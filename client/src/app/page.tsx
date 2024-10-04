@@ -2,6 +2,8 @@ import { SFDisplayFont } from '~/fonts/font.config';
 import { cn } from '~/lib/utils';
 import '~/styles/globals.css';
 
+import envConfig from '~/config/env.config';
+
 export default function Home() {
    return (
       <div className={cn(SFDisplayFont.variable, 'font-SFProDisplay')}>
