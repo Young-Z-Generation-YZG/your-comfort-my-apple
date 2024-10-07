@@ -43,7 +43,8 @@
             "ignoreRestSiblings": true
          }
       ],
-      "react/react-in-jsx-scope": "off" // Disable the requirement for React scope
+      "react/react-in-jsx-scope": "off", // Disable the requirement for React scope
+      "react/no-unescaped-entities": "off" // Disable the requirement for escaping entities
    },
    "settings": {
       "react": {
