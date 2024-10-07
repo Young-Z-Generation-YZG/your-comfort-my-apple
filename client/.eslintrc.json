@@ -1,8 +1,53 @@
 {
    "extends": [
-      "next/core-web-vitals",
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended",
+      "plugin:react/recommended",
       "next/typescript",
-      "plugin:storybook/recommended",
-      "prettier"
-   ]
+      "prettier",
+      "next"
+   ],
+   "rules": {
+      "prettier/prettier": [
+         "warn",
+         {
+            "arrowParens": "always",
+            "bracketSameLine": false,
+            "bracketSpacing": true,
+            "embeddedLanguageFormatting": "auto",
+            "htmlWhitespaceSensitivity": "css",
+            "insertPragma": false,
+            "printWidth": 80,
+            "quoteProps": "as-needed",
+            "requirePragma": false,
+            "semi": true,
+            "singleQuote": true,
+            "tabWidth": 3,
+            "useTabs": false,
+            "vueIndentScriptAndStyle": false,
+            "endOfLine": "lf",
+            "tsxSingleQuote": false,
+            "trailingComma": "all"
+         }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+         "warn",
+         {
+            "args": "all",
+            "argsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+         }
+      ],
+      "react/react-in-jsx-scope": "off" // Disable the requirement for React scope
+   },
+   "settings": {
+      "react": {
+         "version": "detect" // Automatically detect the react version
+      }
+   }
 }

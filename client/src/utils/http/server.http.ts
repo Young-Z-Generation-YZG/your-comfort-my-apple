@@ -12,7 +12,7 @@ export const get = async <IResponse>(
 ) => {
    const serializedUrl = serializeUrl(url, params);
 
-   const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+   const response = await fetch(baseUrl + serializedUrl, {
       method: 'GET',
       headers: {
          'Content-Type': 'application-json',
@@ -41,9 +41,7 @@ export const post = async <IRequest>(
          'Content-Type': 'application-json',
          ...(localStorage.getItem('access-token')
             ? {
-                 Authorization: `Bearer ${localStorage.getItem(
-                    'access-token',
-                 )}`,
+                 Authorization: `Bearer ${cookies().get('access-token')}`,
               }
             : {}),
          ...options,
