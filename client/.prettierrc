@@ -14,5 +14,6 @@
   "tabWidth": 3,
   "trailingComma": "all",
   "useTabs": false,
-  "vueIndentScriptAndStyle": false
+  "vueIndentScriptAndStyle": false,
+  "endOfLine": "lf"
 }

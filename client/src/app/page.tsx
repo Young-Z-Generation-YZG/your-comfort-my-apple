@@ -1,7 +1,6 @@
 import { SFDisplayFont } from '~/fonts/font.config';
 import { cn } from '~/lib/utils';
 import '~/styles/globals.css';
-import { getUser } from '~/services/auth.service';
 import { cookies } from 'next/headers';
 
 export default function Home() {
