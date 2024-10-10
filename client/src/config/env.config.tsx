@@ -5,11 +5,11 @@ const envConfig = () => {
       NEXT_PUBLIC_API_URL: z
          .string()
          .optional()
-         .default('http://localhost:3001/api'),
+         .default('http://localhost:3000/api/v1/'),
       NEXT_PUBLIC_CLIENT_URL: z
          .string()
          .optional()
-         .default('http://localhost:3000'),
+         .default('http://localhost:5000'),
    });
 
    const serverEnvSchema = z.object({});

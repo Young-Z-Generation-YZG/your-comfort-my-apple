@@ -39,7 +39,7 @@ export const post = async <IRequest>(
       method: 'POST',
       headers: {
          'Content-Type': 'application-json',
-         ...(localStorage.getItem('access-token')
+         ...(cookies().get('access-token')
             ? {
                  Authorization: `Bearer ${cookies().get('access-token')}`,
               }
