@@ -1,5 +1,9 @@
 ﻿using Asp.Versioning;
+using MapsterMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using YGZ.Identity.Application.Samples.Commands;
+using YGZ.Identity.Contracts.Samples;
 
 namespace YGZ.Identity.Api.Controllers
 {
@@ -9,6 +13,15 @@ namespace YGZ.Identity.Api.Controllers
     [ApiVersion(2, Deprecated = true)]
     public class SampleController : ControllerBase
     {
+        private readonly ISender _sender;
+        public readonly IMapper _mapper;
+
+        public SampleController(ISender sender, IMapper mapper)
+        {
+            _sender = sender;
+            _mapper = mapper;
+        }
+
         /// <summary>
         /// Get the version 1 of the API
         /// </summary>
@@ -21,12 +34,24 @@ namespace YGZ.Identity.Api.Controllers
             return Ok("v1");
             //throw new Exception("test");
         }
+
         [HttpGet]
         //[Route("")]
         [MapToApiVersion(2)]
         public IActionResult Get2()
         {
             return Ok("v2");
+        }
+
+        [HttpPost]
+        [MapToApiVersion(1)]
+        public IActionResult SamplePost(CreateSampleRequest request)
+        {
+            var cmd = _mapper.Map<CreateSampleCommand>(request);
+
+            var result = _sender.Send(cmd);
+
+            return Ok(result);
         }
     }
 }

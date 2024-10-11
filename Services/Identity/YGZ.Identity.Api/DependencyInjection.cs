@@ -3,15 +3,20 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Asp.Versioning;
 using Serilog;
+using Mapster;
+using System.Reflection;
+using MapsterMapper;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection
 {
     public static IServiceCollection AddPresentation(this IServiceCollection services) 
     {
-       services.AddVersioning();
+        services.AddVersioning();
 
         services.AddSwaggerExtension();
+
+        services.AddMapping();
 
         return services;
     }
@@ -58,5 +63,18 @@ public static class DependencyInjection
             loggerConfiguration
                 .ReadFrom.Configuration(configuration);
         });
+    }
+
+    public static IServiceCollection AddMapping(this IServiceCollection services)
+    {
+        var config = new TypeAdapterConfig();
+
+        config.Scan(Assembly.GetExecutingAssembly());
+
+        services.AddSingleton(config);
+
+        services.AddScoped<IMapper, ServiceMapper>();
+
+        return services;
     }
 }
