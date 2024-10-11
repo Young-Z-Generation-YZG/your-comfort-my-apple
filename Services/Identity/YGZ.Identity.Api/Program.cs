@@ -1,5 +1,6 @@
 using Asp.Versioning.ApiExplorer;
 using Microsoft.Extensions.Options;
+using Serilog;
 using YGZ.Identity.Api;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddPresentation();
+builder.Host.AddSerilog(builder.Configuration);
 
 var app = builder.Build();
 
@@ -34,6 +36,8 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Asp.Versioning;
+using Serilog;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection
@@ -48,5 +49,14 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+
+    public static void AddSerilog(this IHostBuilder builder, IConfiguration configuration)
+    {
+        builder.UseSerilog((context, loggerConfiguration) =>
+        {
+            loggerConfiguration
+                .ReadFrom.Configuration(configuration);
+        });
     }
 }
