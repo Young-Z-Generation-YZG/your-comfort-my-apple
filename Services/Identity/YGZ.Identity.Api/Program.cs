@@ -1,11 +1,16 @@
+using Asp.Versioning.ApiExplorer;
+using Microsoft.Extensions.Options;
+using YGZ.Identity.Api;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddPresentation();
 
 var app = builder.Build();
 
@@ -13,7 +18,21 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // Get the API version descriptions
+        IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
+        // Add the Swagger endpoints for each API version
+        foreach (var description in descriptions)
+        {
+            // Create the Swagger endpoint URL
+            string url = $"/swagger/{description.GroupName}/swagger.json";
+            // Create the Swagger endpoint name
+            string name = description.GroupName.ToUpperInvariant();
+            // Add the Swagger endpoint to the Swagger UI
+            options.SwaggerEndpoint(url, name);
+        }
+    });
 }
 
 app.UseHttpsRedirection();

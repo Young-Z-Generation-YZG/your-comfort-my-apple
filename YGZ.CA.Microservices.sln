@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{8B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Api", "Services\Identity\YGZ.Identity.Api\YGZ.Identity.Api.csproj", "{8BC70CE2-7AE9-46FE-B604-99B145C9CA59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Application", "Services\Identity\YGZ.Identity.Application\YGZ.Identity.Application.csproj", "{F7B73346-7594-4F0B-8FC5-7783B04A6D5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Application", "Services\Identity\YGZ.Identity.Application\YGZ.Identity.Application.csproj", "{F7B73346-7594-4F0B-8FC5-7783B04A6D5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Domain", "Services\Identity\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj", "{0E72549D-4A87-4150-967C-FC3ECA307AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Domain", "Services\Identity\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj", "{0E72549D-4A87-4150-967C-FC3ECA307AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Contracts", "Services\Identity\YGZ.Identity.Contracts\YGZ.Identity.Contracts.csproj", "{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Contracts", "Services\Identity\YGZ.Identity.Contracts\YGZ.Identity.Contracts.csproj", "{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Persistence", "Services\Identity\YGZ.Identity.Persistence\YGZ.Identity.Persistence.csproj", "{78823A43-EB51-4873-BC3F-D1D8018C6CA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Persistence", "Services\Identity\YGZ.Identity.Persistence\YGZ.Identity.Persistence.csproj", "{78823A43-EB51-4873-BC3F-D1D8018C6CA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Test", "Services\Identity\YGZ.Identity.Test\YGZ.Identity.Test.csproj", "{2DC051E0-5518-41FF-A522-1BAF0B189191}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Test", "Services\Identity\YGZ.Identity.Test\YGZ.Identity.Test.csproj", "{2DC051E0-5518-41FF-A522-1BAF0B189191}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Infrastructure", "Services\Identity\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj", "{260ACD0C-AE70-47E8-959E-65B971E92BE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +43,6 @@ Global
 		{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{952D18DD-E2B9-4999-8958-C3A5E4D657D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{952D18DD-E2B9-4999-8958-C3A5E4D657D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{952D18DD-E2B9-4999-8958-C3A5E4D657D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{952D18DD-E2B9-4999-8958-C3A5E4D657D8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78823A43-EB51-4873-BC3F-D1D8018C6CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{78823A43-EB51-4873-BC3F-D1D8018C6CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78823A43-EB51-4873-BC3F-D1D8018C6CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +51,10 @@ Global
 		{2DC051E0-5518-41FF-A522-1BAF0B189191}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DC051E0-5518-41FF-A522-1BAF0B189191}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DC051E0-5518-41FF-A522-1BAF0B189191}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,9 +65,9 @@ Global
 		{F7B73346-7594-4F0B-8FC5-7783B04A6D5D} = {8B619F7C-2035-42D4-A679-FF4017125643}
 		{0E72549D-4A87-4150-967C-FC3ECA307AEA} = {8B619F7C-2035-42D4-A679-FF4017125643}
 		{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E} = {8B619F7C-2035-42D4-A679-FF4017125643}
-		{952D18DD-E2B9-4999-8958-C3A5E4D657D8} = {8B619F7C-2035-42D4-A679-FF4017125643}
 		{78823A43-EB51-4873-BC3F-D1D8018C6CA8} = {8B619F7C-2035-42D4-A679-FF4017125643}
 		{2DC051E0-5518-41FF-A522-1BAF0B189191} = {8B619F7C-2035-42D4-A679-FF4017125643}
+		{260ACD0C-AE70-47E8-959E-65B971E92BE9} = {8B619F7C-2035-42D4-A679-FF4017125643}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}
