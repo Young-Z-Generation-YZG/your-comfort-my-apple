@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -17,4 +17,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YGZ.Identity.Application\YGZ.Identity.Application.csproj" />
+    <ProjectReference Include="..\YGZ.Identity.Contracts\YGZ.Identity.Contracts.csproj" />
+    <ProjectReference Include="..\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\YGZ.Identity.Persistence\YGZ.Identity.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>
