@@ -2,6 +2,7 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using YGZ.Identity.Api.Extensions.NewFolder;
 using YGZ.Identity.Application.Samples.Commands;
 using YGZ.Identity.Contracts.Samples;
 
@@ -11,7 +12,7 @@ namespace YGZ.Identity.Api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion(1)]
     [ApiVersion(2, Deprecated = true)]
-    public class SampleController : ControllerBase
+    public class SampleController : ApiController
     {
         private readonly ISender _sender;
         public readonly IMapper _mapper;
@@ -51,7 +52,7 @@ namespace YGZ.Identity.Api.Controllers
 
             var result = await _sender.Send(cmd);
 
-            return Ok(result);
+            return result.Match(Ok, HandleFailure);
         }
     }
 }

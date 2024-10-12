@@ -7,7 +7,7 @@ using Mapster;
 using System.Reflection;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using YGZ.Identity.Api.Common.Error;
+using YGZ.Identity.Api.Common.Errors;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection

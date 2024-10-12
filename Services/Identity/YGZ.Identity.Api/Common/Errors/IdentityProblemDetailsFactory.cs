@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using YGZ.Identity.Domain.Common.Errors;
 
-namespace YGZ.Identity.Api.Common.Error;
+namespace YGZ.Identity.Api.Common.Errors;
 public class IdentityProblemDetailsFactory : ProblemDetailsFactory
 {
     private readonly ApiBehaviorOptions _apiBehaviorOptions;
@@ -22,6 +23,7 @@ public class IdentityProblemDetailsFactory : ProblemDetailsFactory
         string? instance = null)
     {
         statusCode ??= 500;
+
         var problemDetails = new ProblemDetails
         {
             Status = statusCode,
@@ -30,9 +32,12 @@ public class IdentityProblemDetailsFactory : ProblemDetailsFactory
             Detail = detail,
             Instance = instance
         };
+
         ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
+
         return problemDetails;
     }
+
     public override ValidationProblemDetails CreateValidationProblemDetails(
         HttpContext httpContext,
         ModelStateDictionary modelStateDictionary,
@@ -75,7 +80,16 @@ public class IdentityProblemDetailsFactory : ProblemDetailsFactory
         {
             problemDetails.Extensions["traceId"] = traceId;
         }
-        problemDetails.Extensions.Add("test", "test extensions");
+        //problemDetails.Extensions.Add("test", "test extensions");
+
+        if (httpContext?.Items["errors"] is Error[] errors)
+        {
+            problemDetails.Extensions.Add("errors", errors);
+        }
+        if (httpContext?.Items["error"] is Error error)
+        {
+            problemDetails.Extensions.Add("error", error);
+        }
 
         //var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
         //if (errors is not null)
