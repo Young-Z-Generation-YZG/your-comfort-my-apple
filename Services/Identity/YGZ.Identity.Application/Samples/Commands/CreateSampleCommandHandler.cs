@@ -13,9 +13,9 @@ internal class CreateSampleCommandHandler : ICommandHandler<CreateSampleCommand,
         
         var response = new CreateSampleResponse(Email: request.Email, ReponseAttribute: "Response Attribute");
 
-        //throw new Exception("Sample Exception");
+        throw new Exception("Sample Exception");
 
-        return Result<CreateSampleResponse>.Success(response);
+        //return Result<CreateSampleResponse>.Success(response);
 
         //return Result<CreateSampleResponse>.Failure(SampleErrors.SampleError);
     }

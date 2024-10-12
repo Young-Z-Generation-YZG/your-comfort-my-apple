@@ -6,6 +6,8 @@ using Serilog;
 using Mapster;
 using System.Reflection;
 using MapsterMapper;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using YGZ.Identity.Api.Common.Error;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection
@@ -17,6 +19,8 @@ public static class DependencyInjection
         services.AddSwaggerExtension();
 
         services.AddMapping();
+
+        services.AddGlobalExceptionHandler();
 
         return services;
     }
@@ -74,6 +78,13 @@ public static class DependencyInjection
         services.AddSingleton(config);
 
         services.AddScoped<IMapper, ServiceMapper>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddGlobalExceptionHandler(this IServiceCollection services)
+    {
+        services.AddSingleton<ProblemDetailsFactory, IdentityProblemDetailsFactory>();
 
         return services;
     }
