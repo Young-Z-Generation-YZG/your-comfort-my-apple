@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace YGZ.Identity.Domain.Common.Errors
+﻿
+namespace YGZ.Identity.Domain.Common.Errors;
+public class SampleErrors
 {
-    internal class SampleErrors
-    {
-        public static Error SampleError  => new("SampleError", "Sample error");
-    }
+    public static Error SampleError  => new("SampleError", "Sample error");
 }

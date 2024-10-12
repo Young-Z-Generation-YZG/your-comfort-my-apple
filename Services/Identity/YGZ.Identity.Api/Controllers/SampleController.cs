@@ -45,11 +45,11 @@ namespace YGZ.Identity.Api.Controllers
 
         [HttpPost]
         [MapToApiVersion(1)]
-        public IActionResult SamplePost(CreateSampleRequest request)
+        public async Task<IActionResult> SamplePost(CreateSampleRequest request)
         {
             var cmd = _mapper.Map<CreateSampleCommand>(request);
 
-            var result = _sender.Send(cmd);
+            var result = await _sender.Send(cmd);
 
             return Ok(result);
         }

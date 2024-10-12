@@ -14,11 +14,25 @@ public class Result
         Error = error;
     }
 }
+//public class Result<TResponse> : Result
+//{
+//    public TResponse Respone { get; }
+//    public Result(bool isSuccess, TResponse response, Error error) : base(isSuccess, error)
+//    {
+//        Respone = response;
+//    }
+//}
+
 public class Result<TResponse> : Result
 {
-    public TResponse Respone { get; }
+    public TResponse? Response { get; }
     public Result(bool isSuccess, TResponse response, Error error) : base(isSuccess, error)
     {
-        Respone = response;
+        Response = response;
     }
+
+    public static Result<TResponse> Success(TResponse response) => new(true, response, Error.NoneError);
+    public static Result<TResponse> Failure(Error error) => new(false, default!, error);
+
+    public static implicit operator Result<TResponse>(TResponse response) => new(true, default!, Error.NoneError);
 }

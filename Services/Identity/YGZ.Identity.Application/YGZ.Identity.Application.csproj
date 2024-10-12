@@ -15,8 +15,4 @@
     <ProjectReference Include="..\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Samples\Queries\" />
-  </ItemGroup>
-
 </Project>
