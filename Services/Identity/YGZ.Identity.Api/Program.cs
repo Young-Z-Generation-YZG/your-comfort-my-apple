@@ -1,8 +1,10 @@
 using Asp.Versioning.ApiExplorer;
-using Microsoft.Extensions.Options;
 using Serilog;
 using YGZ.Identity.Api;
+using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application;
+using YGZ.Identity.Infrastructure;
+using YGZ.Identity.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddPresentation().AddApplication();
+builder.Services
+    .AddApplicationLayer()
+    .AddPersistenceLayer(builder.Configuration)
+    .AddInfrastructureLayer()
+    .AddPresentationLayer();
+
 builder.Host.AddSerilog(builder.Configuration);
 
 var app = builder.Build();
@@ -36,7 +43,14 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
+
+    //app.AppMigrations();
 }
+
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+});
 
 app.UseSerilogRequestLogging();
 
@@ -44,6 +58,7 @@ app.UseExceptionHandler("/error");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -8,11 +8,12 @@ using System.Reflection;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using YGZ.Identity.Api.Common.Errors;
+using Microsoft.OpenApi.Models;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services) 
+    public static IServiceCollection AddPresentationLayer(this IServiceCollection services) 
     {
         services.AddVersioning();
 
@@ -27,6 +28,34 @@ public static class DependencyInjection
 
     public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
     {
+        services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT with Bearer into field",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
+
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
 
         return services;
