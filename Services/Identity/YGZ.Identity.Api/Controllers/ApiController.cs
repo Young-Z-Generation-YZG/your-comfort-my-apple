@@ -5,6 +5,8 @@ using YGZ.Identity.Domain.Common.Abstractions.Validations;
 
 namespace YGZ.Identity.Api.Controllers;
 
+
+[ApiController]
 public class ApiController : ControllerBase
 {
     protected IActionResult HandleFailure<TResponse>(Result<TResponse> result)
