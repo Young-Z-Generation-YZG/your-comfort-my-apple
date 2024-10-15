@@ -1,4 +1,4 @@
-﻿using YGZ.Identity.Application.Common.Abstractions.Messaging;
+﻿using YGZ.Identity.Application.Core.Abstractions.Messaging;
 using YGZ.Identity.Contracts.Identity;
 
 namespace YGZ.Identity.Application.Identity.Commands.CreateUser;

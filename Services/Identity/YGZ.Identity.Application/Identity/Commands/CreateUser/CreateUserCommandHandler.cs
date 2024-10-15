@@ -1,5 +1,5 @@
-﻿using YGZ.Identity.Application.Common.Abstractions.Messaging;
-using YGZ.Identity.Application.Identity.Common.Abstractions;
+﻿using YGZ.Identity.Application.Core.Abstractions.Identity;
+using YGZ.Identity.Application.Core.Abstractions.Messaging;
 using YGZ.Identity.Contracts.Identity;
 using YGZ.Identity.Domain.Common.Abstractions;
 
@@ -16,6 +16,22 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, Creat
 
     public async Task<Result<CreateUserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var result = await _identityService.CreateUserAsync(request);
+
+        if(result.IsFailure)
+        {
+            return result.Error;
+        }
+
+        var verificationToken = await _identityService.GenerateEmailVerificationTokenAsync(request.Email);
+
+        if (verificationToken.IsFailure)
+        {
+            return verificationToken.Error;
+        }
+
+
+
+        return null;
     }
 }

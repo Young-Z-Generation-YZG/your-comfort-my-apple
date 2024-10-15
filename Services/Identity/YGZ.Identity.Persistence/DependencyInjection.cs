@@ -2,10 +2,10 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using YGZ.Identity.Application.Identity.Common.Abstractions;
+using YGZ.Identity.Application.Core.Abstractions.Identity;
 using YGZ.Identity.Persistence.Extensions;
 using YGZ.Identity.Persistence.Infrastructure;
-using YGZ.Identity.Persistence.Services;
+using YGZ.Identity.Persistence.Services.Identity;
 
 namespace YGZ.Identity.Persistence;
 

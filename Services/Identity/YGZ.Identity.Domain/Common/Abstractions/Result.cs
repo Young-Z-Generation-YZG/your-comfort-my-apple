@@ -35,4 +35,5 @@ public class Result<TResponse> : Result
     public static Result<TResponse> Failure(Error error) => new(false, default!, error);
 
     public static implicit operator Result<TResponse>(TResponse response) => new(true, default!, Error.NoneError);
+    public static implicit operator Result<TResponse>(Error error) => new(false, default!, error);
 }

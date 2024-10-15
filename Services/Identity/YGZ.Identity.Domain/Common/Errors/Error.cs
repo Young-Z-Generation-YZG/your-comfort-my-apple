@@ -10,7 +10,7 @@ public class Error
         Message = message;
     }
 
-    public static Error NoneError => new("NoneError", "None error");
-    public static Error ValidationError => new("ValidationError", "Validation error");
+    public static Error NoneError => new("Identity.NoneError", "None error");
+    public static Error ValidationError => new("Identity.ValidationError", "Validation error");
     public static Error BadRequest(string code, string message) => new(code, message);
 }

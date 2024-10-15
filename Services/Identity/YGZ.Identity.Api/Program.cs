@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddApplicationLayer()
     .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer()
+    .AddInfrastructureLayer(builder.Configuration)
     .AddPresentationLayer();
 
 builder.Host.AddSerilog(builder.Configuration);
@@ -61,6 +61,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.MapControllers();
 

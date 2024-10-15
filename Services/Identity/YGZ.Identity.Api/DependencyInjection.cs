@@ -21,6 +21,8 @@ public static class DependencyInjection
 
         services.AddMapping();
 
+        services.AddRazorPages();
+
         services.AddGlobalExceptionHandler();
 
         return services;
