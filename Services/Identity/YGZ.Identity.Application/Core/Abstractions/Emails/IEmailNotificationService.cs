@@ -5,5 +5,5 @@ namespace YGZ.Identity.Application.Core.Abstractions.Emails;
 
 public interface IEmailNotificationService
 {
-    Task SendConfirmationEmail(EmailConfirmationCommand command);
+    Task SendEmailConfirmation(EmailConfirmationCommand command);
 }

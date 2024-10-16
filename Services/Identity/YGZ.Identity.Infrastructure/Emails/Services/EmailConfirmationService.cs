@@ -14,7 +14,7 @@ public class EmailConfirmationService : IEmailNotificationService
         _emailService = emailService;
     }
 
-    public async Task SendConfirmationEmail(EmailConfirmationCommand command)
+    public async Task SendEmailConfirmation(EmailConfirmationCommand command)
     {
         var mail = 
             new SendEmailCommand(

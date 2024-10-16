@@ -3,4 +3,4 @@ using YGZ.Identity.Contracts.Identity;
 
 namespace YGZ.Identity.Application.Identity.Commands.CreateUser;
 
-public sealed record CreateUserCommand(string FirstName, string LastName, string Email, string Password) : ICommand<CreateUserResponse> { }
+public sealed record CreateUserCommand(string FirstName, string LastName, string Email, string Password) : ICommand<bool> { }

@@ -3,9 +3,8 @@ using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using YGZ.Identity.Api.Extensions.NewFolder;
+using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application.Identity.Commands.CreateUser;
-using YGZ.Identity.Application.Samples.Commands;
 
 namespace YGZ.Identity.Api.Controllers
 {
@@ -29,7 +28,7 @@ namespace YGZ.Identity.Api.Controllers
         {
             var result = await _sender.Send(request, cancellationToken);
 
-            return result.Match(Ok, HandleFailure);
+            return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
         }
     }
 }

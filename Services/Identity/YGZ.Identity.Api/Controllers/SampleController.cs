@@ -2,7 +2,7 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using YGZ.Identity.Api.Extensions.NewFolder;
+using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application.Samples.Commands;
 using YGZ.Identity.Contracts.Samples;
 
