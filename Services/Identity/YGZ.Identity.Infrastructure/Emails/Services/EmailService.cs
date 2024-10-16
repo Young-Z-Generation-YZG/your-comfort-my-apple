@@ -1,6 +1,7 @@
 ﻿
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using MimeKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -11,10 +12,11 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using YGZ.Identity.Application.Core.Abstractions.Emails;
 using YGZ.Identity.Application.Emails.Commands;
 using YGZ.Identity.Infrastructure.Emails.Settings;
+//using System.Net.Mail;
+//using System.Net;
 
 namespace YGZ.Identity.Infrastructure.Emails.Services;
 
@@ -35,6 +37,7 @@ public class EmailService : IEmailService
         IOptions<MailSettings> settings)
     {
         _logger = logger;
+        _mailSettings = settings.Value;
         _tempDataProvider = tempDataProvider;
         _serviceProvider = serviceProvider;
         _razorViewEngine = razorViewEngine;
@@ -115,22 +118,22 @@ public class EmailService : IEmailService
             using SmtpClient smtpClient = new();
 
             await smtpClient.ConnectAsync(
-                _mailSettings.SmtpServer, 
-                _mailSettings.SmtpPort, 
-                SecureSocketOptions.None
+                _mailSettings.SmtpServer,
+                _mailSettings.SmtpPort,
+                SecureSocketOptions.StartTls
             );
+
+            await smtpClient.AuthenticateAsync(_mailSettings.SenderEmail, _mailSettings.SmtpPassword);
 
             await smtpClient.SendAsync(email);
 
             await smtpClient.DisconnectAsync(true);
 
             _logger.LogInformation("Send email successfully!");
-
-        } catch(Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while sending the email");
         }
-
-        throw new NotImplementedException();
+        catch (Exception e)
+        {
+            _logger.LogError($"Send email error! {e.Message}");
+        }
     }
 }
