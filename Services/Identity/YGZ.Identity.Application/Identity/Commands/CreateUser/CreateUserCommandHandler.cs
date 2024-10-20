@@ -2,6 +2,7 @@
 using YGZ.Identity.Application.Core.Abstractions.Emails;
 using YGZ.Identity.Application.Core.Abstractions.Identity;
 using YGZ.Identity.Application.Core.Abstractions.Messaging;
+using YGZ.Identity.Application.Core.Abstractions.TokenService;
 using YGZ.Identity.Application.Emails.Commands;
 using YGZ.Identity.Domain.Common.Abstractions;
 using YGZ.Identity.Domain.Core.Configs;
@@ -33,7 +34,7 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, bool>
             return result.Error;
         }
 
-        Console.WriteLine("User created successfully", result);
+        Console.WriteLine("User created successfully" + result);
 
         var searchResult = await _identityService.FindUserAsync(new(request.Email));
 
@@ -42,21 +43,21 @@ public class CreateUserCommandHandler : ICommandHandler<CreateUserCommand, bool>
             return searchResult.Error;
         }
 
-        var verificationTokenResult = await _identityService.GenerateEmailVerificationTokenAsync(request.Email);
+        //var verificationTokenResult = await _identityService.GenerateEmailVerificationTokenAsync(request.Email);
 
-        Console.WriteLine("Verification token generated successfully", verificationTokenResult);
+        //Console.WriteLine("Verification token generated successfully", verificationTokenResult);
 
-        if (verificationTokenResult.IsFailure)
-        {
-            return verificationTokenResult.Error;
-        }
+        //if (verificationTokenResult.IsFailure)
+        //{
+        //    return verificationTokenResult.Error;
+        //}
 
-        await _emailNotificationService.SendEmailConfirmation(
-            new EmailConfirmationCommand(
-                request.Email, 
-                searchResult.Response!.NormalizedUserName!, 
-                $"{_options.FrontendConfig.Url}/verify?email={request.Email}&token={verificationTokenResult.Response}")
-            );
+        //await _emailNotificationService.SendEmailConfirmation(
+        //    new EmailConfirmationCommand(
+        //        request.Email, 
+        //        searchResult.Response!.NormalizedUserName!, 
+        //        $"{_options.FrontendConfig.Url}/verify?email={request.Email}&token={verificationTokenResult.Response}")
+        //    );
 
 
         return true;

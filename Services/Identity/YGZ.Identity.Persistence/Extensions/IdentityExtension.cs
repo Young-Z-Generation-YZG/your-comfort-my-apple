@@ -26,7 +26,7 @@ public static class IdentityExtension
         {
             options.User.RequireUniqueEmail = true;
 
-            options.SignIn.RequireConfirmedEmail = true;
+            //options.SignIn.RequireConfirmedEmail = true;
 
             options.Password.RequiredLength = 8;
             options.Password.RequireDigit = true;
@@ -39,11 +39,14 @@ public static class IdentityExtension
         services.AddAuthentication("Bearer")
         .AddJwtBearer(options =>
         {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["JWT:Issuer"],
                 ValidAudience = configuration["JWT:Audience"],

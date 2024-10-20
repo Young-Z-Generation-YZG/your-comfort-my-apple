@@ -4,8 +4,10 @@ using Microsoft.Extensions.Logging;
 using System.Text;
 using YGZ.Identity.Application.Core.Abstractions.Identity;
 using YGZ.Identity.Application.Identity.Commands.CreateUser;
+using YGZ.Identity.Application.Identity.Commands.Login;
 using YGZ.Identity.Application.Identity.Common.Dtos;
 using YGZ.Identity.Application.Identity.Extensions;
+using YGZ.Identity.Contracts.Identity.Login;
 using YGZ.Identity.Domain.Common.Abstractions;
 using YGZ.Identity.Domain.Common.Errors;
 using YGZ.Identity.Domain.Identity.Entities;
@@ -63,6 +65,7 @@ public sealed class IdentityService : IIdentityService
         }
     }
 
+
     public async Task<Result<User>> FindUserAsync(FindUserDto request)
     {
         try
@@ -108,5 +111,26 @@ public sealed class IdentityService : IIdentityService
     public Task<Result<string>> GenerateResetPasswordTokenAsync(string email)
     {
         throw new NotImplementedException();
+    }
+
+    public Result<bool> ValidatePasswordAsync(ValidatePasswordDto request)
+    {
+        try
+        {
+            var result = _passwordHasher.VerifyHashedPassword(request.User!, request.User.PasswordHash!, request.RequestPassword);
+
+            var isValid = result == PasswordVerificationResult.Success;
+
+            if(!isValid)
+                return Errors.Identity.InvalidPassword;
+
+            return isValid;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(ValidatePasswordAsync));
+
+            throw;
+        }
     }
 }
