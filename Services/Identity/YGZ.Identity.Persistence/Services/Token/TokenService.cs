@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using YGZ.Identity.Application.Core.Abstractions.TokenService;
 using YGZ.Identity.Domain.Identity.Entities;
+using YGZ.Identity.Domain.IdentityServer;
 
 namespace YGZ.Identity.Persistence.Services.Token;
 
@@ -24,8 +25,8 @@ public class TokenService : ITokenService
     {
         var claims = new List<Claim>()
         {
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName),
+            new Claim(JwtClaimTypes.Scope, ApiScope.Read),
+            //new Claim(JwtClaimTypes.Scope, ApiScope.Write)
         };
 
         var credential = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);

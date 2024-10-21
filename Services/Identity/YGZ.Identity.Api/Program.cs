@@ -1,4 +1,6 @@
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using YGZ.Identity.Api;
 using YGZ.Identity.Api.Common.Extensions;
@@ -21,6 +23,15 @@ builder.Services
     .AddPresentationLayer();
 
 builder.Host.AddSerilog(builder.Configuration);
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ApiScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "api1");
+    });
+});
 
 var app = builder.Build();
 
@@ -58,12 +69,12 @@ app.UseExceptionHandler("/error");
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.MapControllers();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.MapControllers();
 
 app.Run();

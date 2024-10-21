@@ -82,6 +82,12 @@ public class IdentityProblemDetailsFactory : ProblemDetailsFactory
         }
         //problemDetails.Extensions.Add("test", "test extensions");
 
+        var apiPath = httpContext?.Request?.Path.Value;
+        if (!string.IsNullOrEmpty(apiPath))
+        {
+            problemDetails.Extensions["apiPath"] = apiPath;
+        }
+
         if (httpContext?.Items["errors"] is Error[] errors)
         {
             problemDetails.Extensions.Add("errors", errors);
