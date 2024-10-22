@@ -22,7 +22,9 @@ public static class DependencyInjection
 
         services.Configure<AppConfig>(configuration.GetSection(nameof(AppConfig)));
 
-        services.AddIdentityExtension(configuration);
+        services
+            .AddIdentityExtension(configuration)
+            .AddIdentityServerExtension(configuration);
 
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITokenService, TokenService>();
@@ -30,3 +32,5 @@ public static class DependencyInjection
         return services;
     }
 }
+
+

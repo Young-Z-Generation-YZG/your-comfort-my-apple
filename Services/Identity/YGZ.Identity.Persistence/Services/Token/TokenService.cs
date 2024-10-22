@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using YGZ.Identity.Application.Core.Abstractions.TokenService;
 using YGZ.Identity.Domain.Identity.Entities;
-using YGZ.Identity.Domain.IdentityServer;
+using YGZ.Identity.Domain.IdentityServer.Authorization;
 
 namespace YGZ.Identity.Persistence.Services.Token;
 

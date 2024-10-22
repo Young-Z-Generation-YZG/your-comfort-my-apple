@@ -1,5 +1,4 @@
-﻿
-namespace YGZ.Identity.Domain.IdentityServer;
+﻿namespace YGZ.Identity.Domain.IdentityServer.Authorization;
 
 public static class ApiResource
 {

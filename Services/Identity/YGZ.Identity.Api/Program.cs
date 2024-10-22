@@ -7,6 +7,7 @@ using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application;
 using YGZ.Identity.Infrastructure;
 using YGZ.Identity.Persistence;
+using YGZ.Identity.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    await IdentityServerMigrationExtension.ApplyMigrationsAsync(app);
+
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
@@ -54,8 +57,6 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
-
-    //app.AppMigrations();
 }
 
 app.UseCors(options =>
@@ -65,12 +66,14 @@ app.UseCors(options =>
 
 app.UseSerilogRequestLogging();
 
+
 app.UseExceptionHandler("/error");
 
 app.UseHttpsRedirection();
 
 app.MapControllers();
 
+app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
 

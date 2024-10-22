@@ -11,10 +11,10 @@ using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using YGZ.Identity.Domain.Identity.Constants.Authorization;
 using YGZ.Identity.Persistence.Infrastructure;
-using YGZ.Identity.Domain.IdentityServer;
 using YGZ.Identity.Domain.Identity.Entities;
 using YGZ.Identity.Persistence.Data;
 using Duende.IdentityServer;
+using YGZ.Identity.Domain.IdentityServer.Authorization;
 
 namespace YGZ.Identity.Persistence.Extensions;
 public static class IdentityExtension
@@ -40,7 +40,8 @@ public static class IdentityExtension
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
         })
-        .AddEntityFrameworkStores<ApplicationDbContext>()  
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders()
         .AddApiEndpoints();
 
         services.AddAuthorization(options =>
