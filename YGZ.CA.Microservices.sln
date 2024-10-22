@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Persistence", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Test", "Services\Identity\YGZ.Identity.Test\YGZ.Identity.Test.csproj", "{2DC051E0-5518-41FF-A522-1BAF0B189191}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Identity.Infrastructure", "Services\Identity\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj", "{260ACD0C-AE70-47E8-959E-65B971E92BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Infrastructure", "Services\Identity\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj", "{260ACD0C-AE70-47E8-959E-65B971E92BE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway.Api", "Gateways\Gateway.Api\Gateway.Api.csproj", "{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{260ACD0C-AE70-47E8-959E-65B971E92BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
