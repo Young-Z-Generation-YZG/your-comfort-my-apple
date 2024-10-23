@@ -5,7 +5,7 @@ namespace YGZ.Catalog.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services)
     {
         return services;
     }

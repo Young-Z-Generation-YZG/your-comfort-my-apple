@@ -15,6 +15,5 @@ namespace YGZ.Identity.Api.Common.Extensions
 
             return result.IsSuccess ? onSuccess(result.Response!) : onFailure(result);
         }
- 
     }
 }
