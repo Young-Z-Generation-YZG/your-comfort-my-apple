@@ -1,9 +1,6 @@
 using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using YGZ.Identity.Api;
-using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application;
 using YGZ.Identity.Infrastructure;
 using YGZ.Identity.Persistence;
@@ -46,6 +43,7 @@ if (app.Environment.IsDevelopment())
     {
         // Get the API version descriptions
         IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
+
         // Add the Swagger endpoints for each API version
         foreach (var description in descriptions)
         {

@@ -5,6 +5,7 @@ using YGZ.Catalog.Domain.Core.Abstractions.Result.Validations;
 
 namespace YGZ.Catalog.Api.Controllers;
 
+[ApiController]
 public class ApiController : ControllerBase
 {
     protected IActionResult HandleFailure<TResponse>(Result<TResponse> result)

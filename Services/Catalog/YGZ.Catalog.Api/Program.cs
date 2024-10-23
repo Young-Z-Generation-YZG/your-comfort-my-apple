@@ -1,3 +1,4 @@
+using Asp.Versioning.ApiExplorer;
 using Serilog;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Application;
@@ -26,7 +27,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
+
+        foreach (ApiVersionDescription description in descriptions)
+        {
+            string url = $"/swagger/{description.GroupName}/swagger.json";
+            string name = description.GroupName.ToUpperInvariant();
+
+            options.SwaggerEndpoint(url, name);
+        }
+    });
+}
+else
+{
+    app.UseHttpsRedirection();
 }
 
 app.UseCors(options =>
@@ -43,5 +59,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+//app.UseRequestContextLogging();
 
 app.Run();

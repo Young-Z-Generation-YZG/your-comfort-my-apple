@@ -1,14 +1,14 @@
-﻿using YGZ.Identity.Api.OpenApi;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Swashbuckle.AspNetCore.SwaggerGen;
 using Asp.Versioning;
 using Serilog;
 using Mapster;
 using System.Reflection;
 using MapsterMapper;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using YGZ.Identity.Api.Common.Errors;
 using Microsoft.OpenApi.Models;
+using YGZ.Identity.Api.OpenApi;
+using YGZ.Identity.Api.Common.Errors;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection

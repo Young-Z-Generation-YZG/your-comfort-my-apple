@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Identity\YGZ.Identity.Application\YGZ.Identity.Application.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
   </ItemGroup>
 
 </Project>

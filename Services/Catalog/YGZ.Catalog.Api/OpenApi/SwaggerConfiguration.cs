@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -17,15 +18,15 @@ public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
     {
         foreach (var description in _provider.ApiVersionDescriptions)
         {
-            options.SwaggerDoc(description.GroupName, OpenApiInfo(description));
+            options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
         }
     }
 
-    private OpenApiInfo OpenApiInfo(ApiVersionDescription description)
+    private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
         var info = new OpenApiInfo
         {
-            Title = "Identity Service",
+            Title = "Catalog Service",
             Version = description.ApiVersion.ToString(),
             Description = "There are APIs used for authentication and authorization",
             Contact = new OpenApiContact
