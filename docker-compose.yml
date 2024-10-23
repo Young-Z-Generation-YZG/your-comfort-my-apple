@@ -1,15 +1,46 @@
-version: "3.4"
-
 services:
-  seq:
-    image: datalust/seq
-    environment:
-      - ACCEPT_EULA=Y
+  ygz.gateway.api:
+    # image: ${DOCKER_REGISTRY-}gatewayapi
+    build:
+      context: ./Gateways/Gateway.Api
+      dockerfile: Dockerfile
     ports:
-      - "5341:80"
+      - "8080:8080"
+      - "8081:8081"
     networks:
-      - app-network
+      - backendbridge
+
+  # ygz.identity.api:
+  #   # image: ${DOCKER_REGISTRY-}ybeidentityapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+  #   ports:
+  #     - "5000:5000"
+
+  identitytest1:
+    # image: ${DOCKER_REGISTRY-}identitytest1
+    build:
+      context: .\Services\IdentityTest\IdentityTest1
+      dockerfile: Dockerfile
+    ports:
+      - "5050:8080"
+      - "5051:8081"
+    networks:
+      - backendbridge
+
+  identitytest2:
+    # image: ${DOCKER_REGISTRY-}identitytest2
+    build:
+      context: .\Services\IdentityTest\IdentityTest2
+      dockerfile: Dockerfile
+    ports:
+      - "6060:8080"
+      - "6061:8081"
+    networks:
+      - backendbridge
 
 networks:
-  app-network:
+  backendbridge:
+    name: backendbridge
     driver: bridge

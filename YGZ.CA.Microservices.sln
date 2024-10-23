@@ -21,7 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Test", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Infrastructure", "Services\Identity\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj", "{260ACD0C-AE70-47E8-959E-65B971E92BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway.Api", "Gateways\Gateway.Api\Gateway.Api.csproj", "{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.Api", "Gateways\Gateway.Api\Gateway.Api.csproj", "{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest1", "Services\IdentityTest\IdentityTest1\IdentityTest1.csproj", "{8081E21D-6022-47A9-BD61-8A4113B1676D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest2", "Services\IdentityTest\IdentityTest2\IdentityTest2.csproj", "{590E87E3-CEF5-4678-972A-1C54BEB40CC6}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +67,18 @@ Global
 		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8081E21D-6022-47A9-BD61-8A4113B1676D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8081E21D-6022-47A9-BD61-8A4113B1676D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8081E21D-6022-47A9-BD61-8A4113B1676D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8081E21D-6022-47A9-BD61-8A4113B1676D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590E87E3-CEF5-4678-972A-1C54BEB40CC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590E87E3-CEF5-4678-972A-1C54BEB40CC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590E87E3-CEF5-4678-972A-1C54BEB40CC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590E87E3-CEF5-4678-972A-1C54BEB40CC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
