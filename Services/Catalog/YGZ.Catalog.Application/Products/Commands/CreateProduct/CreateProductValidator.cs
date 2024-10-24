@@ -8,6 +8,8 @@ public class CreateProductValidator : AbstractValidator<CreateProductCommand>
     public CreateProductValidator()
     {
         RuleFor(product => product.Name)
-            .NotEmpty();
+            .NotEmpty()
+            .MaximumLength(200);
+
     }
 }

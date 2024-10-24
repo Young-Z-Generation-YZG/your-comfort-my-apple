@@ -9,6 +9,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using YGZ.Catalog.Api.Common.Errors;
 using Asp.Versioning;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace YGZ.Catalog.Api;
 
@@ -29,6 +30,36 @@ public static class DependencyInjection
 
     public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
     {
+        services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT with Bearer into field",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+
+            options.ExampleFilters();
+        });
+
         services.AddApiVersioning(options =>
         {
             options.AssumeDefaultVersionWhenUnspecified = true;
@@ -46,6 +77,8 @@ public static class DependencyInjection
             options.GroupNameFormat = "'v'VVV";
             options.SubstituteApiVersionInUrl = true;
         });
+
+        //services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
 

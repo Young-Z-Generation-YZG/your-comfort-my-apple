@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Asp.Versioning;
-using YGZ.Catalog.Api.Common.Extensions;
+using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
-using Microsoft.AspNetCore.Authorization;
+using YGZ.Catalog.Api.Common.Extensions;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -21,12 +21,24 @@ public class ProductController : ApiController
         _mapper = mapper;
     }
 
-    [AllowAnonymous]
-    [HttpPost()]
+    /// <summary>
+    /// Create Product
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost]
+    //[Consumes("multipart/form-data")]
+    [SwaggerRequestExample(typeof(CreateProductCommand), typeof(CreateProductExample))]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand request, CancellationToken cancellationToken = default)
     {
         var result = await _sender.Send(request, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
+
+    //[HttpPost("Person")]
+    //[SwaggerRequestExample(typeof(Person), typeof(PersonExample))]
+    //public Person Post([FromBody] Person person)
+    //{
+    //    return person;
+    //}
 }

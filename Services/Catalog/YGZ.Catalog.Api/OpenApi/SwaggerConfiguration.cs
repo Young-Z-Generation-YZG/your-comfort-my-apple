@@ -20,6 +20,10 @@ public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
         {
             options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
         }
+
+        var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        options.IncludeXmlComments(xmlPath);
     }
 
     private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
@@ -40,6 +44,8 @@ public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
                 Name = "Use under LICX"
             }
         };
+
+        
 
         if (description.IsDeprecated)
         {
