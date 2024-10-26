@@ -1,4 +1,4 @@
-﻿
+﻿using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Errors;
 
 namespace YGZ.Catalog.Domain.Core.Abstractions.Result.Validations;

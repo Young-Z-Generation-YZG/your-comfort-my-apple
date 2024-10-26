@@ -10,6 +10,5 @@ public class CreateProductValidator : AbstractValidator<CreateProductCommand>
         RuleFor(product => product.Name)
             .NotEmpty()
             .MaximumLength(200);
-
     }
 }

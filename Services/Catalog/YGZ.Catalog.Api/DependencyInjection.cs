@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using YGZ.Catalog.Api.Common.Errors;
 using Asp.Versioning;
 using Swashbuckle.AspNetCore.Filters;
+using YGZ.Catalog.Api.Common.Mappings;
 
 namespace YGZ.Catalog.Api;
 
@@ -21,7 +22,7 @@ public static class DependencyInjection
 
         services.AddApiVersioningExtension();
 
-        services.AddMapping();
+        services.AddMappings();
 
         services.AddGlobalExceptionHandler();
 
@@ -78,7 +79,7 @@ public static class DependencyInjection
             options.SubstituteApiVersionInUrl = true;
         });
 
-        //services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+        services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
 
@@ -120,19 +121,6 @@ public static class DependencyInjection
             loggerConfiguration
                 .ReadFrom.Configuration(configuration);
         });
-    }
-
-    public static IServiceCollection AddMapping(this IServiceCollection services)
-    {
-        var config = new TypeAdapterConfig();
-
-        config.Scan(Assembly.GetExecutingAssembly());
-
-        services.AddSingleton(config);
-
-        services.AddScoped<IMapper, ServiceMapper>();
-
-        return services;
     }
 
     public static IServiceCollection AddGlobalExceptionHandler(this IServiceCollection services)

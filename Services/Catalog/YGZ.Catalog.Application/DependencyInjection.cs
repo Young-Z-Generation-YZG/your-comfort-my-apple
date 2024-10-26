@@ -16,7 +16,7 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        services.AddSwaggerExamplesFromAssemblies(assembly);
+        //services.AddSwaggerExamplesFromAssemblies(assembly);
         services.AddFluentValidationRulesToSwagger();
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));

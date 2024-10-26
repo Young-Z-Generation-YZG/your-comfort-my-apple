@@ -12,12 +12,12 @@ namespace YGZ.Catalog.Api.Controllers;
 [ApiVersion(1)]
 public class ProductController : ApiController
 {
-    private readonly ISender _sender;
+    private readonly ISender _mediator;
     private readonly IMapper _mapper;
 
-    public ProductController(ISender sender, IMapper mapper)
+    public ProductController(ISender mediator, IMapper mapper)
     {
-        _sender = sender;
+        _mediator = mediator;
         _mapper = mapper;
     }
 
@@ -30,15 +30,8 @@ public class ProductController : ApiController
     [SwaggerRequestExample(typeof(CreateProductCommand), typeof(CreateProductExample))]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand request, CancellationToken cancellationToken = default)
     {
-        var result = await _sender.Send(request, cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-
-    //[HttpPost("Person")]
-    //[SwaggerRequestExample(typeof(Person), typeof(PersonExample))]
-    //public Person Post([FromBody] Person person)
-    //{
-    //    return person;
-    //}
 }
