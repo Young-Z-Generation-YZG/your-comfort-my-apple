@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Text;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
-using YGZ.Catalog.Application.Products.Extensions;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Errors;
-using YGZ.Catalog.Domain.Products.Entities;
+using YGZ.Catalog.Domain.Products;
 using YGZ.Catalog.Persistence.Configurations;
 
 namespace YGZ.Catalog.Persistence.Services;
@@ -31,7 +31,9 @@ public class ProductService : IProductService
     {
         try
         {
-            await _collection.InsertOneAsync(request.ToEntity()).ConfigureAwait(false);
+            var product = Product.Create(name: request.Name);
+
+            await _collection.InsertOneAsync(product).ConfigureAwait(false);
 
             return true;
         }

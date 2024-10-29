@@ -13,6 +13,8 @@ public static class DependencyInjection
     {
         services.Configure<CatalogDbSetting>(configuration.GetSection(nameof(CatalogDbSetting)));
 
+        services.AddMongoDbConfiguration();
+
         services.AddScoped<IProductService, ProductService>();
 
         return services;
