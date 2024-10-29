@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using MapsterMapper;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Contracts.Categories;
 

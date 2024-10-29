@@ -5,6 +5,8 @@ using Asp.Versioning;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
 using YGZ.Catalog.Api.Common.Extensions;
+using YGZ.Catalog.Contracts.Products;
+using YGZ.Catalog.Api.Common.SwaggerExamples;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -26,11 +28,18 @@ public class ProductController : ApiController
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    //[Consumes("multipart/form-data")]
-    [SwaggerRequestExample(typeof(CreateProductCommand), typeof(CreateProductExample))]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand request, CancellationToken cancellationToken = default)
+    [Consumes("multipart/form-data")]
+    [SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
+    public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+
+        Console.WriteLine("request" + request);
+
+        var cmd = _mapper.Map<CreateProductCommand>(request);
+
+        cmd.Files = request.Files;
+
+        var result = await _mediator.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

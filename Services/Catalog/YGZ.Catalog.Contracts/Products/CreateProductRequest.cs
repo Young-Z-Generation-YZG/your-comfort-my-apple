@@ -1,6 +1,5 @@
-﻿namespace YGZ.Catalog.Contracts.Products;
+﻿using Microsoft.AspNetCore.Http;
 
-public class CreateProductRequest
-{
+namespace YGZ.Catalog.Contracts.Products;
 
-}
+public sealed record CreateProductRequest(string Name, IFormFile[] Files) { }

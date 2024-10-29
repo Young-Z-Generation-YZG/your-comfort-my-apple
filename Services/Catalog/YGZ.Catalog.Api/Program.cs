@@ -17,7 +17,7 @@ builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
     .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer();
+    .AddInfrastructureLayer(builder.Configuration);
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 

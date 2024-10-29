@@ -24,11 +24,9 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     [BsonElement("slug")]
     public Slug Slug { get; }
 
-    [BsonDateTimeOptions]
     [BsonElement("created_at")]
     public DateTime Created_at { get;}
 
-    [BsonDateTimeOptions]
     [BsonElement("updated_at")]
     public DateTime Updated_at { get ; set; }
 
@@ -46,6 +44,9 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
 
     public static Product Create(string name, string[]? image_urls= null, string[]? image_ids = null)
     {
-        return new Product(ProductId.CreateUnique(), name, image_urls ?? [], image_ids ?? [], Slug.Create(name), DateTime.UtcNow, DateTime.UtcNow);
+        var  vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimezone);
+
+        return new Product(ProductId.CreateUnique(), name, image_urls ?? [], image_ids ?? [], Slug.Create(name), vietnamTime, vietnamTime);
     }
 }

@@ -1,17 +1,34 @@
 ﻿using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using YGZ.Catalog.Contracts.Products;
 
 namespace YGZ.Catalog.Api.OpenApi;
 
-public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>
+public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>, IOperationFilter
 {
     private readonly IApiVersionDescriptionProvider _provider;
     public SwaggerConfiguration(IApiVersionDescriptionProvider provider)
     {
         _provider = provider;
+    }
+
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
+    {
+        if (context.ApiDescription.ParameterDescriptions.Any(p => p.Source == BindingSource.Form))
+        {
+            operation.RequestBody = new OpenApiRequestBody
+            {
+                Content = {
+                    ["multipart/form-data"] = new OpenApiMediaType
+                    {
+                        Schema = context.SchemaGenerator.GenerateSchema(typeof(CreateProductRequest), context.SchemaRepository)
+                    }
+                }
+            };
+        }
     }
 
     public void Configure(SwaggerGenOptions options)
