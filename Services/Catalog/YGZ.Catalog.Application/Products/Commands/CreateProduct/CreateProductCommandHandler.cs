@@ -9,12 +9,10 @@ namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 internal class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, bool>
 {
     private readonly IProductService _productService;
-    private readonly IUploadService _uploadSerivce;
 
-    public CreateProductCommandHandler(IProductService productService, IUploadService uploadService)
+    public CreateProductCommandHandler(IProductService productService)
     {
         _productService = productService;
-        _uploadSerivce = uploadService;
     }
 
     public async Task<Result<bool>> Handle(CreateProductCommand request, CancellationToken cancellationToken)

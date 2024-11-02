@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Core\Common\Constants\" />
-    <Folder Include="Products\Entities\" />
   </ItemGroup>
 
 </Project>

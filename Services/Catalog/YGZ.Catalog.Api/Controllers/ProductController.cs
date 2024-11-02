@@ -28,16 +28,14 @@ public class ProductController : ApiController
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    [Consumes("multipart/form-data")]
-    [SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
-    public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request, CancellationToken cancellationToken = default)
+    //[SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken = default)
     {
-
         Console.WriteLine("request" + request);
 
         var cmd = _mapper.Map<CreateProductCommand>(request);
 
-        cmd.Files = request.Files;
+        //cmd.Files = request.Files;
 
         var result = await _mediator.Send(cmd, cancellationToken);
 

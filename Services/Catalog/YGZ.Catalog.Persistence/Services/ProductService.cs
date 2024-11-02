@@ -31,7 +31,7 @@ public class ProductService : IProductService
     {
         try
         {
-            var product = Product.Create(name: request.Name);
+            var product = Product.Create(name: request.Name, image_urls: request.Image_urls, image_ids: request.Image_ids);
 
             await _collection.InsertOneAsync(product).ConfigureAwait(false);
 

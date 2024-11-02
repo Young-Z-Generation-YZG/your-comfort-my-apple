@@ -9,6 +9,7 @@ public class ProductMappingConfig : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<CreateProductRequest, CreateProductCommand>()
-            .Ignore(dest => dest.Files);
+            //.Ignore(dest => dest.Files)
+            .Map(dest => dest, source => source);
     }
 }

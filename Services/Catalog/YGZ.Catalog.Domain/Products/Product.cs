@@ -1,16 +1,22 @@
 ﻿
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
+using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Domain.Products.ValueObjects;
+using YGZ.Catalog.Domain.Promotions;
 
 namespace YGZ.Catalog.Domain.Products;
 
 public sealed class Product : AggregateRoot<ProductId>, IAuditable
 {
-    public ProductId ProductId { get; }
+    private readonly List<ProductItem> _product_items = new();
+    private readonly Category _category;
+    private readonly Promotion _promotion;
+
 
     [BsonElement("name")]
     public string Name { get; }
@@ -30,10 +36,10 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     [BsonElement("updated_at")]
     public DateTime Updated_at { get ; set; }
 
+    public IReadOnlyList<ProductItem> Product_items => _product_items.AsReadOnly();
 
     private Product(ProductId productId, string name, string[] image_urls, string[] image_ids, Slug slug, DateTime created_at, DateTime updated_at) : base(productId)
     {
-        ProductId = productId;
         Name = name;
         Image_urls = image_urls;
         Image_ids = image_ids;
@@ -42,11 +48,11 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         Updated_at = updated_at;
     }
 
-    public static Product Create(string name, string[]? image_urls= null, string[]? image_ids = null)
+    public static Product Create(string name, string[] image_urls, string[] image_ids)
     {
-        var  vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimezone);
 
-        return new Product(ProductId.CreateUnique(), name, image_urls ?? [], image_ids ?? [], Slug.Create(name), vietnamTime, vietnamTime);
+        return new Product(ProductId.CreateUnique(), name, image_urls, image_ids, Slug.Create(name), vietnamTime, vietnamTime);
     }
 }
