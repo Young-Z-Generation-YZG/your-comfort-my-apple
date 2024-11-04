@@ -16,6 +16,17 @@ const nextConfig = {
 
       return config;
    },
+   images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'shopdunk.com',
+          port: '',
+          pathname: '/**'
+        },
+      ],
+   },
+  
 };
 
 export default nextConfig;
