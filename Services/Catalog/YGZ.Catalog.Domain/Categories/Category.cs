@@ -10,17 +10,17 @@ public class Category : AggregateRoot<CategoryId>, IAuditable
 {
     public string Name { get; set; }
     [BsonElement("created_at")]
-    public DateTime Created_at { get; }
+    public DateTime CreatedAt { get; }
 
     [BsonElement("updated_at")]
-    public DateTime Updated_at { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
 
-    private Category(CategoryId categoryId, string name, DateTime created_at, DateTime updated_at) : base(categoryId)
+    private Category(CategoryId categoryId, string name, DateTime createdAt, DateTime updatedAt) : base(categoryId)
     {
         Name = name;
-        Created_at = created_at;
-        Updated_at = updated_at;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
     }
 
 
@@ -30,6 +30,6 @@ public class Category : AggregateRoot<CategoryId>, IAuditable
         var vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimezone);
 
-        return new Category(CategoryId.Create(), name, vietnamTime, vietnamTime);
+        return new Category(CategoryId.CreateNew(), name, vietnamTime, vietnamTime);
     }
 }

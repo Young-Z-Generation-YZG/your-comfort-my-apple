@@ -16,20 +16,42 @@ class Product
 {
   "id": "0000-0000-0000-0000",
   "name": "Iphone 16",
-  "ProductItems": [
+  "description": "desc",
+  "images": [
     {
-        "id": "0000-0000-0000-0000",
-        "name": "Iphone 16"
+      "url": "string",
+      "id": "id"
     },
-    {
-        "id": "0000-0000-0000-0000",
-        "name": "Iphone 16 Plus"
-    }
   ]
+  "average_rating": {
+    "value": 4.5,
+    "number": 1,
+  },
+  "Product_items": [
+    {
+      "id": "0000-0000-0000-0000",
+      "SKU": "#STRING",
+      "model": "Iphone 16",
+      "color": "pink",
+      "storage": 256,
+      "price": 1000,
+      "quantity_in_stock": 1,
+      "images": [
+      {
+        "url": "string",
+        "id": "id"
+      }],
+    }
+  "Images": [
+    {
+      "url": "",
+      "id": "",
+    }
+  ],
+  ],
   "createdAt": "",
   "updatedAt": "",
-  "categoryId": "0000-0000-0000-0000",
-  "promotionId": "0000-0000-0000-0000",
-  "productItemIds": ["0000-0000-0000-0000", "0000-0000-0000-0000"]
+  "category_id": "0000-0000-0000-0000",
+  "promotion_id": "0000-0000-0000-0000",
 }
 ```

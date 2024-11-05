@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 
-namespace YGZ.Catalog.Persistence.Configurations.Products;
+namespace YGZ.Catalog.Persistence.Configurations.Common;
 
 public class SlugSerializer : SerializerBase<Slug>
 {

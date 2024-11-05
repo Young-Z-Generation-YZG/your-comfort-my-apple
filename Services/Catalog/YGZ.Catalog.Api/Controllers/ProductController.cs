@@ -31,14 +31,12 @@ public class ProductController : ApiController
     //[SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("request" + request);
-
         var cmd = _mapper.Map<CreateProductCommand>(request);
 
-        //cmd.Files = request.Files;
+        //cmd.Files = request.Files; 
 
         var result = await _mediator.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+        return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductResponse>(result)), onFailure: HandleFailure);
     }
 }

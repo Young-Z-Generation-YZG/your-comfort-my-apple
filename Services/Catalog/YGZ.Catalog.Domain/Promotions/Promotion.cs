@@ -10,15 +10,15 @@ public class Promotion : Entity<PromotionId>, IAuditable
 {
     public string Name { get; }
 
-    public DateTime Created_at { get; }
+    public DateTime CreatedAt { get; }
 
-    public DateTime Updated_at { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
-    private Promotion(PromotionId id, string name, DateTime created_at, DateTime updated_at) : base(id)
+    private Promotion(PromotionId id, string name, DateTime createdAt, DateTime updatedAt) : base(id)
     {
         Name = name;
-        Created_at = created_at;
-        Updated_at = updated_at;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
     }
 
     public static Promotion Create(string name)
@@ -26,6 +26,6 @@ public class Promotion : Entity<PromotionId>, IAuditable
         var vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimezone);
 
-        return new(PromotionId.Create(), name, vietnamTime, vietnamTime);
+        return new(PromotionId.CreateNew(), name, vietnamTime, vietnamTime);
     }
 }

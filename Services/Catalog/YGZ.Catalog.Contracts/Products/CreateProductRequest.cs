@@ -1,9 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿namespace YGZ.Catalog.Contracts.Products;
 
-namespace YGZ.Catalog.Contracts.Products;
+public sealed record CreateProductRequest(string Name,
+                                          string? Description,
+                                          AverageRatingRequest? Average_rating,
+                                          List<ImageRequest>? Images,
+                                          List<ProductItemRequest>? Product_items,
+                                          string? Category_id, 
+                                          string? Promotion_id) { }
 
-public sealed record CreateProductRequest(string Name, List<string> Image_urls, List<string> Image_ids, List<ProductItem> Product_items) { }
+public sealed record ImageRequest(string Url, string Id) { }
 
-public sealed record ProductItem(string Name, string Description, decimal Price, Inventory Inventory) { }
+public sealed record AverageRatingRequest(double Value, int NumRatings) { }
 
-public sealed record Inventory(int Quantity_in_stock) { }
+public sealed record ProductItemRequest(string Model,
+                                        string Color,
+                                        int Storage,
+                                        double Price,
+                                        int Quantity_in_stock,
+                                        List<ImageRequest> Images) { }
+

@@ -2,57 +2,84 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Categories;
+using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Domain.Promotions;
+using YGZ.Catalog.Domain.Promotions.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products;
 
 public sealed class Product : AggregateRoot<ProductId>, IAuditable
 {
-    private readonly List<ProductItem> _product_items = new();
+    private readonly List<ProductItem> _productItems = new();
     private readonly Category _category;
     private readonly Promotion _promotion;
-
 
     [BsonElement("name")]
     public string Name { get; }
 
-    [BsonElement("image_urls")]
-    public string[] Image_urls { get; }
+    [BsonElement("description")]
+    public string Description { get; }
 
-    [BsonElement("image_ids")]
-    public string[] Image_ids { get; }
+    [BsonElement("images")]
+    public List<Image> Images { get; }
+
+    [BsonElement("average_rating")]
+    public AverageRating AverageRating { get; }
 
     [BsonElement("slug")]
     public Slug Slug { get; }
 
+    [BsonElement("category_id")]
+    public CategoryId CategoryId { get; set; }
+
+    [BsonElement("promotion_id")]
+    public PromotionId PromotionId { get; set; }
+
+
     [BsonElement("created_at")]
-    public DateTime Created_at { get;}
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime CreatedAt { get;}
 
     [BsonElement("updated_at")]
-    public DateTime Updated_at { get ; set; }
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime UpdatedAt { get ; set; }
 
-    public IReadOnlyList<ProductItem> Product_items => _product_items.AsReadOnly();
+    public IReadOnlyList<ProductItem> ProductItems => _productItems.AsReadOnly();
 
-    private Product(ProductId productId, string name, string[] image_urls, string[] image_ids, Slug slug, DateTime created_at, DateTime updated_at) : base(productId)
+    private Product(ProductId productId, string name, Slug slug, string description, List<Image> images, AverageRating averageRating, List<ProductItem> product_items, CategoryId categoryId, PromotionId promotionId, DateTime created_at, DateTime updated_at) : base(productId)
     {
         Name = name;
-        Image_urls = image_urls;
-        Image_ids = image_ids;
+        Description = description;
+        Images = images;
+        AverageRating = averageRating;
         Slug = slug;
-        Created_at = created_at;
-        Updated_at = updated_at;
+        _productItems = product_items;
+        CategoryId = categoryId;
+        PromotionId = promotionId;
+        CreatedAt = created_at;
+        UpdatedAt = updated_at;
     }
 
-    public static Product Create(string name, string[] image_urls, string[] image_ids)
+    public static Product Create(string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, string? categoryId, string? promotionId)
     {
-        var vietnamTimezone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-        var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimezone);
+        var now = DateTime.UtcNow;
+        var utc = now.ToUniversalTime();
 
-        return new Product(ProductId.CreateUnique(), name, image_urls, image_ids, Slug.Create(name), vietnamTime, vietnamTime);
+        return new Product(ProductId.CreateUnique(),
+                           name,
+                           Slug.Create(name),
+                           description ?? "",
+                           images,
+                           AverageRating.CreateNew(valueRating, numsRating),
+                           productItems,
+                           CategoryId.ToObjectId(categoryId)!,
+                           PromotionId.ToObjectId(promotionId)!,
+                           utc,
+                           utc);
     }
 }

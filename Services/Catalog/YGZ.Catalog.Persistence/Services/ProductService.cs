@@ -2,9 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System.Text;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
-using YGZ.Catalog.Application.Products.Commands.CreateProduct;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products;
@@ -27,15 +25,15 @@ public class ProductService : IProductService
         _collection = _mongoDb.GetCollection<Product>("Products");
     }
 
-    public async Task<Result<bool>> CreateProductAsync(CreateProductCommand request)
+    public async Task<Result<Product>> CreateProductAsync(Product request)
     {
         try
         {
-            var product = Product.Create(name: request.Name, image_urls: request.Image_urls, image_ids: request.Image_ids);
+            //var product = Product.Create(name: request.Name, image_urls: request.Image_urls, image_ids: request.Image_ids);
 
-            await _collection.InsertOneAsync(product).ConfigureAwait(false);
+            await _collection.InsertOneAsync(request).ConfigureAwait(false);
 
-            return true;
+            return request;
         }
         catch (Exception ex)
         {

@@ -3,12 +3,27 @@ namespace YGZ.Catalog.Contracts.Products;
 
 public sealed record CreateProductResponse(string Id,
                                            string Name,
-                                           List<ProductItemResponse> ProductItems,
-                                           string? CategoryId,
-                                           string? PromotionId,
+                                           string Slug,
+                                           string Description,
+                                           List<ImageResponse> Images,
+                                           AverageRatingResponse Average_rating,
+                                           List<ProductItemResponse> Product_items,
+                                           string CategoryId,
+                                           string PromotionId,
                                            DateTime Created_at,
                                            DateTime Updated_at) { }
 
-public sealed record ProductItemResponse(string Id, string Name, string Description, decimal Price, InventoryResponse Inventory) { }
+public sealed record AverageRatingResponse(double Value, int NumRatings) { }
 
-public sealed record InventoryResponse(string Id, int QuantityInStock) { }
+public sealed record ImageResponse(string Url, string Id) { }
+
+public sealed record ProductItemResponse(string Id,
+                                         string Sku,
+                                         string Model,
+                                         string Color,
+                                         int Storage,
+                                         double Price,
+                                         int Quantity_in_stock,
+                                          List<ImageResponse> Images,
+                                         DateTime Created_at,
+                                         DateTime Updated_at) { }

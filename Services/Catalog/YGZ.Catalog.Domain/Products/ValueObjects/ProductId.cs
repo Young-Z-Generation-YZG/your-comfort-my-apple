@@ -10,7 +10,7 @@ namespace YGZ.Catalog.Domain.Products.ValueObjects;
 public class ProductId : ValueObject
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
+    [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId Value { get; }
     public string ValueStr { get; }
 
