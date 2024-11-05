@@ -18,12 +18,18 @@ const nextConfig = {
    },
    images: {
       remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'shopdunk.com',
-          port: '',
-          pathname: '/**'
-        },
+         {
+            protocol: 'https',
+            hostname: 'shopdunk.com',
+            port: '',
+            pathname: '/**'
+         },
+         {
+            protocol: 'https',
+            hostname: 'store.storeimages.cdn-apple.com',
+            port: '',
+            pathname: '/**'
+         },
       ],
    },
   
