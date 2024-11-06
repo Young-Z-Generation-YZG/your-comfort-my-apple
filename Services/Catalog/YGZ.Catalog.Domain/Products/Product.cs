@@ -20,6 +20,7 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     private readonly Category _category;
     private readonly Promotion _promotion;
 
+
     [BsonElement("name")]
     public string Name { get; }
 
@@ -35,12 +36,14 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     [BsonElement("slug")]
     public Slug Slug { get; }
 
+    [BsonElement("product_items")]
+    public List<ProductItemId> ProductItemIds => _productItems.Select(x => x.Id).ToList();
+
     [BsonElement("category_id")]
     public CategoryId CategoryId { get; set; }
 
     [BsonElement("promotion_id")]
     public PromotionId PromotionId { get; set; }
-
 
     [BsonElement("created_at")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
@@ -66,12 +69,12 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static Product Create(string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, CategoryId? categoryId, PromotionId? promotionId)
+    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, CategoryId? categoryId, PromotionId? promotionId)
     {
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
 
-        var product = new Product(ProductId.CreateUnique(),
+        var product = new Product(productId,
                            name,
                            Slug.Create(name),
                            description ?? "",

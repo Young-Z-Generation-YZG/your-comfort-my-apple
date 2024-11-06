@@ -9,17 +9,21 @@ using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Domain.Promotions.ValueObjects;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Application.Core.Abstractions.Services;
+using YGZ.Catalog.Domain.Products.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
 internal class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, Product>
 {
     private readonly IProductService _productService;
+    private readonly IProductItemService _productItemService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateProductCommandHandler(IProductService productService, IUnitOfWork unitOfWork)
+    public CreateProductCommandHandler(IProductService productService, IProductItemService productItemService ,IUnitOfWork unitOfWork)
     {
         _productService = productService;
+        _productItemService = productItemService;
         _unitOfWork = unitOfWork;
     }
 
@@ -47,13 +51,17 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             }
         }
 
+        var productId = ProductId.CreateUnique();
+
         var product = Product.Create(
+            productId: productId,
             name: request.Name,
             description: request.Description,
             images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
             valueRating: request.AverageRating.Value,
             numsRating: request.AverageRating.NumRatings,
             productItems: request.ProductItems.ConvertAll(item => ProductItem.Create(
+                productId: productId,
                 model: item.Model,
                 color: item.Color,
                 storage: item.Storage,
@@ -65,14 +73,17 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             promotionId: PromotionId.ToObjectId(request.PromotionId)
             ); 
 
-        var result = await _productService.CreateProductAsync(product);
+        await _productService.CreateProductAsync(product);
 
+        await _productItemService.CreateProductItemAsync(product.ProductItems[0]);
 
-        await _unitOfWork.Commit();
-
-        if (result.IsFailure)
+        try
         {
-            return result.Error;
+            var test = await _unitOfWork.Commit();
+        } catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return Errors.Product.ProductCannotBeCreated;
         }
 
         return product;

@@ -1,4 +1,5 @@
 ﻿
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
@@ -9,6 +10,9 @@ namespace YGZ.Catalog.Domain.Products.Entities;
 
 public class ProductItem : Entity<ProductItemId>, IAuditable
 {
+    [BsonElement("product_id")]
+    public ProductId ProductId { get; } 
+
     [BsonElement("model")]
     public string Model { get; }
 
@@ -36,8 +40,9 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
     [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; }
 
-    private ProductItem(ProductItemId productItemId,string model, string color, int storage, SKU sku, double price, int quantityInStock, List<Image> images, DateTime created_at, DateTime updated_at) : base(productItemId)
+    private ProductItem(ProductItemId productItemId, ProductId productId, string model, string color, int storage, SKU sku, double price, int quantityInStock, List<Image> images, DateTime created_at, DateTime updated_at) : base(productItemId)
     {
+        ProductId = productId;
         Model = model;
         Color = color;
         Storage = storage;
@@ -49,12 +54,12 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static ProductItem Create(string model, string color, int storage, double price, int quantityInStock, List<Image> images)
+    public static ProductItem Create(ProductId productId, string model, string color, int storage, double price, int quantityInStock, List<Image> images)
     {
         var sku = SKU.Create("SKU_DEMO");
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
 
-        return new ProductItem(ProductItemId.CreateUnique(), model, color, storage, sku, price, quantityInStock, images, utc, utc);
+        return new ProductItem(ProductItemId.CreateUnique(), productId, model, color, storage, sku, price, quantityInStock, images, utc, utc);
     }
 }
