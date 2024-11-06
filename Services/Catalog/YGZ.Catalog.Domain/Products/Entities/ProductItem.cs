@@ -1,4 +1,5 @@
 ﻿
+using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -8,16 +9,31 @@ namespace YGZ.Catalog.Domain.Products.Entities;
 
 public class ProductItem : Entity<ProductItemId>, IAuditable
 {
+    [BsonElement("model")]
     public string Model { get; }
+
+    [BsonElement("color")]
     public string Color { get; }
+
+    [BsonElement("storage")]
     public int Storage { get; }
+
+    [BsonElement("sku")]
     public SKU Sku { get; }
+
+    [BsonElement("price")]
     public double Price { get; }
+
+    [BsonElement("quantity_in_stock")]
     public int QuantityInStock { get; private set; }
+
+    [BsonElement("images")]
     public List<Image> Images { get; }
 
+    [BsonElement("created_at")]
     public DateTime CreatedAt { get; }
 
+    [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; }
 
     private ProductItem(ProductItemId productItemId,string model, string color, int storage, SKU sku, double price, int quantityInStock, List<Image> images, DateTime created_at, DateTime updated_at) : base(productItemId)

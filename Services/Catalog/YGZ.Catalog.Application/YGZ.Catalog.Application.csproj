@@ -24,4 +24,8 @@
     <ProjectReference Include="..\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Products\Events\" />
+  </ItemGroup>
+
 </Project>

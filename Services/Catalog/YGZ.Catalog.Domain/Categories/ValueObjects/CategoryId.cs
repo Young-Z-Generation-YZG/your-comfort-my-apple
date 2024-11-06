@@ -3,13 +3,14 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Primitives;
+using YGZ.Catalog.Domain.Core.Errors;
 
 namespace YGZ.Catalog.Domain.Categories.ValueObjects;
 
 public class CategoryId : ValueObject
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
+    //[BsonId]
+    [BsonRepresentation(BsonType.String)]
     public ObjectId Value { get; }
     public string ValueStr { get; }
     private CategoryId(ObjectId value)
@@ -25,7 +26,14 @@ public class CategoryId : ValueObject
 
     public static CategoryId? ToObjectId(string? objectId)
     {
-        return !string.IsNullOrEmpty(objectId) ? new(ObjectId.Parse(objectId)) : null;
+        try
+        {
+            return !string.IsNullOrEmpty(objectId) ? new(ObjectId.Parse(objectId)) : null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public override IEnumerable<object> GetEqualityComponents()

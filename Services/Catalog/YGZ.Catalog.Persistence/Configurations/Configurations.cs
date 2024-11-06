@@ -19,8 +19,10 @@ public static class Configurations
     {
 
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerializer());
+        BsonSerializer.RegisterSerializer(typeof(SKU), new SKUSerializer());
 
         BsonSerializer.RegisterSerializer(typeof(ProductId), new ProductIdSerialzer());
+        BsonSerializer.RegisterSerializer(typeof(ProductItemId), new ProductItemIdSerialzer());
         BsonSerializer.RegisterSerializer(typeof(CategoryId), new CategoryIdSerializer());
         BsonSerializer.RegisterSerializer(typeof(PromotionId), new PromotionIdSerialzier());
 

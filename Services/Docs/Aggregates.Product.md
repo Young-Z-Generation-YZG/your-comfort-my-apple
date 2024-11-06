@@ -14,7 +14,7 @@ class Product
 
 ```json
 {
-  "id": "0000-0000-0000-0000",
+  "id": "6729c960ad3ee43c7966b405",
   "name": "Iphone 16",
   "description": "desc",
   "images": [
@@ -29,7 +29,7 @@ class Product
   },
   "Product_items": [
     {
-      "id": "0000-0000-0000-0000",
+      "id": "6729c960ad3ee43c7966b405",
       "SKU": "#STRING",
       "model": "Iphone 16",
       "color": "pink",
@@ -41,17 +41,13 @@ class Product
         "url": "string",
         "id": "id"
       }],
-    }
-  "Images": [
-    {
-      "url": "",
-      "id": "",
-    }
+    "created_at": "2024-11-05T07:29:36.8766573Z",
+    "updated_at": "2024-11-05T07:29:36.8766573Z"
+    },
   ],
-  ],
-  "createdAt": "",
-  "updatedAt": "",
-  "category_id": "0000-0000-0000-0000",
-  "promotion_id": "0000-0000-0000-0000",
+  "created_at": "2024-11-05T07:29:36.8766573Z",
+  "updated_at": "2024-11-05T07:29:36.8766573Z",
+  "category_id": "6729c960ad3ee43c7966b405",
+  "promotion_id": "6729c960ad3ee43c7966b405",
 }
 ```

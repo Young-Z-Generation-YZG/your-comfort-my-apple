@@ -118,7 +118,7 @@ public static class IdentityExtension
                  {
                      context.Response.StatusCode = 401;
                      context.Response.ContentType = "application/json";
-                     var apiPath = context.Request.Path.Value;
+                     var path = context.Request.Path.Value;
                      var method = context.Request.Method;
                      var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
                      var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
@@ -127,7 +127,7 @@ public static class IdentityExtension
                      {
                          title = "UnauthorizedException",
                          statusCode = HttpStatusCode.Unauthorized,
-                         path = apiPath,
+                         path = path,
                          method,
                          message = "Authentication failed. Please check your token.",
                          timestamp,
@@ -137,7 +137,7 @@ public static class IdentityExtension
                  },
                  OnChallenge = context =>
                  {
-                     var apiPath = context.Request.Path.Value;
+                     var path = context.Request.Path.Value;
                      var method = context.Request.Method;
                      var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
                      var vietnamTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
@@ -152,7 +152,7 @@ public static class IdentityExtension
                          {
                              title = "UnauthorizedException",
                              statusCode = HttpStatusCode.Unauthorized,
-                             path = apiPath,
+                             path = path,
                              method,
                              message = "You are not authorized to access this resource.",
                              timestamp,

@@ -7,15 +7,16 @@ namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
 
 public class Image : ValueObject
 {
-    [BsonElement("url")]
-    public string Url { get; }
-    [BsonElement("id")]
-    public string Id { get; }
+    [BsonElement("image_url")]
+    public string ImageUrl { get; }
+
+    [BsonElement("image_id")]
+    public string ImageId { get; }
 
     private Image(string url, string id)
     {
-        Url = url;
-        Id = id;
+        ImageUrl = url;
+        ImageId = id;
     }
 
     public static Image Create(string url, string id)

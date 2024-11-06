@@ -7,6 +7,7 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Entities;
+using YGZ.Catalog.Domain.Products.Events;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Domain.Promotions;
 using YGZ.Catalog.Domain.Promotions.ValueObjects;
@@ -65,21 +66,25 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static Product Create(string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, string? categoryId, string? promotionId)
+    public static Product Create(string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, CategoryId? categoryId, PromotionId? promotionId)
     {
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
 
-        return new Product(ProductId.CreateUnique(),
+        var product = new Product(ProductId.CreateUnique(),
                            name,
                            Slug.Create(name),
                            description ?? "",
                            images,
                            AverageRating.CreateNew(valueRating, numsRating),
                            productItems,
-                           CategoryId.ToObjectId(categoryId)!,
-                           PromotionId.ToObjectId(promotionId)!,
+                           categoryId!,
+                           promotionId!,
                            utc,
-                           utc);
+                           utc); 
+
+        product.AddDomainEvent(new ProductCreatedEvent(product));
+
+        return product;
     }
 }

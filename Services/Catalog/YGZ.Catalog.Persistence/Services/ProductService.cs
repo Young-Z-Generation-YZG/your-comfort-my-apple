@@ -3,43 +3,27 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
+using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products;
 using YGZ.Catalog.Persistence.Configurations;
+using YGZ.Catalog.Persistence.Data;
 
 namespace YGZ.Catalog.Persistence.Services;
 
-public class ProductService : IProductService
+public class ProductService : BaseRepository<Product>, IProductService
 {
-    private readonly ILogger<ProductService> _logger;
-    private readonly IMongoCollection<Product> _collection;
-    private readonly MongoClient _mongoClient;
-    private readonly IMongoDatabase _mongoDb;
-
-    public ProductService(ILogger<ProductService> logger, IOptions<CatalogDbSetting> options)
+    public ProductService(IMongoContext context) : base(context)
     {
-        _logger = logger;
-        _mongoClient = new MongoClient(options.Value.ConnectionString);
-        _mongoDb = _mongoClient.GetDatabase(options.Value.DatabaseName);
-        _collection = _mongoDb.GetCollection<Product>("Products");
     }
 
-    public async Task<Result<Product>> CreateProductAsync(Product request)
+    public async Task<Result<Product>> CreateProductAsync(Product product)
     {
-        try
-        {
-            //var product = Product.Create(name: request.Name, image_urls: request.Image_urls, image_ids: request.Image_ids);
+        await Task.CompletedTask;
 
-            await _collection.InsertOneAsync(request).ConfigureAwait(false);
+        _context.AddCommand(() => _collection.InsertOneAsync(product));
 
-            return request;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.Message, nameof(CreateProductAsync));
-
-            return Errors.Product.ProductCannotBeCreated;
-        }
+        return product;
     }
 }

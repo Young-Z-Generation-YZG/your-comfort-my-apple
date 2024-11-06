@@ -26,7 +26,13 @@ public class PromotionId : ValueObject
 
     public static PromotionId? ToObjectId(string? objectId)
     {
-        return !string.IsNullOrEmpty(objectId) ? new(ObjectId.Parse(objectId)) : null;
+        try
+        {
+            return !string.IsNullOrEmpty(objectId) ? new(ObjectId.Parse(objectId)) : null;
+        } catch
+        {
+            return null;
+        }
     }
 
     public override IEnumerable<object> GetEqualityComponents()
