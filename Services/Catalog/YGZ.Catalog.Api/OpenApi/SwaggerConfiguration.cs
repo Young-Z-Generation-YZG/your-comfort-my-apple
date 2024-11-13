@@ -24,7 +24,7 @@ public class SwaggerConfiguration : IConfigureOptions<SwaggerGenOptions>, IOpera
                 Content = {
                     ["multipart/form-data"] = new OpenApiMediaType
                     {
-                        Schema = context.SchemaGenerator.GenerateSchema(typeof(CreateProductRequest), context.SchemaRepository)
+                        Schema = context.SchemaGenerator.GenerateSchema(typeof(CreateProductItemRequest), context.SchemaRepository)
                     }
                 }
             };

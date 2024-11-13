@@ -1,4 +1,6 @@
 ﻿
+using YGZ.Catalog.Contracts.Common;
+
 namespace YGZ.Catalog.Contracts.Products;
 
 public sealed record CreateProductResponse(string Id,
@@ -13,17 +15,7 @@ public sealed record CreateProductResponse(string Id,
                                            DateTime Created_at,
                                            DateTime Updated_at) { }
 
-public sealed record AverageRatingResponse(double Value, int Num_ratings) { }
-
-public sealed record ImageResponse(string Image_url, string Image_id) { }
-
-public sealed record ProductItemResponse(string Id,
-                                         string Sku,
-                                         string Model,
-                                         string Color,
-                                         int Storage,
-                                         double Price,
-                                         int Quantity_in_stock,
-                                          List<ImageResponse> Images,
-                                         DateTime Created_at,
-                                         DateTime Updated_at) { }
+public sealed record ProductItemResponse : CreateProductItemResponse
+{
+    ProductItemResponse(CreateProductItemResponse original) : base(original) { }
+}

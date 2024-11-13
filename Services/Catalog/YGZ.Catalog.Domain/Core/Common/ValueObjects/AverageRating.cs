@@ -7,11 +7,9 @@ namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
 
 public class AverageRating : ValueObject
 {
-    [BsonElement("value")]
-    public double Value { get; private set; }
+    public double Value { get; set; }
 
-    [BsonElement("num_ratings")]
-    public int NumRatings { get; private set; }
+    public int NumRatings { get; set; }
 
     private AverageRating(double value, int numRatings)
     {

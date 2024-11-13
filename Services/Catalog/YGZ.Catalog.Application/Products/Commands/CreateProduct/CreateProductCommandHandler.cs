@@ -11,6 +11,8 @@ using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Products.ValueObjects;
+using YGZ.Catalog.Application.Core.Abstractions.EventBus;
+using YGZ.Catalog.Application.Products.Events;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
@@ -19,12 +21,14 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
     private readonly IProductService _productService;
     private readonly IProductItemService _productItemService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventBus _eventBus;
 
-    public CreateProductCommandHandler(IProductService productService, IProductItemService productItemService ,IUnitOfWork unitOfWork)
+    public CreateProductCommandHandler(IProductService productService, IProductItemService productItemService, IUnitOfWork unitOfWork, IEventBus eventBus)
     {
         _productService = productService;
         _productItemService = productItemService;
         _unitOfWork = unitOfWork;
+        _eventBus = eventBus;
     }
 
     public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -71,11 +75,11 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
                 )), 
             categoryId: CategoryId.ToObjectId(request.CategoryId),
             promotionId: PromotionId.ToObjectId(request.PromotionId)
-            ); 
+        );
 
         await _productService.CreateProductAsync(product);
 
-        await _productItemService.CreateProductItemAsync(product.ProductItems[0]);
+        //await _productItemService.CreateProductItemAsync(product.ProductItems[0]);
 
         try
         {
@@ -85,6 +89,13 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             Console.WriteLine(ex.Message);
             return Errors.Product.ProductCannotBeCreated;
         }
+
+        await _eventBus.PublishAsync(new ProductCreatedEvent
+        {
+            ProductId = "123",
+            ProductName = "test",
+            Description = "test"
+        }, cancellationToken);
 
         return product;
     }

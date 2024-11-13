@@ -8,7 +8,6 @@ public class CreateCategoryValidator : AbstractValidator<CreateCategoryCommand>
     public CreateCategoryValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
-
-        RuleFor(x => x.ParentId).Null();
+        RuleFor(x => x.ParentId).NotEmpty();
     }
 }

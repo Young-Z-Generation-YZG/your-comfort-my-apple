@@ -12,7 +12,7 @@ public class ProductMappingConfig : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<CreateProductRequest, CreateProductCommand>()
+        config.NewConfig<CreateProductItemRequest, CreateProductCommand>()
             .Map(dest => dest, source => source);
 
         config.NewConfig<Product, CreateProductResponse>()

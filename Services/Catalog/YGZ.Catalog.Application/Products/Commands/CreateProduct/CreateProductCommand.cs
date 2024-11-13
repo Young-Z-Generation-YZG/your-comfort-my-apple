@@ -1,4 +1,5 @@
 ﻿
+using YGZ.Catalog.Application.Common.Commands;
 using YGZ.Catalog.Application.Core.Abstractions.Messaging;
 using YGZ.Catalog.Domain.Products;
 
@@ -16,10 +17,6 @@ public sealed record CreateProductCommand : ICommand<Product> {
     public string CategoryId { get; set; } = null!;
     public string PromotionId { get; set; } = null!;
 }
-
-public sealed record ImageCommand(string Url, string Id) { }
-
-public sealed record AverageRatingCommand(double Value, int NumRatings) {}
 
 public sealed record ProductItemCommand(string Model,
                                         string Color,

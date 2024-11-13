@@ -1,4 +1,5 @@
 using Asp.Versioning.ApiExplorer;
+using MassTransit;
 using Serilog;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Application;

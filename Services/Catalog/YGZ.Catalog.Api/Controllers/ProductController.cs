@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Asp.Versioning;
-using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
 using YGZ.Catalog.Api.Common.Extensions;
 using YGZ.Catalog.Contracts.Products;
-using YGZ.Catalog.Api.Common.SwaggerExamples;
+using Swashbuckle.AspNetCore.Filters;
+using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
+using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
 namespace YGZ.Catalog.Api.Controllers;
 
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/products")]
 [ApiVersion(1)]
 public class ProductController : ApiController
 {
@@ -28,7 +29,7 @@ public class ProductController : ApiController
     /// </summary>
     /// <returns></returns>
     [HttpPost]
-    //[SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
+    [SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken = default)
     {
         var cmd = _mapper.Map<CreateProductCommand>(request);
@@ -38,5 +39,16 @@ public class ProductController : ApiController
         var result = await _mediator.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductResponse>(result)), onFailure: HandleFailure);
+    }
+
+    [HttpPost("product-items")]
+    [SwaggerRequestExample(typeof(CreateProductItemRequest), typeof(CreateProductItemRequestExample))]
+    public async Task<IActionResult> CreateProductItem([FromBody] CreateProductItemRequest request, CancellationToken cancellationToken = default)
+    {
+        var cmd = _mapper.Map<CreateProductItemCommand>(request);
+
+        var result = await _mediator.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductItemResponse>(result)), onFailure: HandleFailure);
     }
 }

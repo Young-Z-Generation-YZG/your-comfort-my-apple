@@ -10,9 +10,4 @@ public class CreateCategoryRequestExample : AbstractValidator<CreateCategoryRequ
     {
         return new CreateCategoryRequest(Name: "Category name", Description: "Category description", ParentId: "0");
     }
-
-    public CreateCategoryRequestExample()
-    {
-        RuleFor(x => x.Name).NotEmpty();
-    }
 }

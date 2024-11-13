@@ -23,33 +23,36 @@ public class MongoContext : IMongoContext
     }
     public async Task<int> SaveChanges()
     {
-        using (Session = await _mongoClient.StartSessionAsync())
-        {
-            Session.StartTransaction();
+        var commandTasks = _commands.Select(c => c());
 
-            //try
-            //{
-            //    var commandTasks = _commands.Select(c => c());
+        await Task.WhenAll(commandTasks);
+        //using (Session = await _mongoClient.StartSessionAsync())
+        //{
+        //    //Session.StartTransaction();
 
-            //    await Task.WhenAll(commandTasks);
+        //    //try
+        //    //{
+        //    //    var commandTasks = _commands.Select(c => c());
 
-            //    await Session.CommitTransactionAsync();
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine("Error writing to MongoDB: " + e.Message);
+        //    //    await Task.WhenAll(commandTasks);
 
-            //    await Session.AbortTransactionAsync();
+        //    //    await Session.CommitTransactionAsync();
+        //    //}
+        //    //catch (Exception e)
+        //    //{
+        //    //    Console.WriteLine("Error writing to MongoDB: " + e.Message);
 
-            //    return 0;
-            //}
+        //    //    await Session.AbortTransactionAsync();
 
-            var commandTasks = _commands.Select(c => c());
+        //    //    return 0;
+        //    //}
 
-            await Task.WhenAll(commandTasks);
+        //    var commandTasks = _commands.Select(c => c());
 
-            await Session.CommitTransactionAsync();
-        }
+        //    await Task.WhenAll(commandTasks);
+
+        //    //await Session.CommitTransactionAsync();
+        //}
 
         return _commands.Count;
     }

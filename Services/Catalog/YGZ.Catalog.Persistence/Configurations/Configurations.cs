@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Domain.Promotions.ValueObjects;
 using YGZ.Catalog.Persistence.Configurations.Categories;
@@ -17,7 +18,6 @@ public static class Configurations
 {
     public static IServiceCollection AddMongoDbConfiguration(this IServiceCollection services)
     {
-
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerializer());
         BsonSerializer.RegisterSerializer(typeof(SKU), new SKUSerializer());
 

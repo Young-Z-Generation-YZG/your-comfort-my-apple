@@ -19,39 +19,42 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     private readonly List<ProductItem> _productItems = new();
     private readonly Category _category;
     private readonly Promotion _promotion;
+    public readonly AverageRating _averageRating;
 
-
-    [BsonElement("name")]
+     [BsonElement("name")]
     public string Name { get; }
 
-    [BsonElement("description")]
+     [BsonElement("description")]
     public string Description { get; }
 
-    [BsonElement("images")]
+     [BsonElement("images")]
     public List<Image> Images { get; }
 
-    [BsonElement("average_rating")]
-    public AverageRating AverageRating { get; }
+    [BsonElement("average_rating_value")]
+    public double AverageRatingValue { get; }
+
+    [BsonElement("average_rating_num_ratings")]
+    public int AverageRatingNumRatings { get; }
 
     [BsonElement("slug")]
     public Slug Slug { get; }
 
-    [BsonElement("product_items")]
+     [BsonElement("product_items")]
     public List<ProductItemId> ProductItemIds => _productItems.Select(x => x.Id).ToList();
 
-    [BsonElement("category_id")]
+     [BsonElement("category_id")]
     public CategoryId CategoryId { get; set; }
 
-    [BsonElement("promotion_id")]
+     [BsonElement("promotion_id")]
     public PromotionId PromotionId { get; set; }
 
-    [BsonElement("created_at")]
+     [BsonElement("created_at", Order = 1)]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime CreatedAt { get;}
+    public DateTime CreatedAt { get; }
 
-    [BsonElement("updated_at")]
+     [BsonElement("updated_at", Order = 2)]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime UpdatedAt { get ; set; }
+    public DateTime UpdatedAt { get; set; }
 
     public IReadOnlyList<ProductItem> ProductItems => _productItems.AsReadOnly();
 
@@ -60,7 +63,9 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         Name = name;
         Description = description;
         Images = images;
-        AverageRating = averageRating;
+        _averageRating = averageRating;
+        AverageRatingValue = averageRating.Value;
+        AverageRatingNumRatings = averageRating.NumRatings;
         Slug = slug;
         _productItems = product_items;
         CategoryId = categoryId;
