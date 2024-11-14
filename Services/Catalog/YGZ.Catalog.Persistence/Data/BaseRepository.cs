@@ -103,9 +103,24 @@ public abstract class BaseRepository<TEntity> : IRepository<TEntity> where TEnti
         throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteOneAsync(string id, IClientSessionHandle clientSessionHandle, CancellationToken cancellationToken)
+    public async Task<bool> DeleteOneAsync(string id, IClientSessionHandle? clientSessionHandle, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var objectId = new ObjectId(id);
+
+        var filter = Builders<TEntity>.Filter.Eq("_id", objectId);
+
+        var deleteResult = await _collection.DeleteOneAsync(filter, null, cancellationToken);
+
+        if (clientSessionHandle is not null)
+        {
+            deleteResult = await _collection.DeleteOneAsync(clientSessionHandle, filter, null, cancellationToken);
+
+            return deleteResult.IsAcknowledged
+                && deleteResult.DeletedCount > 0;
+        }
+
+        return deleteResult.IsAcknowledged
+                && deleteResult.DeletedCount > 0;
     }
 
     public Task<bool> DeleteManyAsync(Expression<Func<TEntity, bool>> filterExpression, IClientSessionHandle clientSessionHandle, CancellationToken cancellationToken)

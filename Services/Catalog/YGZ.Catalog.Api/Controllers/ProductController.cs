@@ -10,6 +10,7 @@ using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
 using YGZ.Catalog.Application.Products.Queries.GetProductById;
+using YGZ.Catalog.Application.Products.Commands.DeleteProductById;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -75,9 +76,11 @@ public class ProductController : ApiController
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(string id, CancellationToken cancellationToken = default)
     {
-        await Task.CompletedTask;
-        return Ok();
-        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+        var cmd = new DeleteProductByIdCommand(id);
+
+        var result = await _mediator.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpGet("product-items")]
