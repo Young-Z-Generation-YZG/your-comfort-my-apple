@@ -21,36 +21,36 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     private readonly Promotion _promotion;
     public readonly AverageRating _averageRating;
 
-     [BsonElement("name")]
-    public string Name { get; }
+    [BsonElement("name")]
+    public string Name { get; private set; }
 
      [BsonElement("description")]
-    public string Description { get; }
+    public string Description { get; private set; }
 
      [BsonElement("images")]
-    public List<Image> Images { get; }
+    public List<Image> Images { get; private set; }
 
     [BsonElement("average_rating_value")]
-    public double AverageRatingValue { get; }
+    public double AverageRatingValue { get; private set; }
 
     [BsonElement("average_rating_num_ratings")]
-    public int AverageRatingNumRatings { get; }
+    public int AverageRatingNumRatings { get; private set; }
 
     [BsonElement("slug")]
-    public Slug Slug { get; }
+    public Slug Slug { get; private set; }
 
      [BsonElement("product_items")]
     public List<ProductItemId> ProductItemIds => _productItems.Select(x => x.Id).ToList();
 
-     [BsonElement("category_id")]
-    public CategoryId CategoryId { get; set; }
+     [BsonElement("CategoryId")]
+    public CategoryId CategoryId { get; private set; }
 
-     [BsonElement("promotion_id")]
-    public PromotionId PromotionId { get; set; }
+     [BsonElement("promotionId")]
+    public PromotionId PromotionId { get; private set; }
 
      [BsonElement("created_at", Order = 1)]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; }
 
      [BsonElement("updated_at", Order = 2)]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
@@ -74,7 +74,7 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, List<ProductItem> productItems, CategoryId? categoryId, PromotionId? promotionId)
+    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, CategoryId? categoryId, PromotionId? promotionId)
     {
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
@@ -85,7 +85,7 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
                            description ?? "",
                            images,
                            AverageRating.CreateNew(valueRating, numsRating),
-                           productItems,
+                           [],
                            categoryId!,
                            promotionId!,
                            utc,

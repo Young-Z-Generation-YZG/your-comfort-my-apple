@@ -35,7 +35,7 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
     public List<Image> Images { get; }
 
     [BsonElement("created_at")]
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; }
 
     [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; }

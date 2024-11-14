@@ -1,8 +1,9 @@
 ﻿
 
+using MongoDB.Bson;
+using MongoDB.Driver;
 using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
-using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Persistence.Data;
 
@@ -16,12 +17,25 @@ public class ProductItemService : BaseRepository<ProductItem>, IProductItemServi
 
     }
 
-    public async Task<Result<ProductItem>> CreateProductItemAsync(ProductItem productItem)
+    public override Task InsertOneAsync(ProductItem document, IClientSessionHandle clientSessionHandle, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
+        _context.AddCommand(() => _collection.InsertOneAsync(document));
 
-        Add(productItem);
-
-        return productItem;
+        return Task.CompletedTask;
     }
+
+    //public async Task<Result<ProductItem>> GetByIdAsync(string id)
+    //{
+    //    try
+    //    {
+    //        var objectId = ObjectId.Parse(id);
+
+    //        var test = _collection.Find(x => x.Id.ValueStr == id).FirstOrDefaultAsync();
+
+    //        return await GetById(objectId);
+    //    }
+    //    catch
+    //    {
+    //        return Errors.ProductItem.IdInvalid;
+    //    }
 }

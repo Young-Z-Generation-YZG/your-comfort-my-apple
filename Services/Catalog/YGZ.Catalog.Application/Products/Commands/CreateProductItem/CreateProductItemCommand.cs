@@ -14,5 +14,5 @@ public sealed record CreateProductItemCommand : ICommand<ProductItem>
     public double Price { get; set; } = 0;
     public int Quantity_in_stock { get; set; }
     public List<ImageCommand> Images { get; set; } = new();
-    public string ProductId { get; set; } = string.Empty;
+    public string ProductId { get; set; } = default!;
 }

@@ -1,5 +1,7 @@
 ﻿
 using FluentValidation;
+using MongoDB.Bson;
+using YGZ.Catalog.Application.Common.CustomValidator;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
@@ -25,6 +27,7 @@ public class CreateProductItemValidator : AbstractValidator<CreateProductItemCom
             .GreaterThan(0);
 
         RuleFor(product => product.ProductId)
-            .NotEmpty();
+            .NotEmpty()
+            .Must(Validators.ObjectIdVlidator.BeAValidObjectId).WithMessage("Invalid product id");
     }
 }

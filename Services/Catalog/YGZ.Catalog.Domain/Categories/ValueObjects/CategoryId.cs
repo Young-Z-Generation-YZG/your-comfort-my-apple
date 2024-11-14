@@ -13,7 +13,7 @@ public class CategoryId : ValueObject
     [BsonRepresentation(BsonType.String)]
     public ObjectId Value { get; }
     public string ValueStr { get; }
-    private CategoryId(ObjectId value)
+    public CategoryId(ObjectId value)
     {
         Value = value;
         ValueStr = value.ToString();

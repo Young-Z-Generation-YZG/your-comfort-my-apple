@@ -12,7 +12,7 @@ public sealed record CreateProductCommand : ICommand<Product> {
     //public IFormFile[] Files { get; set; } = [];
     public List<ImageCommand> Images { get; set; } = new();
     public AverageRatingCommand AverageRating { get; set; } = new(0, 0);
-    public List<ProductItemCommand> ProductItems { get; set; } = new();
+    //public List<ProductItemCommand> ProductItems { get; set; } = new();
 
     public string CategoryId { get; set; } = null!;
     public string PromotionId { get; set; } = null!;

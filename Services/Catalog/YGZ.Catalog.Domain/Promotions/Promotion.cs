@@ -10,7 +10,7 @@ public class Promotion : Entity<PromotionId>, IAuditable
 {
     public string Name { get; }
 
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
 

@@ -34,27 +34,6 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
     public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         //var uploadResult = await _uploadSerivce.UploadImageFileAsync(request.File);
-
-        if(request.CategoryId is not null)
-        {
-            var categoryId = CategoryId.ToObjectId(request.CategoryId);
-
-            if (categoryId is null)
-            {
-                return Errors.Category.CategoryIdInvalid;
-            }
-        }
-
-        if(request.PromotionId is not null)
-        {
-            var promotionId = PromotionId.ToObjectId(request.PromotionId);
-
-            if (promotionId is null)
-            {
-                return Errors.Promotion.PromotionIdInvalid;
-            }
-        }
-
         var productId = ProductId.CreateUnique();
 
         var product = Product.Create(
@@ -64,38 +43,37 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
             valueRating: request.AverageRating.Value,
             numsRating: request.AverageRating.NumRatings,
-            productItems: request.ProductItems.ConvertAll(item => ProductItem.Create(
-                productId: productId,
-                model: item.Model,
-                color: item.Color,
-                storage: item.Storage,
-                price: item.Price,
-                quantityInStock: item.Quantity_in_stock,
-                images: item.Images.ConvertAll(image => Image.Create(image.Url, image.Id))
-                )), 
+            //productItems: request.ProductItems.ConvertAll(item => ProductItem.Create(
+            //    productId: productId,
+            //    model: item.Model,
+            //    color: item.Color,
+            //    storage: item.Storage,
+            //    price: item.Price,
+            //    quantityInStock: item.Quantity_in_stock,
+            //    images: item.Images.ConvertAll(image => Image.Create(image.Url, image.Id))
+            //    )), 
             categoryId: CategoryId.ToObjectId(request.CategoryId),
             promotionId: PromotionId.ToObjectId(request.PromotionId)
         );
 
-        await _productService.CreateProductAsync(product);
-
-        //await _productItemService.CreateProductItemAsync(product.ProductItems[0]);
+        await _productService.InsertOneAsync(product, null!, cancellationToken);
 
         try
         {
             var test = await _unitOfWork.Commit();
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return Errors.Product.ProductCannotBeCreated;
+            return Errors.Product.CannotBeCreated;
         }
 
-        await _eventBus.PublishAsync(new ProductCreatedEvent
-        {
-            ProductId = "123",
-            ProductName = "test",
-            Description = "test"
-        }, cancellationToken);
+        //await _eventBus.PublishAsync(new ProductCreatedEvent
+        //{
+        //    ProductId = "123",
+        //    ProductName = "test",
+        //    Description = "test"
+        //}, cancellationToken);
 
         return product;
     }

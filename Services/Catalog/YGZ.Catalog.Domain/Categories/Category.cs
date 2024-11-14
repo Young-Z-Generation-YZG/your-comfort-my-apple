@@ -10,7 +10,7 @@ public class Category : AggregateRoot<CategoryId>, IAuditable
 {
     public string Name { get; set; }
     [BsonElement("created_at")]
-    public DateTime CreatedAt { get; }
+    public DateTime CreatedAt { get; set; }
 
     [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; }
