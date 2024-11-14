@@ -10,7 +10,6 @@ public class ProductIdSerialzer : SerializerBase<ProductId>
 {
     public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, ProductId value)
     {
-        Console.WriteLine("ProductIdSerialzer.Serialize");
         if (value is null)
         {
             context.Writer.WriteNull();
@@ -22,7 +21,6 @@ public class ProductIdSerialzer : SerializerBase<ProductId>
 
     public override ProductId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
-        Console.WriteLine("ProductIdSerialzer.Deserialize");
         var objectId = context.Reader.ReadObjectId();
         return new ProductId(objectId);
     }

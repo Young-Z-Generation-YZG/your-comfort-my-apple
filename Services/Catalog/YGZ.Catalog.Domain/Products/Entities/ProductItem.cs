@@ -12,28 +12,28 @@ namespace YGZ.Catalog.Domain.Products.Entities;
 public class ProductItem : Entity<ProductItemId>, IAuditable
 {
     [BsonElement("product_id")]
-    public ProductId ProductId { get; } 
-
-    [BsonElement("model")]
-    public string Model { get; }
-
-    [BsonElement("color")]
-    public string Color { get; }
-
-    [BsonElement("storage")]
-    public int Storage { get; }
+    public ProductId ProductId { get; private set; } 
 
     [BsonElement("sku")]
-    public SKU Sku { get; }
+    public SKU Sku { get; private set; }
+
+    [BsonElement("model")]
+    public string Model { get; private set; }
+
+    [BsonElement("color")]
+    public string Color { get; private set; }
+
+    [BsonElement("storage")]
+    public int Storage { get; private set; }
 
     [BsonElement("price")]
-    public double Price { get; }
+    public double Price { get; private set; }
 
     [BsonElement("quantity_in_stock")]
     public int QuantityInStock { get; private set; }
 
     [BsonElement("images")]
-    public List<Image> Images { get; }
+    public List<Image> Images { get; private set; }
 
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; }

@@ -7,7 +7,6 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Entities;
-using YGZ.Catalog.Domain.Products.Events;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Domain.Promotions;
 using YGZ.Catalog.Domain.Promotions.ValueObjects;

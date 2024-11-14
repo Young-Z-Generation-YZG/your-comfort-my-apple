@@ -8,6 +8,7 @@ using YGZ.Catalog.Contracts.Products;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
+using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -22,6 +23,24 @@ public class ProductController : ApiController
     {
         _mediator = mediator;
         _mapper = mapper;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProducts(CancellationToken cancellationToken = default)
+    {
+        var query = new GetAllProductsQuery();
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProduct(string id, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     /// <summary>
@@ -41,6 +60,39 @@ public class ProductController : ApiController
         return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductResponse>(result)), onFailure: HandleFailure);
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateProduct(string id, [FromBody] CreateProductRequest request, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProduct(string id, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("product-items")]
+    public async Task<IActionResult> GetProductItems(CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("product-items/{id}")]
+    public async Task<IActionResult> GetProductItem(string id, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
     [HttpPost("product-items")]
     [SwaggerRequestExample(typeof(CreateProductItemRequest), typeof(CreateProductItemRequestExample))]
     public async Task<IActionResult> CreateProductItem([FromBody] CreateProductItemRequest request, CancellationToken cancellationToken = default)
@@ -50,5 +102,21 @@ public class ProductController : ApiController
         var result = await _mediator.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductItemResponse>(result)), onFailure: HandleFailure);
+    }
+
+    [HttpPut("product-items/{id}")]
+    public async Task<IActionResult> UpdateProductItem(string id, [FromBody] CreateProductItemRequest request, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpDelete("product-items/{id}")]
+    public async Task<IActionResult> DeleteProductItem(string id, CancellationToken cancellationToken = default)
+    {
+        await Task.CompletedTask;
+        return Ok();
+        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 }

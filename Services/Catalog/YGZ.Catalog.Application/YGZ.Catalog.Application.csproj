@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\YGZ.Catalog.Contracts\YGZ.Catalog.Contracts.csproj" />
     <ProjectReference Include="..\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj" />
   </ItemGroup>
 

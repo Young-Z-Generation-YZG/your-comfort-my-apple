@@ -59,6 +59,13 @@ public abstract class BaseRepository<TEntity> : IRepository<TEntity> where TEnti
         return _collection.AsQueryable();
     }
 
+    public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        var filter = Builders<TEntity>.Filter.Empty;
+
+        return await _collection.Find(filter).ToListAsync(cancellationToken);
+    }
+
     public virtual async Task<TEntity> FindByIdAsync(string id, CancellationToken cancellationToken)
     {
         var objectId = new ObjectId(id);

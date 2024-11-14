@@ -15,6 +15,9 @@ public interface IRepository<TEntity> : ISession, IDisposable where TEntity : cl
 
     IQueryable<TEntity> AsQueryable();
 
+
+    Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);
+
     Task<IEnumerable<TEntity>> FilterByAsync(
         Expression<Func<TEntity, bool>> filterExpression,
         CancellationToken cancellationToken);

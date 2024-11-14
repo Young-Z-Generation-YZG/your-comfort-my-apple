@@ -37,9 +37,14 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
         var model = product.Models.Contains(request.Model);
         var color = product.Colors.Contains(request.Color);
 
-        if (!model || !color)
+        if (!model)
         {
-            return Errors.ProductItem.InvalidModelOrColor;
+            return Errors.Product.InvalidModel(product.Models);
+        }
+
+        if (!color)
+        {
+            return Errors.Product.InvalidColor(product.Colors);
         }
 
         var productItem = ProductItem.Create(ProductItemId.CreateUnique(), 

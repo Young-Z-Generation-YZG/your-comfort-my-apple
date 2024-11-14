@@ -9,6 +9,5 @@ public static partial class Errors
         public static Error IdInvalid = Error.BadRequest(code: "ProductItem.IdInvalid", message: "ProductItem Id is invalid format objectId");
         public static Error DoesNotExist = Error.BadRequest(code: "ProductItem.DoesNotExist", message: "ProductItem does not Exists");
         public static Error CannotBeCreated = Error.BadRequest(code: "ProductItem.CannotBeCreated", message: "ProductItem cannot be created");
-        public static Error InvalidModelOrColor = Error.BadRequest(code: "ProductItem.InvalidModelOrColor", message: "Model or Color is invalid");
     }
 }

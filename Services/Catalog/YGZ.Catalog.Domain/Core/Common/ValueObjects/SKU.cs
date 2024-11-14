@@ -6,7 +6,7 @@ namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
 
 public class SKU : ValueObject
 {
-    public new string Value { get; }
+    public string Value { get; }
 
     private SKU(string value)
     {

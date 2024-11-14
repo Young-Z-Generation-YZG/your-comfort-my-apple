@@ -12,4 +12,10 @@ class SKUSerializer : SerializerBase<SKU>
     {
         context.Writer.WriteString(value.Value);
     }
+
+    public override SKU Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    {
+        var value = context.Reader.ReadString();
+        return SKU.Create(value); // Return a new SKU instance
+    }
 }
