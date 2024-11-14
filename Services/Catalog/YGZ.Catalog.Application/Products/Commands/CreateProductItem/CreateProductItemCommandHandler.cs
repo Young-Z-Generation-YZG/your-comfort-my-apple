@@ -2,11 +2,13 @@
 using YGZ.Catalog.Application.Core.Abstractions.Messaging;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
 using YGZ.Catalog.Application.Core.Abstractions.Services;
+using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Entities;
+using YGZ.Catalog.Domain.Products.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
@@ -32,7 +34,16 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
             return Errors.Product.DoesNotExist;
         }
 
-        var productItem = ProductItem.Create(product.Id,
+        var model = product.Models.Contains(request.Model);
+        var color = product.Colors.Contains(request.Color);
+
+        if (!model || !color)
+        {
+            return Errors.ProductItem.InvalidModelOrColor;
+        }
+
+        var productItem = ProductItem.Create(ProductItemId.CreateUnique(), 
+                                             product.Id,
                                              request.Model,
                                              request.Color,
                                              request.Storage,
@@ -44,7 +55,9 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
 
         try
         {
-            await _unitOfWork.Commit();
+            var eventDomains = new List<IHasDomainEvents> { productItem };
+
+            await _unitOfWork.CommitAsync(eventDomains);
         } catch (Exception ex)
         {
             Console.WriteLine(ex.Message);

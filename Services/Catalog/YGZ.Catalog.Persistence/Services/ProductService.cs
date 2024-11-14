@@ -6,6 +6,7 @@ using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products;
+using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Persistence.Data;
 
 namespace YGZ.Catalog.Persistence.Services;
@@ -21,22 +22,14 @@ public class ProductService : ProductRepository, IProductService
         return Task.CompletedTask;
     }
 
-    //public async Task<Result<Product>> GetByIdAsync(string id)
-    //{
-    //    try
-    //    {
-    //        var objectId = ObjectId.Parse(id);
+    public async Task<Result<bool>> AddProductItem(string productId, ProductItem productItem)
+    {
+        var filter = Builders<Product>.Filter.Eq("_id", new ObjectId(productId));
+        var update = Builders<Product>.Update.Push("ProductItems", productItem);
 
-    //        var filter = Builders<Product>.Filter.Eq("_id", objectId);
-    //        var result = await _collection.Find(filter).SingleOrDefaultAsync();
 
-    //        var test = await GetById(objectId);
+        var result = await _collection.UpdateOneAsync(filter, update).ConfigureAwait(false);
 
-    //        return test;
-    //    }
-    //    catch
-    //    {
-    //        return Errors.Product.IdInvalid;
-    //    }
-    //}
+        return result.ModifiedCount > 0;
+    }
 }

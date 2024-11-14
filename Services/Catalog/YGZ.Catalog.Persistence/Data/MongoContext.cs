@@ -19,40 +19,15 @@ public class MongoContext : IMongoContext
     public MongoContext(IOptions<CatalogDbSetting> options)
     {
         _mongoClient = new MongoClient(options.Value.ConnectionString);
+
         _mongoDb = _mongoClient.GetDatabase(options.Value.DatabaseName);
     }
+
     public async Task<int> SaveChanges()
     {
         var commandTasks = _commands.Select(c => c());
 
         await Task.WhenAll(commandTasks);
-        //using (Session = await _mongoClient.StartSessionAsync())
-        //{
-        //    //Session.StartTransaction();
-
-        //    //try
-        //    //{
-        //    //    var commandTasks = _commands.Select(c => c());
-
-        //    //    await Task.WhenAll(commandTasks);
-
-        //    //    await Session.CommitTransactionAsync();
-        //    //}
-        //    //catch (Exception e)
-        //    //{
-        //    //    Console.WriteLine("Error writing to MongoDB: " + e.Message);
-
-        //    //    await Session.AbortTransactionAsync();
-
-        //    //    return 0;
-        //    //}
-
-        //    var commandTasks = _commands.Select(c => c());
-
-        //    await Task.WhenAll(commandTasks);
-
-        //    //await Session.CommitTransactionAsync();
-        //}
 
         return _commands.Count;
     }

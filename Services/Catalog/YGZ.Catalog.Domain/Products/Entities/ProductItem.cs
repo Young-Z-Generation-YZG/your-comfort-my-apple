@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
+using YGZ.Catalog.Domain.Products.Events;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Entities;
@@ -54,12 +55,16 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static ProductItem Create(ProductId productId, string model, string color, int storage, double price, int quantityInStock, List<Image> images)
+    public static ProductItem Create(ProductItemId productItemId, ProductId productId, string model, string color, int storage, double price, int quantityInStock, List<Image> images)
     {
         var sku = SKU.Create("SKU_DEMO");
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
 
-        return new ProductItem(ProductItemId.CreateUnique(), productId, model, color, storage, sku, price, quantityInStock, images, utc, utc);
+        var newProductItem = new ProductItem(productItemId, productId, model, color, storage, sku, price, quantityInStock, images, utc, utc);
+
+        newProductItem.AddDomainEvent(new ProductItemCreatedEvent(newProductItem));
+
+        return newProductItem;
     }
 }

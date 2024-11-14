@@ -39,10 +39,16 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     [BsonElement("slug")]
     public Slug Slug { get; private set; }
 
-     [BsonElement("product_items")]
-    public List<ProductItemId> ProductItemIds => _productItems.Select(x => x.Id).ToList();
+    [BsonElement("product_items")]
+    public List<ProductItem> ProductItems { get; private set; } = new();
 
-     [BsonElement("CategoryId")]
+    [BsonElement("models")]
+    public List<string> Models { get; private set; } = new();
+
+    [BsonElement("colors")]
+    public List<string> Colors { get; private set; } = new();
+
+    [BsonElement("CategoryId")]
     public CategoryId CategoryId { get; private set; }
 
      [BsonElement("promotionId")]
@@ -56,9 +62,20 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
     public DateTime UpdatedAt { get; set; }
 
-    public IReadOnlyList<ProductItem> ProductItems => _productItems.AsReadOnly();
-
-    private Product(ProductId productId, string name, Slug slug, string description, List<Image> images, AverageRating averageRating, List<ProductItem> product_items, CategoryId categoryId, PromotionId promotionId, DateTime created_at, DateTime updated_at) : base(productId)
+    private Product(
+        ProductId productId,
+        string name,
+        Slug slug,
+        string description,
+        List<Image> images,
+        AverageRating averageRating,
+        List<ProductItem> product_items,
+        List<string> models,
+        List<string> colors,
+        CategoryId categoryId,
+        PromotionId promotionId,
+        DateTime created_at,
+        DateTime updated_at) : base(productId)
     {
         Name = name;
         Description = description;
@@ -68,13 +85,15 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         AverageRatingNumRatings = averageRating.NumRatings;
         Slug = slug;
         _productItems = product_items;
+        Models = models;
+        Colors = colors;
         CategoryId = categoryId;
         PromotionId = promotionId;
         CreatedAt = created_at;
         UpdatedAt = updated_at;
     }
 
-    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, CategoryId? categoryId, PromotionId? promotionId)
+    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, List<string> models,List<string> colors, CategoryId? categoryId, PromotionId? promotionId)
     {
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();
@@ -86,13 +105,22 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
                            images,
                            AverageRating.CreateNew(valueRating, numsRating),
                            [],
+                           models,
+                           colors,
                            categoryId!,
                            promotionId!,
                            utc,
                            utc); 
 
-        product.AddDomainEvent(new ProductCreatedEvent(product));
-
         return product;
+    }
+
+    public List<ProductItem> AddProductItem(ProductItem productItem)
+    {
+        var newItem = ProductItem.Create(productItem.Id, productItem.ProductId, productItem.Model, productItem.Color, productItem.Storage, productItem.Price, productItem.QuantityInStock, productItem.Images);
+
+        _productItems.Add(newItem);
+
+        return _productItems;
     }
 }

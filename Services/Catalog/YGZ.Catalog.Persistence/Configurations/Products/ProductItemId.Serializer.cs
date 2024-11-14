@@ -17,4 +17,10 @@ public class ProductItemIdSerialzer : SerializerBase<ProductItemId>
 
         context.Writer.WriteObjectId(value.Value);
     }
+
+    public override ProductItemId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    {
+        var objectId = context.Reader.ReadObjectId();
+        return new ProductItemId(objectId);
+    }
 }

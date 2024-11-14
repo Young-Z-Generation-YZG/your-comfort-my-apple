@@ -4,11 +4,12 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 
 namespace YGZ.Catalog.Domain.Core.Primitives;
 
-public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
+public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
+    where TId : ValueObject
 {
     private readonly List<IDomainEvent> _domainEvents = new();
 
-    public TId Id { get; protected set; } 
+    public TId Id { get; protected set; }
 
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
@@ -35,6 +36,11 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : notnull
     public void AddDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
+    }
+
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
     }
 
     public static bool operator ==(Entity<TId> left, Entity<TId> right)

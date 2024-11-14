@@ -24,18 +24,4 @@ public class ProductItemService : BaseRepository<ProductItem>, IProductItemServi
         return Task.CompletedTask;
     }
 
-    //public async Task<Result<ProductItem>> GetByIdAsync(string id)
-    //{
-    //    try
-    //    {
-    //        var objectId = ObjectId.Parse(id);
-
-    //        var test = _collection.Find(x => x.Id.ValueStr == id).FirstOrDefaultAsync();
-
-    //        return await GetById(objectId);
-    //    }
-    //    catch
-    //    {
-    //        return Errors.ProductItem.IdInvalid;
-    //    }
 }

@@ -9,6 +9,19 @@ public class CreateProductRequestExample : IExamplesProvider<CreateProductReques
 {
     public CreateProductRequest GetExamples()
     {
-        return new CreateProductRequest("iPhone 16", "iPhone 16 description", new(0, 0), new() { new("image_url", "image_id") }, "672cdaed4e67692dff64a47c", "672cdaed4e67692dff64a47c");
+        var averageRating = new AverageRatingRequest(0, 0);
+        var images = new List<ImageRequest> { new("image_url", "image_id") };
+        var models = new List<string> { "model1", "model2" };
+        var colors = new List<string> { "color1", "color2" };
+
+        return new CreateProductRequest(
+            "iPhone 16",
+            "iPhone 16 description",
+            averageRating,
+            images,
+            models,
+            colors,
+            "672cdaed4e67692dff64a47c",
+            "672cdaed4e67692dff64a47c");
     }
 }

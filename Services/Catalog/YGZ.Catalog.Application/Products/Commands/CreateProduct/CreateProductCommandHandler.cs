@@ -43,15 +43,8 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
             valueRating: request.AverageRating.Value,
             numsRating: request.AverageRating.NumRatings,
-            //productItems: request.ProductItems.ConvertAll(item => ProductItem.Create(
-            //    productId: productId,
-            //    model: item.Model,
-            //    color: item.Color,
-            //    storage: item.Storage,
-            //    price: item.Price,
-            //    quantityInStock: item.Quantity_in_stock,
-            //    images: item.Images.ConvertAll(image => Image.Create(image.Url, image.Id))
-            //    )), 
+            models: request.Models,
+            colors: request.Colors,
             categoryId: CategoryId.ToObjectId(request.CategoryId),
             promotionId: PromotionId.ToObjectId(request.PromotionId)
         );
@@ -60,11 +53,12 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
 
         try
         {
-            var test = await _unitOfWork.Commit();
+            await _unitOfWork.CommitAsync(null);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+
             return Errors.Product.CannotBeCreated;
         }
 
