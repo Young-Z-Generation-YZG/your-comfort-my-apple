@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
+using YGZ.Catalog.Application.Products.Queries.GetProductById;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -38,9 +39,11 @@ public class ProductController : ApiController
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProduct(string id, CancellationToken cancellationToken = default)
     {
-        await Task.CompletedTask;
-        return Ok();
-        //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+        var query = new GetProductByIdQuery(id);
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     /// <summary>
