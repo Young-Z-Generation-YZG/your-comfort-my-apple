@@ -38,7 +38,7 @@ public class ProductController : ApiController
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetProduct(string id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetProductById(string id, CancellationToken cancellationToken = default)
     {
         var query = new GetProductByIdQuery(id);
 

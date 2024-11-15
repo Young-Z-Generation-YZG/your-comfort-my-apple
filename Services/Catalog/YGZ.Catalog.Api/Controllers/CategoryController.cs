@@ -10,7 +10,7 @@ using YGZ.Catalog.Contracts.Categories;
 
 namespace YGZ.Catalog.Api.Controllers;
 
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}/categories")]
 [ApiVersion(1)]
 public class CategoryController : ApiController
 {

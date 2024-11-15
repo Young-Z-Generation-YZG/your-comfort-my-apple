@@ -8,5 +8,6 @@ public interface IUploadService
 {
     Task<ImageUploadResult> UploadImageFileAsync(IFormFile file);
     Task<DeletionResult> DeleteImageFileAsync(string publicId);
+    Task<ListResourcesResult> GetImages();
 
 }
