@@ -11,6 +11,8 @@ using YGZ.Catalog.Api.Common.Errors;
 using Asp.Versioning;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Api.Common.Mappings;
+using YGZ.Catalog.Api.Common.Helpers;
+using YGZ.Catalog.Domain.Core.Enums;
 
 namespace YGZ.Catalog.Api;
 
@@ -25,6 +27,12 @@ public static class DependencyInjection
         services.AddMappings();
 
         services.AddGlobalExceptionHandler();
+
+        services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new SmartEnumConverterHelper<ProductStateEnum>());
+                });
 
         return services;
     }

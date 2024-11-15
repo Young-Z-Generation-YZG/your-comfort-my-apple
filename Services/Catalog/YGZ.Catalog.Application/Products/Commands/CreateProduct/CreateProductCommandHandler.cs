@@ -13,10 +13,11 @@ using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Application.Products.Events;
+using Microsoft.Extensions.Logging;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
-internal class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, Product>
+internal class CreateProductCommandHandler : ICommandHandler<CreateProductCommand, bool>
 {
     private readonly IProductService _productService;
     private readonly IProductItemService _productItemService;
@@ -31,9 +32,8 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
         _eventBus = eventBus;
     }
 
-    public async Task<Result<Product>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        //var uploadResult = await _uploadSerivce.UploadImageFileAsync(request.File);
         var productId = ProductId.CreateUnique();
 
         var product = Product.Create(
@@ -53,7 +53,9 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
 
         try
         {
-            await _unitOfWork.CommitAsync(null);
+            var result = await _unitOfWork.CommitAsync(null);
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -68,7 +70,5 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
         //    ProductName = "test",
         //    Description = "test"
         //}, cancellationToken);
-
-        return product;
     }
 }

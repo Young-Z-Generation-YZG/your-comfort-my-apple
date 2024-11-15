@@ -5,7 +5,7 @@ using YGZ.Catalog.Domain.Products;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
-public sealed record CreateProductCommand : ICommand<Product> {
+public sealed record CreateProductCommand : ICommand<bool> {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     //public IFormFile[] Files { get; set; } = [];

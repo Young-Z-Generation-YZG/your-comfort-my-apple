@@ -5,6 +5,7 @@ using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Domain.Products.ValueObjects;
@@ -46,6 +47,9 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
 
     [BsonElement("colors")]
     public List<string> Colors { get; private set; } = new();
+
+    [BsonElement("state")]
+    public ProductStateEnum State { get; private set; } = ProductStateEnum.INACTIVE;
 
     [BsonElement("CategoryId")]
     public CategoryId CategoryId { get; private set; }

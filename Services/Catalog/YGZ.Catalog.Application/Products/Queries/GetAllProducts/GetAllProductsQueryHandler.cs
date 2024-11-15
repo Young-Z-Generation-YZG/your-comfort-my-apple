@@ -35,11 +35,13 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
                 pi.QuantityInStock,
                 pi.Price,
                 pi.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
+                pi.State.Name,
                 pi.CreatedAt,
                 pi.UpdatedAt
             )).ToList(),
             p.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
             p.Slug.Value,
+            p.State.Name,
             p.CategoryId.ValueStr,
             p.PromotionId.ValueStr,
             p.CreatedAt,

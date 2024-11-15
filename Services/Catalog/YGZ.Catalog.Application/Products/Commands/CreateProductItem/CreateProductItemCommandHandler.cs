@@ -12,7 +12,7 @@ using YGZ.Catalog.Domain.Products.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
-public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItemCommand, ProductItem>
+public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItemCommand, bool>
 {
     private readonly IProductService _productService;
     private readonly IProductItemService _productItemService;
@@ -25,7 +25,7 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
         _productService = productService;
     }
 
-    public async Task<Result<ProductItem>> Handle(CreateProductItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(CreateProductItemCommand request, CancellationToken cancellationToken)
     {
         var product = await _productService.FindByIdAsync(request.ProductId!, cancellationToken);
 
@@ -62,14 +62,14 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
         {
             var eventDomains = new List<IHasDomainEvents> { productItem };
 
-            await _unitOfWork.CommitAsync(eventDomains);
+            var result = await _unitOfWork.CommitAsync(eventDomains);
+
+            return result;
         } catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
 
             return Errors.ProductItem.CannotBeCreated;
         }
-
-        return productItem;
     }
 }

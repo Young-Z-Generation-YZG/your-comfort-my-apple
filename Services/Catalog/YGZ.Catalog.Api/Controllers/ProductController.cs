@@ -61,7 +61,7 @@ public class ProductController : ApiController
 
         var result = await _mediator.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(_mapper.Map<CreateProductResponse>(result)), onFailure: HandleFailure);
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPut("{id}")]

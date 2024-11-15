@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Events;
 using YGZ.Catalog.Domain.Products.ValueObjects;
@@ -34,6 +35,9 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
 
     [BsonElement("images")]
     public List<Image> Images { get; private set; }
+
+    [BsonElement("state")]
+    public ProductStateEnum State { get; private set; } = ProductStateEnum.INACTIVE;
 
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; }

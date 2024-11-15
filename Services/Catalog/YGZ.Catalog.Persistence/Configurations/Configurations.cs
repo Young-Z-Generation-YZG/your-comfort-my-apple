@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Products;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Domain.Promotions.ValueObjects;
@@ -20,6 +21,7 @@ public static class Configurations
     {
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerializer());
         BsonSerializer.RegisterSerializer(typeof(SKU), new SKUSerializer());
+        BsonSerializer.RegisterSerializer(typeof(ProductStateEnum), new SmartEnumSerializer<ProductStateEnum>());
 
         BsonSerializer.RegisterSerializer(typeof(ProductId), new ProductIdSerialzer());
         BsonSerializer.RegisterSerializer(typeof(ProductItemId), new ProductItemIdSerialzer());

@@ -1,12 +1,10 @@
 ﻿
-using System.Windows.Input;
 using YGZ.Catalog.Application.Common.Commands;
 using YGZ.Catalog.Application.Core.Abstractions.Messaging;
-using YGZ.Catalog.Domain.Products.Entities;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
-public sealed record CreateProductItemCommand : ICommand<ProductItem>
+public sealed record CreateProductItemCommand : ICommand<bool>
 {
     public string Model { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;

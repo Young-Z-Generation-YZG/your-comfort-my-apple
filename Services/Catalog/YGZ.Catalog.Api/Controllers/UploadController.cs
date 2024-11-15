@@ -6,7 +6,6 @@ using YGZ.Catalog.Api.Common.Extensions;
 using YGZ.Catalog.Application.Uploading.Commands.UploadSingle;
 using YGZ.Catalog.Application.Uploading.Queries.GetImages;
 using YGZ.Catalog.Contracts.Common;
-using YGZ.Catalog.Contracts.Products;
 
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -50,7 +49,6 @@ public class UploadController : ApiController
     [Route("multiple")]
     public async Task<IActionResult> UploadMultiple([FromForm] UploadImageFilesRequest request)
     {
-        Console.WriteLine("UploadMultiple" + request.Files);
         await Task.CompletedTask;
 
         return Ok();
@@ -60,7 +58,6 @@ public class UploadController : ApiController
     [Route("url")]
     public async Task<IActionResult> UploadByUrl([FromBody] UploadImageUrlRequest request)
     {
-        Console.WriteLine("UploadByUrl" + request.Url);
         await Task.CompletedTask;
 
         return Ok();
@@ -70,10 +67,17 @@ public class UploadController : ApiController
     [Route("urls")]
     public async Task<IActionResult> UploadByUrls([FromBody] UploadImageUrlsRequest request)
     {
-        Console.WriteLine("UploadByUrls" + request.Urls);
         await Task.CompletedTask;
 
         return Ok();
     }
 
+    [HttpDelete]
+    [Route("delete/{publicId}")]
+    public async Task<IActionResult> Delete(string publicId)
+    {
+        await Task.CompletedTask;
+
+        return Ok();
+    }
 }
