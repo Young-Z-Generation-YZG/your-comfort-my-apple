@@ -23,15 +23,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Identity.Infrastructure
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway.Api", "Gateways\Gateway.Api\Gateway.Api.csproj", "{C08D408D-5C1B-49F0-B39F-8A88CC2FF804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest1", "Services\IdentityTest\IdentityTest1\IdentityTest1.csproj", "{8081E21D-6022-47A9-BD61-8A4113B1676D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityTest1", "Services\IdentityTest\IdentityTest1\IdentityTest1.csproj", "{8081E21D-6022-47A9-BD61-8A4113B1676D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest2", "Services\IdentityTest\IdentityTest2\IdentityTest2.csproj", "{590E87E3-CEF5-4678-972A-1C54BEB40CC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityTest2", "Services\IdentityTest\IdentityTest2\IdentityTest2.csproj", "{590E87E3-CEF5-4678-972A-1C54BEB40CC6}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{E7BC684F-7E20-4AD3-9DCB-6C663401DFC0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Api", "Services\Catalog\YGZ.Catalog.Api\YGZ.Catalog.Api.csproj", "{246AA0F9-C11E-4F62-9125-B7C319D2121F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Api", "Services\Catalog\YGZ.Catalog.Api\YGZ.Catalog.Api.csproj", "{246AA0F9-C11E-4F62-9125-B7C319D2121F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3538A527-4067-4BBA-804D-0DE7B9039F6B} = {3538A527-4067-4BBA-804D-0DE7B9039F6B}
 		{87838124-9B56-4650-8379-CB298D260219} = {87838124-9B56-4650-8379-CB298D260219}
@@ -39,24 +39,34 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Api", "Services
 		{BBAB9503-09F1-4829-BC43-0505DA719603} = {BBAB9503-09F1-4829-BC43-0505DA719603}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Application", "Services\Catalog\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj", "{8E09FDF5-BCA1-4A69-BF0D-6C3460C90A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Application", "Services\Catalog\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj", "{8E09FDF5-BCA1-4A69-BF0D-6C3460C90A96}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0E72549D-4A87-4150-967C-FC3ECA307AEA} = {0E72549D-4A87-4150-967C-FC3ECA307AEA}
 		{2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E} = {2CAA2EA7-F0C4-4AAA-872E-80C0BF3E715E}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Domain", "Services\Catalog\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj", "{700B85B8-C3D5-4923-90F5-1D8ACEC44168}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Domain", "Services\Catalog\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj", "{700B85B8-C3D5-4923-90F5-1D8ACEC44168}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Persistence", "Services\Catalog\YGZ.Catalog.Persistence\YGZ.Catalog.Persistence.csproj", "{3538A527-4067-4BBA-804D-0DE7B9039F6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Persistence", "Services\Catalog\YGZ.Catalog.Persistence\YGZ.Catalog.Persistence.csproj", "{3538A527-4067-4BBA-804D-0DE7B9039F6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Infrastructure", "Services\Catalog\YGZ.Catalog.Infrastructure\YGZ.Catalog.Infrastructure.csproj", "{87838124-9B56-4650-8379-CB298D260219}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Infrastructure", "Services\Catalog\YGZ.Catalog.Infrastructure\YGZ.Catalog.Infrastructure.csproj", "{87838124-9B56-4650-8379-CB298D260219}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8E09FDF5-BCA1-4A69-BF0D-6C3460C90A96} = {8E09FDF5-BCA1-4A69-BF0D-6C3460C90A96}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Test", "Services\Catalog\YGZ.Catalog.Test\YGZ.Catalog.Test.csproj", "{534408DB-A375-4723-BD47-1C276AB7AC78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Test", "Services\Catalog\YGZ.Catalog.Test\YGZ.Catalog.Test.csproj", "{534408DB-A375-4723-BD47-1C276AB7AC78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Contracts", "Services\Catalog\YGZ.Catalog.Contracts\YGZ.Catalog.Contracts.csproj", "{BBAB9503-09F1-4829-BC43-0505DA719603}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Contracts", "Services\Catalog\YGZ.Catalog.Contracts\YGZ.Catalog.Contracts.csproj", "{BBAB9503-09F1-4829-BC43-0505DA719603}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{3EFFBA45-8417-4470-9213-2E458506438B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Api", "Services\Basket\YGZ.Basket.Api\YGZ.Basket.Api.csproj", "{CF68E58C-6775-49F0-A98D-66F685011CBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Application", "Services\Basket\YGZ.Basket.Application\YGZ.Basket.Application.csproj", "{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Domain", "Services\Basket\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj", "{79E0D783-A99F-486C-9508-F98D4053EC55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Infrastructure", "Services\Basket\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj", "{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -136,6 +146,22 @@ Global
 		{BBAB9503-09F1-4829-BC43-0505DA719603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBAB9503-09F1-4829-BC43-0505DA719603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBAB9503-09F1-4829-BC43-0505DA719603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF68E58C-6775-49F0-A98D-66F685011CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF68E58C-6775-49F0-A98D-66F685011CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF68E58C-6775-49F0-A98D-66F685011CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF68E58C-6775-49F0-A98D-66F685011CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79E0D783-A99F-486C-9508-F98D4053EC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79E0D783-A99F-486C-9508-F98D4053EC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79E0D783-A99F-486C-9508-F98D4053EC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79E0D783-A99F-486C-9508-F98D4053EC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +183,11 @@ Global
 		{87838124-9B56-4650-8379-CB298D260219} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
 		{534408DB-A375-4723-BD47-1C276AB7AC78} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
 		{BBAB9503-09F1-4829-BC43-0505DA719603} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
+		{3EFFBA45-8417-4470-9213-2E458506438B} = {09CC424F-409B-49D1-BDBD-D2D46B9CA34E}
+		{CF68E58C-6775-49F0-A98D-66F685011CBA} = {3EFFBA45-8417-4470-9213-2E458506438B}
+		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842} = {3EFFBA45-8417-4470-9213-2E458506438B}
+		{79E0D783-A99F-486C-9508-F98D4053EC55} = {3EFFBA45-8417-4470-9213-2E458506438B}
+		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87} = {3EFFBA45-8417-4470-9213-2E458506438B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}

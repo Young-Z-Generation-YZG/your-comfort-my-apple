@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using YGZ.Catalog.Domain.Core.Errors;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using YGZ.Basket.Domain.Errors;
 
-namespace YGZ.Catalog.Api.Common.Errors;
+namespace YGZ.Basket.Api.Common.Errors;
 
-public class CatalogProblemDetailsFactory : ProblemDetailsFactory
+public class BasketProblemDetailsFactory : ProblemDetailsFactory
 {
     private readonly ApiBehaviorOptions _apiBehaviorOptions;
-    public CatalogProblemDetailsFactory(IOptions<ApiBehaviorOptions>
+
+    public BasketProblemDetailsFactory(IOptions<ApiBehaviorOptions>
         options)
     {
         _apiBehaviorOptions = options.Value;
@@ -84,7 +85,7 @@ public class CatalogProblemDetailsFactory : ProblemDetailsFactory
         }
 
         var path = httpContext?.Request?.Path.Value;
-        
+
         if (!string.IsNullOrEmpty(path))
         {
             problemDetails.Extensions["path"] = path;

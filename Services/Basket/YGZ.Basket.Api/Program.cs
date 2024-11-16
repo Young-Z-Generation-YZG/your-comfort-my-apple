@@ -1,23 +1,20 @@
 using Asp.Versioning.ApiExplorer;
 using Serilog;
-using YGZ.Catalog.Api;
-using YGZ.Catalog.Application;
-using YGZ.Catalog.Infrastructure;
-using YGZ.Catalog.Persistence;
+using YGZ.Basket.Api;
+using YGZ.Basket.Application;
+using YGZ.Basket.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    .AddPersistenceLayer(builder.Configuration)
+    //.AddPersistenceLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
+
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 
@@ -59,7 +56,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-//app.UseRequestContextLogging();
 
 app.Run();

@@ -1,20 +1,18 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using YGZ.Catalog.Api.OpenApi;
-using Serilog;
-using System.Reflection;
+﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using YGZ.Catalog.Api.Common.Errors;
-using Asp.Versioning;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
+using YGZ.Basket.Api.Common.Errors;
+using YGZ.Basket.Api.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
-using YGZ.Catalog.Api.Common.Mappings;
-using YGZ.Catalog.Api.Common.Helpers;
-using YGZ.Catalog.Domain.Core.Enums;
 
-namespace YGZ.Catalog.Api;
 
-public static class DependencyInjection
+namespace YGZ.Basket.Api;
+
+public static class ServiceConfiguration
 {
     public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
     {
@@ -22,17 +20,18 @@ public static class DependencyInjection
 
         services.AddApiVersioningExtension();
 
-        services.AddMappings();
-
         services.AddGlobalExceptionHandler();
 
-        services.AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.Converters.Add(new SmartEnumConverterHelper<ProductStateEnum>());
-                });
-
         return services;
+    }
+
+    public static void AddSerilogExtension(this IHostBuilder host,  IConfiguration configuration)
+    {
+        host.UseSerilog((context, loggerConfiguration) =>
+        {
+            loggerConfiguration
+                .ReadFrom.Configuration(configuration);
+        });
     }
 
     public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
@@ -65,8 +64,6 @@ public static class DependencyInjection
             });
 
             options.ExampleFilters();
-
-            options.OperationFilter<SwaggerConfiguration>();
         });
 
         services.AddApiVersioning(options =>
@@ -122,18 +119,9 @@ public static class DependencyInjection
         return services;
     }
 
-    public static void AddSerilogExtension(this IHostBuilder builder, IConfiguration configuration)
-    {
-        builder.UseSerilog((context, loggerConfiguration) =>
-        {
-            loggerConfiguration
-                .ReadFrom.Configuration(configuration);
-        });
-    }
-
     public static IServiceCollection AddGlobalExceptionHandler(this IServiceCollection services)
     {
-        services.AddSingleton<ProblemDetailsFactory, CatalogProblemDetailsFactory>();
+        services.AddSingleton<ProblemDetailsFactory, BasketProblemDetailsFactory>();
 
         return services;
     }
