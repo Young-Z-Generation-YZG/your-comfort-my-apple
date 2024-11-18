@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using YGZ.Basket.Domain.Errors;
+using YGZ.Basket.Domain.Core.Errors;
 
 namespace YGZ.Basket.Api.Common.Errors;
 

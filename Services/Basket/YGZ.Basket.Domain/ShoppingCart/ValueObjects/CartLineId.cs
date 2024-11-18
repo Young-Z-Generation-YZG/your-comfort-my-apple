@@ -15,7 +15,7 @@ public class CartLineId : ValueObject
 
     public static CartLineId CreateUnique()
     {
-        return new(new Guid());
+        return new(Guid.NewGuid());
     }
 
 

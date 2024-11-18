@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YGZ.Basket.Application\YGZ.Basket.Application.csproj" />
+    <ProjectReference Include="..\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj" />
   </ItemGroup>
 
 </Project>

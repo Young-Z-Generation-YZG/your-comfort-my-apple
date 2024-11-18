@@ -1,6 +1,6 @@
 ﻿
 
-namespace YGZ.Basket.Domain.Errors;
+namespace YGZ.Basket.Domain.Core.Errors;
 
 public class Error
 {

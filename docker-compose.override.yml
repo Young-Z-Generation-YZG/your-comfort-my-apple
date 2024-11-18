@@ -34,9 +34,9 @@ services:
       POSTGRES_DB: BasketDb
     restart: always
     ports:
-      - "5432:5432"
+      - "6432:5432"
     volumes:
-      - postgres_basket:/var/lib/postgresql/data
+      - postgres_basket:/var/lib/postgresql/data/
 
 
   rabbitmq:
@@ -78,7 +78,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
     ports:
-      - "50028080"
+      - "5002:8080"
       - "5052:8081"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro

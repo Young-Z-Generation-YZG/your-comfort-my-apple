@@ -18,8 +18,4 @@
     <ProjectReference Include="..\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Baskets\Commands\DeleteBasket\" />
-  </ItemGroup>
-
 </Project>

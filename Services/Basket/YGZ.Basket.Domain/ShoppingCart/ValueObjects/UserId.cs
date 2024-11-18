@@ -13,9 +13,14 @@ public class UserId : ValueObject
         Value = value;
     }
 
-    public static ShoppingCartId CreateUnique()
+    public static UserId CreateUnique()
     {
-        return new(new Guid());
+        return new(Guid.NewGuid());
+    }
+
+    public static UserId ToEntity(Guid value)
+    {
+        return new(value);
     }
 
 

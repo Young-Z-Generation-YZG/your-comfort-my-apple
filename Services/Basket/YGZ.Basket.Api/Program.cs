@@ -19,6 +19,7 @@ builder.Services
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

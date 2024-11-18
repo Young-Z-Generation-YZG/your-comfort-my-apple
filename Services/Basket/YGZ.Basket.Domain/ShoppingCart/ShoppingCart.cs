@@ -1,5 +1,6 @@
 ﻿
 using YGZ.Basket.Domain.Core.Abstractions;
+using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.Core.Primitives;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -8,11 +9,12 @@ namespace YGZ.Basket.Domain.ShoppingCart;
 
 public class ShoppingCart : AggregateRoot<ShoppingCartId>, IAuditable
 {
+    public string UserIdValue => UserId.Value.ToString();
     public UserId UserId { get; private set; }
 
     public List<CartLine> CartLines { get; set; } = new();
 
-    public decimal TotalPrice => CartLines.Sum(line => line.SubTotal);
+    public decimal Total => CartLines.Sum(line => line.SubTotal);
 
     public DateTime CreatedAt { get; set; }
 
@@ -27,8 +29,8 @@ public class ShoppingCart : AggregateRoot<ShoppingCartId>, IAuditable
         UpdatedAt = updatedAt;
     }
 
-    public static ShoppingCart CreateNew(UserId userId)
+    public static ShoppingCart CreateNew(Guid userId, List<CartLine> cartLines)
     {
-        return new(ShoppingCartId.CreateUnique(), userId, new List<CartLine>(), DateTime.UtcNow, DateTime.UtcNow);
+        return new(ShoppingCartId.CreateUnique(), UserId.ToEntity(userId), cartLines, DateTime.UtcNow, DateTime.UtcNow);
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 
 
-using YGZ.Basket.Domain.Errors;
+using YGZ.Basket.Domain.Core.Errors;
 
 namespace YGZ.Basket.Domain.Core.Abstractions.Result;
 

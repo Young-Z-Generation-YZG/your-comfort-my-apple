@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using YGZ.Basket.Application.Baskets.Queries.GetBasket;
 using YGZ.Basket.Api.Common.Extensions;
+using YGZ.Basket.Application.Contracts;
+using YGZ.Basket.Application.Baskets.Commands.StoreBasket;
+using YGZ.Basket.Application.Baskets.Commands.DeleteBasket;
 
 namespace YGZ.Basket.Api.Controllers;
 
@@ -12,10 +15,12 @@ namespace YGZ.Basket.Api.Controllers;
 public class BasketController : ApiController
 {
     private readonly ISender _mediator;
+    private readonly IMapper _mapper;
 
-    public BasketController(ISender mediator)
+    public BasketController(ISender mediator, IMapper mapper)
     {
         _mediator = mediator;
+        _mapper = mapper;
     }
 
     [HttpGet("{userId}")]
@@ -28,20 +33,23 @@ public class BasketController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    /// <summary>
-    /// Create Product
-    /// </summary>
-    /// <returns></returns>
-    //[HttpPost]
-    //[SwaggerRequestExample(typeof(CreateProductRequest), typeof(CreateProductRequestExample))]
-    //public async Task<IActionResult> CreateProduct([FromBody] CreateProductRequest request, CancellationToken cancellationToken = default)
-    //{
-    //    var cmd = _mapper.Map<CreateProductCommand>(request);
+    [HttpPost]
+    public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken = default)
+    {
+        var cmd = _mapper.Map<StoreBasketCommand>(request);
 
-    //    //cmd.Files = request.Files; 
+        var result = await _mediator.Send(cmd, cancellationToken);
 
-    //    var result = await _mediator.Send(cmd, cancellationToken);
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
+    [HttpDelete("{userId}")]
+    public async Task<IActionResult> DeleteBasketByUserId(string userId, CancellationToken cancellationToken = default)
+    {
+        var cmd = new DeleteBasketCommand(userId);
+
+        var result = await _mediator.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 }

@@ -3,7 +3,7 @@
 using FluentValidation;
 using MediatR;
 using YGZ.Basket.Domain.Core.Abstractions.Result;
-using YGZ.Basket.Domain.Errors;
+using YGZ.Basket.Domain.Core.Errors;
 
 namespace YGZ.Basket.Application.Common.Behaviors;
 

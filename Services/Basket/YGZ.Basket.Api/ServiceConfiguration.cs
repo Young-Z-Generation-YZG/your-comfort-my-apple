@@ -8,6 +8,7 @@ using System.Reflection;
 using YGZ.Basket.Api.Common.Errors;
 using YGZ.Basket.Api.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
+using YGZ.Basket.Api.Common.Mappings;
 
 
 namespace YGZ.Basket.Api;
@@ -17,6 +18,8 @@ public static class ServiceConfiguration
     public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
     {
         services.AddSwaggerExtension();
+
+        services.AddMappings();
 
         services.AddApiVersioningExtension();
 
@@ -76,10 +79,6 @@ public static class ServiceConfiguration
 
         }).AddApiExplorer(options =>
         {
-            //semantic versioning
-            //first character is the principal or greater version
-            //second character is the minor version
-            //third character is the patch
             options.GroupNameFormat = "'v'VVV";
             options.SubstituteApiVersionInUrl = true;
         });
