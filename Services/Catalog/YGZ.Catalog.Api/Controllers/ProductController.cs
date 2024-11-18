@@ -1,11 +1,11 @@
 ﻿using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Swashbuckle.AspNetCore.Filters;
 using Asp.Versioning;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
 using YGZ.Catalog.Api.Common.Extensions;
 using YGZ.Catalog.Contracts.Products;
-using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;

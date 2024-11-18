@@ -96,7 +96,17 @@ public sealed class Product : AggregateRoot<ProductId>, IAuditable
         UpdatedAt = updated_at;
     }
 
-    public static Product Create(ProductId productId, string name, string? description, List<Image> images, double valueRating, int numsRating, List<string> models,List<string> colors, CategoryId? categoryId, PromotionId? promotionId)
+    public static Product Create(
+        ProductId productId,
+        string name,
+        string? description,
+        List<Image> images,
+        double valueRating,
+        int numsRating,
+        List<string> models,
+        List<string> colors,
+        CategoryId? categoryId,
+        PromotionId? promotionId)
     {
         var now = DateTime.UtcNow;
         var utc = now.ToUniversalTime();

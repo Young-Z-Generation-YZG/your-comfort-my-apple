@@ -7,12 +7,13 @@
     <UserSecretsId>6e686a59-7753-4672-a311-589831aac37c</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..\..</DockerfileContext>
+    <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\YGZ.Basket.Application\YGZ.Basket.Application.csproj" />
     <ProjectReference Include="..\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj" />
     <ProjectReference Include="..\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj" />
+    <ProjectReference Include="..\YGZ.Basket.Persistence\YGZ.Basket.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

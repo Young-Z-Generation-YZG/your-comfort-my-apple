@@ -3,6 +3,7 @@ using Serilog;
 using YGZ.Basket.Api;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
+using YGZ.Basket.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    //.AddPersistenceLayer(builder.Configuration)
+    .AddPersistenceLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
 
 

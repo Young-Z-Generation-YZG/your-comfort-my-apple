@@ -60,13 +60,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Catalog.Contracts", "Se
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Basket", "Basket", "{3EFFBA45-8417-4470-9213-2E458506438B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Api", "Services\Basket\YGZ.Basket.Api\YGZ.Basket.Api.csproj", "{CF68E58C-6775-49F0-A98D-66F685011CBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Api", "Services\Basket\YGZ.Basket.Api\YGZ.Basket.Api.csproj", "{CF68E58C-6775-49F0-A98D-66F685011CBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Application", "Services\Basket\YGZ.Basket.Application\YGZ.Basket.Application.csproj", "{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Application", "Services\Basket\YGZ.Basket.Application\YGZ.Basket.Application.csproj", "{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Domain", "Services\Basket\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj", "{79E0D783-A99F-486C-9508-F98D4053EC55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Domain", "Services\Basket\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj", "{79E0D783-A99F-486C-9508-F98D4053EC55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Infrastructure", "Services\Basket\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj", "{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Infrastructure", "Services\Basket\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj", "{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Persistence", "Services\Basket\YGZ.Basket.Persistence\YGZ.Basket.Persistence.csproj", "{91F734A5-CE56-44E8-8210-69922392DA4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -162,6 +164,10 @@ Global
 		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91F734A5-CE56-44E8-8210-69922392DA4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F734A5-CE56-44E8-8210-69922392DA4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91F734A5-CE56-44E8-8210-69922392DA4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F734A5-CE56-44E8-8210-69922392DA4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +194,7 @@ Global
 		{5E888DFB-81F0-4DE8-ABF6-1A47B07F3842} = {3EFFBA45-8417-4470-9213-2E458506438B}
 		{79E0D783-A99F-486C-9508-F98D4053EC55} = {3EFFBA45-8417-4470-9213-2E458506438B}
 		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87} = {3EFFBA45-8417-4470-9213-2E458506438B}
+		{91F734A5-CE56-44E8-8210-69922392DA4D} = {3EFFBA45-8417-4470-9213-2E458506438B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}

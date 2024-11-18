@@ -4,7 +4,6 @@ using MediatR;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using YGZ.Catalog.Application.Common.Behaviors;
 

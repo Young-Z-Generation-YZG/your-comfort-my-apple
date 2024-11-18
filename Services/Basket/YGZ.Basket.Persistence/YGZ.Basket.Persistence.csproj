@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Marten" Version="7.31.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YGZ.Basket.Application\YGZ.Basket.Application.csproj" />
+  </ItemGroup>
+
+</Project>
