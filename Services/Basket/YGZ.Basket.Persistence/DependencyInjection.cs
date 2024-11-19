@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Weasel.Core;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Persistence.Data;
+using YGZ.Basket.Persistence.Helpers;
 using YGZ.Basket.Persistence.Infrastructure;
 
 namespace YGZ.Basket.Persistence;
@@ -23,7 +24,15 @@ public static class DependencyInjection
             options.Schema.For<ShoppingCart>().Identity(x => x.UserIdValue);
         }).UseLightweightSessions();
 
-        services.AddTransient<IBasketRepository, BasketRepository>();
+        services.JsonConverterHelper();
+
+        services.AddScoped<IBasketRepository, BasketRepository>();
+        services.Decorate<IBasketRepository, CachedBasketRepository>();
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString(ConnectionString.Redis)!;
+        });
 
         return services;
     }

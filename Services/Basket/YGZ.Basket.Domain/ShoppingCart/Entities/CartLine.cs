@@ -19,7 +19,16 @@ public class CartLine : Entity<CartLineId>
 
     public decimal SubTotal => Price * Quantity;
 
-    public CartLine(CartLineId id, string productId, string sku, string model, string color, string storage, int quantity, decimal price, string imageUrl) : base(id)
+    public CartLine(
+        CartLineId id,
+        string productId,
+        string sku,
+        string model,
+        string color,
+        string storage,
+        int quantity,
+        decimal price,
+        string imageUrl) : base(id)
     {
         ProductId = productId;
         Quantity = quantity;

@@ -7,6 +7,7 @@ public sealed class ConnectionString
     public string Value { get; }
 
     public const string BasketDb = "BasketDb";
+    public const string Redis = "Redis";
 
     public ConnectionString(string value)
     {

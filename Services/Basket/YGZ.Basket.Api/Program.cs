@@ -1,4 +1,6 @@
 using Asp.Versioning.ApiExplorer;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using YGZ.Basket.Api;
 using YGZ.Basket.Application;
@@ -18,6 +20,10 @@ builder.Services
 
 
 builder.Host.AddSerilogExtension(builder.Configuration);
+
+builder.Services.AddHealthChecks()
+        .AddNpgSql(builder.Configuration.GetConnectionString("BasketDb")!)
+        .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
 
 
 var app = builder.Build();
@@ -58,5 +64,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

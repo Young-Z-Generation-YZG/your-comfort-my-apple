@@ -18,6 +18,11 @@ public class CartLineId : ValueObject
         return new(Guid.NewGuid());
     }
 
+    public static CartLineId ToEntity(Guid value)
+    {
+        return new(value);
+    }
+
 
     public override IEnumerable<object> GetEqualityComponents()
     {
