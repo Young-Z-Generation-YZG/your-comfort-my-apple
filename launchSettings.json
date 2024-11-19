@@ -7,7 +7,8 @@
         "gateway.api": "StartDebugging",
         "ygz.identity.api": "StartDebugging",
         "ygz.catalog.api": "StartDebugging",
-        "ygz.basket.api": "StartDebugging"
+        "ygz.basket.api": "StartDebugging",
+        "gyz.discount.grpc": "StartDebugging"
       }
     }
   }

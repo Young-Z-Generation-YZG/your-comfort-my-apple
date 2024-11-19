@@ -16,7 +16,6 @@ COPY ["Services/Basket/YGZ.Basket.Api/YGZ.Basket.Api.csproj", "Services/Basket/Y
 COPY ["Services/Basket/YGZ.Basket.Application/YGZ.Basket.Application.csproj", "Services/Basket/YGZ.Basket.Application/"]
 COPY ["Services/Basket/YGZ.Basket.Domain/YGZ.Basket.Domain.csproj", "Services/Basket/YGZ.Basket.Domain/"]
 COPY ["Services/Basket/YGZ.Basket.Infrastructure/YGZ.Basket.Infrastructure.csproj", "Services/Basket/YGZ.Basket.Infrastructure/"]
-COPY ["Services/Basket/YGZ.Basket.Persistence/YGZ.Basket.Persistence.csproj", "Services/Basket/YGZ.Basket.Persistence/"]
 RUN dotnet restore "./Services/Basket/YGZ.Basket.Api/YGZ.Basket.Api.csproj"
 COPY . .
 WORKDIR "/src/Services/Basket/YGZ.Basket.Api"

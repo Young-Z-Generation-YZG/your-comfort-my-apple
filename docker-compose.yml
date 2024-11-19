@@ -62,6 +62,12 @@ services:
     build:
       context: .
       dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+    depends_on:
+      - basketdb
+      - rabbitmq
+      - distributedcache
+      - ygz.catalog.api
+      - gyz.discount.grpc
 
   ygz.catalog.api:
     image: ${DOCKER_REGISTRY-}ygzcatalogapi
@@ -69,8 +75,15 @@ services:
       context: .
       dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
+  gyz.discount.grpc:
+    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+
 volumes:
   postgres_data:
+
 
 
 

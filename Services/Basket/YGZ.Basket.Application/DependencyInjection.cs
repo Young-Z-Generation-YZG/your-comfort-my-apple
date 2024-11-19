@@ -1,5 +1,6 @@
 ﻿
 using FluentValidation;
+using GYZ.Discount.Grpc;
 using MediatR;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,18 @@ public static class DependencyInjection
         services.AddFluentValidationRulesToSwagger();
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
+
+        services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+        {
+            options.Address = new Uri(configuration["GrpcSettings:DiscountUrl"]!);
+        })
+        .ConfigurePrimaryHttpMessageHandler(serviceProvider =>
+        {
+            return new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+        });
 
         //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestLoggingPipelineBehavior<,>));
 

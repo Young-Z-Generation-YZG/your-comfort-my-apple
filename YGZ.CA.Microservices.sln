@@ -68,7 +68,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Domain", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Infrastructure", "Services\Basket\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj", "{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Basket.Persistence", "Services\Basket\YGZ.Basket.Persistence\YGZ.Basket.Persistence.csproj", "{91F734A5-CE56-44E8-8210-69922392DA4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Basket.Persistence", "Services\Basket\YGZ.Basket.Persistence\YGZ.Basket.Persistence.csproj", "{91F734A5-CE56-44E8-8210-69922392DA4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Discount", "Discount", "{F1A2B22B-C28C-4DFD-A0C2-783894A22AA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GYZ.Discount.Grpc", "Services\Discount\GYZ.Discount.Grpc\GYZ.Discount.Grpc.csproj", "{AAFF2E77-75C5-4B95-99D9-08422D139105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,6 +172,10 @@ Global
 		{91F734A5-CE56-44E8-8210-69922392DA4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F734A5-CE56-44E8-8210-69922392DA4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91F734A5-CE56-44E8-8210-69922392DA4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAFF2E77-75C5-4B95-99D9-08422D139105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAFF2E77-75C5-4B95-99D9-08422D139105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAFF2E77-75C5-4B95-99D9-08422D139105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAFF2E77-75C5-4B95-99D9-08422D139105}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +203,8 @@ Global
 		{79E0D783-A99F-486C-9508-F98D4053EC55} = {3EFFBA45-8417-4470-9213-2E458506438B}
 		{DCBFC7E1-6741-4BE8-B4AF-C197D713EC87} = {3EFFBA45-8417-4470-9213-2E458506438B}
 		{91F734A5-CE56-44E8-8210-69922392DA4D} = {3EFFBA45-8417-4470-9213-2E458506438B}
+		{F1A2B22B-C28C-4DFD-A0C2-783894A22AA6} = {09CC424F-409B-49D1-BDBD-D2D46B9CA34E}
+		{AAFF2E77-75C5-4B95-99D9-08422D139105} = {F1A2B22B-C28C-4DFD-A0C2-783894A22AA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}
