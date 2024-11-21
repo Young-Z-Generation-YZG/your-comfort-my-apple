@@ -1,6 +1,6 @@
 ﻿
 
-namespace YGZ.Catalog.Domain.Core.Primitives;
+namespace YGZ.Ordering.Domain.Core.Primitives;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {
@@ -8,7 +8,7 @@ public abstract class ValueObject : IEquatable<ValueObject>
 
     public override bool Equals(object? obj)
     {
-        if(obj == null || obj.GetType() != GetType())
+        if (obj == null || obj.GetType() != GetType())
         {
             return false;
         }

@@ -1,10 +1,12 @@
 ﻿
+
 using FluentValidation;
 using MediatR;
-using YGZ.Catalog.Domain.Core.Abstractions.Result;
-using YGZ.Catalog.Domain.Core.Errors;
+using YGZ.Ordering.Domain.Core.Abstractions.Result;
+using YGZ.Ordering.Domain.Core.Errors;
 
-namespace YGZ.Catalog.Application.Common.Behaviors;
+namespace YGZ.Ordering.Application.Behaviors;
+
 public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : class

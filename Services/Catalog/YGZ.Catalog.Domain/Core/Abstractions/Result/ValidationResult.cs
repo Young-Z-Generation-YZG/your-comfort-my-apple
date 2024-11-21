@@ -1,7 +1,6 @@
-﻿using YGZ.Catalog.Domain.Core.Abstractions.Result;
-using YGZ.Catalog.Domain.Core.Errors;
+﻿using YGZ.Catalog.Domain.Core.Errors;
 
-namespace YGZ.Catalog.Domain.Core.Abstractions.Result.Validations;
+namespace YGZ.Catalog.Domain.Core.Abstractions.Result;
 
 public class ValidationResult<TResponse> : Result<TResponse>, IValidationResult
 {

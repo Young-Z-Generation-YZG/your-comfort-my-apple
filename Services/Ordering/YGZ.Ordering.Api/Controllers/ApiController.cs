@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using YGZ.Catalog.Domain.Core.Abstractions.Result;
+using YGZ.Ordering.Domain.Core.Abstractions.Result;
 
-namespace YGZ.Catalog.Api.Controllers;
+namespace YGZ.Ordering.Api.Controllers;
 
 [ApiController]
 public class ApiController : ControllerBase

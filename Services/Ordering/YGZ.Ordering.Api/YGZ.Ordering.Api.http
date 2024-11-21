@@ -1,0 +1,6 @@
+@YGZ.Ordering.Api_HostAddress = http://localhost:5101
+
+GET {{YGZ.Ordering.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace YGZ.Catalog.Api.Controllers;
+namespace YGZ.Ordering.Api.Controllers;
 
 public class ErrorController : ControllerBase
 {
