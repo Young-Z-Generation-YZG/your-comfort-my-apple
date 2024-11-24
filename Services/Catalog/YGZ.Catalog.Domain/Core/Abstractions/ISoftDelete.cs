@@ -2,7 +2,7 @@
 
 public interface ISoftDelete
 {
-    public bool IsDeleted { get; set; }
-
-    public DateTime DeletedAt { get; set; }
+    bool IsDeleted { get; set; }
+    DateTime? DeletedAt { get; set; }
+    string? DeletedByUserId { get; set; }
 }

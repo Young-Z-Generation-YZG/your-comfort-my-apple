@@ -7,34 +7,36 @@ namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
 
 public class AverageRating : ValueObject
 {
-    public double Value { get; set; }
+    [BsonElement("average_value")]
+    public double AverageValue { get; set; }
 
+    [BsonElement("num_ratings")]
     public int NumRatings { get; set; }
 
-    private AverageRating(double value, int numRatings)
+    private AverageRating(double averageValue, int numRatings)
     {
-        Value = value;
+        AverageValue = averageValue;
         NumRatings = numRatings;
     }
 
-    public static AverageRating CreateNew(double rating = 0, int numRatings = 0)
+    public static AverageRating CreateNew()
     {
-        return new AverageRating(rating, numRatings);
+        return new AverageRating(0, 0);
     }
 
     public void AddNewRating(Rating rating)
     {
-        Value = ((Value * NumRatings) + rating.Value) / ++NumRatings;
+        AverageValue = ((AverageValue * NumRatings) + rating.Value) / ++NumRatings;
     }
 
     public void RemoveRating(Rating rating)
     {
-        Value = ((Value * NumRatings) - rating.Value) / --NumRatings;
+        AverageValue = ((AverageValue * NumRatings) - rating.Value) / --NumRatings;
     } 
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return AverageValue;
         yield return NumRatings;
     }
 }

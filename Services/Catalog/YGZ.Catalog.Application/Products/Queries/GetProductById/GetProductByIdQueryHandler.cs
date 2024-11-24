@@ -32,7 +32,7 @@ public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, Pro
                                            product.Description,
                                            product.Models,
                                            product.Colors,
-                                           new AverageRatingResponse(product.AverageRatingValue, product.AverageRatingNumRatings),
+                                           new AverageRatingResponse(product.AverageRating.AverageValue, product.AverageRating.NumRatings),
                                            product.ProductItems.Select(pi => new ProductItemResponse(
                                                pi.Sku.Value,
                                                pi.Model,

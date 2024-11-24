@@ -10,7 +10,7 @@ using YGZ.Catalog.Domain.Products.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Entities;
 
-public class ProductItem : Entity<ProductItemId>, IAuditable
+public class ProductItem : Entity<ProductItemId>, IInventory, IAuditable, ISoftDelete
 {
     [BsonElement("product_id")]
     public ProductId ProductId { get; private set; } 
@@ -30,8 +30,14 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
     [BsonElement("price")]
     public double Price { get; private set; }
 
+    [BsonElement("quantity_remain")]
+    public int QuantityRemain { get; set; }
+
     [BsonElement("quantity_in_stock")]
-    public int QuantityInStock { get; private set; }
+    public int QuantityInStock { get; set; } 
+
+    [BsonElement("sold")]
+    public int Sold { get; set; } = 0;
 
     [BsonElement("images")]
     public List<Image> Images { get; private set; }
@@ -45,7 +51,28 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
     [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; }
 
-    private ProductItem(ProductItemId productItemId, ProductId productId, string model, string color, int storage, SKU sku, double price, int quantityInStock, List<Image> images, DateTime created_at, DateTime updated_at) : base(productItemId)
+    [BsonElement("is_deleted")]
+    public bool IsDeleted { get; set; } = false;
+
+    [BsonElement("deleted_at")]
+    public DateTime? DeletedAt { get; set; } = null;
+
+    [BsonElement("deleted_by")]
+    public string? DeletedByUserId { get; set; } = null;
+   
+
+    private ProductItem(
+        ProductItemId productItemId,
+        ProductId productId,
+        string model,
+        string color,
+        int storage,
+        SKU sku,
+        double price,
+        int quantityInStock,
+        List<Image> images,
+        DateTime createdAt,
+        DateTime updatedAt) : base(productItemId)
     {
         ProductId = productId;
         Model = model;
@@ -54,18 +81,19 @@ public class ProductItem : Entity<ProductItemId>, IAuditable
         Sku = sku;
         Price = price;
         QuantityInStock = quantityInStock;
+        QuantityRemain = quantityInStock;
         Images = images;
-        CreatedAt = created_at;
-        UpdatedAt = updated_at;
+        CreatedAt = createdAt;
+        UpdatedAt = updatedAt;
     }
 
-    public static ProductItem Create(ProductItemId productItemId, ProductId productId, string model, string color, int storage, double price, int quantityInStock, List<Image> images)
+    public static ProductItem Create(ProductItemId productItemId, ProductId productId, string model, string color, int storage, double price, int quantityInStock, List<Image> images, DateTime createdDate)
     {
         var sku = SKU.Create("SKU_DEMO");
-        var now = DateTime.UtcNow;
-        var utc = now.ToUniversalTime();
+        //var now = DateTime.UtcNow;
+        //var utc = now.ToUniversalTime();
 
-        var newProductItem = new ProductItem(productItemId, productId, model, color, storage, sku, price, quantityInStock, images, utc, utc);
+        var newProductItem = new ProductItem(productItemId, productId, model, color, storage, sku, price, quantityInStock, images, createdDate, createdDate);
 
         newProductItem.AddDomainEvent(new ProductItemCreatedEvent(newProductItem));
 

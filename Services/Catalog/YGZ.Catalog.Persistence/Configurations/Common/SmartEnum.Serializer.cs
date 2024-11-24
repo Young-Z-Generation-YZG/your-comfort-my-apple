@@ -50,9 +50,9 @@ public class SmartEnumSerializer<TEnum> : SerializerBase<TEnum> where TEnum : Sm
     public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TEnum value)
     {
         context.Writer.WriteStartDocument();
-        context.Writer.WriteName("Name");
+        context.Writer.WriteName("name");
         context.Writer.WriteString(value.Name);
-        context.Writer.WriteName("Value");
+        context.Writer.WriteName("value");
         context.Writer.WriteInt32(value.Value);
         context.Writer.WriteEndDocument();
     }

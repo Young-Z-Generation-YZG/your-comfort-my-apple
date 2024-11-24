@@ -26,7 +26,7 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
             p.Description,
             p.Models,
             p.Colors,
-            new AverageRatingResponse(p.AverageRatingValue, p.AverageRatingNumRatings),
+            new AverageRatingResponse(p.AverageRating.AverageValue, p.AverageRating.NumRatings),
             p.ProductItems.Select(pi => new ProductItemResponse(
                 pi.Sku.Value,
                 pi.Model,

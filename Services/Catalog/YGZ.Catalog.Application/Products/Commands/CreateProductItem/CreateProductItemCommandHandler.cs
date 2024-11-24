@@ -3,6 +3,7 @@ using YGZ.Catalog.Application.Core.Abstractions.Messaging;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
 using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Core.Abstractions;
+using YGZ.Catalog.Domain.Core.Abstractions.Common;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
@@ -16,33 +17,32 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
 {
     private readonly IProductService _productService;
     private readonly IProductItemService _productItemService;
+    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateProductItemCommandHandler(IProductItemService productItemService, IUnitOfWork unitOfWork, IProductService productService)
+    public CreateProductItemCommandHandler(IProductItemService productItemService, IUnitOfWork unitOfWork, IProductService productService, IDateTimeProvider dateTimeProvider)
     {
         _productItemService = productItemService;
         _unitOfWork = unitOfWork;
         _productService = productService;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<Result<bool>> Handle(CreateProductItemCommand request, CancellationToken cancellationToken)
     {
         var product = await _productService.FindByIdAsync(request.ProductId!, cancellationToken);
-
+    
         if (product is null)
         {
             return Errors.Product.DoesNotExist;
         }
 
-        var model = product.Models.Contains(request.Model);
-        var color = product.Colors.Contains(request.Color);
-
-        if (!model)
+        if (!product.Models.Contains(request.Model))
         {
             return Errors.Product.InvalidModel(product.Models);
         }
 
-        if (!color)
+        if (!product.Colors.Contains(request.Color))
         {
             return Errors.Product.InvalidColor(product.Colors);
         }
@@ -54,7 +54,9 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
                                              request.Storage,
                                              request.Price,
                                              request.Quantity_in_stock,
-                                             request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)));
+                                             request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
+                                             _dateTimeProvider.Now
+                                             );
 
         await _productItemService.InsertOneAsync(productItem, null!, cancellationToken);
 

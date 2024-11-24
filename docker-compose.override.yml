@@ -22,7 +22,7 @@
 #     - ASPNETCORE_ENVIRONMENT=Development
 #     - ASPNETCORE_HTTP_PORTS=8080
 #     - ASPNETCORE_HTTPS_PORTS=8081
-version: "3.4"
+# version: "3.4"
 
 services:
   basketdb:
@@ -49,14 +49,12 @@ services:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
 
-
   distributedcache:
     image: redis:alpine
     container_name: distributedcache
     restart: always
     ports:
       - "6379:6379"
-
 
   ygz.catalog.api:
     environment:
@@ -69,7 +67,6 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
 
   ygz.basket.api:
     environment:
@@ -101,7 +98,3 @@ services:
 volumes:
   postgres_basket:
   postgres_discount:
-
-
-
-
