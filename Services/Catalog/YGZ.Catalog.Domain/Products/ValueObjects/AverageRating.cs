@@ -1,9 +1,10 @@
 ﻿
 
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.ValueObjects;
 
 public class AverageRating : ValueObject
 {
@@ -26,13 +27,13 @@ public class AverageRating : ValueObject
 
     public void AddNewRating(Rating rating)
     {
-        AverageValue = ((AverageValue * NumRatings) + rating.Value) / ++NumRatings;
+        AverageValue = (AverageValue * NumRatings + rating.Value) / ++NumRatings;
     }
 
     public void RemoveRating(Rating rating)
     {
-        AverageValue = ((AverageValue * NumRatings) - rating.Value) / --NumRatings;
-    } 
+        AverageValue = (AverageValue * NumRatings - rating.Value) / --NumRatings;
+    }
 
     public override IEnumerable<object> GetEqualityComponents()
     {

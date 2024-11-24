@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Core.Common.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.ValueObjects;
 
 public class Color : ValueObject
 {

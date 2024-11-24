@@ -44,7 +44,6 @@
 #   backendbridge:
 #     name: backendbridge
 #     driver: bridge
-
 version: "3.4"
 
 services:
@@ -83,8 +82,3 @@ services:
 
 volumes:
   postgres_data:
-
-
-
-
-
