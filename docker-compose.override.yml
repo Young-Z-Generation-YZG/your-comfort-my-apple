@@ -67,6 +67,7 @@ services:
       - MessageBrokerSettings__Password=admin
     depends_on:
       - messagebroker
+    restart: always
     ports:
       - "6001:8080"
       - "6061:8081"
