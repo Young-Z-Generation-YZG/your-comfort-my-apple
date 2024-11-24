@@ -76,19 +76,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GYZ.Discount.Grpc", "Servic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ordering", "Ordering", "{268F8796-3B2F-40FA-951C-5740504801B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Api", "Services\Ordering\YGZ.Ordering.Api\YGZ.Ordering.Api.csproj", "{45BF9EB9-890E-480D-B24F-EE2C21DC2B8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Api", "Services\Ordering\YGZ.Ordering.Api\YGZ.Ordering.Api.csproj", "{45BF9EB9-890E-480D-B24F-EE2C21DC2B8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Application", "Services\Ordering\YGZ.Ordering.Application\YGZ.Ordering.Application.csproj", "{B620E0AD-CF33-45F5-85B0-AD2677655957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Application", "Services\Ordering\YGZ.Ordering.Application\YGZ.Ordering.Application.csproj", "{B620E0AD-CF33-45F5-85B0-AD2677655957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Domain", "Services\Ordering\YGZ.Ordering.Domain\YGZ.Ordering.Domain.csproj", "{119D5083-991A-4840-BF2F-D8F3A4389369}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Domain", "Services\Ordering\YGZ.Ordering.Domain\YGZ.Ordering.Domain.csproj", "{119D5083-991A-4840-BF2F-D8F3A4389369}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Infrastructure", "Services\Ordering\YGZ.Ordering.Infrastructure\YGZ.Ordering.Infrastructure.csproj", "{DD256122-CC5B-45A1-A781-4B6B15119CD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Infrastructure", "Services\Ordering\YGZ.Ordering.Infrastructure\YGZ.Ordering.Infrastructure.csproj", "{DD256122-CC5B-45A1-A781-4B6B15119CD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Persistence", "..\YGZ.Ordering.Persistence\YGZ.Ordering.Persistence.csproj", "{63449AA7-2E73-4DC7-9242-5FB34A5F225D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Test", "Services\Ordering\YGZ.Ordering.Test\YGZ.Ordering.Test.csproj", "{C6203898-61AA-4E75-B2E6-53A45E30CFD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Test", "Services\Ordering\YGZ.Ordering.Test\YGZ.Ordering.Test.csproj", "{C6203898-61AA-4E75-B2E6-53A45E30CFD5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Ordering.Contracts", "Services\Ordering\YGZ.Ordering.Contracts\YGZ.Ordering.Contracts.csproj", "{649BE823-F501-42A3-9AAC-1AFACDE2540A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YGZ.Ordering.Contracts", "Services\Ordering\YGZ.Ordering.Contracts\YGZ.Ordering.Contracts.csproj", "{649BE823-F501-42A3-9AAC-1AFACDE2540A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -208,10 +206,6 @@ Global
 		{DD256122-CC5B-45A1-A781-4B6B15119CD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD256122-CC5B-45A1-A781-4B6B15119CD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD256122-CC5B-45A1-A781-4B6B15119CD9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63449AA7-2E73-4DC7-9242-5FB34A5F225D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63449AA7-2E73-4DC7-9242-5FB34A5F225D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63449AA7-2E73-4DC7-9242-5FB34A5F225D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63449AA7-2E73-4DC7-9242-5FB34A5F225D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6203898-61AA-4E75-B2E6-53A45E30CFD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6203898-61AA-4E75-B2E6-53A45E30CFD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6203898-61AA-4E75-B2E6-53A45E30CFD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -254,7 +248,6 @@ Global
 		{B620E0AD-CF33-45F5-85B0-AD2677655957} = {268F8796-3B2F-40FA-951C-5740504801B0}
 		{119D5083-991A-4840-BF2F-D8F3A4389369} = {268F8796-3B2F-40FA-951C-5740504801B0}
 		{DD256122-CC5B-45A1-A781-4B6B15119CD9} = {268F8796-3B2F-40FA-951C-5740504801B0}
-		{63449AA7-2E73-4DC7-9242-5FB34A5F225D} = {268F8796-3B2F-40FA-951C-5740504801B0}
 		{C6203898-61AA-4E75-B2E6-53A45E30CFD5} = {268F8796-3B2F-40FA-951C-5740504801B0}
 		{649BE823-F501-42A3-9AAC-1AFACDE2540A} = {268F8796-3B2F-40FA-951C-5740504801B0}
 	EndGlobalSection

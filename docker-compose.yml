@@ -51,7 +51,7 @@ services:
   #   image: postgres:alpine
 
   messagebroker:
-    image: rabbitmq:3-management
+    image: rabbitmq:management
 
   # distributedcache:
   #   image: redis:alpine
@@ -68,11 +68,11 @@ services:
   #     - ygz.catalog.api
   #     - gyz.discount.grpc
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+  # ygz.catalog.api:
+  #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
   # gyz.discount.grpc:
   #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
@@ -80,5 +80,12 @@ services:
   #     context: .
   #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
+  ygz.ordering.api:
+    image: ${DOCKER_REGISTRY-}ygzorderingapi
+    build:
+      context: .
+      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+
 volumes:
   postgres_data:
+

@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Application.Core.Abstractions.Uploading;
-using YGZ.Catalog.Application.Products.Events;
 using YGZ.Catalog.Domain.Core.Abstractions.Common;
 using YGZ.Catalog.Infrastructure.Common;
 using YGZ.Catalog.Infrastructure.MessageBroker;
