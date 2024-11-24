@@ -72,6 +72,7 @@ services:
       - MessageBrokerSettings__Host=amqp://ecommerce-mq:5672
       - MessageBrokerSettings__UserName=guest
       - MessageBrokerSettings__Password=guest
+    restart: on-failure
     depends_on:
       messagebroker:
         condition: service_healthy
