@@ -41,7 +41,7 @@ services:
   messagebroker:
     image: rabbitmq:3-management
     container_name: rabbitmq
-    hostname: messagebroker-rabbitmq
+    hostname: messagebroker
     restart: always
     ports:
       - "5672:5672"
@@ -49,6 +49,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
+    networks:
+      - resolute
 
   distributedcache:
     image: redis:alpine
@@ -62,7 +64,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - MessageBrokerSettings__Host=amqp://messagebroker-rabbitmq:5672
+      - MessageBrokerSettings__Host=amqp://messagebroker:5672
       - MessageBrokerSettings__Username=admin
       - MessageBrokerSettings__Password=admin
     ports:
@@ -73,6 +75,8 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    networks:
+      - resolute
 
   ygz.basket.api:
     environment:
@@ -101,6 +105,12 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
 volumes:
   postgres_basket:
   postgres_discount:
+
+networks:
+  resolute:
+    external:
+      name: resolute
