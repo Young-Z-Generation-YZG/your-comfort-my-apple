@@ -65,6 +65,8 @@ services:
     ports:
       - "6001:8080"
       - "6061:8081"
+    depends_on:
+      - rabbitmq
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
