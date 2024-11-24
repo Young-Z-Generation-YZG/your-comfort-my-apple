@@ -45,9 +45,17 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    expose:
+      - 5672
+      - 15672
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
 
   # distributedcache:
   #   image: redis:alpine
@@ -65,7 +73,8 @@ services:
       - MessageBrokerSettings__UserName=guest
       - MessageBrokerSettings__Password=guest
     depends_on:
-      - messagebroker
+      messagebroker:
+        condition: service_healthy
     ports:
       - "6001:8080"
       - "6061:8081"
@@ -109,8 +118,10 @@ services:
       - MessageBrokerSettings__Host=amqp://ecommerce-mq:5672
       - MessageBrokerSettings__UserName=guest
       - MessageBrokerSettings__Password=guest
+    restart: on-failure
     depends_on:
-     - messagebroker
+      messagebroker:
+        condition: service_healthy
     ports:
       - "6004:8080"
       - "6064:8081"
