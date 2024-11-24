@@ -26,7 +26,7 @@ public static class DependencyInjection
         {
             busConfiguarator.SetKebabCaseEndpointNameFormatter();
 
-            busConfiguarator.AddConsumer<ProductCreatedEventComsumer>();
+            //busConfiguarator.AddConsumer<ProductCreatedEventComsumer>();
 
             busConfiguarator.UsingRabbitMq((context, configurator) =>
             {
@@ -44,10 +44,6 @@ public static class DependencyInjection
 
                 configurator.ConfigureEndpoints(context);
 
-                //configurator.ReceiveEndpoint("product-created-event-queue", endpoint =>
-                //{
-                //    endpoint.ConfigureConsumer<ProductCreatedEventComsumer>(context);
-                //});
             });
         });
 
