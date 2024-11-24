@@ -1,24 +1,27 @@
-﻿using YGZ.Identity.Api.OpenApi;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.SwaggerGen;
+﻿using Swashbuckle.AspNetCore.SwaggerGen;
 using Asp.Versioning;
 using Serilog;
 using Mapster;
 using System.Reflection;
 using MapsterMapper;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.OpenApi.Models;
+using YGZ.Identity.Api.OpenApi;
 using YGZ.Identity.Api.Common.Errors;
 
 namespace YGZ.Identity.Api;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentation(this IServiceCollection services) 
+    public static IServiceCollection AddPresentationLayer(this IServiceCollection services) 
     {
         services.AddVersioning();
 
         services.AddSwaggerExtension();
 
         services.AddMapping();
+
+        services.AddRazorPages();
 
         services.AddGlobalExceptionHandler();
 
@@ -27,6 +30,34 @@ public static class DependencyInjection
 
     public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
     {
+        services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT with Bearer into field",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
+
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfiguration>();
 
         return services;

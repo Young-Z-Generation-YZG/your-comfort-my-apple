@@ -82,6 +82,12 @@ public class IdentityProblemDetailsFactory : ProblemDetailsFactory
         }
         //problemDetails.Extensions.Add("test", "test extensions");
 
+        var path = httpContext?.Request?.Path.Value;
+        if (!string.IsNullOrEmpty(path))
+        {
+            problemDetails.Extensions["path"] = path;
+        }
+
         if (httpContext?.Items["errors"] is Error[] errors)
         {
             problemDetails.Extensions.Add("errors", errors);

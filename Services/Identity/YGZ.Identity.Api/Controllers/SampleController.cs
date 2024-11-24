@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using YGZ.Identity.Api.Extensions.NewFolder;
+using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application.Samples.Commands;
 using YGZ.Identity.Contracts.Samples;
+using YGZ.Identity.Domain.Identity.Constants.Authorization;
 
 namespace YGZ.Identity.Api.Controllers
 {
@@ -12,6 +14,7 @@ namespace YGZ.Identity.Api.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion(1)]
     [ApiVersion(2, Deprecated = true)]
+
     public class SampleController : ApiController
     {
         private readonly ISender _sender;
@@ -29,6 +32,8 @@ namespace YGZ.Identity.Api.Controllers
         /// <returns>Sample API</returns>
         [HttpGet]
         //[Route("")]
+        [Authorize(Policy = Policy.ReadAccess)]
+        [Authorize(Policy = Policy.WriteAccess)]
         [MapToApiVersion(1)]
         public IActionResult Get1()
         {

@@ -1,15 +1,90 @@
+# services:
+#   ygz.gateway.api:
+#     image: ${DOCKER_REGISTRY-}gatewayapi
+#     build:
+#       context: ./Gateways/Gateway.Api
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8080:8080"
+#       - "8081:8081"
+#     networks:
+#       - backendbridge
+
+# ygz.identity.api:
+#   image: ${DOCKER_REGISTRY-}ybeidentityapi
+#   build:
+#     context: .
+#     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+#   ports:
+#     - "5000:5000"
+
+# identitytest1:
+#   image: ${DOCKER_REGISTRY-}identitytest1
+#   build:
+#     context: .\Services\IdentityTest\IdentityTest1
+#     dockerfile: Dockerfile
+#   ports:
+#     - "5050:8080"
+#     - "5051:8081"
+#   networks:
+#     - backendbridge
+
+# identitytest2:
+#   image: ${DOCKER_REGISTRY-}identitytest2
+#   build:
+#     context: .\Services\IdentityTest\IdentityTest2
+#     dockerfile: Dockerfile
+#   ports:
+#     - "6060:8080"
+#     - "6061:8081"
+#   networks:
+#     - backendbridge
+
+# networks:
+#   backendbridge:
+#     name: backendbridge
+#     driver: bridge
+
 version: "3.4"
 
 services:
-  seq:
-    image: datalust/seq
-    environment:
-      - ACCEPT_EULA=Y
-    ports:
-      - "5341:80"
-    networks:
-      - app-network
+  basketdb:
+    image: postgres:alpine
 
-networks:
-  app-network:
-    driver: bridge
+  rabbitmq:
+    image: rabbitmq:3-management
+
+  distributedcache:
+    image: redis:alpine
+
+  ygz.basket.api:
+    image: ${DOCKER_REGISTRY-}ygzbasketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+    depends_on:
+      - basketdb
+      - rabbitmq
+      - distributedcache
+      - ygz.catalog.api
+      - gyz.discount.grpc
+
+  ygz.catalog.api:
+    image: ${DOCKER_REGISTRY-}ygzcatalogapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+
+  gyz.discount.grpc:
+    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+
+volumes:
+  postgres_data:
+
+
+
+
+

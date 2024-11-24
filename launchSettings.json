@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "gateway.api": "StartDebugging",
+        "ygz.identity.api": "StartDebugging",
+        "ygz.catalog.api": "StartDebugging",
+        "ygz.basket.api": "StartDebugging",
+        "gyz.discount.grpc": "StartDebugging"
+      }
+    }
+  }
+}

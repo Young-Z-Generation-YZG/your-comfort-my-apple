@@ -1,6 +1,6 @@
 ﻿
 using System.Windows.Input;
-using YGZ.Identity.Application.Common.Abstractions.Messaging;
+using YGZ.Identity.Application.Core.Abstractions.Messaging;
 using YGZ.Identity.Contracts.Samples;
 using YGZ.Identity.Domain.Common.Abstractions;
 using YGZ.Identity.Domain.Common.Errors;
@@ -13,7 +13,10 @@ internal class CreateSampleCommandHandler : ICommandHandler<CreateSampleCommand,
         
         var response = new CreateSampleResponse(Email: request.Email, ReponseAttribute: "Response Attribute");
 
+
         throw new Exception("Sample Exception");
+
+        //return SampleErrors.SampleError;
 
         //return Result<CreateSampleResponse>.Success(response);
 
