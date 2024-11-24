@@ -38,9 +38,10 @@ services:
     volumes:
       - postgres_basket:/var/lib/postgresql/data/
 
-  rabbitmq:
+  messagebroker:
     image: rabbitmq:3-management
     container_name: rabbitmq
+    hostname: messagebroker-rabbitmq
     restart: always
     ports:
       - "5672:5672"
@@ -61,12 +62,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - MessageBrokerSettings__Host=amqp://34.70.49.189:5672
+      - MessageBrokerSettings__Host=amqp://messagebroker-rabbitmq:5672
+      - MessageBrokerSettings__Username=admin
+      - MessageBrokerSettings__Password=admin
     ports:
       - "6001:8080"
       - "6061:8081"
     depends_on:
-      - rabbitmq
+      - messagebroker
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
