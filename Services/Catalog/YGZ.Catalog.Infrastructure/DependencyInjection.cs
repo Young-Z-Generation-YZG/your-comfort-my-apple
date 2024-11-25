@@ -2,6 +2,7 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Application.Core.Abstractions.Uploading;
@@ -30,17 +31,14 @@ public static class DependencyInjection
                 config.AddConsumers(assembly);
             }
 
-            Console.WriteLine("MessageBrokerSettings:Host: " + configuration["MessageBrokerSettings:Host"]);
-            Console.WriteLine("MessageBrokerSettings:UserName: " + configuration["MessageBrokerSettings:Username"]);
-            Console.WriteLine("MessageBrokerSettings:Password: " + configuration["MessageBrokerSettings:Password"]);
-
-
             config.UsingRabbitMq((context, configurator) =>
             {
-                configurator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
+                MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
+
+                configurator.Host(new Uri(configuration[settings.Host]!), host =>
                 {
-                    host.Username(configuration["MessageBrokerSettings:Username"]!);
-                    host.Password(configuration["MessageBrokerSettings:Password"]!);
+                    host.Username(configuration[settings.Username]!);
+                    host.Password(configuration[settings.Password]!);
                 });
 
                 configurator.ConfigureEndpoints(context);

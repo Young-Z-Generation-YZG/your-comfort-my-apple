@@ -72,6 +72,8 @@ services:
       - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
       - MessageBrokerSettings__Username=guest
       - MessageBrokerSettings__Password=guest
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
     restart: on-failure
     depends_on:
       messagebroker:
@@ -82,6 +84,7 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - /ssl:/https/ssl:ro
 
   # ygz.basket.api:
   #   environment:
