@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY_CREDS = credentials('ygzstore-be')
+        DOCKER_REGISTRY_CREDS_ID = 'ygzstore-be'
     }
 
     stages {
@@ -24,7 +25,7 @@ pipeline {
 
         stage('Push') {
             steps {
-                withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS}", url: 'https://index.docker.io/v1/') {
+                withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS_ID}", url: 'https://index.docker.io/v1/') {
                     sh label: "deploy images", script: "docker compose push"
                 }
                 script {
