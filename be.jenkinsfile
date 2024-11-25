@@ -34,24 +34,24 @@ pipeline {
             steps {
                 script {
                     sh label: "down", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml down"
-                    // sh "echo y | docker container prune -f"
-                    sh label: 'logs', script: 'docker ps -a'
+                    sh "echo y | docker container prune -f"
                 }
             }
         }
 
-        // stage('Deploy to dev environment') {
-        //     steps {
-        //         script {
-        //             sh label: "deploy", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
-        //         }
-        //     }
-        // }
+        stage('Deploy to dev environment') {
+            steps {
+                script {
+                    sh label: "deploy", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
+                }
+            }
+        }
 
         stage('Log') {
             steps {
                 script {
-                    sh label: "log", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml logs -f"
+                    sh label: 'log', script: 'docker ps -a'
+
                 }
             }
         }
