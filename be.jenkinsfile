@@ -40,13 +40,13 @@ pipeline {
             }
         }
 
-        stage('Deploy to dev environment') {
-            steps {
-                script {
-                    sh label: "deploy", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
-                }
-            }
-        }
+        // stage('Deploy to dev environment') {
+        //     steps {
+        //         script {
+        //             sh label: "deploy", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
+        //         }
+        //     }
+        // }
 
         stage('Log') {
             steps {
