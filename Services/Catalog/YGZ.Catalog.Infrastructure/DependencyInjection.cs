@@ -35,10 +35,10 @@ public static class DependencyInjection
             {
                 MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
 
-                configurator.Host(new Uri(configuration[settings.Host]!), host =>
+                configurator.Host(new Uri(settings.Host!), host =>
                 {
-                    host.Username(configuration[settings.Username]!);
-                    host.Password(configuration[settings.Password]!);
+                    host.Username(settings.Username!);
+                    host.Password(settings.Password!);
                 });
 
                 configurator.ConfigureEndpoints(context);
