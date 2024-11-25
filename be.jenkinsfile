@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // echo "Test 1231231312313"
+                    echo "Test 1231231312313"
                     echo "Docker registry: ${DOCKER_REGISTRY_CREDS_USR}"
                     sh label: "build images", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build"
                 }
