@@ -24,7 +24,7 @@ pipeline {
 
         stage('Push') {
             steps {
-                withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS_USR}", url: 'https://index.docker.io/v1/') {
+                withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS}", url: 'https://index.docker.io/v1/') {
                     sh label: "deploy images", script: "docker compose push"
                 }
                 script {
