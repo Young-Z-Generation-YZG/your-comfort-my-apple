@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        dockerRegistryCredential = 'ygzstore-be'
+        DOCKER_REGISTRY_CREDENTIALS = 'ygzstore-be'
     }
 
     stages {
@@ -15,8 +15,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo "Docker registry: ${dockerRegistryCredential_USERNAME}"
-                    sh label: "build images", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build"
+                    echo "Docker registry: ${DOCKER_REGISTRY_CREDENTIALS_USR}"
+                    sh label: "build images", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDENTIALS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build"
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
         stage('Push') {
             steps {
                 script {
-                    sh label: "push images", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml push"
+                    sh label: "push images", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDENTIALS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml push"
                 }
             }
         }
@@ -41,7 +41,7 @@ pipeline {
         stage('Deploy to dev environment') {
             steps {
                 script {
-                    sh label: "deploy", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
+                    sh label: "deploy", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDENTIALS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
                 }
             }
         }
