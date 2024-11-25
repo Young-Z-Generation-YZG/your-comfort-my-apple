@@ -34,7 +34,8 @@ pipeline {
             steps {
                 script {
                     sh label: "down", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml down"
-                    sh "echo y | docker container prune -f"
+                    // sh "echo y | docker container prune -f"
+                    sh label: 'logs', script: 'docker ps -a'
                 }
             }
         }
