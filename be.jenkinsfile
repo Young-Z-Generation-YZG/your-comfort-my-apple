@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'bach-dev-be', url: 'https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git'
+            }
+        }
+    }
+}
