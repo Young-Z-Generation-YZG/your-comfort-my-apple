@@ -17,7 +17,6 @@ pipeline {
             steps {
                 script {
                     echo "Test 1231231312313"
-                    echo "Docker registry: ${DOCKER_REGISTRY_CREDS_USR}"
                     sh label: "build images", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build"
                 }
             }
@@ -29,7 +28,7 @@ pipeline {
                     sh label: "deploy images", script: "docker compose push"
                 }
                 script {
-                    sh label: "push images", script: "DOCKER_REGISTRY=${DOCKER_REGISTRY_CREDS_USR}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml push"
+                    sh label: "push images", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml push"
                 }
             }
         }

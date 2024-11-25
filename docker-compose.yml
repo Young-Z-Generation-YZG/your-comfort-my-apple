@@ -69,7 +69,7 @@ services:
   #     - gyz.discount.grpc
 
   ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
+    image: baledev/ygzcatalogapi
     build:
       context: .
       dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
