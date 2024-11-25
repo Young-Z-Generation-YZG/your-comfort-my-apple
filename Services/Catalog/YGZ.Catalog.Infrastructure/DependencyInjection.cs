@@ -2,7 +2,6 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Application.Core.Abstractions.Uploading;
@@ -32,7 +31,7 @@ public static class DependencyInjection
             }
 
             Console.WriteLine("MessageBrokerSettings:Host: " + configuration["MessageBrokerSettings:Host"]);
-            Console.WriteLine("MessageBrokerSettings:UserName: " + configuration["MessageBrokerSettings:UserName"]);
+            Console.WriteLine("MessageBrokerSettings:UserName: " + configuration["MessageBrokerSettings:Username"]);
             Console.WriteLine("MessageBrokerSettings:Password: " + configuration["MessageBrokerSettings:Password"]);
 
 
@@ -40,7 +39,7 @@ public static class DependencyInjection
             {
                 configurator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
                 {
-                    host.Username(configuration["MessageBrokerSettings:UserName"]!);
+                    host.Username(configuration["MessageBrokerSettings:Username"]!);
                     host.Password(configuration["MessageBrokerSettings:Password"]!);
                 });
 

@@ -86,6 +86,8 @@ services:
       context: .
       dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
+  # ygz.seq:
+  #   image: datalust/seq
+
 volumes:
   postgres_data:
-

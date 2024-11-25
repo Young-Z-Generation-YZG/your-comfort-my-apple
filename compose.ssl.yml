@@ -1,0 +1,6 @@
+services:
+  helloword:
+    container_name: helloword
+    image: crccheck/hello-world
+    ports:
+      - "80:8000"
