@@ -1,13 +1,57 @@
 pipeline {
     agent any
 
+    environment {
+        dockerRegistryCredential = 'ygzstore-be'
+    }
+
     stages {
         stage('Clone') {
             steps {
                 git branch: 'bach-dev-be', url: 'https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git'
             }
         }
+
+        stage('Build') {
+            steps {
+                script {
+                    echo "Docker registry: ${dockerRegistryCredential_USERNAME}"
+                    sh label: "build images", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml build"
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                script {
+                    sh label: "push images", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml push"
+                }
+            }
+        }
+
+        stage('Down current dev environment') {
+            steps {
+                script {
+                    sh label: "down", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml down"
+                    sh "echo y | docker container prune -f"
+                }
+            }
+        }
+
+        stage('Deploy to dev environment') {
+            steps {
+                script {
+                    sh label: "deploy", script: "DOCKER_REGISTRY=${dockerRegistryCredential_USERNAME}/ docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml up -d"
+                }
+            }
+        }
+
+        stage('Log') {
+            steps {
+                script {
+                    sh label: "log", script: "docker compose -f ./docker-compose.yml -f ./docker-compose.override.yml logs -f"
+                }
+            }
+        }
     }
 }
-
-///
