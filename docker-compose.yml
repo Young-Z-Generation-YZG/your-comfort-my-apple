@@ -93,4 +93,6 @@ services:
   #   image: datalust/seq
 
 volumes:
-  postgres_data:
+  postgres_basket:
+  postgres_discount:
+  mongodb_catalog:
