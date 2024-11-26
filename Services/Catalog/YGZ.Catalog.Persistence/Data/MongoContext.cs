@@ -16,7 +16,7 @@ public class MongoContext : IMongoContext
     private readonly MongoClient _mongoClient;
     private readonly IMongoDatabase _mongoDb;
 
-    public MongoContext(IOptions<CatalogDbSetting> options)
+    public MongoContext(IOptions<CatalogDbSettings> options)
     {
         _mongoClient = new MongoClient(options.Value.ConnectionString);
 

@@ -47,14 +47,17 @@
 # version: "3.8"
 
 services:
+  catalogdb:
+    image: mongo:latest
+
   # basketdb:
   #   image: postgres:alpine
 
-  messagebroker:
-    image: rabbitmq:management
-
   # distributedcache:
   #   image: redis:alpine
+
+  messagebroker:
+    image: rabbitmq:management
 
   # ygz.basket.api:
   #   image: ${DOCKER_REGISTRY-}ygzbasketapi

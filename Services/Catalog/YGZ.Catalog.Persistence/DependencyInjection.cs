@@ -14,7 +14,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<CatalogDbSetting>(configuration.GetSection(nameof(CatalogDbSetting)));
+        services.Configure<CatalogDbSettings>(configuration.GetSection(nameof(CatalogDbSettings)));
 
         services.AddMongoDbConfiguration();
 
