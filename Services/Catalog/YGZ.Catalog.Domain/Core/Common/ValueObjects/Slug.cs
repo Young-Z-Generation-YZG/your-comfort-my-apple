@@ -10,7 +10,7 @@ public class Slug : ValueObject
 {
     public string Value { get; }
 
-    private Slug(string value)
+    public Slug(string value)
     {
         Value = value;
     }

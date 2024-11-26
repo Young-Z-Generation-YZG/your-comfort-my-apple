@@ -2,6 +2,7 @@
 
 using YGZ.Catalog.Application.Core.Abstractions.Messaging;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
+using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
 using YGZ.Catalog.Contracts.Common;
 using YGZ.Catalog.Contracts.Products;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
@@ -9,23 +10,25 @@ using YGZ.Catalog.Domain.Core.Errors;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductById;
 
-public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, ProductResponse>
+public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery, ProductResponse>
 {
     private readonly IProductService _productService;
 
-    public GetProductByIdQueryHandler(IProductService productService)
+    public GetProductBySlugQueryHandler(IProductService productService)
     {
         _productService = productService;
     }
 
-    public async Task<Result<ProductResponse>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ProductResponse>> Handle(GetProductBySlugQuery request, CancellationToken cancellationToken)
     {
-        var product = await _productService.FindByIdAsync(request.Id, cancellationToken);
+        var result = await _productService.GetBySlug(request.Slug, cancellationToken);
 
-        if(product is null)
+        if (result is null)
         {
             return Errors.Product.DoesNotExist;
         }
+
+        var product = result.Response!;
 
         var response = new ProductResponse(product.Id.ValueStr,
                                            product.CategoryId.ValueStr,

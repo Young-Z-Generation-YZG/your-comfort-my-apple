@@ -9,6 +9,8 @@ public static partial class Errors
         public static Error DoesNotExist = Error.BadRequest(code: "Product.DoesNotExist", message: "Product does not Exists");
         public static Error CannotBeCreated = Error.BadRequest(code: "Product.CannotBeCreated", message: "Product cannot be created");
         public static Error CannotBeAddProductItem = Error.BadRequest(code: "Product.CannotBeAddProductItem", message: "Product cannot be add product item");
+        public static Error InvalidStorage = Error.BadRequest(code: "Product.InvalidStorage", message: "Product storage is invalid");
+
         public static Error InvalidModel(List<string> models)
         {
             var str = $"({string.Join(" | ", models)})";

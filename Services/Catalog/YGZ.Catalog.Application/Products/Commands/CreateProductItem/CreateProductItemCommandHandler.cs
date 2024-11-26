@@ -37,15 +37,15 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
             return Errors.Product.DoesNotExist;
         }
 
-        if (!product.Models.Contains(request.Model))
-        {
-            return Errors.Product.InvalidModel(product.Models);
-        }
+        //if (!product.Models.Contains(request.Model))
+        //{
+        //    return Errors.Product.InvalidModel(product.Models);
+        //}
 
-        if (!product.Colors.Contains(request.Color))
-        {
-            return Errors.Product.InvalidColor(product.Colors);
-        }
+        //if (!product.Colors.Contains(request.Color))
+        //{
+        //    return Errors.Product.InvalidColor(product.Colors);
+        //}
 
         var productItem = ProductItem.Create(ProductItemId.CreateUnique(), 
                                              product.Id,

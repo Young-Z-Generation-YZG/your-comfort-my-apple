@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
+using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products;
 using YGZ.Catalog.Domain.Products.Entities;
@@ -14,6 +15,15 @@ namespace YGZ.Catalog.Persistence.Services;
 public class ProductService : ProductRepository, IProductService
 {
     public ProductService(IMongoContext context) : base(context){}
+
+
+    public async Task<Result<Product>> GetBySlug(string slug, CancellationToken cancellationToken)
+    {
+
+        var result = await FindOneAsync(filter => filter.Slug == new Slug(slug), cancellationToken).ConfigureAwait(false);
+
+        return result;
+    }
 
     public override Task InsertOneAsync(Product document, IClientSessionHandle? clientSessionHandle, CancellationToken cancellationToken)
     {
@@ -32,4 +42,6 @@ public class ProductService : ProductRepository, IProductService
 
         return result.ModifiedCount > 0;
     }
+
+    
 }

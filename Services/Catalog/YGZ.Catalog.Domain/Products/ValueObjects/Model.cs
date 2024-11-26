@@ -19,8 +19,14 @@ public class Model : ValueObject
         Order = order;
     }
 
+    public static Model CreateNew(string name, int order)
+    {
+        return new Model(name, order);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return Name;
+        yield return Order;
     }
 }

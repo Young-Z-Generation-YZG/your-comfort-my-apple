@@ -31,10 +31,13 @@ public class Product : AggregateRoot<ProductId>, IAuditable
     public string Name { get; private set; }
 
     [BsonElement("models")]
-    public List<string> Models { get; private set; } = new();
+    public List<Model> Models { get; private set; }
 
     [BsonElement("colors")]
-    public List<string> Colors { get; private set; } = new();
+    public List<Color> Colors { get; private set; } = new();
+
+    [BsonElement("storages")]
+    public List<StorageEnum> Storages { get; private set; }
 
     [BsonElement("description")]
     public string Description { get; private set; } = "";
@@ -68,8 +71,9 @@ public class Product : AggregateRoot<ProductId>, IAuditable
     private Product(
         ProductId productId,
         string name,
-        List<string> models,
-        List<string> colors,
+        List<Model> models,
+        List<Color> colors,
+        List<StorageEnum> storages,
         string description,
         List<Image> images,
         List<ProductItem> productItems,
@@ -81,6 +85,7 @@ public class Product : AggregateRoot<ProductId>, IAuditable
         Name = name;
         Models = models;
         Colors = colors;
+        Storages = storages;
         Description = description;
         Images = images;
         _productItems = productItems;
@@ -93,20 +98,23 @@ public class Product : AggregateRoot<ProductId>, IAuditable
 
     public static Product Create(
         ProductId productId,
-        string name,
-        List<string> models,
-        List<string> colors,
-        string? description,
-        List<Image> images,
         CategoryId? categoryId,
         PromotionId? promotionId,
+        string name,
+        List<Model> models,
+        List<Color> colors,
+        List<StorageEnum> storages,
+        string? description,
+        List<Image> images,
         DateTime createdAt)
     {
+
         var product = new Product(
                            productId,
                            name,
                            models,
                            colors,
+                           storages,
                            description ?? "",
                            images,
                            new(),
@@ -126,4 +134,6 @@ public class Product : AggregateRoot<ProductId>, IAuditable
 
         return _productItems;
     }
+
+    public string GetSlug => Slug.Value;
 }

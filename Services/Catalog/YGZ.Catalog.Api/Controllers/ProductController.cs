@@ -11,6 +11,7 @@ using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
 using YGZ.Catalog.Application.Products.Queries.GetProductById;
 using YGZ.Catalog.Application.Products.Commands.DeleteProductById;
+using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -27,6 +28,10 @@ public class ProductController : ApiController
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// [DONE] Get ALL products
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetProducts(CancellationToken cancellationToken = default)
     {
@@ -37,10 +42,14 @@ public class ProductController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetProductById(string id, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// [DONE] Get product by slug
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("{slug}")]
+    public async Task<IActionResult> GetProductById(string slug, CancellationToken cancellationToken = default)
     {
-        var query = new GetProductByIdQuery(id);
+        var query = new GetProductBySlugQuery(slug);
 
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -48,7 +57,7 @@ public class ProductController : ApiController
     }
 
     /// <summary>
-    /// Create Product
+    /// [DONE] Create a general product base model for product'items
     /// </summary>
     /// <returns></returns>
     [HttpPost]

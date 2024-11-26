@@ -12,6 +12,7 @@ using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Domain.Core.Abstractions.Common;
+using YGZ.Catalog.Domain.Core.Enums;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
@@ -36,13 +37,25 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
     {
         var productId = ProductId.CreateUnique();
 
+        var productStorages = new List<StorageEnum>();
+
+        try
+        {
+            productStorages = request.Storages.ConvertAll(model => StorageEnum.FromValue(model));
+        }
+        catch
+        {
+            return Errors.Product.InvalidStorage;
+        }
+
         var product = Product.Create(
             productId: productId,
             categoryId: CategoryId.ToObjectId(request.CategoryId),
             promotionId: PromotionId.ToObjectId(request.PromotionId),
             name: request.Name,
-            models: request.Models,
-            colors: request.Colors,
+            models: request.Models.ConvertAll(model => Model.CreateNew(model.Name, model.Order)),
+            colors: request.Colors.ConvertAll(color => Color.CreateNew(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+            storages: productStorages,
             description: request.Description,
             images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
             createdAt: _dateTimeProvider.Now
