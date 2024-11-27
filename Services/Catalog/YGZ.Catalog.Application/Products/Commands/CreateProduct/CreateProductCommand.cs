@@ -8,7 +8,6 @@ public sealed record CreateProductCommand : ICommand<bool> {
     public string Name { get; set; }
     public string Description { get; set; }
     public List<ImageCommand> Images { get; set; }
-    public AverageRatingCommand AverageRating { get; set; }
     public List<ModelCommand> Models { get; set; }
     public List<ColorCommand> Colors { get; set; }
     public List<int> Storages { get; set; }

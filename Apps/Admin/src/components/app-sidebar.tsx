@@ -35,7 +35,7 @@ const data = {
   user: {
     name: "Bách Lê",
     email: "lxbach1608@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "",
   },
   navMain: [
     {
@@ -49,11 +49,19 @@ const data = {
           url: "#",
         },
         {
-          title: "Data tables",
+          title: "List view",
           url: "#",
         },
         {
-          title: "Managements",
+          title: "Grid view",
+          url: "#",
+        },
+        {
+          title: "Overview",
+          url: "#",
+        },
+        {
+          title: "Add New",
           url: "#",
         },
         {

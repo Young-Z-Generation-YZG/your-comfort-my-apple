@@ -50,32 +50,32 @@ services:
   catalogdb:
     image: mongo:latest
 
-  # basketdb:
-  #   image: postgres:alpine
+  basketdb:
+    image: postgres:alpine
 
-  # distributedcache:
-  #   image: redis:alpine
+  distributedcache:
+    image: redis:alpine
 
   messagebroker:
     image: rabbitmq:management
-
-  # ygz.basket.api:
-  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
-  #   depends_on:
-  #     - basketdb
-  #     - rabbitmq
-  #     - distributedcache
-  #     - ygz.catalog.api
-  #     - gyz.discount.grpc
 
   ygz.catalog.api:
     image: ${DOCKER_REGISTRY-}ygzcatalogapi
     build:
       context: .
       dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+
+  ygz.basket.api:
+    image: ${DOCKER_REGISTRY-}ygzbasketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+    depends_on:
+      - basketdb
+      - messagebroker
+      - distributedcache
+      - ygz.catalog.api
+      # - gyz.discount.grpc
 
   # gyz.discount.grpc:
   #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc

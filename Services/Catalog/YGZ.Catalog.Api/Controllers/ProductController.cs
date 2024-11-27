@@ -108,6 +108,10 @@ public class ProductController : ApiController
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    /// <summary>
+    /// [DONE] Create a Product detail base model for product'items
+    /// </summary>
+    /// <returns></returns>
     [HttpPost("product-items")]
     [SwaggerRequestExample(typeof(CreateProductItemRequest), typeof(CreateProductItemRequestExample))]
     public async Task<IActionResult> CreateProductItem([FromBody] CreateProductItemRequest request, CancellationToken cancellationToken = default)

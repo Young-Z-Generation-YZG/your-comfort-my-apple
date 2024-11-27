@@ -27,10 +27,10 @@ public class CreateProductValidator : AbstractValidator<CreateProductCommand>
         RuleFor(product => product.Images)
             .NotEmpty();
 
-        RuleFor(product => product.AverageRating)
-            .NotNull()
-            .Must(averageRating => averageRating.Value >= 0 && averageRating.Value <= 5)
-            .Must(averageRating => averageRating.NumRatings >= 0);
+        //RuleFor(product => product.AverageRating)
+        //    .NotNull()
+        //    .Must(averageRating => averageRating.Value >= 0 && averageRating.Value <= 5)
+        //    .Must(averageRating => averageRating.NumRatings >= 0);
 
         RuleFor(product => product.PromotionId)
             .Must(Validators.ObjectIdVlidator.BeAValidObjectId)

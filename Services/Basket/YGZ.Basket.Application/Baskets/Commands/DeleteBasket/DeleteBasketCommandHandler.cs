@@ -14,7 +14,7 @@ public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, b
     }
 
     public async Task<Result<bool>> Handle(DeleteBasketCommand request, CancellationToken cancellationToken)
-    {
+     {
         try
         {
             await _basketRepository.DeleteBasket(request.UserId, cancellationToken);

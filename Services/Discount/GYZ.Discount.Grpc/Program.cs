@@ -10,6 +10,7 @@ builder.Services.AddGrpcReflection();
 
 builder.Services.AddDbContext<DiscountDbContext>(options =>
 {
+    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     options.UseNpgsql(builder.Configuration.GetConnectionString("DiscountDb"));
 });
 

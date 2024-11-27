@@ -43,6 +43,16 @@ public class BasketController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    [HttpPost("checkout")]
+    public async Task<IActionResult> CheckoutBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken = default)
+    {
+        var cmd = _mapper.Map<StoreBasketCommand>(request);
+
+        var result = await _mediator.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteBasketByUserId(string userId, CancellationToken cancellationToken = default)
     {

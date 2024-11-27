@@ -4,7 +4,6 @@ namespace YGZ.Catalog.Contracts.Products;
 
 public sealed record CreateProductRequest(string Name,
                                           string? Description,
-                                          AverageRatingRequest? Average_rating,
                                           List<ImageRequest>? Images,
                                           List<ModelRequest> Models,
                                           List<ColorRequest> Colors,

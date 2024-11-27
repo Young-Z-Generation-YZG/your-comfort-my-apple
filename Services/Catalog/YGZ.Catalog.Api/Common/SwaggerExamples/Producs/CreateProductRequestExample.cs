@@ -8,7 +8,6 @@ public class CreateProductRequestExample : IExamplesProvider<CreateProductReques
 {
     public CreateProductRequest GetExamples()
     {
-        var averageRating = new AverageRatingRequest(0, 0);
         var images = new List<ImageRequest> { new("image_url", "image_id") };
         var colors = new List<ColorRequest> { new("color1", "color_hash1", "image_url1", 1) };
         var models = new List<ModelRequest> { new("model1", 1), new("model2", 2) };
@@ -19,7 +18,6 @@ public class CreateProductRequestExample : IExamplesProvider<CreateProductReques
         return new CreateProductRequest(
             "iPhone 16",
             "iPhone 16 description",
-            averageRating,
             images,
             models,
             colors,

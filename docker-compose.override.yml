@@ -29,26 +29,33 @@ services:
     image: mongo:latest
     container_name: mongodb
     environment:
-      MONGO_INITDB_ROOT_USERNAME: bale
-      MONGO_INITDB_ROOT_PASSWORD: bale
+      - MONGO_INITDB_ROOT_USERNAME=bale
+      - MONGO_INITDB_ROOT_PASSWORD=bale
     restart: always
     ports:
-      - "27018:27017"
+      - "37017:27017"
     volumes:
       - mongodb_catalog:/data/db
 
-  # basketdb:
-  #   image: postgres:alpine
-  #   container_name: basketdb
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: BasketDb
-  #   restart: always
-  #   ports:
-  #     - "6432:5432"
-  #   volumes:
-  #     - postgres_basket:/var/lib/postgresql/data/
+  basketdb:
+    image: postgres:alpine
+    container_name: basketdb
+    environment:
+      - POSTGRES_USER=bale
+      - POSTGRES_PASSWORD=bale
+      - POSTGRES_DB=BasketDb
+    restart: always
+    ports:
+      - "6432:5432"
+    volumes:
+      - postgres_basket:/var/lib/postgresql/data/
+
+  distributedcache:
+    image: redis:alpine
+    container_name: distributedcache
+    restart: always
+    ports:
+      - "6379:6379"
 
   messagebroker:
     container_name: messagebroker
@@ -68,13 +75,6 @@ services:
       interval: 5s
       timeout: 20s
       retries: 5
-
-  # distributedcache:
-  #   image: redis:alpine
-  #   container_name: distributedcache
-  #   restart: always
-  #   ports:
-  #     - "6379:6379"
 
   ygz.catalog.api:
     environment:
@@ -99,20 +99,20 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  # ygz.basket.api:
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_HTTP_PORTS=8080
-  #     - ASPNETCORE_HTTPS_PORTS=8081
-  #     - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
-  #     - ConnectionStrings__Redis=distributedcache:6379
-  #     - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
-  #   ports:
-  #     - "6002:8080"
-  #     - "6062:8081"
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  ygz.basket.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
+      - ConnectionStrings__Redis=distributedcache:6379
+      - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+    ports:
+      - "6002:8080"
+      - "6062:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   # gyz.discount.grpc:
   #   environment:
