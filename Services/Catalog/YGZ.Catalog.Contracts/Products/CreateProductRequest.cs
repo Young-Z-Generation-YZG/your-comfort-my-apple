@@ -4,9 +4,12 @@ namespace YGZ.Catalog.Contracts.Products;
 
 public sealed record CreateProductRequest(string Name,
                                           string? Description,
-                                          AverageRatingRequest? Average_rating,
                                           List<ImageRequest>? Images,
-                                          List<string> Models,
-                                          List<string> Colors,
-                                          string? Category_id, 
-                                          string? Promotion_id) { }
+                                          List<ModelRequest> Models,
+                                          List<ColorRequest> Colors,
+                                          List<int> Storages,
+                                          string? CategoryId, 
+                                          string? PromotionId) { }
+
+public sealed record ModelRequest(string Name, int Order) { }
+public sealed record ColorRequest(string Name, string ColorHash, string ImageColorUrl, int Order) { }

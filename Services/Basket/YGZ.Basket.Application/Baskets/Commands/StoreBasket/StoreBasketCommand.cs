@@ -9,11 +9,9 @@ public sealed record StoreBasketCommand : ICommand<bool> {
     public List<CartLineCommand> CartLines { get; set; }
 }
 
-public sealed record CartLineCommand(string ProductId,
-                                     string Sku,
+public sealed record CartLineCommand(string ProductItemId,
                                      string Model,
                                      string Color,
-                                     string Storage,
+                                     int Storage,
                                      int Price,
-                                     int Quantity,
-                                     string ImageUrl) { }
+                                     int Quantity) { }

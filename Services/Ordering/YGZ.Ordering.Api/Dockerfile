@@ -13,6 +13,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Ordering/YGZ.Ordering.Api/YGZ.Ordering.Api.csproj", "Services/Ordering/YGZ.Ordering.Api/"]
+COPY ["Services/Ordering/YGZ.Ordering.Application/YGZ.Ordering.Application.csproj", "Services/Ordering/YGZ.Ordering.Application/"]
+COPY ["Services/Ordering/YGZ.Ordering.Domain/YGZ.Ordering.Domain.csproj", "Services/Ordering/YGZ.Ordering.Domain/"]
+COPY ["Services/Ordering/YGZ.Ordering.Infrastructure/YGZ.Ordering.Infrastructure.csproj", "Services/Ordering/YGZ.Ordering.Infrastructure/"]
 RUN dotnet restore "./Services/Ordering/YGZ.Ordering.Api/YGZ.Ordering.Api.csproj"
 COPY . .
 WORKDIR "/src/Services/Ordering/YGZ.Ordering.Api"

@@ -22,17 +22,22 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
 
         var responses = products.Select(p => new ProductResponse(
             p.Id.ValueStr,
+            p.CategoryId.ValueStr,
+            p.PromotionId.ValueStr,
             p.Name,
             p.Description,
-            p.Models,
-            p.Colors,
+            p.Models.ConvertAll(model => new ModelResponse(model.Name, model.Order)),
+            p.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+            p.Storages.ConvertAll(storage => new StorageResponse(storage.Name, storage.Value)),
             new AverageRatingResponse(p.AverageRating.AverageValue, p.AverageRating.NumRatings),
             p.ProductItems.Select(pi => new ProductItemResponse(
                 pi.Sku.Value,
                 pi.Model,
                 pi.Color,
                 pi.Storage,
+                pi.QuantityRemain,
                 pi.QuantityInStock,
+                pi.Sold,
                 pi.Price,
                 pi.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
                 pi.State.Name,
@@ -41,9 +46,7 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
             )).ToList(),
             p.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
             p.Slug.Value,
-            p.State.Name,
-            p.CategoryId.ValueStr,
-            p.PromotionId.ValueStr,
+            p.State,
             p.CreatedAt,
             p.UpdatedAt
         )).ToList();

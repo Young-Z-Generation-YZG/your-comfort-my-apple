@@ -3,7 +3,6 @@ using Serilog;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Application;
 using YGZ.Ordering.Infrastructure;
-using YGZ.Ordering.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +12,6 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    .AddPersistenceLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
 
 builder.Host.AddSerilogExtension(builder.Configuration);

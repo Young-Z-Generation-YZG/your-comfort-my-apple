@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using YGZ.Basket.Domain.Core.Abstractions.Result;
 using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Persistence.Helpers;
 
 namespace YGZ.Basket.Persistence.Data;
 
@@ -40,6 +39,10 @@ public class CachedBasketRepository : IBasketRepository
 
         var basket = await _basketRepository.GetBasket(userId, cancellationToken);
 
+        if(basket.IsFailure)
+        {
+            return basket;
+        }
         await _cache.SetStringAsync(userId, JsonSerializer.Serialize(basket), cancellationToken);
 
         return basket;

@@ -10,4 +10,4 @@ public sealed record CreateProductItemRequest(string Model,
                                               double Price,
                                               int Quantity_in_stock,
                                               List<ImageRequest> Images, 
-                                              string Product_id) { }
+                                              string ProductId) { }

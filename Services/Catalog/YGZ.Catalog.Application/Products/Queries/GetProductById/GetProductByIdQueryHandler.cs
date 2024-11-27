@@ -22,23 +22,28 @@ public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, Pro
     {
         var product = await _productService.FindByIdAsync(request.Id, cancellationToken);
 
-        if (product is null)
+        if(product is null)
         {
             return Errors.Product.DoesNotExist;
         }
 
         var response = new ProductResponse(product.Id.ValueStr,
+                                           product.CategoryId.ValueStr,
+                                           product.PromotionId.ValueStr,
                                            product.Name,
                                            product.Description,
-                                           product.Models,
-                                           product.Colors,
+                                           product.Models.ConvertAll(model => new ModelResponse(model.Name, model.Order)),
+                                           product.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+                                           product.Storages.ConvertAll(storage => new StorageResponse(storage.Name, storage.Value)),
                                            new AverageRatingResponse(product.AverageRating.AverageValue, product.AverageRating.NumRatings),
                                            product.ProductItems.Select(pi => new ProductItemResponse(
                                                pi.Sku.Value,
                                                pi.Model,
                                                pi.Color,
                                                pi.Storage,
+                                               pi.QuantityRemain,
                                                pi.QuantityInStock,
+                                               pi.Sold,
                                                pi.Price,
                                                pi.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
                                                pi.State.Name,
@@ -46,9 +51,7 @@ public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, Pro
                                                pi.UpdatedAt)).ToList(),
                                            product.Images.Select(i => new ImageResponse(i.ImageUrl, i.ImageId)).ToList(),
                                            product.Slug.Value,
-                                           product.State.Name,
-                                           product.CategoryId.ValueStr,
-                                           product.PromotionId.ValueStr,
+                                           product.State,
                                            product.CreatedAt,
                                            product.UpdatedAt);
 

@@ -6,7 +6,6 @@ using YGZ.Basket.Domain.Core.Abstractions.Result;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
-using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 
 namespace YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 
@@ -32,26 +31,24 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
             return Errors.Guid.IdInvalid;
         }
 
-        var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
-        {
-            ProductName = "IPhone X"
-        }, 
-        cancellationToken: cancellationToken
-        );
+        //var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
+        //{
+        //    ProductName = "IPhone X"
+        //}, 
+        //cancellationToken: cancellationToken
+        //);
 
 
 
         var shoppingCart = ShoppingCart.CreateNew(
             Guid.Parse(request.UserId),
             request.CartLines.ConvertAll(line => CartLine.CreateNew(
-                line.ProductId,
-                line.Sku,
+                line.ProductItemId,
                 line.Model,
                 line.Color,
                 line.Storage,
                 line.Quantity,
-                line.Price,
-                line.ImageUrl))
+                line.Price))
         );
 
         await _basketRepository.StoreBasket(shoppingCart, cancellationToken);

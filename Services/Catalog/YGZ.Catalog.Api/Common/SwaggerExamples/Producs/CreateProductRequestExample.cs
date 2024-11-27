@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Swashbuckle.AspNetCore.Filters;
+﻿using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Contracts.Common;
 using YGZ.Catalog.Contracts.Products;
 
@@ -9,18 +8,20 @@ public class CreateProductRequestExample : IExamplesProvider<CreateProductReques
 {
     public CreateProductRequest GetExamples()
     {
-        var averageRating = new AverageRatingRequest(0, 0);
         var images = new List<ImageRequest> { new("image_url", "image_id") };
-        var models = new List<string> { "model1", "model2" };
-        var colors = new List<string> { "color1", "color2" };
+        var colors = new List<ColorRequest> { new("color1", "color_hash1", "image_url1", 1) };
+        var models = new List<ModelRequest> { new("model1", 1), new("model2", 2) };
+
+
+        var storages = new List<int> { 64, 128, 256 };
 
         return new CreateProductRequest(
             "iPhone 16",
             "iPhone 16 description",
-            averageRating,
             images,
             models,
             colors,
+            storages,
             "672cdaed4e67692dff64a47c",
             "672cdaed4e67692dff64a47c");
     }

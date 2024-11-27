@@ -1,12 +1,8 @@
-﻿
-
+﻿using Ardalis.SmartEnum;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
-using Ardalis.SmartEnum;
-using MongoDB.Bson.IO;
 using MongoDB.Bson;
-
-namespace YGZ.Catalog.Persistence.Configurations.Common;
+using MongoDB.Bson.IO;
 
 public class SmartEnumSerializer<TEnum> : SerializerBase<TEnum> where TEnum : SmartEnum<TEnum>
 {
@@ -24,13 +20,13 @@ public class SmartEnumSerializer<TEnum> : SerializerBase<TEnum> where TEnum : Sm
             {
                 var fieldName = context.Reader.ReadName();
 
-                if (fieldName == "Name")
+                if (fieldName == "name")
                 {
                     name = context.Reader.ReadString();
                 }
-                else if (fieldName == "Value")
+                else if (fieldName == "value")
                 {
-                    value = context.Reader.ReadInt32();
+                    value = context.Reader.ReadInt32(); // Fix: Changed from "name" to "value"
                 }
             }
 
@@ -41,7 +37,7 @@ public class SmartEnumSerializer<TEnum> : SerializerBase<TEnum> where TEnum : Sm
                 return SmartEnum<TEnum>.FromValue(value.Value);
             }
 
-            throw new BsonSerializationException("Missing 'Value' field for SmartEnum deserialization.");
+            throw new BsonSerializationException("Missing 'value' field for SmartEnum deserialization.");
         }
 
         throw new BsonSerializationException($"Unexpected BSON type '{bsonType}' for SmartEnum.");

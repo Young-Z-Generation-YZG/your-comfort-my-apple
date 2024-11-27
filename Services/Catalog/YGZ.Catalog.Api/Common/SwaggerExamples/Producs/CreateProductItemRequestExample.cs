@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using Swashbuckle.AspNetCore.Filters;
-using YGZ.Catalog.Contracts.Common;
+﻿using Swashbuckle.AspNetCore.Filters;
 using YGZ.Catalog.Contracts.Products;
 
 namespace YGZ.Catalog.Api.Common.SwaggerExamples.Producs;

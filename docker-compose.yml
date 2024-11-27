@@ -44,18 +44,26 @@
 #   backendbridge:
 #     name: backendbridge
 #     driver: bridge
-
-version: "3.4"
+# version: "3.8"
 
 services:
+  catalogdb:
+    image: mongo:latest
+
   basketdb:
     image: postgres:alpine
 
-  rabbitmq:
-    image: rabbitmq:3-management
-
   distributedcache:
     image: redis:alpine
+
+  messagebroker:
+    image: rabbitmq:management
+
+  ygz.catalog.api:
+    image: ${DOCKER_REGISTRY-}ygzcatalogapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
   ygz.basket.api:
     image: ${DOCKER_REGISTRY-}ygzbasketapi
@@ -64,27 +72,27 @@ services:
       dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
     depends_on:
       - basketdb
-      - rabbitmq
+      - messagebroker
       - distributedcache
       - ygz.catalog.api
-      - gyz.discount.grpc
+      # - gyz.discount.grpc
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+  # gyz.discount.grpc:
+  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
-  gyz.discount.grpc:
-    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-    build:
-      context: .
-      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+  # ygz.ordering.api:
+  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+
+  # ygz.seq:
+  #   image: datalust/seq
 
 volumes:
-  postgres_data:
-
-
-
-
-
+  postgres_basket:
+  postgres_discount:
+  mongodb_catalog:

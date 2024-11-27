@@ -16,8 +16,7 @@ public class BasketMappingConfig : IRegister
             .Map(dest => dest.CartLines, src => src.Cart_lines); // Handles the list mapping
 
         config.NewConfig<CartLineRequest, CartLineCommand>()
-            .Map(dest => dest, src => src)
-            .Map(dest => dest.ImageUrl, src => src.Image_url); // Handles the ImageUrl mapping
+            .Map(dest => dest, src => src);
 
 
     }

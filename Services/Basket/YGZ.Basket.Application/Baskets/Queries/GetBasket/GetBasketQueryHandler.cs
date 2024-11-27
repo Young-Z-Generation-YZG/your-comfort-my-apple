@@ -2,8 +2,6 @@
 using YGZ.Basket.Application.Contracts;
 using YGZ.Basket.Application.Core.Abstractions.Messaging;
 using YGZ.Basket.Domain.Core.Abstractions.Result;
-using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 
 namespace YGZ.Basket.Application.Baskets.Queries.GetBasket;
 
@@ -23,20 +21,18 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketByUserIdQuery, GetBa
 
         if (basket.IsFailure)
         {
-            return basket.Error;
+            return new GetBasketResponse(null, request.UserId, [], null, null, null);
         }
 
         var response = new GetBasketResponse(
-            basket.Response.Id.Value.ToString(),
+            basket.Response!.Id.Value.ToString(),
             basket.Response.UserId.Value.ToString(),
-            basket.Response.CartLines.ConvertAll(line => new CartLineResponse(line.ProductId,
-                                                                              line.Sku,
+            basket.Response.CartLines.ConvertAll(line => new CartLineResponse(line.ProductItemId,
                                                                               line.Model,
                                                                               line.Color,
                                                                               line.Storage,
                                                                               line.Quantity,
                                                                               line.Price,
-                                                                              line.Image_url,
                                                                               line.SubTotal)),
             basket.Response.Total,
             basket.Response.CreatedAt,

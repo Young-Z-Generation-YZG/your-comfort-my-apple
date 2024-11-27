@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "GYZ.Discount.Grpc";
+import "google/protobuf/timestamp.proto";
 
 package discount;
 
@@ -12,19 +13,39 @@ service DiscountProtoService {
 }
 
 message CouponModel {
-	int32 id = 1;
-	string productName = 2;
-	string description = 3;
-	int32 amount = 4;
+	string id = 1;
+    string code = 2;
+	string title = 3;
+	string description = 4;
+    string type = 5;
+    string status = 6;
+    double discountValue = 7;
+    double minPurchaseAmount = 8;
+    double maxDiscountAmount = 9;
+    google.protobuf.Timestamp validFrom = 10;
+    google.protobuf.Timestamp validTo = 11;
+    int32 quantityRemain = 12;
+    int32 usageLimit = 13;
+    google.protobuf.Timestamp createdAt = 14;
+    google.protobuf.Timestamp updatedAt = 15;
+    google.protobuf.Timestamp deletedAt = 16;
 }
 
 message GetDiscountRequest {
-	string productName = 1;
+	string id = 1;
 }
 
 message CreateDiscountRequest {
-	CouponModel coupon = 1;
+	string title = 1;
+    string description = 2;
+    double discountValue = 3;
+    double minPurchaseAmount = 4;
+    double maxDiscountAmount = 5;
+    string validFrom = 6;
+    string validTo = 7;
+    int32 usageLimit = 8;
 }
+
 
 message UpdateDiscountRequest {
 	CouponModel coupon = 1;

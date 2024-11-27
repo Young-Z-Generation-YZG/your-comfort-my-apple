@@ -12,7 +12,7 @@ namespace YGZ.Catalog.Domain.Products.Entities;
 
 public class ProductItem : Entity<ProductItemId>, IInventory, IAuditable, ISoftDelete
 {
-    [BsonElement("product_id")]
+    [BsonElement("productId")]
     public ProductId ProductId { get; private set; } 
 
     [BsonElement("sku")]

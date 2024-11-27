@@ -75,7 +75,7 @@ public abstract class BaseRepository<TEntity> : IRepository<TEntity> where TEnti
 
     public Task<TEntity> FindOneAsync(Expression<Func<TEntity, bool>> filterExpression, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.Run(() => _collection.Find(filterExpression).FirstOrDefaultAsync());
     }
 
     public Task<IEnumerable<TEntity>> FilterByAsync(Expression<Func<TEntity, bool>> filterExpression, CancellationToken cancellationToken)

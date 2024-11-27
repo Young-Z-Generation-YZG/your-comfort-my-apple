@@ -1,0 +1,160 @@
+# services:
+#   ygz.gateway.api:
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+#       - ASPNETCORE_HTTP_PORTS=8080
+#       - ASPNETCORE_HTTPS_PORTS=8081
+#     ports:
+#       - "8080"
+#       - "8081"
+#     volumes:
+#       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+#       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+# identitytest1:
+#   environment:
+#     - ASPNETCORE_ENVIRONMENT=Development
+#     - ASPNETCORE_HTTP_PORTS=8080
+#     - ASPNETCORE_HTTPS_PORTS=8081
+
+# identitytest2:
+#   environment:
+#     - ASPNETCORE_ENVIRONMENT=Development
+#     - ASPNETCORE_HTTP_PORTS=8080
+#     - ASPNETCORE_HTTPS_PORTS=8081
+# version: "3.4"
+
+services:
+  catalogdb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bale
+      MONGO_INITDB_ROOT_PASSWORD: bale
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_catalog:/data/db
+
+  # basketdb:
+  #   image: postgres:alpine
+  #   container_name: basketdb
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: BasketDb
+  #   restart: always
+  #   ports:
+  #     - "6432:5432"
+  #   volumes:
+  #     - postgres_basket:/var/lib/postgresql/data/
+
+  messagebroker:
+    container_name: messagebroker
+    hostname: rabbitmq-host
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - 5672
+      - 15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  # distributedcache:
+  #   image: redis:alpine
+  #   container_name: distributedcache
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+
+  ygz.catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - CatalogDbSettings__ConnectionString=mongodb://bale:bale@mongodb:27017/?safe=true&connect=replicaset
+      - CatalogDbSettings__DatabaseName=catalogDb
+      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+      - MessageBrokerSettings__Username=guest
+      - MessageBrokerSettings__Password=guest
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    restart: on-failure
+    depends_on:
+      messagebroker:
+        condition: service_healthy
+      catalogdb:
+        condition: service_started
+    ports:
+      - "6001:8080"
+      - "6061:8081"
+    volumes:
+      - /ssl:/https/ssl:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # ygz.basket.api:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
+  #     - ConnectionStrings__Redis=distributedcache:6379
+  #     - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+  #   ports:
+  #     - "6002:8080"
+  #     - "6062:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # gyz.discount.grpc:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - ConnectionStrings__DiscountDb=Host=basketdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
+  #   ports:
+  #     - "6003:8080"
+  #     - "6063:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # ygz.ordering.api:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+  #     - MessageBrokerSettings__UserName=guest
+  #     - MessageBrokerSettings__Password=guest
+  #   restart: on-failure
+  #   depends_on:
+  #     messagebroker:
+  #       condition: service_healthy
+  #   ports:
+  #     - "6004:8080"
+  #     - "6064:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # ygz.seq:
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #   ports:
+  #     - "5341:80"
+
+volumes:
+  postgres_basket:
+  postgres_discount:
