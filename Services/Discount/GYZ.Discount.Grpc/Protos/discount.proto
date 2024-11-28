@@ -2,59 +2,78 @@ syntax = "proto3";
 
 option csharp_namespace = "GYZ.Discount.Grpc";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package discount;
 
 service DiscountProtoService {
-	rpc GetDiscount (GetDiscountRequest) returns (CouponModel);
-	rpc CreateDiscount (CreateDiscountRequest) returns (CouponModel);
-	rpc UpdateDiscount (UpdateDiscountRequest) returns (CouponModel);
+	rpc GetDiscount (GetDiscountRequest) returns (CouponResponse);
+	rpc CreateDiscount (CreateDiscountRequest) returns (CreateDiscountResponse);
+	rpc UpdateDiscount (UpdateDiscountRequest) returns (UpdateDiscountResponse);
 	rpc DeleteDiscount (DeleteDiscountRequest) returns (DeleteDiscountResponse);
 }
 
-message CouponModel {
-	string id = 1;
+message CouponResponse {
+    string id = 1;
     string code = 2;
 	string title = 3;
 	string description = 4;
     string type = 5;
     string status = 6;
     double discountValue = 7;
-    double minPurchaseAmount = 8;
-    double maxDiscountAmount = 9;
-    google.protobuf.Timestamp validFrom = 10;
-    google.protobuf.Timestamp validTo = 11;
     int32 quantityRemain = 12;
     int32 usageLimit = 13;
-    google.protobuf.Timestamp createdAt = 14;
-    google.protobuf.Timestamp updatedAt = 15;
-    google.protobuf.Timestamp deletedAt = 16;
+    google.protobuf.DoubleValue minPurchaseAmount = 8;
+    google.protobuf.DoubleValue maxDiscountAmount = 9;
+    string validFrom = 10;
+    string validTo = 11;
+    string createdAt = 14;
+    string updatedAt = 15;
+    string deletedAt = 16;
 }
 
 message GetDiscountRequest {
-	string id = 1;
+	string code = 1;
 }
 
 message CreateDiscountRequest {
-	string title = 1;
-    string description = 2;
-    double discountValue = 3;
-    double minPurchaseAmount = 4;
-    double maxDiscountAmount = 5;
-    string validFrom = 6;
-    string validTo = 7;
-    int32 usageLimit = 8;
+    string id = 1;
+	string title = 2;
+    string description = 3;
+    double discountValue = 4;
+    double minPurchaseAmount = 5;
+    double maxDiscountAmount = 6;
+    string validFrom = 7;
+    string validTo = 8;
+    int32 usageLimit = 9;
 }
-
 
 message UpdateDiscountRequest {
-	CouponModel coupon = 1;
+	string id = 1;
+	string title = 2;
+    string description = 3;
+    double discountValue = 4;
+    double minPurchaseAmount = 5;
+    double maxDiscountAmount = 6;
+    string validFrom = 7;
+    string validTo = 8;
+    int32 usageLimit = 9;
 }
 
+
 message DeleteDiscountRequest {
-	string productName = 1;
+	string id = 1;
+}
+
+message CreateDiscountResponse {
+    bool isSuccess = 1;
+}
+
+
+message UpdateDiscountResponse {
+    bool isSuccess = 1;
 }
 
 message DeleteDiscountResponse {
-	bool success = 1;
+	bool isSuccess = 1;
 }

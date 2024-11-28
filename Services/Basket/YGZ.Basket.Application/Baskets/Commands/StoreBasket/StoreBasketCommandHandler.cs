@@ -31,14 +31,12 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
             return Errors.Guid.IdInvalid;
         }
 
-        //var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
-        //{
-        //    ProductName = "IPhone X"
-        //}, 
-        //cancellationToken: cancellationToken
-        //);
-
-
+        var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
+        {
+            Code = request.CouponCode
+        },
+        cancellationToken: cancellationToken
+        );
 
         var shoppingCart = ShoppingCart.CreateNew(
             Guid.Parse(request.UserId),

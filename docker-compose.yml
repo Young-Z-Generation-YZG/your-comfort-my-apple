@@ -77,11 +77,11 @@ services:
       - ygz.catalog.api
       # - gyz.discount.grpc
 
-  # gyz.discount.grpc:
-  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+  gyz.discount.grpc:
+    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
   # ygz.ordering.api:
   #   image: ${DOCKER_REGISTRY-}ygzorderingapi

@@ -34,9 +34,16 @@ public class BasketController : ApiController
     }
 
     [HttpPost]
-    public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, [FromQuery] string? coupon = null, CancellationToken cancellationToken = default)
     {
-        var cmd = _mapper.Map<StoreBasketCommand>(request);
+        //Console.WriteLine("coupon" + coupon);
+
+        var cmd = new StoreBasketCommand
+        {
+            UserId = request.UserId,
+            CouponCode = coupon,
+            CartLines = request.Cart_lines.Select(line => new CartLineCommand(line.ProductItemId, line.Model, line.Color, line.Storage, line.Price, line.Quantity)).ToList()
+        };
 
         var result = await _mediator.Send(cmd, cancellationToken);
 

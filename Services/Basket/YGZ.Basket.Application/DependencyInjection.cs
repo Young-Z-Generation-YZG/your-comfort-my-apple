@@ -25,6 +25,7 @@ public static class DependencyInjection
         {
             options.Address = new Uri(configuration["GrpcSettings:DiscountUrl"]!);
         })
+
         .ConfigurePrimaryHttpMessageHandler(serviceProvider =>
         {
             return new HttpClientHandler

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GYZ.Discount.Grpc.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,8 +28,8 @@ namespace GYZ.Discount.Grpc.Migrations
                     ValidTo = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     QuantityRemain = table.Column<int>(type: "integer", nullable: false),
                     UsageLimit = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
@@ -40,7 +40,7 @@ namespace GYZ.Discount.Grpc.Migrations
             migrationBuilder.InsertData(
                 table: "Coupons",
                 columns: new[] { "Id", "Code", "CreatedAt", "DeletedAt", "Description", "DiscountValue", "MaxDiscountAmount", "MinPurchaseAmount", "QuantityRemain", "Status", "Title", "Type", "UpdatedAt", "UsageLimit", "ValidFrom", "ValidTo" },
-                values: new object[] { new Guid("98a87729-5bcf-49f4-8a50-a4721dbf044d"), "CODE", new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(8032), null, "Summer 2024 description", 0.20000000000000001, null, null, 20, 1, "Summer 2024", 0, new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(8033), 20, new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(6032), new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(6857) });
+                values: new object[] { new Guid("00bdce8c-5b77-42bc-98c9-87f1fcb83c8c"), "CODE", new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4875), null, "Summer 2024 description", 0.20000000000000001, null, null, 20, 1, "Summer 2024", 0, new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4877), 20, new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(2113), new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(3272) });
         }
 
         /// <inheritdoc />

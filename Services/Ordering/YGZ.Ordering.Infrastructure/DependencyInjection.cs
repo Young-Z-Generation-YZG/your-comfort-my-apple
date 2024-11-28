@@ -21,10 +21,6 @@ public static class DependencyInjection
                 config.AddConsumers(assembly);
             }
 
-            Console.WriteLine("MessageBrokerSettings:Host: " + configuration["MessageBrokerSettings:Host"]);
-            Console.WriteLine("MessageBrokerSettings:UserName: " + configuration["MessageBrokerSettings:UserName"]);
-            Console.WriteLine("MessageBrokerSettings:Password: " + configuration["MessageBrokerSettings:Password"]);
-
 
             config.UsingRabbitMq((context, configurator) =>
             {

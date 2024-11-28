@@ -33,4 +33,10 @@
     <ProjectReference Include="..\YGZ.Basket.Persistence\YGZ.Basket.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Protobuf Include="..\..\Discount\GYZ.Discount.Grpc\Protos\discount.proto" GrpcServices="Client">
+      <Link>Protos\discount.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
 </Project>

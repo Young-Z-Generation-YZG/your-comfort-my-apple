@@ -32,7 +32,7 @@ namespace GYZ.Discount.Grpc.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -64,7 +64,7 @@ namespace GYZ.Discount.Grpc.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("UpdatedAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("UsageLimit")
@@ -83,19 +83,19 @@ namespace GYZ.Discount.Grpc.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("98a87729-5bcf-49f4-8a50-a4721dbf044d"),
+                            Id = new Guid("00bdce8c-5b77-42bc-98c9-87f1fcb83c8c"),
                             Code = "CODE",
-                            CreatedAt = new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(8032),
+                            CreatedAt = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4875),
                             Description = "Summer 2024 description",
                             DiscountValue = 0.20000000000000001,
                             QuantityRemain = 20,
                             Status = 1,
                             Title = "Summer 2024",
                             Type = 0,
-                            UpdatedAt = new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(8033),
+                            UpdatedAt = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4877),
                             UsageLimit = 20,
-                            ValidFrom = new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(6032),
-                            ValidTo = new DateTime(2024, 11, 27, 18, 46, 15, 289, DateTimeKind.Utc).AddTicks(6857)
+                            ValidFrom = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(2113),
+                            ValidTo = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(3272)
                         });
                 });
 #pragma warning restore 612, 618
