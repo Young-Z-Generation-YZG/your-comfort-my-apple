@@ -26,13 +26,13 @@ public class Address : ValueObject
     }
 
     public static Address CreateNew(
+        string contactName,
+        string contactEmail,
+        string contactPhoneNumber,
         string addressLine,
         string district,
         string province,
-        string country,
-        string contactName,
-        string contactEmail,
-        string contactPhoneNumber)
+        string country)
     {
         return new Address
         {

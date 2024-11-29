@@ -41,7 +41,7 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
 
         try
         {
-            productStorages = request.Storages.ConvertAll(model => StorageEnum.FromValue(model));
+            productStorages = request.Storages.ConvertAll(s => StorageEnum.FromValue(s));
         }
         catch
         {

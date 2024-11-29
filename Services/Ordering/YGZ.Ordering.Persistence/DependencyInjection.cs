@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.Ordering.Application.Core.Abstractions.Data;
 using YGZ.Ordering.Persistence.Data;
 using YGZ.Ordering.Persistence.Data.Interceptors;
 
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddSingleton(new ConnectionStrings(connectionString));
 
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         services.AddDbContext<ApplicationDbContext>((serviceProvider ,options) =>
         {

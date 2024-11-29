@@ -15,7 +15,7 @@ public class OrderConfiguaration : IEntityTypeConfiguration<Order>
         builder.HasKey(o => o.Id);
         builder.Property(o => o.Id).HasConversion(orderId => orderId.Value, dbId => OrderId.Of(dbId));
 
-        builder.Property(o => o.OrderCode).HasMaxLength(50).IsRequired();
+        builder.Property(o => o.OrderCode).HasConversion(orderCode => orderCode.Value, dbCode => OrderCode.Of(dbCode));
 
         builder.Property(o => o.TotalAmount);
 

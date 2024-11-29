@@ -2,12 +2,13 @@
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using YGZ.Ordering.Application.Core.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders;
 using YGZ.Ordering.Domain.Orders.Entities;
 
 namespace YGZ.Ordering.Persistence.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

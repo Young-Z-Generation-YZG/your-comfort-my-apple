@@ -10,6 +10,7 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
   </ItemGroup>
@@ -19,8 +20,10 @@
   </ItemGroup>
 
 	  <ItemGroup>
-    <Folder Include="Orders\Commands\" />
-    <Folder Include="Orders\Queries\" />
+    <Folder Include="Orders\Commands\DeleteOrder\" />
+    <Folder Include="Orders\Commands\UpdateOrder\" />
+    <Folder Include="Orders\Queries\GetOrders\" />
+    <Folder Include="Orders\Queries\GetOrdersByCustomer\" />
   </ItemGroup>
 
 </Project>

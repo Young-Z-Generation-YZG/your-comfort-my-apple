@@ -46,7 +46,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderCode = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    OrderCode = table.Column<string>(type: "text", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     PaymentType = table.Column<int>(type: "integer", nullable: false),
@@ -90,6 +90,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                     ProductModel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ProductColor = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ProductStorage = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    ProductSlug = table.Column<string>(type: "text", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false)
                 },

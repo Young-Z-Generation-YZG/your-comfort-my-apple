@@ -13,7 +13,7 @@ using YGZ.Ordering.Persistence.Data;
 namespace YGZ.Ordering.Persistence.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129122242_InitialCreate")]
+    [Migration("20241129200830_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -78,6 +78,10 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ProductSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ProductStorage")
                         .IsRequired()
@@ -145,8 +149,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
 
                     b.Property<string>("OrderCode")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("PaymentType")
                         .HasColumnType("integer");

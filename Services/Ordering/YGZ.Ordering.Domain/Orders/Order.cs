@@ -13,7 +13,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     private readonly List<OrderLine> _orderLines = new();
     public IReadOnlyList<OrderLine> OrderLines => _orderLines.AsReadOnly();
 
-    public string OrderCode { get; private set; }
+    public OrderCode OrderCode { get; private set; }
     public CustomerId CustomerId { get; private set; }
     public Address ShippingAddress { get; private set; }
     public Address BillingAddress { get; private set; }
@@ -33,7 +33,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     }
 
     public Order(OrderId id,
-                  string orderCode,
+                  OrderCode orderCode,
                   CustomerId customerId,
                   Address shippingAddress,
                   Address billingAddress,
@@ -49,7 +49,6 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     }
 
     public static Order CreateNew(
-        string orderCode,
         CustomerId customerId,
         Address shippingAddress,
         Address billingAddress,
@@ -58,7 +57,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     {
         var newOrder = new Order(
                         OrderId.CreateNew(),
-                        orderCode,
+                        OrderCode.CreateNew(),
                         customerId,
                         shippingAddress,
                         billingAddress,
@@ -71,9 +70,8 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         return newOrder;
     }
 
-    public void Update(string orderCode, Address shippingAddress, Address billingAddress, OrderStatus orderStatus, PaymentType paymentType)
+    public void Update(Address shippingAddress, Address billingAddress, OrderStatus orderStatus, PaymentType paymentType)
     {
-        OrderCode = orderCode;
         ShippingAddress = shippingAddress;
         BillingAddress = billingAddress;
         Status = orderStatus;
@@ -83,7 +81,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         AddDomainEvent(new OrderUpdatedDomainEvent(this));
     }
 
-    public void AddOrderLine(ProductId productId, string productName, string productModel, string productColor, string productStorage, int quantity, decimal price)
+    public void AddOrderLine(ProductId productId, string productName, string productModel, string productColor, string productStorage, string productSlug, int quantity, decimal price)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
@@ -95,6 +93,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
             productModel,
             productColor,
             productStorage,
+            productSlug,
             quantity,
             price);
 

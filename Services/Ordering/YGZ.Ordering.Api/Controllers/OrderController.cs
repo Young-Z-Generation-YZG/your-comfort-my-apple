@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using MediatR;
+using Swashbuckle.AspNetCore.Filters;
+using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
+using YGZ.Ordering.Api.Common.SwaggerExamples;
+using YGZ.Ordering.Api.Common.Extensions;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -16,5 +20,16 @@ public class OrderController : ApiController
     {
         _mapper = mapper;
         _mediator = mediator;
+    }
+
+    [HttpPost]
+    [SwaggerRequestExample(typeof(CreateOrderCommand), typeof(CreateOrderExample))]
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand request, CancellationToken cancellationToken = default)
+    {
+        var cmd = _mapper.Map<CreateOrderCommand>(request);
+
+        var result = await _mediator.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 }

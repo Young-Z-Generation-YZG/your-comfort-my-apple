@@ -12,6 +12,7 @@ public class OrderLine : Entity<OrderLineId>
     public string ProductModel { get; private set; } = default!;
     public string ProductColor { get; private set; } = default!;
     public string ProductStorage { get; private set; } = default!;
+    public string ProductSlug { get; private set; } = default!;
     public int Quantity { get; private set; } = default!;
     public decimal Price { get; private set; } = default!;
 
@@ -23,6 +24,7 @@ public class OrderLine : Entity<OrderLineId>
         string productModel,
         string productColor,
         string productStorage,
+        string productSlug,
         int quantity,
         decimal price) : base(id)
     {
@@ -32,6 +34,7 @@ public class OrderLine : Entity<OrderLineId>
         ProductModel = productModel;
         ProductColor = productColor;
         ProductStorage = productStorage;
+        ProductSlug = productSlug;
         Quantity = quantity;
         Price = price;
     }
@@ -43,6 +46,7 @@ public class OrderLine : Entity<OrderLineId>
         string productModel,
         string productColor,
         string productStorage,
+        string productSlug,
         int quantity,
         decimal price)
     {
@@ -54,6 +58,7 @@ public class OrderLine : Entity<OrderLineId>
             productModel,
             productColor,
             productStorage,
+            productSlug,
             quantity,
             price);
     }

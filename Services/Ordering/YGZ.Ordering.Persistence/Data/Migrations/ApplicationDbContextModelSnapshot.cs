@@ -76,6 +76,10 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<string>("ProductSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ProductStorage")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,8 +146,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
 
                     b.Property<string>("OrderCode")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("PaymentType")
                         .HasColumnType("integer");

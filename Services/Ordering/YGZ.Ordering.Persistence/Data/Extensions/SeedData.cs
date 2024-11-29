@@ -27,9 +27,9 @@ internal class SeedData
         {
             var address = Address.CreateNew("1060/2, Kha Vạn Cân", "Thủ Đức", "HCM", "VN", "Lê Xuân Bách", "lxbach1608@gmail.com", "0333284890");
 
-            var order = Order.CreateNew("ORDER-001", CustomerId.Of(new Guid("78dc45ca-a007-4d33-9616-2d8e44735e1a")), address, address, OrderStatus.PAID, PaymentType.VNPAY);
+            var order = Order.CreateNew(CustomerId.Of(new Guid("78dc45ca-a007-4d33-9616-2d8e44735e1a")), address, address, OrderStatus.PAID, PaymentType.VNPAY);
 
-            order.AddOrderLine(ProductId.Of("78dc45ca"), "iPhone 16", "iPhone 16", "pink", "256", 1, 1000);
+            order.AddOrderLine(ProductId.Of("78dc45ca"), "iPhone 16", "iPhone 16", "pink", "256","iphone-16", 1, 1000);
 
             return new List<Order> { order };
         }

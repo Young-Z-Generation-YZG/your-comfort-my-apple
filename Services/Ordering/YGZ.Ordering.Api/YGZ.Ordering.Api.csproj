@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Helpers\" />
-    <Folder Include="Common\SwaggerExamples\" />
   </ItemGroup>
 
   <ItemGroup>
