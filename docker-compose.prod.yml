@@ -37,18 +37,31 @@ services:
     volumes:
       - mongodb_catalog:/data/db
 
-  # basketdb:
-  #   image: postgres:alpine
-  #   container_name: basketdb
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_PASSWORD: postgres
-  #     POSTGRES_DB: BasketDb
-  #   restart: always
-  #   ports:
-  #     - "6432:5432"
-  #   volumes:
-  #     - postgres_basket:/var/lib/postgresql/data/
+  basketdb:
+    image: postgres:alpine
+    container_name: basketdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: BasketDb
+    restart: always
+    ports:
+      - "6432:5432"
+    volumes:
+      - postgres_basket:/var/lib/postgresql/data/
+
+  discountdb:
+    image: postgres:alpine
+    container_name: discountdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: DiscountDb
+    restart: always
+    ports:
+      - "7432:5432"
+    volumes:
+      - postgres_discount:/var/lib/postgresql/data/
 
   messagebroker:
     container_name: messagebroker
@@ -102,33 +115,39 @@ services:
       # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  # ygz.basket.api:
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_HTTP_PORTS=8080
-  #     - ASPNETCORE_HTTPS_PORTS=8081
-  #     - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
-  #     - ConnectionStrings__Redis=distributedcache:6379
-  #     - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
-  #   ports:
-  #     - "6002:8080"
-  #     - "6062:8081"
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  ygz.basket.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
+      - ConnectionStrings__Redis=distributedcache:6379
+      - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    ports:
+      - "6002:8080"
+      - "6062:8081"
+    volumes:
+      - /ssl:/https/ssl:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  # gyz.discount.grpc:
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_HTTP_PORTS=8080
-  #     - ASPNETCORE_HTTPS_PORTS=8081
-  #     - ConnectionStrings__DiscountDb=Host=basketdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
-  #   ports:
-  #     - "6003:8080"
-  #     - "6063:8081"
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  gyz.discount.grpc:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__DiscountDb=Host=discountdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    ports:
+      - "6003:8080"
+      - "6063:8081"
+    volumes:
+      - /ssl:/https/ssl:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   # ygz.ordering.api:
   #   environment:

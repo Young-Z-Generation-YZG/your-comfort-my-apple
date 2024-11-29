@@ -1,6 +1,7 @@
 using Asp.Versioning.ApiExplorer;
 using Serilog;
 using YGZ.Catalog.Api;
+using YGZ.Catalog.Api.Services;
 using YGZ.Catalog.Application;
 using YGZ.Catalog.Infrastructure;
 using YGZ.Catalog.Persistence;
@@ -20,6 +21,9 @@ builder.Services
     .AddInfrastructureLayer(builder.Configuration);
 
 builder.Host.AddSerilogExtension(builder.Configuration);
+
+builder.Services.AddGrpc();
+builder.Services.AddGrpcReflection();
 
 var app = builder.Build();
 
@@ -49,6 +53,8 @@ app.UseCors(options =>
 {
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
+
+app.MapGrpcService<CatalogGrpcService>();
 
 app.UseExceptionHandler("/error");
 

@@ -6,5 +6,7 @@ public interface IHasDomainEvents
 {
     public IReadOnlyList<IDomainEvent> DomainEvents { get; }
 
-    public void ClearDomainEvents();
+    public void AddDomainEvent(IDomainEvent domainEvent);
+
+    public IDomainEvent[] ClearDomainEvents();
 }

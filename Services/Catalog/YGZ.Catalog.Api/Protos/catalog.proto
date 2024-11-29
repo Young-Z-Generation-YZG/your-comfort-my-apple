@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "YGZ.Catalog.Api.Protos";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package catalog;
+
+service CatalogProtoService {
+	rpc GetProduct(GetProductRequest) returns (Product);
+}
+
+message Product {
+	string productItemId = 1;
+	string name = 2;
+}
+
+message GetProductRequest {
+	string productItemId = 1;
+}

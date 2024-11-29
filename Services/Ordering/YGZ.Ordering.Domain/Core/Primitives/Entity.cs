@@ -7,9 +7,9 @@ namespace YGZ.Ordering.Domain.Core.Primitives;
 public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
     where TId : ValueObject
 {
-    private readonly List<IDomainEvent> _domainEvents = new();
-
     public TId Id { get; protected set; }
+
+    private readonly List<IDomainEvent> _domainEvents = new();
 
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
@@ -33,16 +33,6 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
         return Id.GetHashCode();
     }
 
-    public void AddDomainEvent(IDomainEvent domainEvent)
-    {
-        _domainEvents.Add(domainEvent);
-    }
-
-    public void ClearDomainEvents()
-    {
-        _domainEvents.Clear();
-    }
-
     public static bool operator ==(Entity<TId> left, Entity<TId> right)
     {
         return Equals(left, right);
@@ -51,6 +41,20 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
     public static bool operator !=(Entity<TId> left, Entity<TId> right)
     {
         return !Equals(left, right);
+    }
+
+    public IDomainEvent[] ClearDomainEvents()
+    {
+        IDomainEvent[] dequeueEvents = _domainEvents.ToArray();
+
+        _domainEvents.Clear();
+
+        return dequeueEvents;
+    }
+
+    public void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
     }
 }
 

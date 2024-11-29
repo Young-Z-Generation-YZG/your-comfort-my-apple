@@ -53,6 +53,9 @@ services:
   basketdb:
     image: postgres:alpine
 
+  discountdb:
+    image: postgres:alpine
+
   distributedcache:
     image: redis:alpine
 
