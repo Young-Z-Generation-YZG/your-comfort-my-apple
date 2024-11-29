@@ -13,7 +13,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     private readonly List<OrderLine> _orderLines = new();
     public IReadOnlyList<OrderLine> OrderLines => _orderLines.AsReadOnly();
 
-    public string OrderName { get; private set; }
+    public string OrderCode { get; private set; }
     public CustomerId CustomerId { get; private set; }
     public Address ShippingAddress { get; private set; }
     public Address BillingAddress { get; private set; }
@@ -28,15 +28,19 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
-    private Order(OrderId id,
-                  string orderName,
+    private Order(OrderId id) : base(id)
+    {
+    }
+
+    public Order(OrderId id,
+                  string orderCode,
                   CustomerId customerId,
                   Address shippingAddress,
                   Address billingAddress,
                   OrderStatus orderStatus,
                   PaymentType paymentType) : base(id)
     {
-        OrderName = orderName;
+        OrderCode = orderCode;
         CustomerId = customerId;
         ShippingAddress = shippingAddress;
         BillingAddress = billingAddress;
@@ -46,7 +50,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
 
     public static Order CreateNew(
         OrderId id,
-        string orderName,
+        string orderCode,
         CustomerId customerId,
         Address shippingAddress,
         Address billingAddress,
@@ -55,7 +59,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     {
         var newOrder = new Order(
                         id,
-                        orderName,
+                        orderCode,
                         customerId,
                         shippingAddress,
                         billingAddress,
@@ -68,9 +72,9 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         return newOrder;
     }
 
-    public void Update(string orderName, Address shippingAddress, Address billingAddress, OrderStatus orderStatus, PaymentType paymentType)
+    public void Update(string orderCode, Address shippingAddress, Address billingAddress, OrderStatus orderStatus, PaymentType paymentType)
     {
-        OrderName = orderName;
+        OrderCode = orderCode;
         ShippingAddress = shippingAddress;
         BillingAddress = billingAddress;
         Status = orderStatus;
@@ -87,7 +91,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
 
         var newOrderLine = OrderLine.CreateNew(
             Id,
-            productId,
+            ProductId.Of(productId),
             productName,
             productModel,
             productColor,

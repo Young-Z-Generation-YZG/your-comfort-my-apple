@@ -21,4 +21,16 @@ public class OrderLineId : ValueObject
     {
         return new OrderLineId(Guid.NewGuid());
     }
+
+
+    public static OrderLineId Of(Guid guid)
+    {
+        if (guid == Guid.Empty)
+        {
+            throw new ArgumentException("Order id cannot be empty", nameof(guid));
+        }
+
+        return new OrderLineId(guid);
+    }
+
 }

@@ -6,12 +6,11 @@ namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class Address : ValueObject
 {
+    public string ContactName { get; private set; } = default!;
     public string AddressLine { get; private set; } = default!;
     public string District { get; private set; } = default!;
     public string Province { get; private set; } = default!;
-    public string City { get; private set; } = default!;
     public string Country { get; private set; } = default!;
-    public string ContactName { get; private set; } = default!;
     public string ContactEmail { get; private set; } = default!;
     public string ContactPhoneNumber { get; private set; } = default!;
 
@@ -20,7 +19,6 @@ public class Address : ValueObject
         yield return AddressLine;
         yield return District;
         yield return Province;
-        yield return City;
         yield return Country;
         yield return ContactName;
         yield return ContactEmail;
@@ -31,7 +29,6 @@ public class Address : ValueObject
         string addressLine,
         string district,
         string province,
-        string city,
         string country,
         string contactName,
         string contactEmail,
@@ -42,7 +39,6 @@ public class Address : ValueObject
             AddressLine = addressLine,
             District = district,
             Province = province,
-            City = city,
             Country = country,
             ContactName = contactName,
             ContactEmail = contactEmail,

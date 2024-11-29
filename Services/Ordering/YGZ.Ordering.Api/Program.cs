@@ -3,6 +3,8 @@ using Serilog;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Application;
 using YGZ.Ordering.Infrastructure;
+using YGZ.Ordering.Persistence;
+using YGZ.Ordering.Persistence.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration);
+    .AddInfrastructureLayer(builder.Configuration)
+    .AddPersistenceLayer(builder.Configuration);
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 
@@ -33,6 +36,8 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
+
+    await app.ApplyMigrationAsync();
 }
 else
 {

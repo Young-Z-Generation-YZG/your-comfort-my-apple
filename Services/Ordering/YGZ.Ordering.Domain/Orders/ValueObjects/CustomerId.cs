@@ -12,4 +12,29 @@ public class CustomerId : ValueObject
     {
         yield return Value;
     }
+
+    public CustomerId(Guid value)
+    {
+        if (value == Guid.Empty)
+        {
+            throw new ArgumentException("Customer id cannot be empty", nameof(value));
+        }
+
+        Value = value;
+    }
+
+    public static CustomerId CreateNew()
+    {
+        return new CustomerId(Guid.NewGuid());
+    }
+
+    public static CustomerId Of(Guid guid)
+    {
+        if (guid == Guid.Empty)
+        {
+            throw new ArgumentException("Order id cannot be empty", nameof(guid));
+        }
+
+        return new CustomerId(guid);
+    }
 }

@@ -15,3 +15,7 @@ if InitialCreate is your first migration, rollback to the baseline state by spec
 # Update-Database <new migrationName>
 
 This will execute the Down method of InitialCreate, removing all changes applied by the migration.
+
+# Ordering Service
+
+PM> Add-Migration InitialCreate -OutputDir Data/Migrations -Project YGZ.Ordering.Persistence -StartupProject YGZ.Ordering.Api

@@ -7,7 +7,7 @@ namespace YGZ.Ordering.Domain.Orders.Entities;
 public class OrderLine : Entity<OrderLineId>
 {
     public OrderId OrderId { get; private set; } = default!;
-    public string ProductId { get; private set; } = default!;
+    public ProductId ProductId { get; private set; } = default!;
     public string ProductName { get; private set; } = default!;
     public string ProductModel { get; private set; } = default!;
     public string ProductColor { get; private set; } = default!;
@@ -18,7 +18,7 @@ public class OrderLine : Entity<OrderLineId>
     private OrderLine(
         OrderLineId id,
         OrderId orderId,
-        string productId,
+        ProductId productId,
         string productName,
         string productModel,
         string productColor,
@@ -38,7 +38,7 @@ public class OrderLine : Entity<OrderLineId>
 
     public static OrderLine CreateNew(
         OrderId orderId,
-        string productId,
+        ProductId productId,
         string productName,
         string productModel,
         string productColor,

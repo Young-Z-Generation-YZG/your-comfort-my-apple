@@ -63,6 +63,19 @@ services:
     volumes:
       - postgres_discount:/var/lib/postgresql/data/
 
+  orderingdb:
+    image: postgres:alpine
+    container_name: orderingdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: OrderingDb
+    restart: always
+    ports:
+      - "8432:5432"
+    volumes:
+      - postgres_ordering:/var/lib/postgresql/data/
+
   distributedcache:
     image: redis:alpine
     container_name: distributedcache
@@ -169,3 +182,4 @@ volumes:
   postgres_basket:
   postgres_discount:
   mongodb_catalog:
+  postgres_ordering:
