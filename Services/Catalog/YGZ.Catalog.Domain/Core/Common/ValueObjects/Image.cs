@@ -26,6 +26,6 @@ public class Image : ValueObject
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return ImageUrl;
     }
 }

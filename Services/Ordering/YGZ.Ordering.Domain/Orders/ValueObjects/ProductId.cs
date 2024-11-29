@@ -10,7 +10,7 @@ public class ProductId : ValueObject
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return Value;
     }
 
     public ProductId(string value)

@@ -38,6 +38,7 @@ if (app.Environment.IsDevelopment())
     });
 
     await app.ApplyMigrationAsync();
+    await app.ApplySeedDataAsync();
 }
 else
 {

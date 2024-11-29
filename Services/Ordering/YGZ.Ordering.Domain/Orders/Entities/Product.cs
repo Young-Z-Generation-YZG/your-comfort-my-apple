@@ -14,8 +14,9 @@ public class Product : Entity<ProductId>
     public decimal Price { get; private set; } = default!;
     public int Quantity { get; private set; } = default!;
 
-    public Product(ProductId id, string model, string color, string storage, decimal price, int quantity) : base(id)
+    public Product(ProductId id,string name, string model, string color, string storage, decimal price, int quantity) : base(id)
     {
+        Name = name;
         Model = model;
         Color = color;
         Storage = storage;
@@ -23,8 +24,8 @@ public class Product : Entity<ProductId>
         Quantity = quantity;
     }
 
-    public static Product CreateNew(string model, string color, string storage, decimal price, int quantity)
+    public static Product CreateNew(ProductId? productId, string name, string model, string color, string storage, decimal price, int quantity)
     {
-        return new Product(ProductId.CreateNew(), model, color, storage, price, quantity);
+        return new Product(productId ?? ProductId.CreateNew(), name, model, color, storage, price, quantity);
     }
 }

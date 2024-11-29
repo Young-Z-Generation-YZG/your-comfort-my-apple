@@ -49,7 +49,6 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
     }
 
     public static Order CreateNew(
-        OrderId id,
         string orderCode,
         CustomerId customerId,
         Address shippingAddress,
@@ -58,7 +57,7 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         PaymentType paymentType)
     {
         var newOrder = new Order(
-                        id,
+                        OrderId.CreateNew(),
                         orderCode,
                         customerId,
                         shippingAddress,
@@ -84,14 +83,14 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         AddDomainEvent(new OrderUpdatedDomainEvent(this));
     }
 
-    public void AddOrderLine(string productId, string productName, string productModel, string productColor, string productStorage, int quantity, decimal price)
+    public void AddOrderLine(ProductId productId, string productName, string productModel, string productColor, string productStorage, int quantity, decimal price)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
 
         var newOrderLine = OrderLine.CreateNew(
             Id,
-            ProductId.Of(productId),
+            productId,
             productName,
             productModel,
             productColor,

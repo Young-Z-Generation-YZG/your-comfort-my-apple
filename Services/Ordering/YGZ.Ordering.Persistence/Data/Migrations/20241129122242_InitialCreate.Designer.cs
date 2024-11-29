@@ -13,7 +13,7 @@ using YGZ.Ordering.Persistence.Data;
 namespace YGZ.Ordering.Persistence.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129105450_InitialCreate")]
+    [Migration("20241129122242_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -244,7 +244,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("YGZ.Ordering.Domain.Orders.Entities.OrderLine", b =>

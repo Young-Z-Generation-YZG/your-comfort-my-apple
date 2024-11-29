@@ -241,7 +241,7 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("YGZ.Ordering.Domain.Orders.Entities.OrderLine", b =>

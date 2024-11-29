@@ -15,8 +15,8 @@ public class Customer : Entity<CustomerId>
         Email = email;
     }
 
-    public static Customer CreateNew(string name, string email)
+    public static Customer CreateNew(CustomerId? customerId, string name, string email)
     {
-        return new Customer(CustomerId.CreateNew(), name, email);
+        return new Customer(customerId ?? CustomerId.CreateNew(), name, email);
     }
 }

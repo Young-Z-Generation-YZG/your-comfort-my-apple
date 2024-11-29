@@ -18,4 +18,7 @@ This will execute the Down method of InitialCreate, removing all changes applied
 
 # Ordering Service
 
-PM> Add-Migration InitialCreate -OutputDir Data/Migrations -Project YGZ.Ordering.Persistence -StartupProject YGZ.Ordering.Api
+PM>Add-Migration InitialCreate -OutputDir Data/Migrations -Project YGZ.Ordering.Persistence -StartupProject YGZ.Ordering.Api
+dotnet cli>dotnet ef migrations add InitialCreate -o Data/Migrations -p YGZ.Ordering.Persistence -s YGZ.Ordering.Api
+
+PM>Update-Database
