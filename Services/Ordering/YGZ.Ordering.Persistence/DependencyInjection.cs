@@ -1,9 +1,11 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Ordering.Persistence.Data;
+using YGZ.Ordering.Persistence.Data.Interceptors;
 
 namespace YGZ.Ordering.Persistence;
 
@@ -15,10 +17,12 @@ public static class DependencyInjection
 
         services.AddSingleton(new ConnectionStrings(connectionString));
 
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<ApplicationDbContext>((serviceProvider ,options) =>
         {
             //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            serviceProvider.GetServices<ISaveChangesInterceptor>();
 
             options.UseNpgsql(connectionString);
         });
