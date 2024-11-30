@@ -1,4 +1,5 @@
 ﻿using Swashbuckle.AspNetCore.Filters;
+using YGZ.Ordering.Application.Common.Commands;
 using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 
 namespace YGZ.Ordering.Api.Common.SwaggerExamples;

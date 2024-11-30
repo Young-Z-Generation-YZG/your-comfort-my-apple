@@ -16,6 +16,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStrings.OrderingDb)!;
 
+        services.AddHealthChecks()
+            .AddNpgSql(connectionString);
+
         services.AddSingleton(new ConnectionStrings(connectionString));
 
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();

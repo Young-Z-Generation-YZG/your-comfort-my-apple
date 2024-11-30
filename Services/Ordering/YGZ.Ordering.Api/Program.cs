@@ -1,4 +1,6 @@
 using Asp.Versioning.ApiExplorer;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Application;
@@ -51,6 +53,11 @@ app.UseCors(options =>
 });
 
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseSerilogRequestLogging();
 
