@@ -6,6 +6,7 @@ using YGZ.Basket.Api;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
 using YGZ.Basket.Persistence;
+using YGZ.BuildingBlocks.Messaging.MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,8 @@ builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
     .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration);
+    .AddInfrastructureLayer(builder.Configuration)
+    .AddMessageBrokerExtensions(builder.Configuration);
 
 
 builder.Host.AddSerilogExtension(builder.Configuration);

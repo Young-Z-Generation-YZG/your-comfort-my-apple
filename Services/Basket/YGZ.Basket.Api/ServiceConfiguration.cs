@@ -9,6 +9,7 @@ using YGZ.Basket.Api.Common.Errors;
 using YGZ.Basket.Api.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.Basket.Api.Common.Mappings;
+using YGZ.BuildingBlocks.Messaging.MassTransit;
 
 
 namespace YGZ.Basket.Api;

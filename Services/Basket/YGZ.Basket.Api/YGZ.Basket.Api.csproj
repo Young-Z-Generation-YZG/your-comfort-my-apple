@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\YGZ.Basket.Application\YGZ.Basket.Application.csproj" />
     <ProjectReference Include="..\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj" />
     <ProjectReference Include="..\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj" />
