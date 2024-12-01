@@ -61,8 +61,12 @@ const data = {
           url: "#",
         },
         {
-          title: "Add New",
-          url: "#",
+          title: "New Iphone Model",
+          url: "/dashboards/products/new-iphone-model",
+        },
+        {
+          title: "Create New Iphone",
+          url: "/dashboards/products/new-iphone-item",
         },
         {
           title: "Trash",

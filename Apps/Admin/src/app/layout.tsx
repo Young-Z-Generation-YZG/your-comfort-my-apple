@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "~/styles/globals.css";
 import { fontMono, fontSans } from "~/fonts";
 import { ThemeProvider } from "~/components/theme-provider";
+import { Toaster } from "~/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "ygzStore",
@@ -22,7 +23,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <main>
+            <Toaster />
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
