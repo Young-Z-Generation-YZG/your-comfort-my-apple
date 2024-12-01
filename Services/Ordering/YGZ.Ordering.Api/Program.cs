@@ -2,6 +2,8 @@ using Asp.Versioning.ApiExplorer;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+using System.Reflection;
+using YGZ.BuildingBlocks.Messaging.MassTransit;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Application;
 using YGZ.Ordering.Infrastructure;
@@ -16,7 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration)
+    .AddInfrastructureLayer(builder.Configuration, Assembly.GetExecutingAssembly())
     .AddPersistenceLayer(builder.Configuration);
 
 builder.Host.AddSerilogExtension(builder.Configuration);

@@ -21,7 +21,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, boo
 
     public async Task<Result<bool>> Handle(CreateOrderCommand cmd, CancellationToken cancellationToken)
     {
-        if(!Guid.TryParse(cmd.Customer_id, out Guid customerId))
+        if(!Guid.TryParse(cmd.User_id, out Guid customerId))
         {
             return Errors.Customer.IdInvalid;
         };

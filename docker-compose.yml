@@ -81,7 +81,7 @@ services:
       - messagebroker
       - distributedcache
       - ygz.catalog.api
-      # - gyz.discount.grpc
+      - gyz.discount.grpc
 
   gyz.discount.grpc:
     image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
@@ -89,11 +89,11 @@ services:
       context: .
       dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
-  # ygz.ordering.api:
-  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+  ygz.ordering.api:
+    image: ${DOCKER_REGISTRY-}ygzorderingapi
+    build:
+      context: .
+      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
   # ygz.seq:
   #   image: datalust/seq

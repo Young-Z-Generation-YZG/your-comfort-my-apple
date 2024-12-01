@@ -23,10 +23,10 @@ public static class Extensions
             {
                 MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
 
-                configuarator.Host(new Uri(settings.Host!), host =>
+                configuarator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
                 {
-                    host.Username(settings.Username);
-                    host.Password(settings.Password);
+                    host.Username(configuration["MessageBrokerSettings:Username"]!);
+                    host.Password(configuration["MessageBrokerSettings:Password"]!);
                 });
 
                 configuarator.ConfigureEndpoints(context);

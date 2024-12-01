@@ -11,6 +11,7 @@ public class CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketComman
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishEndpoint;
 
+
     public CheckoutBasketCommandHandler(IBasketRepository basketRepository, IPublishEndpoint publishEndpoint)
     {
         _basketRepository = basketRepository;

@@ -1,5 +1,6 @@
 using Asp.Versioning.ApiExplorer;
 using Serilog;
+using System.Reflection;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Api.Services;
 using YGZ.Catalog.Application;
@@ -18,7 +19,7 @@ builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
     .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration);
+    .AddInfrastructureLayer(builder.Configuration, Assembly.GetExecutingAssembly());
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 

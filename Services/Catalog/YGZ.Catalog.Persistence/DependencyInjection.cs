@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using YGZ.Catalog.Application.Core.Abstractions.Products;
 using YGZ.Catalog.Application.Core.Abstractions.Services;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
@@ -12,7 +13,7 @@ namespace YGZ.Catalog.Persistence;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
     {
         services.Configure<CatalogDbSettings>(configuration.GetSection(nameof(CatalogDbSettings)));
 
