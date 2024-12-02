@@ -15,14 +15,4 @@
     <PackageReference Include="Yarp.ReverseProxy" Version="2.2.0" />
   </ItemGroup>
 
-<ItemGroup>
-	<Content Include="appsettings.json">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</Content>
-	<Content Include="appsettings.*.json">
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		<DependentUpon>appsettings.json</DependentUpon>
-	</Content>
-</ItemGroup>
-
 </Project>
