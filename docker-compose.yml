@@ -65,6 +65,12 @@ services:
   messagebroker:
     image: rabbitmq:management
 
+  ygz.gateways.yarp:
+    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
+    build:
+      context: .
+      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+
   ygz.catalog.api:
     image: ${DOCKER_REGISTRY-}ygzcatalogapi
     build:
@@ -98,7 +104,9 @@ services:
   # ygz.seq:
   #   image: datalust/seq
 
+
 volumes:
   postgres_basket:
   postgres_discount:
   mongodb_catalog:
+

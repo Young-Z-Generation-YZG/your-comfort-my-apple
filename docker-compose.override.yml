@@ -102,6 +102,22 @@ services:
       timeout: 20s
       retries: 5
 
+  ygz.gateways.yarp:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "6000:8080"
+      - "6060:8081"
+    depends_on:
+      - ygz.catalog.api
+      - ygz.basket.api
+      - ygz.ordering.api
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
   ygz.catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -197,8 +213,10 @@ services:
   #   ports:
   #     - "5341:80"
 
+
 volumes:
   mongodb_catalog:
   postgres_basket:
   postgres_discount:
   postgres_ordering:
+
