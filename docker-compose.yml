@@ -77,11 +77,11 @@ services:
       context: .
       dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  # ygz.basket.api:
-  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+  ygz.basket.api:
+    image: ${DOCKER_REGISTRY-}ygzbasketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
   gyz.discount.grpc:
     image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
