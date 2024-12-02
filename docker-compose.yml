@@ -77,17 +77,11 @@ services:
       context: .
       dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  ygz.basket.api:
-    image: ${DOCKER_REGISTRY-}ygzbasketapi
-    build:
-      context: .
-      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
-    depends_on:
-      - basketdb
-      - messagebroker
-      - distributedcache
-      - ygz.catalog.api
-      - gyz.discount.grpc
+  # ygz.basket.api:
+  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
   gyz.discount.grpc:
     image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
@@ -104,9 +98,7 @@ services:
   # ygz.seq:
   #   image: datalust/seq
 
-
 volumes:
   postgres_basket:
   postgres_discount:
   mongodb_catalog:
-
