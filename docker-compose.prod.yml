@@ -107,6 +107,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
     ports:
       - "6000:8080"
       - "6060:8081"
