@@ -8,7 +8,7 @@ namespace YGZ.Ordering.Persistence.Data.Extensions;
 
 public static class MigrationExtension
 {
-    public static async Task ApplyMigrationAsync(this WebApplication app)
+    public static async Task ApplyMigrationAsync(this WebApplication app) 
     {
         using var scope = app.Services.CreateScope();
 

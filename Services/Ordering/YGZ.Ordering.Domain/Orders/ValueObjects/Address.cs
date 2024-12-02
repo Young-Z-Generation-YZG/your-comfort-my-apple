@@ -6,13 +6,13 @@ namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class Address : ValueObject
 {
-    public string ContactName { get; private set; } = default!;
-    public string AddressLine { get; private set; } = default!;
-    public string District { get; private set; } = default!;
-    public string Province { get; private set; } = default!;
-    public string Country { get; private set; } = default!;
-    public string ContactEmail { get; private set; } = default!;
-    public string ContactPhoneNumber { get; private set; } = default!;
+    public string? ContactName { get; private set; } = default!;
+    public string? AddressLine { get; private set; } = default!;
+    public string? District { get; private set; } = default!;
+    public string? Province { get; private set; } = default!;
+    public string? Country { get; private set; } = default!;
+    public string? ContactEmail { get; private set; } = default!;
+    public string? ContactPhoneNumber { get; private set; } = default!;
 
     public override IEnumerable<object> GetEqualityComponents()
     {

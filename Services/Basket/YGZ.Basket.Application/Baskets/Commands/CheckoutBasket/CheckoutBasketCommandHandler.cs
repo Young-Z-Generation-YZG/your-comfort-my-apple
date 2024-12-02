@@ -27,12 +27,11 @@ public class CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketComman
             return basket.Error;
         }
 
-        var eventMessage = new BasketCheckoutIntergrationEvent
+        var eventMessage = new BasketCheckoutIntegrationEvent
         {
             UserId = cmd.UserId,
             FirstName = cmd.FirstName,
             LastName = cmd.LastName,
-            TotalPrice = cmd.TotalPrice,
         };
 
         await _publishEndpoint.Publish(eventMessage, cancellationToken);

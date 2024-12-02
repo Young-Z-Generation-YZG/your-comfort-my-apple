@@ -36,21 +36,42 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, boo
             return Errors.Order.InvalidPaymentType;
         }
 
-        var shippingAddress = Address.CreateNew(cmd.Shipping_address.Contact_name,
-                                                cmd.Shipping_address.Contact_email,
-                                                cmd.Shipping_address.Contact_phone_number,
-                                                cmd.Shipping_address.Address_line,
-                                                cmd.Shipping_address.District,
-                                                cmd.Shipping_address.Province,
-                                                cmd.Shipping_address.Country);
+        var shippingAddress = Address.CreateNew(null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null);
+        var billingAddress = Address.CreateNew(null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null);
 
-        var billingAddress = Address.CreateNew(cmd.Billing_address.Contact_name,
-                                               cmd.Billing_address.Contact_email,
-                                               cmd.Billing_address.Contact_phone_number,
-                                               cmd.Billing_address.Address_line,
-                                               cmd.Billing_address.District,
-                                               cmd.Billing_address.Province,
-                                               cmd.Billing_address.Country);
+        //if (cmd.Shipping_address is not null)
+        //{
+        //    shippingAddress = Address.CreateNew(cmd.Shipping_address.Contact_name,
+        //                                            cmd.Shipping_address.Contact_email,
+        //                                            cmd.Shipping_address.Contact_phone_number,
+        //                                            cmd.Shipping_address.Address_line,
+        //                                            cmd.Shipping_address.District,
+        //                                            cmd.Shipping_address.Province,
+        //                                            cmd.Shipping_address.Country);
+        //}
+
+        //if(cmd.Billing_address is not null)
+        //{
+        //    billingAddress = Address.CreateNew(cmd.Billing_address.Contact_name,
+        //                                           cmd.Billing_address.Contact_email,
+        //                                           cmd.Billing_address.Contact_phone_number,
+        //                                           cmd.Billing_address.Address_line,
+        //                                           cmd.Billing_address.District,
+        //                                           cmd.Billing_address.Province,
+        //                                           cmd.Billing_address.Country);
+        //}
 
         var newOrder = Order.CreateNew(CustomerId.Of(customerId), shippingAddress, billingAddress, status, paymentType);
 

@@ -33,25 +33,29 @@ public class OrderConfiguaration : IEntityTypeConfiguration<Order>
 
         builder.ComplexProperty(o => o.ShippingAddress, addressbuilder =>
         {
-            addressbuilder.Property(a => a.ContactName).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.AddressLine).HasMaxLength(100).IsRequired();
-            addressbuilder.Property(a => a.District).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.Province).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.Country).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.ContactEmail).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.ContactPhoneNumber).HasMaxLength(50).IsRequired();
+            addressbuilder.IsRequired();
+            addressbuilder.Property(a => a.ContactName).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.AddressLine).HasMaxLength(100).IsRequired(false);
+            addressbuilder.Property(a => a.District).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.Province).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.Country).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.ContactEmail).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.ContactPhoneNumber).HasMaxLength(50).IsRequired(false);
         });
+
 
         builder.ComplexProperty(o => o.BillingAddress, addressbuilder =>
         {
-            addressbuilder.Property(a => a.ContactName).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.AddressLine).HasMaxLength(100).IsRequired();
-            addressbuilder.Property(a => a.District).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.Province).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.Country).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.ContactEmail).HasMaxLength(50).IsRequired();
-            addressbuilder.Property(a => a.ContactPhoneNumber).HasMaxLength(50).IsRequired();
+            addressbuilder.IsRequired();
+            addressbuilder.Property(a => a.ContactName).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.AddressLine).HasMaxLength(100).IsRequired(false);
+            addressbuilder.Property(a => a.District).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.Province).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.Country).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.ContactEmail).HasMaxLength(50).IsRequired(false);
+            addressbuilder.Property(a => a.ContactPhoneNumber).HasMaxLength(50).IsRequired(false);
         });
+
 
         builder.Property(o => o.Status).HasConversion(p => p.Value, p => OrderStatus.FromValue(p));
         

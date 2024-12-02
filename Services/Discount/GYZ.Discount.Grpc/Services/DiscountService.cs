@@ -23,7 +23,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     {
         var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(c => c.Code == request.Code);
 
-        if (coupon == null)
+        if (coupon is null)
         {
             _logger.LogError($"Discount with Code={request.Code} is not found.");
 

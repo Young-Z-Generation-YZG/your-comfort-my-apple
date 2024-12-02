@@ -13,7 +13,7 @@ using YGZ.Ordering.Persistence.Data;
 namespace YGZ.Ordering.Persistence.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129200830_InitialCreate")]
+    [Migration("20241202131306_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -168,37 +168,30 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                             b1.IsRequired();
 
                             b1.Property<string>("AddressLine")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
 
                             b1.Property<string>("ContactEmail")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactName")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactPhoneNumber")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Country")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("District")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Province")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
                         });
@@ -208,37 +201,30 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                             b1.IsRequired();
 
                             b1.Property<string>("AddressLine")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
 
                             b1.Property<string>("ContactEmail")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactName")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactPhoneNumber")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Country")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("District")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Province")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
                         });

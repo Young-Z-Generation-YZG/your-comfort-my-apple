@@ -6,21 +6,20 @@ using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 using static YGZ.Ordering.Domain.Core.Enums.Enums;
 using YGZ.Ordering.Application.Common.Commands;
 
-namespace YGZ.Ordering.Application.Orders.Events.Intergations;
+namespace YGZ.Ordering.Application.Orders.Events.Integrations;
 
-public class BasketCheckoutIntergrationEventHandler : IConsumer<BasketCheckoutIntergrationEvent>
+public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutIntegrationEvent>
 {
     private readonly ISender _mediator;
-    private readonly ILogger<BasketCheckoutIntergrationEventHandler> _logger;
+    private readonly ILogger<BasketCheckoutIntegrationEventHandler> _logger;
 
-    public BasketCheckoutIntergrationEventHandler(ISender mediator, ILogger<BasketCheckoutIntergrationEventHandler> logger)
+    public BasketCheckoutIntegrationEventHandler(ISender mediator, ILogger<BasketCheckoutIntegrationEventHandler> logger)
     {
         _mediator = mediator;
         _logger = logger;
     }
 
-
-    public async Task Consume(ConsumeContext<BasketCheckoutIntergrationEvent> context)
+    public async Task Consume(ConsumeContext<BasketCheckoutIntegrationEvent> context)
     {
         _logger.LogInformation("Intergration Event Handled: {IntergrationEvent}", context.Message.GetType().Name);
 
@@ -29,7 +28,7 @@ public class BasketCheckoutIntergrationEventHandler : IConsumer<BasketCheckoutIn
         await _mediator.Send(cmd);
     }
 
-    private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntergrationEvent message)
+    private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent message)
     {
         var paymentStaus = OrderStatus.PENDING.Name;
         var paymentType = PaymentType.MOMO.Name;

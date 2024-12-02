@@ -63,6 +63,19 @@ services:
     volumes:
       - postgres_discount:/var/lib/postgresql/data/
 
+  orderingdb:
+    image: postgres:alpine
+    container_name: orderingdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: OrderingDb
+    restart: always
+    ports:
+      - "8432:5432"
+    volumes:
+      - postgres_ordering:/var/lib/postgresql/data/
+
   messagebroker:
     container_name: messagebroker
     hostname: rabbitmq-host
@@ -122,9 +135,18 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
       - ConnectionStrings__Redis=distributedcache:6379
+      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+      - MessageBrokerSettings__Username=guest
+      - MessageBrokerSettings__Password=guest
       - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
       - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
       - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    restart: on-failure
+    depends_on:
+      messagebroker:
+        condition: service_healthy
+      basketdb:
+        condition: service_started
     ports:
       - "6002:8080"
       - "6062:8081"
@@ -141,6 +163,10 @@ services:
       - ConnectionStrings__DiscountDb=Host=discountdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
       - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
       - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    restart: on-failure
+    depends_on:
+      discountdb:
+        condition: service_started
     ports:
       - "6003:8080"
       - "6063:8081"
@@ -149,24 +175,30 @@ services:
       # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  # ygz.ordering.api:
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_HTTP_PORTS=8080
-  #     - ASPNETCORE_HTTPS_PORTS=8081
-  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-  #     - MessageBrokerSettings__UserName=guest
-  #     - MessageBrokerSettings__Password=guest
-  #   restart: on-failure
-  #   depends_on:
-  #     messagebroker:
-  #       condition: service_healthy
-  #   ports:
-  #     - "6004:8080"
-  #     - "6064:8081"
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+  ygz.ordering.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__OrderingDb=Host=orderingdb;Port=5432;Database=OrderingDb;Username=postgres;Password=postgres
+      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+      - MessageBrokerSettings__UserName=guest
+      - MessageBrokerSettings__Password=guest
+      - Kestrel__Certificates__Default__Path=/https/ssl/fullchain.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
+    restart: on-failure
+    depends_on:
+      messagebroker:
+        condition: service_healthy
+      orderingdb:
+        condition: service_started
+    ports:
+      - "6004:8080"
+      - "6064:8081"
+    volumes:
+      - /ssl:/https/ssl:ro
+      # - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      # - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   # ygz.seq:
   #   environment:

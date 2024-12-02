@@ -132,7 +132,19 @@ services:
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
       - ConnectionStrings__Redis=distributedcache:6379
+      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+      - MessageBrokerSettings__Username=guest
+      - MessageBrokerSettings__Password=guest
       - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+    depends_on:
+      basketdb:
+        condition: service_started
+      distributedcache:
+        condition: service_started
+      messagebroker:
+        condition: service_healthy
+      gyz.discount.grpc:
+        condition: service_started
     ports:
       - "6002:8080"
       - "6062:8081"
@@ -146,6 +158,9 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__DiscountDb=Host=discountdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
+    depends_on:
+      discountdb:
+        condition: service_started
     ports:
       - "6003:8080"
       - "6063:8081"
@@ -158,15 +173,17 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__OrderingDb=Host=orderingdb;Port=5432;Database=OrderingDb;Username=postgres;Password=postgres
       - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
       - MessageBrokerSettings__UserName=guest
       - MessageBrokerSettings__Password=guest
+      - FeatureManagement__OrderFullfilment=false
     restart: on-failure
     depends_on:
-      messagebroker:
-        condition: service_healthy
       orderingdb:
         condition: service_started
+      messagebroker:
+        condition: service_healthy
     ports:
       - "6004:8080"
       - "6064:8081"
@@ -181,7 +198,7 @@ services:
   #     - "5341:80"
 
 volumes:
+  mongodb_catalog:
   postgres_basket:
   postgres_discount:
-  mongodb_catalog:
   postgres_ordering:

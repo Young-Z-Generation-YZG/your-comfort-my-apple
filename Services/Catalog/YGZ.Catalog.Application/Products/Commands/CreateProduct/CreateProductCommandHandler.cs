@@ -13,6 +13,7 @@ using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Domain.Core.Abstractions.Common;
 using YGZ.Catalog.Domain.Core.Enums;
+using YGZ.Catalog.Application.Products.Events;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
@@ -63,6 +64,13 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
 
         await _productService.InsertOneAsync(product, null!, cancellationToken);
 
+        await _eventBus.PublishAsync(new ProductCreatedEvent
+        {
+            ProductId = "123",
+            ProductName = "test",
+            Description = "test"
+        }, cancellationToken);
+
         try
         {
             var result = await _unitOfWork.CommitAsync(null);
@@ -76,11 +84,6 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             return Errors.Product.CannotBeCreated;
         }
 
-        //await _eventBus.PublishAsync(new ProductCreatedEvent
-        //{
-        //    ProductId = "123",
-        //    ProductName = "test",
-        //    Description = "test"
-        //}, cancellationToken);
+        
     }
 }

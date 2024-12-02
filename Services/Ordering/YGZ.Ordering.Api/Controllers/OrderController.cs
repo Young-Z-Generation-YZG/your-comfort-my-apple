@@ -26,9 +26,9 @@ public class OrderController : ApiController
     [SwaggerRequestExample(typeof(CreateOrderCommand), typeof(CreateOrderExample))]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand request, CancellationToken cancellationToken = default)
     {
-        var cmd = _mapper.Map<CreateOrderCommand>(request);
+        //var cmd = _mapper.Map<CreateOrderCommand>(request);
 
-        var result = await _mediator.Send(cmd, cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

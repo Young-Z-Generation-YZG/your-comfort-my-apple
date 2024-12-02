@@ -7,6 +7,8 @@ using YGZ.Basket.Api.Common.Extensions;
 using YGZ.Basket.Application.Contracts;
 using YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 using YGZ.Basket.Application.Baskets.Commands.DeleteBasket;
+using YGZ.Basket.Api.Contracts;
+using YGZ.Basket.Application.Baskets.Commands.CheckoutBasket;
 
 namespace YGZ.Basket.Api.Controllers;
 
@@ -36,8 +38,6 @@ public class BasketController : ApiController
     [HttpPost]
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, [FromQuery] string? coupon = null, CancellationToken cancellationToken = default)
     {
-        //Console.WriteLine("coupon" + coupon);
-
         var cmd = new StoreBasketCommand
         {
             UserId = request.UserId,
@@ -51,9 +51,9 @@ public class BasketController : ApiController
     }
 
     [HttpPost("checkout")]
-    public async Task<IActionResult> CheckoutBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken = default)
     {
-        var cmd = _mapper.Map<StoreBasketCommand>(request);
+        var cmd = _mapper.Map<CheckoutBasketCommand>(request);
 
         var result = await _mediator.Send(cmd, cancellationToken);
 

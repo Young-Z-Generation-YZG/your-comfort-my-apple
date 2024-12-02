@@ -1,4 +1,6 @@
 ﻿using Mapster;
+using YGZ.Basket.Api.Contracts;
+using YGZ.Basket.Application.Baskets.Commands.CheckoutBasket;
 using YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 using YGZ.Basket.Application.Contracts;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
@@ -18,6 +20,10 @@ public class BasketMappingConfig : IRegister
         config.NewConfig<CartLineRequest, CartLineCommand>()
             .Map(dest => dest, src => src);
 
-
+        config.NewConfig<CheckoutBasketRequest, CheckoutBasketCommand>()
+            .Map(dest => dest, src => src)
+            .Map(dest => dest.UserId, src => src.UserId)
+            .Map(dest => dest.FirstName, src => src.First_name)
+            .Map(dest => dest.LastName, src => src.Last_name);
     }
 }

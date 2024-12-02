@@ -15,8 +15,8 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
 
     public OrderCode OrderCode { get; private set; }
     public CustomerId CustomerId { get; private set; }
-    public Address ShippingAddress { get; private set; }
-    public Address BillingAddress { get; private set; }
+    public Address? ShippingAddress { get; private set; }
+    public Address? BillingAddress { get; private set; }
     public OrderStatus Status { get; private set; } = OrderStatus.PENDING;
     public PaymentType PaymentType { get; private set; }
     public decimal TotalAmount

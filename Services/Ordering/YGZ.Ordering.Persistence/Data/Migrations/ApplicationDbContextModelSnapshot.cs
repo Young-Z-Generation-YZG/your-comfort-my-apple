@@ -165,37 +165,30 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                             b1.IsRequired();
 
                             b1.Property<string>("AddressLine")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
 
                             b1.Property<string>("ContactEmail")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactName")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactPhoneNumber")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Country")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("District")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Province")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
                         });
@@ -205,37 +198,30 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                             b1.IsRequired();
 
                             b1.Property<string>("AddressLine")
-                                .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)");
 
                             b1.Property<string>("ContactEmail")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactName")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("ContactPhoneNumber")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Country")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("District")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
 
                             b1.Property<string>("Province")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)");
                         });
