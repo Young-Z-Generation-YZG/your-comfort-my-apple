@@ -162,9 +162,13 @@ services:
       - Kestrel__Certificates__Default__KeyPath=/https/ssl/privkey.pem
     restart: always
     depends_on:
+      basketdb:
+        condition: service_started
+      distributedcache:
+        condition: service_started
       messagebroker:
         condition: service_healthy
-      basketdb:
+      gyz.discount.grpc:
         condition: service_started
     ports:
       - "6002:8080"
