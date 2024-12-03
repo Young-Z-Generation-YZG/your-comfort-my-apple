@@ -8,6 +8,7 @@ public class DeleteOrderCommandHandler : ICommandHandler<DeleteOrderCommand, boo
 {
     public async Task<Result<bool>> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
     {
+        await Task.CompletedTask;
         throw new NotImplementedException();
     }
 }

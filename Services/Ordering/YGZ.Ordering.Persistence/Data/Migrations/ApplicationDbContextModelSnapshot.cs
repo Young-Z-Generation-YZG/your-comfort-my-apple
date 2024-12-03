@@ -51,6 +51,9 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
@@ -66,27 +69,24 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ProductImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ProductModel")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("ProductName")
-                        .IsRequired()
+                    b.Property<int>("ProductStorage")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("ProductSlug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProductStorage")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
@@ -112,21 +112,12 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
+                    b.Property<int>("Storage")
                         .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

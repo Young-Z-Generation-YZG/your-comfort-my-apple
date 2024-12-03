@@ -19,12 +19,14 @@ public class OrderLineConfiguaration : IEntityTypeConfiguration<OrderLine>
             .HasForeignKey(ol => ol.ProductId)
             .IsRequired();
 
-        builder.Property(ol => ol.ProductName).HasMaxLength(50).IsRequired();
         builder.Property(ol => ol.ProductModel).HasMaxLength(50).IsRequired();
         builder.Property(ol => ol.ProductColor).HasMaxLength(50).IsRequired();
         builder.Property(ol => ol.ProductStorage).HasMaxLength(50).IsRequired();
+        builder.Property(ol => ol.ProductImageUrl).IsRequired();
         builder.Property(ol => ol.Quantity).IsRequired();
         builder.Property(ol => ol.Price).IsRequired();
+        builder.Property(ol => ol.DiscountAmount).IsRequired();
+        builder.Property(ol => ol.SubTotal).IsRequired();
 
     }
 }

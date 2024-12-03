@@ -49,10 +49,11 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             o.ProductModel,
             o.ProductColor,
             o.ProductStorage,
-            o.ProductSlug,
+            o.ProductImageUrl,
             o.Price,
             o.Quantity,
-            o.Quantity * o.Price
+            o.DiscountAmount,
+            o.SubTotal
         )).ToList();
 
         return new CreateOrderCommand(

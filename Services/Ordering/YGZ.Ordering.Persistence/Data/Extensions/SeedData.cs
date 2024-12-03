@@ -16,9 +16,7 @@ internal class SeedData
 
     public static IEnumerable<Product> Products => new List<Product>
     {
-        Product.CreateNew(ProductId.Of("78dc45ca"),"Iphone 16", "iPhone 16", "pink", "256", 1000, 3),
-        Product.CreateNew(ProductId.Of("78dc45cb"),"Samsung", "Samsung Galaxy S21", "black", "128", 800, 5),
-        Product.CreateNew(ProductId.Of("78dc45cc"),"Xiaomi", "Xiaomi Mi 11", "blue", "256", 700, 2),
+        Product.CreateNew(ProductId.Of("674f20b3ed034b761cd47ec2"),"iPhone 16", "pink", 128, 799),
     };
 
     public static IEnumerable<Order> OrdersWithItems
@@ -29,7 +27,15 @@ internal class SeedData
 
             var order = Order.CreateNew(CustomerId.Of(new Guid("78dc45ca-a007-4d33-9616-2d8e44735e1a")), address, address, OrderStatus.PAID, PaymentType.VNPAY);
 
-            order.AddOrderLine(ProductId.Of("78dc45ca"), "iPhone 16", "iPhone 16", "pink", "256","iphone-16", 1, 1000);
+            order.AddOrderLine(ProductId.Of("674f20b3ed034b761cd47ec2"),
+                               "iPhone 16",
+                               "pink",
+                               128,
+                               "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-7inch-ultramarine?wid=5120&hei=2880&fmt=webp&qlt=70&.v=UXp1U3VDY3IyR1hNdHZwdFdOLzg1V0tFK1lhSCtYSGRqMUdhR284NTN4OUp1NDJCalJ6MnpHSm1KdCtRZ0FvSDJrQmVLSXFrTCsvY1VvVmRlZkVnMzJKTG1lVWJJT2RXQWE0Mm9rU1V0V0R6SkNnaG1kYkl1VUVsNXVsVGJrQ0s0UmdXWi9jaTBCeEx5VFNDNXdWbmdB&traceId=1",
+                               1,
+                               1000,
+                               200,
+                               800);
 
             return new List<Order> { order };
         }

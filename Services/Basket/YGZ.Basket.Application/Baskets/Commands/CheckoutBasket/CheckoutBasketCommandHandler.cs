@@ -34,13 +34,15 @@ public class CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketComman
         }
 
         var cartLines = basket.Response!.CartLines.Select(x => new OrderLineIntegrationEvent(
-            x.Id.Value.ToString(),
+            x.ProductItemId,
             x.Model,
             x.Color,
             x.Storage,
-            "slug",
+            x.PrimaryImageUrl,
             x.Quantity,
-            x.Price
+            x.Price,
+            x.DiscountAmount,
+            x.SubTotal
         )).ToList();
 
         var eventMessage = new BasketCheckoutIntegrationEvent

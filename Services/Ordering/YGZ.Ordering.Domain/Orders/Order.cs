@@ -25,8 +25,8 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         private set { }
     }
 
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     private Order(OrderId id) : base(id)
     {
@@ -81,7 +81,15 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         AddDomainEvent(new OrderUpdatedDomainEvent(this));
     }
 
-    public void AddOrderLine(ProductId productId, string productName, string productModel, string productColor, string productStorage, string productSlug, int quantity, decimal price)
+    public void AddOrderLine(ProductId productId,
+                             string productModel,
+                             string productColor,
+                             int productStorage,
+                             string productImageUrl,
+                             int quantity,
+                             decimal price,
+                             decimal discountAmount,
+                             decimal subTotal)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
@@ -89,13 +97,14 @@ public sealed class Order : AggregateRoot<OrderId>, IAuditable
         var newOrderLine = OrderLine.CreateNew(
             Id,
             productId,
-            productName,
             productModel,
             productColor,
             productStorage,
-            productSlug,
+            productImageUrl,
             quantity,
-            price);
+            price,
+            discountAmount,
+            subTotal);
 
         _orderLines.Add(newOrderLine);
     }

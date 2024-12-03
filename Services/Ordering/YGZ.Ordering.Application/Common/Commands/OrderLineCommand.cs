@@ -6,7 +6,8 @@ public record OrderLineCommand(string ProductTd,
                                string Model,
                                string Color,
                                int Storage,
-                               string Slug,
-                               double Price,
+                               string ProductImageUrl,
+                               decimal Price,
                                int Quantity,
-                               double SubTotal) { }
+                               decimal DiscountAmount,
+                               decimal SubTotal) { }

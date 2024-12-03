@@ -22,7 +22,9 @@ public record OrderLineIntegrationEvent(string productItemId,
                                         string ProductModel,
                                         string ProductColor,
                                         int ProductStorage,
-                                        string ProductSlug,
+                                        string ProductImageUrl,
                                         int Quantity,
-                                        decimal Price) { }
+                                        decimal Price,
+                                        decimal DiscountAmount,
+                                        decimal SubTotal) { }
 

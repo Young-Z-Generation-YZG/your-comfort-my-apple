@@ -29,12 +29,10 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Model = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Color = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Storage = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false)
+                    Storage = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,13 +84,14 @@ namespace YGZ.Ordering.Persistence.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<string>(type: "text", nullable: false),
-                    ProductName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ProductModel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ProductColor = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ProductStorage = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ProductSlug = table.Column<string>(type: "text", nullable: false),
+                    ProductStorage = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    ProductImageUrl = table.Column<string>(type: "text", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false)
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

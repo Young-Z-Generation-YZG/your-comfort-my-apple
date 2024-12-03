@@ -1,10 +1,13 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using YGZ.Ordering.Application.Core.Abstractions.Data;
 using YGZ.Ordering.Application.Core.Abstractions.Messaging;
 using YGZ.Ordering.Domain.Core.Abstractions.Result;
 using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders;
+using YGZ.Ordering.Domain.Orders.Entities;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 using static YGZ.Ordering.Domain.Core.Enums.Enums;
 
@@ -54,8 +57,45 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, boo
 
         var newOrder = Order.CreateNew(CustomerId.Of(customerId), shippingAddress, billingAddress, status, paymentType);
 
+        foreach (var orderLine in cmd.OrderLines)
+        {
+            try
+            {
+                var product = await _dbContext.Products
+                    .FirstOrDefaultAsync(p => p.Id == ProductId.Of(orderLine.ProductTd), cancellationToken);
+
+                if(product is null)
+                {
+                    var newProduct = Product.CreateNew(ProductId.Of(orderLine.ProductTd), orderLine.Model, orderLine.Color, orderLine.Storage, orderLine.Price);
+                    _dbContext.Products.Add(newProduct);
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            newOrder.AddOrderLine(ProductId.Of(orderLine.ProductTd),
+                                  orderLine.Model,
+                                  orderLine.Color,
+                                  orderLine.Storage,
+                                  orderLine.ProductImageUrl,
+                                  orderLine.Quantity,
+                                  orderLine.Price,
+                                  orderLine.DiscountAmount,
+                                  orderLine.SubTotal);
+        }
+        
         _dbContext.Orders.Add(newOrder);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
 
         return true;
     }
