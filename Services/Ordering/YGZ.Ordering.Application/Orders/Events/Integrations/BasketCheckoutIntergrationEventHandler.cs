@@ -30,7 +30,7 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
 
     private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent message)
     {
-        var paymentStatus = OrderStatus.PENDING.Name;
+        var paymentStatus = OrderStatus.PENDING;
         var paymentType = PaymentType.FromName(message.PaymentType);
 
         var address = new AddressCommand
@@ -59,8 +59,8 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             message.UserId,
             address,
             address,
-            paymentStatus,
-            paymentType,
+            paymentStatus.Name,
+            paymentType.Name,
             orderLines
         );
     }

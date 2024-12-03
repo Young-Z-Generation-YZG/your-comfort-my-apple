@@ -21,57 +21,36 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, boo
 
     public async Task<Result<bool>> Handle(CreateOrderCommand cmd, CancellationToken cancellationToken)
     {
-        if(!Guid.TryParse(cmd.User_id, out Guid customerId))
+        if(!Guid.TryParse(cmd.UserId, out Guid customerId))
         {
             return Errors.Customer.IdInvalid;
         };
 
-        if(!OrderStatus.TryFromName(cmd.Payment_status, out OrderStatus status))
+        if(!OrderStatus.TryFromName(cmd.PaymentStatus, out OrderStatus status))
         {
             return Errors.Order.InvalidOrderStatus;
         }
 
-        if (!PaymentType.TryFromName(cmd.Payment_type, out PaymentType paymentType))
+        if (!PaymentType.TryFromName(cmd.PaymentType, out PaymentType paymentType))
         {
             return Errors.Order.InvalidPaymentType;
         }
 
-        var shippingAddress = Address.CreateNew(null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null);
-        var billingAddress = Address.CreateNew(null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null);
+        var shippingAddress = Address.CreateNew(cmd.ShippingAddress.ContactName,
+                                                cmd.ShippingAddress.ContactEmail,
+                                                cmd.ShippingAddress.ContactPhoneNumber,
+                                                cmd.ShippingAddress.AddressLine,
+                                                cmd.ShippingAddress.District,
+                                                cmd.ShippingAddress.Province,
+                                                cmd.ShippingAddress.Country);
 
-        //if (cmd.Shipping_address is not null)
-        //{
-        //    shippingAddress = Address.CreateNew(cmd.Shipping_address.Contact_name,
-        //                                            cmd.Shipping_address.Contact_email,
-        //                                            cmd.Shipping_address.Contact_phone_number,
-        //                                            cmd.Shipping_address.Address_line,
-        //                                            cmd.Shipping_address.District,
-        //                                            cmd.Shipping_address.Province,
-        //                                            cmd.Shipping_address.Country);
-        //}
-
-        //if(cmd.Billing_address is not null)
-        //{
-        //    billingAddress = Address.CreateNew(cmd.Billing_address.Contact_name,
-        //                                           cmd.Billing_address.Contact_email,
-        //                                           cmd.Billing_address.Contact_phone_number,
-        //                                           cmd.Billing_address.Address_line,
-        //                                           cmd.Billing_address.District,
-        //                                           cmd.Billing_address.Province,
-        //                                           cmd.Billing_address.Country);
-        //}
+        var billingAddress = Address.CreateNew(cmd.BillingAddress.ContactName,
+                                                cmd.BillingAddress.ContactEmail,
+                                                cmd.BillingAddress.ContactPhoneNumber,
+                                                cmd.BillingAddress.AddressLine,
+                                                cmd.BillingAddress.District,
+                                                cmd.BillingAddress.Province,
+                                                cmd.BillingAddress.Country);
 
         var newOrder = Order.CreateNew(CustomerId.Of(customerId), shippingAddress, billingAddress, status, paymentType);
 

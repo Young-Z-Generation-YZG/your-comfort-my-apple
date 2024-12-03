@@ -24,5 +24,5 @@ public record OrderLineIntegrationEvent(string productItemId,
                                         int ProductStorage,
                                         string ProductSlug,
                                         int Quantity,
-                                        double Price) { }
+                                        decimal Price) { }
 

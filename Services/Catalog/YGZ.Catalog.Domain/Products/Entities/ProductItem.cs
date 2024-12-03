@@ -35,7 +35,7 @@ public class ProductItem : Entity<ProductItemId>, IInventory, IAuditable, ISoftD
     public string Description { get; private set; }
 
     [BsonElement("price")]
-    public double Price { get; private set; }
+    public decimal Price { get; private set; }
 
     [BsonElement("quantity_remain")]
     public int QuantityRemain { get; set; }
@@ -77,7 +77,7 @@ public class ProductItem : Entity<ProductItemId>, IInventory, IAuditable, ISoftD
         int storage,
         string description,
         SKU sku,
-        double price,
+        decimal price,
         int quantityInStock,
         List<Image> images,
         DateTime createdAt,
@@ -105,7 +105,7 @@ public class ProductItem : Entity<ProductItemId>, IInventory, IAuditable, ISoftD
                                      string color,
                                      int storage,
                                      string description,
-                                     double price,
+                                     decimal price,
                                      int quantityInStock,
                                      List<Image> images,
                                      DateTime createdDate)

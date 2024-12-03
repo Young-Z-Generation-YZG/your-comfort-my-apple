@@ -21,7 +21,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketByUserIdQuery, GetBa
 
         if (basket.IsFailure)
         {
-            return new GetBasketResponse(null, request.UserId, [], null, null, null);
+            return new GetBasketResponse(null, request.UserId, [], 0, 0, 0, null, null);
         }
 
         var response = new GetBasketResponse(
@@ -31,10 +31,14 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketByUserIdQuery, GetBa
                                                                               line.Model,
                                                                               line.Color,
                                                                               line.Storage,
+                                                                              line.PrimaryImageUrl,
                                                                               line.Quantity,
                                                                               line.Price,
+                                                                              line.DiscountAmount,
                                                                               line.SubTotal)),
-            basket.Response.Total,
+            basket.Response.TotalCostOfGoods,
+            basket.Response.TotalDiscountAmount,
+            basket.Response.TotalAmount,
             basket.Response.CreatedAt,
             basket.Response.UpdatedAt);
 

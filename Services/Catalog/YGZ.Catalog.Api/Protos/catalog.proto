@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 option csharp_namespace = "YGZ.Catalog.Api.Protos";
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 package catalog;
@@ -17,7 +16,7 @@ message Product {
 	string color = 4;
 	int32  storage = 5;
 	string description = 6;
-	double price = 7;
+	google.protobuf.DoubleValue price = 7;
 	string primaryImageUrl = 8;
 }
 

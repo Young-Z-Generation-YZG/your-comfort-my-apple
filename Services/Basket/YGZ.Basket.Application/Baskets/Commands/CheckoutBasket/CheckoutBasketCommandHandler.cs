@@ -63,17 +63,17 @@ public class CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketComman
         {
             OrderType = "Order",
             OrderDescription = "Order Description",
-            Amount = basket.Response.Total * 25000,
+            Amount = basket.Response.TotalAmount * 25000,
             Name = cmd.ContactName,
         };
 
         // Vnpay Payment
-        if (cmd.PaymentType == "VNPAY")
-        {
-            var paymentResult = _vnpayPaymentProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
+        //if (cmd.PaymentType == "VNPAY")
+        //{
+        //    var paymentResult = _vnpayPaymentProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
 
-            return paymentResult;
-        }
+        //    return paymentResult;
+        //}
 
 
         //await _basketRepository.DeleteBasket(cmd.UserId, cancellationToken);

@@ -6,5 +6,6 @@ public record CartLineRequest(
                             string Model,
                             string Color,
                             int Storage,
+                            string Primary_image_url,
                             decimal Price,
                             int Quantity) { }

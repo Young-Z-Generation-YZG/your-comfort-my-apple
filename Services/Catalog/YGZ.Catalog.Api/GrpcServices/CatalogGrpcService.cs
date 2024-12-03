@@ -34,7 +34,7 @@ public class CatalogGrpcService : CatalogProtoService.CatalogProtoServiceBase
             Model = product.Model,
             Color = product.Color,
             Storage = product.Storage,
-            Price = product.Price,
+            Price = (double?)product.Price,
             Description = product.Description,
             PrimaryImageUrl = product.Images.FirstOrDefault()!.Url,
         };

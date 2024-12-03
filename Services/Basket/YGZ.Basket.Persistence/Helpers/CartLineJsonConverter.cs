@@ -18,22 +18,28 @@ public class CartLineJsonConverter : JsonConverter<CartLine>
         var model = doc.RootElement.GetProperty("Model").GetString();
         var color = doc.RootElement.GetProperty("Color").GetString();
         var storage = doc.RootElement.GetProperty("Storage").GetInt32();
-        var imageUrl = doc.RootElement.GetProperty("imageUrl").GetString();
+        var imageUrl = doc.RootElement.GetProperty("PrimaryImageUrl").GetString();
+        var price = doc.RootElement.GetProperty("Price").GetDecimal();
         var quantity = doc.RootElement.GetProperty("Quantity").GetInt32();
-        var price = doc.RootElement.GetProperty("Price").GetDouble();
+        var discountAmount = doc.RootElement.GetProperty("DiscountAmount").GetDecimal();
 
-        return new CartLine(cartLineId, productId!, model!, color!, storage!, imageUrl!, quantity, price);
+        return new CartLine(cartLineId, productId!, model!, color!, storage!, imageUrl!, quantity, price, discountAmount);
     }
 
     public override void Write(Utf8JsonWriter writer, CartLine value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
+
         writer.WriteString("ProductItemId", value.ProductItemId);
         writer.WriteString("Model", value.Model);
         writer.WriteString("Color", value.Color);
         writer.WriteNumber("Storage", value.Storage);
+        writer.WriteString("PrimaryImageUrl", value.PrimaryImageUrl);
         writer.WriteNumber("Quantity", value.Quantity);
         writer.WriteNumber("Price", value.Price);
+        writer.WriteNumber("DiscountAmount", value.DiscountAmount);
+        writer.WriteNumber("SubTotal", value.SubTotal);
+
         writer.WriteEndObject();
     }
 }

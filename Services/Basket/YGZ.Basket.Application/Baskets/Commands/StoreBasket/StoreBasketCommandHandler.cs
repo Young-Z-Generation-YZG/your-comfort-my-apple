@@ -40,17 +40,26 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
         );
 
         var cartLines = new List<CartLine>();
+        var totalAmountOfGoods = request.CartLines.Sum(c => c.Price);
 
         foreach (var productItem in request.CartLines)
         {
             try
             {
+
                 var item = await _catalogProtoServiceClient.GetProductItemByIdAsync(new GetProductItemByIdRequest
                 {
                     ProductItemId = productItem.ProductItemId
                 },
                 cancellationToken: cancellationToken
                 );
+
+                decimal discountAmount = 0;
+
+                if(coupon is not null && coupon.QuantityRemain > 0)
+                {
+                    discountAmount = Convert.ToDecimal(item.Price) * Convert.ToDecimal(coupon.DiscountValue);
+                }
 
                 cartLines.Add(CartLine.CreateNew(
                 item.Id,
@@ -59,7 +68,8 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
                 item.Storage,
                 item.PrimaryImageUrl,
                 productItem.Quantity,
-                item.Price
+                Convert.ToDecimal(item.Price),
+                discountAmount
                 ));
             }
             catch
@@ -70,7 +80,8 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 
         var shoppingCart = ShoppingCart.CreateNew(
             Guid.Parse(request.UserId),
-            cartLines
+            cartLines,
+            totalAmountOfGoods
         );
 
         await _basketRepository.StoreBasket(shoppingCart, cancellationToken);

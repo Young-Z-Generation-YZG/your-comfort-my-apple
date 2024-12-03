@@ -21,7 +21,7 @@ public class ImageMappingConfig : IRegister
             .Map(dest => dest.Secure_url, source => source.SecureUrl)
             .Map(dest => dest.Width, source => (decimal)source.Width)
             .Map(dest => dest.Height, source => (decimal)source.Height)
-            .Map(dest => dest.Length, source => (decimal)source.Length)
+            .Map(dest => dest.Length, source => (decimal)source.Bytes)
             .Map(dest => dest.Bytes, source => (decimal)source.Bytes)
             .Map(dest => dest, source => source);
 

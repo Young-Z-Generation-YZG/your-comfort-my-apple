@@ -98,6 +98,10 @@ public class ProductController : ApiController
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    /// <summary>
+    /// [DONE] Get product'item by id
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("product-items/{productItemId}")]
     public async Task<IActionResult> GetProductItem(string productItemId, CancellationToken cancellationToken = default)
     {
