@@ -7,7 +7,6 @@ using YGZ.Basket.Api;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
 using YGZ.Basket.Persistence;
-using YGZ.BuildingBlocks.Messaging.MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -45,6 +45,6 @@ public class DiscountDbContext : DbContext
         optionsBuilder
             .ConfigureWarnings(warnings => warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
-        base.OnConfiguring(optionsBuilder);
+        //base.OnConfiguring(optionsBuilder);
     }
 }

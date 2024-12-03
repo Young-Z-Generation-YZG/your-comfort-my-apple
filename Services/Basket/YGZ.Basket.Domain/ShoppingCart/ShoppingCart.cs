@@ -14,7 +14,7 @@ public class ShoppingCart : AggregateRoot<ShoppingCartId>, IAuditable
 
     public List<CartLine> CartLines { get; set; } = new();
 
-    public decimal Total => CartLines.Sum(line => line.SubTotal);
+    public double Total => CartLines.Sum(line => line.SubTotal);
 
     public DateTime CreatedAt { get; set; }
 

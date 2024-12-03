@@ -7,7 +7,7 @@ namespace YGZ.Basket.Application.Contracts;
 public sealed record GetBasketResponse(string? CartId,
                                        string UserId,
                                        List<CartLineResponse> Cart_lines,
-                                       decimal? Total,
+                                       double? Total,
                                        DateTime? Created_at,
                                        DateTime? Updated_at) { }
 

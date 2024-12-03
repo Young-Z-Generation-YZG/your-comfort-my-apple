@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace GYZ.Discount.Grpc.Migrations
+namespace GYZ.Discount.Grpc.Data.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
     partial class DiscountDbContextModelSnapshot : ModelSnapshot
@@ -83,19 +83,19 @@ namespace GYZ.Discount.Grpc.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("00bdce8c-5b77-42bc-98c9-87f1fcb83c8c"),
+                            Id = new Guid("d203cbdc-f010-4ec6-9d42-512893ca7006"),
                             Code = "CODE",
-                            CreatedAt = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4875),
+                            CreatedAt = new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(2328),
                             Description = "Summer 2024 description",
                             DiscountValue = 0.20000000000000001,
                             QuantityRemain = 20,
                             Status = 1,
                             Title = "Summer 2024",
                             Type = 0,
-                            UpdatedAt = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4877),
+                            UpdatedAt = new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(2329),
                             UsageLimit = 20,
-                            ValidFrom = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(2113),
-                            ValidTo = new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(3272)
+                            ValidFrom = new DateTime(2024, 12, 3, 7, 33, 39, 448, DateTimeKind.Utc).AddTicks(9761),
+                            ValidTo = new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(543)
                         });
                 });
 #pragma warning restore 612, 618

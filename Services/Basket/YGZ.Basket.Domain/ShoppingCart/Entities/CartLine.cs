@@ -11,10 +11,11 @@ public class CartLine : Entity<CartLineId>
     public string Model { get; private set; }
     public string Color { get; private set; }
     public int Storage { get; private set; }
+    public string imageUrl { get; private set; }
     public int Quantity { get; private set; }
-    public decimal Price { get; private set; }
+    public double Price { get; private set; }
 
-    public decimal SubTotal => Price * Quantity;
+    public double SubTotal => Price * Quantity;
 
     public CartLine(
         CartLineId id,
@@ -22,8 +23,9 @@ public class CartLine : Entity<CartLineId>
         string model,
         string color,
         int storage,
+        string imageUrl,
         int quantity,
-        decimal price) : base(id)
+        double price) : base(id)
     {
         ProductItemId = productItemId;
         Quantity = quantity;
@@ -33,8 +35,8 @@ public class CartLine : Entity<CartLineId>
         Storage = storage;
     }
 
-    public static CartLine CreateNew(string productItemId, string model, string color, int storage, int quantity, decimal price)
+    public static CartLine CreateNew(string productItemId, string model, string color, int storage, string imageUrl, int quantity, double price)
     {
-        return new(CartLineId.CreateUnique(), productItemId, model, color, storage, quantity, price);
+        return new(CartLineId.CreateUnique(), productItemId, model, color, storage, imageUrl, quantity, price);
     }
 }

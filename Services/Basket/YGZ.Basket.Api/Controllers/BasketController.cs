@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using YGZ.Basket.Application.Baskets.Queries.GetBasket;
 using YGZ.Basket.Api.Common.Extensions;
-using YGZ.Basket.Application.Contracts;
 using YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 using YGZ.Basket.Application.Baskets.Commands.DeleteBasket;
 using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.Baskets.Commands.CheckoutBasket;
+using Swashbuckle.AspNetCore.Filters;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+using YGZ.Basket.Api.Common.SwaggerExamples;
 
 namespace YGZ.Basket.Api.Controllers;
 
@@ -36,14 +38,22 @@ public class BasketController : ApiController
     }
 
     [HttpPost]
+    [SwaggerRequestExample(typeof(StoreBasketRequest), typeof(StoreBasketRequestExample))]
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, [FromQuery] string? coupon = null, CancellationToken cancellationToken = default)
     {
-        var cmd = new StoreBasketCommand
-        {
-            UserId = request.UserId,
-            CouponCode = coupon,
-            CartLines = request.Cart_lines.Select(line => new CartLineCommand(line.ProductItemId, line.Model, line.Color, line.Storage, line.Price, line.Quantity)).ToList()
-        };
+        var cmd = 
+            new StoreBasketCommand
+            { 
+                UserId = request.UserId,
+                CouponCode = coupon,
+                CartLines = request.Cart_lines.ConvertAll(line => new CartLineCommand(line.ProductItemId,
+                                                                                      line.Model,
+                                                                                      line.Color,
+                                                                                      line.Storage,
+                                                                                      line.Price,
+                                                                                      line.Quantity)),
+            };
+
 
         var result = await _mediator.Send(cmd, cancellationToken);
 

@@ -18,10 +18,11 @@ public class CartLineJsonConverter : JsonConverter<CartLine>
         var model = doc.RootElement.GetProperty("Model").GetString();
         var color = doc.RootElement.GetProperty("Color").GetString();
         var storage = doc.RootElement.GetProperty("Storage").GetInt32();
+        var imageUrl = doc.RootElement.GetProperty("imageUrl").GetString();
         var quantity = doc.RootElement.GetProperty("Quantity").GetInt32();
-        var price = doc.RootElement.GetProperty("Price").GetDecimal();
+        var price = doc.RootElement.GetProperty("Price").GetDouble();
 
-        return new CartLine(cartLineId, productId!, model!, color!, storage!, quantity, price);
+        return new CartLine(cartLineId, productId!, model!, color!, storage!, imageUrl!, quantity, price);
     }
 
     public override void Write(Utf8JsonWriter writer, CartLine value, JsonSerializerOptions options)

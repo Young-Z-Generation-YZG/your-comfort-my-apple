@@ -7,6 +7,6 @@ public sealed record CartLineResponse(
     string Color,
     int Storage,
     int Quantity,
-    decimal Price,
-    decimal Sub_total) { }
+    double Price,
+    double Sub_total) { }
 

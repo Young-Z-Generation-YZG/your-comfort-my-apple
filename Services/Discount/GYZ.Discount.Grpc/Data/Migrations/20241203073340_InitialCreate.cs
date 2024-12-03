@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GYZ.Discount.Grpc.Migrations
+namespace GYZ.Discount.Grpc.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -40,7 +40,7 @@ namespace GYZ.Discount.Grpc.Migrations
             migrationBuilder.InsertData(
                 table: "Coupons",
                 columns: new[] { "Id", "Code", "CreatedAt", "DeletedAt", "Description", "DiscountValue", "MaxDiscountAmount", "MinPurchaseAmount", "QuantityRemain", "Status", "Title", "Type", "UpdatedAt", "UsageLimit", "ValidFrom", "ValidTo" },
-                values: new object[] { new Guid("00bdce8c-5b77-42bc-98c9-87f1fcb83c8c"), "CODE", new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4875), null, "Summer 2024 description", 0.20000000000000001, null, null, 20, 1, "Summer 2024", 0, new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(4877), 20, new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(2113), new DateTime(2024, 11, 28, 5, 19, 7, 996, DateTimeKind.Utc).AddTicks(3272) });
+                values: new object[] { new Guid("d203cbdc-f010-4ec6-9d42-512893ca7006"), "CODE", new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(2328), null, "Summer 2024 description", 0.20000000000000001, null, null, 20, 1, "Summer 2024", 0, new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(2329), 20, new DateTime(2024, 12, 3, 7, 33, 39, 448, DateTimeKind.Utc).AddTicks(9761), new DateTime(2024, 12, 3, 7, 33, 39, 449, DateTimeKind.Utc).AddTicks(543) });
         }
 
         /// <inheritdoc />
