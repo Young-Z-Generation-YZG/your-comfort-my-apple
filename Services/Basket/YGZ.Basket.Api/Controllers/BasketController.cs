@@ -6,7 +6,6 @@ using YGZ.Basket.Application.Baskets.Queries.GetBasket;
 using YGZ.Basket.Api.Common.Extensions;
 using YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 using YGZ.Basket.Application.Baskets.Commands.DeleteBasket;
-using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.Baskets.Commands.CheckoutBasket;
 using Swashbuckle.AspNetCore.Filters;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
@@ -61,6 +60,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost("checkout")]
+    [SwaggerRequestExample(typeof(CheckoutBasketRequest), typeof(CheckoutBasketRequestExample))]
     public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken = default)
     {
         var cmd = _mapper.Map<CheckoutBasketCommand>(request);

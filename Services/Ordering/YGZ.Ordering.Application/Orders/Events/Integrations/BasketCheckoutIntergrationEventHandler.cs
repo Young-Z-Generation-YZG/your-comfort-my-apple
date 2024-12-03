@@ -30,19 +30,36 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
 
     private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent message)
     {
-        var paymentStaus = OrderStatus.PENDING.Name;
-        var paymentType = PaymentType.MOMO.Name;
+        var paymentStatus = OrderStatus.PENDING.Name;
+        var paymentType = PaymentType.FromName(message.PaymentType);
 
-        var orderLines = new List<OrderLineCommand> {
-            new OrderLineCommand(new Guid().ToString(), "iPhone 16", "iPhone 16", "pink", 256, "iphone-16", 1000, 1),
-            new OrderLineCommand(new Guid().ToString(), "iPhone 16", "iPhone 16 Plus", "pink", 256, "iphone-16", 1000, 1)
-        };
+        var address = new AddressCommand
+            (
+            message.ContactName,
+            message.ContactPhoneNumber,
+            message.ContactEmail,
+            message.AddressLine,
+            message.District,
+            message.Province,
+            message.Country
+            );
+
+        var orderLines = message.CartLines.Select(o => new OrderLineCommand(
+            o.productItemId,
+            o.ProductModel,
+            o.ProductColor,
+            o.ProductStorage,
+            o.ProductSlug,
+            o.Price,
+            o.Quantity,
+            o.Quantity * o.Price
+        )).ToList();
 
         return new CreateOrderCommand(
             message.UserId,
-            null,
-            null,
-            paymentStaus,
+            address,
+            address,
+            paymentStatus,
             paymentType,
             orderLines
         );

@@ -16,7 +16,7 @@ public static partial class Enums
         public static readonly OrderStatus CANCELLED = new(nameof(CANCELLED), 4);
         public static readonly OrderStatus RETURNED = new(nameof(RETURNED), 5);
 
-        public static readonly OrderStatus WAITTING_FOR_PAY = new(nameof(WAITTING_FOR_PAY), 7);
+        public static readonly OrderStatus WAITING_FOR_PAY = new(nameof(WAITING_FOR_PAY), 7);
         public static readonly OrderStatus PAID = new(nameof(PAID), 6);
     }
 }

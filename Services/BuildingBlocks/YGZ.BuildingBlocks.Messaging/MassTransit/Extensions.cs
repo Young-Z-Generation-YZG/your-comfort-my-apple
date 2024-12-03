@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-using YGZ.BuildingBlocks.Messaging.ServiceEvents.BasketEvents;
 
 namespace YGZ.BuildingBlocks.Messaging.MassTransit;
 
@@ -22,7 +21,7 @@ public static class Extensions
 
             config.UsingRabbitMq((context, configuarator) =>
             {
-                MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
+                //MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
 
                 configuarator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
                 {

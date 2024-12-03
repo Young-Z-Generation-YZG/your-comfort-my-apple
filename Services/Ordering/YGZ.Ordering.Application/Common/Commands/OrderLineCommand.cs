@@ -2,11 +2,11 @@
 
 namespace YGZ.Ordering.Application.Common.Commands;
 
-public record OrderLineCommand(string Product_id,
-                               string Name,
+public record OrderLineCommand(string ProductTd,
                                string Model,
                                string Color,
                                int Storage,
                                string Slug,
-                               decimal Price,
-                               int Quantity) { }
+                               double Price,
+                               int Quantity,
+                               double SubTotal) { }

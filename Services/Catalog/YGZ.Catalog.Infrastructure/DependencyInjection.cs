@@ -1,8 +1,6 @@
 ﻿
-using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 using YGZ.BuildingBlocks.Messaging.MassTransit;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
