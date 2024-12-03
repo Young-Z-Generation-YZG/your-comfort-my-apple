@@ -22,6 +22,11 @@ public class ProductService : ProductRepository, IProductService
 
         var result = await FindOneAsync(filter => filter.Slug == new Slug(slug), cancellationToken).ConfigureAwait(false);
 
+        if(result is null)
+        {
+            return Errors.Product.NotFoundWithSlug(slug);
+        }
+
         return result;
     }
 

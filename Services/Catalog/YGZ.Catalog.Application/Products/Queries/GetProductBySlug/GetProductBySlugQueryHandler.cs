@@ -23,9 +23,9 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
     {
         var result = await _productService.GetBySlug(request.Slug, cancellationToken);
 
-        if (result is null)
+        if (result.IsFailure)
         {
-            return Errors.Product.DoesNotExist;
+            return result.Error;
         }
 
         var product = result.Response!;
