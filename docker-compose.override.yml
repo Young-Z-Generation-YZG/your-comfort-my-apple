@@ -152,6 +152,7 @@ services:
       - MessageBrokerSettings__Username=guest
       - MessageBrokerSettings__Password=guest
       - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+    restart: always
     depends_on:
       basketdb:
         condition: service_started

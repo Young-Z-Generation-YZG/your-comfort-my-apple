@@ -13,15 +13,19 @@ public class Image : ValueObject
     [BsonElement("image_id")]
     public string ImageId { get; private set; }
 
-    private Image(string url, string id)
+    [BsonElement("order")]
+    public int Order { get; set; }
+
+    private Image(string url, string id, int order)
     {
         ImageUrl = url;
         ImageId = id;
+        Order = order;
     }
 
-    public static Image Create(string url, string id)
+    public static Image Create(string url, string id, int order)
     {
-        return new Image(url, id);
+        return new Image(url, id, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

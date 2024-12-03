@@ -27,7 +27,7 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
             p.Name,
             p.Description,
             p.Models.ConvertAll(model => new ModelResponse(model.Name, model.Order)),
-            p.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+            p.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.Order)),
             p.Storages.ConvertAll(storage => new StorageResponse(storage.Name, storage.Value)),
             new AverageRatingResponse(p.AverageRating.AverageValue, p.AverageRating.NumRatings),
             p.ProductItems.Select(pi => new ProductItemResponse(

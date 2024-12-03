@@ -36,7 +36,7 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
                                            product.Name,
                                            product.Description,
                                            product.Models.ConvertAll(model => new ModelResponse(model.Name, model.Order)),
-                                           product.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+                                           product.Colors.ConvertAll(color => new ColorResponse(color.Name, color.ColorHash, color.Order)),
                                            product.Storages.ConvertAll(storage => new StorageResponse(storage.Name, storage.Value)),
                                            new AverageRatingResponse(product.AverageRating.AverageValue, product.AverageRating.NumRatings),
                                            product.ProductItems.Select(pi => new ProductItemResponse(

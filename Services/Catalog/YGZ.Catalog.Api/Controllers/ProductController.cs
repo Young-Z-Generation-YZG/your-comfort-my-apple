@@ -66,8 +66,6 @@ public class ProductController : ApiController
     {
         var cmd = _mapper.Map<CreateProductCommand>(request);
 
-        //cmd.Files = request.Files; 
-
         var result = await _mediator.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);

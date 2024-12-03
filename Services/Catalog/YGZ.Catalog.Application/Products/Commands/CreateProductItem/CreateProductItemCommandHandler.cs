@@ -54,7 +54,7 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
                                              request.Storage,
                                              request.Price,
                                              request.Quantity_in_stock,
-                                             request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
+                                             request.Images.ConvertAll(image => Image.Create(image.Url, image.Id, image.Order)),
                                              _dateTimeProvider.Now
                                              );
 
