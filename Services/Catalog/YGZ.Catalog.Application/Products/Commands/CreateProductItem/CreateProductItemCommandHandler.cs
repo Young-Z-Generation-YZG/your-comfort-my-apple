@@ -10,6 +10,7 @@ using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Entities;
 using YGZ.Catalog.Domain.Products.ValueObjects;
+using YGZ.Catalog.Domain.Promotions.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 
@@ -28,33 +29,35 @@ public class CreateProductItemCommandHandler : ICommandHandler<CreateProductItem
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<Result<bool>> Handle(CreateProductItemCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(CreateProductItemCommand cmd, CancellationToken cancellationToken)
     {
-        var product = await _productService.FindByIdAsync(request.ProductId!, cancellationToken);
+        var product = await _productService.FindByIdAsync(cmd.ProductId!, cancellationToken);
     
         if (product is null)
         {
             return Errors.Product.DoesNotExist;
         }
 
-        if (!product.Models.Any(model => model.Name == request.Model))
+        if (!product.Models.Any(model => model.Name == cmd.Model))
         {
             return Errors.Product.InvalidModel(product.Models.ConvertAll(model => model.Name));
         }
 
-        if (!product.Colors.Any(model => model.Name == request.Color))
+        if (!product.Colors.Any(model => model.Name == cmd.Color))
         {
             return Errors.Product.InvalidColor(product.Colors.ConvertAll(model => model.Name));
         }
 
         var productItem = ProductItem.Create(ProductItemId.CreateUnique(), 
                                              product.Id,
-                                             request.Model,
-                                             request.Color,
-                                             request.Storage,
-                                             request.Price,
-                                             request.Quantity_in_stock,
-                                             request.Images.ConvertAll(image => Image.Create(image.Url, image.Id, image.Order)),
+                                             PromotionId.ToObjectId(cmd.ProductId),
+                                             cmd.Model,
+                                             cmd.Color,
+                                             cmd.Storage,
+                                             cmd.Description,
+                                             cmd.Price,
+                                             cmd.Quantity_in_stock,
+                                             cmd.Images.ConvertAll(image => Image.Create(image.Url, image.Id, image.Order)),
                                              _dateTimeProvider.Now
                                              );
 
