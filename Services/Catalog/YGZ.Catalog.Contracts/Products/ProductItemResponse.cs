@@ -1,6 +1,5 @@
 ﻿
 using YGZ.Catalog.Contracts.Common;
-using YGZ.Catalog.Domain.Core.Enums;
 
 namespace YGZ.Catalog.Contracts.Products;
 
@@ -8,9 +7,10 @@ public sealed record ProductItemResponse(string Sku,
                                          string Model,
                                          string Color,
                                          int Storage,
+                                         string Description,
                                          int Quantity_remain,
                                          int Quantity_in_stock,
-                                         int sold,
+                                         int Sold,
                                          double Price,
                                          List<ImageResponse> Images,
                                          string State,

@@ -12,7 +12,6 @@ public class MongoContext : IMongoContext
 {
     private IClientSessionHandle Session { get; set; }
     private readonly List<Func<Task>> _commands = new();
-    private readonly IConfiguration _configuration;
     private readonly MongoClient _mongoClient;
     private readonly IMongoDatabase _mongoDb;
 

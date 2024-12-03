@@ -1,4 +1,4 @@
 ﻿
 namespace YGZ.Catalog.Contracts.Common;
 
-public sealed record ImageResponse(string Image_url, string Image_id) { }
+public sealed record ImageResponse(string  Url, string Id, int Order) { }

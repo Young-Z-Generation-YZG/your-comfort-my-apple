@@ -14,10 +14,11 @@ public sealed record ProductResponse(string Id,
                                     List<ColorResponse> Colors,
                                     List<StorageResponse> Storages,
                                     AverageRatingResponse Average_rating,
+                                    List<StarRatingResponse> Star_ratings,
                                     List<ProductItemResponse> Product_items,
                                     List<ImageResponse> Images,
                                     string Slug,
-                                    ProductStateEnum State,
+                                    string State,
                                     DateTime Created_at,
                                     DateTime Updated_at) { }
 
