@@ -6,7 +6,6 @@ using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
 using YGZ.Catalog.Contracts.Common;
 using YGZ.Catalog.Contracts.Products;
 using YGZ.Catalog.Domain.Core.Abstractions.Result;
-using YGZ.Catalog.Domain.Core.Errors;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductById;
 
@@ -41,6 +40,7 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
                                            new AverageRatingResponse(product.AverageRating.AverageValue, product.AverageRating.NumRatings),
                                            product.StarRatings.Select(sr => new StarRatingResponse(sr.Star, sr.NumRatings)).ToList(),
                                            product.ProductItems.Select(pi => new ProductItemResponse(
+                                               pi.Id.Value.ToString(),
                                                pi.Sku.Value,
                                                pi.Model,
                                                pi.Color,

@@ -21,7 +21,7 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
         var products = await _productService.GetAllAsync(cancellationToken);
 
         var responses = products.Select(p => new ProductResponse(
-            p.Id.ValueStr,
+            p.Id.Value.ToString(),
             p.CategoryId.ValueStr,
             p.PromotionId.ValueStr,
             p.Name,
@@ -32,6 +32,7 @@ public class GetAllProductsQueryHandler : IQueryHandler<GetAllProductsQuery, IEn
             new AverageRatingResponse(p.AverageRating.AverageValue, p.AverageRating.NumRatings),
             p.StarRatings.Select(sr => new StarRatingResponse(sr.Star, sr.NumRatings)).ToList(),
             p.ProductItems.Select(pi => new ProductItemResponse(
+                pi.Id.Value.ToString(),
                 pi.Sku.Value,
                 pi.Model,
                 pi.Color,

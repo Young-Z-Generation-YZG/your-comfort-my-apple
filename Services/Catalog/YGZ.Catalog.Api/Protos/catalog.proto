@@ -7,14 +7,20 @@ import "google/protobuf/wrappers.proto";
 package catalog;
 
 service CatalogProtoService {
-	rpc GetProduct(GetProductRequest) returns (Product);
+	rpc GetProductItemById(GetProductItemByIdRequest) returns (Product);
 }
 
 message Product {
-	string productItemId = 1;
-	string name = 2;
+	string id = 1;
+	string sku = 2;
+	string model = 3;
+	string color = 4;
+	int32  storage = 5;
+	string description = 6;
+	double price = 7;
+	string primaryImageUrl = 8;
 }
 
-message GetProductRequest {
+message GetProductItemByIdRequest {
 	string productItemId = 1;
 }

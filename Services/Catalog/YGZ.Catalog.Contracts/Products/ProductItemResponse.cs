@@ -3,7 +3,8 @@ using YGZ.Catalog.Contracts.Common;
 
 namespace YGZ.Catalog.Contracts.Products;
 
-public sealed record ProductItemResponse(string Sku,
+public sealed record ProductItemResponse(string Id,
+                                         string Sku,
                                          string Model,
                                          string Color,
                                          int Storage,

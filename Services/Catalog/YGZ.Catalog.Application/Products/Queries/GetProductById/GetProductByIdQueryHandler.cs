@@ -38,6 +38,7 @@ public class GetProductByIdQueryHandler : IQueryHandler<GetProductByIdQuery, Pro
                                            new AverageRatingResponse(product.AverageRating.AverageValue, product.AverageRating.NumRatings),
                                            product.StarRatings.Select(sr => new StarRatingResponse(sr.Star, sr.NumRatings)).ToList(),
                                            product.ProductItems.Select(pi => new ProductItemResponse(
+                                               pi.Id.Value.ToString(),
                                                pi.Sku.Value,
                                                pi.Model,
                                                pi.Color,

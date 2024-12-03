@@ -9,9 +9,9 @@ using YGZ.Catalog.Contracts.Products;
 using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
-using YGZ.Catalog.Application.Products.Queries.GetProductById;
 using YGZ.Catalog.Application.Products.Commands.DeleteProductById;
 using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
+using YGZ.Catalog.Application.ProductItems.Queries.GetProductItemById;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -90,19 +90,22 @@ public class ProductController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("product-items")]
-    public async Task<IActionResult> GetProductItems(CancellationToken cancellationToken = default)
+    [HttpGet("{productId}/product-items")]
+    public async Task<IActionResult> GetProductItems(string productId, CancellationToken cancellationToken = default)
     {
         await Task.CompletedTask;
         return Ok();
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("product-items/{id}")]
-    public async Task<IActionResult> GetProductItem(string id, CancellationToken cancellationToken = default)
+    [HttpGet("product-items/{productItemId}")]
+    public async Task<IActionResult> GetProductItem(string productItemId, CancellationToken cancellationToken = default)
     {
-        await Task.CompletedTask;
-        return Ok();
+        var query = new GetProductItemByIdQuery(productItemId);
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 

@@ -44,6 +44,8 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
+
+    app.MapGrpcReflectionService();
 }
 else
 {
