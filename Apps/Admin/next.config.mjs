@@ -16,7 +16,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["store.storeimages.cdn-apple.com"],
+    domains: ["store.storeimages.cdn-apple.com", "res.cloudinary.com"],
   },
 };
 

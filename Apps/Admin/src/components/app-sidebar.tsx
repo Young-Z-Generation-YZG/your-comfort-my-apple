@@ -46,7 +46,7 @@ const data = {
       items: [
         {
           title: "Analytics",
-          url: "#",
+          url: "/dashboards/products/analytics",
         },
         {
           title: "List view",
@@ -58,7 +58,7 @@ const data = {
         },
         {
           title: "Overview",
-          url: "#",
+          url: "/dashboards/products/overview",
         },
         {
           title: "New Iphone Model",
@@ -124,17 +124,17 @@ const data = {
   dashboards: [
     {
       name: "Revenue Analytics",
-      url: "#",
+      url: "/dashboards/revenue-analytics",
       icon: ChartNoAxesCombined,
     },
     {
       name: "User Reports",
-      url: "#",
+      url: "/dashboards/user-reports",
       icon: UsersRound,
     },
     {
       name: "User'agent Reports",
-      url: "#",
+      url: "/dashboards/user-agent-reports",
       icon: MonitorSmartphone,
     },
   ],

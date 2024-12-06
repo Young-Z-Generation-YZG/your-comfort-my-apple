@@ -4,8 +4,9 @@ import CardWrapper, {
   CardContent,
 } from "~/components/card-wrapper";
 import { AreaChartInteractive } from "~/components/chart-ui/area-chart-interactive";
-import { BarChartInteractive } from "~/components/chart-ui/bar-chart-interactive";
-import { BarChartLabel } from "~/components/chart-ui/bar-chart-label";
+import { PieChartDonutWithText } from "~/components/chart-ui/pie-chart-donut-with-text";
+import { PieChartInteractive } from "~/components/chart-ui/pie-chart-interactive";
+import { RadarChartRadiusAxis } from "~/components/chart-ui/radar-chart-radius-axis";
 
 const CardData: AppCardProps[] = [
   {
@@ -34,11 +35,11 @@ const CardData: AppCardProps[] = [
   },
 ];
 
-const IphoneAnalytics = () => {
+const UserAgentReportPage = () => {
   return (
     <div className="flex flex-col flex-1 gap-4 p-4">
       <CardContent>
-        <h2 className="ml-5 text-2xl font-bold mb-3">iPhone reports</h2>
+        <h2 className="ml-5 text-2xl font-bold mb-3">User'agents Report</h2>
 
         <div className="flex gap-4">
           <CardWrapper
@@ -71,19 +72,27 @@ const IphoneAnalytics = () => {
         </div>
       </CardContent>
 
-      <CardContent>
-        <BarChartLabel />
-      </CardContent>
+      <div className="flex gap-4">
+        <CardContent>
+          <PieChartInteractive />
+        </CardContent>
 
-      <CardContent>
-        <BarChartInteractive />
-      </CardContent>
+        <CardContent>
+          <PieChartDonutWithText />
+        </CardContent>
+      </div>
 
-      <CardContent>
-        <AreaChartInteractive />
-      </CardContent>
+      <div className="grid grid-cols-3 gap-4">
+        <CardContent className="col-span-1">
+          <RadarChartRadiusAxis />
+        </CardContent>
+
+        <CardContent className="col-span-2">
+          <AreaChartInteractive />
+        </CardContent>
+      </div>
     </div>
   );
 };
 
-export default IphoneAnalytics;
+export default UserAgentReportPage;

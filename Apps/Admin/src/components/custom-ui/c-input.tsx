@@ -8,11 +8,12 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
 
 export type CInputProps = {
   form: UseFormReturn;
   name: string;
-  type: "text" | "email" | "password" | "number" | "color" | "url";
+  type: "text" | "email" | "password" | "number" | "color" | "url" | "textarea";
   label?: string;
   description?: string;
   disabled?: boolean;
@@ -21,6 +22,7 @@ export type CInputProps = {
   descriptionClassName?: string;
   defaultValue?: string;
   value?: string;
+  placeholder?: string;
 };
 
 const CInput = (props: CInputProps) => {
@@ -34,14 +36,25 @@ const CInput = (props: CInputProps) => {
             {props.label || ""}
           </FormLabel>
           <FormControl>
-            <Input
-              {...field}
-              type={props.type}
-              disabled={props.disabled}
-              className={props.inputClassname}
-              defaultValue={props.defaultValue}
-              value={props.value || field.value}
-            />
+            {props.type !== "textarea" ? (
+              <Input
+                {...field}
+                type={props.type}
+                disabled={props.disabled}
+                className={props.inputClassname}
+                defaultValue={props.defaultValue}
+                value={props.value || field.value}
+              />
+            ) : (
+              <Textarea
+                {...field}
+                disabled={props.disabled}
+                className={props.inputClassname}
+                defaultValue={props.defaultValue}
+                value={props.value || field.value}
+                placeholder={props.placeholder}
+              />
+            )}
           </FormControl>
 
           <FormDescription className={props.descriptionClassName}>

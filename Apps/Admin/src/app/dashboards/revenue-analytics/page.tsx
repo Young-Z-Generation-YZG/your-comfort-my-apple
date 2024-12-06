@@ -34,11 +34,11 @@ const CardData: AppCardProps[] = [
   },
 ];
 
-const IphoneAnalytics = () => {
+const RevenueAnalyticsPage = () => {
   return (
     <div className="flex flex-col flex-1 gap-4 p-4">
       <CardContent>
-        <h2 className="ml-5 text-2xl font-bold mb-3">iPhone reports</h2>
+        <h2 className="ml-5 text-2xl font-bold mb-3">Revenue Report</h2>
 
         <div className="flex gap-4">
           <CardWrapper
@@ -86,4 +86,4 @@ const IphoneAnalytics = () => {
   );
 };
 
-export default IphoneAnalytics;
+export default RevenueAnalyticsPage;
