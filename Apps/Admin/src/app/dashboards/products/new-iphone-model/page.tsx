@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Form, FormDescription, FormLabel } from "~/components/ui/form";
 import { z } from "zod";
-import { set, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CInput from "~/components/custom-ui/c-input";
 import { Cylinder } from "lucide-react";
@@ -18,6 +16,15 @@ import CChooseImage from "~/components/custom-ui/c-choose-image";
 import * as CatalogServices from "~/services/catalog.services";
 import { ICreateNewIPhoneModelPayload } from "~/types/api-types/catalog.type";
 import { LoadingOverlay } from "~/components/loading-overlay";
+import DragTest from "~/components/drag/drag-test";
+import {
+  Sortable,
+  SortableDragHandle,
+  SortableItem,
+} from "~/components/dnd-ui/sortable";
+import { RxDragHandleDots2 } from "react-icons/rx";
+import { FaRegTrashAlt } from "react-icons/fa";
+import DragWrapper from "~/components/dnd-ui/drag-wrapper";
 
 const colorVariantSchema = z.object({
   name: z
@@ -38,25 +45,22 @@ const imagesSchema = z.object({
   order: z.number().int().positive("Order must be a positive integer"),
 });
 
+const modelSchema = z.object({
+  name: z.string().min(1, {
+    message: "Model name is required",
+  }),
+});
+
 const CreateModelFormSchema = z.object({
-  name: z.string().min(6, {
-    message: "Name must be at least 6 characters",
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+  models: z.array(modelSchema).min(1, {
+    message: "At least one model is required",
   }),
   description: z.string().min(1, {
     message: "Description is required",
   }),
-  models: z
-    .array(
-      z.object({
-        name: z.string().min(3, {
-          message: "Model name must be at least 3 characters",
-        }),
-        order: z.number().int().positive("Order must be a positive integer"),
-      })
-    )
-    .min(1, {
-      message: "At least one model is required",
-    }),
   storages: z
     .array(z.string())
     .min(1, {
@@ -121,39 +125,6 @@ const storagesList = [
   { value: "2048", label: "2048GB", icon: Cylinder },
 ];
 
-const imagesList = [
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127697",
-    imageId: "imageId1",
-  },
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-2-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127558",
-    imageId: "imageId2",
-  },
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-3-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127642",
-    imageId: "imageId3",
-  },
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-4-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127808",
-    imageId: "imageId4",
-  },
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-5-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127726",
-    imageId: "imageId5",
-  },
-  {
-    imageUrl:
-      "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127697",
-    imageId: "imageId6",
-  },
-];
-
 const IphoneModelPage = () => {
   const [selectedStorages, setSelectedStorages] = useState<string[]>([
     "64",
@@ -162,11 +133,10 @@ const IphoneModelPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Default value
   const defaultValues: Partial<z.infer<typeof CreateModelFormSchema>> = {
     name: "",
     description: "",
-    models: [{ name: "", order: 1 }],
+    models: [{ name: "" }],
     storages: selectedStorages,
     colors: [{ name: "", colorHash: "", order: 1 }],
     images: [{ imageUrl: "", imageId: "", order: 1 }],
@@ -178,20 +148,21 @@ const IphoneModelPage = () => {
   });
 
   const {
+    fields: models,
+    append: appendModel,
+    move: moveModel,
+    remove: removeModel,
+  } = useFieldArray({
+    name: "models",
+    control: form.control,
+  });
+
+  const {
     fields: colors,
     append: appendColor,
     remove: removeColor,
   } = useFieldArray({
     name: "colors",
-    control: form.control,
-  });
-
-  const {
-    fields: models,
-    append: appendModel,
-    remove: removeModel,
-  } = useFieldArray({
-    name: "models",
     control: form.control,
   });
 
@@ -208,9 +179,6 @@ const IphoneModelPage = () => {
     form.setValue("storages", selectedStorages, { shouldValidate: true });
   }, [selectedStorages, form]);
 
-  // console.log("message", form.formState.errors.colors);
-  // console.log("colors", form.watch(`colors.${1}.colorHash`) ?? "#0000cd");
-
   const handleCreateIphoneModel = async (
     data: z.infer<typeof CreateModelFormSchema>
   ) => {
@@ -225,87 +193,15 @@ const IphoneModelPage = () => {
       ),
     });
 
-    // const examplePayload: ICreateNewIPhoneModelPayload = {
-    //   name: "iPhone 16",
-    //   description: "iPhone 16 description",
-    //   models: [
-    //     {
-    //       name: "iPhone 16",
-    //       order: 1,
-    //     },
-    //     {
-    //       name: "iPhone 16 Plus",
-    //       order: 2,
-    //     },
-    //   ],
-    //   colors: [
-    //     {
-    //       name: "ultramarine",
-    //       color_hash: "#a1aff5",
-    //       order: 1,
-    //     },
-    //     {
-    //       name: "teal",
-    //       color_hash: "#bad7d6",
-    //       order: 2,
-    //     },
-    //     {
-    //       name: "pink",
-    //       color_hash: "#e9aed6",
-    //       order: 3,
-    //     },
-    //     {
-    //       name: "white",
-    //       color_hash: "#fafafa",
-    //       order: 4,
-    //     },
-    //     {
-    //       name: "black",
-    //       color_hash: "#474a4d",
-    //       order: 5,
-    //     },
-    //   ],
-    //   storages: [128, 256, 512],
-    //   images: [
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127697",
-    //       id: "image_id1",
-    //       order: 1,
-    //     },
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-2-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127558",
-    //       id: "image_id2",
-    //       order: 2,
-    //     },
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-3-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127642",
-    //       id: "image_id3",
-    //       order: 3,
-    //     },
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-4-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127808",
-    //       id: "image_id4",
-    //       order: 4,
-    //     },
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-5-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127726",
-    //       id: "image_id5",
-    //       order: 5,
-    //     },
-    //     {
-    //       url: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-6-202409?wid=728&hei=666&fmt=p-jpg&qlt=95&.v=1723669127802",
-    //       id: "image_id6",
-    //       order: 6,
-    //     },
-    //   ],
-    //   categoryId: "672cdaed4e67692dff64a47c",
-    //   promotionId: "672cdaed4e67692dff64a47c",
-    // };
-
     const payload: ICreateNewIPhoneModelPayload = {
       name: data.name,
       description: data.description,
-      models: data.models,
+      models: data.models.map((m, index) => {
+        return {
+          name: m.name,
+          order: index + 1,
+        };
+      }),
       storages: data.storages.map((s) => parseInt(s)),
       colors: data.colors.map((color) => {
         return {
@@ -354,7 +250,6 @@ const IphoneModelPage = () => {
         <div className="basis-[70%] bg-muted/50 rounded-xl p-3">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleCreateIphoneModel)}>
-              {/* name */}
               <CInput
                 form={form as any}
                 name="name"
@@ -363,7 +258,6 @@ const IphoneModelPage = () => {
                 description="Enter general product model each product item"
               />
 
-              {/* Description */}
               <CInput
                 form={form as any}
                 name="description"
@@ -372,67 +266,91 @@ const IphoneModelPage = () => {
                 description="Enter product model description"
               />
 
-              {/* Models */}
               <div className="mt-3">
                 <FormLabel>Choose Models</FormLabel>
                 <FormDescription>
                   Choose storage options for the product model
                 </FormDescription>
 
-                <div className="border rounded-xl mt-2 p-3">
-                  <div className="flex flex-col">
-                    {models.map((model, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <CInput
-                          form={form as any}
-                          name={`models[${index}].name`}
-                          type="text"
-                          label="Model name"
-                          labelClassName="text-xs"
-                          inputClassname="min-w-[254px]"
-                        />
-
-                        <div className="flex gap-3 ">
-                          <CInput
-                            form={form as any}
-                            name={`models.${index}.order`}
-                            type="number"
-                            label="Order number"
-                            labelClassName="text-xs"
-                            disabled
-                          />
-                          <Button
-                            className="text-xs h-[35px] self-end mb-2"
-                            onClick={() => {
-                              removeModel(index);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        </div>
+                {/* Models */}
+                <div className="border rounded-xl mt-2 p-3 flex flex-col gap-3">
+                  <Sortable
+                    value={models}
+                    onMove={({ activeIndex, overIndex }) => {
+                      moveModel(activeIndex, overIndex);
+                    }}
+                    overlay={
+                      <div className="grid grid-cols-[0.5fr,1fr,auto,auto] items-center gap-2">
+                        <div className="h-8 w-full rounded-sm bg-primary/10" />
+                        <div className="h-8 w-full rounded-sm bg-primary/10" />
+                        <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+                        <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
                       </div>
-                    ))}
+                    }
+                  >
+                    {models.map((model, index) => {
+                      return (
+                        <SortableItem key={model.id} value={model.id} asChild>
+                          <div className="flex gap-3 w-[inherit] bg-muted p-2 rounded-md">
+                            <div className="flex-1">
+                              <CInput
+                                form={form as any}
+                                name={`models.${index}.name`}
+                                type="text"
+                                label="Model name"
+                                className="flex-1"
+                                inputWrapperClassName="flex gap-3"
+                                labelClassName="text-xs"
+                              ></CInput>
+                            </div>
 
-                    <Button
-                      type="button"
-                      className="text-xs h-[32px] mt-5"
-                      onClick={() =>
-                        appendModel({
-                          name: "",
-                          order: models.length + 1,
-                        })
-                      }
-                    >
-                      + Add model
-                    </Button>
-                  </div>
+                            <div className="flex gap-3">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="size-8 shrink-0 translate-y-[100%]"
+                                onClick={() => removeModel(index)}
+                              >
+                                <FaRegTrashAlt
+                                  className="size-4 text-destructive"
+                                  aria-hidden="true"
+                                />
+                                <span className="sr-only">Remove</span>
+                              </Button>
+
+                              <SortableDragHandle
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="size-8 shrink-0 translate-y-[100%]"
+                              >
+                                <RxDragHandleDots2
+                                  className="size-4"
+                                  aria-hidden="true"
+                                />
+                              </SortableDragHandle>
+                            </div>
+                          </div>
+                        </SortableItem>
+                      );
+                    })}
+
+                    <div className="flex justify-center mt-2 border-2 border-dashed rounded-md cursor-pointer text-primary font-semibold">
+                      <button
+                        type="button"
+                        className="text-primary-500 hover:text-primary-700 text-sm p-3"
+                        onClick={() => {
+                          appendModel({ name: "" });
+                        }}
+                      >
+                        + Add More
+                      </button>
+                    </div>
+                  </Sortable>
                 </div>
               </div>
 
-              {/* Storages */}
               <div className="gap-4 py-5">
                 <CMultiSelect
                   label="Select Storages"
@@ -453,7 +371,6 @@ const IphoneModelPage = () => {
                 )}
               </div>
 
-              {/* Colors picker */}
               <div>
                 <FormLabel>Choose Colors</FormLabel>
                 <FormDescription>
@@ -545,7 +462,6 @@ const IphoneModelPage = () => {
                 </div>
               </div>
 
-              {/* Images */}
               <div className="mt-5">
                 <FormLabel>Choose Images</FormLabel>
                 <FormDescription>
@@ -650,27 +566,6 @@ const IphoneModelPage = () => {
                     + Add image
                   </Button>
                 </div>
-
-                {/* <div className="grid grid-cols-3 p-5 border rounded-xl mt-2 gap-3">
-                  {imagesList.map((image, index) => {
-                    return (
-                      <CCheckbox
-                        key={index}
-                        form={form as any}
-                        name="images"
-                        items={imagesList.map((image) => ({
-                          secure_url: image.imageUrl,
-                          public_id: image.imageId,
-                        }))}
-                        item={{
-                          secure_url: image.imageUrl,
-                          public_id: image.imageId,
-                        }}
-                        type="text"
-                      />
-                    );
-                  })}
-                </div> */}
               </div>
 
               <Button type="submit" className="mt-10 text-right">

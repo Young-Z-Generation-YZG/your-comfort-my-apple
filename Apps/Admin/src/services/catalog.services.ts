@@ -1,7 +1,12 @@
-import { ICreateNewIPhoneModelPayload } from "~/types/api-types/catalog.type";
+import {
+  ICreateNewIPhoneModelPayload,
+  IGetAllIphoneModelsResponse,
+} from "~/types/api-types/catalog.type";
 import { get, post } from "~/utils/http-request";
 
-export const getAllProductAsync = async () => {
+export const getAllProductAsync = async (): Promise<
+  IGetAllIphoneModelsResponse[]
+> => {
   const response = await get("products");
 
   return response;

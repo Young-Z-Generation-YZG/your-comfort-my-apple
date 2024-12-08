@@ -61,11 +61,11 @@ const data = {
           url: "/dashboards/products/overview",
         },
         {
-          title: "New Iphone Model",
+          title: "New iPhone's model",
           url: "/dashboards/products/new-iphone-model",
         },
         {
-          title: "Create New Iphone",
+          title: "Create New iPhone",
           url: "/dashboards/products/new-iphone-item",
         },
         {

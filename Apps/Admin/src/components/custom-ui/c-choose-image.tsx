@@ -20,7 +20,6 @@ import Image from "next/image";
 import * as UploadServices from "~/services/upload.services";
 import { ICloudinaryImage } from "~/types/common/cloudinary-image.type";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { Separator } from "~/components/ui/separator";
 import UploadImageDialog from "~/components/upload-image-dialog";
 import { BsCloudPlus } from "react-icons/bs";
 
@@ -69,15 +68,13 @@ const CChooseImage = (props: CChooseImageProps) => {
   const [images, setImages] = useState<ICloudinaryImage[]>([]);
   const uploadBtnRef = useRef<HTMLButtonElement>(null);
 
-  console.log("uploadBtnRef", uploadBtnRef);
-
   const handleItemChange = (imageId: string, imageUrl: string) => {
     setSelectedItem(imageId);
     props.form.setValue(`${props.name}.${props.index}.imageUrl`, imageUrl);
     props.form.setValue(`${props.name}.${props.index}.imageId`, imageId);
   };
 
-  const handleUploadImage = () => {};
+  // const handleUploadImage = () => {};
 
   useEffect(() => {
     const fetchImages = async () => {
