@@ -339,7 +339,7 @@ const IphoneModelPage = () => {
                     <div className="flex justify-center mt-2 border-2 border-dashed rounded-md cursor-pointer text-primary font-semibold">
                       <button
                         type="button"
-                        className="text-primary-500 hover:text-primary-700 text-sm p-3"
+                        className="text-primary-500 hover:text-primary-700 text-sm p-3 w-full"
                         onClick={() => {
                           appendModel({ name: "" });
                         }}
@@ -488,9 +488,9 @@ const IphoneModelPage = () => {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                             className="w-52 h-52 text-slate-800 cursor-pointer"
                           >
                             <rect
