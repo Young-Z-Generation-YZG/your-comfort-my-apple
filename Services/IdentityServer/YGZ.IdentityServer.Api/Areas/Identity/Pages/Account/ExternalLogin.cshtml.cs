@@ -95,12 +95,16 @@ namespace YGZ.IdentityServer.Api.Areas.Identity.Pages.Account
         {
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
             return new ChallengeResult(provider, properties);
         }
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
+            return Content("This is the callback page");
+
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
@@ -143,6 +147,9 @@ namespace YGZ.IdentityServer.Api.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
+            return Content("This is the callback page");
+
+
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();

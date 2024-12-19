@@ -1,5 +1,4 @@
-﻿
-namespace YGZ.IdentityServer.Infrastructure.Mails;
+﻿namespace YGZ.IdentityServer.Infrastructure.Settings;
 
 public class MailSettings
 {

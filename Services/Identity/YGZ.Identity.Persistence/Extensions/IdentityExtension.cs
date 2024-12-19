@@ -82,9 +82,9 @@ public static class IdentityExtension
             );
 
             var defaultAuthorizationPolicy = new AuthorizationPolicyBuilder(
-                JwtBearerDefaults.AuthenticationScheme
-             //IdentityServerConstants.DefaultCookieAuthenticationScheme // for cookie authentication
-             //IdentityServerConstants.ExternalCookieAuthenticationScheme // for external authentication (like Google, Facebook)
+                JwtBearerDefaults.AuthenticationScheme,
+            //  IdentityServerConstants.DefaultCookieAuthenticationScheme, // for cookie authentication
+             IdentityServerConstants.ExternalCookieAuthenticationScheme // for external authentication (like Google, Facebook)
              );
 
             options.DefaultPolicy = defaultAuthorizationPolicy.RequireAuthenticatedUser().Build();

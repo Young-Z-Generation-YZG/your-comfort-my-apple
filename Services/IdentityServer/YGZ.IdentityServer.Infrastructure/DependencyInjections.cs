@@ -2,9 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.IdentityServer.Infrastructure.Extensions.IdentityServer;
 using YGZ.IdentityServer.Infrastructure.Mails;
 using YGZ.IdentityServer.Infrastructure.Persistence.Data;
-using YGZ.IdentityServer.Infrastructure.Persistence.Extensions;
+using YGZ.IdentityServer.Infrastructure.Settings;
 
 namespace YGZ.IdentityServer.Infrastructure;
 

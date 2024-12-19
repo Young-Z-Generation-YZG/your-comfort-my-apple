@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using YGZ.IdentityServer.Infrastructure.Settings;
 
 namespace YGZ.IdentityServer.Infrastructure.Mails;
 

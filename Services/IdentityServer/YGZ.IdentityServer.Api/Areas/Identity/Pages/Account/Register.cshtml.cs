@@ -106,6 +106,11 @@ namespace YGZ.IdentityServer.Api.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            foreach(var provider in ExternalLogins)
+            {
+                _logger.LogInformation($"Provider: {provider.DisplayName}");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

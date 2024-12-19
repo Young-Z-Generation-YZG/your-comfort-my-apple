@@ -31,10 +31,13 @@ namespace YGZ.IdentityServer.Api.Areas.Identity.Pages.Account
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {
+                _logger.LogInformation("returnUrl 1" + returnUrl);
+
                 return LocalRedirect(returnUrl);
             }
             else
             {
+                _logger.LogInformation("returnUrl 2" + returnUrl);
                 // This needs to be a redirect so that the browser performs a new
                 // request and the identity for the user gets updated.
                 return RedirectToPage();
