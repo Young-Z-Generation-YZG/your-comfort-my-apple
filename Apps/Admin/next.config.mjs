@@ -15,6 +15,9 @@ const nextConfig = {
 
     return config;
   },
+  images: {
+    domains: ["store.storeimages.cdn-apple.com", "res.cloudinary.com"],
+  },
 };
 
 export default nextConfig;

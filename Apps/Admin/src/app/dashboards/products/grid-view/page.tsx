@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import * as productServices from "~/services/product.services";
+import * as productServices from "~/services/catalog.services";
 
 const ProductListViewPage = () => {
   const getAllProductAsync = async () => {
