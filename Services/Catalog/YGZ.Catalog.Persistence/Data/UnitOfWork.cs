@@ -18,7 +18,6 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public async Task<bool> CommitAsync(IEnumerable<IHasDomainEvents> domainEntities)
-
     {
         var changeAmount = await _context.SaveChanges();
 

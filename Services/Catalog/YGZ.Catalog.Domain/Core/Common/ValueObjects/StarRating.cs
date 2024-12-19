@@ -21,7 +21,8 @@ public class StarRating : ValueObject
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return Star;
+        yield return NumRatings;
     }
 
     public static IEnumerable<StarRating> CreateNewList(int length)

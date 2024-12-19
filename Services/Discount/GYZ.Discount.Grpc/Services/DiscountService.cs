@@ -2,7 +2,6 @@
 using GYZ.Discount.Grpc.Abstractions;
 using GYZ.Discount.Grpc.Data;
 using GYZ.Discount.Grpc.Entities;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYZ.Discount.Grpc.Services;
@@ -20,31 +19,53 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         _uniqueCodeGenerator = uniqueCodeGenerator;
     }
 
-    //public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
-    //{
-    //    //var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(c => c.ProductName == request.ProductName);
+    public override async Task<CouponResponse> GetDiscount(GetDiscountRequest request, ServerCallContext context)
+    {
+        var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(c => c.Code == request.Code);
 
-    //    //if(coupon == null)
-    //    //{
-    //    //    _logger.LogError($"Discount with ProductName={request.ProductName} is not found.");
+        if (coupon is null)
+        {
+            _logger.LogError($"Discount with Code={request.Code} is not found.");
 
-    //    //    coupon = new Coupon
-    //    //    {
-    //    //        ProductName = "No Discount",
-    //    //        Amount = 0,
-    //    //        Description = "No Discount Desc"
-    //    //    };
-    //    //    //throw new RpcException(new Status(StatusCode.NotFound, $"Discount with ProductName={request.ProductName} is not found."));
-    //    //}
+          
+            throw new RpcException(new Status(StatusCode.NotFound, $"Discount with Code={request.Code} is not found."));
+        }
 
-    //    //_logger.LogInformation($"Discount is retrieved for ProductName: {coupon.ProductName}, Amount: {coupon.Amount}");
+        _logger.LogInformation($"Discount is retrieved for Code: {coupon.Code}, Title: {coupon.Title}");
 
-    //    //var couponModel = coupon.Adapt<CouponModel>();
+        try
+        {
+            var couponModel = new CouponResponse
+            {
+                Id = coupon.Id.ToString(),
+                Code = coupon.Code,
+                Title = coupon.Title,
+                Type = coupon.Type.Name,
+                Status = coupon.Status.Name,
+                Description = coupon.Description,
+                DiscountValue = coupon.DiscountValue,
+                MinPurchaseAmount = null,
+                MaxDiscountAmount = null,
+                ValidFrom = coupon.ValidFrom.Value.ToString(),
+                ValidTo = coupon.ValidTo.Value.ToString(),
+                QuantityRemain = coupon.QuantityRemain,
+                UsageLimit = coupon.UsageLimit,
+                CreatedAt = coupon.CreatedAt.ToString(),
+                UpdatedAt = coupon.UpdatedAt.ToString(),
+                DeletedAt = coupon.ValidFrom.Value.ToString()
+            };
 
-    //    //return couponModel;
-    //}
+            return couponModel;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
 
-    public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
+            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.ToString()));
+        }
+    }
+
+    public override async Task<CreateDiscountResponse> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
     {
         if (!DateTime.TryParse(request.ValidFrom, out var validFrom))
         {
@@ -56,6 +77,16 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid ValidTo date format"));
         }
 
+        if(validFrom > validTo)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "ValidFrom date must be less than ValidTo date"));
+        }
+
+        if(validFrom < DateTime.UtcNow)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "ValidFrom date must be greater than current date"));
+        }
+
         var uniqueCode = _uniqueCodeGenerator.GenerateUniqueCode();
 
         var coupon = Coupon.CreateNew(
@@ -65,8 +96,8 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             request.DiscountValue,
             request.MinPurchaseAmount,
             request.MaxDiscountAmount,
-            DateTime.Parse(request.ValidFrom),
-            DateTime.Parse(request.ValidTo),
+            validFrom,
+            validTo,
             request.UsageLimit);
 
         if(coupon == null)
@@ -76,53 +107,119 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         _dbContext.Coupons.Add(coupon);
 
-        await _dbContext.SaveChangesAsync();
 
-        _logger.LogInformation($"Discount is successfully created. Title: {coupon.Title}");
+        try
+        {
+            await _dbContext.SaveChangesAsync();
 
-        var couponModel = coupon.Adapt<CouponModel>();
+            return new CreateDiscountResponse
+            {
+                IsSuccess = true
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
 
-        return couponModel;
+            return new CreateDiscountResponse
+            {
+                IsSuccess = false
+            };
+        }
     }
 
-    //public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
-    //{
-    //    var coupon = request.Coupon.Adapt<Coupon>();
+    public override async Task<UpdateDiscountResponse> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
+    {
+        if (!Guid.TryParse(request.Id, out var id))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Discount Id"));
+        }
 
-    //    if (coupon == null)
-    //    {
-    //        throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Discount Data"));
-    //    }
+        if (!DateTime.TryParse(request.ValidFrom, out var validFrom))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid ValidFrom date format"));
+        }
 
-    //    _dbContext.Coupons.Update(coupon);
+        if (!DateTime.TryParse(request.ValidTo, out var validTo))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid ValidTo date format"));
+        }
 
-    //    await _dbContext.SaveChangesAsync();
+        if (validFrom > validTo)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "ValidFrom date must be less than ValidTo date"));
+        }
 
-    //    _logger.LogInformation($"Discount is successfully created. Title: {coupon.Title}");
+        if (validFrom < DateTime.UtcNow)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "ValidFrom date must be greater than current date"));
+        }
 
-    //    var couponModel = coupon.Adapt<CouponModel>();
+        var coupon = Coupon.ToUpdate(id, request.Title, request.Description, request.DiscountValue, request.MinPurchaseAmount, request.MaxDiscountAmount, validFrom, validTo, request.UsageLimit);
 
-    //    return couponModel;
-    //}
+        if (coupon == null)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Discount Data"));
+        }
 
-    //public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
-    //{
-    //    var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(x => x.Title == request.ProductName);
+        _dbContext.Coupons.Update(coupon);
 
-    //    if (coupon == null)
-    //    {
-    //        throw new RpcException(new Status(StatusCode.NotFound, $"Discount with ProductName={request.ProductName} is not found."));
-    //    }
 
-    //    _dbContext.Coupons.Remove(coupon);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
 
-    //    await _dbContext.SaveChangesAsync();
+            _logger.LogInformation($"Discount is successfully created. Title: {coupon.Title}");
 
-    //    _logger.LogInformation($"Discount is successfully deleted. ProductName: {coupon.ProductName}");
+            return new UpdateDiscountResponse
+            {
+                IsSuccess = true
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
 
-    //    return new DeleteDiscountResponse
-    //    {
-    //        Success = true
-    //    };
-    //}
+            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.ToString()));
+        }
+    }
+
+    public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+    {
+        if (!Guid.TryParse(request.Id, out var id))
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Discount Id"));
+        }
+
+        var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (coupon == null)
+        {
+            _logger.LogError($"Discount with Id={request.Id} is not found.");
+
+
+            throw new RpcException(new Status(StatusCode.NotFound, $"Discount with Id={request.Id} is not found."));
+        }
+
+        _logger.LogInformation($"Discount is retrieved for Id: {coupon.Id}, Title: {coupon.Title}");
+
+
+        _dbContext.Coupons.Remove(coupon);
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+
+            return new DeleteDiscountResponse
+            {
+                IsSuccess = true
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+
+            throw new RpcException(new Status(StatusCode.InvalidArgument, ex.ToString()));
+        }
+    }
 }

@@ -23,6 +23,10 @@ public class UploadController : ApiController
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// [DONE] Get all images from cloudinary
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [Route("images")]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
@@ -34,6 +38,10 @@ public class UploadController : ApiController
         return result.Match(onSuccess: result => Ok(_mapper.Map<List<UploadImageResponse>>(result.Resources)), onFailure: HandleFailure);
     }
 
+    /// <summary>
+    /// [DONE] Upload single image
+    /// </summary>
+    /// <returns></returns>
     [HttpPost]
     [Route("single")]
     public async Task<IActionResult> UploadSingle([FromForm] UploadImageFileRequest request, CancellationToken cancellationToken = default)

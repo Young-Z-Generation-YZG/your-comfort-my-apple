@@ -9,9 +9,9 @@ using YGZ.Catalog.Contracts.Products;
 using YGZ.Catalog.Api.Common.SwaggerExamples.Producs;
 using YGZ.Catalog.Application.Products.Commands.CreateProductItem;
 using YGZ.Catalog.Application.Products.Queries.GetAllProducts;
-using YGZ.Catalog.Application.Products.Queries.GetProductById;
 using YGZ.Catalog.Application.Products.Commands.DeleteProductById;
 using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
+using YGZ.Catalog.Application.ProductItems.Queries.GetProductItemById;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -66,8 +66,6 @@ public class ProductController : ApiController
     {
         var cmd = _mapper.Map<CreateProductCommand>(request);
 
-        //cmd.Files = request.Files; 
-
         var result = await _mediator.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
@@ -92,19 +90,26 @@ public class ProductController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("product-items")]
-    public async Task<IActionResult> GetProductItems(CancellationToken cancellationToken = default)
+    [HttpGet("{productId}/product-items")]
+    public async Task<IActionResult> GetProductItems(string productId, CancellationToken cancellationToken = default)
     {
         await Task.CompletedTask;
         return Ok();
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("product-items/{id}")]
-    public async Task<IActionResult> GetProductItem(string id, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// [DONE] Get product'item by id
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("product-items/{productItemId}")]
+    public async Task<IActionResult> GetProductItem(string productItemId, CancellationToken cancellationToken = default)
     {
-        await Task.CompletedTask;
-        return Ok();
+        var query = new GetProductItemByIdQuery(productItemId);
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
         //return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 

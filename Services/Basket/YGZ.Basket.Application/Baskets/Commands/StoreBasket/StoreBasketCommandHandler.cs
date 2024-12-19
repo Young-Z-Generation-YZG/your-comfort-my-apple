@@ -6,6 +6,7 @@ using YGZ.Basket.Domain.Core.Abstractions.Result;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
+using YGZ.Catalog.Api.Protos;
 
 namespace YGZ.Basket.Application.Baskets.Commands.StoreBasket;
 
@@ -13,42 +14,74 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 {
     private readonly IBasketRepository _basketRepository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
+    private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
 
-    public StoreBasketCommandHandler(IBasketRepository basketRepository, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+    public StoreBasketCommandHandler(IBasketRepository basketRepository,
+                                     DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
+                                     CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient)
     {
         _basketRepository = basketRepository;
         _discountProtoServiceClient = discountProtoServiceClient;
+        _catalogProtoServiceClient = catalogProtoServiceClient;
     }
 
     public async Task<Result<bool>> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            Guid.Parse(request.UserId);
-        }
-        catch
+        if(Guid.TryParse(request.UserId, out Guid userId) == false)
         {
             return Errors.Guid.IdInvalid;
         }
 
-        //var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
-        //{
-        //    ProductName = "IPhone X"
-        //}, 
-        //cancellationToken: cancellationToken
-        //);
+        var coupon = await _discountProtoServiceClient.GetDiscountAsync(new GetDiscountRequest
+        {
+            Code = request.CouponCode
+        },
+        cancellationToken: cancellationToken
+        );
 
+        var cartLines = new List<CartLine>();
+        var totalAmountOfGoods = request.CartLines.Sum(c => c.Price);
 
+        foreach (var productItem in request.CartLines)
+        {
+            try
+            {
+
+                var item = await _catalogProtoServiceClient.GetProductItemByIdAsync(new GetProductItemByIdRequest
+                {
+                    ProductItemId = productItem.ProductItemId
+                },
+                cancellationToken: cancellationToken
+                );
+
+                decimal discountAmount = 0;
+
+                if(coupon is not null && coupon.QuantityRemain > 0)
+                {
+                    discountAmount = Convert.ToDecimal(item.Price) * Convert.ToDecimal(coupon.DiscountValue);
+                }
+
+                cartLines.Add(CartLine.CreateNew(
+                item.Id,
+                item.Model,
+                item.Color,
+                item.Storage,
+                item.PrimaryImageUrl,
+                productItem.Quantity,
+                Convert.ToDecimal(item.Price),
+                discountAmount
+                ));
+            }
+            catch
+            {
+                return Errors.Basket.InvalidCartLine(productItem.ProductItemId, productItem.Model, productItem.Color, productItem.Storage);
+            }
+        }
 
         var shoppingCart = ShoppingCart.CreateNew(
             Guid.Parse(request.UserId),
-            request.CartLines.ConvertAll(line => CartLine.CreateNew(
-                line.ProductItemId,
-                line.Model,
-                line.Color,
-                line.Storage,
-                line.Quantity,
-                line.Price))
+            cartLines,
+            totalAmountOfGoods
         );
 
         await _basketRepository.StoreBasket(shoppingCart, cancellationToken);

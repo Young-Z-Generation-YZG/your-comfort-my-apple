@@ -53,11 +53,23 @@ services:
   basketdb:
     image: postgres:alpine
 
+  discountdb:
+    image: postgres:alpine
+
+  orderingdb:
+    image: postgres:alpine
+
   distributedcache:
     image: redis:alpine
 
   messagebroker:
     image: rabbitmq:management
+
+  ygz.gateways.yarp:
+    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
+    build:
+      context: .
+      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
   ygz.catalog.api:
     image: ${DOCKER_REGISTRY-}ygzcatalogapi
@@ -70,24 +82,18 @@ services:
     build:
       context: .
       dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
-    depends_on:
-      - basketdb
-      - messagebroker
-      - distributedcache
-      - ygz.catalog.api
-      # - gyz.discount.grpc
 
-  # gyz.discount.grpc:
-  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+  gyz.discount.grpc:
+    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
-  # ygz.ordering.api:
-  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+  ygz.ordering.api:
+    image: ${DOCKER_REGISTRY-}ygzorderingapi
+    build:
+      context: .
+      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
   # ygz.seq:
   #   image: datalust/seq

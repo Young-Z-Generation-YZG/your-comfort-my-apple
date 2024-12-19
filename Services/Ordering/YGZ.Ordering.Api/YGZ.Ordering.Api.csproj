@@ -13,9 +13,14 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
@@ -25,13 +30,15 @@
 
   <ItemGroup>
     <Folder Include="Common\Helpers\" />
-    <Folder Include="Common\SwaggerExamples\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Application\YGZ.Ordering.Application.csproj" />
+    <ProjectReference Include="..\YGZ.Ordering.Contracts\YGZ.Ordering.Contracts.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Domain\YGZ.Ordering.Domain.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Infrastructure\YGZ.Ordering.Infrastructure.csproj" />
+    <ProjectReference Include="..\YGZ.Ordering.Persistence\YGZ.Ordering.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

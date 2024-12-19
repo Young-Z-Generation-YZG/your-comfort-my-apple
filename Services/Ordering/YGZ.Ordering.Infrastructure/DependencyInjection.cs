@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MassTransit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 using System.Reflection;
-using YGZ.Ordering.Infrastructure.MessageBroker;
-using MassTransit;
+using YGZ.BuildingBlocks.Messaging.MassTransit;
+using YGZ.Ordering.Application.Orders.Events.Integrations;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -10,34 +12,41 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
     {
-        services.Configure<MessageBrokerSettings>(configuration.GetSection(MessageBrokerSettings.SettingKey));
+        services.AddFeatureManagement();
 
-        services.AddMassTransit(config =>
-        {
-            config.SetKebabCaseEndpointNameFormatter();
+        var queuesFromAssembly = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Ordering.Application");
 
-            if (assembly != null) 
-            {
-                config.AddConsumers(assembly);
-            }
+        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
 
-            Console.WriteLine("MessageBrokerSettings:Host: " + configuration["MessageBrokerSettings:Host"]);
-            Console.WriteLine("MessageBrokerSettings:UserName: " + configuration["MessageBrokerSettings:UserName"]);
-            Console.WriteLine("MessageBrokerSettings:Password: " + configuration["MessageBrokerSettings:Password"]);
+        //services.Configure<MessageBrokerSettings>(configuration.GetSection(MessageBrokerSettings.SettingKey));
 
+        //services.AddMassTransit(config =>
+        //{
+        //    config.SetKebabCaseEndpointNameFormatter();
 
-            config.UsingRabbitMq((context, configurator) =>
-            {
-                configurator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
-                {
-                    host.Username(configuration["MessageBrokerSettings:UserName"]!);
-                    host.Password(configuration["MessageBrokerSettings:Password"]!);
-                });
+        //    //config.AddConsumers(typeof(BasketCheckoutIntegrationEventHandler).Assembly);
 
-                configurator.ConfigureEndpoints(context);
-            });
+        //    config.AddConsumers(applicationAssembly);
 
-        });
+        //    config.UsingRabbitMq((context, configurator) =>
+        //    {
+        //        //configurator.ReceiveEndpoint("basket-checkout-queue", endpoint =>
+        //        //{
+        //        //    endpoint.ConfigureConsumer<BasketCheckoutIntegrationEventHandler>(context);
+        //        //});
+
+        //        configurator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
+        //        {
+        //            host.Username(configuration["MessageBrokerSettings:UserName"]!);
+        //            host.Password(configuration["MessageBrokerSettings:Password"]!);
+        //        });
+
+        //        configurator.ConfigureEndpoints(context);
+        //    });
+
+        //});
 
 
         return services;

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ProductItems\Commands\" />
     <Folder Include="Products\Commands\UpdateProduct\" />
     <Folder Include="Uploading\Commands\UploadMultiple\" />
   </ItemGroup>

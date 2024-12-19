@@ -8,7 +8,7 @@ public class Coupon
     public string Code { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public DiscountTypeEnum Type { get; set; } = DiscountTypeEnum.PERCENT;  
+    public DiscountTypeEnum Type { get; set; } = DiscountTypeEnum.PERCENT;
     public DiscountStatusEnum Status { get; set; } = DiscountStatusEnum.INACTIVE;
     public double DiscountValue { get; set; }
     public double? MinPurchaseAmount { get; set; }
@@ -17,9 +17,12 @@ public class Coupon
     public DateTime? ValidTo { get; set; } = null;
     public int QuantityRemain { get; set; }
     public int UsageLimit { get; set; }
-    public DateTime? CreatedAt { get; set; } = null;
-    public DateTime? UpdatedAt { get; set; } = null;
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; } = null;
+
+    public Coupon() { }
+
 
     public Coupon(Guid id,
                    string code,
@@ -31,8 +34,8 @@ public class Coupon
                    DateTime? validFrom,
                    DateTime? validTo,
                    int usageLimit,
-                   DateTime? createdAt,
-                   DateTime? updatedAt)
+                   DateTime createdAt,
+                   DateTime updatedAt)
     {
         Id = id;
         Code = code;
@@ -58,7 +61,7 @@ public class Coupon
         double? maxDiscountAmount,
         DateTime? validFrom,
         DateTime? validTo,
-        int usageLimit) 
+        int usageLimit)
     {
         return new Coupon(
             Guid.NewGuid(),
@@ -66,8 +69,34 @@ public class Coupon
             title,
             description,
             discountValue,
-            minPurchaseAmount,
-            maxDiscountAmount,
+            minPurchaseAmount > 0 ? minPurchaseAmount : null,
+            maxDiscountAmount > 0 ? maxDiscountAmount : null,
+            validFrom,
+            validTo,
+            usageLimit,
+            DateTime.UtcNow.ToUniversalTime(),
+            DateTime.UtcNow.ToUniversalTime()
+            );
+    }
+
+    public static Coupon ToUpdate(Guid id,
+                                string title,
+                                string description,
+                                double discountValue,
+                                double? minPurchaseAmount,
+                                double? maxDiscountAmount,
+                                DateTime? validFrom,
+                                DateTime? validTo,
+                                int usageLimit)
+    {
+        return new Coupon(
+            id,
+            string.Empty,
+            title,
+            description,
+            discountValue,
+            minPurchaseAmount > 0 ? minPurchaseAmount : null,
+            maxDiscountAmount > 0 ? maxDiscountAmount : null,
             validFrom,
             validTo,
             usageLimit,

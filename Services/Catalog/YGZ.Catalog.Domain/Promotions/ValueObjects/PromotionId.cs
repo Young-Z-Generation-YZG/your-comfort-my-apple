@@ -2,6 +2,7 @@
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Promotions.ValueObjects;
@@ -24,19 +25,19 @@ public class PromotionId : ValueObject
         return new(ObjectId.GenerateNewId());
     }
 
-    public static PromotionId? ToObjectId(string? objectId)
+    public static PromotionId ToObjectId(string id)
     {
-        try
+
+        if(!ObjectId.TryParse(id, out var objectId))
         {
-            return !string.IsNullOrEmpty(objectId) ? new(ObjectId.Parse(objectId)) : null;
-        } catch
-        {
-            return null;
+            throw new ArgumentNullException("PromotionId is null");
         }
+
+        return new(objectId);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        throw new NotImplementedException();
+        yield return Value;
     }
 }

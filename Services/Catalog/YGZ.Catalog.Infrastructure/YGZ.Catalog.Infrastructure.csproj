@@ -7,11 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="8.3.1" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
   </ItemGroup>
 

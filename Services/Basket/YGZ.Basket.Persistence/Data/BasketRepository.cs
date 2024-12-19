@@ -16,11 +16,11 @@ public class BasketRepository : IBasketRepository
         _sesssion = sesssion;
     }
 
-    async Task<Result<ShoppingCart>> IBasketRepository.GetBasket(string UserId, CancellationToken cancellationToken)
+    public async Task<Result<ShoppingCart>> GetBasket(string userId, CancellationToken cancellationToken = default)
     {
-        var basket = await _sesssion.LoadAsync<ShoppingCart>(UserId, cancellationToken);
+        var basket = await _sesssion.LoadAsync<ShoppingCart>(userId, cancellationToken);
 
-        if(basket is null)
+        if (basket is null)
         {
             return Errors.Basket.DoesNotExist;
         }

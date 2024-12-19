@@ -11,26 +11,25 @@ public class ShoppingCart : AggregateRoot<ShoppingCartId>, IAuditable
 {
     public string UserIdValue => UserId.Value.ToString();
     public UserId UserId { get; private set; }
-
     public List<CartLine> CartLines { get; set; } = new();
-
-    public decimal Total => CartLines.Sum(line => line.SubTotal);
-
+    public decimal TotalCostOfGoods { get; set; }
+    public decimal TotalDiscountAmount => CartLines.Sum(line => line.DiscountAmount);
+    public decimal TotalAmount => TotalCostOfGoods - TotalDiscountAmount;
     public DateTime CreatedAt { get; set; }
-
     public DateTime UpdatedAt { get; set; }
 
 
-    public ShoppingCart(ShoppingCartId id, UserId userId, List<CartLine> cartLines, DateTime createdAt, DateTime updatedAt) : base(id)
+    public ShoppingCart(ShoppingCartId id, UserId userId, List<CartLine> cartLines, decimal totalCostOfGoods, DateTime createdAt, DateTime updatedAt) : base(id)
     {
         UserId = userId;
         CartLines = cartLines;
+        TotalCostOfGoods = totalCostOfGoods;
         CreatedAt = createdAt;
         UpdatedAt = updatedAt;
     }
 
-    public static ShoppingCart CreateNew(Guid userId, List<CartLine> cartLines)
+    public static ShoppingCart CreateNew(Guid userId, List<CartLine> cartLines, decimal TotalCostOfGoods)
     {
-        return new(ShoppingCartId.CreateUnique(), UserId.ToEntity(userId), cartLines, DateTime.UtcNow, DateTime.UtcNow);
+        return new(ShoppingCartId.CreateUnique(), UserId.ToEntity(userId), cartLines, TotalCostOfGoods, DateTime.UtcNow, DateTime.UtcNow);
     }
 }

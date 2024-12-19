@@ -13,6 +13,7 @@ using YGZ.Catalog.Domain.Products.ValueObjects;
 using YGZ.Catalog.Application.Core.Abstractions.EventBus;
 using YGZ.Catalog.Domain.Core.Abstractions.Common;
 using YGZ.Catalog.Domain.Core.Enums;
+using YGZ.Catalog.Application.Products.Events;
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
@@ -41,7 +42,7 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
 
         try
         {
-            productStorages = request.Storages.ConvertAll(model => StorageEnum.FromValue(model));
+            productStorages = request.Storages.ConvertAll(s => StorageEnum.FromValue(s));
         }
         catch
         {
@@ -54,14 +55,21 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             promotionId: PromotionId.ToObjectId(request.PromotionId),
             name: request.Name,
             models: request.Models.ConvertAll(model => Model.CreateNew(model.Name, model.Order)),
-            colors: request.Colors.ConvertAll(color => Color.CreateNew(color.Name, color.ColorHash, color.ImageColorUrl, color.Order)),
+            colors: request.Colors.ConvertAll(color => Color.CreateNew(color.Name, color.ColorHash, color.Order)),
             storages: productStorages,
             description: request.Description,
-            images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id)),
+            images: request.Images.ConvertAll(image => Image.Create(image.Url, image.Id, image.Order)),
             createdAt: _dateTimeProvider.Now
         );
 
         await _productService.InsertOneAsync(product, null!, cancellationToken);
+
+        //await _eventBus.PublishAsync(new ProductCreatedEvent
+        //{
+        //    ProductId = "123",
+        //    ProductName = "test",
+        //    Description = "test"
+        //}, cancellationToken);
 
         try
         {
@@ -76,11 +84,6 @@ internal class CreateProductCommandHandler : ICommandHandler<CreateProductComman
             return Errors.Product.CannotBeCreated;
         }
 
-        //await _eventBus.PublishAsync(new ProductCreatedEvent
-        //{
-        //    ProductId = "123",
-        //    ProductName = "test",
-        //    Description = "test"
-        //}, cancellationToken);
+        
     }
 }

@@ -1,8 +1,13 @@
 using Asp.Versioning.ApiExplorer;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+using System.Reflection;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Application;
 using YGZ.Ordering.Infrastructure;
+using YGZ.Ordering.Persistence;
+using YGZ.Ordering.Persistence.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration);
+    .AddPersistenceLayer(builder.Configuration)
+    .AddInfrastructureLayer(builder.Configuration, Assembly.GetExecutingAssembly());
 
 builder.Host.AddSerilogExtension(builder.Configuration);
 
@@ -33,6 +39,9 @@ if (app.Environment.IsDevelopment())
             options.SwaggerEndpoint(url, name);
         }
     });
+
+    await app.ApplyMigrationAsync();
+    await app.ApplySeedDataAsync();
 }
 else
 {
@@ -45,6 +54,11 @@ app.UseCors(options =>
 });
 
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseSerilogRequestLogging();
 

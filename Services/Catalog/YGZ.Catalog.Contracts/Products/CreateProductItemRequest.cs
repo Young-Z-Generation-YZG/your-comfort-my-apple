@@ -7,7 +7,9 @@ namespace YGZ.Catalog.Contracts.Products;
 public sealed record CreateProductItemRequest(string Model,
                                               string Color,
                                               int Storage,
-                                              double Price,
+                                              string Description,
+                                              decimal Price,
                                               int Quantity_in_stock,
                                               List<ImageRequest> Images, 
-                                              string ProductId) { }
+                                              string ProductId,
+                                              string PromotionId) { }

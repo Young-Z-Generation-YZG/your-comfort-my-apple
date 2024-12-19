@@ -17,9 +17,9 @@ namespace YGZ.Catalog.Domain.Products;
 public class Product : AggregateRoot<ProductId>, IAuditable
 {
     private readonly List<ProductItem> _productItems = new();
-    private readonly Category _category;
-    private readonly Promotion _promotion;
-    public readonly AverageRating _averageRating;
+    private readonly Category _category = default!;
+    private readonly Promotion _promotion = default!;
+    public readonly AverageRating _averageRating = default!;
 
     [BsonElement("categoryId")]
     public CategoryId CategoryId { get; private set; }

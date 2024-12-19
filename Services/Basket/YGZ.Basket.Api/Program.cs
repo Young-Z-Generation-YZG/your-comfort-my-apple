@@ -2,6 +2,7 @@ using Asp.Versioning.ApiExplorer;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+using System.Reflection;
 using YGZ.Basket.Api;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
@@ -16,7 +17,7 @@ builder.Services
     .AddPresentationLayer()
     .AddApplicationLayer(builder.Configuration)
     .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration);
+    .AddInfrastructureLayer(builder.Configuration, Assembly.GetExecutingAssembly());
 
 
 builder.Host.AddSerilogExtension(builder.Configuration);

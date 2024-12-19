@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Basket/YGZ.Basket.Api/YGZ.Basket.Api.csproj", "Services/Basket/YGZ.Basket.Api/"]
+COPY ["Services/BuildingBlocks/YGZ.BuildingBlocks.Messaging/YGZ.BuildingBlocks.Messaging.csproj", "Services/BuildingBlocks/YGZ.BuildingBlocks.Messaging/"]
 COPY ["Services/Basket/YGZ.Basket.Application/YGZ.Basket.Application.csproj", "Services/Basket/YGZ.Basket.Application/"]
 COPY ["Services/Basket/YGZ.Basket.Domain/YGZ.Basket.Domain.csproj", "Services/Basket/YGZ.Basket.Domain/"]
 COPY ["Services/Basket/YGZ.Basket.Infrastructure/YGZ.Basket.Infrastructure.csproj", "Services/Basket/YGZ.Basket.Infrastructure/"]

@@ -15,3 +15,24 @@ if InitialCreate is your first migration, rollback to the baseline state by spec
 # Update-Database <new migrationName>
 
 This will execute the Down method of InitialCreate, removing all changes applied by the migration.
+
+# Ordering Service
+
+PM>Add-Migration InitialCreate -OutputDir Data/Migrations -Project YGZ.Ordering.Persistence -StartupProject YGZ.Ordering.Api
+dotnet cli>dotnet ef migrations add InitialCreate -o Data/Migrations -p YGZ.Ordering.Persistence -s YGZ.Ordering.Api
+
+PM>Update-Database
+
+# remove migration (Migrations folder)
+
+dotnet ef migrations remove (remove latest migration'file which not updated yet)
+
+# IdentityServer
+
+dotnet ef migrations list
+
+PS W:\projects\your-comfort-my-apple\Services\IdentityServer> dotnet ef --project YGZ.IdentityServer.Infrastructure --startup-project YGZ.IdentityServer.Api migrations add InitCreate --output-dir Persistence/Data/Migrations -c ApplicationDbContext
+
+PS W:\projects\your-comfort-my-apple\Services\IdentityServer> dotnet ef --startup-project YGZ.IdentityServer.Api database update -c ApplicationDbContext
+
+PS W:\projects\your-comfort-my-apple\Services\IdentityServer\YGZ.IdentityServer.Api> dotnet aspnet-codegenerator identity -dc YGZ.IdentityServer.Infrastructure.Persistence.Data.ApplicationDbContext

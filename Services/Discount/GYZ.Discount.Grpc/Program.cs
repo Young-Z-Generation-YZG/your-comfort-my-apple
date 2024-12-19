@@ -1,3 +1,4 @@
+using GYZ.Discount.Grpc;
 using GYZ.Discount.Grpc.Data;
 using GYZ.Discount.Grpc.Services;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
+
+builder.Services.AddPresentationLayer();
 
 builder.Services.AddDbContext<DiscountDbContext>(options =>
 {

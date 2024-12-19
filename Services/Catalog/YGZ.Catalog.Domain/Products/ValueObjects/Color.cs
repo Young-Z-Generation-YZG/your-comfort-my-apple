@@ -12,30 +12,25 @@ public class Color : ValueObject
     [BsonElement("color_hash")]
     public string ColorHash { get; set; }
 
-    [BsonElement("image_color_url")]
-    public string ImageColorUrl { get; set; }
-
     [BsonElement("order")]
     public int Order { get; set; }
 
-    private Color(string name, string colorHash, string imageColorUrl, int order)
+    private Color(string name, string colorHash, int order)
     {
         Name = name;
         ColorHash = colorHash;
-        ImageColorUrl = imageColorUrl;
         Order = order;
     }
 
-    public static Color CreateNew(string name, string colorHash, string imageColorUrl, int order)
+    public static Color CreateNew(string name, string colorHash, int order)
     {
-        return new Color(name, colorHash, imageColorUrl, order);
+        return new Color(name, colorHash, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Name;
         yield return ColorHash;
-        yield return ImageColorUrl;
         yield return Order;
     }
 }

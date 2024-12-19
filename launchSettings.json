@@ -9,7 +9,8 @@
         "ygz.catalog.api": "StartDebugging",
         "ygz.basket.api": "StartDebugging",
         "gyz.discount.grpc": "StartDebugging",
-        "ygz.ordering.api": "StartDebugging"
+        "ygz.ordering.api": "StartDebugging",
+        "ygz.gateways.yarp": "StartDebugging"
       }
     }
   }
