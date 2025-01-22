@@ -1,0 +1,15 @@
+﻿
+namespace YGZ.Identity.Domain.Authorizations;
+
+public static class Policy
+{
+    public const string ReadAccess = "read_access";
+    public const string WriteAccess = "write_access";
+    public const string UpdateAccess = "update_access";
+    public const string DeleteAccess = "delete_access";
+
+    public const string ReadCategory = "read_category";
+    public const string WriteCategory = "write_category";
+    public const string UpdateCategory = "update_category";
+    public const string DeleteCategory = "delete_category";
+}

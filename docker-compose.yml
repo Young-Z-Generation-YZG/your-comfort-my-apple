@@ -47,23 +47,32 @@
 # version: "3.8"
 
 services:
-  catalogdb:
-    image: mongo:latest
-
-  basketdb:
+  identitydb:
     image: postgres:alpine
 
-  discountdb:
-    image: postgres:alpine
+  # catalogdb:
+  #   image: mongo:latest
 
-  orderingdb:
-    image: postgres:alpine
+  # basketdb:
+  #   image: postgres:alpine
 
-  distributedcache:
-    image: redis:alpine
+  # discountdb:
+  #   image: postgres:alpine
 
-  messagebroker:
-    image: rabbitmq:management
+  # orderingdb:
+  #   image: postgres:alpine
+
+  # distributedcache:
+  #   image: redis:alpine
+
+  # messagebroker:
+  #   image: rabbitmq:management
+
+  ygz.identity.api:
+    image: ${DOCKER_REGISTRY-}ybeidentityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
 
   ygz.gateways.yarp:
     image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
@@ -71,34 +80,41 @@ services:
       context: .
       dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+  # ygz.catalog.api:
+  #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  ygz.basket.api:
-    image: ${DOCKER_REGISTRY-}ygzbasketapi
-    build:
-      context: .
-      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+  # ygz.basket.api:
+  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
-  gyz.discount.grpc:
-    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-    build:
-      context: .
-      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+  # gyz.discount.grpc:
+  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
 
-  ygz.ordering.api:
-    image: ${DOCKER_REGISTRY-}ygzorderingapi
-    build:
-      context: .
-      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+  # ygz.ordering.api:
+  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
-  # ygz.seq:
-  #   image: datalust/seq
+  ygz.seq:
+    image: datalust/seq
+  
+  ygz.keycloak:
+    image: quay.io/keycloak/keycloak:latest
+
+  ygz.jaeger:
+    image: jaegertracing/all-in-one:latest
 
 volumes:
-  postgres_basket:
-  postgres_discount:
-  mongodb_catalog:
+  postgres_identity:
+  # postgres_basket:
+  # postgres_discount:
+  # mongodb_catalog:

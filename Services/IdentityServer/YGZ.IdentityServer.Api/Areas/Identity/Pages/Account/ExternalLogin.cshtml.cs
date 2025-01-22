@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using YGZ.IdentityServer.Domain.Users;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 
 
 
@@ -98,7 +99,9 @@ namespace YGZ.IdentityServer.Api.Areas.Identity.Pages.Account
 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
-            return new ChallengeResult(provider, properties);
+            var result = new ChallengeResult(provider, properties);
+
+            return result;
         }
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)

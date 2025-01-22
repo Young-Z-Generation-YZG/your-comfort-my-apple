@@ -26,16 +26,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 	  
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0" />
+	  
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
 	  
     <PackageReference Include="MimeKit" Version="4.8.0" />
 	  
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\YGZ.IdentityServer.Application\YGZ.IdentityServer.Application.csproj" />
-    <ProjectReference Include="..\YGZ.IdentityServer.Domain\YGZ.IdentityServer.Domain.csproj" />
   </ItemGroup>
 
 </Project>

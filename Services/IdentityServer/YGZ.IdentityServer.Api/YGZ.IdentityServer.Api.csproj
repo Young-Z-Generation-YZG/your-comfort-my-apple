@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YGZ.IdentityServer.Application\YGZ.IdentityServer.Application.csproj" />
     <ProjectReference Include="..\YGZ.IdentityServer.Infrastructure\YGZ.IdentityServer.Infrastructure.csproj" />
   </ItemGroup>
 

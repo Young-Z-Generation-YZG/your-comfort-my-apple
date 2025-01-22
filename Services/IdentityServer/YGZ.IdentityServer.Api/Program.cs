@@ -1,6 +1,4 @@
 using YGZ.IdentityServer.Api;
-using YGZ.IdentityServer.Application;
-using YGZ.IdentityServer.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +8,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddRazorPages();
 
 builder.Services
-    .AddInfrastructureLayer(builder.Configuration)
-    .AddApplicationLayer(builder.Configuration)
+    //.AddInfrastructureLayer(builder.Configuration)
+    //.AddApplicationLayer(builder.Configuration)
     .AddPresentationLayer();
 
 var app = builder.Build();

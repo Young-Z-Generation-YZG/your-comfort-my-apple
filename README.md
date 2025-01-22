@@ -36,3 +36,9 @@ PS W:\projects\your-comfort-my-apple\Services\IdentityServer> dotnet ef --projec
 PS W:\projects\your-comfort-my-apple\Services\IdentityServer> dotnet ef --startup-project YGZ.IdentityServer.Api database update -c ApplicationDbContext
 
 PS W:\projects\your-comfort-my-apple\Services\IdentityServer\YGZ.IdentityServer.Api> dotnet aspnet-codegenerator identity -dc YGZ.IdentityServer.Infrastructure.Persistence.Data.ApplicationDbContext
+
+# Identity
+
+PS W:\projects\your-comfort-my-apple\Services\Identity> dotnet ef migrations add Migration2 -o Persistence/Migrations -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api
+
+dotnet ef database update -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api

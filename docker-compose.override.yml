@@ -1,220 +1,249 @@
-# services:
-#   ygz.gateway.api:
-#     environment:
-#       - ASPNETCORE_ENVIRONMENT=Development
-#       - ASPNETCORE_HTTP_PORTS=8080
-#       - ASPNETCORE_HTTPS_PORTS=8081
-#     ports:
-#       - "8080"
-#       - "8081"
-#     volumes:
-#       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-#       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-# identitytest1:
-#   environment:
-#     - ASPNETCORE_ENVIRONMENT=Development
-#     - ASPNETCORE_HTTP_PORTS=8080
-#     - ASPNETCORE_HTTPS_PORTS=8081
-
-# identitytest2:
-#   environment:
-#     - ASPNETCORE_ENVIRONMENT=Development
-#     - ASPNETCORE_HTTP_PORTS=8080
-#     - ASPNETCORE_HTTPS_PORTS=8081
-# version: "3.4"
-
 services:
-  catalogdb:
-    image: mongo:latest
-    container_name: mongodb
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=bale
-      - MONGO_INITDB_ROOT_PASSWORD=bale
-    restart: always
-    ports:
-      - "37017:27017"
-    volumes:
-      - mongodb_catalog:/data/db
+    identitydb:
+        image: postgres:alpine
+        container_name: identitydb
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=IdentityDb
+        restart: always
+        ports:
+        - "9432:5432"
+        volumes:
+        - postgres_identity:/var/lib/postgresql/data/
+ 
+    ygz.seq:
+        environment:
+            - ACCEPT_EULA=Y
+        ports:
+            - "16060:8080"
+    
+    ygz.keycloak:
+        container_name: ygz.keycloak
+        environment:
+        - KEYCLOAK_ADMIN=admin
+        - KEYCLOAK_ADMIN_PASSWORD=admin
+        - KC_HEALTH_ENABLED=true
+        command:
+        - start-dev
+        volumes:
+        - ./.containers/identity:/opt/keycloak/data
+        ports:
+        - "17070:8080"
 
-  basketdb:
-    image: postgres:alpine
-    container_name: basketdb
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=BasketDb
-    restart: always
-    ports:
-      - "6432:5432"
-    volumes:
-      - postgres_basket:/var/lib/postgresql/data/
+    ygz.jaeger:
+        container_name: ygz.jaeger
+        ports:
+            - "4317:4317"
+            - "4318:4318" 
+            - "16686:16686"
 
-  discountdb:
-    image: postgres:alpine
-    container_name: discountdb
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: DiscountDb
-    restart: always
-    ports:
-      - "7432:5432"
-    volumes:
-      - postgres_discount:/var/lib/postgresql/data/
+    ygz.gateways.yarp:
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_HTTP_PORTS=8080
+          - ASPNETCORE_HTTPS_PORTS=8081
+          - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger:4317
+        ports:
+          - "6005:8080"
+          - "6065:8081"
+        depends_on:
+            - ygz.identity.api
+          # - ygz.catalog.api
+          # - ygz.basket.api
+          # - ygz.ordering.api
+        volumes:
+          - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+          - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+    
+    ygz.identity.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__IdentityDb=Host=identitydb;Port=5432;Database=identityBb;Username=bale;Password=bale
+            - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger:4317
+        restart: on-failure
+        depends_on:
+            identitydb:
+                condition: service_started
+        ports:
+            - "6000:8080"
+            - "6060:8081"
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  orderingdb:
-    image: postgres:alpine
-    container_name: orderingdb
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: OrderingDb
-    restart: always
-    ports:
-      - "8432:5432"
-    volumes:
-      - postgres_ordering:/var/lib/postgresql/data/
-
-  distributedcache:
-    image: redis:alpine
-    container_name: distributedcache
-    restart: always
-    ports:
-      - "6379:6379"
-
-  messagebroker:
-    container_name: messagebroker
-    hostname: rabbitmq-host
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    expose:
-      - 5672
-      - 15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 5s
-      timeout: 20s
-      retries: 5
-
-  ygz.gateways.yarp:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-    ports:
-      - "6000:8080"
-      - "6060:8081"
-    depends_on:
-      - ygz.catalog.api
-      - ygz.basket.api
-      - ygz.ordering.api
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  ygz.catalog.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - CatalogDbSettings__ConnectionString=mongodb://bale:bale@mongodb:27017/?safe=true&connect=replicaset
-      - CatalogDbSettings__DatabaseName=catalogDb
-      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-      - MessageBrokerSettings__Username=guest
-      - MessageBrokerSettings__Password=guest
-    restart: on-failure
-    depends_on:
-      messagebroker:
-        condition: service_healthy
-      catalogdb:
-        condition: service_started
-    ports:
-      - "6001:8080"
-      - "6061:8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  ygz.basket.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
-      - ConnectionStrings__Redis=distributedcache:6379
-      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-      - MessageBrokerSettings__Username=guest
-      - MessageBrokerSettings__Password=guest
-      - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
-    restart: always
-    depends_on:
-      basketdb:
-        condition: service_started
-      distributedcache:
-        condition: service_started
-      messagebroker:
-        condition: service_healthy
-      gyz.discount.grpc:
-        condition: service_started
-    ports:
-      - "6002:8080"
-      - "6062:8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  gyz.discount.grpc:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DiscountDb=Host=discountdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
-    depends_on:
-      discountdb:
-        condition: service_started
-    ports:
-      - "6003:8080"
-      - "6063:8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  ygz.ordering.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__OrderingDb=Host=orderingdb;Port=5432;Database=OrderingDb;Username=postgres;Password=postgres
-      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-      - MessageBrokerSettings__UserName=guest
-      - MessageBrokerSettings__Password=guest
-      - FeatureManagement__OrderFullfilment=false
-    restart: on-failure
-    depends_on:
-      orderingdb:
-        condition: service_started
-      messagebroker:
-        condition: service_healthy
-    ports:
-      - "6004:8080"
-      - "6064:8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-
-  # ygz.seq:
+  # catalogdb:
+  #   image: mongo:latest
+  #   container_name: mongodb
   #   environment:
-  #     - ACCEPT_EULA=Y
+  #     - MONGO_INITDB_ROOT_USERNAME=bale
+  #     - MONGO_INITDB_ROOT_PASSWORD=bale
+  #   restart: always
   #   ports:
-  #     - "5341:80"
+  #     - "37017:27017"
+  #   volumes:
+  #     - mongodb_catalog:/data/db
+
+  # basketdb:
+  #   image: postgres:alpine
+  #   container_name: basketdb
+  #   environment:
+  #     - POSTGRES_USER=bale
+  #     - POSTGRES_PASSWORD=bale
+  #     - POSTGRES_DB=BasketDb
+  #   restart: always
+  #   ports:
+  #     - "6432:5432"
+  #   volumes:
+  #     - postgres_basket:/var/lib/postgresql/data/
+
+  # discountdb:
+  #   image: postgres:alpine
+  #   container_name: discountdb
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: DiscountDb
+  #   restart: always
+  #   ports:
+  #     - "7432:5432"
+  #   volumes:
+  #     - postgres_discount:/var/lib/postgresql/data/
+
+  # orderingdb:
+  #   image: postgres:alpine
+  #   container_name: orderingdb
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: OrderingDb
+  #   restart: always
+  #   ports:
+  #     - "8432:5432"
+  #   volumes:
+  #     - postgres_ordering:/var/lib/postgresql/data/
+
+  # distributedcache:
+  #   image: redis:alpine
+  #   container_name: distributedcache
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"
+
+  # messagebroker:
+  #   container_name: messagebroker
+  #   hostname: rabbitmq-host
+  #   restart: always
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   expose:
+  #     - 5672
+  #     - 15672
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=guest
+  #     - RABBITMQ_DEFAULT_PASS=guest
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmqctl", "status"]
+  #     interval: 5s
+  #     timeout: 20s
+  #     retries: 5
+
+  # ygz.catalog.api:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - CatalogDbSettings__ConnectionString=mongodb://bale:bale@mongodb:27017/?safe=true&connect=replicaset
+  #     - CatalogDbSettings__DatabaseName=catalogDb
+  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+  #     - MessageBrokerSettings__Username=guest
+  #     - MessageBrokerSettings__Password=guest
+  #   restart: on-failure
+  #   depends_on:
+  #     messagebroker:
+  #       condition: service_healthy
+  #     catalogdb:
+  #       condition: service_started
+  #   ports:
+  #     - "6001:8080"
+  #     - "6061:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # ygz.basket.api:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - ConnectionStrings__BasketDb=Host=basketdb;Port=5432;Database=BasketDb;Username=postgres;Password=postgres
+  #     - ConnectionStrings__Redis=distributedcache:6379
+  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+  #     - MessageBrokerSettings__Username=guest
+  #     - MessageBrokerSettings__Password=guest
+  #     - GrpcSettings__DiscountUrl=https://gyz.discount.grpc:8081
+  #   restart: always
+  #   depends_on:
+  #     basketdb:
+  #       condition: service_started
+  #     distributedcache:
+  #       condition: service_started
+  #     messagebroker:
+  #       condition: service_healthy
+  #     gyz.discount.grpc:
+  #       condition: service_started
+  #   ports:
+  #     - "6002:8080"
+  #     - "6062:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # gyz.discount.grpc:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - ConnectionStrings__DiscountDb=Host=discountdb;Port=5432;Database=DiscountDb;Username=postgres;Password=postgres
+  #   depends_on:
+  #     discountdb:
+  #       condition: service_started
+  #   ports:
+  #     - "6003:8080"
+  #     - "6063:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  # ygz.ordering.api:
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_HTTP_PORTS=8080
+  #     - ASPNETCORE_HTTPS_PORTS=8081
+  #     - ConnectionStrings__OrderingDb=Host=orderingdb;Port=5432;Database=OrderingDb;Username=postgres;Password=postgres
+  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+  #     - MessageBrokerSettings__UserName=guest
+  #     - MessageBrokerSettings__Password=guest
+  #     - FeatureManagement__OrderFullfilment=false
+  #   restart: on-failure
+  #   depends_on:
+  #     orderingdb:
+  #       condition: service_started
+  #     messagebroker:
+  #       condition: service_healthy
+  #   ports:
+  #     - "6004:8080"
+  #     - "6064:8081"
+  #   volumes:
+  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
 
 volumes:
+  postgres_identity:
   mongodb_catalog:
   postgres_basket:
   postgres_discount:
