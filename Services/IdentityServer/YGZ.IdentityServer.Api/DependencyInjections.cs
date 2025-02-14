@@ -1,22 +1,22 @@
-﻿namespace YGZ.IdentityServer.Api;
+﻿// namespace YGZ.IdentityServer.Api;
 
-public static class DependencyInjections
-{
-    public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
-    {
-        services.AddRazorPagesConfiguaration();
+// public static class DependencyInjections
+// {
+//     public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
+//     {
+//         services.AddRazorPagesConfiguaration();
 
-        return services;
-    }
+//         return services;
+//     }
 
-    public static IServiceCollection AddRazorPagesConfiguaration(this IServiceCollection services) {
+//     public static IServiceCollection AddRazorPagesConfiguaration(this IServiceCollection services) {
 
-        //services.AddRazorPages();
-        //services.AddRazorPages().AddRazorPagesOptions(options =>
-        //{
-        //        //options.RootDirectory = "/Pages";
-        //});
+//         //services.AddRazorPages();
+//         //services.AddRazorPages().AddRazorPagesOptions(options =>
+//         //{
+//         //        //options.RootDirectory = "/Pages";
+//         //});
 
-        return services;
-    }
-}
+//         return services;
+//     }
+// }

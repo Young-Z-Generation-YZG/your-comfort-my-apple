@@ -20,14 +20,27 @@ services:
     
     ygz.keycloak:
         container_name: ygz.keycloak
+        command:
+            [
+                'start-dev',
+                '--import-realm',
+                '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
+                '--log-console-color=true'
+            ]
         environment:
         - KEYCLOAK_ADMIN=admin
         - KEYCLOAK_ADMIN_PASSWORD=admin
         - KC_HEALTH_ENABLED=true
-        command:
-        - start-dev
+        # - KC_DB=postgres
+        # - KC_DB_URL=jdbc:postgresql://identitydb:5432/IdentityDb
+        # - KC_DB_USERNAME=bale
+        # - KC_DB_PASSWORD=bale
+        restart: always
+        depends_on: 
+        - identitydb
         volumes:
-        - ./.containers/identity:/opt/keycloak/data
+        # - ./.containers/identity:/opt/keycloak/data
+        - ./KeycloakConfiguration/:/opt/keycloak/data/import/
         ports:
         - "17070:8080"
 

@@ -17,24 +17,39 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 builder.Services
+    .AddPresentationLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration)
-    .AddPresentationLayer(builder.Configuration);
-       
+    .AddInfrastructureLayer(builder.Configuration);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = builder?.Configuration["JwtSettings:Issuers"] ?? "default-issuers",
+                        ValidAudience = builder?.Configuration["JwtSettings:Audience"] ?? "default-audience",
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder?.Configuration["JwtSettings:SecretKey"] ?? "default-secret-key"))
+                    };
+                });
+
+builder.Services.AddAuthentication();
+
 
 //builder.Services.AddIdentityApiEndpoints<User>();
 
 // Razor Pages
-builder.Services.Configure<RouteOptions>(options =>
-{
-    options.LowercaseUrls = true;
-    options.LowercaseQueryStrings = true;
-});
+//builder.Services.Configure<RouteOptions>(options =>
+//{
+//    options.LowercaseUrls = true;
+//    options.LowercaseQueryStrings = true;
+//});
 
-// Serilog
+// Add Serilog
 builder.Host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
@@ -56,7 +71,7 @@ if (app.Environment.IsDevelopment())
         }
     });
 
-    app.ApplyMigrations();
+    //app.ApplyMigrations();
 }
 
 
@@ -68,18 +83,19 @@ app.UseCors(options =>
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
-// app.UseHttpsRedirection();
+ app.UseHttpsRedirection();
 
-app.UseExceptionHandler("/error");
+//app.UseExceptionHandler("/error");
 
-app.UseSerilogRequestLogging();
+//app.UseSerilogRequestLogging();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapRazorPages();
+//app.MapRazorPages();
 
 app.Run();

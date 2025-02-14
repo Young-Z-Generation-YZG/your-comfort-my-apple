@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,7 @@ public static class DependencyInjection
 
         // Add extensions
         services.AddIdentityExtension(configuration)
-                .AddIdentityServerExtension(configuration);
+                .AddKeycloakIdentityServerExtension(configuration);
 
         // Add Database provider
         services.AddDatabaseProvider(connectionStrings!);

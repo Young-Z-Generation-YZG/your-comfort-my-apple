@@ -11,8 +11,10 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
+        // Add MediatR lib
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
 
+        // Add Fluent Validation lib
         services.AddFluentValidationExtension(assembly);
 
         return services;

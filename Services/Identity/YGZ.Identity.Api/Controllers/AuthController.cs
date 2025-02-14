@@ -54,66 +54,66 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("all-roles")]
-    public IActionResult GetAllRoles()
-    {
-        return Ok();
-    }
+    //[HttpGet("all-roles")]
+    //public IActionResult GetAllRoles()
+    //{
+    //    return Ok();
+    //}
 
-    [HttpGet("google-login")]
-    [AllowAnonymous]
-    public IActionResult GetExternalLoginUrl()
-    {
-        var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", "/api/v1/auth/google-response");
+    //[HttpGet("google-login")]
+    //[AllowAnonymous]
+    //public IActionResult GetExternalLoginUrl()
+    //{
+    //    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", "/api/v1/auth/google-response");
 
-        return new ChallengeResult("Google", properties);
-    }
+    //    return new ChallengeResult("Google", properties);
+    //}
 
-    [HttpGet("google-response")]
-    [AllowAnonymous]
-    public async Task<IActionResult> GoogleResponse()
-    {
-        ExternalLoginInfo? info = await _signInManager.GetExternalLoginInfoAsync();
+    //[HttpGet("google-response")]
+    //[AllowAnonymous]
+    //public async Task<IActionResult> GoogleResponse()
+    //{
+    //    ExternalLoginInfo? info = await _signInManager.GetExternalLoginInfoAsync();
 
-        if(info == null)
-        {
-            return BadRequest();
-        }
+    //    if(info == null)
+    //    {
+    //        return BadRequest();
+    //    }
 
-        var result =await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
+    //    var result =await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, false);
 
-        string[] userInfo = { info.Principal.FindFirst(ClaimTypes.NameIdentifier)!.Value, info.Principal.FindFirst(ClaimTypes.Email)!.Value };
+    //    string[] userInfo = { info.Principal.FindFirst(ClaimTypes.NameIdentifier)!.Value, info.Principal.FindFirst(ClaimTypes.Email)!.Value };
 
-        if (result.Succeeded)
-        {
-            return Redirect("https://example.com");
-            return Ok(userInfo);
-        }
-        else
-        {
-            User newUser = new User
-            {
-                Email = info.Principal.FindFirst(ClaimTypes.Email)!.Value,
-                UserName = info.Principal.FindFirst(ClaimTypes.Email)!.Value,
-                FirstName = info.Principal.FindFirst(ClaimTypes.GivenName)!.Value,
-                LastName = info.Principal.FindFirst(ClaimTypes.Surname)!.Value
-            };
+    //    if (result.Succeeded)
+    //    {
+    //        return Redirect("https://example.com");
+    //        return Ok(userInfo);
+    //    }
+    //    else
+    //    {
+    //        User newUser = new User
+    //        {
+    //            Email = info.Principal.FindFirst(ClaimTypes.Email)!.Value,
+    //            UserName = info.Principal.FindFirst(ClaimTypes.Email)!.Value,
+    //            FirstName = info.Principal.FindFirst(ClaimTypes.GivenName)!.Value,
+    //            LastName = info.Principal.FindFirst(ClaimTypes.Surname)!.Value
+    //        };
 
-            IdentityResult identityResult = await _signInManager.UserManager.CreateAsync(newUser);
+    //        IdentityResult identityResult = await _signInManager.UserManager.CreateAsync(newUser);
 
-            if (identityResult.Succeeded)
-            {
-                identityResult = await _signInManager.UserManager.AddLoginAsync(newUser, info);
-                if (identityResult.Succeeded)
-                {
-                    await _signInManager.SignInAsync(newUser, false);
+    //        if (identityResult.Succeeded)
+    //        {
+    //            identityResult = await _signInManager.UserManager.AddLoginAsync(newUser, info);
+    //            if (identityResult.Succeeded)
+    //            {
+    //                await _signInManager.SignInAsync(newUser, false);
 
-                    return Redirect("https://example.com");
-                    return Ok(userInfo);
-                }
-            }
-        }
+    //                return Redirect("https://example.com");
+    //                return Ok(userInfo);
+    //            }
+    //        }
+    //    }
 
-        return Redirect("https://example.com");
-    }
+    //    return Redirect("https://example.com");
+    //}
 }
