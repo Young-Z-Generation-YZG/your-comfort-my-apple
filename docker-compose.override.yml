@@ -1,62 +1,11 @@
 services:
-    identitydb:
-        image: postgres:alpine
-        container_name: identitydb
-        environment:
-        - POSTGRES_USER=bale
-        - POSTGRES_PASSWORD=bale
-        - POSTGRES_DB=IdentityDb
-        restart: always
-        ports:
-        - "9432:5432"
-        volumes:
-        - postgres_identity:/var/lib/postgresql/data/
- 
-    ygz.seq:
-        environment:
-            - ACCEPT_EULA=Y
-        ports:
-            - "16060:8080"
-    
-    ygz.keycloak:
-        container_name: ygz.keycloak
-        command:
-            [
-                'start-dev',
-                '--import-realm',
-                '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
-                '--log-console-color=true'
-            ]
-        environment:
-        - KEYCLOAK_ADMIN=admin
-        - KEYCLOAK_ADMIN_PASSWORD=admin
-        - KC_HEALTH_ENABLED=true
-        # - KC_DB=postgres
-        # - KC_DB_URL=jdbc:postgresql://identitydb:5432/IdentityDb
-        # - KC_DB_USERNAME=bale
-        # - KC_DB_PASSWORD=bale
-        restart: always
-        depends_on: 
-        - identitydb
-        volumes:
-        # - ./.containers/identity:/opt/keycloak/data
-        - ./KeycloakConfiguration/:/opt/keycloak/data/import/
-        ports:
-        - "17070:8080"
-
-    ygz.jaeger:
-        container_name: ygz.jaeger
-        ports:
-            - "4317:4317"
-            - "4318:4318" 
-            - "16686:16686"
-
     ygz.gateways.yarp:
+        container_name: ygz.gateways.yarp
         environment:
           - ASPNETCORE_ENVIRONMENT=Development
           - ASPNETCORE_HTTP_PORTS=8080
           - ASPNETCORE_HTTPS_PORTS=8081
-          - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger:4317
+          - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
         ports:
           - "6005:8080"
           - "6065:8081"
@@ -68,8 +17,23 @@ services:
         volumes:
           - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
           - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+          
+    db.identity:
+        container_name: db.identity
+        image: postgres:alpine
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=IdentityDb
+        restart: always
+        ports:
+        - "9432:5432"
+        volumes:
+        - postgres_identity:/var/lib/postgresql/data/
+ 
     
     ygz.identity.api:
+        container_name: ygz.identity.api
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
@@ -78,15 +42,65 @@ services:
             - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger:4317
         restart: on-failure
         depends_on:
-            identitydb:
+            db.identity:
                 condition: service_started
         ports:
-            - "6000:8080"
-            - "6060:8081"
+            - "8080:8080"
+            - "8081:8081"
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
+    ygz.keycloak.api:
+        container_name: ygz.keycloak.api
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
+        ports:
+        - "3000:8080"
+        - "3030:8081"
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+    # ygz.seq:
+    #     environment:
+    #         - ACCEPT_EULA=Y
+    #     ports:
+    #         - "16060:8080"
+    
+    ygz.jaeger.opentelemetry:
+        container_name: ygz.jaeger.opentelemetry
+        ports:
+            - "4317:4317"
+            - "4318:4318" 
+            - "16686:16686"
+
+    ygz.keycloak.server:
+        container_name: ygz.keycloak.server
+        command:
+            [
+                'start-dev',
+                '--import-realm',
+                '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
+                '--log-console-color=true'
+            ]
+        environment:
+        - KEYCLOAK_ADMIN=admin
+        - KEYCLOAK_ADMIN_PASSWORD=admin
+        - KC_HEALTH_ENABLED=true
+        - KC_DB=postgres
+        - KC_DB_URL=jdbc:postgresql://db.identity:5432/IdentityDb
+        - KC_DB_USERNAME=bale
+        - KC_DB_PASSWORD=bale
+        restart: always
+        depends_on:
+        - db.identity
+        ports:
+        - "17070:8080"
+      
   # catalogdb:
   #   image: mongo:latest
   #   container_name: mongodb

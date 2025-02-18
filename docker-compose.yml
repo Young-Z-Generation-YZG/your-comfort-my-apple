@@ -1,53 +1,5 @@
-# services:
-#   ygz.gateway.api:
-#     image: ${DOCKER_REGISTRY-}gatewayapi
-#     build:
-#       context: ./Gateways/Gateway.Api
-#       dockerfile: Dockerfile
-#     ports:
-#       - "8080:8080"
-#       - "8081:8081"
-#     networks:
-#       - backendbridge
-
-# ygz.identity.api:
-#   image: ${DOCKER_REGISTRY-}ybeidentityapi
-#   build:
-#     context: .
-#     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
-#   ports:
-#     - "5000:5000"
-
-# identitytest1:
-#   image: ${DOCKER_REGISTRY-}identitytest1
-#   build:
-#     context: .\Services\IdentityTest\IdentityTest1
-#     dockerfile: Dockerfile
-#   ports:
-#     - "5050:8080"
-#     - "5051:8081"
-#   networks:
-#     - backendbridge
-
-# identitytest2:
-#   image: ${DOCKER_REGISTRY-}identitytest2
-#   build:
-#     context: .\Services\IdentityTest\IdentityTest2
-#     dockerfile: Dockerfile
-#   ports:
-#     - "6060:8080"
-#     - "6061:8081"
-#   networks:
-#     - backendbridge
-
-# networks:
-#   backendbridge:
-#     name: backendbridge
-#     driver: bridge
-# version: "3.8"
-
 services:
-  identitydb:
+  db.identity:
     image: postgres:alpine
 
   # catalogdb:
@@ -68,17 +20,24 @@ services:
   # messagebroker:
   #   image: rabbitmq:management
 
-  ygz.identity.api:
-    image: ${DOCKER_REGISTRY-}ybeidentityapi
-    build:
-      context: .
-      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
-
   ygz.gateways.yarp:
     image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
     build:
       context: .
       dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+
+  ygz.identity.api:
+    image: ${DOCKER_REGISTRY-}ybeidentityapi
+    build:
+      context: .
+      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+  
+  ygz.keycloak.api:
+    image: ${DOCKER_REGISTRY-}ygzkeycloakapi
+    build:
+      context: .
+      dockerfile: Services/Identity/YGZ.Keycloak.Api/Dockerfile
+
 
   # ygz.catalog.api:
   #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
@@ -104,13 +63,13 @@ services:
   #     context: .
   #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
-  ygz.seq:
-    image: datalust/seq
+  # ygz.seq:
+  #   image: datalust/seq
   
-  ygz.keycloak:
+  ygz.keycloak.server:
     image: quay.io/keycloak/keycloak:latest
 
-  ygz.jaeger:
+  ygz.jaeger.opentelemetry:
     image: jaegertracing/all-in-one:latest
 
 volumes:
@@ -118,3 +77,4 @@ volumes:
   # postgres_basket:
   # postgres_discount:
   # mongodb_catalog:
+

@@ -9,8 +9,13 @@
   <ItemGroup>
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.5.3" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.5.5" />
+    <PackageReference Include="Keycloak.AuthServices.OpenTelemetry" Version="1.0.0" />
     <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.5.5" />
     <PackageReference Include="Keycloak.AuthServices.Sdk.Kiota" Version="26.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
   </ItemGroup>
 
 </Project>

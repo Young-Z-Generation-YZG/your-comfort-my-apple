@@ -23,4 +23,4 @@ public static class KeycloakExtensions
 
         return services;
     }
-}
+}  

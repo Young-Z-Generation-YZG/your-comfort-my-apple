@@ -13,8 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Identity/YGZ.Keycloak.Api/YGZ.Keycloak.Api.csproj", "Services/Identity/YGZ.Keycloak.Api/"]
-COPY ["Services/Identity/YGZ.Keycloak.Infrastructure/YGZ.Keycloak.Infrastructure.csproj", "Services/Identity/YGZ.Keycloak.Infrastructure/"]
-COPY ["Services/BuildingBlocks/YGZ.BuildingBlocks.Shared/YGZ.BuildingBlocks.Shared.csproj", "Services/BuildingBlocks/YGZ.BuildingBlocks.Shared/"]
 RUN dotnet restore "./Services/Identity/YGZ.Keycloak.Api/YGZ.Keycloak.Api.csproj"
 COPY . .
 WORKDIR "/src/Services/Identity/YGZ.Keycloak.Api"

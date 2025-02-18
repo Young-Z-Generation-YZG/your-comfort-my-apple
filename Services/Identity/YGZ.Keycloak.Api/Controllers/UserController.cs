@@ -1,4 +1,5 @@
 ﻿using Keycloak.AuthServices.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 
@@ -7,16 +8,17 @@ namespace YGZ.Keycloak.Api.Controllers;
 [ApiController]
 [Route("users")]
 [OpenApiTag("users", Description = "Manage users.")]
-[ProtectedResource("catalogs")]
+//[ProtectedResource("users")]
 public class UserController : Controller
 {
-    [HttpGet(Name = nameof(getUsersAsync))]
-    [OpenApiOperation("[catalog:list]", "")]
-    [ProtectedResource("catalogs", "catalog:list")]
-    public async Task<ActionResult<IEnumerable<string>>> getUsersAsync()
+    [HttpGet("profile")]
+    [OpenApiOperation("[user:profile]", "")]
+    //[ProtectedResource("users", "user:profile")]
+    [AllowAnonymous]
+    public async Task<ActionResult<IEnumerable<string>>> getProfile()
     {
         await Task.CompletedTask;
 
-        return Ok("getUsersAsync");
+        return Ok("getProfile");
     }
 }

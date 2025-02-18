@@ -28,7 +28,6 @@ builder.Services
         {
             ValidIssuer = builder.Configuration["JwtSettings:ValidIssuer"],
         };
-
     });
 
 builder.Services

@@ -3,7 +3,7 @@
 
 //using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 //using Microsoft.EntityFrameworkCore;
-//using YGZ.IdentityServer.Domain.Users;
+////using YGZ.IdentityServer.Domain.Users;
 
 //namespace YGZ.IdentityServer.Infrastructure.Persistence.Data;
 
@@ -30,7 +30,7 @@
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //    {
 //        base.OnConfiguring(optionsBuilder);
-        
-        
+
+
 //    }
 //}
