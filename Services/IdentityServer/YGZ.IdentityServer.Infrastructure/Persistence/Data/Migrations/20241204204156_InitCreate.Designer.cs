@@ -11,7 +11,7 @@ using YGZ.IdentityServer.Infrastructure.Persistence.Data;
 
 namespace YGZ.IdentityServer.Infrastructure.Persistence.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    //[DbContext(typeof(ApplicationDbContext))]
     [Migration("20241204204156_InitCreate")]
     partial class InitCreate
     {

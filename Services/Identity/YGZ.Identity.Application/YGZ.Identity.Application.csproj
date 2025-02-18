@@ -7,14 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
-    <PackageReference Include="IdentityModel" Version="7.0.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+    <Folder Include="Users\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YGZ.Identity.Contracts\YGZ.Identity.Contracts.csproj" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
     <ProjectReference Include="..\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj" />
   </ItemGroup>
 

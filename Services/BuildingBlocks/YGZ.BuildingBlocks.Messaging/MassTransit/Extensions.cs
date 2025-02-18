@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Reflection;
 
 namespace YGZ.BuildingBlocks.Messaging.MassTransit;

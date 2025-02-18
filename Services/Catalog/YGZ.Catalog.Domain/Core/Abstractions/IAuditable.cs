@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace YGZ.Catalog.Domain.Core.Abstractions;
+﻿namespace YGZ.Catalog.Domain.Core.Abstractions;
 
 public interface IAuditable
 { 

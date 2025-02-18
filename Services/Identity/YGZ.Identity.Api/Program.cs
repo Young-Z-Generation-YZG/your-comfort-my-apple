@@ -1,81 +1,101 @@
+using System.Security.Claims;
+using System.Text;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api;
+using YGZ.Identity.Api.Common.Extensions;
 using YGZ.Identity.Application;
+using YGZ.Identity.Domain.Users;
 using YGZ.Identity.Infrastructure;
-using YGZ.Identity.Persistence;
-using YGZ.Identity.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
 builder.Services
-    .AddApplicationLayer()
-    .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration)
-    .AddPresentationLayer();
+    .AddPresentationLayer(builder.Configuration)
+    .AddApplicationLayer(builder.Configuration)
+    .AddInfrastructureLayer(builder.Configuration);
 
-builder.Host.AddSerilog(builder.Configuration);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = builder?.Configuration["JwtSettings:Issuers"] ?? "default-issuers",
+                        ValidAudience = builder?.Configuration["JwtSettings:Audience"] ?? "default-audience",
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder?.Configuration["JwtSettings:SecretKey"] ?? "default-secret-key"))
+                    };
+                });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ApiScope", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "api1");
-    });
-});
+builder.Services.AddAuthentication();
+
+
+//builder.Services.AddIdentityApiEndpoints<User>();
+
+// Razor Pages
+//builder.Services.Configure<RouteOptions>(options =>
+//{
+//    options.LowercaseUrls = true;
+//    options.LowercaseQueryStrings = true;
+//});
+
+// Add Serilog
+builder.Host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    await IdentityServerMigrationExtension.ApplyMigrationsAsync(app);
-
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        // Get the API version descriptions
         IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
 
-        // Add the Swagger endpoints for each API version
-        foreach (var description in descriptions)
+        foreach (ApiVersionDescription description in descriptions)
         {
-            // Create the Swagger endpoint URL
             string url = $"/swagger/{description.GroupName}/swagger.json";
-            // Create the Swagger endpoint name
             string name = description.GroupName.ToUpperInvariant();
-            // Add the Swagger endpoint to the Swagger UI
+
             options.SwaggerEndpoint(url, name);
         }
     });
+
+    //app.ApplyMigrations();
 }
+
+
+
+//app.MapIdentityApi<User>();
 
 app.UseCors(options =>
 {
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
-app.UseSerilogRequestLogging();
+//app.UseStaticFiles();
+
+ app.UseHttpsRedirection();
+
+//app.UseExceptionHandler("/error");
+
+//app.UseSerilogRequestLogging();
 
 
-app.UseExceptionHandler("/error");
-
-app.UseHttpsRedirection();
-
-app.MapControllers();
-
-app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
-
+app.MapControllers();
+//app.MapRazorPages();
 
 app.Run();

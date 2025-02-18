@@ -1,69 +1,24 @@
-# services:
-#   ygz.gateway.api:
-#     image: ${DOCKER_REGISTRY-}gatewayapi
-#     build:
-#       context: ./Gateways/Gateway.Api
-#       dockerfile: Dockerfile
-#     ports:
-#       - "8080:8080"
-#       - "8081:8081"
-#     networks:
-#       - backendbridge
-
-# ygz.identity.api:
-#   image: ${DOCKER_REGISTRY-}ybeidentityapi
-#   build:
-#     context: .
-#     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
-#   ports:
-#     - "5000:5000"
-
-# identitytest1:
-#   image: ${DOCKER_REGISTRY-}identitytest1
-#   build:
-#     context: .\Services\IdentityTest\IdentityTest1
-#     dockerfile: Dockerfile
-#   ports:
-#     - "5050:8080"
-#     - "5051:8081"
-#   networks:
-#     - backendbridge
-
-# identitytest2:
-#   image: ${DOCKER_REGISTRY-}identitytest2
-#   build:
-#     context: .\Services\IdentityTest\IdentityTest2
-#     dockerfile: Dockerfile
-#   ports:
-#     - "6060:8080"
-#     - "6061:8081"
-#   networks:
-#     - backendbridge
-
-# networks:
-#   backendbridge:
-#     name: backendbridge
-#     driver: bridge
-# version: "3.8"
-
 services:
-  catalogdb:
-    image: mongo:latest
-
-  basketdb:
+  db.identity:
     image: postgres:alpine
 
-  discountdb:
-    image: postgres:alpine
+  # catalogdb:
+  #   image: mongo:latest
 
-  orderingdb:
-    image: postgres:alpine
+  # basketdb:
+  #   image: postgres:alpine
 
-  distributedcache:
-    image: redis:alpine
+  # discountdb:
+  #   image: postgres:alpine
 
-  messagebroker:
-    image: rabbitmq:management
+  # orderingdb:
+  #   image: postgres:alpine
+
+  # distributedcache:
+  #   image: redis:alpine
+
+  # messagebroker:
+  #   image: rabbitmq:management
 
   ygz.gateways.yarp:
     image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
@@ -71,34 +26,55 @@ services:
       context: .
       dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
+  ygz.identity.api:
+    image: ${DOCKER_REGISTRY-}ybeidentityapi
     build:
       context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+  
+  ygz.keycloak.api:
+    image: ${DOCKER_REGISTRY-}ygzkeycloakapi
+    build:
+      context: .
+      dockerfile: Services/Identity/YGZ.Keycloak.Api/Dockerfile
 
-  ygz.basket.api:
-    image: ${DOCKER_REGISTRY-}ygzbasketapi
-    build:
-      context: .
-      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
-  gyz.discount.grpc:
-    image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-    build:
-      context: .
-      dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+  # ygz.catalog.api:
+  #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  ygz.ordering.api:
-    image: ${DOCKER_REGISTRY-}ygzorderingapi
-    build:
-      context: .
-      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+  # ygz.basket.api:
+  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+
+  # gyz.discount.grpc:
+  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
+
+  # ygz.ordering.api:
+  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
   # ygz.seq:
   #   image: datalust/seq
+  
+  ygz.keycloak.server:
+    image: quay.io/keycloak/keycloak:latest
+
+  ygz.jaeger.opentelemetry:
+    image: jaegertracing/all-in-one:latest
 
 volumes:
-  postgres_basket:
-  postgres_discount:
-  mongodb_catalog:
+  postgres_identity:
+  # postgres_basket:
+  # postgres_discount:
+  # mongodb_catalog:
+

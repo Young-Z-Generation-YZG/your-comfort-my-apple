@@ -35,7 +35,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Application\YGZ.Ordering.Application.csproj" />
-    <ProjectReference Include="..\YGZ.Ordering.Contracts\YGZ.Ordering.Contracts.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Domain\YGZ.Ordering.Domain.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Infrastructure\YGZ.Ordering.Infrastructure.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Persistence\YGZ.Ordering.Persistence.csproj" />
