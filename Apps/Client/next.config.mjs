@@ -16,6 +16,23 @@ const nextConfig = {
 
       return config;
    },
+   images: {
+      remotePatterns: [
+         {
+            protocol: 'https',
+            hostname: 'shopdunk.com',
+            port: '',
+            pathname: '/**'
+         },
+         {
+            protocol: 'https',
+            hostname: 'store.storeimages.cdn-apple.com',
+            port: '',
+            pathname: '/**'
+         },
+      ],
+   },
+  
 };
 
 export default nextConfig;
