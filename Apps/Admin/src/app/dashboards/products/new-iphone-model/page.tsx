@@ -13,7 +13,7 @@ import { Button } from "~/components/ui/button";
 import { toast } from "~/hooks/use-toast";
 import Image from "next/image";
 import CChooseImage from "~/components/custom-ui/c-choose-image";
-import * as CatalogServices from "~/services/catalog.services";
+import * as CatalogServices from "~/services/catalog.service";
 import { ICreateNewIPhoneModelPayload } from "~/types/api-types/catalog.type";
 import { LoadingOverlay } from "~/components/loading-overlay";
 import DragTest from "~/components/drag/drag-test";

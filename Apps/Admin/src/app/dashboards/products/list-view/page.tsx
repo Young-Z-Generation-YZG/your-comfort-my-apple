@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import * as productServices from "~/services/catalog.services";
+import * as productServices from "~/services/catalog.service";
 
 const ProductGridViewPage = () => {
   const getAllProductAsync = async () => {
