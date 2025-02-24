@@ -8,13 +8,12 @@ namespace YGZ.Keycloak.Api.Controllers;
 [ApiController]
 [Route("users")]
 [OpenApiTag("users", Description = "Manage users.")]
-//[ProtectedResource("users")]
+[ProtectedResource("users")]
 public class UserController : Controller
 {
     [HttpGet("profile")]
     [OpenApiOperation("[user:profile]", "")]
-    //[ProtectedResource("users", "user:profile")]
-    [AllowAnonymous]
+    [ProtectedResource("users", "user:profile")]
     public async Task<ActionResult<IEnumerable<string>>> getProfile()
     {
         await Task.CompletedTask;

@@ -3,7 +3,7 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
-namespace YGZ.Identity.Application.Auths.Commands.Login;
+namespace YGZ.Keycloak.Application.Auths.Commands.Login;
 
 public sealed record LoginCommand : ICommand<LoginResponse>
 {

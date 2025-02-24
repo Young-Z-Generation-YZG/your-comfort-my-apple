@@ -10,8 +10,6 @@ import { AppDispatch, useAppSelector } from '~/redux/store';
 import { redirectToIdentityProvider } from '~/services/auth.service';
 import { authChannel } from '~/utils/broadcast-channel';
 
-const authUrl = redirectToIdentityProvider(); // Get the authentication URL
-
 let loginWindow: Window | null = null;
 
 const LoginPage = () => {
@@ -21,6 +19,8 @@ const LoginPage = () => {
 
    const handleLogin = () => {
       setLoading(true);
+
+      let authUrl = redirectToIdentityProvider(); // Get the authentication URL
 
       loginWindow = window.open(
          authUrl,
@@ -57,11 +57,11 @@ const LoginPage = () => {
                setLoading(false);
             }
 
-            if (loginWindow) {
-               setTimeout(() => {
-                  loginWindow?.close();
-               }, 1000);
-            }
+            // if (loginWindow) {
+            //    setTimeout(() => {
+            //       loginWindow?.close();
+            //    }, 1000);
+            // }
          }
       };
    }, []);

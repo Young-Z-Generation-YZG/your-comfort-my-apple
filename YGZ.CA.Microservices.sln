@@ -90,6 +90,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Keycloak.Api", "Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Keycloak.Infrastructure", "Services\Identity\YGZ.Keycloak.Infrastructure\YGZ.Keycloak.Infrastructure.csproj", "{6ECCD5DB-C854-467A-AE39-942C43A6A44A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Keycloak.Domain", "Services\Identity\YGZ.Keycloak.Domain\YGZ.Keycloak.Domain.csproj", "{144B653E-F095-47AB-98AD-08BF6BBF50D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Keycloak.Application", "Services\Identity\YGZ.Keycloak.Application\YGZ.Keycloak.Application.csproj", "{B0D3A149-9F3A-4499-86C0-D261D08BE4FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +220,14 @@ Global
 		{6ECCD5DB-C854-467A-AE39-942C43A6A44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ECCD5DB-C854-467A-AE39-942C43A6A44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ECCD5DB-C854-467A-AE39-942C43A6A44A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{144B653E-F095-47AB-98AD-08BF6BBF50D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{144B653E-F095-47AB-98AD-08BF6BBF50D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{144B653E-F095-47AB-98AD-08BF6BBF50D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{144B653E-F095-47AB-98AD-08BF6BBF50D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -256,6 +268,8 @@ Global
 		{853E65B0-E3F4-4BF3-AF1D-F72CE402657B} = {EFB21941-9803-4495-8F9A-39362545909C}
 		{1498E285-E6EB-4C95-B341-237AA018C94E} = {EFB21941-9803-4495-8F9A-39362545909C}
 		{6ECCD5DB-C854-467A-AE39-942C43A6A44A} = {EFB21941-9803-4495-8F9A-39362545909C}
+		{144B653E-F095-47AB-98AD-08BF6BBF50D8} = {EFB21941-9803-4495-8F9A-39362545909C}
+		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF} = {EFB21941-9803-4495-8F9A-39362545909C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}
