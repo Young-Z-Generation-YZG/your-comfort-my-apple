@@ -1,0 +1,4 @@
+export const AUTH_RESULT_TYPE = {
+   AUTH_SUCCESS: 'AUTH_SUCCESS',
+   AUTH_FAILED: 'AUTH_FAILED',
+};

@@ -3,7 +3,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Infrastructure.Persistence.Configurations;
 

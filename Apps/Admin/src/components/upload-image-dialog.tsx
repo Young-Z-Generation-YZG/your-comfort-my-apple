@@ -14,7 +14,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { X, Upload, ImageIcon } from "lucide-react";
 import { toast } from "~/hooks/use-toast";
-import * as UploadServices from "~/services/upload.services";
+import * as UploadServices from "~/services/upload.service";
 
 export default function UploadImageDialog({
   maxFiles = 5,

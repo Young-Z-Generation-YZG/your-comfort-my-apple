@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
+using YGZ.Keycloak.Api.Contracts;
 
 namespace YGZ.Keycloak.Api.Extensions;
 
@@ -40,8 +41,13 @@ public static class SwaggerExtensions
                 }
             );
 
+
             document.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             document.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
+
+            // Add the custom schema processor for LoginRequest examples
+            document.SchemaSettings.SchemaProcessors.Add(new LoginRequestExample());
+            document.SchemaSettings.SchemaProcessors.Add(new RegisterRequestExample());
         });
 
         return services;

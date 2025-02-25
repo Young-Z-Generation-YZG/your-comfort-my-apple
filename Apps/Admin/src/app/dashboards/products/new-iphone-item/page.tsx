@@ -20,7 +20,7 @@ import {
   FormLabel,
 } from "~/components/ui/form";
 import { toast } from "~/hooks/use-toast";
-import * as CatalogServices from "~/services/catalog.services";
+import * as CatalogServices from "~/services/catalog.service";
 import { IGetAllIphoneModelsResponse } from "~/types/api-types/catalog.type";
 import Image from "next/image";
 import CISelect from "~/components/custom-ui/ci-select";

@@ -17,7 +17,7 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import Image from "next/image";
-import * as UploadServices from "~/services/upload.services";
+import * as UploadServices from "~/services/upload.service";
 import { ICloudinaryImage } from "~/types/common/cloudinary-image.type";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import UploadImageDialog from "~/components/upload-image-dialog";

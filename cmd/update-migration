@@ -1,0 +1,4 @@
+#! /bin/bash
+dotnet ef database update \
+--startup-project ../Services/Identity/YGZ.Keycloak.Api \
+--project ../Services/Identity/YGZ.Keycloak.Infrastructure

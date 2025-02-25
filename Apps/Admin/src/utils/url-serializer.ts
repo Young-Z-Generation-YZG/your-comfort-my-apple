@@ -1,5 +1,5 @@
 export const urlSerializer = (
-  url: string,
+  url: string = "",
   params: Record<string, string> = {}
 ) => {
   if (url.startsWith("/")) {
@@ -12,7 +12,7 @@ export const urlSerializer = (
 
   const urlParams = new URLSearchParams();
 
-  for (const key in Object.keys(params)) {
+  for (const key in params) {
     urlParams.append(key, params[key]);
   }
 
