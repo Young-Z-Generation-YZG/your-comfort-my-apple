@@ -1,4 +1,7 @@
 services:
+  db.keycloak:
+    image: postgres:alpine
+
   db.identity:
     image: postgres:alpine
 
@@ -20,17 +23,12 @@ services:
   # messagebroker:
   #   image: rabbitmq:management
 
-  ygz.gateways.yarp:
-    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
-    build:
-      context: .
-      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
-  ygz.identity.api:
-    image: ${DOCKER_REGISTRY-}ybeidentityapi
-    build:
-      context: .
-      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+  # ygz.identity.api:
+  #   image: ${DOCKER_REGISTRY-}ybeidentityapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
   
   ygz.keycloak.api:
     image: ${DOCKER_REGISTRY-}ygzkeycloakapi
@@ -63,8 +61,14 @@ services:
   #     context: .
   #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
-  # ygz.seq:
-  #   image: datalust/seq
+  ygz.gateways.yarp:
+    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
+    build:
+      context: .
+      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+
+  ygz.seq:
+    image: datalust/seq
   
   ygz.keycloak.server:
     image: quay.io/keycloak/keycloak:latest
@@ -74,7 +78,7 @@ services:
 
 volumes:
   postgres_identity:
+  postgres_keycloak:
   # postgres_basket:
   # postgres_discount:
   # mongodb_catalog:
-

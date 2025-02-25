@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace YGZ.Keycloak.Infrastructure.Extensions;
 
-public static class KeycloakExtensions
+public static class KeycloakExtension
 {
     public static IServiceCollection AddKeycloakIdentityServerExtensions(this IServiceCollection services, IConfiguration configuration)
     {

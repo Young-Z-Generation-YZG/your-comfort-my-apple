@@ -1,0 +1,4 @@
+#! /bin/bash
+dotnet ef migrations remove \
+--startup-project ../Services/Identity/YGZ.Keycloak.Api \
+--project ../Services/Identity/YGZ.Keycloak.Infrastructure

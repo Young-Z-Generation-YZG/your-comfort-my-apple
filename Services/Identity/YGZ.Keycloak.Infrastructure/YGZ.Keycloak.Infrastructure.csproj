@@ -12,10 +12,18 @@
     <PackageReference Include="Keycloak.AuthServices.OpenTelemetry" Version="1.0.0" />
     <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.5.5" />
     <PackageReference Include="Keycloak.AuthServices.Sdk.Kiota" Version="26.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
+	  
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
+    <ProjectReference Include="..\YGZ.Keycloak.Domain\YGZ.Keycloak.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Persistence\Migrations\" />
   </ItemGroup>
 
 </Project>

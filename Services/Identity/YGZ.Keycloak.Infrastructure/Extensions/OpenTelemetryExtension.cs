@@ -7,7 +7,7 @@ using OpenTelemetry.Trace;
 
 namespace YGZ.Keycloak.Infrastructure.Extensions;
 
-public static class OpenTelemetryExtensions
+public static class OpenTelemetryExtension
 {
     public static IServiceCollection AddOpenTelemetryExtensions(this IServiceCollection services)
     {

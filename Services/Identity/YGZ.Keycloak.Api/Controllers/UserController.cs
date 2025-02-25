@@ -9,7 +9,7 @@ namespace YGZ.Keycloak.Api.Controllers;
 [Route("users")]
 [OpenApiTag("users", Description = "Manage users.")]
 [ProtectedResource("users")]
-public class UserController : Controller
+public class UserController : ApiController
 {
     [HttpGet("profile")]
     [OpenApiOperation("[user:profile]", "")]

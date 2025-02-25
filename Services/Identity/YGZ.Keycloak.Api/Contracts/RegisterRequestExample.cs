@@ -7,7 +7,7 @@ public class RegisterRequestExample : ISchemaProcessor
 {
     public void Process(SchemaProcessorContext context)
     {
-        if (context.Type == typeof(RegisterRequest))
+        if (context.ContextualType.Type == typeof(RegisterRequest))
         {
             // Directly set the example as a raw JSON-like object
             context.Schema.Example = new 

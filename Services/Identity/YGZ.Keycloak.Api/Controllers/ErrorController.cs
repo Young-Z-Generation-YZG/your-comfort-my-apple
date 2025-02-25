@@ -7,6 +7,7 @@ namespace YGZ.Keycloak.Api.Controllers;
 public class ErrorController : ControllerBase
 {
     [Route("error")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [AllowAnonymous]
     public IActionResult Error()
     {
