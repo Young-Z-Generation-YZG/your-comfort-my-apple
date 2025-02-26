@@ -17,6 +17,8 @@ public class User : IdentityUser
         {
             Email = email,
             UserName = email,
+            NormalizedEmail = email.ToUpper(),
+            NormalizedUserName = email.ToUpper(),
             PasswordHash = passwordHash,
             FirstName = firstName,
             LastName = lastName

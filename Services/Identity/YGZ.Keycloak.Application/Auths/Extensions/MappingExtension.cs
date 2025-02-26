@@ -9,12 +9,9 @@ public static class MappingExtension
 {
     public static User ToEntity(this RegisterCommand dto)
     {
-        return new User()
-        {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Email = dto.Email,
-            UserName = dto.Email
-        };
+        return User.Create(email: dto.Email,
+                           passwordHash: dto.Password,
+                           firstName: dto.FirstName,
+                           lastName: dto.LastName);
     }
 }
