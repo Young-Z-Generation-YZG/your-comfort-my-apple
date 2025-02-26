@@ -7,6 +7,7 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Keycloak.Api.Contracts;
 using YGZ.Keycloak.Application.Auths.Commands.Login;
+using YGZ.Keycloak.Application.Auths.Commands.Register;
 
 
 namespace YGZ.Keycloak.Api.Controllers;
@@ -41,11 +42,10 @@ public class AuthController : ApiController
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
+        var cmd = _mapper.Map<RegisterCommand>(request);
 
-        _logger.LogInformation("Register request - Email: {Email}, Password: {Password}",
-            request.Email, request.Password);
+        var result = await _sender.Send(cmd, cancellationToken);
 
-        return Ok("OK request");
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 }

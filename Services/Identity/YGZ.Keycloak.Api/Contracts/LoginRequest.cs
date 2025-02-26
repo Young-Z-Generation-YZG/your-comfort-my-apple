@@ -1,3 +1,7 @@
-﻿namespace YGZ.Keycloak.Api.Contracts;
+﻿using System.Text.Json.Serialization;
 
-public sealed record LoginRequest(string Email, string Password) { }
+namespace YGZ.Keycloak.Api.Contracts;
+
+public sealed record LoginRequest(
+    [property: JsonPropertyName("email")] string Email,
+    [property: JsonPropertyName("password")] string Password) { }

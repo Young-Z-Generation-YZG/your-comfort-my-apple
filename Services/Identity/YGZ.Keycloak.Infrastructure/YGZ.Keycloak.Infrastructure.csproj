@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
+    <ProjectReference Include="..\YGZ.Keycloak.Application\YGZ.Keycloak.Application.csproj" />
     <ProjectReference Include="..\YGZ.Keycloak.Domain\YGZ.Keycloak.Domain.csproj" />
   </ItemGroup>
 

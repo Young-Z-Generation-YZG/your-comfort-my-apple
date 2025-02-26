@@ -4,6 +4,7 @@ using YGZ.Keycloak.Api;
 using YGZ.Keycloak.Api.Extensions;
 using YGZ.Keycloak.Application;
 using YGZ.Keycloak.Infrastructure;
+using YGZ.Keycloak.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -38,6 +39,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+
+    app.ApplyMigrations();
+    await app.ApplySeedDataAsync();
 }
 
 app.UseCors(options =>
