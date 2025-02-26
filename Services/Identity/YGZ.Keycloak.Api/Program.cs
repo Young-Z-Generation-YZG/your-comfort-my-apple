@@ -1,13 +1,14 @@
 using Keycloak.AuthServices.Authorization;
-using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Keycloak.Api;
 using YGZ.Keycloak.Api.Extensions;
 using YGZ.Keycloak.Application;
 using YGZ.Keycloak.Infrastructure;
 using YGZ.Keycloak.Infrastructure.Persistence.Extensions;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
+var host = builder.Host;
 
 // Add Layers
 services
@@ -29,6 +30,9 @@ services.AddControllers(options => options.AddProtectedResources())
         });
 
 builder.Services.AddEndpointsApiExplorer();
+
+// Add Serilog
+host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
 
