@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Keycloak.Application;
 
@@ -11,8 +12,11 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        // Add MediatR lib
+        // Add MediatR
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
+
+        // Add Fluent Validation
+        services.AddFluentValidationExtension(assembly);
 
         return services;
     }
