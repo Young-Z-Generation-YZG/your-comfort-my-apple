@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.Keycloak.Application.Abstractions;
 using YGZ.Keycloak.Infrastructure.Extensions;
 using YGZ.Keycloak.Infrastructure.Persistence;
+using YGZ.Keycloak.Infrastructure.Services;
 using YGZ.Keycloak.Infrastructure.Settings;
 
 namespace YGZ.Keycloak.Infrastructure;
@@ -18,6 +20,8 @@ public static class DependencyInjection
         services.AddIdentityExtension();
 
         services.AddOpenTelemetryExtensions();
+
+        services.AddTransient<IIdentityService, IdentityService>();
 
         return services;
     }

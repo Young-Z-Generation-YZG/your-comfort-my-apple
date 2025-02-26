@@ -1,5 +1,4 @@
 ﻿using NJsonSchema.Generation;
-using NSwag;
 
 namespace YGZ.Keycloak.Api.Contracts;
 

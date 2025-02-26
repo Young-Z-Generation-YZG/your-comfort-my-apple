@@ -18,7 +18,7 @@ public class Error
 
     public static Error NoneError => new(GetAssemblyName() + "Test", "None error", GetAssemblyName());
     public static Error ValidationError => new(GetAssemblyName() + "Test", "Validation error", GetAssemblyName());
-    public static Error BadRequest(string code, string message, string serivceName) => new(code, message, serivceName);
+    public static Error BadRequest(string code, string message, string serviceName) => new(code, message, serviceName);
 
     private static string GetAssemblyName()
     {

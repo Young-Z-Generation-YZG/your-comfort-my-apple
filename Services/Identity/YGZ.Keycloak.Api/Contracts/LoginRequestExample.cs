@@ -1,5 +1,4 @@
 ﻿using NJsonSchema.Generation;
-using NSwag;
 
 namespace YGZ.Keycloak.Api.Contracts;
 
@@ -12,7 +11,7 @@ public class LoginRequestExample : ISchemaProcessor
             context.Schema.Example = new
             {
                 email = "lov3rinve146@gmail.com",
-                password = "password"
+                password = "password",
             };
         }
     }
