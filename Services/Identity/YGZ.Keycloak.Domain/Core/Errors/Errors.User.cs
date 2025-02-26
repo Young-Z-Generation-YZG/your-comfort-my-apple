@@ -10,6 +10,6 @@ public static partial class Errors
         public static Error DoesNotExist = Error.BadRequest(code: "User.DoesNotExist", message: "User does not exists", serviceName: "IdentityService");
         public static Error AlreadyExists = Error.BadRequest(code: "User.AlreadyExists", message: "User already exists", serviceName: "IdentityService");
         public static Error CannotBeCreated = Error.BadRequest(code: "User.CannotBeCreated", message: "User cannot be created", serviceName: "IdentityService");
-        public static Error InvalidPassword = Error.BadRequest(code: "User.InvalidPassword", message: "Invalid password", serviceName: "IdentityService");
+        public static Error InvalidCredentials = Error.BadRequest(code: "User.InvalidCredentials", message: "Invalid credentials", serviceName: "IdentityService");
     }
 }

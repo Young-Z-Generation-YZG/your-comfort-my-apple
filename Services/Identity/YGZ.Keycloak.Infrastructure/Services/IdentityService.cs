@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Keycloak.Application.Abstractions;
+using YGZ.Keycloak.Application.Auths.Commands.Login;
 using YGZ.Keycloak.Application.Auths.Commands.Register;
 using YGZ.Keycloak.Application.Auths.Extensions;
 using YGZ.Keycloak.Domain.Core.Errors;
@@ -15,16 +16,19 @@ public class IdentityService : IIdentityService
     private readonly UserManager<User> _userManager;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ILogger<IdentityService> _logger;
+    private readonly IKeycloakService _keycloakService;
 
 
     public IdentityService(
         ILogger<IdentityService> logger,
         UserManager<User> userManager,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<User> passwordHasher,
+        IKeycloakService keycloakService)
     {
         _logger = logger;
         _userManager = userManager;
         _passwordHasher = passwordHasher;
+        _keycloakService = keycloakService;
     }
     public async Task<Result<User>> FindUserAsync(string email)
     {
@@ -73,6 +77,33 @@ public class IdentityService : IIdentityService
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message, nameof(CreateUserAsync));
+            throw;
+        }
+    }
+
+    public async Task<Result<User>> LoginAsync(LoginCommand request)
+    {
+        try
+        {
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
+
+            if (existingUser is null)
+            {
+                return Errors.User.DoesNotExist;
+            }
+
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash!, request.Password);
+
+            if (passwordVerificationResult == PasswordVerificationResult.Failed)
+            {
+                return Errors.User.InvalidCredentials;
+            }
+
+            return existingUser;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(LoginAsync));
             throw;
         }
     }

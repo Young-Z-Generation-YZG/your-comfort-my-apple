@@ -2,28 +2,36 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
-using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.Keycloak.Application.Abstractions;
 
 namespace YGZ.Keycloak.Application.Auths.Commands.Login;
 
 public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
     private readonly ILogger<LoginCommandHandler> _logger;
+    private readonly IIdentityService _identityService;
+    private readonly IKeycloakService _keycloakService;
 
-    public LoginCommandHandler(ILogger<LoginCommandHandler> logger)
+    public LoginCommandHandler(ILogger<LoginCommandHandler> logger, IIdentityService identityService, IKeycloakService keycloakService)
     {
         _logger = logger;
+        _identityService = identityService;
+        _keycloakService = keycloakService;
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        await Task.CompletedTask;
+        var user = await _identityService.LoginAsync(request);
 
-        _logger.LogInformation("Login request - Email: {Email}, Password: {Password}",
-            request.Email, request.Password);
+        if (user.IsFailure)
+        {
+            return user.Error;
+        }
 
-        var reponse = new LoginResponse("Access token", "refresh token", "10p");
+        var tokenResposne = await _keycloakService.GetTokenClientCredentialsAsync();
 
-        return reponse;
+        var response = new LoginResponse(tokenResposne.AccessToken, "test", "test");
+
+        return response;
     }
 }

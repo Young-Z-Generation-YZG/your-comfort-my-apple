@@ -21,7 +21,15 @@ public static class DependencyInjection
 
         services.AddOpenTelemetryExtensions();
 
-        services.AddTransient<IIdentityService, IdentityService>();
+        var keycloakSettings = new KeycloakSettings();
+        configuration.GetSection(KeycloakSettings.SettingKey).Bind(keycloakSettings);
+
+        services.Configure<KeycloakSettings>(configuration.GetSection(KeycloakSettings.SettingKey));
+
+        services.AddSingleton(keycloakSettings);
+
+        services.AddHttpClient<IKeycloakService, KeycloakService>();
+        services.AddScoped<IIdentityService, IdentityService>();
 
         return services;
     }
