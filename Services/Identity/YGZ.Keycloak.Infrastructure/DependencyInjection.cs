@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Keycloak.Application.Abstractions;
+using YGZ.Keycloak.Application.Abstractions.Mails;
 using YGZ.Keycloak.Infrastructure.Extensions;
+using YGZ.Keycloak.Infrastructure.Mail;
 using YGZ.Keycloak.Infrastructure.Persistence;
 using YGZ.Keycloak.Infrastructure.Services;
 using YGZ.Keycloak.Infrastructure.Settings;
@@ -21,15 +23,17 @@ public static class DependencyInjection
 
         services.AddOpenTelemetryExtensions();
 
-        var keycloakSettings = new KeycloakSettings();
-        configuration.GetSection(KeycloakSettings.SettingKey).Bind(keycloakSettings);
+        //var keycloakSettings = new KeycloakSettings();
+        //configuration.GetSection(KeycloakSettings.SettingKey).Bind(keycloakSettings);
 
         services.Configure<KeycloakSettings>(configuration.GetSection(KeycloakSettings.SettingKey));
+        services.Configure<MailSettings>(configuration.GetSection(MailSettings.SettingKey));
 
-        services.AddSingleton(keycloakSettings);
+        //services.AddSingleton(keycloakSettings);
 
         services.AddHttpClient<IKeycloakService, KeycloakService>();
-        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddTransient<IIdentityService, IdentityService>();
+        services.AddTransient<IMailService, MailService>();
 
         return services;
     }
