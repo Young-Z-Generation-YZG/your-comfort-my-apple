@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
-    <ProjectReference Include="..\YGZ.Identity.Domain\YGZ.Identity.Domain.csproj" />
   </ItemGroup>
 
 </Project>
