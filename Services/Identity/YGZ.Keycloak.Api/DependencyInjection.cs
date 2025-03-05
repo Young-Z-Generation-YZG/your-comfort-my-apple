@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Razor;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
 
@@ -8,6 +9,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
     {
+        services.AddRazorPages();
+
+        services.Configure<RazorViewEngineOptions>(options =>
+        {
+            options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml");
+        });
+
         services.AddApiVersioningExtension();
 
         services.AddMappingExtensions(Assembly.GetExecutingAssembly());

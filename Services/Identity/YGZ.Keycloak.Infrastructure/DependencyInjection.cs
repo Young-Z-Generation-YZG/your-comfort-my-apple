@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Keycloak.Application.Abstractions;
+using YGZ.Keycloak.Application.Abstractions.Emails;
 using YGZ.Keycloak.Application.Abstractions.Mails;
 using YGZ.Keycloak.Infrastructure.Extensions;
 using YGZ.Keycloak.Infrastructure.Mail;
+using YGZ.Keycloak.Infrastructure.Mail.Templates;
 using YGZ.Keycloak.Infrastructure.Persistence;
 using YGZ.Keycloak.Infrastructure.Services;
 using YGZ.Keycloak.Infrastructure.Settings;
@@ -31,9 +33,18 @@ public static class DependencyInjection
 
         //services.AddSingleton(keycloakSettings);
 
+        services.AddSingleton(_ =>
+        {
+            return new List<IEmailClassifier>()
+            {
+                new EmailVerificationTemplate(),
+            };
+        });
+
         services.AddHttpClient<IKeycloakService, KeycloakService>();
         services.AddTransient<IIdentityService, IdentityService>();
-        services.AddTransient<IMailService, MailService>();
+        services.AddTransient<IEmailService, EmailService>();
+        //services.AddTransient<IEmailNotificationService, EmailNotificationService>();
 
         return services;
     }

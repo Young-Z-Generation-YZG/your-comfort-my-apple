@@ -1,0 +1,20 @@
+﻿@using YGZ.Keycloak.Application.Emails.Models
+@model WelcomeEmailModel
+<html>
+<head>
+    <style>
+        /* Inline styles for email compatibility */
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, @Model.UserName!</h1>
+    <p>Thank you for joining our service.</p>
+</body>
+</html>
