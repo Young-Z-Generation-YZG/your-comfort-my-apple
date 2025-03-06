@@ -7,8 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contracts\Identity\**" />
+    <EmbeddedResource Remove="Contracts\Identity\**" />
+    <None Remove="Contracts\Identity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum" Version="8.2.0" />
+    <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.5.3" />
+    <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.5.5" />
+    <PackageReference Include="Keycloak.AuthServices.OpenTelemetry" Version="1.0.0" />
+	  
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+	  
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
@@ -19,6 +31,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.2.0" />
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
 	  
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
@@ -41,10 +54,6 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
 	  
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\Identity\" />
   </ItemGroup>
 
 </Project>

@@ -74,26 +74,7 @@ services:
         - postgres_identity:/var/lib/postgresql/data/
         networks:
         - app-network
-    
-    # ygz.identity.api:
-    #     container_name: ygz.identity.api
-    #     environment:
-    #         - ASPNETCORE_ENVIRONMENT=Development
-    #         - ASPNETCORE_HTTP_PORTS=8080
-    #         - ASPNETCORE_HTTPS_PORTS=8081
-    #         - ConnectionStrings__KeycloakDb=Host=db.keycloak;Port=5432;Database=keycloakdb;Username=bale;Password=bale
-    #         - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=identitydb;Username=bale;Password=bale
-    #         - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger:4317
-    #     restart: on-failure
-    #     depends_on:
-    #         db.identity:
-    #             condition: service_started
-    #     ports:
-    #         - "8080:8080"
-    #         - "8081:8081"
-    #     volumes:
-    #         - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-    #         - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
         command:
@@ -101,7 +82,9 @@ services:
                 'start-dev',
                 '--import-realm',
                 '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
-                '--log-console-color=true'
+                '--log-console-color=true',
+                '--hostname=http://localhost:17070',
+                '--hostname-backchannel-dynamic=true'
             ]
         environment:
         - KEYCLOAK_ADMIN=admin

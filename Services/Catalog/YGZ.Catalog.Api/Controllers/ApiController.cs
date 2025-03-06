@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using YGZ.Catalog.Domain.Core.Abstractions.Result;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Catalog.Api.Controllers;
 

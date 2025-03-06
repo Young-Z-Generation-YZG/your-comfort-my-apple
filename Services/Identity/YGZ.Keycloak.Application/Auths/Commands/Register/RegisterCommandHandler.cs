@@ -10,21 +10,30 @@ namespace YGZ.Keycloak.Application.Auths.Commands.Register;
 public class RegisterCommandHandler : ICommandHandler<RegisterCommand, bool>
 {
     private readonly IIdentityService _identityService;
+    private readonly IKeycloakService _keycloakService;
     private readonly ILogger<RegisterCommandHandler> _logger;
 
-    public RegisterCommandHandler(IIdentityService identityService, ILogger<RegisterCommandHandler> logger)
+    public RegisterCommandHandler(IIdentityService identityService, ILogger<RegisterCommandHandler> logger, IKeycloakService keycloakService)
     {
-        _identityService = identityService;
         _logger = logger;
+        _identityService = identityService;
+        _keycloakService = keycloakService;
     }
 
     public async Task<Result<bool>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var result = await _identityService.CreateUserAsync(request);
 
-        if(result.IsFailure)
+        if (result.IsFailure)
         {
             return result.Error;
+        }
+
+        var keycloakResult = await _keycloakService.CreateKeycloakUserAsync(request);
+
+        if(keycloakResult.IsFailure)
+        {
+            return keycloakResult.Error;
         }
 
         return true;

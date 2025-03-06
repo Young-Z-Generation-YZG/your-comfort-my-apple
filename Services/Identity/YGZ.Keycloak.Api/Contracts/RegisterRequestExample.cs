@@ -8,7 +8,6 @@ public class RegisterRequestExample : ISchemaProcessor
     {
         if (context.ContextualType.Type == typeof(RegisterRequest))
         {
-            // Directly set the example as a raw JSON-like object
             context.Schema.Example = new 
             {
                 email = "lov3rinve146@gmail.com",

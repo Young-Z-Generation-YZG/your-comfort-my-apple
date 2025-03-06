@@ -11,10 +11,10 @@ public class RegisterValidator : AbstractValidator<RegisterCommand>
             .NotEmpty()
             .EmailAddress();
 
-        RuleFor(register => register.FirstName)
+        RuleFor(register => register.LastName)
             .NotEmpty();
 
-        RuleFor(register => register.LastName)
+        RuleFor(register => register.FirstName)
             .NotEmpty();
 
         RuleFor(register => register.Password)

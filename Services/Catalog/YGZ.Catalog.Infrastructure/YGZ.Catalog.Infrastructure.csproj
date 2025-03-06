@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
-    <ProjectReference Include="..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
+    <ProjectReference Include="..\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj" />
   </ItemGroup>
 
 </Project>

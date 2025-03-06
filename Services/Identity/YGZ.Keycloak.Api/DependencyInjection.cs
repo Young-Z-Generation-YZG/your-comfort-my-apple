@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Razor;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Keycloak.Api.HttpContext;
+using YGZ.Keycloak.Application.Abstractions;
 
 namespace YGZ.Keycloak.Api;
 
@@ -21,6 +23,10 @@ public static class DependencyInjection
         services.AddMappingExtensions(Assembly.GetExecutingAssembly());
 
         services.AddGlobalExceptionHandler();
+
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }

@@ -1,7 +1,6 @@
 ﻿
 
 using System.Text.Json.Serialization;
-using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
