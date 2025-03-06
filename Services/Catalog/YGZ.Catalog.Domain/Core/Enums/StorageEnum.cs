@@ -1,5 +1,6 @@
 ﻿
 
+
 using Ardalis.SmartEnum;
 
 namespace YGZ.Catalog.Domain.Core.Enums;

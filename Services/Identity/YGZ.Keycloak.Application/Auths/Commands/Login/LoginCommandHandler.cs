@@ -1,4 +1,4 @@
-﻿ using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
@@ -28,9 +28,9 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
             return user.Error;
         }
 
-        var tokenResposne = await _keycloakService.GetTokenClientCredentialsAsync();
+        var tokenResponse = await _keycloakService.GetKeycloackUserTokenAsync(request);
 
-        var response = new LoginResponse(tokenResposne.AccessToken, "test", "test");
+        var response = new LoginResponse(tokenResponse, "test", "test");
 
         return response;
     }

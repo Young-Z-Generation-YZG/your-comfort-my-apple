@@ -2,7 +2,7 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -13,13 +13,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Catalog/YGZ.Catalog.Api/YGZ.Catalog.Api.csproj", "Services/Catalog/YGZ.Catalog.Api/"]
-COPY ["Services/Catalog/YGZ.Catalog.Application/YGZ.Catalog.Application.csproj", "Services/Catalog/YGZ.Catalog.Application/"]
-COPY ["Services/Catalog/YGZ.Catalog.Contracts/YGZ.Catalog.Contracts.csproj", "Services/Catalog/YGZ.Catalog.Contracts/"]
-COPY ["Services/Catalog/YGZ.Catalog.Domain/YGZ.Catalog.Domain.csproj", "Services/Catalog/YGZ.Catalog.Domain/"]
-COPY ["Services/Identity/YGZ.Identity.Domain/YGZ.Identity.Domain.csproj", "Services/Identity/YGZ.Identity.Domain/"]
-COPY ["Services/Identity/YGZ.Identity.Contracts/YGZ.Identity.Contracts.csproj", "Services/Identity/YGZ.Identity.Contracts/"]
-COPY ["Services/Catalog/YGZ.Catalog.Infrastructure/YGZ.Catalog.Infrastructure.csproj", "Services/Catalog/YGZ.Catalog.Infrastructure/"]
-COPY ["Services/Catalog/YGZ.Catalog.Persistence/YGZ.Catalog.Persistence.csproj", "Services/Catalog/YGZ.Catalog.Persistence/"]
 RUN dotnet restore "./Services/Catalog/YGZ.Catalog.Api/YGZ.Catalog.Api.csproj"
 COPY . .
 WORKDIR "/src/Services/Catalog/YGZ.Catalog.Api"
