@@ -75,6 +75,19 @@ services:
         networks:
         - app-network
 
+    db.catalog:
+        container_name: db.catalog
+        environment:
+        - MONGO_INITDB_ROOT_USERNAME=bale
+        - MONGO_INITDB_ROOT_PASSWORD=bale
+        - MONGO_INITDB_DATABASE=CatalogDb
+        restart: always
+        ports:
+        - "37017:27017"
+        volumes:
+        - mongodb_catalog:/data/db
+        - ./DockerVolumes/MongoDb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
         command:
@@ -120,18 +133,6 @@ services:
         - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
         - app-network
-
-  # catalogdb:
-  #   image: mongo:latest
-  #   container_name: mongodb
-  #   environment:
-  #     - MONGO_INITDB_ROOT_USERNAME=bale
-  #     - MONGO_INITDB_ROOT_PASSWORD=bale
-  #   restart: always
-  #   ports:
-  #     - "37017:27017"
-  #   volumes:
-  #     - mongodb_catalog:/data/db
 
   # basketdb:
   #   image: postgres:alpine
@@ -292,7 +293,7 @@ services:
 volumes:
   postgres_identity:
   postgres_keycloak:
-#   mongodb_catalog:
+  mongodb_catalog:
 #   postgres_basket:
 #   postgres_discount:
 #   postgres_ordering:

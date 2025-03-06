@@ -2,6 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Infrastructure.Persistence;
+using YGZ.Catalog.Infrastructure.Persistence.Configurations;
+using YGZ.Catalog.Infrastructure.Settings;
 
 namespace YGZ.Catalog.Infrastructure;
 
@@ -12,6 +16,12 @@ public static class DependencyInjection
         services.AddKeycloakIdentityServerExtension(configuration);
 
         services.AddOpenTelemetryExtensions();
+
+        services.Configure<MongoDbSettings>(configuration.GetSection(MongoDbSettings.SettingKey));
+
+        services.AddMongoDbConfiguration();
+
+        services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
         return services;
     }

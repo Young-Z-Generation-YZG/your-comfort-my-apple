@@ -5,8 +5,8 @@ services:
   db.identity:
     image: postgres:alpine
 
-  # catalogdb:
-  #   image: mongo:latest
+  db.catalog:
+    image: mongo:latest
 
   # basketdb:
   #   image: postgres:alpine
