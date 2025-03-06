@@ -18,7 +18,7 @@ public static class SwaggerExtensions
         {
             var keycloakOptions = sp.GetRequiredService<IOptionsMonitor<KeycloakAuthenticationOptions>>()?.Get(JwtBearerDefaults.AuthenticationScheme)!;
 
-            document.Title = "Keycloak Identity API";
+            document.Title = "Catalog API";
 
             document.AddSecurity(
                 JwtBearerDefaults.AuthenticationScheme,
@@ -46,8 +46,7 @@ public static class SwaggerExtensions
             document.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
             document.SchemaSettings.SchemaProcessors.Add(new CreateProductItemRequestExample());
-
-            // Add the custom schema processor for LoginRequest examples
+            document.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
         });
 
         return services;
