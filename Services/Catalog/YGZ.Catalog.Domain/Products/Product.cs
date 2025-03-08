@@ -10,5 +10,5 @@ public class Product : Document, ISoftDelete
 {
     public bool IsDeleted => false;
     public DateTime? DeletedAt => null;
-    public ObjectId? DeletedByUserId => null;
+    public string? DeletedByUserId => null;
 }

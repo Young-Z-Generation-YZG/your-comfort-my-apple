@@ -12,7 +12,7 @@ public class CreateCategoryRequestExample : ISchemaProcessor
             {
                 name = "iPhone",
                 description = "iPhone categories.",
-                parent_id = "67346f7549189f7314e4ef0c"
+                product_id = "67346f7549189f7314e4ef0c"
             };
         }
     }
