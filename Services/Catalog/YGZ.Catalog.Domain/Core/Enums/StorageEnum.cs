@@ -14,7 +14,6 @@ public class StorageEnum : SmartEnum<StorageEnum>
     public static readonly StorageEnum STORAGE_256 = new("256GB", 256);
     public static readonly StorageEnum STORAGE_512 = new("512GB", 512);
     public static readonly StorageEnum STORAGE_1024 = new("1TB", 1024);
-    public static readonly StorageEnum STORAGE_2048 = new("2TB", 2048);
 
     public static new StorageEnum FromValue(int value)
     {

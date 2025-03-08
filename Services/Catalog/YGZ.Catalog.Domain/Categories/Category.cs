@@ -41,7 +41,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public DateTime? DeletedAt => null;
 
     [BsonElement("deleted_by_user_id")]
-    public ObjectId? DeletedByUserId => null;
+    public string? DeletedByUserId => null;
 
     public static Category Create(string name, string description, string? parentId)
     {
@@ -50,7 +50,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
             Name = name,
             Description = description,
             Slug = Slug.Create(name),
-            ParentId = CategoryId.ToId(parentId!)
+            ParentId = CategoryId.ToValueObjectId(parentId!)
         };
     }
 }

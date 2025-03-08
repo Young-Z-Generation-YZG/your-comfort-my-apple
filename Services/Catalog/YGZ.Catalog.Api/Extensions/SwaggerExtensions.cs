@@ -1,12 +1,17 @@
 ﻿using Keycloak.AuthServices.Common;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
+
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using NSwag;
+
 using Keycloak.AuthServices.Authentication;
 using YGZ.Catalog.Api.Contracts;
+//using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+
 
 namespace YGZ.Catalog.Api.Extensions;
 
@@ -14,13 +19,13 @@ public static class SwaggerExtensions
 {
     public static IServiceCollection AddSwaggerExtensions(this IServiceCollection services)
     {
-        services.AddOpenApiDocument((document, sp) =>
+        services.AddOpenApiDocument((settings, serviceProvider) =>
         {
-            var keycloakOptions = sp.GetRequiredService<IOptionsMonitor<KeycloakAuthenticationOptions>>()?.Get(JwtBearerDefaults.AuthenticationScheme)!;
+            var keycloakOptions = serviceProvider.GetRequiredService<IOptionsMonitor<KeycloakAuthenticationOptions>>()?.Get(JwtBearerDefaults.AuthenticationScheme)!;
 
-            document.Title = "Catalog API";
+            settings.Title = "Catalog API";
 
-            document.AddSecurity(
+            settings.AddSecurity(
                 JwtBearerDefaults.AuthenticationScheme,
                 [],
                 new OpenApiSecurityScheme
@@ -31,7 +36,7 @@ public static class SwaggerExtensions
                 }
             );
 
-            document.AddSecurity(
+            settings.AddSecurity(
                 OpenIdConnectDefaults.AuthenticationScheme,
                 [],
                 new OpenApiSecurityScheme
@@ -41,13 +46,14 @@ public static class SwaggerExtensions
                 }
             );
 
+            settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
+            settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
-            document.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
-            document.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
-
-            document.SchemaSettings.SchemaProcessors.Add(new CreateProductItemRequestExample());
-            document.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateProductItemRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
         });
+
+        //services.AddFluentValidationRulesToSwagger();
 
         return services;
     }

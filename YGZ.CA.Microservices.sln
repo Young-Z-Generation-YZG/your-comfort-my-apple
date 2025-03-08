@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Keycloak.Application", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Api", "Services\Catalog\YGZ.Catalog.Api\YGZ.Catalog.Api.csproj", "{3E7FCBC2-E9BC-4B13-9AAD-6A3DA0B45A5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Application", "..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj", "{68D39159-75F9-4127-BAFF-4734E2FB11BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YGZ.Catalog.Application", "Services\Catalog\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj", "{5D087EA7-A45D-4444-9EFD-A97AC76DFC69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -159,10 +159,10 @@ Global
 		{3E7FCBC2-E9BC-4B13-9AAD-6A3DA0B45A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E7FCBC2-E9BC-4B13-9AAD-6A3DA0B45A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E7FCBC2-E9BC-4B13-9AAD-6A3DA0B45A5F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68D39159-75F9-4127-BAFF-4734E2FB11BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68D39159-75F9-4127-BAFF-4734E2FB11BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68D39159-75F9-4127-BAFF-4734E2FB11BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68D39159-75F9-4127-BAFF-4734E2FB11BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D087EA7-A45D-4444-9EFD-A97AC76DFC69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D087EA7-A45D-4444-9EFD-A97AC76DFC69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D087EA7-A45D-4444-9EFD-A97AC76DFC69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D087EA7-A45D-4444-9EFD-A97AC76DFC69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -194,7 +194,7 @@ Global
 		{144B653E-F095-47AB-98AD-08BF6BBF50D8} = {EFB21941-9803-4495-8F9A-39362545909C}
 		{B0D3A149-9F3A-4499-86C0-D261D08BE4FF} = {EFB21941-9803-4495-8F9A-39362545909C}
 		{3E7FCBC2-E9BC-4B13-9AAD-6A3DA0B45A5F} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
-		{68D39159-75F9-4127-BAFF-4734E2FB11BE} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
+		{5D087EA7-A45D-4444-9EFD-A97AC76DFC69} = {50B57C49-99C1-4872-AD5E-35FD1F4BA5F8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C2AE742-721E-4075-9A63-FB6FB76133FA}

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Catalog.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Application.ProductItems.Commands;
 using Microsoft.AspNetCore.Authorization;
+using YGZ.Catalog.Application.ProductItems.Commands.CreateProductItem;
 
 namespace YGZ.Catalog.Api.Controllers;
 

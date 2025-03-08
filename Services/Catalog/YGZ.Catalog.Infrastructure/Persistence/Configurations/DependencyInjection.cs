@@ -12,9 +12,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddMongoDbConfiguration(this IServiceCollection services)
     {
+        BsonSerializer.RegisterSerializer(typeof(ProductId), new ProductIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(ProductItemId), new ProductItemIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(CategoryId), new CategoryIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerialization());
+
 
         return services;
     }

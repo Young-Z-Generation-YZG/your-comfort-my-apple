@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Abstractions\Persistence\" />
+    <Folder Include="Categories\Queries\" />
+    <Folder Include="ProductItems\Queries\" />
+    <Folder Include="Products\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
+    <ProjectReference Include="..\YGZ.Catalog.Domain\YGZ.Catalog.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

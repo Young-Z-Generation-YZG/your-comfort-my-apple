@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
+    <ProjectReference Include="..\YGZ.Catalog.Application\YGZ.Catalog.Application.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
     <ProjectReference Include="..\YGZ.Catalog.Infrastructure\YGZ.Catalog.Infrastructure.csproj" />
   </ItemGroup>

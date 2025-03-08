@@ -12,5 +12,5 @@ public interface ISoftDelete
 
     [BsonId]
     [BsonRepresentation(BsonType.String)]
-    ObjectId? DeletedByUserId { get; }
+    string? DeletedByUserId { get; }
 }

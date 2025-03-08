@@ -23,7 +23,7 @@ public class CategoryId : ValueObject
         return new CategoryId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static CategoryId ToId(string? id) 
+    public static CategoryId ToValueObjectId(string? id) 
     {
         var isParse = ObjectId.TryParse(id, out _);
 
