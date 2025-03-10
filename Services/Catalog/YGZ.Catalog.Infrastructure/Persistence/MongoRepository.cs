@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Infrastructure.Settings;
+using Polly;
 
 namespace YGZ.Catalog.Infrastructure.Persistence;
 
@@ -18,7 +19,23 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     {
         _mongoDbSettings = options.Value;
 
-        var database = new MongoClient(_mongoDbSettings.ConnectionString).GetDatabase(_mongoDbSettings.DatabaseName);
+        var policy = Policy
+        .Handle<MongoConnectionException>()
+        .WaitAndRetry(10, retryAttempt => TimeSpan.FromSeconds(retryAttempt * 5),
+            (exception, timeSpan, retryCount, context) =>
+            {
+                Console.WriteLine($"Retry {retryCount} after {timeSpan.TotalSeconds}s due to: {exception.Message}");
+            });
+
+        var client = policy.Execute(() =>
+        {
+            var mongoClient = new MongoClient(_mongoDbSettings.ConnectionString);
+            var db = mongoClient.GetDatabase(_mongoDbSettings.DatabaseName);
+            db.RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+            return mongoClient;
+        });
+
+        var database = client.GetDatabase(_mongoDbSettings.DatabaseName);
 
         _collection = database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
     }
