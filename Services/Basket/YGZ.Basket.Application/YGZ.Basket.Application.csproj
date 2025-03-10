@@ -26,9 +26,4 @@
     <ProjectReference Include="..\YGZ.Basket.Domain\YGZ.Basket.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ShoppingCarts\Commands\" />
-    <Folder Include="ShoppingCarts\Queries\" />
-  </ItemGroup>
-
 </Project>

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Catalog.Api.Contracts;
-using YGZ.Catalog.Application.ProductItems.Commands;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Products.Commands.CreateProduct;
 

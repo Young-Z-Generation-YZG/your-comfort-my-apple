@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using NSwag;
+using YGZ.Basket.Api.Contracts;
 
 namespace YGZ.Basket.Api.Extensions;
 
@@ -42,6 +43,8 @@ public static class SwaggerExtensions
 
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
+
+            settings.SchemaSettings.SchemaProcessors.Add(new StoreBasketRequestExample());
 
         });
 
