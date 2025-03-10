@@ -2,7 +2,4 @@
 
 namespace YGZ.Catalog.Application.Products.Commands.CreateProduct;
 
-public class CreateProductCommand : ICommand<bool>
-{
-
-}
+public sealed record CreateProductCommand : ICommand<bool> { }

@@ -20,8 +20,4 @@
     <ProjectReference Include="..\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
-
 </Project>

@@ -8,15 +8,16 @@
 
   <ItemGroup>
     <Compile Remove="Common\**" />
-    <Compile Remove="Core\**" />
     <EmbeddedResource Remove="Common\**" />
-    <EmbeddedResource Remove="Core\**" />
     <None Remove="Common\**" />
-    <None Remove="Core\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ShoppingCart\ValueObjects\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
   </ItemGroup>
 
 </Project>
