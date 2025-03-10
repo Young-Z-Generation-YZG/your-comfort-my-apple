@@ -1,54 +1,47 @@
-using Asp.Versioning.ApiExplorer;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Serilog;
-using System.Reflection;
+using Keycloak.AuthServices.Authorization;
 using YGZ.Basket.Api;
+using YGZ.Basket.Api.Extensions;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
-using YGZ.Basket.Persistence;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var host = builder.Host;
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services
+// Add Layers
+services
     .AddPresentationLayer()
-    .AddApplicationLayer(builder.Configuration)
-    .AddPersistenceLayer(builder.Configuration)
-    .AddInfrastructureLayer(builder.Configuration, Assembly.GetExecutingAssembly());
+    .AddInfrastructureLayer(builder.Configuration)
+    .AddApplicationLayer(builder.Configuration);
+
+// Add services to the container.
+services.AddProblemDetails();
+services.AddSwaggerExtensions();
+
+services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 
 
-builder.Host.AddSerilogExtension(builder.Configuration);
+services.AddControllers(options => options.AddProtectedResources())
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.WriteIndented = true; // Optional
+        });
 
-builder.Services.AddHealthChecks()
-        .AddNpgSql(builder.Configuration.GetConnectionString("BasketDb")!)
-        .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
+builder.Services.AddEndpointsApiExplorer();
 
+// Add Serilog
+host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
-
-        foreach (ApiVersionDescription description in descriptions)
-        {
-            string url = $"/swagger/{description.GroupName}/swagger.json";
-            string name = description.GroupName.ToUpperInvariant();
-
-            options.SwaggerEndpoint(url, name);
-        }
-    });
-}
-else
-{
-    app.UseHttpsRedirection();
+    app.UseOpenApi();
+    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 }
 
 app.UseCors(options =>
@@ -56,19 +49,12 @@ app.UseCors(options =>
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
+app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
 
-app.UseSerilogRequestLogging();
-
-app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.Run();

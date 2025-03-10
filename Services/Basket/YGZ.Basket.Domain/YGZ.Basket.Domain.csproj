@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Common\**" />
+    <Compile Remove="Core\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <EmbeddedResource Remove="Core\**" />
+    <None Remove="Common\**" />
+    <None Remove="Core\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ShoppingCart\ValueObjects\" />
+  </ItemGroup>
+
 </Project>

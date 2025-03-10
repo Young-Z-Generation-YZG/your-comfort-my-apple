@@ -76,17 +76,44 @@ services:
         - app-network
 
     db.catalog:
-        container_name: db.catalog
+        container_name: mongodb
         environment:
         - MONGO_INITDB_ROOT_USERNAME=bale
         - MONGO_INITDB_ROOT_PASSWORD=bale
         - MONGO_INITDB_DATABASE=CatalogDb
         restart: always
+        healthcheck:
+            test: ["CMD", "mongosh", "--host", "localhost", "--username", "bale", "--password", "bale", "--eval", "db.runCommand('ping').ok"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         ports:
         - "37017:27017"
         volumes:
         - mongodb_catalog:/data/db
         - ./DockerVolumes/MongoDb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+        networks:
+        - app-network
+
+    db.basket:
+        image: postgres:alpine
+        container_name: db.basket
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=BasketDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "3432:5432"
+        volumes:
+        - postgres_basket:/var/lib/postgresql/data/
+        networks:
+        - app-network
 
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
@@ -126,6 +153,7 @@ services:
         ports:
         - "6005:8080"
         - "6065:8081"
+        restart: always
         depends_on:
         - db.identity
         volumes:
@@ -134,18 +162,45 @@ services:
         networks:
         - app-network
 
-  # basketdb:
-  #   image: postgres:alpine
-  #   container_name: basketdb
-  #   environment:
-  #     - POSTGRES_USER=bale
-  #     - POSTGRES_PASSWORD=bale
-  #     - POSTGRES_DB=BasketDb
-  #   restart: always
-  #   ports:
-  #     - "6432:5432"
-  #   volumes:
-  #     - postgres_basket:/var/lib/postgresql/data/
+    ygz.catalog.api:
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog:27017/CatalogDb?authSource=admin
+        - MongoDbSettings__DatabaseName=CatalogDb
+        ports:
+        - "6001:8080"
+        - "6061:8081"
+        depends_on:
+            db.catalog:
+                condition: service_started
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
+
+    ygz.basket.api:
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
+        - ConnectionStrings__Redis=distributedcache:6379
+        ports:
+        - "6002:8080"
+        - "6062:8081"
+        depends_on:
+            db.basket:
+                condition: service_healthy
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
+
+
 
   # discountdb:
   #   image: postgres:alpine
@@ -198,29 +253,6 @@ services:
   #     interval: 5s
   #     timeout: 20s
   #     retries: 5
-
-  # ygz.catalog.api:
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_HTTP_PORTS=8080
-  #     - ASPNETCORE_HTTPS_PORTS=8081
-  #     - CatalogDbSettings__ConnectionString=mongodb://bale:bale@mongodb:27017/?safe=true&connect=replicaset
-  #     - CatalogDbSettings__DatabaseName=catalogDb
-  #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-  #     - MessageBrokerSettings__Username=guest
-  #     - MessageBrokerSettings__Password=guest
-  #   restart: on-failure
-  #   depends_on:
-  #     messagebroker:
-  #       condition: service_healthy
-  #     catalogdb:
-  #       condition: service_started
-  #   ports:
-  #     - "6001:8080"
-  #     - "6061:8081"
-  #   volumes:
-  #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-  #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   # ygz.basket.api:
   #   environment:
@@ -290,15 +322,19 @@ services:
   #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
 
+  
+
+
 volumes:
   postgres_identity:
   postgres_keycloak:
+  postgres_basket:
+  postgres_discount:
+  postgres_ordering:
   mongodb_catalog:
-#   postgres_basket:
-#   postgres_discount:
-#   postgres_ordering:
 
 networks:
   app-network:
     name: app-network
     driver: bridge
+

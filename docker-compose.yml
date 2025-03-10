@@ -8,46 +8,38 @@ services:
   db.catalog:
     image: mongo:latest
 
-  # basketdb:
+  db.basket:
+    image: postgres:alpine
+
+  # db.discount:
   #   image: postgres:alpine
 
-  # discountdb:
+  # db.ordering:
   #   image: postgres:alpine
 
-  # orderingdb:
-  #   image: postgres:alpine
+  db.distributedcache:
+    image: redis:alpine
 
-  # distributedcache:
-  #   image: redis:alpine
+  mq.rabbitmq:
+    image: rabbitmq:management
 
-  # messagebroker:
-  #   image: rabbitmq:management
-
-
-  # ygz.identity.api:
-  #   image: ${DOCKER_REGISTRY-}ybeidentityapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
-  
   ygz.keycloak.api:
     image: ${DOCKER_REGISTRY-}ygzkeycloakapi
     build:
       context: .
       dockerfile: Services/Identity/YGZ.Keycloak.Api/Dockerfile
 
+  ygz.catalog.api:
+    image: ${DOCKER_REGISTRY-}ygzcatalogapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  # ygz.catalog.api:
-  #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
-
-  # ygz.basket.api:
-  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+  ygz.basket.api:
+    image: ${DOCKER_REGISTRY-}ygzbasketapi
+    build:
+      context: .
+      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
   # gyz.discount.grpc:
   #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
@@ -76,9 +68,3 @@ services:
   ygz.jaeger.opentelemetry:
     image: jaegertracing/all-in-one:latest
 
-volumes:
-  postgres_identity:
-  postgres_keycloak:
-  # postgres_basket:
-  # postgres_discount:
-  # mongodb_catalog:

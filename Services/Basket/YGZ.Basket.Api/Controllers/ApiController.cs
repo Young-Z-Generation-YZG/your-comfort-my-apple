@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using YGZ.Basket.Domain.Core.Abstractions.Result;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Basket.Api.Controllers;
 

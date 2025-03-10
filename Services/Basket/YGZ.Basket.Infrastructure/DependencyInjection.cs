@@ -1,23 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using YGZ.Basket.Application.Core.Abstractions.Payments;
-using YGZ.Basket.Infrastructure.Payments.Vnpay;
-using YGZ.BuildingBlocks.Messaging.MassTransit;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Basket.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
+    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHttpContextAccessor();
+        services.AddKeycloakIdentityServerExtension(configuration);
 
-        services.Configure<VnpaySettings>(configuration.GetSection(VnpaySettings.SettingKey));
-
-        services.AddSingleton<IVnpayPaymentProvider, VnpayPaymentProvider>();
-
-        services.AddMessageBrokerExtensions(configuration);
+        services.AddOpenTelemetryExtensions();
 
         return services;
     }

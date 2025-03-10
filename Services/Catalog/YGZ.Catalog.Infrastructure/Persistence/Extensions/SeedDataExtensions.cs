@@ -15,7 +15,6 @@ public static class SeedDataExtensions
 
         var productItemRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<ProductItem>>();
 
-
         await SeedProductItemsAsync(productItemRepository);
     }
 

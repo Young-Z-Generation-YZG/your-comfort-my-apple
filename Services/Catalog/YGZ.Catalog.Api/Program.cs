@@ -45,9 +45,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
-
-    await app.ApplySeedDataAsync();
 }
+
+app.Lifetime.ApplicationStarted.Register(async () =>
+{
+    using var scope = app.Services.CreateScope();
+    await app.ApplySeedDataAsync();
+});
 
 app.UseCors(options =>
 {
