@@ -29,7 +29,7 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 
         ShoppingCart shoppingCart = request.ToEntity("lov3rinve146@gmail.com");
 
-        var result = await _basketRepository.StoreBasket(shoppingCart, cancellationToken);
+        var result = await _basketRepository.StoreBasketAsync(shoppingCart, cancellationToken);
 
         if(result.IsFailure)
         {

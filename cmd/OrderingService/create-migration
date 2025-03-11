@@ -1,0 +1,5 @@
+#! /bin/bash
+dotnet ef migrations add "InitialMigration" \
+--startup-project ../Services/Identity/YGZ.Keycloak.Api \
+--project ../Services/Identity/YGZ.Keycloak.Infrastructure \
+--output-dir Persistence/Migrations

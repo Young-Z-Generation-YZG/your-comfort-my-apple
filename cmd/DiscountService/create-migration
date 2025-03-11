@@ -1,0 +1,5 @@
+#! /bin/bash
+dotnet ef migrations add "InitialMigration" \
+--startup-project ../../Services/Discount/YGZ.Discount.Grpc \
+--project ../../Services/Discount/YGZ.Discount.Infrastructure \
+--output-dir Persistence/Migrations

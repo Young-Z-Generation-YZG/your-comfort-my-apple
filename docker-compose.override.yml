@@ -119,14 +119,21 @@ services:
         image: postgres:alpine
         container_name: db.discount
         environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: DiscountDb
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=DiscountDb
         restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d DiscountDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         ports:
-        - "7432:5432"
+        - "4432:5432"
         volumes:
         - postgres_discount:/var/lib/postgresql/data/
+        networks:
+        - app-network
 
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
@@ -214,16 +221,20 @@ services:
         - app-network
 
     ygz.discount.grpc:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-    ports:
-      - "6003:8080"
-      - "6063:8081"
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        environment:
+          - ASPNETCORE_ENVIRONMENT=Development
+          - ASPNETCORE_HTTP_PORTS=8080
+          - ASPNETCORE_HTTPS_PORTS=8081
+          - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
+        ports:
+          - "6003:8080"
+          - "6063:8081"
+        depends_on:
+          db.discount:
+                condition: service_healthy
+        volumes:
+          - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+          - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   # distributedcache:
   #   image: redis:alpine
