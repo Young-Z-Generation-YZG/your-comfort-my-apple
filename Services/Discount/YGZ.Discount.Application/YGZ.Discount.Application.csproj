@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
+    <ProjectReference Include="..\YGZ.Discount.Domain\YGZ.Discount.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

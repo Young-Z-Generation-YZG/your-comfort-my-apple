@@ -23,7 +23,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
     {
         //var userEmail = _userContext.GetUserEmail();
 
-        var result = await _basketRepository.GetBasket("lov3rinve146@gmail.com", cancellationToken);
+        var result = await _basketRepository.GetBasketAsync("lov3rinve146@gmail.com", cancellationToken);
 
         if (result.IsFailure)
         {
