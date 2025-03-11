@@ -7,7 +7,8 @@ namespace YGZ.Catalog.Domain.Core.Abstractions;
 
 public interface ISoftDelete
 {
-    bool IsDeleted { get;}
+    bool IsDeleted { get; }
+
     DateTime? DeletedAt { get; }
 
     [BsonId]

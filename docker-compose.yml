@@ -11,17 +11,17 @@ services:
   db.basket:
     image: postgres:alpine
 
-  # db.discount:
-  #   image: postgres:alpine
+  db.discount:
+    image: postgres:alpine
 
   # db.ordering:
   #   image: postgres:alpine
 
-  db.distributedcache:
-    image: redis:alpine
+  # db.distributedcache:
+  #   image: redis:alpine
 
-  mq.rabbitmq:
-    image: rabbitmq:management
+  # mq.rabbitmq:
+  #   image: rabbitmq:management
 
   ygz.keycloak.api:
     image: ${DOCKER_REGISTRY-}ygzkeycloakapi
@@ -41,17 +41,11 @@ services:
       context: .
       dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
-  # gyz.discount.grpc:
-  #   image: ${DOCKER_REGISTRY-}gyzdiscountgrpc
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Discount/GYZ.Discount.Grpc/Dockerfile
-
-  # ygz.ordering.api:
-  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
-  #   build:
-  #     context: .
-  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+  ygz.discount.grpc:
+    image: ${DOCKER_REGISTRY-}ygzdiscountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
 
   ygz.gateways.yarp:
     image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
@@ -67,4 +61,7 @@ services:
 
   ygz.jaeger.opentelemetry:
     image: jaegertracing/all-in-one:latest
+
+
+  
 
