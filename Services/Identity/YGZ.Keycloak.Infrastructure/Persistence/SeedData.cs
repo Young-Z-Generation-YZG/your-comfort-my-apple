@@ -1,7 +1,6 @@
-﻿
-using YGZ.Keycloak.Domain.Users;
+﻿using YGZ.Keycloak.Domain.Users;
 
-namespace YGZ.Keycloak.Infrastructure.Persistence.Extensions;
+namespace YGZ.Keycloak.Infrastructure.Persistence;
 
 public class SeedData
 {

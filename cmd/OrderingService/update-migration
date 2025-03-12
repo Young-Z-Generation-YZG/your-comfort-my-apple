@@ -1,4 +1,4 @@
 #! /bin/bash
 dotnet ef database update \
---startup-project ../Services/Identity/YGZ.Keycloak.Api \
---project ../Services/Identity/YGZ.Keycloak.Infrastructure
+--startup-project ../../Services/Ordering/YGZ.Ordering.Api \
+--project ../../Services/Ordering/YGZ.Ordering.Infrastructure

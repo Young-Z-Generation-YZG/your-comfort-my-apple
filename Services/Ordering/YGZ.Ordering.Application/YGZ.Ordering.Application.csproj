@@ -11,4 +11,8 @@
     <ProjectReference Include="..\YGZ.Ordering.Domain\YGZ.Ordering.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Orders\Queries\" />
+  </ItemGroup>
+
 </Project>

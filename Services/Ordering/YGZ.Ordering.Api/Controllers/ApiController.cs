@@ -1,11 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Ordering.Api.Controllers;
 
-public class ApiController : Controller
+[ApiController]
+public class ApiController : ControllerBase
 {
-    public IActionResult Index()
+    protected IActionResult HandleFailure<TResponse>(Result<TResponse> result)
     {
-        return View();
+        if (result.IsSuccess)
+        {
+            throw new InvalidOperationException("Result is not failure");
+        }
+
+        try
+        {
+            IValidationResult validationResult = (IValidationResult)result;
+
+            HttpContext.Items.Add("errors", validationResult.Errors);
+
+            return BadRequest(Problem(title: "BadRequest", statusCode: (int)HttpStatusCode.BadRequest).Value);
+        }
+        catch (InvalidCastException)
+        {
+            HttpContext.Items.Add("error", result.Error);
+
+            return BadRequest(Problem(title: "BadRequest", statusCode: (int)HttpStatusCode.BadRequest).Value);
+        }
     }
 }

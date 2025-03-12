@@ -1,23 +1,58 @@
+using Keycloak.AuthServices.Authorization;
+using YGZ.Ordering.Api.Extensions;
+using YGZ.Ordering.Api;
+using YGZ.Ordering.Infrastructure;
+using YGZ.Ordering.Application;
+using YGZ.BuildingBlocks.Shared.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var host = builder.Host;
+
+// Add Layers
+services
+    .AddPresentationLayer()
+    .AddInfrastructureLayer(builder.Configuration)
+    .AddApplicationLayer(builder.Configuration);
 
 // Add services to the container.
+services.AddProblemDetails();
+services.AddSwaggerExtensions();
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
+
+
+services.AddControllers(options => options.AddProtectedResources())
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.WriteIndented = true; // Optional
+        });
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Add Serilog
+host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi();
+    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 }
 
-app.UseHttpsRedirection();
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+});
 
+app.UseHttpsRedirection();
+app.UseExceptionHandler("/error");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
