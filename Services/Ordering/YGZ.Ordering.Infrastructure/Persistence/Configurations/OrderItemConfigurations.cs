@@ -12,13 +12,13 @@ public class OrderItemConfigurations : IEntityTypeConfiguration<OrderItem>
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
         builder.HasKey(oi => oi.Id);
-
-        builder.Property(oi => oi.Id)
+        builder
+            .Property(oi => oi.Id)
             .ValueGeneratedNever()
-            .HasConversion(id => id.Value, value => OrderItemId.ToValueObject(value));
+            .HasConversion(id => id.Value, value => OrderItemId.Of(value));
 
         // Add configuration for the new OrderId property
         builder.Property(oi => oi.OrderId)
-            .HasConversion(id => id.Value, value => OrderId.ToValueObject(value));
+            .HasConversion(id => id.Value, value => OrderId.Of(value));
     }
 }

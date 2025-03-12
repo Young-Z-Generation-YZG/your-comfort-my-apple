@@ -12,48 +12,31 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ContactName = table.Column<string>(type: "text", nullable: true),
-                    ContactEmail = table.Column<string>(type: "text", nullable: true),
-                    ContactPhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    AddressLine = table.Column<string>(type: "text", nullable: true),
-                    District = table.Column<string>(type: "text", nullable: true),
-                    Province = table.Column<string>(type: "text", nullable: true),
-                    Country = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false, defaultValue: "PENDING"),
                     PaymentType = table.Column<string>(type: "text", nullable: false),
-                    ShippingAddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     SubTotal = table.Column<decimal>(type: "numeric", nullable: false),
                     DiscountAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     Total = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressAddressLine = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressContactEmail = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressContactName = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressContactPhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressCountry = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressDistrict = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressProvince = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Addresses_ShippingAddressId",
-                        column: x => x.ShippingAddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,11 +69,6 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_ShippingAddressId",
-                table: "Orders",
-                column: "ShippingAddressId");
         }
 
         /// <inheritdoc />
@@ -101,9 +79,6 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
-
-            migrationBuilder.DropTable(
-                name: "Addresses");
         }
     }
 }

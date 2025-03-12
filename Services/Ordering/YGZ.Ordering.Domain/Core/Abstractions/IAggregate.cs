@@ -1,7 +1,7 @@
 ﻿
 namespace YGZ.Ordering.Domain.Core.Abstractions;
 
-public interface IHasDomainEvents
+public interface IAggregate
 {
     public IReadOnlyList<IDomainEvent> DomainEvents { get; }
 
