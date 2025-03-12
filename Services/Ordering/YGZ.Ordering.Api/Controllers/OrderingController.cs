@@ -2,7 +2,7 @@
 
 namespace YGZ.Ordering.Api.Controllers;
 
-public class ApiController : Controller
+public class OrderingController : Controller
 {
     public IActionResult Index()
     {

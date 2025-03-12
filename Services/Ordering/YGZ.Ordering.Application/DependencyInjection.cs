@@ -1,10 +1,7 @@
-﻿using FluentValidation;
-using MediatR;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-using YGZ.Ordering.Application.Behaviors;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Ordering.Application;
 
@@ -14,16 +11,13 @@ public static class DependencyInjection
     {
         var assembly = Assembly.GetExecutingAssembly();
 
-        //services.AddSwaggerExamplesFromAssemblies(assembly);
-        services.AddFluentValidationRulesToSwagger();
-
+        // Add MediatR
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
 
-        //services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestLoggingPipelineBehavior<,>));
+        // Add Fluent Validation
+        services.AddFluentValidationExtension(assembly);
 
-        // Registering the ValidationPipelineBehavior
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
-        services.AddValidatorsFromAssembly(assembly);
+
         return services;
     }
 }

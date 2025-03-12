@@ -7,15 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Abstractions\Data\" />
-    <Folder Include="Core\Common\Constants\" />
-    <Folder Include="Core\Common\ValueObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Ardalis.SmartEnum" Version="8.2.0" />
-    <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.1.0" />
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <Folder Include="Core\" />
+    <Folder Include="Orders\Entities\" />
+    <Folder Include="Orders\ValueObjects\" />
   </ItemGroup>
 
 </Project>

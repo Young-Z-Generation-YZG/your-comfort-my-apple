@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace YGZ.Ordering.Api.Controllers;
 
-public class ErrorController : ControllerBase
+public class ErrorController : Controller
 {
-    [Route("error")]
-    [ApiExplorerSettings(IgnoreApi = true)]
-    public IActionResult Error()
+    public IActionResult Index()
     {
-        Exception? exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-        return Problem(exception?.Message);
+        return View();
     }
 }

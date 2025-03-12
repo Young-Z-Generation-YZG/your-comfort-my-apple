@@ -1,53 +1,33 @@
-﻿using MassTransit;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.FeatureManagement;
-using System.Reflection;
-using YGZ.BuildingBlocks.Messaging.MassTransit;
-using YGZ.Ordering.Application.Orders.Events.Integrations;
+using YGZ.Ordering.Infrastructure.Persistence;
+using YGZ.Ordering.Infrastructure.Settings;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Ordering.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
+    public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddFeatureManagement();
+        services.AddKeycloakIdentityServerExtension(configuration);
 
-        var queuesFromAssembly = AppDomain.CurrentDomain
-            .GetAssemblies()
-            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Ordering.Application");
+        services.AddOpenTelemetryExtensions();
 
-        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
+        services.AddPostgresDatabase(configuration);
 
-        //services.Configure<MessageBrokerSettings>(configuration.GetSection(MessageBrokerSettings.SettingKey));
+        return services;
+    }
 
-        //services.AddMassTransit(config =>
-        //{
-        //    config.SetKebabCaseEndpointNameFormatter();
+    public static IServiceCollection AddPostgresDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString(ConnectionStrings.OrderingDb);
 
-        //    //config.AddConsumers(typeof(BasketCheckoutIntegrationEventHandler).Assembly);
-
-        //    config.AddConsumers(applicationAssembly);
-
-        //    config.UsingRabbitMq((context, configurator) =>
-        //    {
-        //        //configurator.ReceiveEndpoint("basket-checkout-queue", endpoint =>
-        //        //{
-        //        //    endpoint.ConfigureConsumer<BasketCheckoutIntegrationEventHandler>(context);
-        //        //});
-
-        //        configurator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
-        //        {
-        //            host.Username(configuration["MessageBrokerSettings:UserName"]!);
-        //            host.Password(configuration["MessageBrokerSettings:Password"]!);
-        //        });
-
-        //        configurator.ConfigureEndpoints(context);
-        //    });
-
-        //});
-
+        services.AddDbContext<OrderDbContext>(options =>
+        {
+            options.UseNpgsql(connectionString);
+        });
 
         return services;
     }
