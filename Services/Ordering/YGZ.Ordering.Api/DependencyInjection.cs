@@ -1,6 +1,25 @@
-﻿namespace YGZ.Ordering.Api
+﻿using System.Reflection;
+using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Ordering.Api.HttpContext;
+using YGZ.Ordering.Application.Abstractions;
+using YGZ.BuildingBlocks.Shared.Errors;
+
+namespace YGZ.Ordering.Api;
+
+public static class DependencyInjection
 {
-    public class DependencyInjection
+    public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
     {
+        services.AddApiVersioningExtension();
+
+        services.AddMappingExtensions(Assembly.GetExecutingAssembly());
+
+        services.AddGlobalExceptionHandler();
+
+        services.AddHttpContextAccessor();
+
+        services.AddScoped<IUserContext, UserContext>();
+
+        return services;
     }
 }

@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="Orders\Entities\" />
-    <Folder Include="Orders\ValueObjects\" />
+    <Folder Include="Core\Errors\" />
+    <Folder Include="Core\Common\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
   </ItemGroup>
 
 </Project>

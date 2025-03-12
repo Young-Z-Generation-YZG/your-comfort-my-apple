@@ -1,9 +1,15 @@
 ﻿
-namespace YGZ.BuildingBlocks.Shared.ValueObjects;
+
+namespace YGZ.Ordering.Domain.Core.Primitives;
 
 public abstract class ValueObject : IEquatable<ValueObject>
 {
     public abstract IEnumerable<object> GetEqualityComponents();
+
+    public Guid ToGuid()
+    {
+        return Guid.NewGuid();
+    }
 
     public override bool Equals(object? obj)
     {

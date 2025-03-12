@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace YGZ.Ordering.Api.Controllers;
 
-public class ErrorController : Controller
+public class ErrorController : ControllerBase
 {
-    public IActionResult Index()
+    [Route("error")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [AllowAnonymous]
+    public IActionResult Error()
     {
-        return View();
+        Exception? exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        return Problem(exception?.Message);
     }
 }
