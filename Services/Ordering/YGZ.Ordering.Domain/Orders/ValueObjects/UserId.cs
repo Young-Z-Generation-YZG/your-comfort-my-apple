@@ -1,5 +1,6 @@
 ﻿
 
+using YGZ.Ordering.Domain.Core.Exceptions;
 using YGZ.Ordering.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -8,15 +9,7 @@ public class UserId : ValueObject
 {
     public Guid Value { get; private set; }
 
-    public UserId(Guid value)
-    {
-        if (value == Guid.Empty)
-        {
-            throw new ArgumentException("UserId cannot be empty", nameof(value));
-        }
-
-        Value = value;
-    }
+    private UserId(Guid guid) => Value = guid;
 
     public override IEnumerable<object> GetEqualityComponents()
     {
@@ -28,8 +21,16 @@ public class UserId : ValueObject
         return new UserId(Guid.NewGuid());
     }
 
-    public static UserId ToValueObject(Guid guid)
+    public static UserId Of(Guid guid)
     {
+        ArgumentNullException.ThrowIfNull(guid);
+
+        if (guid == Guid.Empty)
+        {
+            throw new DomainException("UserId cannot be empty.");
+        }
+
+
         return new UserId(guid);
     }
 }

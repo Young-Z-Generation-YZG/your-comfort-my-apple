@@ -4,6 +4,7 @@ using YGZ.Ordering.Api;
 using YGZ.Ordering.Infrastructure;
 using YGZ.Ordering.Application;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Ordering.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -42,6 +43,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+
+    await app.ApplyMigrationAsync();
+    await app.ApplySeedDataAsync();
 }
 
 app.UseCors(options =>

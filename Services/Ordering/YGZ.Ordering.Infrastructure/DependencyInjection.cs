@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using YGZ.Ordering.Infrastructure.Persistence;
 using YGZ.Ordering.Infrastructure.Settings;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Ordering.Infrastructure.Persistence.Interceptors;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -24,8 +26,12 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStrings.OrderingDb);
 
-        services.AddDbContext<OrderDbContext>(options =>
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventInterceptor>();
+
+        services.AddDbContext<OrderDbContext>((sp, options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
 

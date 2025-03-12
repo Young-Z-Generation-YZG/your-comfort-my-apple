@@ -1,22 +1,14 @@
 ﻿
 
+using YGZ.Ordering.Domain.Core.Exceptions;
 using YGZ.Ordering.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class OrderItemId : ValueObject
 {
-    public Guid Value { get; private set; }
-
-    public OrderItemId(Guid value)
-    {
-        if (value == Guid.Empty)
-        {
-            throw new ArgumentException("Order item id cannot be empty", nameof(value));
-        }
-
-        Value = value;
-    }
+    public Guid Value { get; }
+    private OrderItemId(Guid guid) => Value = guid;
 
     public override IEnumerable<object> GetEqualityComponents()
     {
@@ -28,8 +20,16 @@ public class OrderItemId : ValueObject
         return new OrderItemId(Guid.NewGuid());
     }
 
-    public static OrderItemId ToValueObject(Guid guid)
+    public static OrderItemId Of(Guid guid)
     {
+        ArgumentNullException.ThrowIfNull(guid);
+
+        if (guid == Guid.Empty)
+        {
+            throw new DomainException("OrderItemId cannot be empty.");
+        }
+
+
         return new OrderItemId(guid);
     }
 }

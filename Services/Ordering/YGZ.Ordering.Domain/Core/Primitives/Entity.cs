@@ -3,7 +3,7 @@ using YGZ.Ordering.Domain.Core.Abstractions;
 
 namespace YGZ.Ordering.Domain.Core.Primitives;
 
-public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents
+public abstract class Entity<TId> : IEquatable<Entity<TId>>, IAggregate
     where TId : ValueObject
 {
     public TId Id { get; protected set; }
