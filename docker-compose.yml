@@ -14,8 +14,8 @@ services:
   db.discount:
     image: postgres:alpine
 
-  # db.ordering:
-  #   image: postgres:alpine
+  db.ordering:
+    image: postgres:alpine
 
   # db.distributedcache:
   #   image: redis:alpine
@@ -53,6 +53,12 @@ services:
       context: .
       dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
+  ygz.ordering.api:
+    image: ${DOCKER_REGISTRY-}ygzorderingapi
+    build:
+      context: .
+      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+
   ygz.seq:
     image: datalust/seq
   
@@ -61,7 +67,4 @@ services:
 
   ygz.jaeger.opentelemetry:
     image: jaegertracing/all-in-one:latest
-
-
-  
 

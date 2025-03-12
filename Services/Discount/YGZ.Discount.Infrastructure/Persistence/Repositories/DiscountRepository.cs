@@ -3,7 +3,6 @@
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using YGZ.Discount.Application.Abstractions;
 using YGZ.Discount.Application.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;

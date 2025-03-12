@@ -135,6 +135,25 @@ services:
         networks:
         - app-network
 
+    db.ordering:
+        container_name: db.ordering
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=OrderingDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d OrderingDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "6432:5432"
+        volumes:
+        - postgres_ordering:/var/lib/postgresql/data/
+        networks:
+        - app-network
+
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
         command:
@@ -236,6 +255,26 @@ services:
           - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
           - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
+    ygz.ordering.api:
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
+        ports:
+        - "6004:8080"
+        - "6064:8081"
+        depends_on:
+            db.ordering:
+                condition: service_healthy
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
+
+
+
   # distributedcache:
   #   image: redis:alpine
   #   container_name: distributedcache
@@ -265,6 +304,7 @@ services:
 
   
 
+  
 volumes:
   postgres_identity:
   postgres_keycloak:
@@ -277,5 +317,6 @@ networks:
   app-network:
     name: app-network
     driver: bridge
+
 
 
