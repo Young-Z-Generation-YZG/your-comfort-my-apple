@@ -19,11 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Common\" />
-    <Folder Include="Mappings\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Application\YGZ.Ordering.Application.csproj" />
     <ProjectReference Include="..\YGZ.Ordering.Infrastructure\YGZ.Ordering.Infrastructure.csproj" />

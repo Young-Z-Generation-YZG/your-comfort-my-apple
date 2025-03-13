@@ -18,9 +18,9 @@ public class SeedData
     {
         get
         {
-            var address1 = Address.Create("Bach Le", "lov3rinve146@gmail.com", "0333284890", "106* Kha Van Can", "Thu Duc", "Ho Chi Minh", "Viet Nam");
+            var address1 = Address.Of("Bach Le", "lov3rinve146@gmail.com", "0333284890", "106* Kha Van Can", "Thu Duc", "Ho Chi Minh", "Viet Nam");
 
-            var order1 = Order.Create(orderId: OrderId.Of(new Guid("3de0c2e6-d082-4d24-b84e-805905674b09")), customerId: UserId.Of(new Guid("d7610ca1-2909-49d3-af23-d502a297da29")), code: Code.Of("#64500665"), status: OrderStatusEnum.PAID, paymentType: PaymentTypeEnum.VNPAY, address1);
+            var order1 = Order.Create(orderId: OrderId.Of(new Guid("3de0c2e6-d082-4d24-b84e-805905674b09")), customerId: UserId.Of(new Guid("d7610ca1-2909-49d3-af23-d502a297da29")), code: Code.Of("#64500665"), status: OrderStatusEnum.PAID, paymentMethod: PaymentMethodEnum.VNPAY, address1);
 
             return new List<Order> { order1 };
         }

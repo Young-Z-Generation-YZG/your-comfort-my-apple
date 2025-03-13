@@ -1,7 +1,7 @@
 ﻿
 
 using MongoDB.Bson.Serialization.Attributes;
-using YGZ.BuildingBlocks.Shared.ValueObjects;
+using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Application.Common.ValueObjects;
 

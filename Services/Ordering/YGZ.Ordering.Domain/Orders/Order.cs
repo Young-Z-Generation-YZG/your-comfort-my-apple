@@ -18,7 +18,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
     public UserId CustomerId { get; set; } = default!;
     public Code Code { get; set; } = default!;
     public OrderStatusEnum Status { get; set; } = OrderStatusEnum.PENDING;
-    required public PaymentTypeEnum PaymentType { get; set; }
+    required public PaymentMethodEnum PaymentMethod { get; set; }
     public Address ShippingAddress { get; set; }
     public decimal SubTotal
     {
@@ -40,7 +40,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
                                UserId customerId,
                                Code code,
                                OrderStatusEnum status,
-                               PaymentTypeEnum paymentType,
+                               PaymentMethodEnum paymentMethod,
                                Address ShippingAddress)
     {
         var order = new Order
@@ -49,7 +49,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
             CustomerId = customerId,
             Code = code,
             Status = status,
-            PaymentType = paymentType,
+            PaymentMethod = paymentMethod,
             ShippingAddress = ShippingAddress,
             LastModifiedBy = null
         };

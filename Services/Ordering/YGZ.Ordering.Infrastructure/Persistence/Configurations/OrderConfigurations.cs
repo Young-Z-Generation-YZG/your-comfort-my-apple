@@ -75,12 +75,12 @@ public class OrderConfigurations : IEntityTypeConfiguration<Order>
                .HasColumnName("Status");
 
         builder
-            .Property(o => o.PaymentType)
+            .Property(o => o.PaymentMethod)
             .HasConversion(
                    x => x.Name,
-                   x => PaymentTypeEnum.FromName(x, false)
+                   x => PaymentMethodEnum.FromName(x, false)
             )
-            .HasColumnName("PaymentType")
+            .HasColumnName("PaymentMethod")
             .IsRequired();
     }
 }

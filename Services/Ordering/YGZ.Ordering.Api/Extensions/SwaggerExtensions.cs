@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using NSwag;
+using YGZ.Ordering.Api.Contracts;
 
 namespace YGZ.Ordering.Api.Extensions;
 
@@ -42,7 +43,9 @@ public static class SwaggerExtensions
 
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
+            settings.OperationProcessors.Add(new GetOrdersPaginationRequestExample());
 
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateOrderRequestExample());
         });
 
         return services;

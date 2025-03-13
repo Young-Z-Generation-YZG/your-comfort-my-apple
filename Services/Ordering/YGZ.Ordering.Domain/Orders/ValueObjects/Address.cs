@@ -33,7 +33,7 @@ public class Address : ValueObject
         Country = country;
     }
 
-    public static Address Create(string contactName,
+    public static Address Of(string contactName,
                                  string contactEmail,
                                  string contactPhoneNumber,
                                  string addressLine,

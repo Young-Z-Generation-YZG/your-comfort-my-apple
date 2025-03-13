@@ -40,10 +40,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("LastModifiedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("PaymentType")
+                    b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("PaymentType");
+                        .HasColumnName("PaymentMethod");
 
                     b.Property<string>("Status")
                         .IsRequired()

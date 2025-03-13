@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using YGZ.Discount.Domain.Coupons;
-using YGZ.Discount.Domain.Coupons.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence;
 

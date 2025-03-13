@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Errors\" />
     <Folder Include="Core\Common\" />
   </ItemGroup>
 
