@@ -13,7 +13,7 @@ using YGZ.Ordering.Infrastructure.Persistence;
 namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20250312193120_InitialMigration")]
+    [Migration("20250313082041_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -43,10 +43,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("LastModifiedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("PaymentType")
+                    b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("PaymentType");
+                        .HasColumnName("PaymentMethod");
 
                     b.Property<string>("Status")
                         .IsRequired()

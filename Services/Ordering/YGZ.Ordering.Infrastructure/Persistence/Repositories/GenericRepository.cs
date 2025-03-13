@@ -1,0 +1,112 @@
+﻿
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Core.Primitives;
+
+namespace YGZ.Ordering.Infrastructure.Persistence.Repositories;
+
+public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> where TEntity : Entity<TId> where TId : ValueObject
+{
+    private readonly OrderDbContext _orderDbContext;
+    protected readonly DbSet<TEntity> _dbSet;
+
+    public GenericRepository(OrderDbContext orderDbContext)
+    {
+        _orderDbContext = orderDbContext;
+        _dbSet = orderDbContext.Set<TEntity>();
+    }
+
+    public async Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression, int? _page, int? _limit, bool tracked, CancellationToken cancellationToken)
+    {
+        var defaultPage = 1;
+        var defaultLimit = 10;
+
+        try
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (filterExpression is not null)
+            {
+                query = query.Where(filterExpression);
+            }
+
+            var totalRecords = await query.CountAsync(cancellationToken);
+            var totalPages = (int)Math.Ceiling((double)totalRecords / _limit ?? defaultLimit);
+
+            if (_page.HasValue && _limit.HasValue)
+            {
+                query = query.Skip((_page.Value - 1) * _limit.Value).Take(_limit.Value);
+            } else
+            {
+                query = query.Skip((defaultPage - 1) * defaultLimit).Take(defaultLimit);
+            }
+
+            var result = tracked ? await query.ToListAsync(cancellationToken) : await query.AsNoTracking().ToListAsync(cancellationToken);
+
+            return (result ?? new List<TEntity>(), totalRecords, totalPages);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    virtual public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _dbSet.FirstOrDefaultAsync(e => e.Id.Equals(id));
+
+            return result ?? null!;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dbSet.AddAsync(entity);
+            await SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
+    }
+
+    virtual public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dbSet.AddRangeAsync(entities);
+            await SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    virtual public Task RemoveAsync(TEntity entity, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    virtual public Task RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    virtual public async Task SaveChangesAsync()
+    {
+        await _orderDbContext.SaveChangesAsync();
+    }
+}

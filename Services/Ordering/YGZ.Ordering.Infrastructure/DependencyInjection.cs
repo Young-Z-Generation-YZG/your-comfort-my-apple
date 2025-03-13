@@ -6,6 +6,8 @@ using YGZ.Ordering.Infrastructure.Settings;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Infrastructure.Persistence.Repositories;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -18,6 +20,9 @@ public static class DependencyInjection
         services.AddOpenTelemetryExtensions();
 
         services.AddPostgresDatabase(configuration);
+
+        services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
         return services;
     }

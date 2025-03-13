@@ -2,8 +2,8 @@
 
 using DnsClient;
 using MongoDB.Bson.Serialization.Attributes;
-using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.ValueObjects;
 

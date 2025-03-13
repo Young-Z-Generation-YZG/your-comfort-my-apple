@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Ordering.Api.Contracts;
-using YGZ.Ordering.Application.Orders.Commands;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
+using YGZ.Ordering.Application.Orders.Queries.GetOrders;
 
 namespace YGZ.Ordering.Api.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/ordering")]
+[Route("api/v{version:apiVersion}/orders")]
 [OpenApiTag("orders", Description = "Manage orders.")]
 //[ProtectedResource("orders")]
 [AllowAnonymous]
@@ -25,6 +26,16 @@ public class OrderingController : ApiController
         _logger = logger;
         _sender = sender;
         _mapper = mapper;
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetOrdersQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPost()]

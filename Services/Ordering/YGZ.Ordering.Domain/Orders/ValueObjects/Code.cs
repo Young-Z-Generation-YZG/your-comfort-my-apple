@@ -24,10 +24,10 @@ public class Code : ValueObject
         // Generate two random uppercase letters
         var random = new Random();
 
-        // Generate 8 random digits
-        int digits = random.Next(10000000, 100000000);
+        // Generate 6 random digits
+        int digits = random.Next(100000, 1000000);
 
-        return new Code($"#{digits:D8}");
+        return new Code($"#{digits:D6}");
     }
 
     public override IEnumerable<object> GetEqualityComponents()

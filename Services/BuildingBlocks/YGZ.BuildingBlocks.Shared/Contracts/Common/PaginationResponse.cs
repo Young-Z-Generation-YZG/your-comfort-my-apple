@@ -1,0 +1,17 @@
+﻿
+
+using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
+
+namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
+
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+public class PaginationResponse<TData>
+{
+    public int TotalRecords { get; set; }
+    public int TotalPages { get; set; }
+    public int PageSize { get; set; }
+    public int CurrentPage { get; set; }
+    public IEnumerable<TData> Data { get; set; } = new List<TData>();
+    public PagingationLinks Links { get; set; } = new PagingationLinks("", "", "", "");
+}
