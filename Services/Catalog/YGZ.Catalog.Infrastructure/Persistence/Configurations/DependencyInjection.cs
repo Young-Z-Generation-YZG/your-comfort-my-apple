@@ -10,7 +10,7 @@ namespace YGZ.Catalog.Infrastructure.Persistence.Configurations;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddMongoDbConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddMongoDbConfigurations(this IServiceCollection services)
     {
         BsonSerializer.RegisterSerializer(typeof(ProductId), new ProductIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(ProductItemId), new ProductItemIdSerialization());

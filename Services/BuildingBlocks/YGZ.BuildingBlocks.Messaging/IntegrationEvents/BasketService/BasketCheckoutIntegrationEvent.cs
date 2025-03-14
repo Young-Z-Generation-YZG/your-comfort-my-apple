@@ -1,0 +1,28 @@
+﻿
+using YGZ.BuildingBlocks.Messaging.Events;
+
+namespace YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
+
+public record BasketCheckoutIntegrationEvent : IntegrationEvent
+{
+    public string CustomerId { get; set; } = default!;
+    public string CustomerEmail { get; set; } = default!;
+    public string PaymentMethod { get; set; } = default!;
+    public string ContactName { get; set; } = default!;
+    public string ContactPhoneNumber { get; set; } = default!;
+    public string AddressLine { get; set; } = default!;
+    public string District { get; set; } = default!;
+    public string Province { get; set; } = default!;
+    public string Country { get; set; } = default!;
+    public List<OrderLineIntegrationEvent> CartItems { get; set; } = new();
+}
+
+public record OrderLineIntegrationEvent(string ProductId,
+                                        string ProductModel,
+                                        string ProductColor,
+                                        string ProductColorHex,
+                                        int ProductStorage,
+                                        decimal ProductPrice,
+                                        string ProductImage,
+                                        int Quantity) { }
+

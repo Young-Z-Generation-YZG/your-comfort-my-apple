@@ -1,6 +1,8 @@
 
 
+using HealthChecks.UI.Client;
 using Keycloak.AuthServices.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Api.Extensions;
@@ -36,6 +38,10 @@ builder.Services.AddEndpointsApiExplorer();
 // Add Serilog
 host.AddSerilogExtension(builder.Configuration);
 
+services
+    .AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("CatalogDb")!);
+
 var app = builder.Build();
 
 app.UseStatusCodePages();
@@ -60,6 +66,11 @@ app.UseCors(options =>
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

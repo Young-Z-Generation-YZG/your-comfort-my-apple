@@ -1,9 +1,10 @@
-﻿using MassTransit;
+﻿
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace YGZ.BuildingBlocks.Messaging.MassTransit;
+namespace YGZ.BuildingBlocks.Messaging.Extensions;
 
 public static class Extensions
 {
@@ -13,15 +14,13 @@ public static class Extensions
         {
             config.SetKebabCaseEndpointNameFormatter();
 
-            if(assembly != null)
+            if (assembly != null)
             {
                 config.AddConsumers(assembly);
             }
 
             config.UsingRabbitMq((context, configuarator) =>
             {
-                //MessageBrokerSettings settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
-
                 configuarator.Host(new Uri(configuration["MessageBrokerSettings:Host"]!), host =>
                 {
                     host.Username(configuration["MessageBrokerSettings:Username"]!);

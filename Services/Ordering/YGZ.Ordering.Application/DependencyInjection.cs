@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Ordering.Application;
@@ -16,6 +17,9 @@ public static class DependencyInjection
 
         // Add Fluent Validation
         services.AddFluentValidationExtension(assembly);
+
+        // Add Feature Management 
+        services.AddFeatureManagement();
 
 
         return services;

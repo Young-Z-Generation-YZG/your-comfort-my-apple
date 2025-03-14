@@ -9,7 +9,7 @@ public static class MappingExtension
 {
     public static ShoppingCart ToEntity(this StoreBasketCommand dto, string userEmail)
     {
-        var cartItems = dto.Cart.Select(x => x.ToEntity()).ToList();
+        var cartItems = dto.CartItems.Select(x => x.ToEntity()).ToList();
 
         return ShoppingCart.Create(userEmail, cartItems);
     }

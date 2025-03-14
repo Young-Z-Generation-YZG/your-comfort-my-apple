@@ -4,7 +4,7 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 
 #pragma warning disable CS8618
 
-public sealed record StoreBasketCommand(List<CartItemCommand> Cart) : ICommand<bool> { }
+public sealed record StoreBasketCommand(List<CartItemCommand> CartItems) : ICommand<bool> { }
 
 
 public sealed record CartItemCommand

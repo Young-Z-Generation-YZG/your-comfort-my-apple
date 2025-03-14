@@ -19,7 +19,7 @@ public static class DependencyInjection
 
         services.Configure<MongoDbSettings>(configuration.GetSection(MongoDbSettings.SettingKey));
 
-        services.AddMongoDbConfiguration();
+        services.AddMongoDbConfigurations();
 
         services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 

@@ -1,4 +1,6 @@
+using HealthChecks.UI.Client;
 using Keycloak.AuthServices.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using YGZ.Basket.Api;
 using YGZ.Basket.Api.Extensions;
 using YGZ.Basket.Application;
@@ -28,10 +30,14 @@ services.AddControllers(options => options.AddProtectedResources())
             options.JsonSerializerOptions.WriteIndented = true; // Optional
         });
 
-builder.Services.AddEndpointsApiExplorer();
+services.AddEndpointsApiExplorer();
 
 // Add Serilog
 host.AddSerilogExtension(builder.Configuration);
+
+services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("BasketDb")!)
+    .AddRedis(builder.Configuration.GetConnectionString("RedisDb")!);
 
 var app = builder.Build();
 
@@ -51,6 +57,11 @@ app.UseCors(options =>
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -20,23 +20,6 @@ services:
         networks:
         - app-network
     
-    ygz.seq:
-        environment:
-            - ACCEPT_EULA=Y
-        ports:
-            - "16060:8080"
-        networks:
-        - app-network
-
-    ygz.jaeger.opentelemetry:
-        container_name: ygz.jaeger.opentelemetry
-        ports:
-            - "4317:4317"
-            - "4318:4318" 
-            - "16686:16686"
-        networks:
-        - app-network
-
     db.keycloak:
         container_name: db.keycloak
         environment:
@@ -154,6 +137,22 @@ services:
         networks:
         - app-network
 
+    db.distributedcache:
+        image: redis:alpine
+        container_name: db.distributedcache
+        restart: always
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "6379:6379"
+        volumes:
+        - redis_basket:/data
+        networks:
+        - app-network
+
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
         command:
@@ -226,13 +225,16 @@ services:
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
         - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
-        - ConnectionStrings__Redis=distributedcache:6379
+        - ConnectionStrings__RedisDb=db.distributedcache:6379
+        - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+        - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
         ports:
         - "6002:8080"
         - "6062:8081"
         depends_on:
-            db.basket:
-                condition: service_healthy
+        - db.basket
+        - db.distributedcache
+        - ygz.discount.grpc
         volumes:
         - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -241,19 +243,21 @@ services:
 
     ygz.discount.grpc:
         environment:
-          - ASPNETCORE_ENVIRONMENT=Development
-          - ASPNETCORE_HTTP_PORTS=8080
-          - ASPNETCORE_HTTPS_PORTS=8081
-          - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
         ports:
-          - "6003:8080"
-          - "6063:8081"
+        - "6003:8080"
+        - "6063:8081"
         depends_on:
-          db.discount:
+            db.discount:
                 condition: service_healthy
         volumes:
-          - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-          - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
 
     ygz.ordering.api:
         environment:
@@ -273,44 +277,48 @@ services:
         networks:
         - app-network
 
+    mq.rabbitmq:
+        container_name: mq.rabbitmq
+        hostname: rabbitmq-host
+        restart: always
+        ports:
+        - "5672:5672"
+        - "15672:15672"
+        environment:
+        - RABBITMQ_DEFAULT_USER=bale
+        - RABBITMQ_DEFAULT_PASS=bale
+        healthcheck:
+            test: ["CMD", "rabbitmqctl", "status"]
+            interval: 5s
+            timeout: 20s
+            retries: 5
+        networks:
+        - app-network
 
+    ygz.seq:
+        environment:
+            - ACCEPT_EULA=Y
+        ports:
+            - "16060:8080"
+        networks:
+        - app-network
 
-  # distributedcache:
-  #   image: redis:alpine
-  #   container_name: distributedcache
-  #   restart: always
-  #   ports:
-  #     - "6379:6379"
-
-  # messagebroker:
-  #   container_name: messagebroker
-  #   hostname: rabbitmq-host
-  #   restart: always
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   expose:
-  #     - 5672
-  #     - 15672
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=guest
-  #     - RABBITMQ_DEFAULT_PASS=guest
-  #   healthcheck:
-  #     test: ["CMD", "rabbitmqctl", "status"]
-  #     interval: 5s
-  #     timeout: 20s
-  #     retries: 5
-
-
-  
-
+    ygz.jaeger.opentelemetry:
+        container_name: ygz.jaeger.opentelemetry
+        ports:
+            - "4317:4317"
+            - "4318:4318" 
+            - "16686:16686"
+        networks:
+        - app-network
   
 volumes:
   postgres_identity:
   postgres_keycloak:
-  postgres_basket:
   postgres_discount:
   postgres_ordering:
+  postgres_basket:
+  redis_basket:
   mongodb_catalog:
 
 networks:

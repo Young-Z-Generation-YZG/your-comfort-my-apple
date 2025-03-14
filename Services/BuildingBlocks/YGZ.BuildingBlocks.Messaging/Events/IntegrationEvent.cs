@@ -2,7 +2,7 @@
 
 namespace YGZ.BuildingBlocks.Messaging.Events;
 
-public record IntergrationEvent
+public record IntegrationEvent
 {
     public Guid Id => Guid.NewGuid();
     public DateTime OccurredOn => DateTime.UtcNow;

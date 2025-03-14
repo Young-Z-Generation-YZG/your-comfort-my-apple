@@ -5,6 +5,8 @@ using YGZ.Ordering.Infrastructure;
 using YGZ.Ordering.Application;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Infrastructure.Persistence.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -31,6 +33,8 @@ services.AddControllers(options => options.AddProtectedResources())
 
 builder.Services.AddEndpointsApiExplorer();
 
+services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("OrderingDb")!);
+
 // Add Serilog
 host.AddSerilogExtension(builder.Configuration);
 
@@ -55,6 +59,11 @@ app.UseCors(options =>
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -8,8 +8,8 @@ namespace YGZ.Basket.Api.Contracts;
 public sealed record StoreBasketRequest
 {
     [Required]
-    [JsonPropertyName("cart")]
-    public List<CartItemRequest> Cart { get; set; }
+    [JsonPropertyName("cart_items")]
+    public List<CartItemRequest> CartItems { get; set; }
 }
 
 public sealed record CartItemRequest()
