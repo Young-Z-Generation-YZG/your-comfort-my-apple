@@ -12,7 +12,7 @@ public class StoreBasketRequestExample : ISchemaProcessor
 
             schema.Example = new
             {
-                cart = new List<object>()
+                Cart_items = new List<object>()
                 {
                     new
                     {

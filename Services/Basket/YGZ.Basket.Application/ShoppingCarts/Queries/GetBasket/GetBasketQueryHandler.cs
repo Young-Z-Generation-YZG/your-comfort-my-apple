@@ -32,7 +32,8 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
         var response = new GetBasketResponse
         {
-            Cart = result.Response!.Items.Select(x => new CartItemResponse(x.ProductId,
+            UserEmail = result.Response!.UserEmail,
+            CartItems = result.Response!.Items.Select(x => new CartItemResponse(x.ProductId,
                                                                            x.ProductModel,
                                                                            x.ProductColor,
                                                                            x.ProductColorHex,

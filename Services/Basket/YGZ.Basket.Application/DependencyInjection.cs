@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application;
 
@@ -16,6 +17,22 @@ public static class DependencyInjection
 
         // Add Fluent Validation
         services.AddFluentValidationExtension(assembly);
+
+        var discountServiceAddress = configuration["GrpcSettings:DiscountUrl"]!;
+
+        services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+        {
+            options.Address = new Uri(discountServiceAddress);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            return handler;
+        });
 
 
         return services;

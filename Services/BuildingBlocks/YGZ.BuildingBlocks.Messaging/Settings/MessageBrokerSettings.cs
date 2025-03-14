@@ -1,6 +1,4 @@
-﻿
-
-namespace YGZ.BuildingBlocks.Messaging.MassTransit;
+﻿namespace YGZ.BuildingBlocks.Messaging.Settings;
 
 public class MessageBrokerSettings
 {

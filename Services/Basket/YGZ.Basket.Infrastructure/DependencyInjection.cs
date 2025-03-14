@@ -4,9 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Weasel.Core;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Infrastructure.Persistence;
 using YGZ.Basket.Infrastructure.Settings;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Messaging.Extensions;
+using YGZ.Basket.Infrastructure.Persistence.Repositories;
 
 namespace YGZ.Basket.Infrastructure;
 
@@ -20,7 +21,15 @@ public static class DependencyInjection
 
         services.AddPostgresDatabase(configuration);
 
+        services.AddQueuesFromApplicationLayer(configuration);
+
         services.AddScoped<IBasketRepository, BasketRepository>();
+        services.Decorate<IBasketRepository, CachedBasketRepository>();
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration =configuration.GetConnectionString(ConnectionStrings.RedisDb);
+        });
 
         return services;
     }
@@ -36,6 +45,17 @@ public static class DependencyInjection
             options.Schema.For<ShoppingCart>().Identity(x => x.UserEmail);
 
         }).UseLightweightSessions();
+
+        return services;
+    }
+
+    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration) 
+    {
+        var queuesFromAssembly = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Basket.Application");
+
+        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
 
         return services;
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using YGZ.Ordering.Infrastructure.Persistence;
 using YGZ.Ordering.Infrastructure.Settings;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.Ordering.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using YGZ.Ordering.Application.Abstractions.Data;
@@ -20,6 +21,8 @@ public static class DependencyInjection
         services.AddOpenTelemetryExtensions();
 
         services.AddPostgresDatabase(configuration);
+
+        services.AddQueuesFromApplicationLayer(configuration);
 
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
         services.AddScoped<IOrderRepository, OrderRepository>();
@@ -39,6 +42,17 @@ public static class DependencyInjection
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration)
+    {
+        var queuesFromAssembly = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Ordering.Application");
+
+        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
 
         return services;
     }

@@ -4,9 +4,11 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public class GetBasketResponse
 {
-    public List<CartItemResponse> Cart { get; set; } = new List<CartItemResponse>();
+    public string UserEmail { get; set; } = default!;
+    public List<CartItemResponse> CartItems { get; set; } = new List<CartItemResponse>();
 }
 
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]

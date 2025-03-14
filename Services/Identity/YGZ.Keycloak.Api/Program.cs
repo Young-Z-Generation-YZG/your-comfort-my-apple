@@ -5,6 +5,9 @@ using YGZ.Keycloak.Application;
 using YGZ.Keycloak.Infrastructure;
 using YGZ.Keycloak.Infrastructure.Persistence.Extensions;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -29,10 +32,22 @@ services.AddControllers(options => options.AddProtectedResources())
             options.JsonSerializerOptions.WriteIndented = true; // Optional
         });
 
-builder.Services.AddEndpointsApiExplorer();
+services.AddEndpointsApiExplorer();
 
 // Add Serilog
 host.AddSerilogExtension(builder.Configuration);
+
+services.AddHealthChecks()
+    .AddNpgSql(
+        connectionString: builder.Configuration.GetConnectionString("IdentityDb")!,
+        name: "IdentityDb",
+        failureStatus: HealthStatus.Unhealthy,
+        tags: new[] { "db", "postgres" })
+    .AddNpgSql(
+        connectionString: builder.Configuration.GetConnectionString("KeycloakDb")!,
+        name: "KeycloakDb",
+        failureStatus: HealthStatus.Unhealthy,
+        tags: new[] { "db", "postgres" });
 
 var app = builder.Build();
 
@@ -55,6 +70,12 @@ app.UseCors(options =>
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 
 app.UseAuthentication();
 app.UseAuthorization();

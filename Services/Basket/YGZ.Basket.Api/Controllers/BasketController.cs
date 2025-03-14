@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Basket.Api.Contracts;
+using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
@@ -33,6 +34,16 @@ public class BasketController : ApiController
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreBasketCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("checkout")]
+    public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<CheckoutBasketCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 

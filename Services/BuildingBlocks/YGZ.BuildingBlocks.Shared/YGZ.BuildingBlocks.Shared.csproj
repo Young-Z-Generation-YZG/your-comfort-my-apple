@@ -14,6 +14,12 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.SmartEnum" Version="8.2.0" />
+	  
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2" />
+	  
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
+	  
     <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.5.3" />
     <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.5.5" />
     <PackageReference Include="Keycloak.AuthServices.OpenTelemetry" Version="1.0.0" />

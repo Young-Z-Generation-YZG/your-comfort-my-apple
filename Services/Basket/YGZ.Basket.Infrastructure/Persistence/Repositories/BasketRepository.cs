@@ -4,9 +4,10 @@ using Marten;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
+using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
-namespace YGZ.Basket.Infrastructure.Persistence;
+namespace YGZ.Basket.Infrastructure.Persistence.Repositories;
 
 public class BasketRepository : IBasketRepository
 {
@@ -24,14 +25,18 @@ public class BasketRepository : IBasketRepository
 
             if (basket is null)
             {
-                return Errors.Basket.DoesNotExist;
+                return new ShoppingCart
+                {
+                    UserEmail = userEmail,
+                    Items = new List<ShoppingCartItem>()
+                };
             }
 
             return basket;
         }
         catch (Exception ex)
         {
-            return Errors.Basket.DoesNotExist;
+            throw;
         }
     }
 
@@ -53,16 +58,16 @@ public class BasketRepository : IBasketRepository
 
     public async Task<Result<bool>> DeleteBasketAsync(string userEmail, CancellationToken cancellationToken)
     {
-       try
-       {
+        try
+        {
             _documentSession.Delete<ShoppingCart>(userEmail);
 
             await _documentSession.SaveChangesAsync(cancellationToken);
 
             return true;
-       }
-       catch (Exception ex)
-       {
+        }
+        catch (Exception ex)
+        {
             return Errors.Basket.CannotStoreBasket;
         }
     }
