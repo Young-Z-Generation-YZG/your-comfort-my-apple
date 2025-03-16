@@ -235,6 +235,7 @@ services:
         - db.basket
         - db.distributedcache
         - ygz.discount.grpc
+        - mq.rabbitmq
         volumes:
         - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -265,11 +266,15 @@ services:
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
         - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
+        - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+        - FeatureManagement__OrderFulfillment=false
         ports:
         - "6004:8080"
         - "6064:8081"
         depends_on:
             db.ordering:
+                condition: service_healthy
+            mq.rabbitmq:
                 condition: service_healthy
         volumes:
         - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro

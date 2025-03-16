@@ -24,10 +24,10 @@ public class CheckoutBasketRequest
     public decimal DiscountAmount { get; set; } = 0;
 
     [Required]
-    [JsonPropertyName("sub_total")]
-    public decimal SubTotal { get; set; }
+    [JsonPropertyName("sub_total_amount")]
+    public decimal SubTotalAmount { get; set; }
 
     [Required]
-    [JsonPropertyName("total")]
-    public decimal Total { get; set; }
+    [JsonPropertyName("total_amount")]
+    public decimal TotalAmount { get; set; }
 }

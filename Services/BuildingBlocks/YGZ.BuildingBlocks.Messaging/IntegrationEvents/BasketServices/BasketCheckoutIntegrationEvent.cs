@@ -14,6 +14,9 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
     public string District { get; set; } = default!;
     public string Province { get; set; } = default!;
     public string Country { get; set; } = default!;
+    public decimal DiscountAmount { get; set; } = 0;
+    public decimal SubTotalAmount { get; set; } = 0;
+    public decimal TotalAmount { get; set; } = 0;
     public List<OrderLineIntegrationEvent> CartItems { get; set; } = new();
 }
 

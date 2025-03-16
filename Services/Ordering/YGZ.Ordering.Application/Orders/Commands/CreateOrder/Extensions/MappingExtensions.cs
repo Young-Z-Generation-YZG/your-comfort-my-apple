@@ -24,6 +24,7 @@ public static class MappingExtension
                                 code: Code.GenerateCode(),
                                 status: OrderStatusEnum.PENDING,
                                 paymentMethod: PaymentMethodEnum.FromName(dto.PaymentMethod),
+                                discountAmount: dto.DiscountAmount,
                                 ShippingAddress: shippingAddress);
 
         foreach(var item in dto.Orders)

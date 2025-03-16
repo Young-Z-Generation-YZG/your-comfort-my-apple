@@ -11,8 +11,8 @@ public static class MappingExtension
                                                                                   string customerEmail,
                                                                                   List<ShoppingCartItem> cartItems,
                                                                                   decimal discountAmount,
-                                                                                  decimal subTotal,
-                                                                                  decimal total)
+                                                                                  decimal subTotalAmount,
+                                                                                  decimal totalAmount)
     {
         return new BasketCheckoutIntegrationEvent
         {
@@ -25,6 +25,9 @@ public static class MappingExtension
             District = dto.ShippingAddress.District,
             Province = dto.ShippingAddress.Province,
             Country = dto.ShippingAddress.Country,
+            DiscountAmount = dto.DiscountAmount,
+            SubTotalAmount = dto.SubTotalAmount,
+            TotalAmount = dto.TotalAmount,
             CartItems = cartItems.Select(x => new OrderLineIntegrationEvent(x.ProductId,
                                                                             x.ProductModel,
                                                                             x.ProductColor,

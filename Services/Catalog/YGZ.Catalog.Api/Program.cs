@@ -40,7 +40,7 @@ host.AddSerilogExtension(builder.Configuration);
 
 services
     .AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("CatalogDb")!);
+    .AddMongoDb(builder.Configuration.GetConnectionString("CatalogDb")!);
 
 var app = builder.Build();
 

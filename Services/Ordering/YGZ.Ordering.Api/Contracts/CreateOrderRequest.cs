@@ -28,9 +28,9 @@ public sealed record CreateOrderRequest
 
     [Required]
     //[JsonPropertyName("sub_total")]
-    public decimal SubTotal { get; set; }
+    public decimal SubTotalAmount { get; set; }
 
     [Required]
     //[JsonPropertyName("total")]
-    public decimal Total { get; set; }
+    public decimal TotalAmount { get; set; }
 }

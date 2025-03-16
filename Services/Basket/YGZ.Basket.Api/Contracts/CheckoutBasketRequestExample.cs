@@ -23,9 +23,9 @@ public class CheckoutBasketRequestExample : ISchemaProcessor
                 },
                 payment_method = "VNPAY",
                 discount_code = "ZF8727717",
-                discount_amount = 100,
-                sub_total = 1000,
-                total = 900
+                discount_amount = 159.8,
+                sub_total_amount = 799,
+                total_amount = 639.2
             };
         }
     }
