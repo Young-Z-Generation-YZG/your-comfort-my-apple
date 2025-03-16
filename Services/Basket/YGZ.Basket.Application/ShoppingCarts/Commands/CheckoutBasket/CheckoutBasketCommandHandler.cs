@@ -45,11 +45,11 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
         }
 
 
-        if(!string.IsNullOrEmpty(request.DiscountCode) && basket.Response!.Items.Any())
+        if (!string.IsNullOrEmpty(request.DiscountCode) && basket.Response!.Items.Any())
         {
             var discount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.DiscountCode });
 
-            if(discount is null)
+            if (discount is null)
             {
                 return false;
             }
@@ -70,17 +70,17 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
         subTotal = basket.Response.Items.Sum(x => x.ProductPrice * x.Quantity);
         total = subTotal - discountAmount;
 
-        if ((discountAmount != request.DiscountAmount) || (subTotal != request.SubTotal || (total != request.Total)))
+        if ((discountAmount != request.DiscountAmount) || (subTotal != request.SubTotalAmount || (total != request.TotalAmount)))
         {
             return false;
         }
 
-        var eventMessage = request.ToBasketCheckoutIntegrationEvent("id-test",
-                                                                    "lov3rinve146@gmail.com",
-                                                                    basket.Response.Items,
-                                                                    discountAmount,
-                                                                    subTotal,
-                                                                    total);
+        var eventMessage = request.ToBasketCheckoutIntegrationEvent(customerId: "d7610ca1-2909-49d3-af23-d502a297da29",
+                                                                    customerEmail: "lov3rinve146@gmail.com",
+                                                                    cartItems: basket.Response.Items,
+                                                                    discountAmount: discountAmount,
+                                                                    subTotalAmount: subTotal,
+                                                                    totalAmount: total);
 
         await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
 

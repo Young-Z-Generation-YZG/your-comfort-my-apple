@@ -52,10 +52,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                         .HasDefaultValue("PENDING")
                         .HasColumnName("Status");
 
-                    b.Property<decimal>("SubTotal")
+                    b.Property<decimal>("SubTotalAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAt")

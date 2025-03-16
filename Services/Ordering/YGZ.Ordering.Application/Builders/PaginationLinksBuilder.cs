@@ -12,7 +12,7 @@ public static class PaginationLinksBuilder
     /// <param name="queryParams">Dictionary of query parameters excluding the page parameter</param>
     /// <param name="pageParamName">Name of the page parameter (e.g., "page")</param>
     /// <param name="currentPage">Current page number</param>
-    /// <param name="totalPages">Total number of pages</param>
+    /// <param name="totalPages">TotalAmount number of pages</param>
     /// <returns>A PaginationLinks object with navigation URLs</returns>
     public static PagingationLinks Build(
         string basePath,

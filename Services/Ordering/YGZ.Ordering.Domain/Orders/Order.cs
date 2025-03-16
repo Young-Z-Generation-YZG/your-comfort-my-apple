@@ -20,15 +20,15 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
     public OrderStatusEnum Status { get; set; } = OrderStatusEnum.PENDING;
     required public PaymentMethodEnum PaymentMethod { get; set; }
     public Address ShippingAddress { get; set; }
-    public decimal SubTotal
+    public decimal SubTotalAmount
     {
         get => OrderItems.Sum(x => x.ProductPrice * x.Quantity);
         set { }
     }
     public decimal DiscountAmount { get; set; } = 0;
-    public decimal Total
+    public decimal TotalAmount
     {
-        get => SubTotal - DiscountAmount;
+        get => SubTotalAmount - DiscountAmount;
         set { }
     }
 
@@ -41,6 +41,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
                                Code code,
                                OrderStatusEnum status,
                                PaymentMethodEnum paymentMethod,
+                               decimal discountAmount,
                                Address ShippingAddress)
     {
         var order = new Order
@@ -51,6 +52,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
             Status = status,
             PaymentMethod = paymentMethod,
             ShippingAddress = ShippingAddress,
+            DiscountAmount = discountAmount,
             LastModifiedBy = null
         };
 

@@ -13,7 +13,7 @@ using YGZ.Ordering.Infrastructure.Persistence;
 namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20250313082041_InitialMigration")]
+    [Migration("20250316161446_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -55,10 +55,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                         .HasDefaultValue("PENDING")
                         .HasColumnName("Status");
 
-                    b.Property<decimal>("SubTotal")
+                    b.Property<decimal>("SubTotalAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedAt")
