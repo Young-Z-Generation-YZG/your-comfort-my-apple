@@ -8,7 +8,7 @@ namespace YGZ.BuildingBlocks.Shared.Extensions;
 
 public static class OpenTelemetryExtension
 {
-    public static IServiceCollection AddOpenTelemetryExtensions(this IServiceCollection services)
+    public static IServiceCollection AddKeycloakOpenTelemetryExtensions(this IServiceCollection services)
     {
         services
             .AddOpenTelemetry()

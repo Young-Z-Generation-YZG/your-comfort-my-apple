@@ -1,60 +1,61 @@
 services:
+  ygz.gateways.yarp:
+    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
+    build:
+      context: .
+      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+
   db.keycloak:
     image: postgres:alpine
 
   db.identity:
     image: postgres:alpine
 
-  db.catalog:
-    image: mongo:latest
+  # db.catalog:
+  #   image: mongo:latest
 
-  db.basket:
-    image: postgres:alpine
+  # db.basket:
+  #   image: postgres:alpine
 
-  db.discount:
-    image: postgres:alpine
+  # db.discount:
+  #   image: postgres:alpine
 
-  db.ordering:
-    image: postgres:alpine
+  # db.ordering:
+  #   image: postgres:alpine
 
-  db.distributedcache:
-    image: redis:alpine
+  # db.distributedcache:
+  #   image: redis:alpine
 
-  ygz.keycloak.api:
-    image: ${DOCKER_REGISTRY-}ygzkeycloakapi
+
+  ygz.identity.api:
+    image: ${DOCKER_REGISTRY-}ygzidentityapi
     build:
       context: .
-      dockerfile: Services/Identity/YGZ.Keycloak.Api/Dockerfile
+      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+  # ygz.catalog.api:
+  #   image: ${DOCKER_REGISTRY-}ygzcatalogapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  ygz.basket.api:
-    image: ${DOCKER_REGISTRY-}ygzbasketapi
-    build:
-      context: .
-      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+  # ygz.basket.api:
+  #   image: ${DOCKER_REGISTRY-}ygzbasketapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
-  ygz.discount.grpc:
-    image: ${DOCKER_REGISTRY-}ygzdiscountgrpc
-    build:
-      context: .
-      dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
+  # ygz.discount.grpc:
+  #   image: ${DOCKER_REGISTRY-}ygzdiscountgrpc
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
 
-  ygz.ordering.api:
-    image: ${DOCKER_REGISTRY-}ygzorderingapi
-    build:
-      context: .
-      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
-
-  ygz.gateways.yarp:
-    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
-    build:
-      context: .
-      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+  # ygz.ordering.api:
+  #   image: ${DOCKER_REGISTRY-}ygzorderingapi
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
   ygz.seq:
     image: datalust/seq

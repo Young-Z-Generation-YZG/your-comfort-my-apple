@@ -1,64 +1,77 @@
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.IdentityModel.Tokens;
-using OpenTelemetry.Resources;
+
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using YGZ.Gateways.Yarp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
 // Add services to the container.
-
 builder.Services.AddReverseProxy()
                 .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Logging.AddOpenTelemetry(logging =>
+{
+    logging.IncludeFormattedMessage = true;
+    logging.IncludeScopes = true;
+});
 
-builder.Services.AddAuthorization();
+builder.Services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 
-var test = builder.Configuration["JwtSettings:ValidIssuer"];
+services.AddSwaggerExtensions();
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.Audience = builder.Configuration["JwtSettings:Audience"];
-        options.MetadataAddress = builder.Configuration["JwtSettings:MetadataAddress"]!;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidIssuer = builder.Configuration["JwtSettings:ValidIssuer"],
-        };
-    });
-
-builder.Services
+services
     .AddOpenTelemetry()
-    .ConfigureResource(resource => resource.AddService("YGZ.Gateways.Yarp"))
+    .WithMetrics(metrics =>
+        metrics
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddKeycloakAuthServicesInstrumentation()
+    )
     .WithTracing(tracing =>
-    {
         tracing
             .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation();
+            .AddHttpClientInstrumentation()
+            .AddKeycloakAuthServicesInstrumentation()
+    )
+    .UseOtlpExporter();
 
-        tracing.AddOtlpExporter();
-    });
+services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddKeycloakWebApi(builder.Configuration);
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddFixedWindowLimiter("fixed", opts =>
-    {
-        opts.Window = TimeSpan.FromSeconds(10);
-        opts.PermitLimit = 10;
-    });
-});
+services
+    .AddAuthorization()
+    .AddKeycloakAuthorization()
+    .AddAuthorizationServer(builder.Configuration);
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseRateLimiter();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+
+    app.UseOpenApi();
+    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+}
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 app.MapReverseProxy();
+app.MapControllers();
 
 app.Run();

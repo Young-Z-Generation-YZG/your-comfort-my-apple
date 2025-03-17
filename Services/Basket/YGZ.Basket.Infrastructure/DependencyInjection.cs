@@ -17,7 +17,7 @@ public static class DependencyInjection
     {
         services.AddKeycloakIdentityServerExtension(configuration);
 
-        services.AddOpenTelemetryExtensions();
+        services.AddKeycloakOpenTelemetryExtensions();
 
         services.AddPostgresDatabase(configuration);
 
@@ -28,7 +28,7 @@ public static class DependencyInjection
 
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration =configuration.GetConnectionString(ConnectionStrings.RedisDb);
+            options.Configuration = configuration.GetConnectionString(ConnectionStrings.RedisDb);
         });
 
         return services;
@@ -49,7 +49,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration) 
+    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration)
     {
         var queuesFromAssembly = AppDomain.CurrentDomain
             .GetAssemblies()
