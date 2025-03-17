@@ -2,7 +2,7 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -13,6 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Gateways/YGZ.Gateways.Yarp/YGZ.Gateways.Yarp.csproj", "Gateways/YGZ.Gateways.Yarp/"]
+COPY ["Services/BuildingBlocks/YGZ.BuildingBlocks.Shared/YGZ.BuildingBlocks.Shared.csproj", "Services/BuildingBlocks/YGZ.BuildingBlocks.Shared/"]
 RUN dotnet restore "./Gateways/YGZ.Gateways.Yarp/YGZ.Gateways.Yarp.csproj"
 COPY . .
 WORKDIR "/src/Gateways/YGZ.Gateways.Yarp"

@@ -18,7 +18,7 @@ public static class DependencyInjection
     {
         services.AddKeycloakIdentityServerExtension(configuration);
 
-        services.AddOpenTelemetryExtensions();
+        services.AddKeycloakOpenTelemetryExtensions();
 
         services.AddPostgresDatabase(configuration);
 
