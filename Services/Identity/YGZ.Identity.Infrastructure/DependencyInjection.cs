@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Shared.Extensions;
@@ -8,7 +7,6 @@ using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Infrastructure.Email;
 using YGZ.Identity.Infrastructure.Email.Templates;
 using YGZ.Identity.Infrastructure.Extensions;
-using YGZ.Identity.Infrastructure.Persistence;
 using YGZ.Identity.Infrastructure.Services;
 using YGZ.Identity.Infrastructure.Settings;
 
@@ -49,7 +47,7 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStrings.IdentityDb);
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<Persistence.IdentityDbContext>(options =>
         {
             options.UseNpgsql(connectionString);
         });

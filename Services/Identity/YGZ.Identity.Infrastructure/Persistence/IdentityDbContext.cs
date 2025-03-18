@@ -1,5 +1,6 @@
 ﻿
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using YGZ.Identity.Domain.Users;
@@ -7,9 +8,9 @@ using YGZ.Identity.Domain.Users;
 namespace YGZ.Identity.Infrastructure.Persistence;
 
 
-public class ApplicationDbContext : IdentityDbContext<User>
+public class IdentityDbContext : IdentityDbContext<User>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -49,7 +49,7 @@ public class IdentityService : IIdentityService
         }
     }
 
-    public async Task<Result<bool>> CreateUserAsync(RegisterCommand request)
+    public async Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId)
     {
         try
         {
@@ -60,7 +60,7 @@ public class IdentityService : IIdentityService
                 return Errors.User.AlreadyExists;
             }
 
-            var newUser = request.ToEntity();
+            var newUser = request.ToEntity(userId);
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 

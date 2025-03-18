@@ -53,100 +53,100 @@ services:
         networks:
         - app-network
 
-    # db.catalog:
-    #     container_name: mongodb
-    #     environment:
-    #     - MONGO_INITDB_ROOT_USERNAME=bale
-    #     - MONGO_INITDB_ROOT_PASSWORD=bale
-    #     - MONGO_INITDB_DATABASE=CatalogDb
-    #     restart: always
-    #     healthcheck:
-    #         test: ["CMD", "mongosh", "--host", "localhost", "--username", "bale", "--password", "bale", "--eval", "db.runCommand('ping').ok"]
-    #         interval: 5s
-    #         timeout: 5s
-    #         retries: 5
-    #     ports:
-    #     - "37017:27017"
-    #     volumes:
-    #     - mongodb_catalog:/data/db
-    #     - ./DockerVolumes/MongoDb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
-    #     networks:
-    #     - app-network
+    db.catalog:
+        container_name: mongodb
+        environment:
+        - MONGO_INITDB_ROOT_USERNAME=bale
+        - MONGO_INITDB_ROOT_PASSWORD=bale
+        - MONGO_INITDB_DATABASE=CatalogDb
+        restart: always
+        healthcheck:
+            test: ["CMD", "mongosh", "--host", "localhost", "--username", "bale", "--password", "bale", "--eval", "db.runCommand('ping').ok"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "37017:27017"
+        volumes:
+        - mongodb_catalog:/data/db
+        - ./DockerVolumes/MongoDb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+        networks:
+        - app-network
 
-    # db.basket:
-    #     image: postgres:alpine
-    #     container_name: db.basket
-    #     environment:
-    #     - POSTGRES_USER=bale
-    #     - POSTGRES_PASSWORD=bale
-    #     - POSTGRES_DB=BasketDb
-    #     restart: always
-    #     healthcheck:
-    #         test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
-    #         interval: 5s
-    #         timeout: 5s
-    #         retries: 5
-    #     ports:
-    #     - "3432:5432"
-    #     volumes:
-    #     - postgres_basket:/var/lib/postgresql/data/
-    #     networks:
-    #     - app-network
+    db.basket:
+        image: postgres:alpine
+        container_name: db.basket
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=BasketDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "3432:5432"
+        volumes:
+        - postgres_basket:/var/lib/postgresql/data/
+        networks:
+        - app-network
 
-    # db.discount:
-    #     image: postgres:alpine
-    #     container_name: db.discount
-    #     environment:
-    #     - POSTGRES_USER=bale
-    #     - POSTGRES_PASSWORD=bale
-    #     - POSTGRES_DB=DiscountDb
-    #     restart: always
-    #     healthcheck:
-    #         test: ["CMD-SHELL", "pg_isready -U bale -d DiscountDb"]
-    #         interval: 5s
-    #         timeout: 5s
-    #         retries: 5
-    #     ports:
-    #     - "4432:5432"
-    #     volumes:
-    #     - postgres_discount:/var/lib/postgresql/data/
-    #     networks:
-    #     - app-network
+    db.discount:
+        image: postgres:alpine
+        container_name: db.discount
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=DiscountDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d DiscountDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "4432:5432"
+        volumes:
+        - postgres_discount:/var/lib/postgresql/data/
+        networks:
+        - app-network
 
-    # db.ordering:
-    #     container_name: db.ordering
-    #     environment:
-    #     - POSTGRES_USER=bale
-    #     - POSTGRES_PASSWORD=bale
-    #     - POSTGRES_DB=OrderingDb
-    #     restart: always
-    #     healthcheck:
-    #         test: ["CMD-SHELL", "pg_isready -U bale -d OrderingDb"]
-    #         interval: 5s
-    #         timeout: 5s
-    #         retries: 5
-    #     ports:
-    #     - "6432:5432"
-    #     volumes:
-    #     - postgres_ordering:/var/lib/postgresql/data/
-    #     networks:
-    #     - app-network
+    db.ordering:
+        container_name: db.ordering
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=OrderingDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d OrderingDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "6432:5432"
+        volumes:
+        - postgres_ordering:/var/lib/postgresql/data/
+        networks:
+        - app-network
 
-    # db.distributedcache:
-    #     image: redis:alpine
-    #     container_name: db.distributedcache
-    #     restart: always
-    #     healthcheck:
-    #         test: ["CMD", "redis-cli", "ping"]
-    #         interval: 5s
-    #         timeout: 5s
-    #         retries: 5
-    #     ports:
-    #     - "6379:6379"
-    #     volumes:
-    #     - redis_basket:/data
-    #     networks:
-    #     - app-network
+    db.distributedcache:
+        image: redis:alpine
+        container_name: db.distributedcache
+        restart: always
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "6379:6379"
+        volumes:
+        - redis_basket:/data
+        networks:
+        - app-network
 
     ygz.keycloak.server:
         container_name: ygz.keycloak.server
@@ -182,6 +182,7 @@ services:
         - ASPNETCORE_HTTPS_PORTS=8081
         - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
         - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
+        - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:8080/
         ports:
         - "6005:8080"
         - "6065:8081"
@@ -193,24 +194,24 @@ services:
         networks:
         - app-network
 
-    # ygz.catalog.api:
-    #     environment:
-    #     - ASPNETCORE_ENVIRONMENT=Development
-    #     - ASPNETCORE_HTTP_PORTS=8080
-    #     - ASPNETCORE_HTTPS_PORTS=8081
-    #     - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog:27017/CatalogDb?authSource=admin
-    #     - MongoDbSettings__DatabaseName=CatalogDb
-    #     ports:
-    #     - "6001:8080"
-    #     - "6061:8081"
-    #     depends_on:
-    #         db.catalog:
-    #             condition: service_started
-    #     volumes:
-    #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-    #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    #     networks:
-    #     - app-network
+    ygz.catalog.api:
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog:27017/CatalogDb?authSource=admin
+        - MongoDbSettings__DatabaseName=CatalogDb
+        ports:
+        - "6001:8080"
+        - "6061:8081"
+        depends_on:
+            db.catalog:
+                condition: service_started
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
 
     # ygz.basket.api:
     #     environment:
@@ -253,45 +254,45 @@ services:
     #     networks:
     #     - app-network
 
-    # ygz.ordering.api:
-    #     environment:
-    #     - ASPNETCORE_ENVIRONMENT=Development
-    #     - ASPNETCORE_HTTP_PORTS=8080
-    #     - ASPNETCORE_HTTPS_PORTS=8081
-    #     - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
-    #     - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-    #     - FeatureManagement__OrderFulfillment=false
-    #     ports:
-    #     - "6004:8080"
-    #     - "6064:8081"
-    #     depends_on:
-    #         db.ordering:
-    #             condition: service_healthy
-    #         mq.rabbitmq:
-    #             condition: service_healthy
-    #     volumes:
-    #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-    #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    #     networks:
-    #     - app-network
+    ygz.ordering.api:
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_HTTP_PORTS=8080
+        - ASPNETCORE_HTTPS_PORTS=8081
+        - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
+        - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+        - FeatureManagement__OrderFulfillment=false
+        ports:
+        - "6004:8080"
+        - "6064:8081"
+        depends_on:
+            db.ordering:
+                condition: service_healthy
+            mq.rabbitmq:
+                condition: service_healthy
+        volumes:
+        - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+        - app-network
 
-    # mq.rabbitmq:
-    #     container_name: mq.rabbitmq
-    #     hostname: rabbitmq-host
-    #     restart: always
-    #     ports:
-    #     - "5672:5672"
-    #     - "15672:15672"
-    #     environment:
-    #     - RABBITMQ_DEFAULT_USER=bale
-    #     - RABBITMQ_DEFAULT_PASS=bale
-    #     healthcheck:
-    #         test: ["CMD", "rabbitmqctl", "status"]
-    #         interval: 5s
-    #         timeout: 20s
-    #         retries: 5
-    #     networks:
-    #     - app-network
+    mq.rabbitmq:
+        container_name: mq.rabbitmq
+        hostname: rabbitmq-host
+        restart: always
+        ports:
+        - "5672:5672"
+        - "15672:15672"
+        environment:
+        - RABBITMQ_DEFAULT_USER=bale
+        - RABBITMQ_DEFAULT_PASS=bale
+        healthcheck:
+            test: ["CMD", "rabbitmqctl", "status"]
+            interval: 5s
+            timeout: 20s
+            retries: 5
+        networks:
+        - app-network
 
     ygz.seq:
         container_name: ygz.seq

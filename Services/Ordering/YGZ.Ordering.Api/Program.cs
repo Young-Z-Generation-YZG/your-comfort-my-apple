@@ -52,18 +52,18 @@ if (app.Environment.IsDevelopment())
     await app.ApplySeedDataAsync();
 }
 
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 app.UseCors(options =>
 {
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseExceptionHandler("/error");
-
-app.UseHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
 
 app.UseAuthentication();
 app.UseAuthorization();

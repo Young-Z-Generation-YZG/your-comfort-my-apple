@@ -12,17 +12,17 @@ public static class SeedDataExtensions
     {
         using var scope = app.Services.CreateScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
 
         await SeedAsync(context);
     }
 
-    private static async Task SeedAsync(ApplicationDbContext context)
+    private static async Task SeedAsync(IdentityDbContext context)
     {
         await SeedUsersAsync(context);
     }
 
-    private static async Task SeedUsersAsync(ApplicationDbContext context)
+    private static async Task SeedUsersAsync(IdentityDbContext context)
     {
         if (!await context.Users.AnyAsync())
         {

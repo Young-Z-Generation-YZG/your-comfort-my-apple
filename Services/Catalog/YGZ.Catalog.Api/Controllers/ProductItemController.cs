@@ -12,7 +12,6 @@ namespace YGZ.Catalog.Api.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/product-items")]
 [OpenApiTag("product items", Description = "Manage product items.")]
-//[ProtectedResource("profiles")]
 [AllowAnonymous]
 public class ProductItemController : ApiController
 {

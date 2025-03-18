@@ -12,7 +12,7 @@ public static class ApplyMigration
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
 
-        using ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        using IdentityDbContext context = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
 
         context.Database.Migrate();
     }

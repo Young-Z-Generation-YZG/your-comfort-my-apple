@@ -62,8 +62,8 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 
-    app.ApplyMigrations();
-    await app.ApplySeedDataAsync();
+    //app.ApplyMigrations();
+    //await app.ApplySeedDataAsync();
 }
 
 app.UseHealthChecks("/health", new HealthCheckOptions
@@ -78,7 +78,7 @@ app.UseCors(options =>
 
 
 app.UseStatusCodePages();
-app.UseExceptionHandler();
+app.UseExceptionHandler("/error");
 
 app.UseAuthentication();
 app.UseAuthorization();

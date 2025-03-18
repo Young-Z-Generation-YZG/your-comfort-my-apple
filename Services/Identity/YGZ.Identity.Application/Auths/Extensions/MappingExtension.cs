@@ -5,9 +5,10 @@ namespace YGZ.Identity.Application.Auths.Extensions;
 
 public static class MappingExtension
 {
-    public static User ToEntity(this RegisterCommand dto)
+    public static User ToEntity(this RegisterCommand dto, Guid userId)
     {
-        return User.Create(email: dto.Email,
+        return User.Create(guid: userId,
+                           email: dto.Email,
                            passwordHash: dto.Password,
                            firstName: dto.FirstName,
                            lastName: dto.LastName);
