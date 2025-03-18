@@ -12,6 +12,6 @@ public class PaginationResponse<TData>
     public int TotalPages { get; set; }
     public int PageSize { get; set; }
     public int CurrentPage { get; set; }
-    public IEnumerable<TData> Data { get; set; } = new List<TData>();
-    public PagingationLinks Links { get; set; } = new PagingationLinks("", "", "", "");
+    public IEnumerable<TData> Items { get; set; } = new List<TData>();
+    public PaginationLinks Links { get; set; } = new PaginationLinks("", "", "", "");
 }

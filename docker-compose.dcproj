@@ -7,7 +7,7 @@
     <ProjectGuid>e7bc684f-7e20-4ad3-9dcb-6c663401dfc0</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>ygz.gateways.yarp</DockerServiceName>
+    <DockerServiceName>ygz.catalog.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

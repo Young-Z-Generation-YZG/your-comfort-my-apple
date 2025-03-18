@@ -8,10 +8,11 @@ public class User : IdentityUser
     public string LastName { get; set; } = default!;
     public string FullName => $"{FirstName} {LastName}";
 
-    public static User Create(string email, string passwordHash, string firstName, string lastName)
+    public static User Create(Guid guid, string email, string passwordHash, string firstName, string lastName)
     {
         return new User
         {
+            Id = guid.ToString(),
             Email = email,
             UserName = email,
             NormalizedEmail = email.ToUpper(),

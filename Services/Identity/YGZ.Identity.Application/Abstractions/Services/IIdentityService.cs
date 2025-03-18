@@ -10,6 +10,6 @@ namespace YGZ.Identity.Application.Abstractions.Services;
 public interface IIdentityService
 {
     Task<Result<User>> FindUserAsync(string email);
-    Task<Result<bool>> CreateUserAsync(RegisterCommand request);
+    Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId);
     Task<Result<User>> LoginAsync(LoginCommand request);
 }

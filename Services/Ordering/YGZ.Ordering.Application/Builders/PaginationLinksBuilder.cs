@@ -8,13 +8,8 @@ public static class PaginationLinksBuilder
     /// <summary>
     /// Builds pagination links for first, previous, next, and last pages.
     /// </summary>
-    /// <param name="basePath">The base URL path (e.g., "/api/items")</param>
-    /// <param name="queryParams">Dictionary of query parameters excluding the page parameter</param>
-    /// <param name="pageParamName">Name of the page parameter (e.g., "page")</param>
-    /// <param name="currentPage">Current page number</param>
-    /// <param name="totalPages">TotalAmount number of pages</param>
     /// <returns>A PaginationLinks object with navigation URLs</returns>
-    public static PagingationLinks Build(
+    public static PaginationLinks Build(
         string basePath,
         Dictionary<string, string> queryParams,
         int currentPage,
@@ -23,7 +18,7 @@ public static class PaginationLinksBuilder
         // Handle case where there are no pages
         if (totalPages <= 0)
         {
-            return new PagingationLinks
+            return new PaginationLinks
             (
                 First: null,
                 Prev: null,
@@ -36,14 +31,24 @@ public static class PaginationLinksBuilder
         string BuildUrl(int page)
         {
             var paramsCopy = new Dictionary<string, string>(queryParams);
+
             paramsCopy["_page"] = page.ToString();
+
             var queryString = string.Join("&",
-                paramsCopy.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}"));
+
+                paramsCopy.Select(kvp =>
+                {
+                    var key = kvp.Key;
+                    var value = kvp.Value;
+
+                    return $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}";
+                }));
+
             return $"{basePath}?{queryString}";
         }
 
         // Construct the pagination links
-        return new PagingationLinks(
+        return new PaginationLinks(
             First: BuildUrl(1),
             Prev: currentPage > 1 ? BuildUrl(currentPage - 1) : null,
             Next: currentPage < totalPages ? BuildUrl(currentPage + 1) : null,

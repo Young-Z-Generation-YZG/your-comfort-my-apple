@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿ using System.Linq.Expressions;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
@@ -28,32 +28,10 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
                                                         _page: request.Page,
                                                         _limit: request.Limit,
                                                         tracked: false,
-                                                        cancellationToken: cancellationToken);
+                                                        cancellationToken: cancellationToken,
+                                                        includes: x => x.OrderItems);
 
-
-        var queryParams = new Dictionary<string, string>
-        {
-            { "_page", request.Page?.ToString() ?? "1" },
-            { "_limit", request.Limit ?.ToString() ?? "10" },
-            { "_orderName", request.OrderName! },
-            { "_orderCode", request.OrderCode! },
-            { "_orderStatus", request.OrderStatus! }
-        };
-
-        var links = PaginationLinksBuilder.Build(basePath: "/api/v1/orders",
-                                                 queryParams: queryParams,
-                                                 currentPage: request.Page ?? 1,
-                                                 totalPages: result.totalPages);
-
-        var response = new PaginationResponse<OrderResponse>
-        {
-            TotalRecords = result.totalRecords,
-            TotalPages = result.totalPages,
-            PageSize = request.Limit ?? 10,
-            CurrentPage = request.Page ?? 1,
-            Data = new List<OrderResponse>(),
-            Links = links
-        };
+        var response = MapToResponse(result.orders, result.totalRecords, result.totalPages, request);
 
         return response;
     }
@@ -78,5 +56,52 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
         }
 
         return filterExpression;
+    }
+
+    private PaginationResponse<OrderResponse> MapToResponse(List<Order> orders, int totalRecords, int totalPages, GetOrdersQuery request)
+    {
+        var queryParams = QueryParamBuilder.Build(request);
+
+        var links = PaginationLinksBuilder.Build(basePath: "/api/v1/orders",
+                                                 queryParams: queryParams,
+                                                 currentPage: request.Page ?? 1,
+                                                 totalPages: totalPages);
+
+        var items = orders.Select(order => new OrderResponse
+        {
+            OrderId = order.Id.Value.ToString(),
+            OrderCode = order.Code.Value,
+            OrderCustomerEmail = order.CustomerId.Value.ToString(),
+            OrderStatus = order.Status.Name,
+            OrderPaymentMethod = order.PaymentMethod.Name,
+            OrderShippingAddress = new ShippingAddressResponse
+            {
+                ContactName = order.ShippingAddress.ContactName,
+                ContactEmail = order.ShippingAddress.ContactEmail,
+                ContactPhoneNumber = order.ShippingAddress.ContactPhoneNumber,
+                ContactAddressLine = order.ShippingAddress.Country,
+                ContactDistrict = order.ShippingAddress.District,
+                ContactProvince = order.ShippingAddress.Province,
+                ContactCountry = order.ShippingAddress.Country
+            },
+            OrderSubTotalAmount = order.SubTotalAmount,
+            OrderDiscountAmount = order.DiscountAmount,
+            OrderTotalAmount = order.TotalAmount,
+            OrderCreatedAt = order.CreatedAt,
+            OrderUpdatedAt = order.UpdatedAt,
+            OrderLastModifiedBy = null
+        }).ToList();
+
+        var response = new PaginationResponse<OrderResponse>
+        {
+            TotalRecords = totalRecords,
+            TotalPages = totalPages,
+            PageSize = request.Limit ?? 10,
+            CurrentPage = request.Page ?? 1,
+            Items = items,
+            Links = links
+        };
+
+        return response;
     }
 }

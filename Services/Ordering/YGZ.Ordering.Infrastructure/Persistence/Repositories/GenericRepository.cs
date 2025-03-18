@@ -18,7 +18,12 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         _dbSet = orderDbContext.Set<TEntity>();
     }
 
-    public async Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression, int? _page, int? _limit, bool tracked, CancellationToken cancellationToken)
+    public async Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
+                                                                                            int? _page,
+                                                                                            int? _limit,
+                                                                                            bool tracked,
+                                                                                            CancellationToken cancellationToken,
+                                                                                            params Expression<Func<TEntity, object>>[] includes)
     {
         var defaultPage = 1;
         var defaultLimit = 10;
@@ -26,6 +31,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         try
         {
             var query = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
             if (filterExpression is not null)
             {

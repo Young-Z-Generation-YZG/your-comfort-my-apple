@@ -12,6 +12,8 @@ using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Infrastructure.Settings;
 using YGZ.Identity.Domain.Core.Errors;
+using System.Net;
+using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Infrastructure.Services;
 
@@ -46,7 +48,78 @@ public class KeycloakService : IKeycloakService
         _adminEndpoint = $"{_keycloakSettings.AuthServerUrl}admin/realms/{_keycloakSettings.Realm}/users";
     }
 
-    public async Task<Result<bool>> CreateKeycloakUserAsync(RegisterCommand request)
+    public async Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId)
+    {
+        var adminToken = await GetAdminTokenResponseAsync();
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri($"{_adminEndpoint}/{userId.ToString()}"),
+            Headers =
+        {
+            { "Authorization", $"Bearer {adminToken}" },
+            { "Accept", "application/json" }
+        }
+        };
+
+        try
+        {
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<KeycloakUser>>(content);
+                var user = users.Find(u => u.Id == userId.ToString());
+
+                return user!;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(GetUserByIdAsync));
+            throw;
+        }
+
+        return null!;
+    }
+
+    public async Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
+    {
+        var adminToken = await GetAdminTokenResponseAsync();
+        var url = new Uri(_adminEndpoint + "?q=" + usernameOrEmail);
+        var requestMessage = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = url,
+            Headers =
+            {
+                { "Authorization", $"Bearer {adminToken}" },
+                { "Accept", "application/json" }
+            }
+        };
+
+        try
+        {
+            var response = await _httpClient.SendAsync(requestMessage);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var users = JsonConvert.DeserializeObject<List<KeycloakUser>>(content);
+                var user = users.Find(u => u.Email == usernameOrEmail);
+
+                return user!;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(GetUserByUsernameOrEmailAsync));
+            throw;
+        }
+
+        return null!;
+    }
+
+    public async Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request)
     {
         var keycloakUser = new
         {
@@ -67,26 +140,52 @@ public class KeycloakService : IKeycloakService
             }
         };
 
-        var adminToken = await GetAdminTokenResponseAsync();
-
-        var requestMessage = new HttpRequestMessage
-        {
-            Method = HttpMethod.Post,
-            RequestUri = new Uri(_adminEndpoint),
-            Content = new StringContent(JsonConvert.SerializeObject(keycloakUser), Encoding.UTF8, "application/json"),
-            Headers =
-            {
-                { "Authorization", $"Bearer {adminToken}" }
-            }
-        };
-
         try
         {
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(_adminEndpoint),
+                Content = new StringContent(JsonConvert.SerializeObject(keycloakUser), Encoding.UTF8, "application/json"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" }
+                }
+            };
+
             var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.IsSuccessStatusCode)
+            if (response.StatusCode == HttpStatusCode.Created)
             {
-                return true;
+                if (response.Headers.Contains("Location"))
+                {
+                    var locationHeader = response.Headers.GetValues("Location").First();
+                    var locationUrl = new Uri(locationHeader);
+                    var path = locationUrl.AbsolutePath;
+                    var parts = path.TrimStart('/').Split('/');
+                    int usersIndex = Array.IndexOf(parts, "users");
+                    if (usersIndex != -1 && usersIndex + 1 < parts.Length)
+                    {
+                        string userId = parts[usersIndex + 1];
+                        _logger.LogInformation("Created user with ID: " + userId);
+
+                        return userId;
+                    }
+                    else
+                    {
+                        _logger.LogError("Could not extract user ID from Location header.");
+
+                        return Errors.Keycloak.CannotBeCreated;
+                    }
+                }
+                else
+                {
+                    _logger.LogError("No Location header in response.");
+
+                    return Errors.Keycloak.CannotBeCreated;
+                }
             }
         }
         catch (Exception ex)

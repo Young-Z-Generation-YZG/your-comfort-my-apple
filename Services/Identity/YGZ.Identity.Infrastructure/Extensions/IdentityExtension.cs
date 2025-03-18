@@ -1,8 +1,7 @@
 ﻿
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Infrastructure.Persistence;
+using IdentityDbContext = YGZ.Identity.Infrastructure.Persistence.IdentityDbContext;
 
 namespace YGZ.Identity.Infrastructure.Extensions;
 
@@ -13,7 +12,7 @@ public static class IdentityExtension
     {
         services
             .AddIdentityCore<User>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<IdentityDbContext>();
 
         return services;
     }
