@@ -2,8 +2,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
+using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
-using YGZ.Catalog.Domain.Core.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Categories;
@@ -41,7 +41,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public DateTime? DeletedAt => null;
 
     [BsonElement("deleted_by_user_id")]
-    public string? DeletedByUserId => null;
+    public Guid? DeletedBy => null;
 
     public static Category Create(string name, string description, string? parentId)
     {

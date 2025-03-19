@@ -14,6 +14,21 @@ public sealed record ImageRequest
     public string ImageUrl { get; set; } = string.Empty;
 
     [Required]
+    [JsonPropertyName("image_name")]
+    public string ImageName { get; set; } = string.Empty;
+
+    [JsonPropertyName("image_description")]
+    public string ImageDescription { get; set; } = string.Empty;
+
+    [JsonPropertyName("image_width")]
+    public decimal ImageWidth { get; set; } = 0;
+
+    [JsonPropertyName("image_height")]
+    public decimal ImageHeight { get; set; } = 0;
+
+    [JsonPropertyName("image_bytes")]
+    public decimal ImageBytes { get; set; } = 0;
+
     [JsonPropertyName("image_order")]
-    public int ImageOrder { get; set; } = 0;
+    public int? ImageOrder { get; set; } = null;
 }

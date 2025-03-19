@@ -34,13 +34,13 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
         {
             UserEmail = result.Response!.UserEmail,
             CartItems = result.Response!.Items.Select(x => new CartItemResponse(x.ProductId,
-                                                                           x.ProductModel,
-                                                                           x.ProductColor,
-                                                                           x.ProductColorHex,
-                                                                           x.ProductStorage,
-                                                                           x.ProductPrice,
-                                                                           x.ProductImage,
-                                                                           x.Quantity)).ToList()
+                                                                                x.ProductModel,
+                                                                                x.ProductColor,
+                                                                                x.ProductColorHex,
+                                                                                x.ProductStorage,
+                                                                                x.ProductPrice,
+                                                                                x.ProductImage,
+                                                                                x.Quantity)).ToList()
         };
 
         return response;

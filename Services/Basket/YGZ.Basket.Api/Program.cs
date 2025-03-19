@@ -41,8 +41,6 @@ services.AddHealthChecks()
 
 var app = builder.Build();
 
-app.UseStatusCodePages();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -50,18 +48,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 }
 
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 app.UseCors(options =>
 {
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
-app.UseHttpsRedirection();
-app.UseExceptionHandler("/error");
 
-app.UseHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+app.UseStatusCodePages();
+
+//app.UseHttpsRedirection();
+app.UseExceptionHandler("/error");
 
 app.UseAuthentication();
 app.UseAuthorization();
