@@ -1,7 +1,7 @@
 ﻿
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using YGZ.Catalog.Domain.Core.Common.ValueObjects;
+using YGZ.Catalog.Domain.Common.ValueObjects;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Configurations.Serializers;
 

@@ -25,7 +25,7 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
     public DiscountTypeEnum Type { get; set; } = DiscountTypeEnum.PERCENT;
     public DiscountStateEnum State { get; set; } = DiscountStateEnum.INACTIVE;
     public double DiscountValue { get; set; } = 0;
-    public double? MinPurchaseAmount { get; set; } = null;
+    public double? MinPurchaseAmount { get; set; } = null; // thừa
     public double? MaxDiscountAmount { get; set; } = null;
     public DateTime? ValidFrom { get; set; } = null;
     public DateTime? ValidTo { get; set; } = null;

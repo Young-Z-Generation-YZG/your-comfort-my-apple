@@ -3,7 +3,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Entities;
+using YGZ.Catalog.Domain.Products.Iphone16;
+using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Extensions;
 
@@ -13,20 +14,36 @@ public static class SeedDataExtensions
     {
         using var scope = app.Services.CreateScope();
 
-        var productItemRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<ProductItem>>();
+        var iPhone16ModelRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<IPhone16Model>>();
+        var iPhone16DetailRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<IPhone16Detail>>();
 
-        await SeedProductItemsAsync(productItemRepository);
+
+        await SeedIPhone16ModelAsync(iPhone16ModelRepository);
+        await SeedIPhone16DetailsAsync(iPhone16DetailRepository);
     }
 
-    private static async Task SeedProductItemsAsync(IMongoRepository<ProductItem> productItemRepository)
+    private static async Task SeedIPhone16ModelAsync(IMongoRepository<IPhone16Model> iPhone16ModelRepository)
     {
-        var existingItems = await productItemRepository.GetAllAsync();
+        var existingItems = await iPhone16ModelRepository.GetAllAsync();
 
         if (existingItems.Count == 0)
         {
-            foreach (var item in SeedData.ProductItems)
+            foreach (var item in SeedData.IPhone16Models)
             {
-                await productItemRepository.InsertOneAsync(item);
+                await iPhone16ModelRepository.InsertOneAsync(item);
+            }
+        }
+    }
+
+    private static async Task SeedIPhone16DetailsAsync(IMongoRepository<IPhone16Detail> iPhone16DetailRepository)
+    {
+        var existingItems = await iPhone16DetailRepository.GetAllAsync();
+
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedData.IPhone16Details)
+            {
+                await iPhone16DetailRepository.InsertOneAsync(item);
             }
         }
     }

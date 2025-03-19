@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Catalog.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Categories.Commands;
+using YGZ.Catalog.Api.Contracts.CategoryRequest;
 
 namespace YGZ.Catalog.Api.Controllers;
 

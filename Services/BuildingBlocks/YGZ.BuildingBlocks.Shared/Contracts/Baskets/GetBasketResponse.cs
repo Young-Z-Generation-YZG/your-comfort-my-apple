@@ -19,4 +19,4 @@ public sealed record CartItemResponse(string ProductId,
                                       int ProductStorage,
                                       decimal ProductPrice,
                                       string ProductImage,
-                                      int Quantity) { }
+                                      int ProductQuantity) { }

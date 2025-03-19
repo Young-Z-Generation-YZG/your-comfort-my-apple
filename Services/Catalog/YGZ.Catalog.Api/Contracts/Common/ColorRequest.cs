@@ -13,7 +13,6 @@ public sealed record ColorRequest
     [JsonPropertyName("color_hex")]
     public string ColorHex { get; set; } = string.Empty;
 
-    [Required]
     [JsonPropertyName("color_order")]
-    public int ColorOrder { get; set; } = 0;
+    public int? ColorOrder { get; set; } = null;
 }

@@ -9,7 +9,8 @@ using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 
 using Keycloak.AuthServices.Authentication;
-using YGZ.Catalog.Api.Contracts;
+using YGZ.Catalog.Api.Contracts.IPhone16Request;
+using YGZ.Catalog.Api.Contracts.CategoryRequest;
 //using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 
 
@@ -49,8 +50,9 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
-            settings.SchemaSettings.SchemaProcessors.Add(new CreateProductItemRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16ModelRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16DetailRequestExample());
         });
 
         //services.AddFluentValidationRulesToSwagger();
