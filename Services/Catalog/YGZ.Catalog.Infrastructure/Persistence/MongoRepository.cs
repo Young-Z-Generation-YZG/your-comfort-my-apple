@@ -19,23 +19,9 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     {
         _mongoDbSettings = options.Value;
 
-        var policy = Policy
-        .Handle<MongoConnectionException>()
-        .WaitAndRetry(10, retryAttempt => TimeSpan.FromSeconds(retryAttempt * 5),
-            (exception, timeSpan, retryCount, context) =>
-            {
-                Console.WriteLine($"Retry {retryCount} after {timeSpan.TotalSeconds}s due to: {exception.Message}");
-            });
-
-        var client = policy.Execute(() =>
-        {
-            var mongoClient = new MongoClient(_mongoDbSettings.ConnectionString);
-            var db = mongoClient.GetDatabase(_mongoDbSettings.DatabaseName);
-            db.RunCommand<BsonDocument>(new BsonDocument("ping", 1));
-            return mongoClient;
-        });
-
-        var database = client.GetDatabase(_mongoDbSettings.DatabaseName);
+        var mongoClient = new MongoClient(_mongoDbSettings.ConnectionString);
+      
+        var database = mongoClient.GetDatabase(_mongoDbSettings.DatabaseName);
 
         _collection = database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
     }
@@ -53,6 +39,29 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     {
         return await _collection.Find(new BsonDocument()).ToListAsync();
     }
+
+    public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(int? _page,
+                                                                                           int? _limit,
+                                                                                           FilterDefinition<TEntity>? filter,
+                                                                                           SortDefinition<TEntity>? sort,
+                                                                                           CancellationToken cancellationToken)
+    {
+        var page = _page ?? 1;
+        var limit = _limit ?? 10;
+
+        var totalRecords = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+
+        var totalPages = (int)Math.Ceiling((double)totalRecords / limit);
+
+        var items = await _collection.Find(filter)
+                                     .Sort(sort)
+                                     .Skip((page - 1) * limit)
+                                     .Limit(limit)
+                                     .ToListAsync(cancellationToken);
+
+        return (items, (int)totalRecords, totalPages);
+    }
+
 
 
     public async Task<TEntity> GetByIdAsync(string id)
@@ -75,4 +84,5 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     {
         await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)));
     }
+
 }

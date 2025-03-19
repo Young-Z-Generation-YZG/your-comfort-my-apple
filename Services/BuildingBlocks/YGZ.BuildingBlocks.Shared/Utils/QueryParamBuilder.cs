@@ -1,5 +1,6 @@
 ﻿
-namespace YGZ.Ordering.Application.Builders;
+
+namespace YGZ.BuildingBlocks.Shared.Utils;
 
 public static class QueryParamBuilder
 {
