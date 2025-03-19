@@ -3,11 +3,10 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Ordering.Application.Abstractions.Data;
-using YGZ.Ordering.Application.Builders;
 using YGZ.Ordering.Domain.Core.Enums;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
-using YGZ.Ordering.Infrastructure.Persistence.Expressions;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetOrders;
 
