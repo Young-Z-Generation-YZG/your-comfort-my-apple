@@ -13,6 +13,7 @@ public class CreateIPhone16ModelRequestExample : ISchemaProcessor
 
             schema.Example = new
             {
+                name = "iPhone 16",
                 models = new List<object>()
                 {
                     new
@@ -22,7 +23,7 @@ public class CreateIPhone16ModelRequestExample : ISchemaProcessor
                     },
                     new
                     {
-                        model_name = "iPhone 16 plus",
+                        model_name = "iPhone 16 Plus",
                         model_order = 1,
                     },
                 },
@@ -32,6 +33,7 @@ public class CreateIPhone16ModelRequestExample : ISchemaProcessor
                     {
                         color_name = "ultramarine",
                         color_hex = "#3f51b5",
+                        color_image = "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-ultramarine-202409",
                         color_order = 0
                     }
                 },

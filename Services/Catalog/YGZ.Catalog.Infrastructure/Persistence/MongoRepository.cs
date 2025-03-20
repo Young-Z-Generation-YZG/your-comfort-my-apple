@@ -34,10 +34,14 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
         return attribute?.CollectionName ?? throw new InvalidOperationException("Collection name attribute is missing.");
     }
 
-
     public async Task<List<TEntity>> GetAllAsync()
     {
         return await _collection.Find(new BsonDocument()).ToListAsync();
+    }
+
+    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken)
+    {
+        return await _collection.Find(filter).ToListAsync(cancellationToken);
     }
 
     public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(int? _page,
@@ -62,11 +66,14 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
         return (items, (int)totalRecords, totalPages);
     }
 
-
-
-    public async Task<TEntity> GetByIdAsync(string id)
+    public async Task<TEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
-        return await _collection.Find(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id))).FirstOrDefaultAsync();
+        return await _collection.Find(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id))).FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken)
+    {
+        return _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task InsertOneAsync(TEntity document)
@@ -84,5 +91,4 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     {
         await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)));
     }
-
 }

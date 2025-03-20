@@ -21,7 +21,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryComman
     {
         if (request.ParentId is not null)
         {
-            var parentCategory = await _repository.GetByIdAsync(request.ParentId);
+            var parentCategory = await _repository.GetByIdAsync(request.ParentId, cancellationToken);
 
             if (parentCategory is null)
             {

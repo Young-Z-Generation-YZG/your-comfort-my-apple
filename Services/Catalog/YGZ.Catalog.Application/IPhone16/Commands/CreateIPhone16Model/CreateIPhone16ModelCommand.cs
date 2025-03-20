@@ -7,9 +7,10 @@ namespace YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Model;
 
 public sealed record CreateIPhone16ModelCommand : ICommand<bool>
 {
-    public List<IPhoneModelCommand> Models { get; set; } = default!;
-    public List<ColorCommand> Colors { get; set; } = default!;
-    public List<int> Storages { get; set; } = default!;
+    required public string Name { get; set; }
+    required public List<IPhoneModelCommand> Models { get; set; }
+    required public List<ColorCommand> Colors { get; set; }
+    required public List<int> Storages { get; set; }
     public string Description { get; set; } = default!;
     public List<ImageCommand> DescriptionImages { get; set; } = default!;
     public string? CategoryId { get; set; } = default!;

@@ -4,7 +4,7 @@ using YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
 namespace YGZ.Catalog.Api.Mappings;
 
-public class GetProductsMappingConfig : IRegister
+public class GetProductsMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

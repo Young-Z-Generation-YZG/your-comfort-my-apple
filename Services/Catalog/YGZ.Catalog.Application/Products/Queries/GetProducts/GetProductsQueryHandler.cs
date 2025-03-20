@@ -3,17 +3,15 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.BuildingBlocks.Shared.Contracts;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Iphone16;
 using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
-public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, bool>
+public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<ProductResponse>>
 {
     private readonly IMongoRepository<IPhone16Detail> _iPhone16repository;
 
@@ -22,7 +20,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, bool>
         _iPhone16repository = iPhone16repository;
     }
 
-    public async Task<Result<bool>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<ProductResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var (filter, sort) = GetFilterDefinition(request);
 
@@ -30,7 +28,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, bool>
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
 
-        return true;
+        return response;
     }
 
     private (FilterDefinition<IPhone16Detail> filterBuilder, SortDefinition<IPhone16Detail> sort) GetFilterDefinition(GetProductsQuery request)
@@ -96,13 +94,34 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, bool>
                                                  currentPage: request.Page ?? 1,
                                                  totalPages: totalPages);
 
-        var productResponses = new List<ProductResponse>()
+        var productResponses = productItems.Select(p => new ProductResponse
         {
-            new ProductResponse
+            ProductId = p.Id.Value!,
+            ProductModel = p.Model,
+            ProductColor = new ColorResponse
             {
-                ProductId = "test"
-            }
-        };
+                ColorName = p.Color.ColorName,
+                ColorHex = p.Color.ColorHex,
+                ColorImage = p.Color.ColorImage,
+                ColorOrder = p.Color.ColorOrder
+            },
+            ProductStorage = p.Storage,
+            ProductUnitPrice = p.UnitPrice,
+            ProductAvailableInStock = p.AvailableInStock,
+            ProductDescription = p.Description,
+            ProductImages = p.Images.Select(i => new ImageResponse
+            {
+                ImageId = i.ImageId,
+                ImageName = i.ImageName,
+                ImageUrl = i.ImageUrl,
+                ImageDescription = i.ImageDescription,
+                ImageWidth = i.ImageWidth,
+                ImageHeight = i.ImageHeight,
+                ImageBytes = i.ImageBytes,
+                ImageOrder = i.ImageOrder
+            }).ToList(),
+            ProductSlug = p.Slug.Value,
+        }).ToList();
 
         var response = new PaginationResponse<ProductResponse>
         {

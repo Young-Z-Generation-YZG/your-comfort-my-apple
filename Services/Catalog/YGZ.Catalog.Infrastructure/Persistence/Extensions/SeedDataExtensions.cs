@@ -28,7 +28,7 @@ public static class SeedDataExtensions
 
         if (existingItems.Count == 0)
         {
-            foreach (var item in SeedData.IPhone16Models)
+            foreach (var item in SeedData.IPhone16_16Plus_Models)
             {
                 await iPhone16ModelRepository.InsertOneAsync(item);
             }
@@ -41,7 +41,7 @@ public static class SeedDataExtensions
 
         if (existingItems.Count == 0)
         {
-            foreach (var item in SeedData.IPhone16Details)
+            foreach (var item in SeedData.IPhone16_16Plus_Details)
             {
                 await iPhone16DetailRepository.InsertOneAsync(item);
             }

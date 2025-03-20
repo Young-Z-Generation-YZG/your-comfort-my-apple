@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Model;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts;
 using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
@@ -38,7 +37,7 @@ public class ProductController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("{slug}")]
+    [HttpGet("{slug}/details")]
     public async Task<IActionResult> GetProductBySlug([FromRoute] string slug, CancellationToken cancellationToken)
     {
         var query = new GetProductBySlugQuery(slug);

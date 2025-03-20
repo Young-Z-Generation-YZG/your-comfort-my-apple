@@ -46,7 +46,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     public State State { get; set; } = State.INACTIVE;
 
     [BsonElement("images")]
-    public Image[] Images { get; set; } = [];
+    public List<Image> Images { get; set; } = [];
 
     [BsonElement("slug")]
     public Slug Slug { get; set; } = default!;
@@ -77,7 +77,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
                                         int storage,
                                         decimal unitPrice,
                                         string description,
-                                        Image[] images,
+                                        List<Image> images,
                                         string iPhoneModelId)
     {
         var storageEnum = Storage.FromValue(storage);

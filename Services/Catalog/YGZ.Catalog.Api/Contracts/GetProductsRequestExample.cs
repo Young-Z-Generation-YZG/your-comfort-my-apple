@@ -18,8 +18,7 @@ public class GetProductsRequestExample : IOperationProcessor
             var pageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_page");
             if (pageParam != null)
             {
-                pageParam.Example = 1; // Example value
-                pageParam.Description = "Valid value from 1 - 100";
+                pageParam.Example = 1;
             }
 
             // Set example for _limit parameter
@@ -27,21 +26,43 @@ public class GetProductsRequestExample : IOperationProcessor
             if (limitParam != null)
             {
                 limitParam.Example = 10;
-                limitParam.Description = "Valid value from 1 - 100";
             }
 
             // Set example for _code parameter
-            var codeParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productColor");
-            if (codeParam != null)
+            var colorParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productColor");
+            if (colorParam != null)
             {
-                codeParam.Example = "ultramarine";
+                colorParam.Example = "ultramarine";
+
+                List<string> colorList = ["ultramarine", "teal", "pink", "white", "black", "desert-titanium", "natural-titanium", "white-titanium", "black-titanium"];
+
+                colorParam.Schema = new NJsonSchema.JsonSchema
+                {
+                    Type = NJsonSchema.JsonObjectType.String
+                };
+                foreach (var name in colorList)
+                {
+                    colorParam.Schema.Enumeration.Add(name);
+                }
             }
 
             // Set example for _status parameter
-            var statusParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productStorage");
-            if (statusParam != null)
+            var storageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productStorage");
+            if (storageParam != null)
             {
-                statusParam.Example = "256";
+                storageParam.Example = "256";
+
+                List<string> storageList = ["128", "256", "512", "1024"];
+
+                storageParam.Schema = new NJsonSchema.JsonSchema
+                {
+                    Type = NJsonSchema.JsonObjectType.String
+                };
+
+                foreach (var name in storageList)
+                {
+                    storageParam.Schema.Enumeration.Add(name);
+                }
             }
 
             var priceFromParam = operation.Parameters.FirstOrDefault(p => p.Name == "_priceFrom");
@@ -59,7 +80,19 @@ public class GetProductsRequestExample : IOperationProcessor
             var sortParam = operation.Parameters.FirstOrDefault(p => p.Name == "_priceSort");
             if (sortParam != null)
             {
-                sortParam.Example = "ASC";
+                sortParam.Example = "asc";
+
+                List<string> sortList = ["asc", "desc"];
+
+                sortParam.Schema = new NJsonSchema.JsonSchema
+                {
+                    Type = NJsonSchema.JsonObjectType.String
+                };
+
+                foreach (var name in sortList)
+                {
+                    sortParam.Schema.Enumeration.Add(name);
+                }
             }
         }
         return true; // Continue processing other processors
