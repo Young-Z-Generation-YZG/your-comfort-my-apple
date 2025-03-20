@@ -23,6 +23,9 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
         RatingStars = InitRatingStar();
     }
 
+    [BsonElement("name")]
+    public string Name { get; set; }
+
     [BsonElement("models")]
     public List<Model> Models { get; set; }
 
@@ -46,6 +49,9 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
 
     [BsonElement("description_images")]
     public List<Image> DescriptionImages { get; set; } = [];
+
+    [BsonElement("slug")]
+    public Slug Slug { get; set; }
 
     [BsonElement("created_at")]
     public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
@@ -78,22 +84,27 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
     }
 
     public static IPhone16Model Create(IPhone16ModelId iPhone16ModelId,
+                                       string name,
                                        List<Model> models,
                                        List<Color> colors,
                                        List<Storage> storages,
                                        List<Image> descriptionImages,
                                        AverageRating averageRating,
-                                       string description)
+                                       List<RatingStar> ratingStars,
+                                       string description,
+                                       int? overallSold = 0)
     {
         return new IPhone16Model(iPhone16ModelId)
         {
+            Name = name,
             Models = models,
             Colors = colors,
             Storages = storages,
             Description = description,
             AverageRating = averageRating,
-            OverallSold = 0,
+            OverallSold = (int)overallSold!,
             DescriptionImages = descriptionImages,
+            Slug = Slug.Create(name),
         };
     }
 }

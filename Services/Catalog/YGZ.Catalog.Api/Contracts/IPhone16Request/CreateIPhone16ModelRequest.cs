@@ -8,6 +8,10 @@ namespace YGZ.Catalog.Api.Contracts.IPhone16;
 public sealed record CreateIPhone16ModelRequest()
 {
     [Required]
+    [JsonPropertyName("name")]
+    public List<ModelRequest> Name { get; set; }
+
+    [Required]
     [JsonPropertyName("models")]
     public List<ModelRequest> Models { get; set; }
 

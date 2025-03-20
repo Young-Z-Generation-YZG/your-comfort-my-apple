@@ -10,7 +10,6 @@
   <ItemGroup>
     <Folder Include="Abstractions\Persistence\" />
     <Folder Include="Categories\Queries\" />
-    <Folder Include="IPhone16\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

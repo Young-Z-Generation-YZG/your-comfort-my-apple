@@ -35,6 +35,8 @@ public class Slug : ValueObject
         };
     }
 
+    public static Slug Of(string value) => Create(value);
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

@@ -1,6 +1,7 @@
 ﻿
 namespace YGZ.Catalog.Api.Contracts;
 
+
 public class GetProductsRequest
 {
     public int? _page { get; set; } = 1;

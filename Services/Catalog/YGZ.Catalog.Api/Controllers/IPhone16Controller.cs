@@ -7,6 +7,8 @@ using YGZ.Catalog.Api.Contracts.IPhone16;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Model;
 using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
+using YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
+using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -25,6 +27,16 @@ public class IPhone16Controller : ApiController
         _logger = logger;
         _sender = sender;
         _mapper = mapper;
+    }
+
+    [HttpGet("models/{modelSlug}/products")]
+    public async Task<IActionResult> GetProductModelBySlug([FromRoute] string modelSlug, CancellationToken cancellationToken)
+    {
+        var query = new GetIPhonesByModelSlugQuery(modelSlug);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPost("models")]

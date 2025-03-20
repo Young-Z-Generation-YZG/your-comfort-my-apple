@@ -4,7 +4,7 @@ using YGZ.Catalog.Application.Common.Commands;
 
 namespace YGZ.Catalog.Api.Mappings;
 
-public class ColorMappingConfig : IRegister
+public class ColorMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

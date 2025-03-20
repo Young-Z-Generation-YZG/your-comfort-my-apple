@@ -1,16 +1,20 @@
-﻿using Mapster;
-using YGZ.Catalog.Api.Contracts.Common;
-using YGZ.Catalog.Application.Common.Commands;
+﻿
 
-namespace YGZ.Catalog.Api.Mappings;
+using Mapster;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
-public class ImageMappingConfig : IRegister
+namespace YGZ.Catalog.Application.Mappings;
+
+public class ImageResponseMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<ImageRequest, ImageCommand>()
+        config.NewConfig<Image, ImageResponse>()
             .Map(dest => dest.ImageId, src => src.ImageId)
             .Map(dest => dest.ImageUrl, src => src.ImageUrl)
             .Map(dest => dest.ImageName, src => src.ImageName)
