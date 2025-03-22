@@ -25,11 +25,15 @@ import {
 } from "~/components/ui/select";
 
 import images from '~/components/client/images';
-import ModelItem from '~/app/(pages)/detail-product/ModelItem';
-import HelpItem from '~/app/(pages)/detail-product/HelpItem';
-import CompareItem from '~/app/(pages)/detail-product/CompareItem';
-import ColorItem from '~/app/(pages)/detail-product/ColorItem';
-import StorageItem from '~/app/(pages)/detail-product/StorageItem';
+import ModelItem from '~/app/(pages)/detail-product/itemModel';
+import HelpItem from '~/app/(pages)/detail-product/itemHelp';
+import CompareItem from '~/app/(pages)/detail-product/itemCompare';
+import ColorItem from '~/app/(pages)/detail-product/itemColor';
+import StorageItem from '~/app/(pages)/detail-product/itemStorage';
+import { IoMdStarOutline, IoMdStar } from "react-icons/io";
+import { FaRegStar, FaStar } from "react-icons/fa6";
+import ItemReview from '~/app/(pages)/detail-product/itemReview';
+
 
 const listProduct = [
    {
@@ -217,10 +221,100 @@ const DetailProductPage = () => {
       }
    }
 
+   const [infoHeight, setInfoHeight] = useState(0);
+
+   useEffect(() => {
+      const element = document.getElementById('info');
+      if (element) {
+         setInfoHeight(element.offsetHeight+39);
+      }
+   }, []);
+
+   const handleMoreInfo = () => {
+      if (infoHeight) {
+         setInfoHeight(0);
+      }
+      else{
+         const element = document.getElementById('info');
+         if (element) {
+            setInfoHeight(element.offsetHeight+39);
+         }
+      }
+   }
+
+   // stars components
+   const starsRating = (rating: number) => {
+      return Array(5).fill(0).map((_, index) => {
+         const fillPercentage = Math.min(Math.max((rating - index) * 100, 0), 100);
+         return (
+            <svg 
+            key={index} 
+            xmlns="http://www.w3.org/2000/svg" 
+            xmlnsXlink="http://www.w3.org/1999/xlink" 
+            width="16" height="16" viewBox="0 0 16 16" className="mdl-js">
+               <defs>
+                     <linearGradient id={`star-gradient-${index}`}>
+                           <stop offset={`${fillPercentage}%`} stopColor="#FFAA4E"/>
+                           <stop offset={`${fillPercentage}%`} stopColor="#D9D9D9"/>
+                     </linearGradient>
+               </defs>
+               <path 
+                     fill={`url(#star-gradient-${index})`} 
+                     d="M7.322 1.038c.255-.622 1.066-.633 1.341-.034l.015.034 1.773 4.316 4.685.341c.662.048.926.796.468 
+                     1.245l-.025.023-.026.023-3.585 3.008 1.12 4.523c.16.644-.468 1.127-1.037.832l-.03-.015-.028-.017L8 
+                     12.857l-3.993 2.46c-.564.348-1.217-.103-1.109-.735l.006-.032.008-.033 1.12-4.523L.446 6.986C-.063 
+                     6.56.162 5.8.795 5.703l.034-.005.035-.003 4.685-.34 1.773-4.317z" 
+                     transform="translate(-116 -202) translate(37 186) translate(39 14) translate(0 2) translate(40)"
+               />
+               {/* <path 
+                     stroke="#000" 
+                     strokeWidth="0.5" 
+                     fill="none" 
+                     d="M7.322 1.038c.255-.622 1.066-.633 1.341-.034l.015.034 1.773 4.316 4.685.341c.662.048.926.796.468 
+                     1.245l-.025.023-.026.023-3.585 3.008 1.12 4.523c.16.644-.468 1.127-1.037.832l-.03-.015-.028-.017L8 
+                     12.857l-3.993 2.46c-.564.348-1.217-.103-1.109-.735l.006-.032.008-.033 1.12-4.523L.446 6.986C-.063 
+                     6.56.162 5.8.795 5.703l.034-.005.035-.003 4.685-.34 1.773-4.317z" 
+                     transform="translate(-116 -202) translate(37 186) translate(39 14) translate(0 2) translate(40)"
+               /> */}
+            </svg>
+         );
+      })
+   };
+
+   const [indexStar, setIndexStar] = useState(-1);
+   const starsReview = () => {
+      return Array(5).fill(0).map((_, index) => {
+         return (
+            indexStar < index ?
+            (
+               <div 
+               key={index} 
+               onClick={() => setIndexStar(index)}
+               className={cn('w-fit h-fit border border-[#FFAA4E] hover:bg-[#FFAA4E] p-3 rounded-[5px] group ease-out duration-300 ')}>
+                  <FaRegStar 
+                  className={cn('w-6 h-6 text-[#FFAA4E] group-hover:text-white')}
+                  />
+               </div>
+            )
+            :
+            (
+               <div 
+               key={index}
+               onClick={() => setIndexStar(index)} 
+               className={cn('w-fit h-fit border border-[#FFAA4E] bg-[#FFAA4E] p-3 rounded-[5px] ease-out duration-300')}>
+                  <FaStar 
+                  className={cn('w-6 h-6 text-white')}
+                  />
+               </div>
+            )
+         )
+      });
+   }
+
    return (
       <div className={cn(SFDisplayFont.variable, 'font-SFProDisplay w-full flex flex-col items-start justify-center bg-[#fff]')}>
-         
-         <div className='carrier-container w-full pt-[14px] relative bg-transparent'>
+         {/* CARRIER */}
+         <div className='w-full pt-[14px] relative bg-transparent'>
             <div className='w-[980px] py-[14px] h-[66px] rounded-[5px] flex flex-row justify-center items-center text-[12px] font-normal bg-[#f5f5f7] mx-auto'>
                <div className='h-full pl-[20px] w-[176px] flex flex-col'>
                   <div className='leading-[18px] tracking-[0.4px] text-[15px] font-medium'>Carrier Deals at Apple</div>
@@ -283,7 +377,8 @@ const DetailProductPage = () => {
             </div>
          </div>
 
-         <div className='detail-container min-w-[980px] max-w-[2632px] w-[87.5%] mx-auto relative bg-transparent'>
+         {/* DETAIL PRODUCT */}
+         <div className='min-w-[980px] max-w-[2632px] w-[87.5%] mx-auto relative bg-transparent'>
             {/* Product Title */}
             <div className='w-full bg-transparent flex flex-row pt-[52px] pb-[22px]'>
                <div className='basis-[70%] bg-transparent'>
@@ -667,9 +762,11 @@ const DetailProductPage = () => {
                </div>
             </div>
          </div>
-
-         <div className='more-container w-full h-fit relative bg-[#f5f5f7] mt-[73px] flex items-center justify-center'>
-            <div className='min-w-[980px] max-w-[1240px] w-[87.5%] mx-auto mt-[39px] flex flex-row gap-0'>
+         
+         {/* INFO PRODUCT */}
+         <div className={cn('w-full mt-[73px] bg-[#f5f5f7] flex flex-col items-center overflow-hidden relative')}
+         style={{ height: infoHeight ? `${infoHeight}px` : 'fit-content' }}>
+            <div id='info' className={cn('min-w-[980px] max-w-[1240px] w-[87.5%] mx-auto mt-[39px] flex flex-row gap-0')}>
                <div className='basis-[34.76%]'>
                   <div className='pr-[10px] mr-[41px] flex flex-col items-start justify-start'>
                      <span className='text-[#1D1D1F] tracking-[0.3px] w-full text-[38px] font-semibold leading-[46px]'>Your new <br/>iPhone 16 Pro.</span>
@@ -752,103 +849,228 @@ const DetailProductPage = () => {
                   </div>
                </div>
             </div>
+            <div className={cn('w-full bg-[#fff]')}>
+               <div className='w-[980px] mx-auto'>
+                  <div className='w-full pt-16 pb-[41px] text-[40px] font-semibold leading-[44x] tracking-[0.5px] text-center'>
+                     What’s in the Box
+                  </div>
+                  <div className='w-full flex flex-col gap-0 justify-center items-center'>
+                     <div className='w-full bg-[#fafafc] flex flex-row gap-0 justify-center items-center'>
+                        <div className='basis-[25%]'>
+                           <Image
+                              src={images.ip16ProWhiteTitaniumWitb}
+                              className='w-auto h-[339px] mx-auto'
+                              width={2000}
+                              height={2000}
+                              quality={100}
+                              alt=''
+                           />
+                        </div>
+                        <div className='basis-[25%]'>
+                           <Image
+                              src={images.ip16ProBraidedCable}
+                              className='w-auto h-[339px] mx-auto'
+                              width={2000}
+                              height={2000}
+                              quality={100}
+                              alt=''
+                           />
+                        </div>
+                     </div>
+                     <div className='w-full flex flex-row gap-0 justify-center items-center'>
+                        <div className='basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]'>
+                           iPhone 16 Pro
+                        </div>
+                        <div className='basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]'>
+                           USB-C Charge Cable
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className={cn('w-full bg-[#fff] pb-10')}>
+               <div className='w-[980px] mx-auto'>
+                  <div className='w-fit pt-12 pb-5 px-5 text-[40px] mx-auto font-semibold leading-[44px] tracking-[0.5px] text-center'>
+                     Your new iPhone comes<br/> with so much more.
+                  </div>
+                  <div className='w-full pt-9 pb-[54px] px-4 mt-[13px] flex flex-row gap-8 justify-center items-center'>
+                     <div className='basis-[25%] flex flex-col justify-center items-center'>
+                        <Image
+                           src={images.serviceTV}
+                           className='h-auto w-[46px] mx-auto'
+                           width={2000}
+                           height={2000}
+                           quality={100}
+                           alt=''
+                        />
+                        <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple TV+</div>
+                        <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of original films and series.°°°</div>
+                     </div>
+                     <div className='basis-[25%] flex flex-col justify-center items-center'>
+                        <Image
+                           src={images.serviceFitness}
+                           className='h-auto w-[46px] mx-auto'
+                           width={2000}
+                           height={2000}
+                           quality={100}
+                           alt=''
+                        />
+                        <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple Fitness+</div>
+                        <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of workouts, from HIIT to Meditation.°°°</div>
+                     </div>
+                     <div className='basis-[25%] flex flex-col justify-center items-center'>
+                        <Image
+                           src={images.serviceArcade}
+                           className='h-auto w-[46px] mx-auto'
+                           width={2000}
+                           height={2000}
+                           quality={100}
+                           alt=''
+                        />
+                        <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple Arcade</div>
+                        <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of incredibly fun, uninterrupted gameplay.°°°</div>
+                     </div>
+                     <div className='basis-[25%] flex flex-col justify-center items-center'>
+                        <Image
+                           src={images.serviceNews}
+                           className='h-auto w-[46px] mx-auto'
+                           width={2000}
+                           height={2000}
+                           quality={100}
+                           alt=''
+                        />
+                        <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple News+</div>
+                        <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of top stories from leading publications.°°°</div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className={cn('button-more w-10 h-10 absolute bottom-4 left-4 p-4 bg-black rounded-full flex justify-center items-center text-[25px] text-white hover:bg-[#ccc] hover:text-black cursor-pointer')}
+            onClick={() => handleMoreInfo()}>
+               {infoHeight ? "+" : "-"}
+            </div>
+         </div>
+         
+         {/* REVIEWS */}
+         <div className={cn('w-full mt-[73px] h-[1000px]')}>
+            <div className={cn('w-[1076px] mx-auto h-full')}>
+               <div className={cn('w-full border-b border-black')}>
+                  <div className={cn('w-full py-2 text-[30px] font-bold')}>
+                     Reviews
+                  </div>
+                  <div className={cn('w-full grid grid-cols-3')}>
+                     {/* Rating Snapshot */}
+                     <div className={cn('flex flex-col text-[13px] text-[#363636] font-light tracking-[0.5px]')}>
+                        <div className={cn('p-2')}>
+                           Rating Snapshot
+                        </div>
+                        <div className={cn('p-2 pt-0')}>
+                           Select a row below to filter reviews.
+                        </div>
+                        <div className={cn('p-2 pt-0 flex flex-col')}>
+                           {/* 5 Star Rating */}
+                           <div className={cn('flex flex-row')}>
+                              <div className={cn('basis-[13%]')}>5 stars</div>
+                              <div className={cn('basis-[72%] py-1 px-2 relative')}>
+                                 <div className={cn('w-full h-full rounded-full bg-[#bbb] overflow-hidden')}>
+                                    <div className={cn('h-full bg-[#FFAA4E]')} style={{width:'95%'}}/>
+                                 </div>
+                              </div>
+                              <div className={cn('basis-[15%]')}>100000</div>
+                           </div>
+                           {/* 4 Star Rating */}
+                           <div className={cn('flex flex-row')}>
+                              <div className={cn('basis-[13%]')}>4 stars</div>
+                              <div className={cn('basis-[72%] py-1 px-2 relative')}>
+                                 <div className={cn('w-full h-full rounded-full bg-[#bbb] overflow-hidden')}>
+                                    <div className={cn('h-full bg-[#FFAA4E]')} style={{width:'95%'}}/>
+                                 </div>
+                              </div>
+                              <div className={cn('basis-[15%]')}>100000</div>
+                           </div>
+                           {/* 3 Star Rating */}
+                           <div className={cn('flex flex-row')}>
+                              <div className={cn('basis-[13%]')}>3 stars</div>
+                              <div className={cn('basis-[72%] py-1 px-2 relative')}>
+                                 <div className={cn('w-full h-full rounded-full bg-[#bbb] overflow-hidden')}>
+                                    <div className={cn('h-full bg-[#FFAA4E]')} style={{width:'95%'}}/>
+                                 </div>
+                              </div>
+                              <div className={cn('basis-[15%]')}>100000</div>
+                           </div>
+                           {/* 2 Star Rating */}
+                           <div className={cn('flex flex-row')}>
+                              <div className={cn('basis-[13%]')}>2 stars</div>
+                              <div className={cn('basis-[72%] py-1 px-2 relative')}>
+                                 <div className={cn('w-full h-full rounded-full bg-[#bbb] overflow-hidden')}>
+                                    <div className={cn('h-full bg-[#FFAA4E]')} style={{width:'95%'}}/>
+                                 </div>
+                              </div>
+                              <div className={cn('basis-[15%]')}>100000</div>
+                           </div>
+                           {/* 1 Star Rating */}
+                           <div className={cn('flex flex-row')}>
+                              <div className={cn('basis-[13%]')}>1 stars</div>
+                              <div className={cn('basis-[72%] py-1 px-2 relative')}>
+                                 <div className={cn('w-full h-full rounded-full bg-[#bbb] overflow-hidden')}>
+                                    <div className={cn('h-full bg-[#FFAA4E]')} style={{width:'95%'}}/>
+                                 </div>
+                              </div>
+                              <div className={cn('basis-[15%]')}>100000</div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     {/* Overall Rating */}
+                     <div className={cn('flex flex-col text-[13px] text-[#363636] font-light tracking-[0.5px]')}>
+                        <div className={cn('p-2')}>
+                           Overall Rating
+                        </div>
+                        <div className={cn('p-2 pt-0 flex flex-row justify-center')}>
+                           <div className={cn('w-[70px] text-[40px]')}>
+                              4.7
+                           </div>
+                           <div className={cn('flex flex-col justify-center')}>
+                              <div className={cn('flex flex-row gap-[2px] items-center')}>
+                                 {starsRating(3.2)}
+                              </div>
+                              <div className={cn('text-[#0077C8]')}>
+                                 3759 Reviews
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     {/* Review this Product */}
+                     <div className={cn('flex flex-col text-[13px] text-[#363636] font-light tracking-[0.5px]')}>
+                        <div className={cn('p-2')}>
+                           Review this Product
+                        </div>
+                        <div className={cn('p-2 pt-0 flex flex-row gap-1')}>
+                           {starsReview()}
+                        </div>
+                        <div className={cn('p-2 pt-0')}>
+                           Adding a review will require a valid email for verification
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div className={cn('w-full h-full')}>
+                  <div className={cn('w-full py-2 text-[30px] font-bold')}>
+                     Global reviews
+                  </div>
+                  <div className={cn('w-full flex flex-col')}>
+                     <ItemReview/>
+                     <ItemReview/>
+                     <ItemReview/>
+                     <ItemReview/>
+                  </div>
+               </div>
+            </div>
          </div>
 
-         <div className='box-container w-[980px] mx-auto'>
-            <div className='w-full pt-16 pb-[41px] text-[40px] font-semibold leading-[44x] tracking-[0.5px] text-center'>
-               What’s in the Box
-            </div>
-            <div className='w-full flex flex-col gap-0 justify-center items-center'>
-               <div className='w-full bg-[#fafafc] flex flex-row gap-0 justify-center items-center'>
-                  <div className='basis-[25%]'>
-                     <Image
-                        src={images.ip16ProWhiteTitaniumWitb}
-                        className='w-auto h-[339px] mx-auto'
-                        width={2000}
-                        height={2000}
-                        quality={100}
-                        alt=''
-                     />
-                  </div>
-                  <div className='basis-[25%]'>
-                     <Image
-                        src={images.ip16ProBraidedCable}
-                        className='w-auto h-[339px] mx-auto'
-                        width={2000}
-                        height={2000}
-                        quality={100}
-                        alt=''
-                     />
-                  </div>
-               </div>
-               <div className='w-full flex flex-row gap-0 justify-center items-center'>
-                  <div className='basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]'>
-                     iPhone 16 Pro
-                  </div>
-                  <div className='basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]'>
-                     USB-C Charge Cable
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         <div className='service-container w-[980px] mx-auto'>
-            <div className='w-fit pt-12 pb-5 px-5 text-[40px] mx-auto font-semibold leading-[44px] tracking-[0.5px] text-center'>
-               Your new iPhone comes<br/> with so much more.
-            </div>
-            <div className='w-full pt-9 pb-[54px] px-4 mt-[13px] flex flex-row gap-8 justify-center items-center'>
-               <div className='basis-[25%] flex flex-col justify-center items-center'>
-                  <Image
-                     src={images.serviceTV}
-                     className='h-auto w-[46px] mx-auto'
-                     width={2000}
-                     height={2000}
-                     quality={100}
-                     alt=''
-                  />
-                  <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple TV+</div>
-                  <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of original films and series.°°°</div>
-               </div>
-               <div className='basis-[25%] flex flex-col justify-center items-center'>
-                  <Image
-                     src={images.serviceFitness}
-                     className='h-auto w-[46px] mx-auto'
-                     width={2000}
-                     height={2000}
-                     quality={100}
-                     alt=''
-                  />
-                  <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple Fitness+</div>
-                  <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of workouts, from HIIT to Meditation.°°°</div>
-               </div>
-               <div className='basis-[25%] flex flex-col justify-center items-center'>
-                  <Image
-                     src={images.serviceArcade}
-                     className='h-auto w-[46px] mx-auto'
-                     width={2000}
-                     height={2000}
-                     quality={100}
-                     alt=''
-                  />
-                  <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple Arcade</div>
-                  <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of incredibly fun, uninterrupted gameplay.°°°</div>
-               </div>
-               <div className='basis-[25%] flex flex-col justify-center items-center'>
-                  <Image
-                     src={images.serviceNews}
-                     className='h-auto w-[46px] mx-auto'
-                     width={2000}
-                     height={2000}
-                     quality={100}
-                     alt=''
-                  />
-                  <div className='w-full pt-4 pb-2 text-center text-[21px] font-semibold leading-[25px] tracking-[0.3px]'>Apple News+</div>
-                  <div className='w-full px-2 text-center text-[14px] font-light leading-[18px] tracking-[0.3px]'>3 free months of top stories from leading publications.°°°</div>
-               </div>
-            </div>
-         </div>
-
-         <div className='compare-container w-full mb-[100px] flex flex-col justify-center items-center'>
+         {/* COMPARE PRODUCTS */}
+         <div className='w-full my-[100px] flex flex-col justify-center items-center'>
             <div className='compare-title bg-transparent w-[996px] mx-auto text-center pb-[70px]'>
                <div className='text-[40px] font-bold'>Which iPhone is right for you?</div>    
             </div>
