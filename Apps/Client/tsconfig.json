@@ -18,7 +18,9 @@
          }
       ],
       "paths": {
-         "~/*": ["./src/*"]
+         "@constants/*": ["./constants/*"],
+         "@assets/*": ["./assets/*"],
+         "~/*": ["./src/*"],
       }
    },
    "include": [
