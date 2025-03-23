@@ -52,8 +52,10 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<double?>("MaxDiscountAmount")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("MinPurchaseAmount")
-                        .HasColumnType("double precision");
+                    b.Property<string>("ProductNameTag")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ProductNameTag");
 
                     b.Property<string>("State")
                         .IsRequired()

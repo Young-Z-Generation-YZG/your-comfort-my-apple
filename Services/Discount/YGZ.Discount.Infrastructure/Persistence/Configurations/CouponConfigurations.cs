@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
@@ -26,7 +27,7 @@ public class CouponConfigurations : IEntityTypeConfiguration<Coupon>
         builder.Property(x => x.State) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
-                   x => DiscountStateEnum.FromName(x, false)
+                   x => DiscountState.FromName(x, false)
                )
                .HasColumnName("State");
 
@@ -34,11 +35,16 @@ public class CouponConfigurations : IEntityTypeConfiguration<Coupon>
         builder.Property(x => x.Type)
                .HasConversion(
                    x => x.Name,
-                   x => DiscountTypeEnum.FromName(x, false)
+                   x => DiscountType.FromName(x, false)
                )
                .HasColumnName("Type");
 
-        //builder.OwnsOne(x => x.State);
-        //builder.OwnsOne(x => x.Type);
+        //// Configure ProductNameTag property with conversion
+        builder.Property(x => x.ProductNameTag)
+               .HasConversion(
+                   x => x.Name,
+                   x => NameTag.FromName(x, false)
+               )
+               .HasColumnName("ProductNameTag");
     }
 }

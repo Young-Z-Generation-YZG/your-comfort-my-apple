@@ -21,6 +21,16 @@ enum StateEnum {
   EXPIRED = 3;
 }
 
+enum NameTagEnum {
+  NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
+  MACBOOK = 1;
+  IPAD = 2;
+  IPHONE = 3;
+  WATCH = 4;
+  HEADPHONE = 5;
+  ACCESSORY = 6;
+}
+
 service DiscountProtoService {
 	rpc GetAllDiscounts (GetAllDiscountsRequest) returns (GetAllDiscountsResponse);
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
@@ -31,10 +41,11 @@ service DiscountProtoService {
 
 // Coupon message definition
 message CouponModel {
-  google.protobuf.StringValue title = 2;
-  google.protobuf.StringValue description = 3;
-  TypeEnum type = 4; // Enum for discount type
-  StateEnum state = 5; // Enum for discount status
+  google.protobuf.StringValue title = 1;
+  google.protobuf.StringValue description = 2;
+  StateEnum state = 3; // Enum for discount status
+  NameTagEnum product_name_tag = 4; 
+  TypeEnum type = 5; // Enum for discount type
   double discount_value = 6;
   google.protobuf.DoubleValue min_purchase_amount = 7;
   google.protobuf.DoubleValue max_discount_amount = 8;
@@ -76,7 +87,7 @@ message GetAllDiscountsRequest {
 }
 
 message GetAllDiscountsResponse {
-  repeated CouponModel coupons = 1; // List of coupons
   int32 total_count = 2;
   int32 total_pages = 3;
+  repeated CouponModel coupons = 1; // List of coupons
 }

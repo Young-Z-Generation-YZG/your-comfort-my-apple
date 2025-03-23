@@ -22,7 +22,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
     public Address ShippingAddress { get; set; }
     public decimal SubTotalAmount
     {
-        get => OrderItems.Sum(x => x.ProductPrice * x.Quantity);
+        get => OrderItems.Sum(x => x.ProductUnitPrice * x.Quantity);
         set { }
     }
     public decimal DiscountAmount { get; set; } = 0;

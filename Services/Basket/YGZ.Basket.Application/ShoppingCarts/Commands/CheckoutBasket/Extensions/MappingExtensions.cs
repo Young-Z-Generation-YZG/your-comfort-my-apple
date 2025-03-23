@@ -31,9 +31,8 @@ public static class MappingExtension
             CartItems = cartItems.Select(x => new OrderLineIntegrationEvent(x.ProductId,
                                                                             x.ProductModel,
                                                                             x.ProductColor,
-                                                                            x.ProductColorHex,
                                                                             x.ProductStorage,
-                                                                            x.ProductPrice,
+                                                                            x.ProductUnitPrice,
                                                                             x.ProductImage,
                                                                             x.Quantity)).ToList()
         };

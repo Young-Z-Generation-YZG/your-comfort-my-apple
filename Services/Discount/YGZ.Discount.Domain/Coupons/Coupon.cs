@@ -1,5 +1,6 @@
 ﻿
 
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Application.Abstractions;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Core.Primitives;
@@ -22,31 +23,26 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
 
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public DiscountTypeEnum Type { get; set; } = DiscountTypeEnum.PERCENT;
-    public DiscountStateEnum State { get; set; } = DiscountStateEnum.INACTIVE;
+    public DiscountState State { get; set; } = DiscountState.INACTIVE;
+    public NameTag ProductNameTag { get; set; }
+    public DiscountType Type { get; set; } = DiscountType.PERCENT;
     public double DiscountValue { get; set; } = 0;
-    public double? MinPurchaseAmount { get; set; } = null; // thừa
     public double? MaxDiscountAmount { get; set; } = null;
     public DateTime? ValidFrom { get; set; } = null;
     public DateTime? ValidTo { get; set; } = null;
     public int AvailableQuantity { get; set; }
-
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
     public bool IsDeleted { get; set; } = false;
-
     public DateTime? DeletedAt { get; set; } = null;
-
     public string? DeletedByUserId { get; set; } = null;
 
     public static Coupon Create(string code,
                                 string title,
                                 string description,
-                                DiscountTypeEnum type,
+                                DiscountType type,
                                 double discountValue,
-                                double? minPurchaseAmount,
+                                NameTag nameTag,
                                 double? maxDiscountAmount,
                                 DateTime? validFrom,
                                 DateTime? validTo,
@@ -58,7 +54,7 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
             Description = description,
             Type = type,
             DiscountValue = discountValue,
-            MinPurchaseAmount = minPurchaseAmount,
+            ProductNameTag = nameTag,
             MaxDiscountAmount = maxDiscountAmount,
             ValidFrom = validFrom,
             ValidTo = validTo,
@@ -69,10 +65,10 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
     public static Coupon Update(string code,
                                 string title,
                                string description,
-                               DiscountTypeEnum type,
-                               DiscountStateEnum state,
+                               DiscountState state,
+                               NameTag nameTag,
+                               DiscountType type,
                                double discountValue,
-                               double? minPurchaseAmount,
                                double? maxDiscountAmount,
                                DateTime? validFrom,
                                DateTime? validTo,
@@ -85,7 +81,7 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
             Type = type,
             State = state,
             DiscountValue = discountValue,
-            MinPurchaseAmount = minPurchaseAmount,
+            ProductNameTag = nameTag,
             MaxDiscountAmount = maxDiscountAmount,
             ValidFrom = validFrom,
             ValidTo = validTo,

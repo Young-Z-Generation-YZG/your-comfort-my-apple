@@ -23,9 +23,9 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
 public record OrderLineIntegrationEvent(string ProductId,
                                         string ProductModel,
                                         string ProductColor,
-                                        string ProductColorHex,
                                         int ProductStorage,
-                                        decimal ProductPrice,
+                                        decimal ProductUnitPrice,
                                         string ProductImage,
-                                        int Quantity) { }
+                                        int Quantity)
+{ }
 

@@ -32,12 +32,12 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
 
         var product = await _detailRepository.GetByFilterAsync(filter, cancellationToken);
 
-        ProductResponse response = MapToReponse(product);
+        ProductResponse response = MapToResponse(product);
 
         return response;
     }
 
-    private ProductResponse MapToReponse(IPhone16Detail product)
+    private ProductResponse MapToResponse(IPhone16Detail product)
     {
         var colorResponse = _mapper.Map<ColorResponse>(product.Color);
 
@@ -46,7 +46,7 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
         var response = _mapper.Map<ProductResponse>(product);
 
         response.ProductColor = colorResponse;
-         
+
         response.ProductImages = imagesResponse;
 
         return response;

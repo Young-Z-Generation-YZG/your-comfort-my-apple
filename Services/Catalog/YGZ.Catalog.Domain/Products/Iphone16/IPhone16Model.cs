@@ -1,6 +1,7 @@
 ﻿
 
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
@@ -53,6 +54,9 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
     [BsonElement("slug")]
     public Slug Slug { get; set; }
 
+    [BsonElement("category_id")]
+    public CategoryId? CategoryId { get; set; } = null;
+
     [BsonElement("created_at")]
     public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
 
@@ -92,6 +96,7 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
                                        AverageRating averageRating,
                                        List<RatingStar> ratingStars,
                                        string description,
+                                       CategoryId? categoryId,
                                        int? overallSold = 0)
     {
         return new IPhone16Model(iPhone16ModelId)
@@ -105,6 +110,7 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
             OverallSold = (int)overallSold!,
             DescriptionImages = descriptionImages,
             Slug = Slug.Create(name),
+            CategoryId = categoryId,
         };
     }
 }

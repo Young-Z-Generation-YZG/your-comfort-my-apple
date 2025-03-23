@@ -33,7 +33,7 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
     {
         //var userEmail = _userContext.GetUserEmail();
 
-        var discount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = "ZF8727717" });
+        //var discount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = "ZF8727717" });
 
         ShoppingCart shoppingCart = request.ToEntity("lov3rinve146@gmail.com");
 

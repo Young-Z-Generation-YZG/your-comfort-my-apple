@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
@@ -12,11 +13,6 @@ namespace YGZ.Catalog.Domain.Products.Iphone16.Entities;
 public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
 {
     public IPhone16Detail(IPhone16Id id) : base(id)
-    {
-
-    }
-
-    private IPhone16Detail() : base(null!)
     {
 
     }
@@ -35,6 +31,9 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
 
     [BsonElement("description")]
     public string Description { get; set; } = default!;
+
+    [BsonElement("name_tag")]
+    public NameTag NameTag { get; set; } = NameTag.IPHONE;
 
     [BsonElement("available_in_stock")]
     public int AvailableInStock { get; set; } = 0;

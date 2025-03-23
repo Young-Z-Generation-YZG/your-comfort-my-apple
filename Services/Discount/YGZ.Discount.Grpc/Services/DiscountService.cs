@@ -3,6 +3,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MapsterMapper;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Application.Abstractions;
 using YGZ.Discount.Application.Data;
 using YGZ.Discount.Domain.Core.Enums;
@@ -33,32 +34,39 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             throw new RpcException(new Status(StatusCode.NotFound, "Discount code not found"));
         }
 
-        var couponModel = _mapper.Map<CouponModel>(result);
+        CouponResponse response = MapToReponse(result);
 
-        //var test = new CouponModel
-        //{
-        //    Title = result.Title,
-        //    Description = result.Description,
-        //    Type = MapTypeEnum(result.Type.Name),
-        //    State = MapStateEnum(result.State.Name),
-        //    DiscountValue = result.DiscountValue,
-        //    MinPurchaseAmount = result.MinPurchaseAmount,
-        //    MaxDiscountAmount = result.MaxDiscountAmount,
-        //    ValidFrom = result.ValidFrom.HasValue ? Timestamp.FromDateTime(result.ValidFrom.Value.ToUniversalTime()) : null,
-        //    ValidTo = result.ValidTo.HasValue ? Timestamp.FromDateTime(result.ValidTo.Value.ToUniversalTime()) : null,
-        //    AvailableQuantity = result.AvailableQuantity
-        //};
+        return response;
+    }
 
-        return new CouponResponse
+    private CouponResponse MapToReponse(Coupon result)
+    {
+        var couponModel = new CouponModel
+        {
+            Title = result.Title,
+            Description = result.Description,
+            State = (StateEnum)result.State.Value, // Fixing the type conversion issue
+            ProductNameTag = (NameTagEnum)result.ProductNameTag.Value, // Assuming similar conversion is needed
+            Type = (TypeEnum)result.Type.Value, // Assuming similar conversion is needed
+            DiscountValue = result.DiscountValue,
+            MaxDiscountAmount = result.MaxDiscountAmount,
+            ValidFrom = result.ValidFrom.HasValue ? Timestamp.FromDateTime(result.ValidFrom.Value.ToUniversalTime()) : null,
+            ValidTo = result.ValidTo.HasValue ? Timestamp.FromDateTime(result.ValidTo.Value.ToUniversalTime()) : null,
+            AvailableQuantity = result.AvailableQuantity
+        };
+
+        var response = new CouponResponse
         {
             Coupon = couponModel
         };
+
+        return response;
     }
 
     public override async Task<GetAllDiscountsResponse> GetAllDiscounts(GetAllDiscountsRequest request, ServerCallContext context)
     {
         var requestState = (int)request.State;
-        var state = DiscountStateEnum.FromValue(requestState);
+        var state = DiscountState.FromValue(requestState);
 
         var result = await _discountRepository.GetAllAsync(request.Page, request.Limit, state);
 
@@ -78,18 +86,21 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         var validFrom = request.Coupon.ValidFrom.ToDateTime();
         var validTo = request.Coupon.ValidTo.ToDateTime();
         var requestType = (int)request.Coupon.Type;
-        var type = DiscountTypeEnum.FromValue(requestType);
+        var requestNameTag = (int)request.Coupon.ProductNameTag;
 
-        var coupon = Coupon.Create(_uniqueCodeGenerator.GenerateUniqueCode(),
-                                   request.Coupon.Title,
-                                   request.Coupon.Description,
-                                   type,
-                                   request.Coupon.DiscountValue,
-                                   request.Coupon.MinPurchaseAmount,
-                                   request.Coupon.MaxDiscountAmount,
-                                   validFrom,
-                                   validTo,
-                                   request.Coupon.AvailableQuantity);
+        var type = DiscountType.FromValue(requestType);
+        var productNameTag = NameTag.FromValue(requestNameTag);
+
+        var coupon = Coupon.Create(code: _uniqueCodeGenerator.GenerateUniqueCode(),
+                                   title: request.Coupon.Title,
+                                   description: request.Coupon.Description,
+                                   type: type,
+                                   discountValue: request.Coupon.DiscountValue,
+                                   nameTag: productNameTag,
+                                   maxDiscountAmount: request.Coupon.MaxDiscountAmount,
+                                   validFrom: validFrom,
+                                   validTo: validTo,
+                                   availableQuantity: request.Coupon.AvailableQuantity);
 
 
         var result = await _discountRepository.CreateAsync(coupon);
@@ -103,16 +114,18 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         var validTo = request.Coupon.ValidTo.ToDateTime();
         var requestType = (int)request.Coupon.Type;
         var requestState = (int)request.Coupon.State;
-        var type = DiscountTypeEnum.FromValue(requestType);
-        var state = DiscountStateEnum.FromValue(requestState);
+        var requestNameTag = (int)request.Coupon.ProductNameTag;
+        var type = DiscountType.FromValue(requestType);
+        var state = DiscountState.FromValue(requestState);
+        var productNameTag = NameTag.FromValue(requestNameTag);
 
         var coupon = Coupon.Update(code: request.Code,
                                    title: request.Coupon.Title,
                                    description: request.Coupon.Description,
-                                   type: type,
                                    state: state,
+                                   nameTag: productNameTag,
+                                   type: type,
                                    discountValue: request.Coupon.DiscountValue,
-                                   minPurchaseAmount: request.Coupon.MinPurchaseAmount,
                                    maxDiscountAmount: request.Coupon.MaxDiscountAmount,
                                    validFrom: validFrom,
                                    validTo: validTo,
@@ -129,26 +142,4 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         return new BooleanResponse { IsSuccess = result };
     }
-
-    private TypeEnum MapTypeEnum(string typeName)
-    {
-        return typeName switch
-        {
-            "PERCENT" => TypeEnum.Percent,
-            "FIXED" => TypeEnum.Fixed,
-            _ => TypeEnum.DiscountTypeEnumUnknown
-        };
-    }
-
-    private StateEnum MapStateEnum(string stateName)
-    {
-        return stateName switch
-        {
-            "ACTIVE" => StateEnum.Active,
-            "INACTIVE" => StateEnum.Inactive,
-            "EXPIRED" => StateEnum.Expired,
-            _ => StateEnum.DiscountStateEnumUnknown
-        };
-    }
-
 }

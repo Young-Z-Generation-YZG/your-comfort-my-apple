@@ -54,20 +54,20 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                 return false;
             }
 
-            var discountType = DiscountTypeEnum.FromValue((int)discount.Coupon.Type);
+            var discountType = DiscountType.FromValue((int)discount.Coupon.Type);
 
             switch (discountType)
             {
-                case var _ when discountType == DiscountTypeEnum.PERCENT:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductPrice * x.Quantity) * (decimal)discount.Coupon.DiscountValue / 100;
+                case var _ when discountType == DiscountType.PERCENT:
+                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) * (decimal)discount.Coupon.DiscountValue / 100;
                     break;
-                case var _ when discountType == DiscountTypeEnum.FIXED:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductPrice * x.Quantity) - (decimal)discount.Coupon.DiscountValue;
+                case var _ when discountType == DiscountType.FIXED:
+                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) - (decimal)discount.Coupon.DiscountValue;
                     break;
             }
         }
 
-        subTotal = basket.Response.Items.Sum(x => x.ProductPrice * x.Quantity);
+        subTotal = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity);
         total = subTotal - discountAmount;
 
         if ((discountAmount != request.DiscountAmount) || (subTotal != request.SubTotalAmount || (total != request.TotalAmount)))

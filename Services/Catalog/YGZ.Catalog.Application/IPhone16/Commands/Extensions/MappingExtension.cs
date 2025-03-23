@@ -1,5 +1,6 @@
 ﻿using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
 using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Model;
+using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone16;
@@ -40,6 +41,8 @@ public static class MappingExtension
             RatingStar.Create(5, 0),
         };
 
+        var categoryId = string.IsNullOrEmpty(dto.CategoryId) ? null : CategoryId.Of(dto.CategoryId);
+
         return IPhone16Model.Create(
                                     IPhone16ModelId.Create(),
                                     name: dto.Name,
@@ -49,7 +52,8 @@ public static class MappingExtension
                                     description: dto.Description,
                                     averageRating: AverageRating.Create(0, 0),
                                     ratingStars: ratingInit,
-                                    descriptionImages: descriptionImages);
+                                    descriptionImages: descriptionImages,
+                                    categoryId: categoryId);
     }
 
     public static IPhone16Detail ToEntity(this CreateIPhone16DetailsCommand dto)
