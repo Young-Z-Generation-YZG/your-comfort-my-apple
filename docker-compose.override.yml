@@ -311,7 +311,15 @@ services:
         - "16686:16686"
         networks:
         - app-network
-  
+
+    # ygz.nginx:
+    #     container_name: ygz.nginx
+    #     ports:
+    #     - "80:80"
+    #     volumes:
+    #     - ./nginx.conf:/etc/nginx/nginx.conf
+    #     networks:
+    #     - app-network
 
 volumes:
   postgres_identity:
