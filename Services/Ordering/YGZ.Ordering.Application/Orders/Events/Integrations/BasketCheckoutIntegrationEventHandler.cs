@@ -46,9 +46,8 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             ProductId = x.ProductId,
             ProductModel = x.ProductModel,
             ProductColor = x.ProductColor,
-            ProductColorHex = x.ProductColorHex,
             ProductStorage = x.ProductStorage,
-            ProductPrice = x.ProductPrice,
+            ProductUnitPrice = x.ProductUnitPrice,
             ProductImage = x.ProductImage,
             Quantity = x.Quantity
         }).ToList();

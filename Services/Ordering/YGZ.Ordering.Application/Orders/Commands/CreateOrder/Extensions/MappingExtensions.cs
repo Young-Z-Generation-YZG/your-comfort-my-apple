@@ -27,7 +27,7 @@ public static class MappingExtension
                                 discountAmount: dto.DiscountAmount,
                                 ShippingAddress: shippingAddress);
 
-        foreach(var item in dto.Orders)
+        foreach (var item in dto.Orders)
         {
             order.AddOrderItem(item.ToEntity(order.Id));
         }
@@ -39,13 +39,12 @@ public static class MappingExtension
     {
         return OrderItem.Create(orderItemId: OrderItemId.Create(),
                                 orderId: orderId,
-                                ProductId: dto.ProductId,
-                                ProductModel: dto.ProductModel,
-                                ProductColor: dto.ProductColor,
-                                ProductColorHex: dto.ProductColorHex,
-                                ProductStorage: dto.ProductStorage,
-                                ProductPrice: dto.ProductPrice,
-                                ProductImage: dto.ProductImage,
-                                Quantity: dto.Quantity);
+                                productId: dto.ProductId,
+                                productModel: dto.ProductModel,
+                                productColor: dto.ProductColor,
+                                productStorage: dto.ProductStorage,
+                                productUnitPrice: dto.ProductUnitPrice,
+                                productImage: dto.ProductImage,
+                                quantity: dto.Quantity);
     }
 }

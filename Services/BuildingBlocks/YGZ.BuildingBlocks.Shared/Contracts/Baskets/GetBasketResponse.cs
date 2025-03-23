@@ -15,8 +15,7 @@ public class GetBasketResponse
 public sealed record CartItemResponse(string ProductId,
                                       string ProductModel,
                                       string ProductColor,
-                                      string ProductColorHex,
                                       int ProductStorage,
-                                      decimal ProductPrice,
+                                      decimal ProductUnitPrice,
                                       string ProductImage,
                                       int ProductQuantity) { }

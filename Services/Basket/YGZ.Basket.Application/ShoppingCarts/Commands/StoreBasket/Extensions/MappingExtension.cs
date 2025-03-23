@@ -16,13 +16,13 @@ public static class MappingExtension
 
     public static ShoppingCartItem ToEntity(this CartItemCommand dto)
     {
-        return ShoppingCartItem.Create(ProductId: dto.ProductId,
-                                       ProductModel: dto.ProductModel,
-                                       ProductColor: dto.ProductColor,
-                                       ProductColorHex: dto.ProductColorHex,
-                                       ProductStorage: dto.ProductStorage,
-                                       ProductPrice: dto.ProductPrice,
-                                       ProductImage: dto.ProductImage,
-                                       Quantity: dto.Quantity);
+        return ShoppingCartItem.Create(productId: dto.ProductId,
+                                       productModel: dto.ProductModel,
+                                       productColor: dto.ProductColor,
+                                       productStorage: dto.ProductStorage,
+                                       productUnitPrice: dto.ProductUnitPrice,
+                                       productNameTag: dto.ProductNameTag,
+                                       productImage: dto.ProductImage,
+                                       quantity: dto.Quantity);
     }
 }

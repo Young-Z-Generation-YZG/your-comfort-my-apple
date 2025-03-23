@@ -6,12 +6,13 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Categories.Commands;
 using YGZ.Catalog.Api.Contracts.CategoryRequest;
+using YGZ.Catalog.Application.Categories.Queries.GetCategories;
 
 namespace YGZ.Catalog.Api.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/categories")]
-[OpenApiTag("categories", Description = "Manage categories.")]
+[OpenApiTag("Category Controllers", Description = "Manage categories.")]
 //[ProtectedResource("categories")]
 [AllowAnonymous]
 public class CategoryController : ApiController
@@ -25,6 +26,16 @@ public class CategoryController : ApiController
         _logger = logger;
         _sender = sender;
         _mapper = mapper;
+    }
+
+    [HttpGet()]
+    public async Task<IActionResult> GetCategories(CancellationToken cancellationToken)
+    {
+        var query = new GetCategoriesQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPost()]

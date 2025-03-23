@@ -43,7 +43,7 @@ public class DiscountRepository : IDiscountRepository
         }
     }
 
-    public async Task<(List<Coupon> coupons, int TotalCount, int TotalPages)> GetAllAsync(int _page, int _limit, DiscountStateEnum? state = null)
+    public async Task<(List<Coupon> coupons, int TotalCount, int TotalPages)> GetAllAsync(int _page, int _limit, DiscountState? state = null)
     {
         if (_page < 1) throw new ArgumentException("Page must be greater than 0.", nameof(_page));
         if (_limit < 1) throw new ArgumentException("Limit must be greater than 0.", nameof(_limit));
@@ -141,7 +141,7 @@ public class DiscountRepository : IDiscountRepository
             existingCoupon.Type = coupon.Type;
             existingCoupon.State = coupon.State;
             existingCoupon.DiscountValue = coupon.DiscountValue;
-            existingCoupon.MinPurchaseAmount = coupon.MinPurchaseAmount;
+            existingCoupon.ProductNameTag = coupon.ProductNameTag;
             existingCoupon.MaxDiscountAmount = coupon.MaxDiscountAmount;
             existingCoupon.ValidFrom = coupon.ValidFrom;
             existingCoupon.ValidTo = coupon.ValidTo;

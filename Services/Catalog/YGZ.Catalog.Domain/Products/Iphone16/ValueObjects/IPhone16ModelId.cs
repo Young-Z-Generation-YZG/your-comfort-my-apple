@@ -26,7 +26,7 @@ public class IPhone16ModelId : ValueObject
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        var isParse = ObjectId.TryParse(id, out var value);
+        ObjectId.TryParse(id, out var value);
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 

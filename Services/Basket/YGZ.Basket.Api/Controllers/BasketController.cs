@@ -51,9 +51,9 @@ public class BasketController : ApiController
     }
 
     [HttpGet()]
-    public async Task<IActionResult> GetBasket(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
-        var result = await _sender.Send(new GetBasketQuery(), cancellationToken);
+        var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

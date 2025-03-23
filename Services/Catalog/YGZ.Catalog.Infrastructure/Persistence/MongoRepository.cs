@@ -79,7 +79,6 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
     public async Task InsertOneAsync(TEntity document)
     {
         await _collection.InsertOneAsync(document);
-
     }
 
     public async Task UpdateAsync(string id, TEntity entity)

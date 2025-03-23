@@ -27,12 +27,10 @@ public class IPhone16Id : ValueObject
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        var isParse = ObjectId.TryParse(id, out var value);
+        ObjectId.TryParse(id, out var value);
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 
         return new IPhone16Id { Id = value };
     }
-
-
 }

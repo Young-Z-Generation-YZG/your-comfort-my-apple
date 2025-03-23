@@ -12,7 +12,7 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    [Migration("20250311164944_InitialMigration")]
+    [Migration("20250321035947_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -55,8 +55,10 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<double?>("MaxDiscountAmount")
                         .HasColumnType("double precision");
 
-                    b.Property<double?>("MinPurchaseAmount")
-                        .HasColumnType("double precision");
+                    b.Property<string>("ProductNameTag")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ProductNameTag");
 
                     b.Property<string>("State")
                         .IsRequired()

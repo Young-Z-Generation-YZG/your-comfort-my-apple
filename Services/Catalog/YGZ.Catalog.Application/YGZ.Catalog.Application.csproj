@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\Persistence\" />
-    <Folder Include="Categories\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,10 +23,14 @@ public class CategoryId : ValueObject
         return new CategoryId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static CategoryId ToValueObjectId(string? id) 
+    public static CategoryId Of(string? id) 
     {
-        var isParse = ObjectId.TryParse(id, out _);
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        return new CategoryId { Id = isParse ? ObjectId.Parse(id) : null };
+        ObjectId.TryParse(id, out var value);
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
+
+        return new CategoryId { Id = value };
     }
 }

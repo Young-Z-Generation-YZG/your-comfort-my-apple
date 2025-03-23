@@ -28,8 +28,8 @@ public sealed record OrderItemRequest
     public int ProductStorage { get; set; }
 
     [Required]
-    [JsonPropertyName("product_price")]
-    public decimal ProductPrice { get; set; }
+    [JsonPropertyName("product_unit_price")]
+    public decimal ProductUnitPrice { get; set; }
 
     [Required]
     [JsonPropertyName("product_image")]

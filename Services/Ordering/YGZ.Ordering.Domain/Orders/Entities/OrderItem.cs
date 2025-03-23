@@ -21,41 +21,38 @@ public class OrderItem : Entity<OrderItemId>
     public string ProductColor { get; set; } = default!;
     public string ProductColorHex { get; set; } = default!;
     public int ProductStorage { get; set; } = default!;
-    public decimal ProductPrice { get; set; } = default!;
+    public decimal ProductUnitPrice { get; set; } = default!;
     public string ProductImage { get; set; } = default!;
     public int Quantity { get; set; } = default!;
 
     public static OrderItem Create(OrderItemId orderItemId,
                                    OrderId orderId,
-                                   string ProductId,
-                                   string ProductModel,
-                                   string ProductColor,
-                                   string ProductColorHex,
-                                   int ProductStorage,
-                                   decimal ProductPrice,
-                                   string ProductImage,
-                                   int Quantity)
+                                   string productId,
+                                   string productModel,
+                                   string productColor,
+                                   int productStorage,
+                                   decimal productUnitPrice,
+                                   string productImage,
+                                   int quantity)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ProductId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(ProductModel);
-        ArgumentException.ThrowIfNullOrWhiteSpace(ProductColor);
-        ArgumentException.ThrowIfNullOrWhiteSpace(ProductColorHex);
-        ArgumentException.ThrowIfNullOrWhiteSpace(ProductImage);
-        ArgumentOutOfRangeException.ThrowIfLessThan(Quantity, 1);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productModel);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productColor);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productImage);
+        ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
 
 
         return new OrderItem
         {
             Id = orderItemId,
             OrderId = orderId,
-            ProductId = ProductId,
-            ProductModel = ProductModel,
-            ProductColor = ProductColor,
-            ProductColorHex = ProductColorHex,
-            ProductStorage = ProductStorage,
-            ProductPrice = ProductPrice,
-            ProductImage = ProductImage,
-            Quantity = Quantity
+            ProductId = productId,
+            ProductModel = productModel,
+            ProductColor = productColor,
+            ProductStorage = productStorage,
+            ProductUnitPrice = productUnitPrice,
+            ProductImage = productImage,
+            Quantity = quantity
         };
     }
 }

@@ -14,7 +14,7 @@ public sealed record OrderItemCommand
 
     public int ProductStorage { get; set; }
 
-    public decimal ProductPrice { get; set; }
+    public decimal ProductUnitPrice { get; set; }
 
     public string ProductImage { get; set; }
 

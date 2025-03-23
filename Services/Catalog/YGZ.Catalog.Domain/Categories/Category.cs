@@ -25,6 +25,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("slug")]
     public Slug Slug { get; set; } = default!;
 
+    [BsonElement("order")]
+    public int Order { get; set; }
+
     [BsonElement("parent_id")]
     public CategoryId? ParentId { get; set; } = null;
 
@@ -40,17 +43,19 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("deleted_at")]
     public DateTime? DeletedAt => null;
 
-    [BsonElement("deleted_by_user_id")]
+    [BsonElement("deleted_by")]
     public Guid? DeletedBy => null;
 
-    public static Category Create(string name, string description, string? parentId)
+    public static Category Create(CategoryId id, string name, string description, int order, CategoryId? parentId)
     {
-        return new Category(CategoryId.Create())
+        return new Category(id)
         {
+            Id = id,
             Name = name,
             Description = description,
             Slug = Slug.Create(name),
-            ParentId = CategoryId.ToValueObjectId(parentId!)
+            Order = order,
+            ParentId = parentId
         };
     }
 }
