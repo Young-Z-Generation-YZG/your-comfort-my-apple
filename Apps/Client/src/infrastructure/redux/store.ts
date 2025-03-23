@@ -11,8 +11,8 @@ import {
 import { PersistConfig } from 'redux-persist/es/types';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import authReducer from './slices/auth.slice';
-import cartReducer from './slices/cart-demo.slice';
+import authReducer from './features/auth.slice';
+import cartReducer from './features/cart-demo.slice';
 import { categoryApi } from '~/infrastructure/services/category.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
