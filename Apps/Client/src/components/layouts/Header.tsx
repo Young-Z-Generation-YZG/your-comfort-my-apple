@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import svgs from '@assets/svg';
+import svgs from '@assets/svgs';
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGetCategoriesAsyncQuery } from '~/infrastructure/services/category.service';
@@ -16,8 +16,6 @@ const Header = () => {
    const [categories, setCategories] = useState<CategoryResponseType[]>([]);
 
    const categoryRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
-
-   console.log('categoryRefs', categoryRefs);
 
    const {
       data: categoriesData,
