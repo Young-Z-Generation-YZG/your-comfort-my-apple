@@ -7,7 +7,7 @@ using YGZ.Discount.Domain.Coupons.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Configurations;
 
-public class CouponConfigurations : IEntityTypeConfiguration<Coupon>
+public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
 {
     public void Configure(EntityTypeBuilder<Coupon> builder)
     {
@@ -19,8 +19,14 @@ public class CouponConfigurations : IEntityTypeConfiguration<Coupon>
         builder.Property(x => x.Id)
                .ValueGeneratedNever()
                .HasConversion(
-                   code => code.Value,
-                   code => Code.Create(code)
+                   id => id.Value,
+                   dbid => CouponId.Of(dbid)
+               );
+
+        builder.Property(x => x.Code)
+               .HasConversion(
+                   x => x.Value,
+                   x => Code.Of(x)
                );
 
         //// Configure State property with conversion

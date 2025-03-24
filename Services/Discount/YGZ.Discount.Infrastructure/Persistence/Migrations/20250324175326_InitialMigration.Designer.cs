@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using YGZ.Discount.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    partial class DiscountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324175326_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,10 +169,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("DiscountPercentage")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("ProductColorName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("ProductImage")
                         .IsRequired()
                         .HasColumnType("text");
@@ -177,9 +176,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("ProductSlug")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("ProductStorage")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("PromotionGlobalId")
                         .HasColumnType("uuid");

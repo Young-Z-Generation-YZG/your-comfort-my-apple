@@ -8,19 +8,17 @@ using YGZ.Discount.Domain.Coupons.ValueObjects;
 
 namespace YGZ.Discount.Domain.Coupons;
 
-public class Coupon : Entity<Code>, IAuditable, ISoftDelete
+public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
 {
-    public Coupon(Code code) : base(code)
+    public Coupon(CouponId id) : base(id)
     {
 
     }
 
     // Parameterless constructor for EF Core design time
-    private Coupon() : base(null!) // Pass null temporarily, will be set via properties
-    {
+    private Coupon() : base(null!) { }
 
-    }
-
+    public Code Code { get; set; } = default!;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public DiscountState State { get; set; } = DiscountState.INACTIVE;
@@ -35,9 +33,10 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; } = false;
     public DateTime? DeletedAt { get; set; } = null;
-    public string? DeletedByUserId { get; set; } = null;
+    public string? DeletedBy { get; set; } = null;
 
-    public static Coupon Create(string code,
+    public static Coupon Create(CouponId couponId,
+                                Code code,
                                 string title,
                                 string description,
                                 DiscountType type,
@@ -48,8 +47,9 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
                                 DateTime? validTo,
                                 int availableQuantity)
     {
-        return new Coupon(Code.Create(code))
+        return new Coupon(couponId)
         {
+            Code = code,
             Title = title,
             Description = description,
             Type = type,
@@ -62,20 +62,22 @@ public class Coupon : Entity<Code>, IAuditable, ISoftDelete
         };
     }
 
-    public static Coupon Update(string code,
+    public static Coupon Update(CouponId couponId,
+                                Code code,
                                 string title,
-                               string description,
-                               DiscountState state,
-                               NameTag nameTag,
-                               DiscountType type,
-                               double discountValue,
-                               double? maxDiscountAmount,
-                               DateTime? validFrom,
-                               DateTime? validTo,
-                               int availableQuantity)
+                                string description,
+                                DiscountState state,
+                                NameTag nameTag,
+                                DiscountType type,
+                                double discountValue,
+                                double? maxDiscountAmount,
+                                DateTime? validFrom,
+                                DateTime? validTo,
+                                int availableQuantity)
     {
-        return new Coupon(Code.Create(code))
+        return new Coupon(couponId)
         {
+            Code = code,
             Title = title,
             Description = description,
             Type = type,

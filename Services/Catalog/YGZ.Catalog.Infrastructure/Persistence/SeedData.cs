@@ -9,7 +9,7 @@ using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 
 namespace YGZ.Catalog.Infrastructure.Persistence;
 
-public class SeedData 
+public class SeedData
 {
     public static IEnumerable<IPhone16Model> IPhone16_16Plus_Models
     {
@@ -125,7 +125,7 @@ public class SeedData
                                              averageRating: AverageRating.Create(0, 0),
                                              ratingStars: ratingInit,
                                              descriptionImages: imageList1,
-                                             categoryId: CategoryId.Of("67346f7549189f7314e4ef0c"));
+                                             categoryId: CategoryId.Of("91dc470aa9ee0a5e6fbafdbc"));
 
             return new List<IPhone16Model>
             {
@@ -958,7 +958,7 @@ public class SeedData
         Category.Create(id: CategoryId.Of("67dc5338a9ee0a5e6fbafdb4"), name: "iPad mini", description: "iPad mini category.", order: 3, parentId: CategoryId.Of("67dc4708a9ee0a5e6fbafdaa")),
         Category.Create(id: CategoryId.Of("67dc533aa9ee0a5e6fbafdb5"), name: "Apple Pencil", description: "Apple Pencil category.", order: 4, parentId: CategoryId.Of("67dc4708a9ee0a5e6fbafdaa")),
         Category.Create(id: CategoryId.Of("67dc533ca9ee0a5e6fbafdb6"), name: "Keyboards", description: "Keyboards category.", order: 5, parentId: CategoryId.Of("67dc4708a9ee0a5e6fbafdaa")),
-    
+
         Category.Create(id: CategoryId.Of("91dc470aa9ee0a5e6fbafdbc"), name: "iPhone 16", description: "iPhone 16 category.", order: 0, parentId: CategoryId.Of("67dc470aa9ee0a5e6fbafdab")),
         Category.Create(id: CategoryId.Of("92dc470aa9ee0a5e6fbafdbd"), name: "iPhone 15", description: "iPhone 15 category.", order: 1, parentId: CategoryId.Of("67dc470aa9ee0a5e6fbafdab")),
         Category.Create(id: CategoryId.Of("93dc470aa9ee0a5e6fbafdbe"), name: "iPhone 14", description: "iPhone 14 category.", order: 2, parentId: CategoryId.Of("67dc470aa9ee0a5e6fbafdab")),

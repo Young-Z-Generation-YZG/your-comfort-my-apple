@@ -1,3 +1,4 @@
+using YGZ.Discount.Application;
 using YGZ.Discount.Application.Services;
 using YGZ.Discount.Grpc;
 using YGZ.Discount.Grpc.Services;
@@ -12,6 +13,7 @@ builder.Services.AddGrpcReflection();
 
 services
     .AddPresentationLayer()
+    .AddApplicationLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();

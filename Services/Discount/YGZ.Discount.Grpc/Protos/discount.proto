@@ -9,26 +9,32 @@ package discount;
 
 // Enums for DiscountTypeEnum and DiscountStateEnum
 enum TypeEnum {
-  DISCOUNT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
-  PERCENT = 1;
-  FIXED = 2; // Assuming FIXED is another possible value; adjust as needed
+	DISCOUNT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	PERCENTAGE = 1;
+	FIXED = 2; // Assuming FIXED is another possible value; adjust as needed
+}
+
+enum PromotionGlobalTypeEnum {
+	PROMOTION_GLOBAL_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	CATEGORIES = 1;
+	PRODUCTS = 2;
 }
 
 enum StateEnum {
-  DISCOUNT_STATE_ENUM_UNKNOWN = 0; // Default/unknown value
-  ACTIVE = 1; // Assuming ACTIVE is another possible value; adjust as needed
-  INACTIVE = 2;
-  EXPIRED = 3;
+	DISCOUNT_STATE_ENUM_UNKNOWN = 0; // Default/unknown value
+	ACTIVE = 1; // Assuming ACTIVE is another possible value; adjust as needed
+	INACTIVE = 2;
+	EXPIRED = 3;
 }
 
 enum NameTagEnum {
-  NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
-  MACBOOK = 1;
-  IPAD = 2;
-  IPHONE = 3;
-  WATCH = 4;
-  HEADPHONE = 5;
-  ACCESSORY = 6;
+	NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
+	MACBOOK = 1;
+	IPAD = 2;
+	IPHONE = 3;
+	WATCH = 4;
+	HEADPHONE = 5;
+	ACCESSORY = 6;
 }
 
 service DiscountProtoService {
@@ -37,21 +43,78 @@ service DiscountProtoService {
 	rpc CreateDiscount (CreateDiscountRequest) returns (BooleanResponse);
 	rpc UpdateDiscount (UpdateDiscountRequest) returns (BooleanResponse);
 	rpc DeleteDiscount (DeleteDiscountRequest) returns (BooleanResponse);
+
+	rpc CreatePromotionItem (CreatePromotionItemModelRequest) returns (BooleanResponse);
+
+	rpc CreatePromotionEvent (CreatePromotionEventModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
 }
 
 // Coupon message definition
 message CouponModel {
-  google.protobuf.StringValue title = 1;
-  google.protobuf.StringValue description = 2;
-  StateEnum state = 3; // Enum for discount status
-  NameTagEnum product_name_tag = 4; 
-  TypeEnum type = 5; // Enum for discount type
-  double discount_value = 6;
-  google.protobuf.DoubleValue min_purchase_amount = 7;
-  google.protobuf.DoubleValue max_discount_amount = 8;
-  google.protobuf.Timestamp valid_from = 9;
-  google.protobuf.Timestamp valid_to = 10;
-  int32 available_quantity = 11;
+	google.protobuf.StringValue id = 1;
+	google.protobuf.StringValue title = 2;
+	google.protobuf.StringValue code = 3;
+	google.protobuf.StringValue description = 4;
+	NameTagEnum product_name_tag = 5; 
+	StateEnum state = 6; // Enum for discount status
+	TypeEnum type = 7; // Enum for discount type
+	google.protobuf.DoubleValue discount_value = 8;
+	google.protobuf.DoubleValue max_discount_amount = 9;
+	google.protobuf.Timestamp valid_from = 10;
+	google.protobuf.Timestamp valid_to = 11;
+	google.protobuf.Int32Value available_quantity = 12;
+}
+
+message PromotionItemModel {
+	google.protobuf.StringValue id = 1;
+	google.protobuf.StringValue title = 2;
+	google.protobuf.StringValue description = 3;
+	NameTagEnum name_tag = 4; 
+	StateEnum state = 5; // Enum for discount status
+	TypeEnum type = 6; // Enum for discount type
+	google.protobuf.DoubleValue discount_value = 7;
+	google.protobuf.Timestamp valid_from = 8;
+	google.protobuf.Timestamp valid_to = 9;
+	google.protobuf.Int32Value available_quantity = 10;
+	google.protobuf.StringValue product_id = 11;
+	google.protobuf.StringValue product_slug = 12;
+	google.protobuf.StringValue product_image = 13;
+}
+
+message PromotionEventModel {
+	google.protobuf.StringValue title = 1;
+	google.protobuf.StringValue description = 2;
+	StateEnum state = 3; // Enum for discount status
+	google.protobuf.Timestamp valid_from = 4;
+	google.protobuf.Timestamp valid_to = 5;
+}
+
+message PromotionGlobalModel {
+	google.protobuf.StringValue title = 1;
+	google.protobuf.StringValue description = 2;
+	PromotionGlobalTypeEnum global_type = 3;
+	google.protobuf.StringValue promotion_event_id = 4;
+}
+
+message PromotionCategoryModel {
+	google.protobuf.StringValue category_id = 1;
+	google.protobuf.StringValue category_name = 2;
+	google.protobuf.StringValue category_slug = 3;
+	google.protobuf.DoubleValue discount_percentage = 4;
+	google.protobuf.StringValue promotion_global_id = 5;
+}
+
+message PromotionProductModel {
+	google.protobuf.StringValue product_id = 1;
+	google.protobuf.StringValue product_color_name = 2;
+	google.protobuf.Int32Value product_storage = 3;
+	google.protobuf.StringValue product_slug = 4;
+	google.protobuf.StringValue product_image = 5;
+	google.protobuf.DoubleValue discount_percentage = 6;
+	google.protobuf.StringValue promotion_global_id = 7;
 }
 
 message GetDiscountRequest {
@@ -59,20 +122,40 @@ message GetDiscountRequest {
 }
 
 message CouponResponse {
-  CouponModel coupon = 1; // Return the full coupon model
+	CouponModel coupon = 1; // Return the full coupon model
 }
 
 message CreateDiscountRequest {
-  CouponModel coupon = 1; // Full coupon details to create
+	CouponModel coupon_model = 1; // Full coupon details to create
+}
+
+message CreatePromotionItemModelRequest {
+	PromotionItemModel promotion_item_model = 1; // Full coupon details to create
+}
+
+message CreatePromotionEventModelRequest {
+	PromotionEventModel promotion_event_model = 1; // Full coupon details to create
+}
+
+message PromotionGlobalModelRequest {
+	PromotionGlobalModel promotion_global_model = 1; // Full coupon details to create
+}
+
+message PromotionCategoryModelRequest {
+	repeated PromotionCategoryModel promotion_category_model = 1; // Full coupon details to create
+}
+
+message PromotionProductModelRequest {
+	repeated PromotionProductModel promotion_product_model = 1; // Full coupon details to create
 }
 
 message UpdateDiscountRequest {
-  string code = 1; // CouponId as string (assuming CouponId is a string or GUID in your domain)
-  CouponModel coupon = 2; // Full coupon details to update
+	string code = 1; // CouponId as string (assuming CouponId is a string or GUID in your domain)
+	CouponModel coupon_model = 2; // Full coupon details to update
 }
 
 message DeleteDiscountRequest {
-  string code = 1;
+	string code = 1;
 }
 
 message BooleanResponse {
@@ -81,13 +164,13 @@ message BooleanResponse {
 
 // Request and Response messages for GetAllDiscounts
 message GetAllDiscountsRequest {
-  StateEnum state = 1;
-  int32 _page = 2;
-  int32 _limit = 3;
+	StateEnum state = 1;
+	int32 _page = 2;
+	int32 _limit = 3;
 }
 
 message GetAllDiscountsResponse {
-  int32 total_count = 2;
-  int32 total_pages = 3;
-  repeated CouponModel coupons = 1; // List of coupons
+	int32 total_count = 2;
+	int32 total_pages = 3;
+	repeated CouponModel coupous = 1; // List of coupons
 }

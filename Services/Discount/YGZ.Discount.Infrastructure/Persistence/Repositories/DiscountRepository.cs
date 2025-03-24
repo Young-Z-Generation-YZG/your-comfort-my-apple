@@ -3,7 +3,7 @@
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using YGZ.Discount.Application.Data;
+using YGZ.Discount.Application.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
@@ -28,7 +28,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var result = await _context.Coupons
-                .FirstOrDefaultAsync(c => c.Id == Code.Create(code) && !c.IsDeleted);
+                .FirstOrDefaultAsync(c => c.Code == Code.Of(code) && !c.IsDeleted);
 
             if(result is null)
             {
@@ -99,7 +99,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var coupon = await _context.Coupons
-            .FirstOrDefaultAsync(c => c.Id == Code.Create(code));
+            .FirstOrDefaultAsync(c => c.Id == Code.Of(code));
 
             if (coupon is null)
                 return false; // Coupon not found or already deleted
@@ -128,7 +128,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var existingCoupon = await _context.Coupons
-            .FirstOrDefaultAsync(c => c.Id == Code.Create(code) && !c.IsDeleted);
+            .FirstOrDefaultAsync(c => c.Id == Code.Of(code) && !c.IsDeleted);
 
             if (existingCoupon is null)
             {
