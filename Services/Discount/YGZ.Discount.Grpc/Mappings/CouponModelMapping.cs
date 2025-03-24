@@ -5,7 +5,7 @@ using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Discount.Grpc.Mappings;
 
-public class CouponModelMappingConfig : IRegister
+public class CouponModelMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
@@ -28,7 +28,7 @@ public class CouponModelMappingConfig : IRegister
     {
         return typeName switch
         {
-            "PERCENT" => TypeEnum.Percent,
+            "PERCENTAGE" => TypeEnum.Percentage,
             "FIXED" => TypeEnum.Fixed,
             _ => TypeEnum.DiscountTypeEnumUnknown
         };

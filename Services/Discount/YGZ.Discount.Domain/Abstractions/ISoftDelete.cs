@@ -8,5 +8,5 @@ public interface ISoftDelete
 
     DateTime? DeletedAt { get; }
 
-    string? DeletedByUserId { get; }
+    string? DeletedBy { get; }
 }
