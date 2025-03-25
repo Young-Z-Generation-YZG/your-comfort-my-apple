@@ -20,6 +20,11 @@ public class CouponId : ValueObject
         return new CouponId(guid);
     }
 
+    public static CouponId Of(string guid)
+    {
+        return new CouponId(Guid.Parse(guid));
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

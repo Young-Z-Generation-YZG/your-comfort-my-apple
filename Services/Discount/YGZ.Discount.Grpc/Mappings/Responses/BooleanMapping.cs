@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using YGZ.Discount.Grpc.Protos;
 
-namespace YGZ.Discount.Grpc.Mappings;
+namespace YGZ.Discount.Grpc.Mappings.Responses;
 
 public class BooleanMapping : IRegister
 {

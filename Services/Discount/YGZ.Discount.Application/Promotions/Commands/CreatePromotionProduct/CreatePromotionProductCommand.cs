@@ -15,6 +15,6 @@ public sealed record PromotionProductCommand()
     public int ProductStorage { get; set; }
     public string ProductSlug { get; set; }
     public string ProductImage { get; set; }
-    public decimal DiscountPercentage { get; set; }
+    public decimal DiscountPercent { get; set; }
     public string PromotionGlobalId { get; set; }
 }

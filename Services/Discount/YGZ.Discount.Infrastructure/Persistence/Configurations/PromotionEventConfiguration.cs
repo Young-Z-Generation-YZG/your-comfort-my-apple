@@ -21,12 +21,19 @@ public class PromotionEventConfiguration : IEntityTypeConfiguration<PromotionEve
             dbid => PromotionEventId.Of(dbid)
         );
 
-        builder.Property(x => x.State) // Updated from Status to State
+        builder.Property(x => x.DiscountState) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
                    x => DiscountState.FromName(x, false)
                )
-               .HasColumnName("State");
+               .HasColumnName("DiscountState");
+
+        builder.Property(x => x.PromotionEventType)
+               .HasConversion(
+                   x => x.Name,
+                   x => PromotionEventType.FromName(x, false)
+               )
+               .HasColumnName("PromotionEventType");
 
     }
 }

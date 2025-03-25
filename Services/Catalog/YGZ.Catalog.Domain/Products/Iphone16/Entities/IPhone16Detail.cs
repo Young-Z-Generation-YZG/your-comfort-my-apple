@@ -33,7 +33,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     public string Description { get; set; } = default!;
 
     [BsonElement("name_tag")]
-    public NameTag NameTag { get; set; } = NameTag.IPHONE;
+    public ProductNameTag ProductNameTag { get; set; } = ProductNameTag.IPHONE;
 
     [BsonElement("available_in_stock")]
     public int AvailableInStock { get; set; } = 0;

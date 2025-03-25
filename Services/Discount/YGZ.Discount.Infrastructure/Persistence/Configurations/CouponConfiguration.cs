@@ -30,27 +30,34 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
                );
 
         //// Configure State property with conversion
-        builder.Property(x => x.State) // Updated from Status to State
+        builder.Property(x => x.DiscountState) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
                    x => DiscountState.FromName(x, false)
                )
-               .HasColumnName("State");
+               .HasColumnName("DiscountState");
 
         //// Configure Type property with conversion
-        builder.Property(x => x.Type)
+        builder.Property(x => x.DiscountType)
                .HasConversion(
                    x => x.Name,
                    x => DiscountType.FromName(x, false)
                )
-               .HasColumnName("Type");
+               .HasColumnName("DiscountType");
 
         //// Configure ProductNameTag property with conversion
         builder.Property(x => x.ProductNameTag)
                .HasConversion(
                    x => x.Name,
-                   x => NameTag.FromName(x, false)
+                   x => ProductNameTag.FromName(x, false)
                )
                .HasColumnName("ProductNameTag");
+
+        builder.Property(x => x.PromotionEventType)
+               .HasConversion(
+                   x => x.Name,
+                   x => PromotionEventType.FromName(x, false)
+               )
+               .HasColumnName("PromotionEventType");
     }
 }

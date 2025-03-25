@@ -53,7 +53,7 @@ public class DiscountRepository : IDiscountRepository
 
         if (state is not null)
         {
-            query = query.Where(c => c.State == state);
+            query = query.Where(c => c.DiscountState == state);
         }
 
         try
@@ -138,8 +138,8 @@ public class DiscountRepository : IDiscountRepository
             // Update properties
             existingCoupon.Title = coupon.Title;
             existingCoupon.Description = coupon.Description;
-            existingCoupon.Type = coupon.Type;
-            existingCoupon.State = coupon.State;
+            existingCoupon.DiscountType = coupon.DiscountType;
+            existingCoupon.DiscountState = coupon.DiscountState;
             existingCoupon.DiscountValue = coupon.DiscountValue;
             existingCoupon.ProductNameTag = coupon.ProductNameTag;
             existingCoupon.MaxDiscountAmount = coupon.MaxDiscountAmount;

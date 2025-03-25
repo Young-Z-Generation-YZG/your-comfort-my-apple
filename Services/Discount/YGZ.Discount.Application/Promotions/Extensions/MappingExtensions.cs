@@ -1,5 +1,6 @@
 ﻿
 
+using YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionGlobal;
@@ -7,10 +8,12 @@ using YGZ.Discount.Application.Promotions.Commands.CreatePromotionProduct;
 using YGZ.Discount.Domain.PromotionEvent;
 using YGZ.Discount.Domain.PromotionEvent.Entities;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
+using YGZ.Discount.Domain.PromotionItem;
+using YGZ.Discount.Domain.PromotionItem.ValueObjects;
 
 namespace YGZ.Discount.Application.PromotionCoupons.Extensions;
 
-public static class MappingExtension
+public static class MappingExtensions
 {
     public static PromotionEvent ToEntity(this CreatePromotionEventCommand request)
     {
@@ -18,7 +21,7 @@ public static class MappingExtension
                 id: PromotionEventId.Create(),
                 title: request.Title,
                 description: request.Description,
-                state: request.State,
+                discountState: request.State,
                 validFrom: request.ValidFrom,
                 validTo: request.ValidTo);
     }
@@ -40,8 +43,27 @@ public static class MappingExtension
                                        productStorage: request.ProductStorage,
                                        productSlug: request.ProductSlug,
                                        productImage: request.ProductImage,
-                                       discountPercentage: request.DiscountPercentage,
+                                       discountPercent: request.DiscountPercent,
                                        promotionGlobalId: PromotionGlobalId.Of(request.PromotionGlobalId));
+    }
+
+    public static PromotionItem ToEntity(this CreatePromotionItemCommand request)
+    {
+        return PromotionItem.Create(promotionItemId: PromotionItemId.Create(),
+                                    title: request.Title,
+                                    description: request.Description,
+                                    discountState: request.DiscountState,
+                                    discountType: request.DiscountType,
+                                    endDiscountType: request.EndDiscountType,
+                                    discountValue: request.DiscountValue,
+                                    nameTag: request.ProductNameTag,
+                                    validFrom: request.ValidFrom,
+                                    validTo: request.ValidTo,
+                                    availableQuantity: request.AvailableQuantity,
+                                    productModel: request.ProductModel,
+                                    productStorage: request.ProductStorage,
+                                    productSlug: request.ProductSlug,
+                                    productImage: request.ProductImage);
     }
 
     public static PromotionCategory ToEntity(this PromotionCategoryCommand request)
@@ -49,7 +71,7 @@ public static class MappingExtension
         return PromotionCategory.Create(id: CategoryId.Of(request.CategoryId),
             categoryName: request.CategoryName,
             categorySlug: request.CategorySlug,
-            discountPercentage: request.DiscountPercentage,
+            discountPercent: request.DiscountPercent,
             promotionGlobalId: PromotionGlobalId.Of(request.PromotionGlobalId));
     }
 }

@@ -12,19 +12,21 @@ public class PromotionItemMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config
-            .NewConfig<CreatePromotionItemModelRequest, CreatePromotionItemCommand>()
-            .Map(dest => dest.Title, src => src.PromotionItemModel.Title)
-            .Map(dest => dest.Description, src => src.PromotionItemModel.Description)
-            .Map(dest => dest.NameTag, src => NameTag.FromValue((int)src.PromotionItemModel.NameTag))
-            .Map(dest => dest.State, src => DiscountState.FromValue((int)src.PromotionItemModel.State))
-            .Map(dest => dest.Type, src => DiscountType.FromValue((int)src.PromotionItemModel.Type))
-            .Map(dest => dest.DiscountValue, src => src.PromotionItemModel.DiscountValue)
-            .Map(dest => dest.ValidFrom, src => src.PromotionItemModel.ValidFrom.ToDateTime())
-            .Map(dest => dest.ValidTo, src => src.PromotionItemModel.ValidTo.ToDateTime())
-            .Map(dest => dest.AvailableQuantity, src => src.PromotionItemModel.AvailableQuantity)
-            .Map(dest => dest.ProductId, src => src.PromotionItemModel.ProductId)
-            .Map(dest => dest.ProductSlug, src => src.PromotionItemModel.ProductSlug)
-            .Map(dest => dest.ProductImage, src => src.PromotionItemModel.ProductImage);
+        //config
+        //    .NewConfig<CreatePromotionItemModelRequest, CreatePromotionItemCommand>()
+        //    .Map(dest => dest.Title, src => src.PromotionItemModel.PromotionItemTitle)
+        //    .Map(dest => dest.Description, src => src.PromotionItemModel.PromotionItemDescription)
+        //    .Map(dest => dest.ProductNameTag, src => ProductNameTag.FromValue((int)src.PromotionItemModel.PromotionItemNameTag))
+        //    .Map(dest => dest.State, src => DiscountState.FromValue((int)src.PromotionItemModel.PromotionItemState))
+        //    .Map(dest => dest.Type, src => DiscountType.FromValue((int)src.PromotionItemModel.PromotionItemType))
+        //    .Map(dest => dest.EndDiscountType, src => EndDiscountType.FromValue((int)src.PromotionItemModel.PromotionItemEndDiscountType))
+        //    .Map(dest => dest.DiscountValue, src => src.PromotionItemModel.PromotionItemDiscountValue)
+        //    .Map(dest => dest.ValidFrom, src => src.PromotionItemModel.PromotionItemValidFrom.ToDateTime())
+        //    .Map(dest => dest.ValidTo, src => src.PromotionItemModel.PromotionItemValidTo.ToDateTime())
+        //    .Map(dest => dest.AvailableQuantity, src => src.PromotionItemModel.PromotionItemAvailableQuantity)
+        //    .Map(dest => dest.ProductModel, src => src.PromotionItemModel.PromotionItemProductModel)
+        //    .Map(dest => dest.ProductStorage, src => src.PromotionItemModel.PromotionItemProductStorage)
+        //    .Map(dest => dest.ProductSlug, src => src.PromotionItemModel.PromotionItemProductSlug)
+        //    .Map(dest => dest.ProductImage, src => src.PromotionItemModel.PromotionItemProductImage);
     }
 }
