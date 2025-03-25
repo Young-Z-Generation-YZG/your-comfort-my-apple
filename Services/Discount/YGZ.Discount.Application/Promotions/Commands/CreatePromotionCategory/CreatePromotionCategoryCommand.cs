@@ -10,6 +10,6 @@ public sealed record PromotionCategoryCommand()
     public string CategoryId { get; set; }
     public string CategoryName { get; set; }
     public string CategorySlug { get; set; }
-    public decimal DiscountPercentage { get; set; }
+    public decimal DiscountPercent { get; set; }
     public string PromotionGlobalId { get; set; }
 }

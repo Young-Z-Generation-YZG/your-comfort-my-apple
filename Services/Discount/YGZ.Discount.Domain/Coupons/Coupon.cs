@@ -21,11 +21,12 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public Code Code { get; set; } = default!;
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public DiscountState State { get; set; } = DiscountState.INACTIVE;
-    public NameTag ProductNameTag { get; set; }
-    public DiscountType Type { get; set; } = DiscountType.PERCENT;
-    public double DiscountValue { get; set; } = 0;
-    public double? MaxDiscountAmount { get; set; } = null;
+    public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
+    public ProductNameTag ProductNameTag { get; set; }
+    public PromotionEventType PromotionEventType { get; set; } = PromotionEventType.PROMOTION_COUPON;
+    public DiscountType DiscountType { get; set; } = DiscountType.PERCENTAGE;
+    public decimal DiscountValue { get; set; } = 0;
+    public decimal? MaxDiscountAmount { get; set; } = null;
     public DateTime? ValidFrom { get; set; } = null;
     public DateTime? ValidTo { get; set; } = null;
     public int AvailableQuantity { get; set; }
@@ -39,10 +40,12 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
                                 Code code,
                                 string title,
                                 string description,
-                                DiscountType type,
-                                double discountValue,
-                                NameTag nameTag,
-                                double? maxDiscountAmount,
+                                ProductNameTag nameTag,
+                                PromotionEventType promotionEventType,
+                                DiscountState discountState,
+                                DiscountType discountType,
+                                decimal discountValue,
+                                decimal? maxDiscountAmount,
                                 DateTime? validFrom,
                                 DateTime? validTo,
                                 int availableQuantity)
@@ -52,9 +55,11 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             Code = code,
             Title = title,
             Description = description,
-            Type = type,
-            DiscountValue = discountValue,
             ProductNameTag = nameTag,
+            PromotionEventType = promotionEventType,
+            DiscountState = discountState,
+            DiscountType = discountType,
+            DiscountValue = discountValue,
             MaxDiscountAmount = maxDiscountAmount,
             ValidFrom = validFrom,
             ValidTo = validTo,
@@ -66,11 +71,11 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
                                 Code code,
                                 string title,
                                 string description,
-                                DiscountState state,
-                                NameTag nameTag,
-                                DiscountType type,
-                                double discountValue,
-                                double? maxDiscountAmount,
+                                DiscountState discountState,
+                                ProductNameTag productNameTag,
+                                DiscountType discountType,
+                                decimal discountValue,
+                                decimal? maxDiscountAmount,
                                 DateTime? validFrom,
                                 DateTime? validTo,
                                 int availableQuantity)
@@ -80,10 +85,10 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             Code = code,
             Title = title,
             Description = description,
-            Type = type,
-            State = state,
+            DiscountType = discountType,
+            DiscountState = discountState,
             DiscountValue = discountValue,
-            ProductNameTag = nameTag,
+            ProductNameTag = productNameTag,
             MaxDiscountAmount = maxDiscountAmount,
             ValidFrom = validFrom,
             ValidTo = validTo,

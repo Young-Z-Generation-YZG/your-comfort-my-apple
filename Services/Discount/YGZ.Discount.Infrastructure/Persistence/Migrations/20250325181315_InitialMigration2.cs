@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigration2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,11 +19,12 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     Code = table.Column<string>(type: "text", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
+                    DiscountState = table.Column<string>(type: "text", nullable: false),
                     ProductNameTag = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    DiscountValue = table.Column<double>(type: "double precision", nullable: false),
-                    MaxDiscountAmount = table.Column<double>(type: "double precision", nullable: true),
+                    PromotionEventType = table.Column<string>(type: "text", nullable: false),
+                    DiscountType = table.Column<string>(type: "text", nullable: false),
+                    DiscountValue = table.Column<decimal>(type: "numeric", nullable: false),
+                    MaxDiscountAmount = table.Column<decimal>(type: "numeric", nullable: true),
                     ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     AvailableQuantity = table.Column<int>(type: "integer", nullable: false),
@@ -45,9 +46,10 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PromotionEventType = table.Column<string>(type: "text", nullable: false),
+                    DiscountState = table.Column<string>(type: "text", nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -66,14 +68,17 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    NameTag = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    DiscountValue = table.Column<double>(type: "double precision", nullable: false),
+                    ProductNameTag = table.Column<string>(type: "text", nullable: false),
+                    PromotionEventType = table.Column<string>(type: "text", nullable: false),
+                    DiscountState = table.Column<string>(type: "text", nullable: false),
+                    DiscountType = table.Column<string>(type: "text", nullable: false),
+                    EndDiscountType = table.Column<string>(type: "text", nullable: false),
+                    DiscountValue = table.Column<decimal>(type: "numeric", nullable: false),
                     ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    AvailableQuantity = table.Column<int>(type: "integer", nullable: false),
-                    ProductId = table.Column<string>(type: "text", nullable: false),
+                    AvailableQuantity = table.Column<int>(type: "integer", nullable: true),
+                    ProductModel = table.Column<string>(type: "text", nullable: false),
+                    ProductStorage = table.Column<int>(type: "integer", nullable: false),
                     ProductSlug = table.Column<string>(type: "text", nullable: false),
                     ProductImage = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -120,7 +125,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     CategoryName = table.Column<string>(type: "text", nullable: false),
                     CategorySlug = table.Column<string>(type: "text", nullable: false),
-                    DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountPercent = table.Column<decimal>(type: "numeric", nullable: false),
                     PromotionGlobalId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -139,9 +144,11 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    ProductColorName = table.Column<string>(type: "text", nullable: false),
+                    ProductStorage = table.Column<int>(type: "integer", nullable: false),
                     ProductSlug = table.Column<string>(type: "text", nullable: false),
                     ProductImage = table.Column<string>(type: "text", nullable: false),
-                    DiscountPercentage = table.Column<decimal>(type: "numeric", nullable: false),
+                    DiscountPercent = table.Column<decimal>(type: "numeric", nullable: false),
                     PromotionGlobalId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>

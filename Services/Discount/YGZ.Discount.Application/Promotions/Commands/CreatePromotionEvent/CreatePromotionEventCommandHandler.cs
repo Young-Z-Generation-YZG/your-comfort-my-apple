@@ -3,7 +3,7 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Discount.Application.PromotionCoupons.Extensions;
-using YGZ.Discount.Domain.Data;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.PromotionEvent;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 

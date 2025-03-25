@@ -14,7 +14,7 @@ public class PromotionProduct : Entity<ProductId>
     public int ProductStorage { get; set; } = default!;
     public string ProductSlug { get; set; } = default!;
     public string ProductImage { get; set; } = default!;
-    public decimal DiscountPercentage { get; set; } = default!;
+    public decimal DiscountPercent { get; set; } = default!;
     required public PromotionGlobalId PromotionGlobalId { get; set; }
 
     public static PromotionProduct Create(ProductId id,
@@ -22,7 +22,7 @@ public class PromotionProduct : Entity<ProductId>
                                           int productStorage,
                                           string productSlug,
                                           string productImage,
-                                          decimal discountPercentage,
+                                          decimal discountPercent,
                                           PromotionGlobalId promotionGlobalId)
     {
         return new PromotionProduct(id)
@@ -31,7 +31,7 @@ public class PromotionProduct : Entity<ProductId>
             ProductStorage = productStorage,
             ProductSlug = productSlug,
             ProductImage = productImage,
-            DiscountPercentage = discountPercentage,
+            DiscountPercent = discountPercent,
             PromotionGlobalId = promotionGlobalId
         };
     }

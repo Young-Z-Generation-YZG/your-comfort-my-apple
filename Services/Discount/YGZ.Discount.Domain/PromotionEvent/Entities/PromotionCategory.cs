@@ -12,14 +12,14 @@ public class PromotionCategory : Entity<CategoryId>
 
     public string CategoryName { get; set; } = default!;
     public string CategorySlug { get; set; } = default!;
-    public decimal DiscountPercentage { get; set; } = default!;
+    public decimal DiscountPercent { get; set; } = default!;
     required public PromotionGlobalId PromotionGlobalId { get; set; }
 
     public static PromotionCategory Create(
         CategoryId id,
         string categoryName,
         string categorySlug,
-        decimal discountPercentage,
+        decimal discountPercent,
         PromotionGlobalId promotionGlobalId
     )
     {
@@ -27,7 +27,7 @@ public class PromotionCategory : Entity<CategoryId>
         {
             CategoryName = categoryName,
             CategorySlug = categorySlug,
-            DiscountPercentage = discountPercentage,
+            DiscountPercent = discountPercent,
             PromotionGlobalId = promotionGlobalId
         };
     }

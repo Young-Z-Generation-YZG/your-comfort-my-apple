@@ -4,8 +4,8 @@ using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
-using YGZ.Discount.Domain.Data;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Repositories;
 
@@ -20,6 +20,41 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         _discountDbContext = discountDbContext;
         _dbSet = discountDbContext.Set<TEntity>();
         _logger = logger;
+    }
+    public async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await _dbSet.ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
+    }
+
+    public async Task<List<TEntity>> GetAllByFilterAsync(Expression<Func<TEntity, bool>> filterExpression, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includes)
+    {
+        try
+        {
+            return await _dbSet.Where(filterExpression).ToListAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
+    }
+
+    virtual public Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression, int? _page, int? _limit, bool tracked, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includes)
+    {
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
     }
 
     virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken cancellationToken)
@@ -56,17 +91,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
     }
 
-    virtual public Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression, int? _page, int? _limit, bool tracked, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includes)
-    {
-        try
-        {
-            throw new NotImplementedException();
-        }
-        catch (Exception ex)
-        {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-        }
-    }
 
     virtual public Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
     {
@@ -110,4 +134,5 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
         return affactRow;
     }
+
 }

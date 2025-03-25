@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Coupons\Extensions\" />
-    <Folder Include="Coupons\Queries\" />
+    <Folder Include="Coupons\Commands\DeleteCoupon\" />
+    <Folder Include="Coupons\Commands\UpdateCoupon\" />
   </ItemGroup>
 
 </Project>

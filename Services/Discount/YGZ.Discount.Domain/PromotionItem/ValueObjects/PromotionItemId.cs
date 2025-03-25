@@ -19,6 +19,11 @@ public class PromotionItemId : ValueObject
         return new PromotionItemId(guid);
     }
 
+    public static PromotionItemId Of(string guid)
+    {
+        return new PromotionItemId(Guid.Parse(guid));
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

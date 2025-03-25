@@ -47,33 +47,38 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("DiscountValue")
-                        .HasColumnType("double precision");
+                    b.Property<string>("DiscountState")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountState");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountType");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<double?>("MaxDiscountAmount")
-                        .HasColumnType("double precision");
+                    b.Property<decimal?>("MaxDiscountAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("ProductNameTag")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ProductNameTag");
 
-                    b.Property<string>("State")
+                    b.Property<string>("PromotionEventType")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("State");
+                        .HasColumnName("PromotionEventType");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Type");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -102,7 +107,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DiscountPercentage")
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("numeric");
 
                     b.Property<Guid>("PromotionGlobalId")
@@ -163,7 +168,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DiscountPercentage")
+                    b.Property<decimal>("DiscountPercent")
                         .HasColumnType("numeric");
 
                     b.Property<string>("ProductColorName")
@@ -209,13 +214,18 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DiscountState")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountState");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("State")
+                    b.Property<string>("PromotionEventType")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("State");
+                        .HasColumnName("PromotionEventType");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -224,10 +234,10 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("ValidFrom")
+                    b.Property<DateTime?>("ValidFrom")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("ValidTo")
+                    b.Property<DateTime?>("ValidTo")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -240,7 +250,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("AvailableQuantity")
+                    b.Property<int?>("AvailableQuantity")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
@@ -256,42 +266,55 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("DiscountValue")
-                        .HasColumnType("double precision");
+                    b.Property<string>("DiscountState")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountState");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountType");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("EndDiscountType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("EndDiscountType");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("NameTag")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("NameTag");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("ProductImage")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ProductModel")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProductNameTag")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ProductNameTag");
+
                     b.Property<string>("ProductSlug")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("State")
+                    b.Property<int>("ProductStorage")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PromotionEventType")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("State");
+                        .HasColumnName("PromotionEventType");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("Type");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

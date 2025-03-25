@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Discount.Application;
 
@@ -12,6 +13,8 @@ public static class DependencyInjection
 
         // Add MediatR
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
+
+        services.AddMappingExtensions(assembly);
 
         return services;
     }
