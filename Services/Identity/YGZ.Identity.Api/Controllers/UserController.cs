@@ -1,14 +1,16 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using Keycloak.AuthServices.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
 [ApiController]
+//[Authorize(Roles = "[Role] USER")]
 [Route("api/v{version:apiVersion}/users")]
 [OpenApiTag("users", Description = "Manage users.")]
 [ProtectedResource("profiles")]
@@ -25,6 +27,7 @@ public class UserController : ApiController
 
     [HttpGet("profiles")]
     [OpenApiOperation("[profiles:read]", "")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     [ProtectedResource("profiles", "profile:read:own")]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
@@ -34,12 +37,7 @@ public class UserController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-
-    //[HttpPut("profiles")]
-    //[OpenApiOperation("[profiles:update]", "")]
-    //[ProtectedResource("profiles", "profile:update:own")]
-    //public async Task<ActionResult<IEnumerable<string>>> UpdateProfile(CancellationToken cancellationToken)
-    //{
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
 }
+
+
+
