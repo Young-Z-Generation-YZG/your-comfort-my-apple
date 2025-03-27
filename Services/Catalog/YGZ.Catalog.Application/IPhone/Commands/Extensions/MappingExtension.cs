@@ -77,7 +77,8 @@ public static class MappingExtension
                                   unitPrice: dto.UnitPrice,
                                   description: dto.Description,
                                   images: images,
-                                  iPhoneModelId: dto.IPhoneModelId
+                                  iPhoneModelId: dto.IPhoneModelId,
+                                  categoryId: dto.CategoryId
                                   );
     }
 }

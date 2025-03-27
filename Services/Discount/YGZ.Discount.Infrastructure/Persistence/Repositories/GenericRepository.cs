@@ -63,15 +63,15 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         {
             var result = await _dbSet.AddAsync(entity, cancellationToken);
 
-            await SaveChangesAsync();
+            var affectedRows = await SaveChangesAsync();
 
-            return true;
+            return affectedRows > 0;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message, nameof(AddAsync));
 
-            return false;
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
         }
     }
 
@@ -81,12 +81,14 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         {
             await _dbSet.AddRangeAsync(entities, cancellationToken);
 
-            var affactRows = await SaveChangesAsync();
+            var affectedRows = await SaveChangesAsync();
 
-            return affactRows > 0;
+            return affectedRows > 0;
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message, nameof(AddAsync));
+
             throw new RpcException(new Status(StatusCode.Internal, ex.Message));
         }
     }
@@ -130,9 +132,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
     virtual public async Task<int> SaveChangesAsync()
     {
-        var affactRow =  await _discountDbContext.SaveChangesAsync();
+        var affectedRows = await _discountDbContext.SaveChangesAsync();
 
-        return affactRow;
+        return affectedRows;
     }
 
 }

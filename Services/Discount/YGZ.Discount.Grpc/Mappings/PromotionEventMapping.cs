@@ -21,12 +21,12 @@ public class PromotionEventMapping : IRegister
             .Map(dest => dest.ValidFrom, src => src.PromotionEventModel.PromotionEventValidFrom.ToDateTime())
             .Map(dest => dest.ValidTo, src => src.PromotionEventModel.PromotionEventValidTo.ToDateTime());
 
-        config.NewConfig<PromotionEventResponse, PromotionEventModel>()
-            .Map(dest => dest.PromotionEventId, src => src.PromotionEventId)
-            .Map(dest => dest.PromotionEventTitle, src => src.PromotionEventTitle)
-            .Map(dest => dest.PromotionEventDescription, src => src.PromotionEventDescription)
-            .Map(dest => dest.PromotionEventState, src => DiscountState.FromName(src.PromotionEventState, false).Value)
-            .Map(dest => dest.PromotionEventValidFrom, src => src.PromotionEventValidFrom.HasValue ? src.PromotionEventValidFrom.Value.ToTimestamp() : null)
-            .Map(dest => dest.PromotionEventValidTo, src => src.PromotionEventValidTo.HasValue ? src.PromotionEventValidTo.Value.ToTimestamp() : null);
+        //config.NewConfig<PromotionEventResponse, PromotionEventModel>()
+        //    .Map(dest => dest.PromotionEventId, src => src.PromotionEventId)
+        //    .Map(dest => dest.PromotionEventTitle, src => src.PromotionEventTitle)
+        //    .Map(dest => dest.PromotionEventDescription, src => src.PromotionEventDescription)
+        //    .Map(dest => dest.PromotionEventState, src => DiscountState.FromName(src.PromotionEventState, false).Value)
+        //    .Map(dest => dest.PromotionEventValidFrom, src => src.PromotionEventValidFrom.HasValue ? src.PromotionEventValidFrom.Value.ToTimestamp() : null)
+        //    .Map(dest => dest.PromotionEventValidTo, src => src.PromotionEventValidTo.HasValue ? src.PromotionEventValidTo.Value.ToTimestamp() : null);
     }
 }

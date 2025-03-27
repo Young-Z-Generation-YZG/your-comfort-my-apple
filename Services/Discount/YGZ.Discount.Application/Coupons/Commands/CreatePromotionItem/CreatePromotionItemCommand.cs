@@ -7,18 +7,17 @@ namespace YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 
 public sealed record class CreatePromotionItemCommand() : ICommand<bool>
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public ProductNameTag ProductNameTag { get; set; }
-    public DiscountState DiscountState { get; set; }
-    public DiscountType DiscountType { get; set; }
-    public EndDiscountType EndDiscountType { get; set; }
-    public decimal DiscountValue { get; set; }
-    public DateTime? ValidFrom { get; set; }
-    public DateTime? ValidTo { get; set; }
-    public int? AvailableQuantity { get; set; }
-    public string ProductModel { get; set; }
-    public int ProductStorage { get; set; }
-    public string ProductImage { get; set; }
-    public string ProductSlug { get; set; }
+    required public string ProductId { get; set; }
+    required public string Title { get; set; }
+    public string Description { get; set; } = string.Empty;
+    required public ProductNameTag ProductNameTag { get; set; }
+    required public DiscountState DiscountState { get; set; }
+    required public DiscountType DiscountType { get; set; }
+    required public EndDiscountType EndDiscountType { get; set; }
+    required public decimal DiscountValue { get; set; }
+    public DateTime? ValidFrom { get; set; } = null;
+    public DateTime? ValidTo { get; set; } = null;
+    required public int AvailableQuantity { get; set; }
+    required public string ProductImage { get; set; }
+    required public string ProductSlug { get; set; }
 }

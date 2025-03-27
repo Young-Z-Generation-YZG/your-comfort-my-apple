@@ -5,6 +5,8 @@ using MapsterMapper;
 using MediatR;
 using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 using YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
+using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
+using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
@@ -38,35 +40,52 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return response;
     }
 
-    public override async Task<PromotionGlobalResponse> GetPromotionGlobal(GetPromotionGlobalRequest request, ServerCallContext context)
+    public override async Task<PromotionEventResponse> GetPromotionEvent(GetPromotionEventRequest request, ServerCallContext context)
     {
         var query = new GetPromotionGlobalQuery();
 
         var result = await _sender.Send(query);
 
-        var response = new PromotionGlobalResponse();
+        var response = new PromotionEventResponse();
 
         result.Response.ForEach(e =>
         {
-            var promotionEventResponse = new PromtionEventResponse();
+            var promotionEventResponse = new ListPromtionEventResponse();
 
             promotionEventResponse.PromotionEvent = new PromotionEventModel()
             {
                 PromotionEventId = e.promotionEvent.PromotionEventId,
                 PromotionEventTitle = e.promotionEvent.PromotionEventTitle,
                 PromotionEventDescription = e.promotionEvent.PromotionEventDescription,
+                PromotionEventPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(e.promotionEvent.PromotionEventType, false).Value,
                 PromotionEventState = (DiscountStateEnum)DiscountState.FromName(e.promotionEvent.PromotionEventState, false).Value,
                 PromotionEventValidFrom = e.promotionEvent.PromotionEventValidFrom.HasValue ? e.promotionEvent.PromotionEventValidFrom.Value.ToTimestamp() : null,
                 PromotionEventValidTo = e.promotionEvent.PromotionEventValidTo.HasValue ? e.promotionEvent.PromotionEventValidTo.Value.ToTimestamp() : null
             };
 
-            promotionEventResponse.PromotionProducs.AddRange(e.PromotionProducts.Select(p => _mapper.Map<PromotionProductModel>(p)));
-            promotionEventResponse.PromotionCategories.AddRange(e.PromotionCategories.Select(c => _mapper.Map<PromotionCategoryModel>(c)));
+            if (e.PromotionProducts is not null)
+            {
+                promotionEventResponse.PromotionProducts.AddRange(e.PromotionProducts.Select(p => _mapper.Map<PromotionProductModel>(p)));
+            }
 
-            response.PromotionGlobals.Add(promotionEventResponse);
+            if (e.PromotionCategories is not null)
+            {
+                promotionEventResponse.PromotionCategories.AddRange(e.PromotionCategories.Select(c => _mapper.Map<PromotionCategoryModel>(c)));
+            }
+
+            response.PromotionEvents.Add(promotionEventResponse);
         });
 
         return response;
+    }
+
+    public override Task<GetAllDiscountsResponse> GetAllDiscountCoupons(GetAllDiscountsRequest request, ServerCallContext context)
+    {
+        //var query = new GetAllCouponsQuery();
+
+        //var result = await _sender.Send(query);
+
+        return base.GetAllDiscountCoupons(request, context);
     }
 
     //public override async Task<GetAllDiscountsResponse> GetAllDiscounts(GetAllDiscountsRequest request, ServerCallContext context)
@@ -85,43 +104,6 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     //    response.Coupous.AddRange(result.coupons.Select(c => _mapper.Map<CouponModel>(c)));
 
     //    return response;
-    //}
-
-    //public override async Task<BooleanResponse> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
-    //{
-    //    var validFrom = request.CouponModel.ValidFrom.ToDateTime();
-    //    var validTo = request.CouponModel.ValidTo.ToDateTime();
-    //    var requestType = (int)request.CouponModel.Type;
-    //    var requestState = (int)request.CouponModel.State;
-    //    var requestNameTag = (int)request.CouponModel.ProductNameTag;
-    //    var type = DiscountType.FromValue(requestType);
-    //    var state = DiscountState.FromValue(requestState);
-    //    var productNameTag = ProductNameTag.FromValue(requestNameTag);
-    //    var availableQuantity = request.CouponModel.AvailableQuantity ?? 0;
-
-    //    var coupon = Coupon.Update(couponId: CouponId.Of(Guid.NewGuid()),
-    //                               code: Code.Of(request.Code),
-    //                               title: request.CouponModel.Title,
-    //                               description: request.CouponModel.Description,
-    //                               state: state,
-    //                               nameTag: productNameTag,
-    //                               type: type,
-    //                               discountValue: (double)request.CouponModel.DiscountValue!,
-    //                               maxDiscountAmount: request.CouponModel.MaxDiscountAmount,
-    //                               validFrom: validFrom,
-    //                               validTo: validTo,
-    //                               availableQuantity: availableQuantity);
-
-    //    var result = await _discountRepository.UpdateAsync(request.Code, coupon);
-
-    //    return new BooleanResponse { IsSuccess = result };
-    //}
-
-    //public override async Task<BooleanResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
-    //{
-    //    var result = await _discountRepository.DeleteAsync(request.Code);
-
-    //    return new BooleanResponse { IsSuccess = result };
     //}
 
     public override async Task<BooleanResponse> CreatePromotionCoupon(CreatePromotionCouponModel request, ServerCallContext context)
@@ -182,6 +164,28 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     public override async Task<BooleanResponse> CreatePromotionCategory(PromotionCategoryModelRequest request, ServerCallContext context)
     {
         var cmd = new CreatePromotionCategoryCommand(request.PromotionCategoryModel.Select(req => _mapper.Map<PromotionCategoryCommand>(req)).ToList());
+
+        var result = await _sender.Send(cmd);
+
+        var response = _mapper.Map<BooleanResponse>(result.Response);
+
+        return response;
+    }
+
+    public override async Task<BooleanResponse> UpdateDiscountCoupon(UpdateDiscountCouponRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<UpdateCouponCommand>(request);
+
+        var result = await _sender.Send(cmd);
+
+        var response = _mapper.Map<BooleanResponse>(result.Response);
+
+        return response;
+    }
+
+    public override async Task<BooleanResponse> DeleteDiscountCoupon(DeleteDiscountCouponRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<DeleteCouponCommand>(request);
 
         var result = await _sender.Send(cmd);
 

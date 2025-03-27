@@ -10,9 +10,9 @@ public class PromotionGlobalResponseMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<PromotionGlobalEventResponse, PromtionEventResponse>()
-            .Map(dest => dest.PromotionEvent, src => src.promotionEvent)
-            .Map(dest => dest.PromotionProducs, src => src.PromotionProducts)
-            .Map(dest => dest.PromotionCategories, src => src.PromotionCategories);
+        //config.NewConfig<PromotionGlobalEventResponse, PromtionEventResponse>()
+        //    .Map(dest => dest.PromotionEvent, src => src.promotionEvent)
+        //    .Map(dest => dest.PromotionProducs, src => src.PromotionProducts)
+        //    .Map(dest => dest.PromotionCategories, src => src.PromotionCategories);
     }
 }

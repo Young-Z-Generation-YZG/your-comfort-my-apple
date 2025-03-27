@@ -54,15 +54,15 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                 return false;
             }
 
-            var discountType = DiscountType.FromValue((int)discount.Coupon.Type);
+            var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
 
             switch (discountType)
             {
                 case var _ when discountType == DiscountType.PERCENT:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) * (decimal)discount.Coupon.DiscountValue / 100;
+                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) * (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue / 100;
                     break;
                 case var _ when discountType == DiscountType.FIXED:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) - (decimal)discount.Coupon.DiscountValue;
+                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) - (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue;
                     break;
             }
         }

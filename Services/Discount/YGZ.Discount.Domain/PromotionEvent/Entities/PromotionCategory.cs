@@ -1,5 +1,6 @@
 ﻿
 
+using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 
@@ -10,16 +11,18 @@ public class PromotionCategory : Entity<CategoryId>
     public PromotionCategory(CategoryId id) : base(id) { }
     private PromotionCategory() : base(null!) { }
 
-    public string CategoryName { get; set; } = default!;
-    public string CategorySlug { get; set; } = default!;
-    public decimal DiscountPercent { get; set; } = default!;
+    required public string CategoryName { get; set; }
+    required public string CategorySlug { get; set; }
+    required public DiscountType DiscountType { get; set; }
+    required public decimal DiscountValue { get; set; }
     required public PromotionGlobalId PromotionGlobalId { get; set; }
 
     public static PromotionCategory Create(
         CategoryId id,
         string categoryName,
         string categorySlug,
-        decimal discountPercent,
+        DiscountType discountType,
+        decimal discountValue,
         PromotionGlobalId promotionGlobalId
     )
     {
@@ -27,7 +30,8 @@ public class PromotionCategory : Entity<CategoryId>
         {
             CategoryName = categoryName,
             CategorySlug = categorySlug,
-            DiscountPercent = discountPercent,
+            DiscountType = discountType,
+            DiscountValue = discountValue,
             PromotionGlobalId = promotionGlobalId
         };
     }

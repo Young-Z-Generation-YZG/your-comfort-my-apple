@@ -13,9 +13,9 @@ public class PromotionGlobalMapping : IRegister
 
         config
             .NewConfig<PromotionGlobalModelRequest, CreatePromotionGlobalCommand>()
-            .Map(dest => dest.Title, src => src.PromotionGlobalModel.Title)
-            .Map(dest => dest.Description, src => src.PromotionGlobalModel.Description)
-            .Map(dest => dest.PromotionGlobalType, src => PromotionGlobalType.FromValue((int)src.PromotionGlobalModel.GlobalType))
-            .Map(dest => dest.PromotionEventId, src => src.PromotionGlobalModel.PromotionEventId);
+            .Map(dest => dest.Title, src => src.PromotionGlobalModel.PromotionGlobalTitle)
+            .Map(dest => dest.Description, src => src.PromotionGlobalModel.PromotionGlobalDescription)
+            .Map(dest => dest.PromotionGlobalType, src => PromotionGlobalType.FromValue((int)src.PromotionGlobalModel.PromotionGlobalType))
+            .Map(dest => dest.PromotionEventId, src => src.PromotionGlobalModel.PromotionGlobalEventId);
     }
 }

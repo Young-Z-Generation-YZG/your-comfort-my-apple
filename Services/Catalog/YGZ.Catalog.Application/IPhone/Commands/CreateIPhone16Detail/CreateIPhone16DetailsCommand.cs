@@ -15,4 +15,5 @@ public sealed record CreateIPhone16DetailsCommand : ICommand<bool>
     public string Description { get; set; } = default!;
     public ImageCommand[] Images { get; set; } = default!;
     public string IPhoneModelId { get; set; } = default!;
+    public string CategoryId { get; set; } = default!;
 }

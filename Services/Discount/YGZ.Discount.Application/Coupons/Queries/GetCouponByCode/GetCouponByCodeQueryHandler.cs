@@ -17,7 +17,7 @@ public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, G
         _repository = repository;
     }
 
-    public async Task<Result<GetCouponResponse>?> Handle(GetCouponByCodeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GetCouponResponse>> Handle(GetCouponByCodeQuery request, CancellationToken cancellationToken)
     {
         var coupon = await _repository.GetByCode(Code.Of(request.Code), cancellationToken);
 

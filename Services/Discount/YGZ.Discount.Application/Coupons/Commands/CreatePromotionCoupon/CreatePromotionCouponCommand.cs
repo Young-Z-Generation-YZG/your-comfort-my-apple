@@ -10,13 +10,13 @@ namespace YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 
 public sealed record CreatePromotionCouponCommand() : ICommand<bool>
 {
-    public string Title { get; set; }
+    required public string Title { get; set; }
     public string? Code { get; set; }
-    public string Description { get; set; }
-    public ProductNameTag ProductNameTag { get; set; }
-    public PromotionEventType PromotionEventType { get; set; }
-    public DiscountState DiscountState { get; set; }
-    public DiscountType DiscountType { get; set; }
+    public string Description { get; set; } = string.Empty;
+    required public ProductNameTag ProductNameTag { get; set; }
+    required public PromotionEventType PromotionEventType { get; set; }
+    required public DiscountState DiscountState { get; set; }
+    required public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }
     public decimal? MaxDiscountAmount { get; set; }
     public DateTime? ValidFrom { get; set; }

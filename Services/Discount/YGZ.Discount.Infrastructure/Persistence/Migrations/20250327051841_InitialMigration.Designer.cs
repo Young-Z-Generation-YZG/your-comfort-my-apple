@@ -12,8 +12,8 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    [Migration("20250325181315_InitialMigration2")]
-    partial class InitialMigration2
+    [Migration("20250327051841_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,7 +110,12 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DiscountPercent")
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountType");
+
+                    b.Property<decimal>("DiscountValue")
                         .HasColumnType("numeric");
 
                     b.Property<Guid>("PromotionGlobalId")
@@ -171,12 +176,13 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<decimal>("DiscountPercent")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("ProductColorName")
+                    b.Property<string>("DiscountType")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("DiscountType");
+
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("ProductImage")
                         .IsRequired()
@@ -185,9 +191,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("ProductSlug")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("ProductStorage")
-                        .HasColumnType("integer");
 
                     b.Property<Guid>("PromotionGlobalId")
                         .HasColumnType("uuid");
@@ -250,8 +253,8 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("YGZ.Discount.Domain.PromotionItem.PromotionItem", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<int?>("AvailableQuantity")
                         .HasColumnType("integer");
@@ -294,10 +297,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ProductModel")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("ProductNameTag")
                         .IsRequired()
                         .HasColumnType("text")
@@ -306,9 +305,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("ProductSlug")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("ProductStorage")
-                        .HasColumnType("integer");
 
                     b.Property<string>("PromotionEventType")
                         .IsRequired()
