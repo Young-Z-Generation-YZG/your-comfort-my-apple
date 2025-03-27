@@ -326,13 +326,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 699,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_ultramarine_256 = new IPhone16Detail(IPhone16Id.Of("67dbcd41a9ee0a5e6fbafd77"))
             {
@@ -340,13 +342,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_ultramarine_512 = new IPhone16Detail(IPhone16Id.Of("67dbcd4aa9ee0a5e6fbafd78"))
             {
@@ -354,13 +358,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 999,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_ultramarine_1024 = new IPhone16Detail(IPhone16Id.Of("67dbcd52a9ee0a5e6fbafd79"))
             {
@@ -368,13 +374,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1199,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_teal_128 = new IPhone16Detail(IPhone16Id.Of("67dbcd6da9ee0a5e6fbafd7a"))
@@ -383,13 +391,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 699,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_teal_256 = new IPhone16Detail(IPhone16Id.Of("67dbcdb8a9ee0a5e6fbafd7f"))
             {
@@ -397,13 +407,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_teal_512 = new IPhone16Detail(IPhone16Id.Of("67dbcd8ca9ee0a5e6fbafd7c"))
             {
@@ -411,13 +423,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 999,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_teal_1024 = new IPhone16Detail(IPhone16Id.Of("67dbcdc8a9ee0a5e6fbafd80"))
             {
@@ -425,13 +439,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1199,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_pink_128 = new IPhone16Detail(IPhone16Id.Of("67dbcdaaa9ee0a5e6fbafd7e"))
@@ -440,13 +456,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 699,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_pink_256 = new IPhone16Detail(IPhone16Id.Of("67dbcde6a9ee0a5e6fbafd81"))
             {
@@ -454,13 +472,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_pink_512 = new IPhone16Detail(IPhone16Id.Of("67dbcdf8a9ee0a5e6fbafd82"))
             {
@@ -468,13 +488,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 999,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_pink_1024 = new IPhone16Detail(IPhone16Id.Of("67dbcdfaa9ee0a5e6fbafd83"))
             {
@@ -482,13 +504,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1199,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_white_128 = new IPhone16Detail(IPhone16Id.Of("67dbcdfba9ee0a5e6fbafd84"))
@@ -497,13 +521,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 699,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_white_256 = new IPhone16Detail(IPhone16Id.Of("67dbcdfda9ee0a5e6fbafd85"))
             {
@@ -511,13 +537,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_white_512 = new IPhone16Detail(IPhone16Id.Of("67dbcdfea9ee0a5e6fbafd86"))
             {
@@ -525,13 +553,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 999,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_white_1024 = new IPhone16Detail(IPhone16Id.Of("67dbcdffa9ee0a5e6fbafd87"))
             {
@@ -539,13 +569,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1199,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_black_128 = new IPhone16Detail(IPhone16Id.Of("67dbce01a9ee0a5e6fbafd88"))
@@ -554,13 +586,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 699,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_black_256 = new IPhone16Detail(IPhone16Id.Of("67dbce02a9ee0a5e6fbafd89"))
             {
@@ -568,13 +602,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_black_512 = new IPhone16Detail(IPhone16Id.Of("67dbce04a9ee0a5e6fbafd8a"))
             {
@@ -582,13 +618,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 999,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_black_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce05a9ee0a5e6fbafd8b"))
             {
@@ -596,13 +634,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1199,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_plus_ultramarine_128 = new IPhone16Detail(IPhone16Id.Of("67dbce06a9ee0a5e6fbafd8c"))
@@ -611,13 +651,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_ultramarine_256 = new IPhone16Detail(IPhone16Id.Of("67dbce07a9ee0a5e6fbafd8d"))
             {
@@ -625,13 +667,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 899,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_ultramarine_512 = new IPhone16Detail(IPhone16Id.Of("67dbce08a9ee0a5e6fbafd8e"))
             {
@@ -639,13 +683,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 1099,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_ultramarine_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce09a9ee0a5e6fbafd8f"))
             {
@@ -653,13 +699,15 @@ public class SeedData
                 Color = color_ultramarine,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1299,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_ultramarine,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_plus_teal_128 = new IPhone16Detail(IPhone16Id.Of("67dbce0aa9ee0a5e6fbafd90"))
@@ -668,13 +716,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_teal_256 = new IPhone16Detail(IPhone16Id.Of("67dbce0ba9ee0a5e6fbafd91"))
             {
@@ -682,13 +732,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 899,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_teal_512 = new IPhone16Detail(IPhone16Id.Of("67dbce0ca9ee0a5e6fbafd92"))
             {
@@ -696,13 +748,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 1099,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_teal_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce0da9ee0a5e6fbafd93"))
             {
@@ -710,13 +764,15 @@ public class SeedData
                 Color = color_teal,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1299,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_teal,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_plus_pink_128 = new IPhone16Detail(IPhone16Id.Of("67dbce0ea9ee0a5e6fbafd94"))
@@ -725,13 +781,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_pink_256 = new IPhone16Detail(IPhone16Id.Of("67dbce0fa9ee0a5e6fbafd95"))
             {
@@ -739,13 +797,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 899,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_pink_512 = new IPhone16Detail(IPhone16Id.Of("67dbce10a9ee0a5e6fbafd96"))
             {
@@ -753,13 +813,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 1099,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_pink_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce11a9ee0a5e6fbafd97"))
             {
@@ -767,13 +829,15 @@ public class SeedData
                 Color = color_pink,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1299,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_pink,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_plus_white_128 = new IPhone16Detail(IPhone16Id.Of("67dbce12a9ee0a5e6fbafd98"))
@@ -782,13 +846,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_white_256 = new IPhone16Detail(IPhone16Id.Of("67dbce13a9ee0a5e6fbafd99"))
             {
@@ -796,13 +862,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 899,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_white_512 = new IPhone16Detail(IPhone16Id.Of("67dbce14a9ee0a5e6fbafd9a"))
             {
@@ -810,13 +878,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 1099,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_white_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce15a9ee0a5e6fbafd9b"))
             {
@@ -824,13 +894,15 @@ public class SeedData
                 Color = color_white,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1299,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_white,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             var ip_16_plus_black_128 = new IPhone16Detail(IPhone16Id.Of("67dbce16a9ee0a5e6fbafd9c"))
@@ -839,13 +911,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_128,
                 UnitPrice = 799,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_128.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_black_256 = new IPhone16Detail(IPhone16Id.Of("67dbce17a9ee0a5e6fbafd9d"))
             {
@@ -853,13 +927,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_256,
                 UnitPrice = 899,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_256.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_black_512 = new IPhone16Detail(IPhone16Id.Of("67dbce18a9ee0a5e6fbafd9e"))
             {
@@ -867,13 +943,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_512,
                 UnitPrice = 1099,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_512.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
             var ip_16_plus_black_1024 = new IPhone16Detail(IPhone16Id.Of("67dbce19a9ee0a5e6fbafd9f"))
             {
@@ -881,13 +959,15 @@ public class SeedData
                 Color = color_black,
                 Storage = Storage.STORAGE_1024,
                 UnitPrice = 1299,
+                GeneralModel = "iphone-16",
                 Description = "The iPhone 16 Plus is a smartphone designed, developed, and marketed by Apple Inc. It is the fourteenth generation of the iPhone, alongside the iPhone 16 Pro and iPhone 16 Pro Max models, and was announced on September 14, 2021. Pre-orders began on October 15, 2021, and the phone was officially released on October 22, 2021.",
                 AvailableInStock = 100,
                 TotalSold = 0,
                 State = State.ACTIVE,
                 Images = imageList_black,
                 Slug = Slug.Create($"iphone 16 plus {Storage.STORAGE_1024.Name}"),
-                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c")
+                IPhoneModelId = IPhone16ModelId.Of("67346f7549189f7314e4ef0c"),
+                CategoryId = CategoryId.Of("91dc470aa9ee0a5e6fbafdbc")
             };
 
             return new List<IPhone16Detail>

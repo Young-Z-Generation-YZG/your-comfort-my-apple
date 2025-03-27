@@ -6,7 +6,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
-public sealed record ProductResponse
+public sealed record IPhoneResponse
 {
     public string? ProductId { get; set; }
     public string? ProductModel { get; set; }
@@ -17,5 +17,4 @@ public sealed record ProductResponse
     public string? ProductDescription { get; set; }
     public List<ImageResponse>? ProductImages { get; set; }
     public string? ProductSlug { get; set; }
-    public object? Promotion { get; set; } = null;
 }

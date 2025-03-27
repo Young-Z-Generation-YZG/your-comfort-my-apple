@@ -1,6 +1,7 @@
 ﻿
 
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.Discount.Domain.Core.Enums;
 
 namespace YGZ.Discount.Application.Promotions.Commands.CreatePromotionProduct;
 
@@ -10,11 +11,10 @@ public sealed record CreatePromotionProductCommand(List<PromotionProductCommand>
 
 public sealed record PromotionProductCommand()
 {
-    public string ProductId { get; set; }
-    public string ProductColorName { get; set; }
-    public int ProductStorage { get; set; }
-    public string ProductSlug { get; set; }
-    public string ProductImage { get; set; }
-    public decimal DiscountPercent { get; set; }
-    public string PromotionGlobalId { get; set; }
+    required public string ProductId { get; set; }
+    required public string ProductImage { get; set; }
+    required public string ProductSlug { get; set; }
+    required public DiscountType DiscountType { get; set; }
+    required public decimal DiscountValue { get; set; }
+    required public string PromotionGlobalId { get; set; }
 }

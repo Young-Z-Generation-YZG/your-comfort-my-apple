@@ -5,7 +5,6 @@ using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 using YGZ.Discount.Domain.PromotionItem;
-using YGZ.Discount.Domain.PromotionItem.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Configurations;
 
@@ -15,14 +14,13 @@ public class PromotionItemConfiguration : IEntityTypeConfiguration<PromotionItem
     {
         builder.ToTable("PromotionItems");
 
-        builder.HasKey(x => x.Id); // Define the primary key
+        builder.HasKey(x => x.Id);
 
-        // Map PromotionItemId's Id property to a column
         builder.Property(x => x.Id)
                .ValueGeneratedNever()
                .HasConversion(
                    id => id.Value,
-                   dbid => PromotionItemId.Of(dbid)
+                   dbid => ProductId.Of(dbid)
                );
 
         //// Configure State property with conversion

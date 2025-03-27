@@ -39,6 +39,7 @@ public class DiscountRepository : IDiscountRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred while fetching coupon by code.");
             throw;
         }
     }

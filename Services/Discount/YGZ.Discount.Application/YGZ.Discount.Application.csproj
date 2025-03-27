@@ -11,9 +11,4 @@
     <ProjectReference Include="..\YGZ.Discount.Domain\YGZ.Discount.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Coupons\Commands\DeleteCoupon\" />
-    <Folder Include="Coupons\Commands\UpdateCoupon\" />
-  </ItemGroup>
-
 </Project>

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.PromotionEvent.Entities;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 
@@ -24,6 +25,13 @@ public class PromotionProductConfiguration : IEntityTypeConfiguration<PromotionP
             .Property(x => x.PromotionGlobalId)
             .HasConversion(id => id.Value,
                            dbid => PromotionGlobalId.Of(dbid));
+
+        builder.Property(x => x.DiscountType)
+               .HasConversion(
+                   x => x.Name,
+                   x => DiscountType.FromName(x, false)
+               )
+               .HasColumnName("DiscountType");
 
         builder.HasOne<PromotionGlobal>().WithMany().HasForeignKey(x => x.PromotionGlobalId).IsRequired();
     }

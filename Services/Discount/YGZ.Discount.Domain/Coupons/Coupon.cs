@@ -19,10 +19,10 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     private Coupon() : base(null!) { }
 
     public Code Code { get; set; } = default!;
-    public string Title { get; set; } = string.Empty;
+    required public string Title { get; set; }
     public string Description { get; set; } = string.Empty;
     public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
-    public ProductNameTag ProductNameTag { get; set; }
+    required public ProductNameTag ProductNameTag { get; set; }
     public PromotionEventType PromotionEventType { get; set; } = PromotionEventType.PROMOTION_COUPON;
     public DiscountType DiscountType { get; set; } = DiscountType.PERCENTAGE;
     public decimal DiscountValue { get; set; } = 0;

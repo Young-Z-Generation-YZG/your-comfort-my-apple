@@ -15,7 +15,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 
 namespace YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 
-public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModelSlugQuery, List<ProductResponse>>
+public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModelSlugQuery, List<IPhoneResponse>>
 {
     private readonly IMongoRepository<IPhone16Detail> _detailRepository;
     private readonly IMongoRepository<IPhone16Model> _modelRepository;
@@ -30,7 +30,7 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
         _mapper = mapper;
     }
 
-    public async Task<Result<List<ProductResponse>>> Handle(GetIPhonesByModelSlugQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<IPhoneResponse>>> Handle(GetIPhonesByModelSlugQuery request, CancellationToken cancellationToken)
     {
         var filter = Builders<IPhone16Model>.Filter.Eq(x => x.Slug, Slug.Of(request.modelSlug));
 
@@ -43,19 +43,19 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
 
         var products = await _detailRepository.GetAllAsync(Builders<IPhone16Detail>.Filter.Eq(x => x.IPhoneModelId, model.Id), cancellationToken);
 
-        List<ProductResponse> responses = MapToResponse(products);
+        List<IPhoneResponse> responses = MapToResponse(products);
 
         return responses;
     }
 
-    private List<ProductResponse> MapToResponse(List<IPhone16Detail> products)
+    private List<IPhoneResponse> MapToResponse(List<IPhone16Detail> products)
     {
 
         var response = products.Select(product =>
         {
             var colorResponse = _mapper.Map<ColorResponse>(product.Color);
             var imagesResponse = _mapper.Map<List<ImageResponse>>(product.Images);
-            var response = _mapper.Map<ProductResponse>(product);
+            var response = _mapper.Map<IPhoneResponse>(product);
             response.ProductColor = colorResponse;
             response.ProductImages = imagesResponse;
 

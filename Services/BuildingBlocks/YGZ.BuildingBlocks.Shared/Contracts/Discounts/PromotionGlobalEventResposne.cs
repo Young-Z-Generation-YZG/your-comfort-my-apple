@@ -10,28 +10,31 @@ public class PromotionGlobalEventResponse
 
 public sealed record PromotionEventResponse
 {
-    public string? PromotionEventId { get; set; }
-    public string PromotionEventTitle { get; set; }
-    public string PromotionEventDescription { get; set; }
-    public string PromotionEventState { get; set; }
+    required public string? PromotionEventId { get; set; }
+    required public string PromotionEventTitle { get; set; }
+    public string PromotionEventDescription { get; set; } = string.Empty;
+    required public string PromotionEventType { get; set; }
+    required public string PromotionEventState { get; set; }
     public DateTime? PromotionEventValidFrom { get; set; }
     public DateTime? PromotionEventValidTo { get; set; }
 }
 
 public sealed record PromotionProductResponse
 {
-    public string ProductId { get; set; }
-    public string ProductColorName { get; set; }
-    public string ProductStorage { get; set; }
-    public string ProductImage { get; set; }
-    public string ProductSlug { get; set; }
-    public decimal DiscountPercent { get; set; }
+    required public string ProductId { get; set; }
+    required public string ProductSlug { get; set; }
+    public string ProductImage { get; set; } = string.Empty;
+    required public string DiscountType { get; set; }
+    required public decimal DiscountValue { get; set; }
+    required public string PromotionGlobalId { get; set; }
 }
 
 public sealed record PromotionCategoryResponse
 {
-    public string CategoryId { get; set; }
-    public string CategoryName { get; set; }
-    public string CategorySlug { get; set; }
-    public decimal DiscountPercent { get; set; }
+    required public string CategoryId { get; set; }
+    required public string CategoryName { get; set; }
+    required public string CategorySlug { get; set; }
+    required public string DiscountType { get; set; }
+    required public decimal DiscountValue { get; set; }
+    required public string PromotionGlobalId { get; set; }
 }

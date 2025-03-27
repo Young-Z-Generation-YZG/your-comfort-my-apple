@@ -7,9 +7,9 @@ namespace YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEven
 
 public sealed record CreatePromotionEventCommand() : ICommand<bool> 
 {
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public DiscountState State { get; set; }
+    required public string Title { get; set; }
+    public string Description { get; set; } = string.Empty;
+    required public DiscountState State { get; set; }
     public DateTime ValidFrom { get; set; }
     public DateTime ValidTo { get; set; }
 }

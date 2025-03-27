@@ -14,9 +14,10 @@ public class PromotionCategoryMapping : IRegister
 
         config.NewConfig<PromotionProduct, PromotionProductResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value.ToString())
-            .Map(dest => dest.ProductColorName, src => src.ProductColorName)
-            .Map(dest => dest.ProductStorage, src => src.ProductStorage)
             .Map(dest => dest.ProductSlug, src => src.ProductSlug)
-            .Map(dest => dest.ProductImage, src => src.ProductImage);
+            .Map(dest => dest.ProductImage, src => src.ProductImage)
+            .Map(dest => dest.DiscountType, src => src.DiscountType.Name)
+            .Map(dest => dest.DiscountValue, src => src.DiscountValue)
+            .Map(dest => dest.PromotionGlobalId, src => src.PromotionGlobalId.Value.ToString());
     }
 }

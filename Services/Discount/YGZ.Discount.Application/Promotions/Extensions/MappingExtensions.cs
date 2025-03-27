@@ -38,18 +38,17 @@ public static class MappingExtensions
 
     public static PromotionProduct ToEntity(this PromotionProductCommand request)
     {
-        return PromotionProduct.Create(id: ProductId.Of(request.ProductId),
-                                       productColorName: request.ProductColorName,
-                                       productStorage: request.ProductStorage,
+        return PromotionProduct.Create(id: ProductId.Of(request.ProductSlug),
                                        productSlug: request.ProductSlug,
                                        productImage: request.ProductImage,
-                                       discountPercent: request.DiscountPercent,
+                                       discountType: request.DiscountType,
+                                       discountValue: request.DiscountValue,
                                        promotionGlobalId: PromotionGlobalId.Of(request.PromotionGlobalId));
     }
 
     public static PromotionItem ToEntity(this CreatePromotionItemCommand request)
     {
-        return PromotionItem.Create(promotionItemId: PromotionItemId.Create(),
+        return PromotionItem.Create(productId: ProductId.Of(request.ProductId),
                                     title: request.Title,
                                     description: request.Description,
                                     discountState: request.DiscountState,
@@ -60,10 +59,8 @@ public static class MappingExtensions
                                     validFrom: request.ValidFrom,
                                     validTo: request.ValidTo,
                                     availableQuantity: request.AvailableQuantity,
-                                    productModel: request.ProductModel,
-                                    productStorage: request.ProductStorage,
-                                    productSlug: request.ProductSlug,
-                                    productImage: request.ProductImage);
+                                    productImage: request.ProductImage,
+                                    productSlug: request.ProductSlug);
     }
 
     public static PromotionCategory ToEntity(this PromotionCategoryCommand request)
@@ -71,7 +68,8 @@ public static class MappingExtensions
         return PromotionCategory.Create(id: CategoryId.Of(request.CategoryId),
             categoryName: request.CategoryName,
             categorySlug: request.CategorySlug,
-            discountPercent: request.DiscountPercent,
+            discountType: request.DiscountType,
+            discountValue: request.DiscountType,
             promotionGlobalId: PromotionGlobalId.Of(request.PromotionGlobalId));
     }
 }

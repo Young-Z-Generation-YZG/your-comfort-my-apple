@@ -42,39 +42,49 @@ public class GetPromotionGlobalQueryHandler : IQueryHandler<GetPromotionGlobalQu
 
         if (promotionEvents.Any())
         {
-            PromotionGlobalEventResponse group = new();
 
             foreach (var item in promotionEvents)
             {
+                PromotionGlobalEventResponse group = new();
+
                 group.promotionEvent = new PromotionEventResponse
                 {
                     PromotionEventId = item.Id is not null ? item.Id.Value.ToString() : null,
                     PromotionEventTitle = item.Title,
                     PromotionEventDescription = item.Description,
+                    PromotionEventType = item.PromotionEventType.Name,
                     PromotionEventState = item.DiscountState.Name,
                     PromotionEventValidFrom = item.ValidFrom,
                     PromotionEventValidTo = item.ValidTo
                 };
 
-                var promotionGlobal = promotionGlobals.Find(x => x.PromotionEventId == item.Id);
+                promotionGlobals.Select(x => x.PromotionEventId == item.Id);
 
-                if(promotionGlobal is not null)
+
+                foreach (var promotionGlobal in promotionGlobals)
                 {
-                    List<PromotionProduct> promotionProducts = new();
-                    List<PromotionCategory> promotionCategories = new();
+                    if (promotionGlobal.PromotionEventId == item.Id)
+                    {
+                        List<PromotionProduct> promotionProducts = new();
+                        List<PromotionCategory> promotionCategories = new();
 
-                    promotionProducts = await _promotionProductRepository.GetAllByFilterAsync(x => x.PromotionGlobalId == promotionGlobal.Id, cancellationToken);
+                        if(promotionGlobal.PromotionGlobalType.Equals(PromotionGlobalType.PRODUCTS))
+                        {
+                            promotionProducts = await _promotionProductRepository.GetAllByFilterAsync(x => x.PromotionGlobalId == promotionGlobal.Id, cancellationToken);
+                            group.PromotionProducts = promotionProducts.Select(x => _mapper.Map<PromotionProductResponse>(x)).ToList();
+                        }
 
-                    group.PromotionProducts = promotionProducts.Select(x => _mapper.Map<PromotionProductResponse>(x)).ToList();
+                        if (promotionGlobal.PromotionGlobalType.Equals(PromotionGlobalType.CATEGORIES))
+                        {
+                            promotionCategories = await _promotionCategoryRepository.GetAllByFilterAsync(x => x.PromotionGlobalId == promotionGlobal.Id, cancellationToken);
+                            group.PromotionCategories = promotionCategories.Select(x => _mapper.Map<PromotionCategoryResponse>(x)).ToList();
+                        }
 
-                    promotionCategories = await _promotionCategoryRepository.GetAllByFilterAsync(x => x.PromotionGlobalId == promotionGlobal.Id, cancellationToken);
-
-                    group.PromotionCategories = promotionCategories.Select(x => _mapper.Map<PromotionCategoryResponse>(x)).ToList();
+                    }
                 }
 
+                responses.Add(group);
             }
-
-            responses.Add(group);
         }
 
         return responses;

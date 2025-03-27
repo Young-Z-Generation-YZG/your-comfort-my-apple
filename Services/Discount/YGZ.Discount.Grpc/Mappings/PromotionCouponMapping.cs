@@ -2,8 +2,9 @@
 using Mapster;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
+using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
+using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
 using YGZ.Discount.Domain.Core.Enums;
-using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Discount.Grpc.Mappings;
@@ -28,6 +29,26 @@ public class CouponModelMapping : IRegister
             .Map(dest => dest.ValidTo, src => src.PromotionCouponModel.PromotionCouponValidTo.ToDateTime())
             .Map(dest => dest.AvailableQuantity, src => src.PromotionCouponModel.PromotionCouponAvailableQuantity);
 
+        config
+            .NewConfig<UpdateDiscountCouponRequest, UpdateCouponCommand>()
+            .Map(dest => dest.Id, src => src.PromotionCouponModel.PromotionCouponId)
+            .Map(dest => dest.Code, src => src.PromotionCouponModel.PromotionCouponCode)
+            .Map(dest => dest.Title, src => src.PromotionCouponModel.PromotionCouponCode)
+            .Map(dest => dest.Description, src => src.PromotionCouponModel.PromotionCouponDescription)
+            .Map(dest => dest.ProductNameTag, src => ProductNameTag.FromValue((int)src.PromotionCouponModel.PromotionCouponProductNameTag))
+            .Map(dest => dest.DiscountState, src => DiscountState.FromValue((int)src.PromotionCouponModel.PromotionCouponDiscountState))
+            .Map(dest => dest.DiscountType, src => DiscountType.FromValue((int)src.PromotionCouponModel.PromotionCouponDiscountType))
+            .Map(dest => dest.DiscountValue, src => src.PromotionCouponModel.PromotionCouponDiscountValue)
+            .Map(dest => dest.MaxDiscountAmount, src => src.PromotionCouponModel.PromotionCouponMaxDiscountAmount)
+            .Map(dest => dest.ValidFrom, src => src.PromotionCouponModel.PromotionCouponValidFrom.ToDateTime())
+            .Map(dest => dest.ValidTo, src => src.PromotionCouponModel.PromotionCouponValidTo.ToDateTime())
+            .Map(dest => dest.AvailableQuantity, src => src.PromotionCouponModel.PromotionCouponAvailableQuantity);
+
+
+        config
+            .NewConfig<DeleteDiscountCouponRequest, DeleteCouponCommand>()
+            .Map(dest => dest.CouponId, src => src.CouponId);
+
         //config.NewConfig<Coupon, CouponModel>()
         //    .Map(dest => dest.Title, src => src.Title)
         //    .Map(dest => dest.Description, src => src.Description)
@@ -40,39 +61,4 @@ public class CouponModelMapping : IRegister
         //    .Map(dest => dest.ValidTo, src => src.ValidTo.HasValue ? Timestamp.FromDateTime(src.ValidTo.Value.ToUniversalTime()) : null)
         //    .Map(dest => dest.AvailableQuantity, src => src.AvailableQuantity);
     }
-
-    //private DiscountTypeEnum MapTypeEnum(string typeName)
-    //{
-    //    return typeName switch
-    //    {
-    //        "PERCENTAGE" => DiscountTypeEnum.Percentage,
-    //        "FIXED" => DiscountTypeEnum.Fixed,
-    //        _ => DiscountTypeEnum.DiscountTypeEnumUnknown
-    //    };
-    //}
-
-    //private DiscountStateEnum MapStateEnum(string stateName)
-    //{
-    //    return stateName switch
-    //    {
-    //        "ACTIVE" => DiscountStateEnum.Active,
-    //        "INACTIVE" => DiscountStateEnum.Inactive,
-    //        "EXPIRED" => DiscountStateEnum.Expired,
-    //        _ => DiscountStateEnum.DiscountStateEnumUnknown
-    //    };
-    //}
-
-    //private ProductNameTag MapNameTagEnum(string nameTag)
-    //{
-    //    return nameTag switch
-    //    {
-    //        "MACBOOK" => ProductNam.Macbook,
-    //        "IPAD" => ProductNameTagEnum.Ipad,
-    //        "IPHONE" => ProductNameTagEnum.Iphone,
-    //        "WATCH" => ProductNameTagEnum.Watch,
-    //        "HEADPHONE" => ProductNameTagEnum.Headphone,
-    //        "ACCESSORY" => ProductNameTagEnum.Accessory,
-    //        _ => ProductNameTagEnum.Unknown
-    //    };
-    //}
 }

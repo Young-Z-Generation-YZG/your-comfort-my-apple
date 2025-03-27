@@ -41,19 +41,18 @@ public static class SeedData
 
     public static IEnumerable<PromotionProduct> PromotionProducts => new List<PromotionProduct>()
     {
-        PromotionProduct.Create(id: ProductId.Of("67cbcff3cb422bbaf809c5a9"),
-            productColorName: "ultramarine",
-            productStorage: 128,
+        PromotionProduct.Create(id: ProductId.Of("iphone-16-128gb"),
             productSlug: "iphone-16-128gb",
             productImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US",
-            discountPercent: (decimal)0.05,
+            discountType: DiscountType.PERCENTAGE,
+            discountValue: (decimal)0.05,
             promotionGlobalId: PromotionGlobalId.Of("61cd23de-169e-4beb-a890-8dbb91ccca57")),
-        PromotionProduct.Create(id: ProductId.Of("67dbcd41a9ee0a5e6fbafd77"),
-            productColorName: "ultramarine",
-            productStorage: 256,
+
+        PromotionProduct.Create(id: ProductId.Of("iphone-16-256gb"),
             productSlug: "iphone-16-256gb",
             productImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US",
-            discountPercent: (decimal)0.05,
+            discountType: DiscountType.PERCENTAGE,
+            discountValue: (decimal)0.05,
             promotionGlobalId: PromotionGlobalId.Of("61cd23de-169e-4beb-a890-8dbb91ccca57"))
     };
 
@@ -62,14 +61,15 @@ public static class SeedData
         PromotionCategory.Create(id: CategoryId.Of("67346f7549189f7314e4ef0c"),
             categoryName: "iPhone 16",
             categorySlug: "iphone-16",
-            discountPercent: (decimal)0.05,
-            promotionGlobalId: PromotionGlobalId.Of("61cd23de-169e-4beb-a890-8dbb91ccca57"))
+            discountType: DiscountType.PERCENTAGE,
+            discountValue: (decimal)0.05,
+            promotionGlobalId: PromotionGlobalId.Of("2780383d-cef5-4111-84f0-7798261aa595"))
     };
 
     public static IEnumerable<PromotionItem> PromotionItems => new List<PromotionItem>()
     {
         PromotionItem.Create(
-                promotionItemId: PromotionItemId.Of("76bd9fd3-d09c-479e-a049-88166504fbf1"),
+                productId: ProductId.Of("67cbcff3cb422bbaf809c5a9"),
                 title: "Discount for iPhone 16 128GB",
                 description: "Discount only for iPhone 16 128GB",
                 discountState: DiscountState.ACTIVE,
@@ -80,8 +80,6 @@ public static class SeedData
                 validFrom: new DateTime(2025, 3, 25).ToUniversalTime(),
                 validTo: new DateTime(2025, 4, 25).ToUniversalTime(),
                 availableQuantity: null,
-                productModel: "iPhone 16",
-                productStorage: 128,
                 productImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US",
                 productSlug: "iphone-16-128gb"
         )
