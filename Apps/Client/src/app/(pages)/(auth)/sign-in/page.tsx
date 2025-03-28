@@ -5,6 +5,7 @@ import AnimatedInput from '../_components/animated-input';
 import { GoArrowUpRight } from 'react-icons/go';
 import Image from 'next/image';
 import googlePng from '@assets/images/google.png';
+import Link from 'next/link';
 
 const SignInPage = () => {
    const [loginData, setLoginData] = useState({
@@ -23,16 +24,18 @@ const SignInPage = () => {
             </div>
 
             <div className="flex gap-3 font-SFProText text-slate-500 text-sm">
-               <a href="#">Sign in</a>
-               <a href="#">Create your Account</a>
+               <Link href="/sign-in">Sign in</Link>
+               <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
          </section>
 
          <div className="h-full px-[200px] py-[200px]">
             <div className="w-full  flex flex-col justify-center items-center">
-               <h3 className="text-4xl font-SFProText">Account</h3>
-               <p className="text-lg font-SFProText font-normal py-5">
+               <h3 className="text-4xl font-SFProDisplay font-medium">
+                  Account
+               </h3>
+               <p className="text-base font-SFProText font-light py-5">
                   Manage Your Account
                </p>
 

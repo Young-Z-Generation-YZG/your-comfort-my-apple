@@ -33,7 +33,7 @@ const AnimatedInput = ({
                scale: isActive ? 0.8 : 1,
                color: isActive ? '#666' : '#999',
             }}
-            className="absolute left-4 origin-left cursor-text pointer-events-none font-SFProText"
+            className="absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-sm font-light"
             style={{
                top: '35%',
                transform: 'translateY(-50%)',

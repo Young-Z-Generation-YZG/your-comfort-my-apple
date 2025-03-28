@@ -4,6 +4,7 @@
 
 @layer base {
    :root {
+      --input_h: 56px;
    }
 
    body {
