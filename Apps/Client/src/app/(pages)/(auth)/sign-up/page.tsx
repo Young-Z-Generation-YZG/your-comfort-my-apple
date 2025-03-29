@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import AnimatedInput from '../_components/animated-input';
 import { useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
 import Selector from '../_components/selector-input';
@@ -11,6 +10,7 @@ import PhoneInput from '~/components/client/forms/phone-input';
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
 import Button from '../_components/Button';
+import { FieldInput } from '~/components/client/forms/field-input';
 
 // List of countries - this would typically be more comprehensive
 const countries = [
@@ -123,7 +123,7 @@ const SignUpPage = () => {
                <div className="w-[500px]">
                   <div className="flex gap-2">
                      <div className="w-full">
-                        <AnimatedInput
+                        <FieldInput
                            label="First Name"
                            value={email}
                            onChange={setEmail}
@@ -132,7 +132,7 @@ const SignUpPage = () => {
                      </div>
 
                      <div className="w-full">
-                        <AnimatedInput
+                        <FieldInput
                            label="Last Name"
                            value={email}
                            onChange={setEmail}
@@ -155,7 +155,7 @@ const SignUpPage = () => {
 
                   <div className="mt-5">
                      <div className="w-full">
-                        <AnimatedInput
+                        <FieldInput
                            label="Email"
                            value={email}
                            onChange={setEmail}
@@ -170,7 +170,7 @@ const SignUpPage = () => {
                   <div className="mt-4">
                      <div className="mt-2">
                         <div className="w-full">
-                           <AnimatedInput
+                           <FieldInput
                               label="Password"
                               value={email}
                               onChange={setEmail}
@@ -180,7 +180,7 @@ const SignUpPage = () => {
 
                         <div className="mt-3">
                            <div className="w-full">
-                              <AnimatedInput
+                              <FieldInput
                                  label="Confirm Password"
                                  value={email}
                                  onChange={setEmail}
@@ -204,7 +204,7 @@ const SignUpPage = () => {
 
                   <Separator className="mt-10 bg-slate-200" />
 
-                  <div className="flex justify-center flex-col items-center">
+                  <div className="flex justify-center flex-col items-center mt-5">
                      <Image
                         src={signUpImage}
                         alt="cover"

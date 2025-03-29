@@ -1,17 +1,21 @@
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ILoginPayload } from "~/src/domain/interfaces/auth/ILoginPayload";
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
 
-// Define the login schema using zod
-const loginSchema = z.object({
-  email: z.string().email({
-    message: "Please enter a valid email",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
+const defaultValues: Partial<LoginFormType> = {
+   email: '',
+   password: '',
+};
+
+const LoginSchema = z.object({
+   email: z.string().email({
+      message: 'Please enter a valid email',
+   }),
+   password: z.string().min(1, {
+      message: 'Password is required',
+   }),
 } satisfies Record<keyof ILoginPayload, any>);
 
-export type LoginFormType = z.infer<typeof loginSchema>;
+export type LoginFormType = z.infer<typeof LoginSchema>;
 
-export const loginResolver = zodResolver(loginSchema);
+export const LoginResolver = zodResolver(LoginSchema);
