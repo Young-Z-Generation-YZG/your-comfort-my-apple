@@ -30,6 +30,7 @@ const authSlice = createSlice({
       setAccessToken: (state, action: PayloadAction<ILoginResponse>) => {
          console.log('setAccessToken action:', action.payload);
 
+         state.value.userEmail = action.payload.user_email;
          state.value.accessToken = action.payload.access_token;
          state.value.refreshToken = action.payload.refresh_token;
          state.value.AT_expireIn = action.payload.expiration;

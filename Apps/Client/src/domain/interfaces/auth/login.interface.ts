@@ -4,6 +4,7 @@ export interface ILoginPayload {
 }
 
 export interface ILoginResponse {
+   user_email: string;
    access_token: string;
    refresh_token: string;
    expiration: string;
