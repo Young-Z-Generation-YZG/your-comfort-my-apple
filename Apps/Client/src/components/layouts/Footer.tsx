@@ -1,7 +1,12 @@
 const Footer = () => {
    return (
-      <footer>
-         <h1>Footer</h1>
+      <footer className="h-[500px] flex flex-col w-screen bg-[#fafafc]">
+         <div className="flex-1 bg-red-500">
+            <p>iPhone</p>
+         </div>
+         <div className="flex-1 bg-green-500">
+            <p>iPhone</p>
+         </div>
       </footer>
    );
 };
