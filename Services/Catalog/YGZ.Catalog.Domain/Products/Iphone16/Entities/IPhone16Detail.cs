@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
@@ -17,6 +18,9 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
 
     }
 
+    [BsonElement("general_model")]
+    required public string GeneralModel { get; set; }
+
     [BsonElement("model")]
     required public string Model { get; set; }
 
@@ -27,13 +31,13 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     required public Storage Storage { get; set; }
 
     [BsonElement("unit_price")]
-    public decimal UnitPrice { get; set; } = 0;
+    required public decimal UnitPrice { get; set; } = 0;
 
     [BsonElement("description")]
     public string Description { get; set; } = default!;
 
     [BsonElement("name_tag")]
-    public NameTag NameTag { get; set; } = NameTag.IPHONE;
+    public ProductNameTag ProductNameTag { get; set; } = ProductNameTag.IPHONE;
 
     [BsonElement("available_in_stock")]
     public int AvailableInStock { get; set; } = 0;
@@ -48,10 +52,13 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     public List<Image> Images { get; set; } = [];
 
     [BsonElement("slug")]
-    public Slug Slug { get; set; } = default!;
+    required public Slug Slug { get; set; } = default!;
 
     [BsonElement("iphone_model_id")]
     required public IPhone16ModelId IPhoneModelId { get; set; }
+
+    [BsonElement("category_id")]
+    required public CategoryId CategoryId { get; set; }
 
     [BsonElement("created_at")]
     public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
@@ -77,12 +84,14 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
                                         decimal unitPrice,
                                         string description,
                                         List<Image> images,
-                                        string iPhoneModelId)
+                                        string iPhoneModelId,
+                                        string categoryId)
     {
         var storageEnum = Storage.FromValue(storage);
 
         return new IPhone16Detail(IPhone16Id.Of(iPhoneModelId))
         {
+            GeneralModel = Slug.Create(model).Value,
             Model = model,
             Color = color,
             Storage = storageEnum,
@@ -92,7 +101,8 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
             TotalSold = 0,
             Images = images,
             Slug = Slug.Create(model),
-            IPhoneModelId = IPhone16ModelId.Of(iPhoneModelId)
+            IPhoneModelId = IPhone16ModelId.Of(iPhoneModelId),
+            CategoryId = CategoryId.Of(categoryId)
         };
     }
 }

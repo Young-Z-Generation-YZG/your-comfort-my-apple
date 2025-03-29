@@ -8,86 +8,202 @@ import "google/protobuf/timestamp.proto";
 package discount;
 
 // Enums for DiscountTypeEnum and DiscountStateEnum
-enum TypeEnum {
-  DISCOUNT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
-  PERCENT = 1;
-  FIXED = 2; // Assuming FIXED is another possible value; adjust as needed
+enum DiscountTypeEnum {
+	DISCOUNT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	PERCENTAGE = 1;
+	FIXED = 2; // Assuming FIXED is another possible value; adjust as needed
 }
 
-enum StateEnum {
-  DISCOUNT_STATE_ENUM_UNKNOWN = 0; // Default/unknown value
-  ACTIVE = 1; // Assuming ACTIVE is another possible value; adjust as needed
-  INACTIVE = 2;
-  EXPIRED = 3;
+enum PromotionGlobalTypeEnum {
+	PROMOTION_GLOBAL_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	CATEGORIES = 1;
+	PRODUCTS = 2;
 }
 
-enum NameTagEnum {
-  NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
-  MACBOOK = 1;
-  IPAD = 2;
-  IPHONE = 3;
-  WATCH = 4;
-  HEADPHONE = 5;
-  ACCESSORY = 6;
+enum PromotionEventTypeEnum {
+	PROMOTION_EVENT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	PROMOTION_COUPON = 1;
+	PROMOTION_ITEM = 2;
+	PROMOTION_EVENT = 3;
+
+}
+
+enum DiscountStateEnum {
+	DISCOUNT_STATE_ENUM_UNKNOWN = 0; // Default/unknown value
+	ACTIVE = 1; // Assuming ACTIVE is another possible value; adjust as needed
+	INACTIVE = 2;
+	EXPIRED = 3;
+}
+
+enum EndDiscountEnum {
+	END_DISCOUNT_ENUM_UNKNOWN = 0; // Default/unknown value
+	BY_END_DATE = 1;
+	BY_QUANTITY = 2;
+}
+
+enum ProductNameTagEnum {
+	NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
+	MACBOOK = 1;
+	IPAD = 2;
+	IPHONE = 3;
+	WATCH = 4;
+	HEADPHONE = 5;
+	ACCESSORY = 6;
 }
 
 service DiscountProtoService {
-	rpc GetAllDiscounts (GetAllDiscountsRequest) returns (GetAllDiscountsResponse);
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
-	rpc CreateDiscount (CreateDiscountRequest) returns (BooleanResponse);
-	rpc UpdateDiscount (UpdateDiscountRequest) returns (BooleanResponse);
-	rpc DeleteDiscount (DeleteDiscountRequest) returns (BooleanResponse);
+	rpc GetAllDiscountCoupons (GetAllDiscountsRequest) returns (GetAllDiscountsResponse);
+	rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
+
+	rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
+	rpc DeleteDiscountCoupon (DeleteDiscountCouponRequest) returns (BooleanResponse);
+
+	rpc CreatePromotionItem (CreatePromotionItemModelRequest) returns (BooleanResponse);
+
+	rpc CreatePromotionCoupon (CreatePromotionCouponModel) returns (BooleanResponse);
+	rpc CreatePromotionEvent (CreatePromotionEventModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
+	rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
 }
 
 // Coupon message definition
-message CouponModel {
-  google.protobuf.StringValue title = 1;
-  google.protobuf.StringValue description = 2;
-  StateEnum state = 3; // Enum for discount status
-  NameTagEnum product_name_tag = 4; 
-  TypeEnum type = 5; // Enum for discount type
-  double discount_value = 6;
-  google.protobuf.DoubleValue min_purchase_amount = 7;
-  google.protobuf.DoubleValue max_discount_amount = 8;
-  google.protobuf.Timestamp valid_from = 9;
-  google.protobuf.Timestamp valid_to = 10;
-  int32 available_quantity = 11;
+message PromotionCouponModel {
+	google.protobuf.StringValue promotion_coupon_id = 1;
+	google.protobuf.StringValue promotion_coupon_title = 2;
+	google.protobuf.StringValue promotion_coupon_code = 3;
+	google.protobuf.StringValue promotion_coupon_description = 4;
+	ProductNameTagEnum			promotion_coupon_product_name_tag = 5; 
+	PromotionEventTypeEnum		promotion_coupon_promotion_event_type = 6;
+	DiscountStateEnum			promotion_coupon_discount_state = 7;
+	DiscountTypeEnum			promotion_coupon_discount_type = 8;
+	google.protobuf.DoubleValue promotion_coupon_discount_value = 9;
+	google.protobuf.DoubleValue promotion_coupon_max_discount_amount = 10;
+	google.protobuf.Timestamp	promotion_coupon_valid_from = 11;
+	google.protobuf.Timestamp	promotion_coupon_valid_to = 12;
+	google.protobuf.Int32Value	promotion_coupon_available_quantity = 13;
+}
+
+message PromotionItemModel {
+	google.protobuf.StringValue promotion_item_product_id = 1;
+	google.protobuf.StringValue promotion_item_title = 2;
+	google.protobuf.StringValue promotion_item_description = 3;
+	ProductNameTagEnum			promotion_item_name_tag = 4;
+	PromotionEventTypeEnum		promotion_item_promotion_event_type = 5;
+	DiscountStateEnum			promotion_item_discount_state = 6;
+	DiscountTypeEnum			promotion_item_discount_type = 7;
+	EndDiscountEnum				promotion_item_end_discount_type = 8;
+	google.protobuf.DoubleValue promotion_item_discount_value = 9;
+	google.protobuf.Timestamp	promotion_item_valid_from = 10;
+	google.protobuf.Timestamp	promotion_item_valid_to = 11;
+	google.protobuf.Int32Value	promotion_item_available_quantity = 12;
+	google.protobuf.StringValue promotion_item_product_image = 13;
+	google.protobuf.StringValue promotion_item_product_slug = 14;
+}
+
+message PromotionEventModel {
+	google.protobuf.StringValue promotion_event_id = 1;
+	google.protobuf.StringValue promotion_event_title = 2;
+	google.protobuf.StringValue promotion_event_description = 3;
+	PromotionEventTypeEnum		promotion_event_promotion_event_type = 4;
+	DiscountStateEnum			promotion_event_state = 5;
+	google.protobuf.Timestamp	promotion_event_valid_from = 6;
+	google.protobuf.Timestamp	promotion_event_valid_to = 7;
+}
+
+message PromotionGlobalModel {
+	google.protobuf.StringValue promotion_global_id = 1;
+	google.protobuf.StringValue promotion_global_title = 2;
+	google.protobuf.StringValue promotion_global_description = 3;
+	PromotionGlobalTypeEnum		promotion_global_type = 4;
+	google.protobuf.StringValue promotion_global_event_id = 5;
+}
+
+message PromotionCategoryModel {
+	google.protobuf.StringValue promotion_category_id = 1;
+	google.protobuf.StringValue promotion_category_name = 2;
+	google.protobuf.StringValue promotion_category_slug = 3;
+	DiscountTypeEnum			promotion_category_discount_type = 4;
+	google.protobuf.DoubleValue promotion_category_discount_value = 5;
+	google.protobuf.StringValue promotion_category_promotion_global_id = 6;
+}
+
+message PromotionProductModel {
+	google.protobuf.StringValue promotion_product_id = 1;
+	google.protobuf.StringValue promotion_product_slug = 2;
+	google.protobuf.StringValue promotion_product_image = 3;
+	DiscountTypeEnum			promotion_product_discount_type = 4;
+	google.protobuf.DoubleValue promotion_product_discount_value = 5;
+	google.protobuf.StringValue promotion_product_promotion_global_id = 6;
 }
 
 message GetDiscountRequest {
 	string code = 1;
 }
 
+message GetPromotionEventRequest { }
+
 message CouponResponse {
-  CouponModel coupon = 1; // Return the full coupon model
+	PromotionCouponModel promotion_coupon = 1;
 }
 
-message CreateDiscountRequest {
-  CouponModel coupon = 1; // Full coupon details to create
+message PromotionEventResponse {
+	repeated ListPromtionEventResponse promotion_events = 1;
 }
 
-message UpdateDiscountRequest {
-  string code = 1; // CouponId as string (assuming CouponId is a string or GUID in your domain)
-  CouponModel coupon = 2; // Full coupon details to update
+message ListPromtionEventResponse {
+		PromotionEventModel promotion_event = 1;
+		repeated PromotionProductModel promotion_products = 2;
+		repeated PromotionCategoryModel promotion_categories = 3;
 }
 
-message DeleteDiscountRequest {
-  string code = 1;
+message CreatePromotionCouponModel {
+	PromotionCouponModel promotion_coupon_model = 1;
+}
+
+message CreatePromotionItemModelRequest {
+	PromotionItemModel promotion_item_model = 1; 
+}
+
+message CreatePromotionEventModelRequest {
+	PromotionEventModel promotion_event_model = 1; 
+}
+
+message PromotionGlobalModelRequest {
+	PromotionGlobalModel promotion_global_model = 1;
+}
+
+message PromotionCategoryModelRequest {
+	repeated PromotionCategoryModel promotion_category_model = 1; 
+}
+
+message PromotionProductModelRequest {
+	repeated PromotionProductModel promotion_product_model = 1; 
+}
+
+message UpdateDiscountCouponRequest {
+	PromotionCouponModel promotion_coupon_model = 1;
+}
+
+message DeleteDiscountCouponRequest {
+	string coupon_id = 1;
 }
 
 message BooleanResponse {
 	bool is_success = 1;
 }
 
-// Request and Response messages for GetAllDiscounts
 message GetAllDiscountsRequest {
-  StateEnum state = 1;
-  int32 _page = 2;
-  int32 _limit = 3;
+	int32 _page = 1;
+	int32 _limit = 2;
+	DiscountStateEnum _state = 3;
 }
 
 message GetAllDiscountsResponse {
-  int32 total_count = 2;
-  int32 total_pages = 3;
-  repeated CouponModel coupons = 1; // List of coupons
+	int32 total_records = 1;
+	int32 total_pages = 2;
+	int32 page_size = 3;
+	int32 current_page = 4;
+	repeated PromotionCouponModel promotion_coupons = 5;
 }

@@ -4,6 +4,7 @@ using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.BuildingBlocks.Shared.Extensions;
 
@@ -16,9 +17,17 @@ public static class KeycloakIdentityServerExtension
            .AddKeycloakWebApi(configuration);
 
         services
-            .AddAuthorization()
-            .AddKeycloakAuthorization()
+            .AddAuthorization(o =>
+            {
+                o.AddPolicy(Policies.RequireClientRole, b =>
+                {
+                    b.RequireResourceRoles("[Role] USER");
+                });
+            })
+            .AddKeycloakAuthorization(configuration)
             .AddAuthorizationServer(configuration);
+
+
 
         return services;
     }

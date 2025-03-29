@@ -1,5 +1,4 @@
 ﻿
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -11,7 +10,7 @@ using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
-public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<ProductResponse>>
+public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<IPhoneResponse>>
 {
     private readonly IMongoRepository<IPhone16Detail> _iPhone16repository;
 
@@ -20,7 +19,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
         _iPhone16repository = iPhone16repository;
     }
 
-    public async Task<Result<PaginationResponse<ProductResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<IPhoneResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var (filter, sort) = GetFilterDefinition(request);
 
@@ -85,7 +84,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
         return (filter, sort);
     }
 
-    private PaginationResponse<ProductResponse> MapToResponse(List<IPhone16Detail> productItems, int totalRecords, int totalPages, GetProductsQuery request)
+    private PaginationResponse<IPhoneResponse> MapToResponse(List<IPhone16Detail> productItems, int totalRecords, int totalPages, GetProductsQuery request)
     {
         var queryParams = QueryParamBuilder.Build(request);
 
@@ -94,7 +93,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
                                                  currentPage: request.Page ?? 1,
                                                  totalPages: totalPages);
 
-        var productResponses = productItems.Select(p => new ProductResponse
+        var productResponses = productItems.Select(p => new IPhoneResponse
         {
             ProductId = p.Id.Value!,
             ProductModel = p.Model,
@@ -123,7 +122,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
             ProductSlug = p.Slug.Value,
         }).ToList();
 
-        var response = new PaginationResponse<ProductResponse>
+        var response = new PaginationResponse<IPhoneResponse>
         {
             TotalRecords = totalRecords,
             TotalPages = totalPages,

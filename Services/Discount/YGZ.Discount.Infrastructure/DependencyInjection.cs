@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Discount.Application.Abstractions;
-using YGZ.Discount.Application.Data;
+using YGZ.Discount.Application.Abstractions.Data;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Infrastructure.Persistence;
 using YGZ.Discount.Infrastructure.Persistence.Repositories;
 using YGZ.Discount.Infrastructure.Settings;
@@ -18,6 +19,9 @@ public static class DependencyInjection
         services.AddSingleton<IUniqueCodeGenerator, UniqueCodeGenerator>();
 
         services.AddScoped<IDiscountRepository, DiscountRepository>();
+
+        services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+        services.AddScoped<IPromotionCouponRepository, PromotionCouponRepository>();
 
         services.AddPostgresDatabase(configuration);
 

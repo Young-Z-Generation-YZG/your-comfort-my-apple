@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CategoryResponseType } from '~/domain/types/category.type';
 
-export const categoryApi = createApi({
+export const CategoryApi = createApi({
    reducerPath: 'category-api',
+   tagTypes: ['Categories'],
    baseQuery: fetchBaseQuery({
       baseUrl: 'https://44e5-116-108-33-248.ngrok-free.app/catalog-services',
       prepareHeaders: (headers) => {
@@ -11,7 +12,6 @@ export const categoryApi = createApi({
          return headers;
       },
    }),
-   tagTypes: ['Categories'],
    endpoints: (builder) => ({
       getCategoriesAsync: builder.query<CategoryResponseType[], void>({
          query: () => '/api/v1/categories',
@@ -20,4 +20,4 @@ export const categoryApi = createApi({
    }),
 });
 
-export const { useGetCategoriesAsyncQuery } = categoryApi;
+export const { useGetCategoriesAsyncQuery } = CategoryApi;

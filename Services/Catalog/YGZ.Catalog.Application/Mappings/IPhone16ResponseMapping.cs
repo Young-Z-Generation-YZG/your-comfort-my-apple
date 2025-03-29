@@ -11,7 +11,7 @@ public class IPhone16ResponseMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<IPhone16Detail, ProductResponse>()
+        config.NewConfig<IPhone16Detail, IPhoneResponse>()
             .Map(dest => dest.ProductId, src => src.Id.Value)
             .Map(dest => dest.ProductModel, src => src.Model)
             .Map(dest => dest.ProductStorage, src => src.Storage)

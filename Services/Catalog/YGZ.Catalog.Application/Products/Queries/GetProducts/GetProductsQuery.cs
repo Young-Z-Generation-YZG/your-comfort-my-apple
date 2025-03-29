@@ -6,7 +6,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
-public sealed class GetProductsQuery() : IQuery<PaginationResponse<ProductResponse>>
+public sealed class GetProductsQuery() : IQuery<PaginationResponse<IPhoneResponse>>
 {
     public int? Page { get; set; }
     public int? Limit { get; set; }

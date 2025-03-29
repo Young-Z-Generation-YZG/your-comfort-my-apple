@@ -3,7 +3,7 @@
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using YGZ.Discount.Application.Data;
+using YGZ.Discount.Application.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
@@ -28,7 +28,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var result = await _context.Coupons
-                .FirstOrDefaultAsync(c => c.Id == Code.Create(code) && !c.IsDeleted);
+                .FirstOrDefaultAsync(c => c.Code == Code.Of(code) && !c.IsDeleted);
 
             if(result is null)
             {
@@ -39,6 +39,7 @@ public class DiscountRepository : IDiscountRepository
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "An error occurred while fetching coupon by code.");
             throw;
         }
     }
@@ -53,7 +54,7 @@ public class DiscountRepository : IDiscountRepository
 
         if (state is not null)
         {
-            query = query.Where(c => c.State == state);
+            query = query.Where(c => c.DiscountState == state);
         }
 
         try
@@ -99,7 +100,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var coupon = await _context.Coupons
-            .FirstOrDefaultAsync(c => c.Id == Code.Create(code));
+            .FirstOrDefaultAsync(c => c.Id == Code.Of(code));
 
             if (coupon is null)
                 return false; // Coupon not found or already deleted
@@ -128,7 +129,7 @@ public class DiscountRepository : IDiscountRepository
         try
         {
             var existingCoupon = await _context.Coupons
-            .FirstOrDefaultAsync(c => c.Id == Code.Create(code) && !c.IsDeleted);
+            .FirstOrDefaultAsync(c => c.Id == Code.Of(code) && !c.IsDeleted);
 
             if (existingCoupon is null)
             {
@@ -138,8 +139,8 @@ public class DiscountRepository : IDiscountRepository
             // Update properties
             existingCoupon.Title = coupon.Title;
             existingCoupon.Description = coupon.Description;
-            existingCoupon.Type = coupon.Type;
-            existingCoupon.State = coupon.State;
+            existingCoupon.DiscountType = coupon.DiscountType;
+            existingCoupon.DiscountState = coupon.DiscountState;
             existingCoupon.DiscountValue = coupon.DiscountValue;
             existingCoupon.ProductNameTag = coupon.ProductNameTag;
             existingCoupon.MaxDiscountAmount = coupon.MaxDiscountAmount;

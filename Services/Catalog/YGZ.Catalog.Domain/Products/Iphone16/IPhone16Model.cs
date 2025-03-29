@@ -36,6 +36,9 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
     [BsonElement("storages")]
     public List<Storage> Storages { get; set; } = [];
 
+    [BsonElement("general_model")]
+    public string GeneralModel { get; set; } = default!;
+
     [BsonElement("description")]
     public string Description { get; set; } = default!;
 
@@ -92,10 +95,10 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
                                        List<Model> models,
                                        List<Color> colors,
                                        List<Storage> storages,
+                                       string description,
                                        List<Image> descriptionImages,
                                        AverageRating averageRating,
                                        List<RatingStar> ratingStars,
-                                       string description,
                                        CategoryId? categoryId,
                                        int? overallSold = 0)
     {
@@ -105,6 +108,7 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
             Models = models,
             Colors = colors,
             Storages = storages,
+            GeneralModel = Slug.Create(name).Value,
             Description = description,
             AverageRating = averageRating,
             OverallSold = (int)overallSold!,

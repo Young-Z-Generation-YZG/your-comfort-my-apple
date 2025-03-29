@@ -8,7 +8,22 @@ public class Code : ValueObject, IEquatable<Code>
 {
     public string Value { get; private set; } = default!;
 
-    public static Code Create(string value)
+    public static Code Create()
+    {
+        // Generate two random uppercase letters
+        var random = new Random();
+        char letter1 = (char)random.Next('A', 'Z' + 1);
+        char letter2 = (char)random.Next('A', 'Z' + 1);
+
+        // Generate eight random digits
+        int digits = random.Next(100000, 1000000);
+
+        var code = $"{letter1}{letter2}{digits:D6}";
+
+        return new Code { Value = code };
+    }
+
+    public static Code Of(string value)
     {
         return new Code { Value = value };
     }

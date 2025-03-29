@@ -1,7 +1,9 @@
+using YGZ.Discount.Application;
 using YGZ.Discount.Application.Services;
 using YGZ.Discount.Grpc;
 using YGZ.Discount.Grpc.Services;
 using YGZ.Discount.Infrastructure;
+using YGZ.Discount.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -12,9 +14,16 @@ builder.Services.AddGrpcReflection();
 
 services
     .AddPresentationLayer()
+    .AddApplicationLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();
+
+if(app.Environment.IsDevelopment())
+{
+    await app.ApplyMigrationAsync();
+    await app.ApplySeedDataAsync();
+}
 
 app.MapGrpcReflectionService();
 
