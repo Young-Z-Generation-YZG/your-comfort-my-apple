@@ -11,15 +11,14 @@ import { MdOutlineManageAccounts } from 'react-icons/md';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGetCategoriesAsyncQuery } from '~/infrastructure/services/category.service';
 import { CategoryResponseType } from '~/domain/types/category.type';
+import Link from 'next/link';
 
 const mainCategoriesDefault = ['Mac', 'iPad', 'iPhone', 'Watch', 'HeadPhones'];
 
 const subCategories = ['iPhone 16 Pro', 'iPhone 16', 'iPhone 16e', 'iPhone 15'];
 
 const Header = () => {
-   const [activeCategory, setActiveCategory] = useState<string | null>(
-      'Search',
-   );
+   const [activeCategory, setActiveCategory] = useState<string | null>(null);
    const [categories, setCategories] = useState<CategoryResponseType[]>([]);
 
    const categoryRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
@@ -156,9 +155,12 @@ const Header = () => {
                         You are not sign-in yet.
                      </h2>
                      <p className="text-base text-slate-500 py-5 font-SFProText">
-                        <a href="#" className="text-blue-400 underline">
+                        <Link
+                           href="/sign-in"
+                           className="text-blue-400 underline"
+                        >
                            Sign-in
-                        </a>{' '}
+                        </Link>{' '}
                         to see your profile
                      </p>
                   </div>
@@ -183,7 +185,7 @@ const Header = () => {
                            className="size-4"
                            aria-hidden="true"
                         />
-                        <p>Sign-in</p>
+                        <Link href="/sign-in">Sign-in</Link>
                      </li>
                   </ul>
                </motion.div>
