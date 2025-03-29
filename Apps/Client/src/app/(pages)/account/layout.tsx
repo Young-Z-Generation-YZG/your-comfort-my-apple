@@ -12,7 +12,7 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    const router = useRouter();
    const dispatch = useDispatch();
 
-   const { isAuthenticated, timerId } = useAppSelector(
+   const { isAuthenticated, timerId, isLogoutTriggered } = useAppSelector(
       (state) => state.auth.value,
    );
 
@@ -22,13 +22,22 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
 
    useEffect(() => {
       if (!isAuthenticated) {
-         if (appRouter.previousPath) {
+         if (isLogoutTriggered) {
+            dispatch(
+               setRouter({
+                  previousPath: null,
+               }),
+            );
+
+            router.push('/sign-in');
+         }
+
+         if (!isLogoutTriggered && appRouter.previousPath) {
             router.push(appRouter.previousPath);
          } else {
             dispatch(
                setRouter({
                   previousPath: currentPath,
-                  currentPath: null,
                }),
             );
             router.push('/sign-in');

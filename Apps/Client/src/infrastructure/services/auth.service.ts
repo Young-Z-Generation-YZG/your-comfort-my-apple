@@ -9,6 +9,7 @@ import {
    HttpErrorResponse,
    ServerErrorResponse,
 } from '~/domain/interfaces/errors/error.interface';
+import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 
 export const AuthApi = createApi({
    reducerPath: 'auth-api',
@@ -40,6 +41,7 @@ export const AuthApi = createApi({
 
                dispatch(
                   setAccessToken({
+                     user_email: data.user_email,
                      access_token: data.access_token,
                      refresh_token: data.refresh_token,
                      expiration: data.expiration,
@@ -51,7 +53,20 @@ export const AuthApi = createApi({
             }
          },
       }),
+      verifyOtpAsync: builder.mutation({
+         query: (payload: IOtpPayload) => ({
+            url: '/api/v1/auth/verify-otp',
+            method: 'POST',
+            body: payload,
+         }),
+         transformErrorResponse: (error: HttpErrorResponse) => {
+            return error.data;
+         },
+         transformResponse: (response: boolean) => {
+            return response;
+         },
+      }),
    }),
 });
 
-export const { useLoginAsyncMutation } = AuthApi;
+export const { useLoginAsyncMutation, useVerifyOtpAsyncMutation } = AuthApi;

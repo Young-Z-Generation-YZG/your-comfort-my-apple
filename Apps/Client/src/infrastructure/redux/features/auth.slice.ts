@@ -11,6 +11,7 @@ type AuthState = {
    refreshToken: string | null;
    AT_expireIn: string | null;
    isAuthenticated: boolean;
+   isLogoutTriggered: boolean;
    timerId: string | null;
 };
 
@@ -20,6 +21,9 @@ const initialState = {
       accessToken: null,
       refreshToken: null,
       AT_expireIn: null,
+      isAuthenticated: false,
+      isLogoutTriggered: false,
+      timerId: null,
    } as AuthState,
 } as InitialState;
 
@@ -28,29 +32,31 @@ const authSlice = createSlice({
    initialState: initialState,
    reducers: {
       setAccessToken: (state, action: PayloadAction<ILoginResponse>) => {
-         console.log('setAccessToken action:', action.payload);
-
          state.value.userEmail = action.payload.user_email;
          state.value.accessToken = action.payload.access_token;
          state.value.refreshToken = action.payload.refresh_token;
          state.value.AT_expireIn = action.payload.expiration;
          state.value.isAuthenticated = true;
+         state.value.isLogoutTriggered = false;
       },
 
       setTimerId: (state, action: PayloadAction<string | null>) => {
          state.value.timerId = action.payload;
       },
 
-      logout: (state) => {
+      setLogout: (state) => {
          state.value.accessToken = null;
          state.value.refreshToken = null;
          state.value.AT_expireIn = null;
          state.value.userEmail = null;
+         state.value.isLogoutTriggered = true;
          state.value.isAuthenticated = false;
+         state.value.timerId = null;
+         state.value.isLogoutTriggered = true;
       },
    },
 });
 
-export const { setAccessToken, logout, setTimerId } = authSlice.actions;
+export const { setAccessToken, setLogout, setTimerId } = authSlice.actions;
 
 export default authSlice.reducer;

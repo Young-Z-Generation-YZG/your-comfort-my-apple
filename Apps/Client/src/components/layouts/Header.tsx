@@ -5,6 +5,7 @@ import svgs from '@assets/svgs';
 import { useEffect, useRef, useState } from 'react';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { LiaBoxSolid } from 'react-icons/lia';
+import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import { MdArrowRightAlt } from 'react-icons/md';
 import { MdOutlineManageAccounts } from 'react-icons/md';
@@ -12,6 +13,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useGetCategoriesAsyncQuery } from '~/infrastructure/services/category.service';
 import { CategoryResponseType } from '~/domain/types/category.type';
 import Link from 'next/link';
+import { useAppSelector } from '~/infrastructure/redux/store';
+import { useDispatch } from 'react-redux';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 
 const mainCategoriesDefault = ['Mac', 'iPad', 'iPhone', 'Watch', 'HeadPhones'];
 
@@ -22,6 +26,12 @@ const Header = () => {
    const [categories, setCategories] = useState<CategoryResponseType[]>([]);
 
    const categoryRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+
+   const { isAuthenticated, userEmail } = useAppSelector(
+      (state) => state.auth.value,
+   );
+
+   const dispatch = useDispatch();
 
    const {
       data: categoriesData,
@@ -150,20 +160,23 @@ const Header = () => {
                   initial="hidden"
                   animate="visible"
                >
-                  <div className="font-SFProText">
-                     <h2 className="text-2xl font-medium font-SFProText">
-                        You are not sign-in yet.
-                     </h2>
-                     <p className="text-base text-slate-500 py-5 font-SFProText">
-                        <Link
-                           href="/sign-in"
-                           className="text-blue-400 underline"
-                        >
-                           Sign-in
-                        </Link>{' '}
-                        to see your profile
-                     </p>
-                  </div>
+                  {!isAuthenticated ? (
+                     <div className="font-SFProText">
+                        <h2 className="text-2xl font-medium font-SFProText">
+                           You are not sign-in yet.
+                        </h2>
+                        <p className="text-base text-slate-500 py-5 font-SFProText">
+                           <Link
+                              href="/sign-in"
+                              className="text-blue-400 underline"
+                           >
+                              Sign-in
+                           </Link>{' '}
+                           to see your profile
+                        </p>
+                     </div>
+                  ) : null}
+
                   <h3 className="text-sm text-slate-500 font-SFProText">
                      My Profile
                   </h3>
@@ -180,13 +193,28 @@ const Header = () => {
                         <MdOutlineManageAccounts className="size-4" />
                         <p>Your Account</p>
                      </li>
-                     <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
-                        <PiUserCircleFill
-                           className="size-4"
-                           aria-hidden="true"
-                        />
-                        <Link href="/sign-in">Sign-in</Link>
-                     </li>
+                     {!isAuthenticated ? (
+                        <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
+                           <PiUserCircleFill
+                              className="size-4"
+                              aria-hidden="true"
+                           />
+                           <Link href="/sign-in">Sign-in</Link>
+                        </li>
+                     ) : (
+                        <li
+                           className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600"
+                           onClick={() => {
+                              dispatch(setLogout());
+                           }}
+                        >
+                           <RiLogoutBoxRLine
+                              className="size-4"
+                              aria-hidden="true"
+                           />
+                           <p>Logout</p>
+                        </li>
+                     )}
                   </ul>
                </motion.div>
             </div>

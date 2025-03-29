@@ -10,14 +10,12 @@ type AppState = {
 
 type RouterState = {
    previousPath: string | null;
-   currentPath: string | null;
 };
 
 const initialState = {
    value: {
       router: {
          previousPath: null,
-         currentPath: null,
       },
    } as AppState,
 } as InitialState;

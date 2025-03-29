@@ -6,7 +6,7 @@ import { cn } from '~/infrastructure/lib/utils';
 import { ReduxProvider } from '~/infrastructure/redux/provider';
 import Header from '~/components/layouts/Header';
 import Footer from '~/components/layouts/Footer';
-import { LoadingProvider } from '~/components/context/loading-context';
+import { LoadingProvider } from '~/components/contexts/loading.context';
 import { Toaster } from '~/components/ui/toaster';
 
 export const metadata: Metadata = {

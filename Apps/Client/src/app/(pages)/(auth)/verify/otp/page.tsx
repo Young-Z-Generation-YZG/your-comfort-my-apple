@@ -5,7 +5,15 @@ import { OTPInput } from '~/components/client/forms/otp-input';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import Button from '../../_components/Button';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
+import { useForm } from 'react-hook-form';
+import { useVerifyOtpAsyncMutation } from '~/infrastructure/services/auth.service';
+
+const defaultValues: OtpFormType = {
+   _q: '',
+   otp: '',
+};
 
 const OtpPage = () => {
    const [otp, setOtp] = useState('');
@@ -13,38 +21,67 @@ const OtpPage = () => {
    const [isError, setIsError] = useState(false);
    const [isSuccess, setIsSuccess] = useState(false);
    const [timeLeft, setTimeLeft] = useState(30);
-   const [isLoading, setIsLoading] = useState(false);
 
    const router = useRouter();
+   const searchParams = useSearchParams();
 
    const userEmail = useAppSelector((state) => state.auth.value.userEmail);
 
-   // Handle OTP completion
-   const handleComplete = (value: string) => {
-      console.log('OTP completed:', value);
-      setOtp(value);
+   const form = useForm<OtpFormType>({
+      resolver: OtpResolver,
+      defaultValues: defaultValues,
+   });
 
-      // Simulate verification
-      setIsVerifying(true);
-      setTimeout(() => {
-         setIsVerifying(false);
+   const [
+      verifyOtpAsync,
+      {
+         isLoading: isFetching,
+         error: verifyOtpError,
+         isError: verifyOtpIsError,
+         reset,
+      },
+   ] = useVerifyOtpAsyncMutation();
 
-         // For demo purposes, consider "123456" as the correct OTP
-         if (value === '123456') {
-            setIsSuccess(true);
-            setIsError(false);
-         } else {
-            setIsError(true);
-            setIsSuccess(false);
-         }
-      }, 1500);
+   const handleSubmit = async (data: OtpFormType) => {
+      console.log('Submitting OTP:', data);
+
+      await verifyOtpAsync(data).unwrap();
    };
+
+   // Handle OTP completion
+   const handleComplete = async (value: string) => {
+      form.setValue('otp', value);
+      handleSubmit(form.getValues());
+   };
+
+   useEffect(() => {
+      if (verifyOtpIsError) {
+         setIsError(true);
+         reset();
+      }
+   }, [verifyOtpIsError]);
+
+   useEffect(() => {
+      if (isFetching) {
+         setIsVerifying(true);
+      } else {
+         setIsVerifying(false);
+      }
+   }, [isFetching]);
 
    // Handle OTP change
    const handleChange = (value: string) => {
       setOtp(value);
-      if (isError) setIsError(false);
-      if (isSuccess) setIsSuccess(false);
+   };
+
+   // Reset timer
+   const handleResendCode = () => {
+      setTimeLeft(30);
+      setIsError(false);
+      setIsSuccess(false);
+      setOtp('');
+
+      alert('A new verification code has been sent!');
    };
 
    // Countdown timer for resend code
@@ -58,16 +95,13 @@ const OtpPage = () => {
       return () => clearTimeout(timer);
    }, [timeLeft]);
 
-   // Reset timer
-   const handleResendCode = () => {
-      setTimeLeft(30);
-      setIsError(false);
-      setIsSuccess(false);
-      setOtp('');
-
-      // Simulate sending a new code
-      alert('A new verification code has been sent!');
-   };
+   // Get query params
+   useEffect(() => {
+      const _q = searchParams.get('_q');
+      if (_q) {
+         form.setValue('_q', _q);
+      }
+   }, [searchParams, form]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -180,7 +214,9 @@ const OtpPage = () => {
                               otp.length !== 6 || isVerifying || isSuccess
                            }
                         >
-                           {isVerifying ? 'Verifying...' : 'Verify Code'}
+                           {isVerifying || isFetching
+                              ? 'Verifying...'
+                              : 'Verify Code'}
                         </Button>
                      </div>
 
