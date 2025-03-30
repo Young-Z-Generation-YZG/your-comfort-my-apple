@@ -22,6 +22,7 @@
          "@assets/*": ["./assets/*"],
          "@public/*": ["./public/*"],
          "~/*": ["./src/*"],
+         "@Client/*" : ["./*"],
       }
    },
    "include": [

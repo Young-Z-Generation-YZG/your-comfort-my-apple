@@ -424,7 +424,7 @@ const Header = () => {
 
    return (
       <header
-         className="relative w-screen bg-[#fafafc]"
+         className="relative w-full bg-[#fafafc]"
          onMouseLeave={handleMouseLeave}
       >
          <div className="flex flex-row items-center w-[1180px] h-[44px] px-[22px] mx-auto">
