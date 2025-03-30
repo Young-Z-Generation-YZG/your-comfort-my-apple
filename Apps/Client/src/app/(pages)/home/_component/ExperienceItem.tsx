@@ -3,7 +3,16 @@
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 
-const ExperienceItem = ({ experience }: { experience: any }) => {
+type ExperienceItemType = {
+    id:number,
+    subtitle:string,
+    title:string,
+    content:string,
+    img:string,
+    checkLightImg:boolean,
+}
+
+const ExperienceItem = ({ experience }: { experience: ExperienceItemType }) => {
     const {
         id,
         subtitle,
@@ -24,4 +33,5 @@ const ExperienceItem = ({ experience }: { experience: any }) => {
     );
 }
 
+export type { ExperienceItemType };
 export default ExperienceItem;

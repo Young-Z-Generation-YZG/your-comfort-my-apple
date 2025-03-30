@@ -5,7 +5,28 @@ import Image from 'next/image';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 
-const CompareItem = ({compare}: {compare: any}) => {
+type CompareItemType = {
+    id:string,
+    checkNew:boolean,
+    name:string,
+    image:string,
+    description:string,
+    price:number,
+    colors:Array<string>,
+    screen:Array<string>,
+    material:Array<string>,
+    checkAppIntell:boolean,
+    checkDynamic:boolean,
+    chip:Array<any>,
+    battery:string,
+    biometricAuthen:string,
+    crashDetection:Array<string>,
+    camera:Array<string>,
+    checkCameraControl:boolean,
+    typeConnect:Array<string>,
+}
+
+const CompareItem = ({compare}: {compare: CompareItemType}) => {
     const {
         id,
         checkNew,
@@ -90,12 +111,12 @@ const CompareItem = ({compare}: {compare: any}) => {
 
             <div className='product-colors flex flex-col mx-auto pt-[23px] pb-[38px] relative justify-start h-[100px]'>
                 <div className='flex flex-row gap-2 pb-[10px] justify-center'>
-                    {colors.slice(0,4).map((color: any, index: any) => (
+                    {colors.slice(0,4).map((color: string, index: number) => (
                     <div className='product-color rounded-[50%] h-[15px] w-[15px] shadow-[rgba(0,0,0,0.15)_1.95px_1.95px_2.6px]' key={index} style={{backgroundColor: color}}/>
                     ))}
                 </div>
                 <div className='flex flex-row gap-2 pb-[10px] justify-center '>
-                    {colors.slice(4,8).map((color: any, index: any) => (
+                    {colors.slice(4,8).map((color: string, index: number) => (
                     <div className='product-color rounded-[50%] h-[15px] w-[15px] shadow-[rgba(0,0,0,0.15)_1.95px_1.95px_2.6px]' key={index} style={{backgroundColor: color}}/>
                     ))}
                 </div>
@@ -113,7 +134,7 @@ const CompareItem = ({compare}: {compare: any}) => {
 
             <div className='product-screen w-full pb-11'>
                 <div className='text-center text-[20px] text-[#1d1d1f] font-semibold leading-[25px] tracking-[-0.374px] pt-[34px]'>{screen[0]}</div>
-                {screen.map((item:any,index:any) => {
+                {screen.map((item, index:number) => {
                     if (index === 0 ) {
                         return ;
                     }
@@ -122,13 +143,13 @@ const CompareItem = ({compare}: {compare: any}) => {
                     }
                 })}
                 {Array.from({ length: Math.max(0, 4 - screen.length) }).map((_, i) => (
-                        <div className='text-center text-[15px] text-[#1d1d1f] font-light leading-[20px] mt-[6px]' key={i + screen.length}>-</div>
+                    <div className='text-center text-[15px] text-[#1d1d1f] font-light leading-[20px] mt-[6px]' key={i + screen.length}>-</div>
                 ))}
             </div>
 
             <div className='product-chip w-full pb-11'>
                 <Image className='w-[38px] h-[38px] mx-auto mb-[12px]' src={imgChip} alt='' width={1000} height={1000} quality={100}/>
-                {chip.map((item:any,index:any) => {
+                {chip.map((item:Array<any>, index:number) => {
                     if(index === 0){
                         return ;
                     }
@@ -162,7 +183,7 @@ const CompareItem = ({compare}: {compare: any}) => {
             
             <div className='product-camera w-full pb-11'>
                 <Image className='w-[39px] h-[39px] mx-auto mb-[12px]' src={imgCamera} alt='' width={1000} height={1000} quality={100}/>
-                {camera.map((item:any,index:any) => {
+                {camera.map((item, index:number) => {
                     if(index === 0){
                         return ;
                     }
@@ -177,7 +198,7 @@ const CompareItem = ({compare}: {compare: any}) => {
 
             <div className='product-crash-detection w-full pb-11 h-[250px]'>
                 <Image className='w-[39px] h-[39px] mx-auto mb-[12px]' src={'/images/compare-imgs/icon-crash-detection.jpg'} alt='' width={1000} height={1000} quality={100}/>
-                {crashDetection.map((item:any,index:any) => 
+                {crashDetection.map((item, index:number) => 
                     <div className='text-center text-[15px] text-[#1d1d1f] font-light leading-[20px] mt-[6px]' key={index}>{item}</div>
                 )}
                 {Array.from({ length: Math.max(0, 5 - crashDetection.length) }).map((_, i) => (
@@ -187,7 +208,7 @@ const CompareItem = ({compare}: {compare: any}) => {
 
             <div className='product-material w-full pb-11'>
                 <Image className='w-[52px] h-[41px] mx-auto mb-[12px]' src={'/images/compare-imgs/icon-material.jpg'} alt='' width={1000} height={1000} quality={100}/>
-                {material.map((item:any,index:any) => {
+                {material.map((item, index:number) => {
                         return <div className='text-center text-[15px] text-[#1d1d1f] font-light leading-[20px] mt-[6px] mx-[24px]' key={index}>{item}</div>
                 })}
                 {Array.from({ length: Math.max(0, 2 - material.length) }).map((_, i) => (
@@ -223,4 +244,5 @@ const CompareItem = ({compare}: {compare: any}) => {
     );
 }
 
+export type { CompareItemType };
 export default CompareItem;

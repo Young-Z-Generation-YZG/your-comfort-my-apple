@@ -3,7 +3,17 @@
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 
-const LastestItem = ({ product }: { product: any }) => {
+type LastestItemType = {
+    id: number,
+    checkPreOrder: boolean,
+    title: string,
+    subtitle: string,
+    price: string,
+    img: string,
+    checkLightImg: boolean,
+}
+
+const LastestItem = ({ product }: { product: LastestItemType }) => {
     const {
         id,
         checkPreOrder,
@@ -24,5 +34,5 @@ const LastestItem = ({ product }: { product: any }) => {
         </div>
     );
 }
-
+export type { LastestItemType };
 export default LastestItem;
