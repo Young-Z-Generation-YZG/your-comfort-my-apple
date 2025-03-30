@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { motion } from "framer-motion"
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import '@Client/globals.css';
+import '/globals.css';
 import Image from 'next/image';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '~/components/ui/carousel';
@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from '~
 
 import LastestItem from './_component/LastestItem';
 import ExperienceItem from './_component/ExperienceItem';
-import CompareItem from './_component/CompareItem';
+import CompareItem, { CompareItemType } from './_component/CompareItem';
 import { Button } from '~/components/ui/button';
 
 const listLatestItem = [
@@ -422,7 +422,7 @@ const HomePage = () => {
                         <SelectValue />
                      </SelectTrigger>
                      <SelectContent className="bg-white">
-                        {listProduct.map((product:any,index:any) =>(
+                        {listProduct.map((product:any, index:number) =>(
                         <SelectItem value={product.id} key={index}>{product.name}</SelectItem>
                         ))}
                      </SelectContent>
@@ -442,7 +442,7 @@ const HomePage = () => {
                         <SelectValue />
                      </SelectTrigger>
                      <SelectContent className="bg-white">
-                        {listProduct.map((product:any,index:any) =>(
+                        {listProduct.map((product:any, index:number) =>(
                         <SelectItem value={product.id} key={index}>{product.name}</SelectItem>
                         ))}
                      </SelectContent>
@@ -457,7 +457,7 @@ const HomePage = () => {
                         <SelectValue />
                      </SelectTrigger>
                      <SelectContent className="bg-white">
-                        {listProduct.map((product:any,index:any) =>(
+                        {listProduct.map((product:any, index:number) =>(
                         <SelectItem value={product.id} key={index}>{product.name}</SelectItem>
                         ))}
                      </SelectContent>
@@ -465,13 +465,13 @@ const HomePage = () => {
                </div>
             </div>
             <div className={cn('w-full flex flex-row gap-3 ', showDetailCompare?'h-fit':'h-[1250px] overflow-hidden')}>
-               <CompareItem compare={listProduct.find((product:any) => product.id === selectedOption1)} />
-               <CompareItem compare={listProduct.find((product:any) => product.id === selectedOption2)} />
-               <CompareItem compare={listProduct.find((product:any) => product.id === selectedOption3)} />
+               <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption1) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
+               <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption2) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
+               <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption3) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
             </div>
             <div className={cn('w-full flex items-center justify-center mt-10')}>
                <Button onClick={()=>setShowDetailCompare(!showDetailCompare)} className={cn('w-[140px] bg-black text-white uppercase px-10 text-xl hover:bg-[#333]')} variant={'default'}>
-                  {showDetailCompare?'Ẩn bớt':'Xem thêm'}
+                  {showDetailCompare?'Collapse':'Expand'}
                </Button>
             </div>
          </div>
