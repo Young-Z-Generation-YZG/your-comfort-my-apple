@@ -155,6 +155,72 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.ToTable("UserTokens", "identity");
                 });
 
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.Profile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Gender");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Profiles", "identity");
+                });
+
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.ShippingAddress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContactPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShippingAddresses", "identity");
+                });
+
             modelBuilder.Entity("YGZ.Identity.Domain.Users.User", b =>
                 {
                     b.Property<string>("Id")
@@ -163,15 +229,8 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("BirthDay")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -180,14 +239,6 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -285,31 +336,98 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("YGZ.Identity.Domain.Users.User", b =>
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.Profile", b =>
                 {
+                    b.HasOne("YGZ.Identity.Domain.Users.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("YGZ.Identity.Domain.Users.Entities.Profile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("YGZ.Identity.Domain.Users.ValueObjects.Image", "Image", b1 =>
                         {
-                            b1.Property<string>("UserId")
-                                .HasColumnType("text");
+                            b1.Property<Guid>("ProfileId")
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("ImageId")
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("text")
+                                .HasDefaultValue("")
                                 .HasColumnName("ImageId");
 
                             b1.Property<string>("ImageUrl")
                                 .IsRequired()
+                                .ValueGeneratedOnAdd()
                                 .HasColumnType("text")
+                                .HasDefaultValue("")
                                 .HasColumnName("ImageUrl");
 
-                            b1.HasKey("UserId");
+                            b1.HasKey("ProfileId");
 
-                            b1.ToTable("Users", "identity");
+                            b1.ToTable("Profiles", "identity");
 
                             b1.WithOwner()
-                                .HasForeignKey("UserId");
+                                .HasForeignKey("ProfileId");
                         });
 
                     b.Navigation("Image");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.ShippingAddress", b =>
+                {
+                    b.HasOne("YGZ.Identity.Domain.Users.User", "User")
+                        .WithMany("ShippingAddresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("YGZ.Identity.Domain.Users.ValueObjects.Address", "AddressDetail", b1 =>
+                        {
+                            b1.Property<Guid>("ShippingAddressId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("AddressCountry")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("AddressCountry");
+
+                            b1.Property<string>("AddressDistrict")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("AddressDistrict");
+
+                            b1.Property<string>("AddressLine")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("AddressLine");
+
+                            b1.Property<string>("AddressProvince")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("AddressProvince");
+
+                            b1.HasKey("ShippingAddressId");
+
+                            b1.ToTable("ShippingAddresses", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ShippingAddressId");
+                        });
+
+                    b.Navigation("AddressDetail")
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.User", b =>
+                {
+                    b.Navigation("Profile")
+                        .IsRequired();
+
+                    b.Navigation("ShippingAddresses");
                 });
 #pragma warning restore 612, 618
         }

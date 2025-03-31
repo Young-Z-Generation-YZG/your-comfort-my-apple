@@ -65,7 +65,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
                         ViewName: "EmailVerification",
                         Model: new EmailVerificationModel
                         {
-                            FullName = $"{user.Response!.FirstName} {user.Response!.LastName}",
+                            FullName = $"Foo Bar",
                             VerifyOtp = otp,
                             VerificationLink = $"https://ygz.zone/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
                         },

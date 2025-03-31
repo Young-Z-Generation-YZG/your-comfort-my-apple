@@ -5,8 +5,8 @@ namespace YGZ.Identity.Domain.Users.ValueObjects;
 
 public class Image : ValueObject
 {
-    public string ImageId { get; private set; }
-    public string ImageUrl { get; private set; }
+    public string ImageId { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
 
     private Image(string id, string url)
     {

@@ -20,6 +20,7 @@ public class IdentityService : IIdentityService
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly ILogger<IdentityService> _logger;
     private readonly IKeycloakService _keycloakService;
+    RoleManager<IdentityRole> _roleManager;
     private readonly IEmailService _emailService;
 
     public IdentityService(
@@ -27,13 +28,15 @@ public class IdentityService : IIdentityService
         UserManager<User> userManager,
         IPasswordHasher<User> passwordHasher,
         IKeycloakService keycloakService,
-        IEmailService emailService)
+        IEmailService emailService,
+        RoleManager<IdentityRole> roleManager)
     {
         _logger = logger;
         _userManager = userManager;
         _passwordHasher = passwordHasher;
         _keycloakService = keycloakService;
         _emailService = emailService;
+        _roleManager = roleManager;
     }
     public async Task<Result<User>> FindUserAsync(string email)
     {
@@ -71,6 +74,19 @@ public class IdentityService : IIdentityService
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 
             var result = await _userManager.CreateAsync(newUser);
+
+            if (!await _roleManager.RoleExistsAsync("[ROLE] USER"))
+            {
+                return Errors.User.CannotBeCreated; // Or a custom error
+            }
+
+            // Add the user to the "USER" role
+            var roleResult = await _userManager.AddToRoleAsync(newUser, "[ROLE] USER");
+
+            if (!roleResult.Succeeded)
+            {
+                return Errors.User.CannotBeCreated; // Or a custom error for role assignment failure
+            }
 
             if (!result.Succeeded)
             {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Emails;
@@ -88,12 +87,12 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand, EmailVeri
             { "_token", tokenResult.Response! }
         };
 
-       var response = new EmailVerificationResponse
-       {
-           Params = Params,
-           VerificationType = VerificationType.EMAIL_VERIFICATION.Name,
-           TokenExpiredIn = TimeSpan.FromMinutes(5).TotalMilliseconds
-       };
+        var response = new EmailVerificationResponse
+        {
+            Params = Params,
+            VerificationType = VerificationType.EMAIL_VERIFICATION.Name,
+            TokenExpiredIn = TimeSpan.FromMinutes(5).Seconds
+        };
 
         return response;
     }

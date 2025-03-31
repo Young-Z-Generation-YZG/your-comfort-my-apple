@@ -12,7 +12,7 @@ public static class IdentityExtension
     public static IServiceCollection AddIdentityExtension(this IServiceCollection services)
     {
         services
-            .AddIdentityCore<User>(options =>
+            .AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
             })
