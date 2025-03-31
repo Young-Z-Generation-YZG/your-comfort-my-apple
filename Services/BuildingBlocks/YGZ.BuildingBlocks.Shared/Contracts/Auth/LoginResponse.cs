@@ -4,4 +4,12 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
-public sealed record LoginResponse(string AccessToken, string RefreshToken, string Expiration) { }
+public sealed class LoginResponse() 
+{
+    required public string UserEmail { get; set;}
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
+    public double? AccessTokenExpiresIn { get; set; }
+    required public string VerificationType { get; set; }
+    public Dictionary<string, string>? Params { get; set; }
+}

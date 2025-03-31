@@ -14,8 +14,9 @@ import { useToast } from '~/hooks/useToast';
 import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
+import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 
-const defaultValues: Partial<LoginFormType> = {
+const defaultValues: LoginFormType = {
    email: '',
    password: '',
 };
@@ -41,7 +42,19 @@ const SignInPage = () => {
    ] = useLoginAsyncMutation();
 
    const onSubmit = async (data: LoginFormType) => {
-      await loginAsync(data).unwrap();
+      const result = await loginAsync(data).unwrap();
+
+      if (result.verification_type === VERIFICATION_TYPES.EMAIL_VERIFICATION) {
+         const queryParams = new URLSearchParams();
+
+         if (result.params) {
+            for (const [key, value] of Object.entries(result.params)) {
+               queryParams.append(key, value as string);
+            }
+         }
+
+         router.replace(`/verify/otp?${queryParams}`);
+      }
    };
 
    useEffect(() => {
@@ -49,7 +62,7 @@ const SignInPage = () => {
          const serverError = loginError as ServerErrorResponse;
          toast({
             variant: 'destructive',
-            title: `${serverError.error.message}`,
+            title: `${serverError?.error?.message ?? 'Server busy, please try again later'}`,
             // description: `${serverError.error.code}`,
          });
          reset(); // Reset the mutation state to clear isError
@@ -122,7 +135,7 @@ const SignInPage = () => {
                               type="password"
                               disabled={isLoading || isFetching}
                               className="rounded-xl rounded-t-none"
-                              fetchingFunc={loginAsync}
+                              fetchingFunc={onSubmit}
                               hasArrowButton={true}
                            />
                         </form>

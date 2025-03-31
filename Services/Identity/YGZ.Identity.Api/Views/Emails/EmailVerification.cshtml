@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <tr>
+        <td style="padding: 30px 0; text-align: center; background-color: #4f46e5;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Email Verification</h1>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 30px;">
+            <p style="margin-top: 0; margin-bottom: 16px; font-size: 16px; line-height: 1.5;">Dear @Model?.FullName,</p>
+            <p style="margin-top: 0; margin-bottom: 16px; font-size: 16px; line-height: 1.5;">Congratulations and welcome to Template! This email serves as confirmation that your registration has been successfully completed. We're thrilled to have you as a part of our community and look forward to providing you with a rewarding experience.</p>
+            <div style="display: flex; gap: 4px">
+                <p style="margin-top: 0; font-size: 16px; line-height: 1.5;">Verify email by link:</p>
+                <a href=@Model?.VerificationLink style="margin-top: 0; margin-bottom: 24px; font-size: 16px; line-height: 1.5; font-weight: 400"> click here</a>
+            </div>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 30px auto;">
+                <tr>
+                    <td style="border-radius: 4px; background-color: #4f46e5; text-align: center;">
+                        <button 
+                            style="
+                            background-color: #4f46e5; 
+                            border: none; 
+                            letter-spacing: 1px; 
+                            color: #ffffff; 
+                            padding: 12px 30px; 
+                            text-decoration: none; 
+                            font-weight: bold; 
+                            border-radius: 4px; 
+                            display: inline-block; 
+                            font-size: 16px;"
+                        >
+                            @Model?.VerifyOtp
+                        </button>
+                    </td>
+                </tr>
+            </table>
+            <p style="margin-top: 24px; margin-bottom: 8px; font-size: 16px; line-height: 1.5;">Best Regards,</p>
+            <p style="margin-top: 0; margin-bottom: 0; font-size: 16px; line-height: 1.5; font-weight: bold;">YGZ Team</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+            <p style="margin: 0; font-size: 14px; color: #777777;">If you didn't request this email, please ignore it.</p>
+            <p style="margin: 10px 0 0; font-size: 14px; color: #777777;">© 2025 Template. All rights reserved.</p>
+        </td>
+    </tr>
+</table>

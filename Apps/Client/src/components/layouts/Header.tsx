@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '~/infrastructure/redux/features/auth.slice';
+import { useRouter } from 'next/navigation';
 
 const mainCategoriesDefault = ['Mac', 'iPad', 'iPhone', 'Watch', 'HeadPhones'];
 
@@ -24,8 +25,8 @@ const subCategories = ['iPhone 16 Pro', 'iPhone 16', 'iPhone 16e', 'iPhone 15'];
 const Header = () => {
    const [activeCategory, setActiveCategory] = useState<string | null>(null);
    const [categories, setCategories] = useState<CategoryResponseType[]>([]);
-
    const categoryRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+   const router = useRouter();
 
    const { isAuthenticated, userEmail } = useAppSelector(
       (state) => state.auth.value,
@@ -429,7 +430,12 @@ const Header = () => {
       >
          <div className="flex flex-row items-center w-[1180px] h-[44px] px-[22px] mx-auto">
             <ul className="main-category flex flex-row justify-between items-center w-full">
-               <div className="px-[8px]">
+               <div
+                  className="px-[8px] cursor-pointer"
+                  onClick={() => {
+                     router.push('/home');
+                  }}
+               >
                   <Image
                      src={svgs.appleIcon}
                      alt="cover"
@@ -439,7 +445,12 @@ const Header = () => {
                      className="w-[22px] h-[44px]"
                   />
                </div>
-               <li className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]">
+               <li
+                  className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('/store');
+                  }}
+               >
                   <p className="antialiased opacity-[0.8] tracking-wide">
                      Store
                   </p>

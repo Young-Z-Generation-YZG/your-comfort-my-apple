@@ -9,7 +9,7 @@ import {
    type FieldValues,
    type RegisterOptions,
 } from 'react-hook-form';
-import { CircleIcon as ExclamationCircleIcon } from 'lucide-react';
+import { AlertCircle, CircleIcon as ExclamationCircleIcon } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
 
 interface FieldInputProps<T extends FieldValues> {
@@ -17,6 +17,7 @@ interface FieldInputProps<T extends FieldValues> {
    name: Path<T>;
    type?: 'text' | 'email' | 'password' | 'number' | 'color' | 'url';
    label: string;
+   required?: boolean;
    className?: string;
    errorTextClassName?: string;
    disabled?: boolean;
@@ -32,6 +33,7 @@ export function FieldInput<T extends FieldValues>({
    name,
    type = 'text',
    label,
+   required = false,
    className = '',
    errorTextClassName = '',
    visibleError = true,
@@ -87,12 +89,22 @@ export function FieldInput<T extends FieldValues>({
                            }}
                            className="absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-base font-light"
                            style={{
-                              top: '35%',
+                              top: '30%',
                               transform: 'translateY(-50%)',
                               transformOrigin: 'left top',
                            }}
                         >
                            {label}
+                           {true && (
+                              <span
+                                 className={cn(
+                                    'ml-1',
+                                    isActive ? 'text-red-500' : '',
+                                 )}
+                              >
+                                 *
+                              </span>
+                           )}
                         </motion.label>
 
                         <input
@@ -106,7 +118,6 @@ export function FieldInput<T extends FieldValues>({
                                     ? 'border-red-500 focus:border-red-500'
                                     : 'border-gray-300 focus:border-blue-500'
                               }`,
-                              `${hasError && visibleError ? 'rounded-xl' : ''}`,
                            )}
                            onFocus={() => setIsFocused(true)}
                            {...field}
@@ -153,9 +164,15 @@ export function FieldInput<T extends FieldValues>({
          </div>
 
          {hasError && visibleError && (
-            <p className={cn('text-red-500 text-sm px-4', errorTextClassName)}>
-               {errorMessage}
-            </p>
+            <div
+               className={cn(
+                  'flex items-center text-red-500 text-sm px-1',
+                  errorTextClassName,
+               )}
+            >
+               <AlertCircle className="h-4 w-4 mr-1" />
+               <span>{errorMessage}</span>
+            </div>
          )}
       </div>
    );

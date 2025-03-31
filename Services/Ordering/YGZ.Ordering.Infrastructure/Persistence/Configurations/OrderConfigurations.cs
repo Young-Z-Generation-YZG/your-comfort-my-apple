@@ -23,19 +23,15 @@ public class OrderConfigurations : IEntityTypeConfiguration<Order>
             .HasConversion(id => id.Value, value => UserId.Of(value))
             .HasDefaultValue(null);
 
-        //builder
-        //    .Property(o => o.Code)
-        //    .HasConversion(code => code.Value, value => Code.Of(value));
         builder.ComplexProperty(builder => builder.Code, code =>
         {
             code.Property(c => c.Value)
                 .HasColumnName(nameof(Order.Code));
         });
 
-        // Updated relationship configuration
         builder.HasMany(o => o.OrderItems)
-            .WithOne(oi => oi.Order) // Reference the navigation property if added, or leave empty with .WithOne()
-            .HasForeignKey(oi => oi.OrderId); // Use the new OrderId property
+            .WithOne(oi => oi.Order)
+            .HasForeignKey(oi => oi.OrderId); 
 
 
         builder.ComplexProperty(builder => builder.ShippingAddress, address =>

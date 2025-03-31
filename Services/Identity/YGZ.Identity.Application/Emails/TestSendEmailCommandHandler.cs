@@ -20,8 +20,13 @@ public class TestSendEmailCommandHandler : ICommandHandler<TestSendEmailCommand,
         var command = new EmailCommand(
                         ReceiverEmail: "lov3rinve146@gmail.com",
                         Subject: "Welcome to Our Service",
-                        ViewName: "WelcomeEmail",
-                        Model: new WelcomeEmailModel { UserName = "John" },
+                        ViewName: "EmailVerification",
+                        Model: new EmailVerificationModel
+                        {
+                            FullName = "Foo Bar",
+                            VerifyOtp = "332452",
+                            VerificationLink = "https://ygz.zone/verify/otp?_q=\"jwt\"&_verifyType=email"
+                        },
                         Attachments: null
         );
 

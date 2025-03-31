@@ -19,7 +19,9 @@ public static class SeedDataExtensions
 
     private static async Task SeedAsync(IdentityDbContext context)
     {
+        await SeedRolesAsync(context);
         await SeedUsersAsync(context);
+        await SeedUserRolesAsync(context);
     }
 
     private static async Task SeedUsersAsync(IdentityDbContext context)
@@ -27,6 +29,24 @@ public static class SeedDataExtensions
         if (!await context.Users.AnyAsync())
         {
             await context.Users.AddRangeAsync(SeedData.Users);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedRolesAsync(IdentityDbContext context)
+    {
+        if (!await context.Roles.AnyAsync())
+        {
+            await context.Roles.AddRangeAsync(SeedData.Roles);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedUserRolesAsync(IdentityDbContext context)
+    {
+        if (!await context.UserRoles.AnyAsync())
+        {
+            await context.UserRoles.AddRangeAsync(SeedData.UserRoles);
             await context.SaveChangesAsync();
         }
     }

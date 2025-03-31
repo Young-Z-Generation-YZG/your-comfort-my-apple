@@ -8,6 +8,8 @@ using YGZ.Identity.Api.Contracts;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
+using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -42,6 +44,26 @@ public class AuthController : ApiController
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<RegisterCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("private/page/otp")]
+     public async Task<IActionResult> GetOtpPage([FromQuery] AccessOtpRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<AccessOtpPageCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("email/verification")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<VerifyEmailCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 

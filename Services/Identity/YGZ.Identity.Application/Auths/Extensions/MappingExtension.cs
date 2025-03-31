@@ -9,8 +9,12 @@ public static class MappingExtension
     {
         return User.Create(guid: userId,
                            email: dto.Email,
+                           phoneNumber: dto.PhoneNumber,
                            passwordHash: dto.Password,
                            firstName: dto.FirstName,
-                           lastName: dto.LastName);
+                           lastName: dto.LastName,
+                           birthDay: DateTime.Parse(dto.BirthDay).ToUniversalTime(),
+                           image: null,
+                           country: dto.Country);
     }
 }

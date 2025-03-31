@@ -36,8 +36,15 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+<<<<<<<< HEAD:Services/Identity/YGZ.Identity.Infrastructure/Persistence/Migrations/20250331193627_InitialMigration.cs
+========
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    ImageId = table.Column<string>(type: "text", nullable: true),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true),
+                    BirthDay = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+>>>>>>>> a9fd08f775d4bf2d62ee0d67ed265354e56973c3:Services/Identity/YGZ.Identity.Infrastructure/Persistence/Migrations/20250329162243_InitialMigration.cs
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -77,6 +84,61 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                         column: x => x.RoleId,
                         principalSchema: "identity",
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Profiles",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: false),
+                    ImageId = table.Column<string>(type: "text", nullable: true, defaultValue: ""),
+                    ImageUrl = table.Column<string>(type: "text", nullable: true, defaultValue: ""),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Profiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Profiles_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "identity",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShippingAddresses",
+                schema: "identity",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ContactName = table.Column<string>(type: "text", nullable: false),
+                    ContactPhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    AddressLine = table.Column<string>(type: "text", nullable: false),
+                    AddressDistrict = table.Column<string>(type: "text", nullable: false),
+                    AddressProvince = table.Column<string>(type: "text", nullable: false),
+                    AddressCountry = table.Column<string>(type: "text", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingAddresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShippingAddresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "identity",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -176,6 +238,13 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Profiles_UserId",
+                schema: "identity",
+                table: "Profiles",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 schema: "identity",
                 table: "RoleClaims",
@@ -187,6 +256,12 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShippingAddresses_UserId",
+                schema: "identity",
+                table: "ShippingAddresses",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -224,7 +299,15 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Profiles",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims",
+                schema: "identity");
+
+            migrationBuilder.DropTable(
+                name: "ShippingAddresses",
                 schema: "identity");
 
             migrationBuilder.DropTable(
