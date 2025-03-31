@@ -1,4 +1,5 @@
 export interface IOtpPayload {
-   _q: string;
+   email: string;
+   token: string;
    otp: string;
 }

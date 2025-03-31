@@ -11,7 +11,8 @@ import { useForm } from 'react-hook-form';
 import { useVerifyOtpAsyncMutation } from '~/infrastructure/services/auth.service';
 
 const defaultValues: OtpFormType = {
-   _q: '',
+   email: '',
+   token: '',
    otp: '',
 };
 
@@ -24,6 +25,9 @@ const OtpPage = () => {
 
    const router = useRouter();
    const searchParams = useSearchParams();
+   const _email = searchParams.get('_email');
+   const _token = searchParams.get('_token');
+   const _otp = searchParams.get('_otp');
 
    const userEmail = useAppSelector((state) => state.auth.value.userEmail);
 
@@ -38,14 +42,18 @@ const OtpPage = () => {
          isLoading: isFetching,
          error: verifyOtpError,
          isError: verifyOtpIsError,
+         isSuccess: verifyOtpIsSuccess,
          reset,
       },
    ] = useVerifyOtpAsyncMutation();
 
    const handleSubmit = async (data: OtpFormType) => {
-      console.log('Submitting OTP:', data);
-
       await verifyOtpAsync(data).unwrap();
+   };
+
+   // Handle OTP change
+   const handleChange = (value: string) => {
+      setOtp(value);
    };
 
    // Handle OTP completion
@@ -62,17 +70,24 @@ const OtpPage = () => {
    }, [verifyOtpIsError]);
 
    useEffect(() => {
+      if (verifyOtpIsSuccess) {
+         setIsSuccess(true);
+         setIsVerifying(true);
+         setIsError(false);
+         reset();
+         setTimeout(() => {
+            window.location.replace('/sign-in');
+         }, 2000);
+      }
+   }, [verifyOtpIsSuccess]);
+
+   useEffect(() => {
       if (isFetching) {
          setIsVerifying(true);
       } else {
          setIsVerifying(false);
       }
    }, [isFetching]);
-
-   // Handle OTP change
-   const handleChange = (value: string) => {
-      setOtp(value);
-   };
 
    // Reset timer
    const handleResendCode = () => {
@@ -97,9 +112,21 @@ const OtpPage = () => {
 
    // Get query params
    useEffect(() => {
-      const _q = searchParams.get('_q');
-      if (_q) {
-         form.setValue('_q', _q);
+      const _email = searchParams.get('_email');
+      const _token = searchParams.get('_token');
+      const _otp = searchParams.get('_otp');
+
+      if (_email && _token) {
+         form.setValue('email', _email);
+         form.setValue('token', _token);
+      }
+
+      if (_email && _token && _otp) {
+         form.setValue('email', _email);
+         form.setValue('token', _token);
+         form.setValue('otp', _otp);
+
+         form.handleSubmit(handleSubmit)();
       }
    }, [searchParams, form]);
 

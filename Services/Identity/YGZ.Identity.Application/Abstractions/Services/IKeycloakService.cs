@@ -15,4 +15,5 @@ public interface IKeycloakService
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
     Task<string> GetKeycloackUserTokenAsync(LoginCommand request);
     Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request);
+    Task<Result<bool>> VerifyEmailAsync(string email);
 }

@@ -14,13 +14,13 @@ public static class SwaggerExtensions
 {
     public static IServiceCollection AddSwaggerExtensions(this IServiceCollection services)
     {
-        services.AddOpenApiDocument((document, sp) =>
+        services.AddOpenApiDocument((settings, sp) =>
         {
             var keycloakOptions = sp.GetRequiredService<IOptionsMonitor<KeycloakAuthenticationOptions>>()?.Get(JwtBearerDefaults.AuthenticationScheme)!;
 
-            document.Title = "Keycloak Identity API";
+            settings.Title = "Identity APIs";
 
-            document.AddSecurity(
+            settings.AddSecurity(
                 JwtBearerDefaults.AuthenticationScheme,
                 [],
                 new OpenApiSecurityScheme
@@ -31,7 +31,7 @@ public static class SwaggerExtensions
                 }
             );
 
-            document.AddSecurity(
+            settings.AddSecurity(
                 OpenIdConnectDefaults.AuthenticationScheme,
                 [],
                 new OpenApiSecurityScheme
@@ -42,12 +42,14 @@ public static class SwaggerExtensions
             );
 
 
-            document.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
-            document.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
+            settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
+            settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
+
+            settings.OperationProcessors.Add(new AccessOtpRequestExample());
 
             // Add the custom schema processor for LoginRequest examples
-            document.SchemaSettings.SchemaProcessors.Add(new LoginRequestExample());
-            document.SchemaSettings.SchemaProcessors.Add(new RegisterRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new LoginRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new RegisterRequestExample());
         });
 
         return services;

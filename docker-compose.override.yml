@@ -181,6 +181,7 @@ services:
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_HTTPS_PORTS=8081
         - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
+        - ConnectionStrings__RedisDb=db.distributedcache:6379
         - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
         - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:8080/
         ports:

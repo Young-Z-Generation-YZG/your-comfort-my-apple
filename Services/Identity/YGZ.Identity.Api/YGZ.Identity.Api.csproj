@@ -28,9 +28,4 @@
     <ProjectReference Include="..\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Emails\" />
-    <Folder Include="Views\Shared\" />
-  </ItemGroup>
-
 </Project>

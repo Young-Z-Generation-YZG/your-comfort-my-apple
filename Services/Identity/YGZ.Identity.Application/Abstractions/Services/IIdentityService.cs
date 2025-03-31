@@ -12,4 +12,9 @@ public interface IIdentityService
     Task<Result<User>> FindUserAsync(string email);
     Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId);
     Task<Result<User>> LoginAsync(LoginCommand request);
+    Task<Result<string>> GenerateEmailVerificationTokenAsync(string email);
+    Task<Result<string>> GenerateResetPasswordTokenAsync(string email);
+    Task<Result<bool>> VerifyEmailTokenAsync(string email, string encodedToken);
+    Task<Result<bool>> CheckTokenIsValid(string email, string encodedToken);
+
 }

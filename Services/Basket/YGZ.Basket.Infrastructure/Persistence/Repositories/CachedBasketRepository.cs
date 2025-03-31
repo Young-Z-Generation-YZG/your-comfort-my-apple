@@ -3,7 +3,6 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Basket.Infrastructure.Persistence.Repositories;

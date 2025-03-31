@@ -9,7 +9,7 @@ type AuthState = {
    userEmail: string | null;
    accessToken: string | null;
    refreshToken: string | null;
-   AT_expireIn: string | null;
+   accessTokenExpiredIn: number | null;
    isAuthenticated: boolean;
    isLogoutTriggered: boolean;
    timerId: string | null;
@@ -20,7 +20,7 @@ const initialState = {
       userEmail: null,
       accessToken: null,
       refreshToken: null,
-      AT_expireIn: null,
+      accessTokenExpiredIn: null,
       isAuthenticated: false,
       isLogoutTriggered: false,
       timerId: null,
@@ -31,11 +31,20 @@ const authSlice = createSlice({
    name: 'auth',
    initialState: initialState,
    reducers: {
-      setAccessToken: (state, action: PayloadAction<ILoginResponse>) => {
+      setAccessToken: (
+         state,
+         action: PayloadAction<{
+            user_email: string;
+            access_token: string | null;
+            refresh_token: string | null;
+            access_token_expires_in: number | null;
+         }>,
+      ) => {
          state.value.userEmail = action.payload.user_email;
          state.value.accessToken = action.payload.access_token;
          state.value.refreshToken = action.payload.refresh_token;
-         state.value.AT_expireIn = action.payload.expiration;
+         state.value.accessTokenExpiredIn =
+            action.payload.access_token_expires_in;
          state.value.isAuthenticated = true;
          state.value.isLogoutTriggered = false;
       },
@@ -47,7 +56,7 @@ const authSlice = createSlice({
       setLogout: (state) => {
          state.value.accessToken = null;
          state.value.refreshToken = null;
-         state.value.AT_expireIn = null;
+         state.value.accessTokenExpiredIn = null;
          state.value.userEmail = null;
          state.value.isLogoutTriggered = true;
          state.value.isAuthenticated = false;
