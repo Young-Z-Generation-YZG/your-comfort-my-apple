@@ -1,6 +1,5 @@
 ﻿
-using System.Reflection.Emit;
-using Microsoft.AspNetCore.Identity;
+using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using YGZ.Identity.Domain.Users;
@@ -28,6 +27,6 @@ public class IdentityDbContext : IdentityDbContext<User>
             }
         }
 
-        //builder.ApplyConfiguration(new IdentityConfiguration());
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

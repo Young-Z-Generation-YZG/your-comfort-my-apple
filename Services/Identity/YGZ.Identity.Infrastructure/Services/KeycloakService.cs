@@ -288,4 +288,67 @@ public class KeycloakService : IKeycloakService
             throw;
         }
     }
+
+    public async Task<Result<bool>> VerifyEmailAsync(string email)
+    {
+        try
+        {
+            // Step 1: Find the user by email
+            var userResult = await GetUserByUsernameOrEmailAsync(email);
+
+            if (userResult.IsFailure || userResult.Response == null)
+            {
+                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
+
+                return Errors.Keycloak.UserNotFound; 
+            }
+
+            var userId = userResult.Response.Id;
+
+            // Step 2: Get admin token
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            // Step 3: Prepare the update payload (only updating emailVerified)
+            var updatePayload = new
+            {
+                emailVerified = true
+            };
+
+            // Step 4: Create the PUT request to update the user
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}"),
+                Content = new StringContent(JsonConvert.SerializeObject(updatePayload), Encoding.UTF8, "application/json"),
+                Headers =
+            {
+                { "Authorization", $"Bearer {adminToken}" },
+                { "Accept", "application/json" }
+            }
+            };
+
+            // Step 5: Send the request
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Email verified successfully for user {Email} in Keycloak", email);
+                return true;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                _logger.LogError("Failed to verify email for {Email}. Status: {StatusCode}, Error: {Error}",
+                    email, response.StatusCode, errorContent);
+
+                return Errors.Keycloak.EmailVerificationFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error verifying email {Email} in Keycloak", email);
+            throw;
+        }
+    }
 }

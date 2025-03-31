@@ -10,12 +10,17 @@ import {
    ServerErrorResponse,
 } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
+import {
+   IRegisterPayload,
+   IRegisterResponse,
+} from '~/domain/interfaces/auth/register.interface';
+import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 
 export const AuthApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://cdf1-116-108-38-46.ngrok-free.app/identity-services',
+      baseUrl: 'https://ea0c-116-108-38-46.ngrok-free.app/identity-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 
@@ -39,23 +44,41 @@ export const AuthApi = createApi({
             try {
                const { data } = await queryFulfilled;
 
-               dispatch(
-                  setAccessToken({
-                     user_email: data.user_email,
-                     access_token: data.access_token,
-                     refresh_token: data.refresh_token,
-                     expiration: data.expiration,
-                  }),
-               );
+               if (
+                  data.verification_type !==
+                  VERIFICATION_TYPES.EMAIL_VERIFICATION
+               ) {
+                  dispatch(
+                     setAccessToken({
+                        user_email: data.user_email,
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token,
+                        access_token_expires_in: data.access_token_expires_in,
+                     }),
+                  );
+               }
             } catch (error) {
                const serverError = error as CatchErrorResponse;
                console.error('Login failed:', serverError.error);
             }
          },
       }),
+      registerAsync: builder.mutation({
+         query: (payload: IRegisterPayload) => ({
+            url: '/api/v1/auth/register',
+            method: 'POST',
+            body: payload,
+         }),
+         transformResponse: (response: IRegisterResponse) => {
+            return response;
+         },
+         transformErrorResponse: (error: HttpErrorResponse) => {
+            return error.data;
+         },
+      }),
       verifyOtpAsync: builder.mutation({
          query: (payload: IOtpPayload) => ({
-            url: '/api/v1/auth/verify-otp',
+            url: '/api/v1/auth/email/verification',
             method: 'POST',
             body: payload,
          }),
@@ -69,4 +92,8 @@ export const AuthApi = createApi({
    }),
 });
 
-export const { useLoginAsyncMutation, useVerifyOtpAsyncMutation } = AuthApi;
+export const {
+   useLoginAsyncMutation,
+   useRegisterAsyncMutation,
+   useVerifyOtpAsyncMutation,
+} = AuthApi;

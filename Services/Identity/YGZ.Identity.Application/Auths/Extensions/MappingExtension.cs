@@ -11,6 +11,10 @@ public static class MappingExtension
                            email: dto.Email,
                            passwordHash: dto.Password,
                            firstName: dto.FirstName,
-                           lastName: dto.LastName);
+                           lastName: dto.LastName,
+                           phoneNumber: dto.PhoneNumber,
+                           birthDay: DateTime.Parse(dto.BirthDay).ToUniversalTime(),
+                           image: null,
+                           country: dto.Country);
     }
 }

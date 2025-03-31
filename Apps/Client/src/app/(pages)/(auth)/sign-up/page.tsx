@@ -1,16 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
-import Selector from '../_components/selector-input';
-import BirthdaySelector from '~/components/client/forms/birthday-selector';
 import { Separator } from '~/components/ui/Separator';
-import PhoneInput from '~/components/client/forms/phone-input';
+
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
 import Button from '../_components/Button';
 import { FieldInput } from '~/components/client/forms/field-input';
+import {
+   RegisterFormType,
+   RegisterResolver,
+} from '~/domain/schemas/auth.schema';
+import { useForm } from 'react-hook-form';
+import { useRegisterAsyncMutation } from '~/infrastructure/services/auth.service';
+import { FormSelector } from '../_components/selector-input';
+import { FormBirthdaySelector } from '~/components/client/forms/birthday-selector';
+import { FormPhoneInput } from '~/components/client/forms/phone-input';
+import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
+import { useToast } from '~/hooks/useToast';
+import { useRouter } from 'next/navigation';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 
 // List of countries - this would typically be more comprehensive
 const countries = [
@@ -79,12 +91,65 @@ const countries = [
    'Vietnam',
 ];
 
-const SignUpPage = () => {
-   const [email, setEmail] = useState('');
-   const [password, setPassword] = useState('');
+const defaultValues: RegisterFormType = {
+   email: '',
+   password: '',
+   confirm_password: '',
+   first_name: '',
+   last_name: '',
+   phone_number: '',
+   birth_day: { month: 0, day: 0, year: 0 },
+   country: '',
+};
 
-   const [phone, setPhone] = useState('');
-   const [phoneValid, setPhoneValid] = useState(true);
+const SignUpPage = () => {
+   const [isLoading, setIsLoading] = useState(false);
+   const { toast } = useToast();
+
+   const router = useRouter();
+
+   const form = useForm<RegisterFormType>({
+      resolver: RegisterResolver,
+      defaultValues: defaultValues,
+   });
+
+   const [
+      registerAsync,
+      { isLoading: isFetching, error: registerError, isError, reset },
+   ] = useRegisterAsyncMutation();
+
+   const handleSubmitRegister = async (data: RegisterFormType) => {
+      const result = await registerAsync({
+         ...data,
+         birth_day: `${data.birth_day.year}-${data.birth_day.month}-${data.birth_day.day}`,
+      }).unwrap();
+
+      if (result.verification_type === VERIFICATION_TYPES.EMAIL_VERIFICATION) {
+         const params = result.params;
+
+         const queryParams = new URLSearchParams();
+
+         for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+               queryParams.append(key, String(params[key]));
+            }
+         }
+
+         router.replace(`/verify/otp?${queryParams}`);
+      }
+   };
+
+   useEffect(() => {
+      if (isError) {
+         const serverError = registerError as ServerErrorResponse;
+         toast({
+            variant: 'destructive',
+            title: `${serverError?.error?.message || 'Server is busy, try again later'}`,
+            // description: `${serverError.error.code}`,
+         });
+         reset(); // Reset the mutation state to clear isError
+      }
+   }, [isError, registerError, reset]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -121,86 +186,128 @@ const SignUpPage = () => {
                </p>
 
                <div className="w-[500px]">
-                  <div className="flex gap-2">
-                     <div className="w-full">
-                        <FieldInput
-                           label="First Name"
-                           value={email}
-                           onChange={setEmail}
-                           className="border border-gray-300 overflow-hidden rounded-xl w-full"
-                        />
-                     </div>
+                  <LoadingOverlay
+                     isLoading={isLoading || isFetching}
+                     text="Loading..."
+                  >
+                     <div className="w-full mt-2">
+                        <div className="flex gap-2">
+                           <div className="w-full">
+                              <form
+                                 onSubmit={form.handleSubmit(
+                                    handleSubmitRegister,
+                                 )}
+                                 onKeyDown={(e) => {
+                                    if (
+                                       e.key === 'Enter' &&
+                                       !e.defaultPrevented
+                                    ) {
+                                       e.preventDefault();
+                                       form.handleSubmit(
+                                          handleSubmitRegister,
+                                       )();
+                                    }
+                                 }}
+                              >
+                                 <div className="w-full flex gap-2 justify-between mt-3">
+                                    <FieldInput
+                                       form={form}
+                                       name="first_name"
+                                       label="First Name"
+                                       className="rounded-xl w-full"
+                                       type="text"
+                                       disabled={isLoading || isFetching}
+                                       errorTextClassName="pb-1"
+                                    />
 
-                     <div className="w-full">
-                        <FieldInput
-                           label="Last Name"
-                           value={email}
-                           onChange={setEmail}
-                           className="border border-gray-300 overflow-hidden rounded-xl w-full"
-                        />
-                     </div>
-                  </div>
-
-                  <div className="mt-3">
-                     <div className="w-full">
-                        <Selector />
-                     </div>
-                  </div>
-
-                  <div className="mt-3">
-                     <BirthdaySelector />
-                  </div>
-
-                  <Separator className="mt-3 bg-slate-200" />
-
-                  <div className="mt-5">
-                     <div className="w-full">
-                        <FieldInput
-                           label="Email"
-                           value={email}
-                           onChange={setEmail}
-                           className="border border-gray-300 overflow-hidden rounded-xl w-full"
-                        />
-                        <p className="mt-2 text-sm font-light">
-                           *Note: This will be your new Account.
-                        </p>
-                     </div>
-                  </div>
-
-                  <div className="mt-4">
-                     <div className="mt-2">
-                        <div className="w-full">
-                           <FieldInput
-                              label="Password"
-                              value={email}
-                              onChange={setEmail}
-                              className="border border-gray-300 overflow-hidden rounded-xl w-full"
-                           />
+                                    <FieldInput
+                                       form={form}
+                                       name="last_name"
+                                       label="Last Name"
+                                       className="rounded-xl w-full"
+                                       type="text"
+                                       disabled={isLoading || isFetching}
+                                       errorTextClassName="pb-1"
+                                    />
+                                 </div>
+                              </form>
+                           </div>
                         </div>
 
                         <div className="mt-3">
                            <div className="w-full">
-                              <FieldInput
-                                 label="Confirm Password"
-                                 value={email}
-                                 onChange={setEmail}
-                                 className="border border-gray-300 overflow-hidden rounded-xl w-full"
+                              <FormSelector
+                                 form={form}
+                                 name="country"
+                                 label="Country/Region"
+                                 placeholder="Select a country"
+                                 options={countries}
+                                 required
                               />
                            </div>
                         </div>
+
+                        <div className="mt-3">
+                           <FormBirthdaySelector
+                              form={form}
+                              name="birth_day"
+                              required
+                           />
+                        </div>
+
+                        <Separator className="mt-3 bg-slate-200" />
+
+                        <div className="mt-5">
+                           <div className="w-full">
+                              <FieldInput
+                                 form={form}
+                                 name="email"
+                                 label="Email"
+                                 className="rounded-xl w-full"
+                                 type="text"
+                                 disabled={isLoading || isFetching}
+                                 errorTextClassName="pb-5"
+                              />
+                              <p className="mt-2 text-sm font-light text-slate-500">
+                                 *Note: This will be your new Account.
+                              </p>
+                           </div>
+                        </div>
+
+                        <div className="w-full mt-4">
+                           <FieldInput
+                              form={form}
+                              name="password"
+                              label="Password"
+                              className="rounded-xl w-full mb-2"
+                              type="password"
+                              disabled={isLoading || isFetching}
+                              errorTextClassName="pb-5"
+                           />
+                        </div>
+
+                        <FieldInput
+                           form={form}
+                           name="confirm_password"
+                           label="Confirm Password"
+                           className="rounded-xl w-full"
+                           type="password"
+                           disabled={isLoading || isFetching}
+                           errorTextClassName="pb-5"
+                        />
                      </div>
-                  </div>
 
-                  <Separator className="mt-3 bg-slate-200" />
+                     <Separator className="mt-3 bg-slate-200" />
 
-                  <div className="mt-4">
-                     <PhoneInput
-                        value={phone}
-                        onChange={setPhone}
-                        onValidChange={setPhoneValid}
-                        required={true}
-                     />
-                  </div>
+                     <div className="mt-4">
+                        <FormPhoneInput
+                           form={form}
+                           name="phone_number"
+                           label="Phone Number"
+                           required
+                        />
+                     </div>
+                  </LoadingOverlay>
 
                   <Separator className="mt-10 bg-slate-200" />
 
@@ -228,8 +335,15 @@ const SignUpPage = () => {
                         .
                      </p>
 
-                     <Button className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center">
-                        Continue
+                     <Button
+                        className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center"
+                        onClick={() => {
+                           form.handleSubmit(handleSubmitRegister)();
+                        }}
+                     >
+                        {isLoading || isFetching
+                           ? 'Registering...'
+                           : 'Create Account'}
                      </Button>
                   </div>
                </div>

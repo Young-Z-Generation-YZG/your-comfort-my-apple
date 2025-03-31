@@ -12,7 +12,7 @@ using YGZ.Identity.Infrastructure.Persistence;
 namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20250317181523_InitialMigration")]
+    [Migration("20250329162243_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -166,8 +166,15 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -279,6 +286,33 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YGZ.Identity.Domain.Users.User", b =>
+                {
+                    b.OwnsOne("YGZ.Identity.Domain.Users.ValueObjects.Image", "Image", b1 =>
+                        {
+                            b1.Property<string>("UserId")
+                                .HasColumnType("text");
+
+                            b1.Property<string>("ImageId")
+                                .HasColumnType("text")
+                                .HasColumnName("ImageId");
+
+                            b1.Property<string>("ImageUrl")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ImageUrl");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users", "identity");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.Navigation("Image");
                 });
 #pragma warning restore 612, 618
         }

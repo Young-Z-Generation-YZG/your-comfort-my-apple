@@ -1,118 +1,155 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import type React from 'react';
+
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle, AlertCircle } from 'lucide-react';
+import type { UseFormReturn, Path, FieldValues } from 'react-hook-form';
 import { cn } from '~/infrastructure/lib/utils';
 
-interface BirthdaySelectorProps {
-   onChange?: (
-      date: { month: string; day: number; year: number } | null,
-   ) => void;
-   className?: string;
-   required?: boolean;
+// Define the months array with numeric values
+const MONTH_NAMES = [
+   'January',
+   'February',
+   'March',
+   'April',
+   'May',
+   'June',
+   'July',
+   'August',
+   'September',
+   'October',
+   'November',
+   'December',
+];
+
+// Generate months 1-12
+const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
+
+// Generate days 1-31
+const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+
+// Generate years from current year - 100 to current year
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS = Array.from({ length: 100 }, (_, i) => CURRENT_YEAR - i);
+
+// Helper function to get days in a month
+const getDaysInMonth = (month: number, year: number): number => {
+   if (month < 1 || month > 12) return 31;
+   return new Date(year, month, 0).getDate();
+};
+
+// Helper function to get month name from number
+const getMonthName = (month: number): string => {
+   return MONTH_NAMES[month - 1] || '';
+};
+
+// Birthday type definition
+export interface Birthday {
+   month: number;
+   day: number;
+   year: number;
 }
 
-const BirthdaySelector = ({
-   onChange,
+interface FormBirthdaySelectorProps<T extends FieldValues> {
+   form: UseFormReturn<T>;
+   name: Path<T>;
+   label?: string;
+   helpText?: string;
+   className?: string;
+   required?: boolean;
+   disabled?: boolean;
+   showMonthAs?: 'number' | 'name' | 'both';
+}
+
+export function FormBirthdaySelector<T extends FieldValues>({
+   form,
+   name,
+   label = 'Birthday',
+   helpText = 'Your birthday helps us verify your identity and provide age-appropriate experiences.',
    className = '',
    required = false,
-}: BirthdaySelectorProps) => {
-   const [month, setMonth] = useState<string>('');
-   const [day, setDay] = useState<number | ''>('');
-   const [year, setYear] = useState<number | ''>('');
-   const [error, setError] = useState<string>('');
-
+   disabled = false,
+   showMonthAs = 'both',
+}: FormBirthdaySelectorProps<T>) {
+   // State for dropdown visibility
    const [monthOpen, setMonthOpen] = useState(false);
    const [dayOpen, setDayOpen] = useState(false);
    const [yearOpen, setYearOpen] = useState(false);
 
-   const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-   ];
+   // Refs for handling outside clicks
+   const monthRef = useRef<HTMLDivElement>(null);
+   const dayRef = useRef<HTMLDivElement>(null);
+   const yearRef = useRef<HTMLDivElement>(null);
 
-   // Generate days 1-31
-   const days = Array.from({ length: 31 }, (_, i) => i + 1);
+   const {
+      control,
+      formState: { errors },
+      watch,
+      setValue,
+   } = form;
 
-   // Generate years from current year - 100 to current year
-   const currentYear = new Date().getFullYear();
-   const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+   // Get the current value from the form
+   const birthday = watch(name) as Birthday | undefined;
 
-   // Get days in month
-   const getDaysInMonth = (month: string, year: number): number => {
-      const monthIndex = months.findIndex((m) => m === month);
-      if (monthIndex === -1) return 31;
+   // Get the error for this field if it exists
+   let errorMessage = errors[name] as
+      | {
+           day?: { message: string };
+           month?: { message: string };
+           year?: { message: string };
+        }
+      | undefined;
+   const hasError = !!errorMessage;
 
-      return new Date(year, monthIndex + 1, 0).getDate();
-   };
+   const errorField =
+      errorMessage?.day ?? errorMessage?.month ?? errorMessage?.year;
 
-   // Validate date
+   const errorText = errorField ? errorField.message : undefined;
+
+   // Handle outside clicks to close dropdowns
    useEffect(() => {
-      if (month && day && year) {
-         const monthIndex = months.findIndex((m) => m === month);
-         const daysInMonth = getDaysInMonth(month, year);
-
-         if (day > daysInMonth) {
-            setError(`${month} ${year} has only ${daysInMonth} days`);
-            if (onChange) onChange(null);
-            return;
+      const handleClickOutside = (event: MouseEvent) => {
+         if (
+            monthRef.current &&
+            !monthRef.current.contains(event.target as Node)
+         ) {
+            setMonthOpen(false);
          }
-
-         const birthDate = new Date(year, monthIndex, day);
-         const today = new Date();
-
-         if (birthDate > today) {
-            setError('Birthday cannot be in the future');
-            if (onChange) onChange(null);
-            return;
+         if (dayRef.current && !dayRef.current.contains(event.target as Node)) {
+            setDayOpen(false);
          }
-
-         if (today.getFullYear() - year < 13) {
-            setError('You must be at least 13 years old');
-            if (onChange) onChange(null);
-            return;
+         if (
+            yearRef.current &&
+            !yearRef.current.contains(event.target as Node)
+         ) {
+            setYearOpen(false);
          }
-
-         setError('');
-         if (onChange)
-            onChange({ month, day: day as number, year: year as number });
-      } else if (required && (month || day || year)) {
-         setError('Enter a valid birthday.');
-         if (onChange) onChange(null);
-      } else {
-         setError(required ? 'Enter a valid birthday.' : '');
-         if (onChange) onChange(null);
-      }
-   }, [month, day, year, required, onChange]);
-
-   // Close all dropdowns when clicking outside
-   useEffect(() => {
-      const handleClickOutside = () => {
-         setMonthOpen(false);
-         setDayOpen(false);
-         setYearOpen(false);
       };
 
       window.addEventListener('click', handleClickOutside);
       return () => window.removeEventListener('click', handleClickOutside);
    }, []);
 
+   // Get valid days based on selected month and year
+   const getValidDays = () => {
+      if (!birthday?.month || !birthday?.year) return DAYS;
+
+      const daysInMonth = getDaysInMonth(birthday.month, birthday.year);
+      return DAYS.slice(0, daysInMonth);
+   };
+
+   const validDays = getValidDays();
+
+   // Handle dropdown toggle
    const handleDropdownClick = (
       e: React.MouseEvent,
       dropdown: 'month' | 'day' | 'year',
    ) => {
       e.stopPropagation();
+
+      if (disabled) return;
 
       if (dropdown === 'month') {
          setMonthOpen(!monthOpen);
@@ -129,28 +166,86 @@ const BirthdaySelector = ({
       }
    };
 
-   const getValidDays = () => {
-      if (!month || !year) return days;
+   // Handle selection of a month
+   const handleMonthSelect = (month: number) => {
+      const newBirthday = {
+         ...(birthday || { day: undefined, year: undefined }),
+         month,
+      };
 
-      const daysInMonth = getDaysInMonth(month, year as number);
-      return days.slice(0, daysInMonth);
+      // If the current day is invalid for the new month, reset it
+      if (birthday?.day && birthday.year) {
+         const daysInMonth = getDaysInMonth(month, birthday.year);
+         if (birthday.day > daysInMonth) {
+            newBirthday.day = undefined;
+         }
+      }
+
+      setValue(name, newBirthday as any, { shouldValidate: true });
+      setMonthOpen(false);
    };
 
-   const validDays = getValidDays();
+   // Handle selection of a day
+   const handleDaySelect = (day: number) => {
+      setValue(
+         name,
+         {
+            ...(birthday || { month: undefined, year: undefined }),
+            day,
+         } as any,
+         { shouldValidate: true },
+      );
+      setDayOpen(false);
+   };
+
+   // Handle selection of a year
+   const handleYearSelect = (year: number) => {
+      const newBirthday = {
+         ...(birthday || { month: undefined, day: undefined }),
+         year,
+      };
+
+      // If the current day is invalid for the selected month and year, reset it
+      if (birthday?.month && birthday?.day) {
+         const daysInMonth = getDaysInMonth(birthday.month, year);
+         if (birthday.day > daysInMonth) {
+            newBirthday.day = undefined;
+         }
+      }
+
+      setValue(name, newBirthday as any, { shouldValidate: true });
+      setYearOpen(false);
+   };
+
+   // Format month display based on showMonthAs prop
+   const formatMonthDisplay = (month?: number): string => {
+      if (!month) return 'Month';
+
+      switch (showMonthAs) {
+         case 'number':
+            return month.toString();
+         case 'name':
+            return getMonthName(month);
+         case 'both':
+         default:
+            return `${month} - ${getMonthName(month)}`;
+      }
+   };
 
    return (
       <div className={`space-y-2 ${className}`}>
          <div className="flex items-center">
-            <label className="text-gray-800 font-normal">Birthday</label>
+            <label className="text-gray-800 font-normal">
+               {label} {required && <span className="text-red-500">*</span>}
+            </label>
             <button
                type="button"
                className="ml-1 text-gray-500 hover:text-gray-700"
                onClick={(e) => {
                   e.preventDefault();
-                  alert(
-                     'Your birthday helps us verify your identity and provide age-appropriate experiences.',
-                  );
+                  alert(helpText);
                }}
+               disabled={disabled}
             >
                <HelpCircle size={16} />
             </button>
@@ -158,20 +253,24 @@ const BirthdaySelector = ({
 
          <div className="flex gap-3">
             {/* Month Selector */}
-            <div className="relative flex-1">
+            <div className="relative flex-1" ref={monthRef}>
                <div
-                  className={`flex items-center h-[--input_h] justify-between border rounded-md px-3 py-2 cursor-pointer ${
-                     error ? 'border-red-500 text-red-500' : 'border-gray-300'
-                  }`}
+                  className={cn(
+                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     hasError
+                        ? 'border-red-500 text-red-500'
+                        : 'border-gray-300',
+                     disabled && 'opacity-60 cursor-not-allowed',
+                  )}
                   onClick={(e) => handleDropdownClick(e, 'month')}
                >
                   <span
                      className={cn(
-                        'font-light text-base',
-                        month ? 'text-gray-900' : 'text-gray-400',
+                        'font-normal text-base',
+                        birthday?.month ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {month || 'Month'}
+                     {formatMonthDisplay(birthday?.month)}
                   </span>
                   <ChevronDown
                      size={16}
@@ -187,17 +286,22 @@ const BirthdaySelector = ({
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                      >
-                        {months.map((m) => (
+                        {MONTHS.map((m) => (
                            <div
                               key={m}
-                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${m === month ? 'bg-gray-100' : ''}`}
+                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
+                                 m === birthday?.month ? 'bg-gray-100' : ''
+                              }`}
                               onClick={(e) => {
                                  e.stopPropagation();
-                                 setMonth(m);
-                                 setMonthOpen(false);
+                                 handleMonthSelect(m);
                               }}
                            >
-                              {m}
+                              {showMonthAs === 'number'
+                                 ? m
+                                 : showMonthAs === 'name'
+                                   ? getMonthName(m)
+                                   : `${m} - ${getMonthName(m)}`}
                            </div>
                         ))}
                      </motion.div>
@@ -206,20 +310,24 @@ const BirthdaySelector = ({
             </div>
 
             {/* Day Selector */}
-            <div className="relative flex-1">
+            <div className="relative flex-1" ref={dayRef}>
                <div
-                  className={`flex items-center h-[--input_h] justify-between border rounded-md px-3 py-2 cursor-pointer ${
-                     error ? 'border-red-500 text-red-500' : 'border-gray-300'
-                  }`}
+                  className={cn(
+                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     hasError
+                        ? 'border-red-500 text-red-500'
+                        : 'border-gray-300',
+                     disabled && 'opacity-60 cursor-not-allowed',
+                  )}
                   onClick={(e) => handleDropdownClick(e, 'day')}
                >
                   <span
                      className={cn(
-                        'font-light text-base',
-                        month ? 'text-gray-900' : 'text-gray-400',
+                        'font-normal text-base',
+                        birthday?.day ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {day || 'Day'}
+                     {birthday?.day || 'Day'}
                   </span>
                   <ChevronDown
                      size={16}
@@ -238,11 +346,10 @@ const BirthdaySelector = ({
                         {validDays.map((d) => (
                            <div
                               key={d}
-                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${d === day ? 'bg-gray-100' : ''}`}
+                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${d === birthday?.day ? 'bg-gray-100' : ''}`}
                               onClick={(e) => {
                                  e.stopPropagation();
-                                 setDay(d);
-                                 setDayOpen(false);
+                                 handleDaySelect(d);
                               }}
                            >
                               {d}
@@ -254,20 +361,24 @@ const BirthdaySelector = ({
             </div>
 
             {/* Year Selector */}
-            <div className="relative flex-1">
+            <div className="relative flex-1" ref={yearRef}>
                <div
-                  className={`flex items-center h-[--input_h] justify-between border rounded-md px-3 py-2 cursor-pointer ${
-                     error ? 'border-red-500 text-red-500' : 'border-gray-300'
-                  }`}
+                  className={cn(
+                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     hasError
+                        ? 'border-red-500 text-red-500'
+                        : 'border-gray-300',
+                     disabled && 'opacity-60 cursor-not-allowed',
+                  )}
                   onClick={(e) => handleDropdownClick(e, 'year')}
                >
                   <span
                      className={cn(
-                        'font-light text-base',
-                        month ? 'text-gray-900' : 'text-gray-400',
+                        'font-normal text-base',
+                        birthday?.year ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {year || 'Year'}
+                     {birthday?.year || 'Year'}
                   </span>
                   <ChevronDown
                      size={16}
@@ -283,14 +394,15 @@ const BirthdaySelector = ({
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                      >
-                        {years.map((y) => (
+                        {YEARS.map((y) => (
                            <div
                               key={y}
-                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${y === year ? 'bg-gray-100' : ''}`}
+                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
+                                 y === birthday?.year ? 'bg-gray-100' : ''
+                              }`}
                               onClick={(e) => {
                                  e.stopPropagation();
-                                 setYear(y);
-                                 setYearOpen(false);
+                                 handleYearSelect(y);
                               }}
                            >
                               {y}
@@ -302,29 +414,12 @@ const BirthdaySelector = ({
             </div>
          </div>
 
-         {error && (
-            <p className="text-red-500 text-sm flex items-center">
-               <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="mr-1"
-               >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-               </svg>
-               {error}
-            </p>
+         {hasError && (
+            <div className="flex items-center text-red-500 text-sm">
+               <AlertCircle size={16} className="mr-1" />
+               <span>{errorText}</span>
+            </div>
          )}
       </div>
    );
-};
-
-export default BirthdaySelector;
+}
