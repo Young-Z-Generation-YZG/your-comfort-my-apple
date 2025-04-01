@@ -192,7 +192,9 @@ const Header = () => {
                      </li>
                      <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
                         <MdOutlineManageAccounts className="size-4" />
-                        <p>Your Account</p>
+                        <Link href="/account">
+                           <p>Your Account</p>
+                        </Link>
                      </li>
                      {!isAuthenticated ? (
                         <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
