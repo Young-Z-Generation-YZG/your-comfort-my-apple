@@ -197,7 +197,7 @@ public class KeycloakService : IKeycloakService
         return Errors.Keycloak.CannotBeCreated;
     }
 
-    public async Task<string> GetKeycloackUserTokenAsync(LoginCommand request)
+    public async Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request)
     {
         var requestBody = new FormUrlEncodedContent(new[]
         {
@@ -219,11 +219,11 @@ public class KeycloakService : IKeycloakService
                 throw new Exception("Failed to retrieve user token.");
             }
 
-            return tokenResponse.AccessToken;
+            return tokenResponse;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetKeycloackUserTokenAsync));
+            _logger.LogError(ex, ex.Message, nameof(GetKeycloackTokenPairAsync));
             throw;
         }
     }
@@ -300,7 +300,7 @@ public class KeycloakService : IKeycloakService
             {
                 _logger.LogWarning("User with email {Email} not found in Keycloak", email);
 
-                return Errors.Keycloak.UserNotFound; 
+                return Errors.Keycloak.UserNotFound;
             }
 
             var userId = userResult.Response.Id;
@@ -348,6 +348,35 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error verifying email {Email} in Keycloak", email);
+            throw;
+        }
+    }
+
+    public async Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken)
+    {
+        var requestBody = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("grant_type", OpenIdConnectGrantTypes.RefreshToken),
+            new KeyValuePair<string, string>("client_id", _nextjsClientId),
+            new KeyValuePair<string, string>("client_secret", _nextjsClientSecret),
+            new KeyValuePair<string, string>("refresh_token", refreshToken)
+        });
+
+        try
+        {
+            var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
+
+            var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+
+            if (tokenResponse == null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+            {
+                throw new Exception("Failed to retrieve user token.");
+            }
+            return tokenResponse;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(RefreshAccessTokenAsync));
             throw;
         }
     }

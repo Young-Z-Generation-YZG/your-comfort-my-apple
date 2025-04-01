@@ -10,6 +10,7 @@ using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
+using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -64,6 +65,16 @@ public class AuthController : ApiController
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyEmailCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("refresh/access-token")]
+    public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshAccessTokenRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<RefreshAccessTokenCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 
