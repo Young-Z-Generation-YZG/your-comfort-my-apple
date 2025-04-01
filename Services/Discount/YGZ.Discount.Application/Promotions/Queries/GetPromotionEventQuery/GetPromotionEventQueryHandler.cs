@@ -68,7 +68,7 @@ public class GetPromotionEventQueryHandler : IQueryHandler<GetPromotionEventQuer
                         List<PromotionProduct> promotionProducts = new();
                         List<PromotionCategory> promotionCategories = new();
 
-                        if(promotionGlobal.PromotionGlobalType.Equals(PromotionGlobalType.PRODUCTS))
+                        if (promotionGlobal.PromotionGlobalType.Equals(PromotionGlobalType.PRODUCTS))
                         {
                             promotionProducts = await _promotionProductRepository.GetAllByFilterAsync(x => x.PromotionGlobalId == promotionGlobal.Id, cancellationToken);
                             group.PromotionProducts = promotionProducts.Select(x => _mapper.Map<PromotionProductResponse>(x)).ToList();
