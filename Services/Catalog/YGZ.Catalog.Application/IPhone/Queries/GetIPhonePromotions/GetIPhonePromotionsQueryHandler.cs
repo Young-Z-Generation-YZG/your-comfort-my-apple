@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Google.Protobuf.WellKnownTypes;
+using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
@@ -23,9 +24,9 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
 
     public async Task<Result<PaginationPromotionResponse<IPhoneResponse>>> Handle(GetIPhonePromotionsQuery request, CancellationToken cancellationToken)
     {
-        var promotionEvent = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest());
+        var promotionEvents = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest());
 
-        var validEvent = promotionEvent.PromotionEvents.FirstOrDefault(pe => pe.PromotionEvent.PromotionEventState == DiscountStateEnum.Active);
+        var validEvent = promotionEvents.PromotionEvents.FirstOrDefault(pe => pe.PromotionEvent.PromotionEventState == DiscountStateEnum.Active);
 
         List<PromotionProductModel> promotionProducts = new List<PromotionProductModel>();
         List<PromotionCategoryModel> promotionCategories = new List<PromotionCategoryModel>();
@@ -59,15 +60,15 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
                                       List<PromotionProductModel> promotionProducts,
                                       List<PromotionCategoryModel> promotionCategories)
     {
-        var promotionItems = new List<PromotionDataResponse>(); // Initialize the out parameter
+        var promotionItems = new List<PromotionDataResponse>(); 
 
         items.ForEach(item =>
         {
             var promotionProduct = promotionProducts.FirstOrDefault(pp => pp.PromotionProductSlug == item.Slug.Value);
             var promotionCategory = promotionCategories.FirstOrDefault(pc => pc.PromotionCategoryId == item.CategoryId.Value);
 
-            decimal promotionPrice = item.UnitPrice; // Default price
-            decimal promotionDiscountValue = 0; // Default discount
+            decimal promotionPrice = item.UnitPrice; 
+            decimal promotionDiscountValue = 0;     
             DiscountTypeEnum DiscountType = DiscountTypeEnum.Percentage;
 
 
@@ -100,7 +101,7 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
                 PromotionDiscountType = DiscountType.ToString(),
                 PromotionDiscountValue = promotionDiscountValue,
                 PromotionProductSlug = item.Slug.Value,
-                PromotionEventType = null,
+                PromotionEventType = promotionEvent!.PromotionEvent.PromotionEventPromotionEventType.ToString(),
                 PromotionFinalPrice = promotionPrice
             };
 

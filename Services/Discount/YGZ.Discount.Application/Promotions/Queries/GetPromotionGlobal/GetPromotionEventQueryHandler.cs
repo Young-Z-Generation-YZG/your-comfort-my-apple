@@ -11,7 +11,7 @@ using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 
 namespace YGZ.Discount.Application.Promotions.Queries.GetPromotionGlobal;
 
-public class GetPromotionGlobalQueryHandler : IQueryHandler<GetPromotionGlobalQuery, List<PromotionGlobalEventResponse>>
+public class GetPromotionEventQueryHandler : IQueryHandler<GetPromotionEventQuery, List<PromotionGlobalEventResponse>>
 {
     private readonly IGenericRepository<PromotionEvent, PromotionEventId> _promotionEventRepository;
     private readonly IGenericRepository<PromotionGlobal, PromotionGlobalId> _promotionGlobalRepository;
@@ -19,7 +19,7 @@ public class GetPromotionGlobalQueryHandler : IQueryHandler<GetPromotionGlobalQu
     private readonly IGenericRepository<PromotionCategory, CategoryId> _promotionCategoryRepository;
     private readonly IMapper _mapper;
 
-    public GetPromotionGlobalQueryHandler(IGenericRepository<PromotionGlobal, PromotionGlobalId> promotionGlobalRepository,
+    public GetPromotionEventQueryHandler(IGenericRepository<PromotionGlobal, PromotionGlobalId> promotionGlobalRepository,
                                           IGenericRepository<PromotionProduct, ProductId> promotionProductRepository,
                                           IGenericRepository<PromotionCategory, CategoryId> promotionCategoryRepository,
                                           IGenericRepository<PromotionEvent, PromotionEventId> promotionEventRepository,
@@ -32,7 +32,7 @@ public class GetPromotionGlobalQueryHandler : IQueryHandler<GetPromotionGlobalQu
         _mapper = mapper;
     }
 
-    public async Task<Result<List<PromotionGlobalEventResponse>>> Handle(GetPromotionGlobalQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<PromotionGlobalEventResponse>>> Handle(GetPromotionEventQuery request, CancellationToken cancellationToken)
     {
         var promotionEvents = await _promotionEventRepository.GetAllAsync(cancellationToken);
 
