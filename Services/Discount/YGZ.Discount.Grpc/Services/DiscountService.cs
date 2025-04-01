@@ -42,13 +42,13 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
     public override async Task<PromotionEventResponse> GetPromotionEvent(GetPromotionEventRequest request, ServerCallContext context)
     {
-        var query = new GetPromotionGlobalQuery();
+        var query = new GetPromotionEventQuery();
 
         var result = await _sender.Send(query);
 
         var response = new PromotionEventResponse();
 
-        result.Response.ForEach(e =>
+        result.Response!.ForEach(e =>
         {
             var promotionEventResponse = new ListPromtionEventResponse();
 
