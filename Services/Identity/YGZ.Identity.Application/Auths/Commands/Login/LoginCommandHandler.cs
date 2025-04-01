@@ -85,7 +85,8 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
                 UserEmail = user.Response.Email!,
                 AccessToken = null,
                 RefreshToken = null,
-                AccessTokenExpiresIn = null,
+                AccessTokenExpiresInSeconds = null,
+                RefreshTokenExpiresInSeconds = null,
                 VerificationType = VerificationType.EMAIL_VERIFICATION.Name,
                 Params = Params,
             };
@@ -93,14 +94,15 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
             return emailVerificationResponse;
         }
 
-        var tokenResponse = await _keycloakService.GetKeycloackUserTokenAsync(request);
+        var tokenResponse = await _keycloakService.GetKeycloackTokenPairAsync(request);
 
         var loginResponse = new LoginResponse
         {
             UserEmail = user.Response.Email!,
-            AccessToken = tokenResponse,
-            RefreshToken = null,
-            AccessTokenExpiresIn = TimeSpan.FromMinutes(5).Seconds,
+            AccessToken = tokenResponse.AccessToken,
+            RefreshToken = tokenResponse.RefreshToken,
+            AccessTokenExpiresInSeconds = tokenResponse.ExpiresIn,
+            RefreshTokenExpiresInSeconds = tokenResponse.RefreshExpiresIn,
             VerificationType = VerificationType.CREDENTIALS_VERIFICATION.Name,
             Params = null
         };

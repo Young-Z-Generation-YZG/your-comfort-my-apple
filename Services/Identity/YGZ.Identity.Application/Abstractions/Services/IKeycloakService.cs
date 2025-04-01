@@ -13,7 +13,8 @@ public interface IKeycloakService
     Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId);
     Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
-    Task<string> GetKeycloackUserTokenAsync(LoginCommand request);
+    Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request);
     Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request);
     Task<Result<bool>> VerifyEmailAsync(string email);
+    Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
 }
