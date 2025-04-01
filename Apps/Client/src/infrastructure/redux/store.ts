@@ -15,7 +15,9 @@ import authReducer from './features/auth.slice';
 import appReducer from './features/app.slice';
 import cartReducer from './features/cart-demo.slice';
 import { CategoryApi } from '~/infrastructure/services/category.service';
-import { AuthApi } from '../services/auth.service';
+import { promotionApi } from '~/infrastructure/services/promotion.service';
+import { AuthApi } from '~/infrastructure/services/auth.service';
+import { catalogApi } from '~/infrastructure/services/catalog.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 
@@ -25,7 +27,12 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
    key: 'root',
    version: 1,
    storage: storage, // Add the storage option or any other required options
-   blacklist: [CategoryApi.reducerPath, AuthApi.reducerPath], // Add the blacklist option
+   blacklist: [
+      CategoryApi.reducerPath,
+      AuthApi.reducerPath,
+      promotionApi.reducerPath,
+      catalogApi.reducerPath,
+   ], // Add the blacklist option
    whitelist: ['auth', 'cart'],
 };
 
@@ -35,6 +42,8 @@ const reducers = combineReducers({
    cart: cartReducer,
    [CategoryApi.reducerPath]: CategoryApi.reducer,
    [AuthApi.reducerPath]: AuthApi.reducer,
+   [promotionApi.reducerPath]: promotionApi.reducer,
+   [catalogApi.reducerPath]: catalogApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -46,7 +55,12 @@ export const reduxStore = configureStore({
          serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
          },
-      }).concat(CategoryApi.middleware, AuthApi.middleware),
+      }).concat(
+         CategoryApi.middleware,
+         AuthApi.middleware,
+         promotionApi.middleware,
+         catalogApi.middleware,
+      ),
 });
 
 export const persistor = persistStore(reduxStore);

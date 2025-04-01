@@ -1,10 +1,6 @@
 'use client';
-import { useState } from 'react';
-// import {  } from '~/infrastructure/lib/utils';
 
 const Footer = () => {
-   const [isOpen, setIsOpen] = useState(false);
-   console.log(isOpen);
    return (
       <footer className="w-full h-full">
          <div className="max-w-[1680px] w-[87.5vw] mx-auto font-SFProText mb-5 py-16">
