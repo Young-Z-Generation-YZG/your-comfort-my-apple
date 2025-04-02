@@ -55,7 +55,7 @@ const ShopPage = () => {
                      <div>10 Results</div>
                   </div>
                   <div className='flex flex-row items-center '>
-                     <Button className='h-[22.5px] p-0 text-[15px] font-semibold border-b-2 border-[#000] rounded-none '>
+                     <Button className='h-[22.5px] p-0 text-[15px] font-semibold border-b-2 border-[#000] rounded-none bg-transparent text-black hover:bg-transparent'>
                         Clear Filters
                      </Button>
                   </div>
