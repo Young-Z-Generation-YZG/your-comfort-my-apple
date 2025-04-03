@@ -6,16 +6,16 @@ namespace YGZ.Basket.Domain.ShoppingCart;
 
 public class ShoppingCart
 {
-    public string UserEmail { get; set; } = default!;
-    public List<ShoppingCartItem> Items { get; set; } = new();
-
+    required public string UserEmail { get; set; }
+    public List<ShoppingCartItem> CartItems { get; set; } = new();
+    public decimal TotalAmount => CartItems.Sum(x => x.Quantity * x.SubTotalAmount ?? 0);
 
     public static ShoppingCart Create(string userEmail, List<ShoppingCartItem> cartItems)
     {
         return new ShoppingCart
         {
             UserEmail = userEmail,
-            Items = cartItems
+            CartItems = cartItems,
         };
     }
 }

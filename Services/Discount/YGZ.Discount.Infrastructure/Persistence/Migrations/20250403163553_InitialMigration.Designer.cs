@@ -12,7 +12,7 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    [Migration("20250327051841_InitialMigration")]
+    [Migration("20250403163553_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -253,8 +253,8 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("YGZ.Discount.Domain.PromotionItem.PromotionItem", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("AvailableQuantity")
                         .HasColumnType("integer");
@@ -292,6 +292,10 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ProductImage")
                         .IsRequired()

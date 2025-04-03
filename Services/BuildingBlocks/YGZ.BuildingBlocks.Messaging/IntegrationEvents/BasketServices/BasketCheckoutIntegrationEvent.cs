@@ -21,11 +21,12 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
 }
 
 public record OrderLineIntegrationEvent(string ProductId,
-                                        string ProductModel,
-                                        string ProductColor,
-                                        int ProductStorage,
+                                        string ProductName,
+                                        string ProductColorName,
                                         decimal ProductUnitPrice,
+                                        string ProductNameTag,
                                         string ProductImage,
+                                        string ProductSlug,
                                         int Quantity)
 { }
 

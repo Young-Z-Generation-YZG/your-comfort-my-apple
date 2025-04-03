@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IIphonePromotionResponse } from '~/domain/interfaces/catalog/iPhone.interface';
+import { IIphonePromotionResponse } from '~/domain/interfaces/catalogs/iPhone.interface';
 import { PaginationWithPromotionResponse } from '~/domain/interfaces/common/pagination-response.interface';
 
 export const catalogApi = createApi({

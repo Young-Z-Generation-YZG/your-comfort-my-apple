@@ -9,11 +9,11 @@ using YGZ.Discount.Domain.PromotionEvent;
 using YGZ.Discount.Domain.PromotionEvent.Entities;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 
-namespace YGZ.Discount.Application.Promotions.Queries.GetPromotionGlobal;
+namespace YGZ.Discount.Application.Promotions.Queries.GetPromotionEventQuery;
 
 public class GetPromotionEventQueryHandler : IQueryHandler<GetPromotionEventQuery, List<PromotionGlobalEventResponse>>
 {
-    private readonly IGenericRepository<PromotionEvent, PromotionEventId> _promotionEventRepository;
+    private readonly IGenericRepository<Domain.PromotionEvent.PromotionEvent, PromotionEventId> _promotionEventRepository;
     private readonly IGenericRepository<PromotionGlobal, PromotionGlobalId> _promotionGlobalRepository;
     private readonly IGenericRepository<PromotionProduct, ProductId> _promotionProductRepository;
     private readonly IGenericRepository<PromotionCategory, CategoryId> _promotionCategoryRepository;
@@ -22,7 +22,7 @@ public class GetPromotionEventQueryHandler : IQueryHandler<GetPromotionEventQuer
     public GetPromotionEventQueryHandler(IGenericRepository<PromotionGlobal, PromotionGlobalId> promotionGlobalRepository,
                                           IGenericRepository<PromotionProduct, ProductId> promotionProductRepository,
                                           IGenericRepository<PromotionCategory, CategoryId> promotionCategoryRepository,
-                                          IGenericRepository<PromotionEvent, PromotionEventId> promotionEventRepository,
+                                          IGenericRepository<Domain.PromotionEvent.PromotionEvent, PromotionEventId> promotionEventRepository,
                                           IMapper mapper)
     {
         _promotionEventRepository = promotionEventRepository;

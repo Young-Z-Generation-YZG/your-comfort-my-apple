@@ -44,12 +44,14 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
         var orderItems = context.CartItems.Select(x => new OrderItemCommand
         {
             ProductId = x.ProductId,
-            ProductModel = x.ProductModel,
-            ProductColor = x.ProductColor,
-            ProductStorage = x.ProductStorage,
+            ProductName = x.ProductName,
+            ProductColorName = x.ProductColorName,
             ProductUnitPrice = x.ProductUnitPrice,
+            ProductNameTag = x.ProductNameTag,
             ProductImage = x.ProductImage,
-            Quantity = x.Quantity
+            ProductSlug = x.ProductSlug,
+            Quantity = x.Quantity,
+            Promotion = null
         }).ToList();
 
         var command = new CreateOrderCommand(CustomerEmail: context.CustomerEmail,

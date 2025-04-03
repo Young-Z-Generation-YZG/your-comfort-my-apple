@@ -56,7 +56,7 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
         builder.Property(x => x.PromotionEventType)
                .HasConversion(
                    x => x.Name,
-                   x => PromotionEventType.FromName(x, false)
+                   x => PromotionEvent.FromName(x, false)
                )
                .HasColumnName("PromotionEventType");
     }

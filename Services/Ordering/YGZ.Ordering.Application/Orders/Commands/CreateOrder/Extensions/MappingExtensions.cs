@@ -40,11 +40,11 @@ public static class MappingExtension
         return OrderItem.Create(orderItemId: OrderItemId.Create(),
                                 orderId: orderId,
                                 productId: dto.ProductId,
-                                productModel: dto.ProductModel,
-                                productColor: dto.ProductColor,
-                                productStorage: dto.ProductStorage,
+                                productName: dto.ProductName,
+                                productColorName: dto.ProductColorName,
                                 productUnitPrice: dto.ProductUnitPrice,
                                 productImage: dto.ProductImage,
+                                productSlug: dto.ProductSlug,
                                 quantity: dto.Quantity);
     }
 }

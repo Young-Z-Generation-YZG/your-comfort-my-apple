@@ -28,7 +28,7 @@ public class BasketRepository : IBasketRepository
                 return new ShoppingCart
                 {
                     UserEmail = userEmail,
-                    Items = new List<ShoppingCartItem>()
+                    CartItems = new List<ShoppingCartItem>()
                 };
             }
 

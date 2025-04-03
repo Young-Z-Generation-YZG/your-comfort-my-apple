@@ -21,4 +21,8 @@
     <ProjectReference Include="..\YGZ.Basket.Infrastructure\YGZ.Basket.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

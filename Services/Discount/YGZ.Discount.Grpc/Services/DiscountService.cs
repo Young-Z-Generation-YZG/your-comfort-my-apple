@@ -8,11 +8,12 @@ using YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
 using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
+using YGZ.Discount.Application.Coupons.Queries.GetPromotionItemById;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionGlobal;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionProduct;
-using YGZ.Discount.Application.Promotions.Queries.GetPromotionGlobal;
+using YGZ.Discount.Application.Promotions.Queries.GetPromotionEventQuery;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Grpc.Protos;
 
@@ -29,13 +30,22 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         _sender = sender;
     }
 
+    //public override Task<GetAllDiscountsResponse> Get(GetAllDiscountsRequest request, ServerCallContext context)
+    //{
+    //    //var query = new GetAllCouponsQuery();
+
+    //    //var result = await _sender.Send(query);
+
+    //    return base.GetAllDiscountCoupons(request, context);
+    //}
+
     public override async Task<CouponResponse> GetDiscountByCode(GetDiscountRequest request, ServerCallContext context)
     {
         var query = new GetCouponByCodeQuery(request.Code);
 
         var result = await _sender.Send(query);
 
-        var response = _mapper.Map<CouponResponse>(result.Response);
+        var response = _mapper.Map<CouponResponse>(result.Response!);
 
         return response;
     }
@@ -57,7 +67,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 PromotionEventId = e.promotionEvent.PromotionEventId,
                 PromotionEventTitle = e.promotionEvent.PromotionEventTitle,
                 PromotionEventDescription = e.promotionEvent.PromotionEventDescription,
-                PromotionEventPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(e.promotionEvent.PromotionEventType, false).Value,
+                PromotionEventPromotionEventType = (PromotionEventTypeEnum)PromotionEvent.FromName(e.promotionEvent.PromotionEventType, false).Value,
                 PromotionEventState = (DiscountStateEnum)DiscountState.FromName(e.promotionEvent.PromotionEventState, false).Value,
                 PromotionEventValidFrom = e.promotionEvent.PromotionEventValidFrom.HasValue ? e.promotionEvent.PromotionEventValidFrom.Value.ToTimestamp() : null,
                 PromotionEventValidTo = e.promotionEvent.PromotionEventValidTo.HasValue ? e.promotionEvent.PromotionEventValidTo.Value.ToTimestamp() : null
@@ -79,13 +89,15 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return response;
     }
 
-    public override Task<GetAllDiscountsResponse> GetAllDiscountCoupons(GetAllDiscountsRequest request, ServerCallContext context)
+    public override async Task<PromotionItemModel> GetPromotionItemById(GetPromotionItemByIdRequest request, ServerCallContext context)
     {
-        //var query = new GetAllCouponsQuery();
+        var query = new GetPromotionItemByIdQuery(request.PromotionId);
 
-        //var result = await _sender.Send(query);
+        var result = await _sender.Send(query);
 
-        return base.GetAllDiscountCoupons(request, context);
+        var response = _mapper.Map<PromotionItemModel>(result.Response!);
+
+        return response;
     }
 
     //public override async Task<GetAllDiscountsResponse> GetAllDiscounts(GetAllDiscountsRequest request, ServerCallContext context)

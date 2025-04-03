@@ -5,6 +5,7 @@ using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 using YGZ.Discount.Domain.PromotionItem;
+using YGZ.Discount.Domain.PromotionItem.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Configurations;
 
@@ -20,8 +21,16 @@ public class PromotionItemConfiguration : IEntityTypeConfiguration<PromotionItem
                .ValueGeneratedNever()
                .HasConversion(
                    id => id.Value,
-                   dbid => ProductId.Of(dbid)
+                   dbid => PromotionItemId.Of(dbid)
                );
+
+        builder.Property(x => x.ProductId)
+                .ValueGeneratedNever()
+                .HasConversion(
+                     id => id.Value,
+                     dbid => ProductId.Of(dbid)
+                );
+
 
         //// Configure State property with conversion
         builder.Property(x => x.DiscountState) // Updated from Status to State
@@ -46,7 +55,6 @@ public class PromotionItemConfiguration : IEntityTypeConfiguration<PromotionItem
                 )
                 .HasColumnName("EndDiscountType");
 
-        //// Configure ProductNameTag property with conversion
         builder.Property(x => x.ProductNameTag)
                .HasConversion(
                    x => x.Name,
@@ -57,7 +65,7 @@ public class PromotionItemConfiguration : IEntityTypeConfiguration<PromotionItem
         builder.Property(x => x.PromotionEventType)
                .HasConversion(
                    x => x.Name,
-                   x => PromotionEventType.FromName(x, false)
+                   x => PromotionEvent.FromName(x, false)
                )
                .HasColumnName("PromotionEventType");
     }

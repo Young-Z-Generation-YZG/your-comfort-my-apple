@@ -8,6 +8,7 @@ public class PromotionGlobalType : SmartEnum<PromotionGlobalType>
 {
     public PromotionGlobalType(string name, int value) : base(name, value) { }
 
+    public static readonly PromotionGlobalType UNKNOWN = new("UNKNOWN", 0);
     public static readonly PromotionGlobalType CATEGORIES = new("CATEGORIES", 1);
     public static readonly PromotionGlobalType PRODUCTS = new("PRODUCTS", 2);
 }

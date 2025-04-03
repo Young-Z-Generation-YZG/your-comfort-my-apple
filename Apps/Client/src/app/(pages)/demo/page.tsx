@@ -6,7 +6,7 @@ import { Button } from '~/components/ui/button';
 import {
    addItem,
    deleteCart,
-} from '~/infrastructure/redux/features/cart-demo.slice';
+} from '~/infrastructure/redux/features/cart.slice';
 import { AppDispatch } from '~/infrastructure/redux/store';
 import CartDemo from './cart/page';
 
