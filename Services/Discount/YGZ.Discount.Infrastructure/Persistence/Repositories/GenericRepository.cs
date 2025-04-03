@@ -94,15 +94,15 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     }
 
 
-    virtual public Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+    virtual public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
     {
         try
         {
-            throw new NotImplementedException();
+            return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
         }
         catch (Exception ex)
         {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            return null!;
         }
     }
 

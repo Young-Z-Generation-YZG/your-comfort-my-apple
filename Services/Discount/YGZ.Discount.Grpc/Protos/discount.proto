@@ -7,21 +7,20 @@ import "google/protobuf/timestamp.proto";
 
 package discount;
 
-// Enums for DiscountTypeEnum and DiscountStateEnum
 enum DiscountTypeEnum {
-	DISCOUNT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	DISCOUNT_TYPE_ENUM_UNKNOWN = 0;
 	PERCENTAGE = 1;
-	FIXED = 2; // Assuming FIXED is another possible value; adjust as needed
+	FIXED = 2;
 }
 
 enum PromotionGlobalTypeEnum {
-	PROMOTION_GLOBAL_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	PROMOTION_GLOBAL_TYPE_ENUM_UNKNOWN = 0; 
 	CATEGORIES = 1;
 	PRODUCTS = 2;
 }
 
 enum PromotionEventTypeEnum {
-	PROMOTION_EVENT_TYPE_ENUM_UNKNOWN = 0; // Default/unknown value
+	PROMOTION_EVENT_TYPE_ENUM_UNKNOWN = 0; 
 	PROMOTION_COUPON = 1;
 	PROMOTION_ITEM = 2;
 	PROMOTION_EVENT = 3;
@@ -29,20 +28,20 @@ enum PromotionEventTypeEnum {
 }
 
 enum DiscountStateEnum {
-	DISCOUNT_STATE_ENUM_UNKNOWN = 0; // Default/unknown value
-	ACTIVE = 1; // Assuming ACTIVE is another possible value; adjust as needed
+	DISCOUNT_STATE_ENUM_UNKNOWN = 0; 
+	ACTIVE = 1; 
 	INACTIVE = 2;
 	EXPIRED = 3;
 }
 
 enum EndDiscountEnum {
-	END_DISCOUNT_ENUM_UNKNOWN = 0; // Default/unknown value
+	END_DISCOUNT_ENUM_UNKNOWN = 0;
 	BY_END_DATE = 1;
 	BY_QUANTITY = 2;
 }
 
 enum ProductNameTagEnum {
-	NAME_TAG_ENUM_UNKNOWN = 0; // Default/unknown value
+	NAME_TAG_ENUM_UNKNOWN = 0; 
 	MACBOOK = 1;
 	IPAD = 2;
 	IPHONE = 3;
@@ -53,8 +52,9 @@ enum ProductNameTagEnum {
 
 service DiscountProtoService {
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
-	rpc GetAllDiscountCoupons (GetAllDiscountsRequest) returns (GetAllDiscountsResponse);
+	rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
 	rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
+	rpc GetPromotionItemById (GetPromotionItemByIdRequest) returns (PromotionItemModel);
 
 	rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
 	rpc DeleteDiscountCoupon (DeleteDiscountCouponRequest) returns (BooleanResponse);
@@ -139,10 +139,14 @@ message PromotionProductModel {
 }
 
 message GetDiscountRequest {
-	string code = 1;
+	google.protobuf.StringValue code = 1;
 }
 
 message GetPromotionEventRequest { }
+
+message GetPromotionItemByIdRequest {
+	google.protobuf.StringValue promotion_id = 1;
+}
 
 message CouponResponse {
 	PromotionCouponModel promotion_coupon = 1;
@@ -194,7 +198,7 @@ message BooleanResponse {
 	bool is_success = 1;
 }
 
-message GetAllDiscountsRequest {
+message GetAllPromotionCouponsRequest {
 	int32 _page = 1;
 	int32 _limit = 2;
 	DiscountStateEnum _state = 3;

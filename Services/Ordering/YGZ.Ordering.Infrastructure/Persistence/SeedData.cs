@@ -11,7 +11,15 @@ public class SeedData
 {
     public static IEnumerable<OrderItem> OrderItems => new List<OrderItem>
     {
-       OrderItem.Create(OrderItemId.Create(), OrderId.Of(new Guid("3de0c2e6-d082-4d24-b84e-805905674b09")), "67ce96bedf79dc25ff41486e", "iPhone 16", "ultramarine", 128, 799, "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine?wid=5120&hei=2880&fmt=webp&qlt=70&.v=UXp1U3VDY3IyR1hNdHZwdFdOLzg1V0tFK1lhSCtYSGRqMUdhR284NTN4L28rSU1jVGx4VGxCNEFSdVNXdG1RdzJrQmVLSXFrTCsvY1VvVmRlZkVnMzJKTG1lVWJJT2RXQWE0Mm9rU1V0V0E5L1ZBdzY3RU1aTVdUR3lMZHFNVzE0RzhwM3RLeUk1S0YzTkJVVmF2Ly9R&traceId=1", 1)
+       OrderItem.Create(OrderItemId.Create(),
+                        OrderId.Of(new Guid("3de0c2e6-d082-4d24-b84e-805905674b09")),
+                        "67ce96bedf79dc25ff41486e",
+                        "iPhone 16",
+                        "ultramarine",
+                        799,
+                        "https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine?wid=5120&hei=2880&fmt=webp&qlt=70&.v=UXp1U3VDY3IyR1hNdHZwdFdOLzg1V0tFK1lhSCtYSGRqMUdhR284NTN4L28rSU1jVGx4VGxCNEFSdVNXdG1RdzJrQmVLSXFrTCsvY1VvVmRlZkVnMzJKTG1lVWJJT2RXQWE0Mm9rU1V0V0E5L1ZBdzY3RU1aTVdUR3lMZHFNVzE0RzhwM3RLeUk1S0YzTkJVVmF2Ly9R&traceId=1",
+                        "iphone-16-128gb",
+                        1)
     };
 
     public static IEnumerable<Order> Orders

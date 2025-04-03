@@ -65,7 +65,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 name: "PromotionItems",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     ProductNameTag = table.Column<string>(type: "text", nullable: false),
@@ -77,6 +77,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     ValidFrom = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ValidTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     AvailableQuantity = table.Column<int>(type: "integer", nullable: true),
+                    ProductId = table.Column<string>(type: "text", nullable: false),
                     ProductImage = table.Column<string>(type: "text", nullable: false),
                     ProductSlug = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

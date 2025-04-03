@@ -13,11 +13,12 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import authReducer from './features/auth.slice';
 import appReducer from './features/app.slice';
-import cartReducer from './features/cart-demo.slice';
+import cartReducer from './features/cart.slice';
 import { CategoryApi } from '~/infrastructure/services/category.service';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
 import { AuthApi } from '~/infrastructure/services/auth.service';
 import { catalogApi } from '~/infrastructure/services/catalog.service';
+import { basketApi } from '~/infrastructure/services/basket.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 
@@ -32,6 +33,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       AuthApi.reducerPath,
       promotionApi.reducerPath,
       catalogApi.reducerPath,
+      basketApi.reducerPath,
    ], // Add the blacklist option
    whitelist: ['auth', 'cart'],
 };
@@ -44,6 +46,7 @@ const reducers = combineReducers({
    [AuthApi.reducerPath]: AuthApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [catalogApi.reducerPath]: catalogApi.reducer,
+   [basketApi.reducerPath]: basketApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -60,6 +63,7 @@ export const reduxStore = configureStore({
          AuthApi.middleware,
          promotionApi.middleware,
          catalogApi.middleware,
+         basketApi.middleware,
       ),
 });
 

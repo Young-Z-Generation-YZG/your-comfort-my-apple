@@ -6,7 +6,6 @@ export interface PaginationWithPromotionResponse<T> {
    page_size: number;
    current_page: number;
    items: T[];
-   promotion_items: IPromotionProductResponse[] | null;
    links: PaginationLinks;
 }
 

@@ -11,9 +11,9 @@ namespace YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 
 public class CreatePromotionItemCommandHandler : ICommandHandler<CreatePromotionItemCommand, bool>
 {
-    private readonly IGenericRepository<PromotionItem, ProductId> _repository;
+    private readonly IGenericRepository<PromotionItem, PromotionItemId> _repository;
 
-    public CreatePromotionItemCommandHandler(IGenericRepository<PromotionItem, ProductId> repository)
+    public CreatePromotionItemCommandHandler(IGenericRepository<PromotionItem, PromotionItemId> repository)
     {
         _repository = repository;
     }

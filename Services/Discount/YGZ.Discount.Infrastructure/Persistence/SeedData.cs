@@ -14,9 +14,9 @@ namespace YGZ.Discount.Infrastructure.Persistence;
 
 public static class SeedData
 {
-    public static IEnumerable<PromotionEvent> PromotionEvents => new List<PromotionEvent>()
+    public static IEnumerable<Domain.PromotionEvent.PromotionEvent> PromotionEvents => new List<Domain.PromotionEvent.PromotionEvent>()
     {
-        PromotionEvent.Create(id: PromotionEventId.Of("f55f322f-6406-4dfa-b2ea-2777f7813e70"),
+        Domain.PromotionEvent.PromotionEvent.Create(id: PromotionEventId.Of("f55f322f-6406-4dfa-b2ea-2777f7813e70"),
             title: "Black Friday",
             description: "Sale all item in shop with special price",
             discountState: DiscountState.ACTIVE,
@@ -52,7 +52,7 @@ public static class SeedData
             productSlug: "iphone-16-256gb",
             productImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone16-digitalmat-gallery-1-202409_GEO_US",
             discountType: DiscountType.PERCENTAGE,
-            discountValue: (decimal)0.05,
+            discountValue: (decimal)0.1,
             promotionGlobalId: PromotionGlobalId.Of("61cd23de-169e-4beb-a890-8dbb91ccca57"))
     };
 
@@ -69,13 +69,14 @@ public static class SeedData
     public static IEnumerable<PromotionItem> PromotionItems => new List<PromotionItem>()
     {
         PromotionItem.Create(
+                promotionItemId: PromotionItemId.Of("f55f322f-6406-4dfa-b2ea-2333f7813e70"),
                 productId: ProductId.Of("67cbcff3cb422bbaf809c5a9"),
                 title: "Discount for iPhone 16 128GB",
                 description: "Discount only for iPhone 16 128GB",
                 discountState: DiscountState.ACTIVE,
                 discountType: DiscountType.PERCENTAGE,
                 endDiscountType: EndDiscountType.BY_END_DATE,
-                discountValue: (decimal)0.05,
+                discountValue: (decimal)0.15,
                 nameTag: ProductNameTag.IPHONE,
                 validFrom: new DateTime(2025, 3, 25).ToUniversalTime(),
                 validTo: new DateTime(2025, 4, 25).ToUniversalTime(),
@@ -93,7 +94,7 @@ public static class SeedData
                 title: "April 2025",
                 description: "Discount for April 2025",
                 nameTag: ProductNameTag.IPHONE,
-                promotionEventType: PromotionEventType.PROMOTION_COUPON,
+                promotionEventType: Domain.Core.Enums.PromotionEvent.PROMOTION_COUPON,
                 discountState: DiscountState.ACTIVE,
                 discountType: DiscountType.PERCENTAGE,
                 discountValue: (decimal)0.05,

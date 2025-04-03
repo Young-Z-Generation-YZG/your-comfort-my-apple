@@ -460,7 +460,7 @@ const HomePage = () => {
                         return (
                            <CarouselItem
                               key={index}
-                              className="md:basis-[30%] mr-[0px]"
+                              className="lg:basis-[30%] mr-[0px]"
                            >
                               <LatestItem product={product} />
                            </CarouselItem>

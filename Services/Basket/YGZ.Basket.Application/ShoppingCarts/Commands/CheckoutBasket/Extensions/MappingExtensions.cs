@@ -28,13 +28,14 @@ public static class MappingExtension
             DiscountAmount = dto.DiscountAmount,
             SubTotalAmount = dto.SubTotalAmount,
             TotalAmount = dto.TotalAmount,
-            CartItems = cartItems.Select(x => new OrderLineIntegrationEvent(x.ProductId,
-                                                                            x.ProductModel,
-                                                                            x.ProductColor,
-                                                                            x.ProductStorage,
-                                                                            x.ProductUnitPrice,
-                                                                            x.ProductImage,
-                                                                            x.Quantity)).ToList()
+            CartItems = cartItems.Select(x => new OrderLineIntegrationEvent(ProductId: x.ProductId,
+                                                                            ProductName: x.ProductName,
+                                                                            ProductColorName: x.ProductColorName,
+                                                                            ProductUnitPrice: x.ProductUnitPrice,
+                                                                            ProductNameTag: x.ProductNameTag,
+                                                                            ProductImage: x.ProductImage,
+                                                                            ProductSlug: x.ProductSlug,
+                                                                            Quantity: x.Quantity)).ToList()
         };
     }
 }

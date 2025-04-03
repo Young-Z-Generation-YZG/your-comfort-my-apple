@@ -58,6 +58,9 @@ const config: Config = {
             input: 'hsl(var(--input))',
             ring: 'hsl(var(--ring))',
          },
+         boxShadow: {
+            'color-selector': 'inset 0 3px 4px rgba(0,0,0,.25)',
+         },
       },
    },
    plugins: [require('tailwindcss-animate')],

@@ -39,50 +39,50 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
         var basket = await _basketRepository.GetBasketAsync("lov3rinve146@gmail.com", cancellationToken);
 
-        if (basket.Response == null || !basket.Response.Items.Any())
-        {
-            return false;
-        }
+        //if (basket.Response == null || !basket.Response.Items.Any())
+        //{
+        //    return false;
+        //}
 
 
-        if (!string.IsNullOrEmpty(request.DiscountCode) && basket.Response!.Items.Any())
-        {
-            var discount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.DiscountCode });
+        //if (!string.IsNullOrEmpty(request.DiscountCode) && basket.Response!.Items.Any())
+        //{
+        //    var discount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.DiscountCode });
 
-            if (discount is null)
-            {
-                return false;
-            }
+        //    if (discount is null)
+        //    {
+        //        return false;
+        //    }
 
-            var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
+        //    var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
 
-            switch (discountType)
-            {
-                case var _ when discountType == DiscountType.PERCENT:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) * (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue / 100;
-                    break;
-                case var _ when discountType == DiscountType.FIXED:
-                    discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) - (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue;
-                    break;
-            }
-        }
+        //    switch (discountType)
+        //    {
+        //        case var _ when discountType == DiscountType.PERCENT:
+        //            discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) * (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue / 100;
+        //            break;
+        //        case var _ when discountType == DiscountType.FIXED:
+        //            discountAmount = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity) - (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue;
+        //            break;
+        //    }
+        //}
 
-        subTotal = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity);
-        total = subTotal - discountAmount;
+        //subTotal = basket.Response.Items.Sum(x => x.ProductUnitPrice * x.Quantity);
+        //total = subTotal - discountAmount;
 
-        if ((discountAmount != request.DiscountAmount) || (subTotal != request.SubTotalAmount || (total != request.TotalAmount)))
-        {
-            return false;
-        }
+        //if ((discountAmount != request.DiscountAmount) || (subTotal != request.SubTotalAmount || (total != request.TotalAmount)))
+        //{
+        //    return false;
+        //}
 
-        var eventMessage = request.ToBasketCheckoutIntegrationEvent(customerId: "d7610ca1-2909-49d3-af23-d502a297da29",
-                                                                    customerEmail: "lov3rinve146@gmail.com",
-                                                                    cartItems: basket.Response.Items,
-                                                                    discountAmount: discountAmount,
-                                                                    subTotalAmount: subTotal,
-                                                                    totalAmount: total);
+        //var eventMessage = request.ToBasketCheckoutIntegrationEvent(customerId: "d7610ca1-2909-49d3-af23-d502a297da29",
+        //                                                            customerEmail: "lov3rinve146@gmail.com",
+        //                                                            cartItems: basket.Response.Items,
+        //                                                            discountAmount: discountAmount,
+        //                                                            subTotalAmount: subTotal,
+        //                                                            totalAmount: total);
 
-        await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
+        //await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
 
         return true;
     }
