@@ -111,9 +111,10 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
                 discountType = DiscountTypeEnum.Fixed;
             }
 
-            promotionAppliedProductCount = item.Quantity; 
+            promotionAppliedProductCount = item.Quantity;
             item.Promotion!.PromotionTitle = promotionItem.PromotionItemTitle;
-        } else
+        }
+        else
         {
             item.Promotion = null;
 
@@ -145,7 +146,7 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
         {
             var promotionEvent = promotionEvents.PromotionEvents.FirstOrDefault(x => x.PromotionEvent.PromotionEventId == item.Promotion?.PromotionIdOrCode);
 
-            if(promotionEvent is null)
+            if (promotionEvent is null)
             {
                 return item;
             }
@@ -160,29 +161,31 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
             var promotionProduct = promotionProducts.FirstOrDefault(pp => pp.PromotionProductId == item.ProductSlug);
             var promotionCategory = promotionCategories.FirstOrDefault(pc => pc.PromotionCategoryId == item.CategoryId);
 
-            
+
 
             if (promotionProduct is not null && promotionProduct.PromotionProductSlug == item.ProductSlug)
             {
                 discountType = promotionProduct.PromotionProductDiscountType;
 
-                if(discountType == DiscountTypeEnum.Percentage)
+                if (discountType == DiscountTypeEnum.Percentage)
                 {
                     promotionDiscountUnitPrice = item.ProductUnitPrice - (item.ProductUnitPrice * (decimal)promotionProduct.PromotionProductDiscountValue!);
                     promotionFinalPrice = promotionDiscountUnitPrice * item.Quantity;
                     discountType = DiscountTypeEnum.Percentage;
                     discountValue = (decimal)promotionProduct.PromotionProductDiscountValue!;
-                } else {
+                }
+                else
+                {
                     promotionDiscountUnitPrice = item.ProductUnitPrice - (decimal)promotionProduct.PromotionProductDiscountValue!;
                     promotionFinalPrice = promotionDiscountUnitPrice * item.Quantity;
                     discountType = DiscountTypeEnum.Fixed;
                     discountValue = (decimal)promotionProduct.PromotionProductDiscountValue!;
                 }
-                
+
                 promotionAppliedProductCount = item.Quantity;
             }
 
-            if(promotionCategory is not null)
+            if (promotionCategory is not null)
             {
                 discountType = promotionCategory.PromotionCategoryDiscountType;
 
@@ -202,7 +205,7 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
                 promotionAppliedProductCount = item.Quantity;
             }
 
-            if(promotionDiscountUnitPrice == -1)
+            if (promotionDiscountUnitPrice == -1)
             {
                 item.Promotion = null;
 
@@ -211,7 +214,8 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 
             subTotalAmount = promotionFinalPrice;
             item.Promotion!.PromotionTitle = promotionEvent.PromotionEvent.PromotionEventTitle;
-        } else
+        }
+        else
         {
             item.Promotion = null;
 
@@ -228,5 +232,5 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 
         return item;
     }
-    
+
 }

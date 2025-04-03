@@ -37,7 +37,8 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             return result.Error;
         }
 
-        if(!string.IsNullOrEmpty(request.CouponCode)) {
+        if (!string.IsNullOrEmpty(request.CouponCode))
+        {
 
             var couponDiscount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.CouponCode });
 
@@ -70,7 +71,8 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
                     }
                 }
             }
-        } else
+        }
+        else
         {
             for (int i = 0; i < result.Response!.CartItems.Count; i++)
             {
@@ -78,7 +80,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
                 ShoppingCartItem updatedItem;
 
-                if(item.Promotion is null)
+                if (item.Promotion is null)
                 {
                     continue;
                 }

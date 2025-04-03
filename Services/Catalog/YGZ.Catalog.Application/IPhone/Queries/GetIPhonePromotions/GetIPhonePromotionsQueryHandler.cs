@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;

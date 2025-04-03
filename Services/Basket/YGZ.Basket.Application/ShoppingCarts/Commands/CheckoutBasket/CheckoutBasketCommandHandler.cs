@@ -67,7 +67,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                 return Errors.Discount.PromotionCouponNotFound;
             }
 
-            var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
+            //    var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
 
             for (var i = 0; i <= basket.Response.CartItems.Count; i++)
             {
@@ -108,7 +108,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                                                                     discountAmount: discountAmount,
                                                                     totalAmount: total);
 
-        await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
+        //await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
 
         switch (request.PaymentMethod)
         {
