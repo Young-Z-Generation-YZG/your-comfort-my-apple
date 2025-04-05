@@ -4,7 +4,13 @@ import Image from 'next/image';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 
-const HelpItem = ({ image, title, subTitle }: { image?: string, title: string, subTitle: string }) => {
+interface HelpItemProps {
+     image?: string, 
+     title: string, 
+     subTitle: string
+}
+
+const HelpItem = ({ image, title, subTitle }: HelpItemProps) => {
      const checkImage = !!image;
 
      return (

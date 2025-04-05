@@ -5,53 +5,31 @@ import Image from 'next/image';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 
-type CompareItemType = {
-    id:string,
-    checkNew:boolean,
-    name:string,
-    image:string,
-    description:string,
-    price:number,
-    colors:Array<string>,
-    screen:Array<string>,
-    material:Array<string>,
-    checkAppIntell:boolean,
-    checkDynamic:boolean,
-    chip:Array<any>,
-    battery:string,
-    biometricAuthen:string,
-    crashDetection:Array<string>,
-    camera:Array<string>,
-    checkCameraControl:boolean,
-    typeConnect:Array<string>,
+interface CompareItemProps {
+    id: string;
+    checkNew: boolean;
+    name: string;
+    image: string;
+    description: string;
+    price: number;
+    colors: Array<string>;
+    screen: Array<string>;
+    material: Array<string>;
+    checkAppIntell: boolean;
+    checkDynamic: boolean;
+    chip: Array<any>;
+    battery: string;
+    biometricAuthen: string;
+    crashDetection: Array<string>;
+    camera: Array<string>;
+    checkCameraControl: boolean;
+    typeConnect: Array<string>;
 }
 
-const CompareItem = ({compare}: {compare: CompareItemType}) => {
-    const {
-        id,
-        checkNew,
-        name,
-        image,
-        description,
-        price,
-        colors,
-        screen,
-        material,
-        checkAppIntell,
-        checkDynamic,
-        chip,
-        battery,
-        biometricAuthen,
-        crashDetection,
-        camera,
-        checkCameraControl,
-        typeConnect
-    } = compare;
-    
+const CompareItem = ({ id, checkNew, name, image, description, price, colors, screen, material, checkAppIntell, checkDynamic, chip, battery, biometricAuthen, crashDetection, camera, checkCameraControl, typeConnect} : CompareItemProps) => {
     let imgBiometricAuthen = biometricAuthen === "Face ID" ? 
                                                 '/images/compare-imgs/icon-biometric-authen/icon-face-id.jpg' : 
                                                 '/images/compare-imgs/icon-biometric-authen/icon-touch-id.jpg';
-    
     let imgChip='';
     switch (chip[0]) {
         case 16:
@@ -244,5 +222,5 @@ const CompareItem = ({compare}: {compare: CompareItemType}) => {
     );
 }
 
-export type { CompareItemType };
+export type { CompareItemProps  as CompareItemType };
 export default CompareItem;
