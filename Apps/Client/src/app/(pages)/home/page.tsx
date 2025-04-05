@@ -1,6 +1,5 @@
+'use client'
 /* eslint-disable react/react-in-jsx-scope */
-'use client';
-import { useEffect, useState } from 'react';
 // import { useGetUsersQuery } from '~/services/example/user.service';
 import { motion } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';
@@ -28,6 +27,7 @@ import LatestItem from './_components/LatestItem';
 import ExperienceItem from './_components/ExperienceItem';
 import CompareItem, { CompareItemType } from './_components/CompareItem';
 import { Button } from '~/components/ui/button';
+import { useState } from 'react';
 
 const listLatestItem = [
    {
@@ -460,7 +460,7 @@ const HomePage = () => {
                         return (
                            <CarouselItem
                               key={index}
-                              className="md:basis-[30%] mr-[0px]"
+                              className="md:basis-[30%] lg:basis-[36%] mr-[0px]"
                            >
                               <LatestItem product={product} />
                            </CarouselItem>
@@ -489,7 +489,7 @@ const HomePage = () => {
                         return (
                            <CarouselItem
                               key={index}
-                              className="md:basis-[30%] mr-[0px]"
+                              className="md:basis-[30%] lg:basis-[36%] mr-[0px]"
                            >
                               <ExperienceItem experience={item} />
                            </CarouselItem>
