@@ -1,3 +1,4 @@
+'use client'
 /* eslint-disable react/react-in-jsx-scope */
 // import { useGetUsersQuery } from '~/services/example/user.service';
 import { motion } from 'framer-motion';
@@ -459,7 +460,7 @@ const HomePage = () => {
                         return (
                            <CarouselItem
                               key={index}
-                              className="md:basis-[30%] mr-[0px]"
+                              className="md:basis-[30%] lg:basis-[36%] mr-[0px]"
                            >
                               <LatestItem product={product} />
                            </CarouselItem>
@@ -488,7 +489,7 @@ const HomePage = () => {
                         return (
                            <CarouselItem
                               key={index}
-                              className="md:basis-[30%] mr-[0px]"
+                              className="md:basis-[30%] lg:basis-[36%] mr-[0px]"
                            >
                               <ExperienceItem experience={item} />
                            </CarouselItem>

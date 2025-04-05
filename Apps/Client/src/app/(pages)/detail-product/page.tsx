@@ -207,7 +207,10 @@ const DetailProductPage = () => {
    const [selectedOption1, setSelectedOption1] = useState('ip14proMax');
    const [selectedOption2, setSelectedOption2] = useState('ip14plus');
    const [selectedOption3, setSelectedOption3] = useState('ip13proMax');
-   const [selectedOption4, setSelectedOption4] = useState('ip13mini');
+
+   const compare01 = listProduct.find((product:CompareItemType) => product.id === selectedOption1);
+   const compare02 = listProduct.find((product:CompareItemType) => product.id === selectedOption2);
+   const compare03 = listProduct.find((product:CompareItemType) => product.id === selectedOption3);
 
    // Visible
    const [visibleModel,setVisibleModel] = useState({
@@ -1144,9 +1147,73 @@ const DetailProductPage = () => {
                   </div>
                </div>
                <div className={cn('w-full flex flex-row gap-3 ', showDetailCompare?'h-fit':'h-[1360px] overflow-hidden')}>
-                  <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption1) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
-                  <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption2) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
-                  <CompareItem compare={listProduct.find((product:CompareItemType) => product.id === selectedOption3) || { id: '', checkNew: false, name: '', image: '', price: 0, colors: [], screen: [], checkDynamic: false, chip: [], battery: '', biometricAuthen: '', crashDetection: [], camera: [], material: [], description: '', checkCameraControl: false, checkAppIntell: false, typeConnect: [] }} />
+                  {compare01 && (
+                     <CompareItem 
+                        id={compare01.id} 
+                        checkNew={compare01.checkNew}  
+                        name={compare01.name}  
+                        image={compare01.image}  
+                        price={compare01.price}  
+                        colors={compare01.colors}  
+                        screen={compare01.screen}  
+                        checkDynamic={compare01.checkDynamic} 
+                        chip={compare01.chip}  
+                        battery={compare01.battery}  
+                        biometricAuthen={compare01.biometricAuthen}  
+                        crashDetection={compare01.crashDetection} 
+                        camera={compare01.camera} 
+                        material={compare01.material} 
+                        description={compare01.description} 
+                        checkCameraControl={compare01.checkCameraControl}
+                        checkAppIntell={compare01.checkAppIntell}
+                        typeConnect={compare01.typeConnect}
+                     />
+                  )}
+                  {compare02 && (
+                     <CompareItem 
+                        id={compare02.id} 
+                        checkNew={compare02.checkNew}  
+                        name={compare02.name}  
+                        image={compare02.image}  
+                        price={compare02.price}  
+                        colors={compare02.colors}  
+                        screen={compare02.screen}  
+                        checkDynamic={compare02.checkDynamic} 
+                        chip={compare02.chip}  
+                        battery={compare02.battery}  
+                        biometricAuthen={compare02.biometricAuthen}  
+                        crashDetection={compare02.crashDetection} 
+                        camera={compare02.camera} 
+                        material={compare02.material} 
+                        description={compare02.description} 
+                        checkCameraControl={compare02.checkCameraControl}
+                        checkAppIntell={compare02.checkAppIntell}
+                        typeConnect={compare02.typeConnect}
+                     />
+                  )}
+                  {compare03 && (
+                     <CompareItem 
+                        id={compare03.id} 
+                        checkNew={compare03.checkNew}  
+                        name={compare03.name}  
+                        image={compare03.image}  
+                        price={compare03.price}  
+                        colors={compare03.colors}  
+                        screen={compare03.screen}  
+                        checkDynamic={compare03.checkDynamic} 
+                        chip={compare03.chip}  
+                        battery={compare03.battery}  
+                        biometricAuthen={compare03.biometricAuthen}  
+                        crashDetection={compare03.crashDetection} 
+                        camera={compare03.camera} 
+                        material={compare03.material} 
+                        description={compare03.description} 
+                        checkCameraControl={compare03.checkCameraControl}
+                        checkAppIntell={compare03.checkAppIntell}
+                        typeConnect={compare03.typeConnect}
+                     />
+                  )}
+                  
                </div>
                <div className={cn('w-full flex items-center justify-center mt-10')}>
                   <Button onClick={()=>setShowDetailCompare(!showDetailCompare)} className={cn('w-[140px] bg-black text-white uppercase px-10 text-xl hover:bg-[#333]')} variant={'default'}>
