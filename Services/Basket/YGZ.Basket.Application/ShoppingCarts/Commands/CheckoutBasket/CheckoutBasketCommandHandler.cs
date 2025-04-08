@@ -108,7 +108,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                                                                     discountAmount: discountAmount,
                                                                     totalAmount: total);
 
-        //await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
+        var promotionFinalPrice = discountUnit * appliedCount;
 
         switch (request.PaymentMethod)
         {

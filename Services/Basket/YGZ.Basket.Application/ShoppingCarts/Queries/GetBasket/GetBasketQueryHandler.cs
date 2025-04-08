@@ -71,6 +71,33 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
                     }
                 }
             }
+        } else
+        {
+            for (int i = 0; i < result.Response!.CartItems.Count; i++)
+            {
+                var item = result.Response!.CartItems[i];
+
+                ShoppingCartItem updatedItem;
+
+                if(item.Promotion is null)
+                {
+                    continue;
+                }
+                else
+                {
+                    switch (item.Promotion.PromotionEventType)
+                    {
+                        case nameof(PromotionEvent.PROMOTION_ITEM):
+                            updatedItem = await HandleItemPromotion(item);
+                            result.Response.CartItems[i] = updatedItem; // Safe to update here
+                            break;
+                        case nameof(PromotionEvent.PROMOTION_EVENT):
+                            updatedItem = await HandleEventPromotion(item);
+                            result.Response.CartItems[i] = updatedItem; // Safe to update here 
+                            break;
+                    }
+                }
+            }
         }
         else
         {
