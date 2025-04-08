@@ -24,19 +24,19 @@ public sealed record CartItemResponse()
     public required string ProductSlug { get; set; }
     public required int Quantity { get; set; }
     public required decimal SubTotalAmount { get; set; }
-    public PromotionResponse? Promotion { get; set; }
+    public PromotionResponse? Promotion { get; set; } = null;
     public required int OrderIndex { get; set; } = 0;
 }
 
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record class PromotionResponse()
 {
-    public required string PromotionIdOrCode { get; set; }
-    public required string PromotionEventType { get; set; }
-    public required string PromotionTitle { get; set; }
-    public required string PromotionDiscountType { get; set; }
-    public required decimal PromotionDiscountValue { get; set; }
-    public required decimal PromotionDiscountUnitPrice { get; set; }
-    public required int PromotionAppliedProductCount { get; set; }
-    public required decimal PromotionFinalPrice { get; set; }
+    public  string PromotionIdOrCode { get; set; }
+    public  string PromotionEventType { get; set; }
+    public  string PromotionTitle { get; set; }
+    public  string PromotionDiscountType { get; set; }
+    public  decimal PromotionDiscountValue { get; set; }
+    public  decimal PromotionDiscountUnitPrice { get; set; }
+    public  int PromotionAppliedProductCount { get; set; }
+    public  decimal PromotionFinalPrice { get; set; }
 }

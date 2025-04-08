@@ -9,6 +9,8 @@ using YGZ.Ordering.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Infrastructure.Persistence.Repositories;
+using YGZ.Ordering.Application.Abstractions.PaymentProviders.Vnpay;
+using YGZ.Ordering.Infrastructure.Payments.Vnpay;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -24,8 +26,11 @@ public static class DependencyInjection
 
         services.AddQueuesFromApplicationLayer(configuration);
 
+        services.Configure<VnpaySettings>(configuration.GetSection(VnpaySettings.SettingKey));
+
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddSingleton<IVnpayProvider, VnpayProvider>();
 
         return services;
     }

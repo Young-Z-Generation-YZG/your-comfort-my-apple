@@ -44,6 +44,8 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
                 var promotion = item.Promotion;
                 if (promotion is null)
                 {
+                    shoppingCart.CartItems[i].SubTotalAmount = item.Quantity * item.ProductUnitPrice;
+
                     continue;
                 }
                 else

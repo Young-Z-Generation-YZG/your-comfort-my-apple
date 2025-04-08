@@ -8,6 +8,10 @@ using YGZ.Basket.Infrastructure.Settings;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.Basket.Infrastructure.Persistence.Repositories;
+using YGZ.Basket.Application.Abstractions.Providers.vnpay;
+using YGZ.Basket.Infrastructure.Payments.Vnpay;
+using YGZ.Basket.Infrastructure.Payments.Momo;
+using YGZ.Basket.Application.Abstractions.Providers.Momo;
 
 namespace YGZ.Basket.Infrastructure;
 
@@ -23,8 +27,14 @@ public static class DependencyInjection
 
         services.AddQueuesFromApplicationLayer(configuration);
 
+        services.Configure<VnpaySettings>(configuration.GetSection(VnpaySettings.SettingKey));
+        services.Configure<MomoSettings>(configuration.GetSection(MomoSettings.SettingKey));
+        services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
+
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.Decorate<IBasketRepository, CachedBasketRepository>();
+        services.AddSingleton<IVnpayProvider, VnpayProvider>();
+        services.AddSingleton<IMomoProvider, MomoProvider>();
 
         services.AddStackExchangeRedisCache(options =>
         {

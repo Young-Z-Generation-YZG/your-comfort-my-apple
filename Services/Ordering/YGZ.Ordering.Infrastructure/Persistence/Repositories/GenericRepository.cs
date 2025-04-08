@@ -1,6 +1,7 @@
 ﻿
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Primitives;
@@ -11,6 +12,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 {
     private readonly OrderDbContext _orderDbContext;
     protected readonly DbSet<TEntity> _dbSet;
+    private readonly ILogger<GenericRepository<TEntity, TId>> _logger;
 
     public GenericRepository(OrderDbContext orderDbContext)
     {
@@ -73,7 +75,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            _logger.LogError(ex, "Error getting entity by id: {Id}", id);
+
+            throw new Exception(ex.Message, ex);
         }
     }
 
@@ -92,27 +96,48 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
     }
 
-    virtual public async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public async Task<bool> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
         try
         {
             await _dbSet.AddRangeAsync(entities);
             await SaveChangesAsync();
+
+            return true;
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            _logger.LogError(ex, "Error adding entities: {Entities}", entities);
+
+            return false;
         }
     }
 
-    virtual public Task RemoveAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    virtual public Task RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public Task<bool> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+    virtual public async Task<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _dbSet.Update(entity);
+            await SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating entity: {Entity}", entity);
+
+            return false;
+        }
     }
 
     virtual public async Task SaveChangesAsync()

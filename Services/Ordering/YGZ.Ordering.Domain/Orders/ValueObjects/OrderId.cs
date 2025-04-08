@@ -28,6 +28,13 @@ public class OrderId : ValueObject
         return new OrderId(guid);
     }
 
+    public static OrderId Of(string id)
+    {
+        Guid.TryParse(id, out var guid);
+
+        return new OrderId(guid);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
