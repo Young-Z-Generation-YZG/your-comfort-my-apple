@@ -11,13 +11,14 @@ public class OrderItem : Entity<OrderItemId>
     // For EF Core migration only
     private OrderItem() : base(null!) { }
 
-    public required string ProductId { get; set; } = default!;
-    public required string ProductName { get; set; } = default!;
-    public required string ProductColorName { get; set; } = default!;
-    public required decimal ProductUnitPrice { get; set; } = default!;
-    public required string ProductImage { get; set; } = default!;
-    public required string ProductSlug { get; set; } = default!;
-    public required int Quantity { get; set; } = default!;
+    public required string ProductId { get; set; }
+    public required string ProductName { get; set; }
+    public required string ProductColorName { get; set; }
+    public required decimal ProductUnitPrice { get; set; }
+    public required string ProductImage { get; set; }
+    public required string ProductSlug { get; set; }
+    public required int Quantity { get; set; }
+    public Promotion? Promotion { get; set; } = null;
 
 
 
@@ -35,7 +36,8 @@ public class OrderItem : Entity<OrderItemId>
                                    decimal productUnitPrice,
                                    string productImage,
                                    string productSlug,
-                                   int quantity)
+                                   int quantity,
+                                   Promotion? promotion)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(productId);
         ArgumentException.ThrowIfNullOrWhiteSpace(productName);
@@ -54,7 +56,8 @@ public class OrderItem : Entity<OrderItemId>
             ProductUnitPrice = productUnitPrice,
             ProductImage = productImage,
             ProductSlug = productSlug,
-            Quantity = quantity
+            Quantity = quantity,
+            Promotion = promotion
         };
     }
 }

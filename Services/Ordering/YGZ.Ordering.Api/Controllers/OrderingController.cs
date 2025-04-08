@@ -7,6 +7,7 @@ using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
+using YGZ.Ordering.Application.Payments.Commands;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -38,12 +39,22 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost()]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<CreateOrderCommand>(request);
+    //[HttpPost()]
+    //public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
+    //{
+    //    var cmd = _mapper.Map<CreateOrderCommand>(request);
 
-        var result = await _sender.Send(cmd, cancellationToken);
+    //    var result = await _sender.Send(cmd, cancellationToken);
+
+    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    //}
+
+    [HttpPatch("vnpay-ipn-callback")]
+    public async Task<IActionResult> VnpayIpn([FromBody] IpnCheckRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<IpnCheckCommand>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

@@ -22,10 +22,10 @@ public class CheckoutBasketRequestExample : ISchemaProcessor
                     country = "Vietnam"
                 },
                 payment_method = "VNPAY",
-                discount_code = "ZF8727717",
+                discount_code = "APRIL2025",
+                sub_total_amount = 1598,
                 discount_amount = 159.8,
-                sub_total_amount = 799,
-                total_amount = 639.2
+                total_amount = 1438.2
             };
         }
     }

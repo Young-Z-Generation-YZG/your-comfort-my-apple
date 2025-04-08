@@ -1,7 +1,5 @@
 ﻿namespace YGZ.Ordering.Application.Orders.Commands.Common;
 
-#pragma warning disable CS8618
-
 public sealed record OrderItemCommand
 {
     public required string ProductId { get; set; }
@@ -18,12 +16,12 @@ public sealed record OrderItemCommand
 public sealed record PromotionCommand
 {
     public required string PromotionIdOrCode { get; set; }
-
     public required string PromotionEventType { get; set; }
-
-    public string PromotionTitle { get; set; } = "UNKNOWN";
-
+    public required string PromotionTitle { get; set; }
     public required string PromotionDiscountType { get; set; }
-
     public required decimal PromotionDiscountValue { get; set; }
+    public required decimal PromotionDiscountUnitPrice { get; set; }
+    public required int PromotionAppliedProductCount { get; set; }
+    public required decimal PromotionFinalPrice { get; set; }
+
 }

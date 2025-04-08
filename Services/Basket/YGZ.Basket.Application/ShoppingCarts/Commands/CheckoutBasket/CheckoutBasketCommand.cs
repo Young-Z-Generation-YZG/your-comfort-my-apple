@@ -10,6 +10,6 @@ public sealed record CheckoutBasketCommand(ShippingAddressCommand ShippingAddres
                                            string? DiscountCode,
                                            decimal DiscountAmount,
                                            decimal SubTotalAmount,
-                                           decimal TotalAmount) : ICommand<bool>
+                                           decimal TotalAmount) : ICommand<string>
 { }
 

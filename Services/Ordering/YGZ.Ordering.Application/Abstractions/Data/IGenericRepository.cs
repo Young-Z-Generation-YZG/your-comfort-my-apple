@@ -15,8 +15,9 @@ public interface IGenericRepository<TEntity, TId> where TEntity : class
                                                                                CancellationToken cancellationToken,
                                                                                params Expression<Func<TEntity, object>>[] includes);
     Task<Result<bool>> AddAsync(TEntity entity, CancellationToken cancellationToken);
-    Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
-    Task RemoveAsync(TEntity entity, CancellationToken cancellationToken);
-    Task RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
+    Task<bool> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
+    Task<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+    Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken);
+    Task<bool> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
     Task SaveChangesAsync();
 }

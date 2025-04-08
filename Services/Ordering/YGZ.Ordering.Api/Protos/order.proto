@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "YGZ.Ordering.Api.Protos";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+package order;
+

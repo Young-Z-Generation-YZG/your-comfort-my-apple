@@ -6,10 +6,11 @@ namespace YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 
 #pragma warning disable CS8618
 
-public sealed record CreateOrderCommand(string CustomerId,
+public sealed record CreateOrderCommand(Guid OrderId,
+                                        string CustomerId,
                                         string CustomerEmail,
                                         ShippingAddressCommand ShippingAddress,
-                                        List<OrderItemCommand> Orders,
+                                        List<OrderItemCommand> OrderItems,
                                         string PaymentMethod,
                                         decimal DiscountAmount,
                                         decimal SubTotalAmount,

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.Ordering.Application.Orders.Commands.Common;
 using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Events.Integrations;
 
@@ -41,7 +42,7 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             Country = context.Country
         };
 
-        var orderItems = context.CartItems.Select(x => new OrderItemCommand
+        var orderItems = context.OrderItems.Select(x => new OrderItemCommand
         {
             ProductId = x.ProductId,
             ProductName = x.ProductName,
@@ -51,12 +52,25 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             ProductImage = x.ProductImage,
             ProductSlug = x.ProductSlug,
             Quantity = x.Quantity,
-            Promotion = null
+            Promotion = x.Promotion is not null
+                ? new PromotionCommand
+                {
+                    PromotionIdOrCode = x.Promotion.PromotionIdOrCode,
+                    PromotionEventType = x.Promotion.PromotionEventType,
+                    PromotionTitle = x.Promotion.PromotionTitle,
+                    PromotionDiscountType = x.Promotion.PromotionDiscountType,
+                    PromotionDiscountValue = x.Promotion.PromotionDiscountValue,
+                    PromotionDiscountUnitPrice = x.Promotion.PromotionDiscountUnitPrice,
+                    PromotionAppliedProductCount = x.Promotion.PromotionAppliedProductCount,
+                    PromotionFinalPrice = x.Promotion.PromotionFinalPrice
+                }
+                : null
         }).ToList();
 
-        var command = new CreateOrderCommand(CustomerEmail: context.CustomerEmail,
+        var command = new CreateOrderCommand(OrderId: context.OrderId,
+                                             CustomerEmail: context.CustomerEmail,
                                              CustomerId: context.CustomerId,
-                                             Orders: orderItems,
+                                             OrderItems: orderItems,
                                              ShippingAddress: shippingAddress,
                                              PaymentMethod: context.PaymentMethod,
                                              DiscountAmount: context.DiscountAmount,
