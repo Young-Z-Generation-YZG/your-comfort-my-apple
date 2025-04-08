@@ -12,10 +12,11 @@ public static class IdentityExtension
     public static IServiceCollection AddIdentityExtension(this IServiceCollection services)
     {
         services
-            .AddIdentity<User, IdentityRole>(options =>
+            .AddIdentityCore<User>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
             })
+            .AddRoles<IdentityRole>()
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<IdentityDbContext>();
 

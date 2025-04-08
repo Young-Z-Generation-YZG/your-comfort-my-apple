@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using Asp.Versioning;
 using Keycloak.AuthServices.Authorization;
-using Microsoft.AspNetCore.Authorization;
-using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
-[ApiController]
 //[Authorize(Roles = "[Role] USER")]
 [Route("api/v{version:apiVersion}/users")]
+[ApiVersion(1)]
 [OpenApiTag("users", Description = "Manage users.")]
 [ProtectedResource("profiles")]
 public class UserController : ApiController
@@ -25,9 +24,9 @@ public class UserController : ApiController
         _sender = sender;
     }
 
+    //[Authorize(Policy = Policies.RequireClientRole)]
+    //[OpenApiOperation("[profiles:read]", "")]
     [HttpGet("profiles")]
-    [OpenApiOperation("[profiles:read]", "")]
-    [Authorize(Policy = Policies.RequireClientRole)]
     [ProtectedResource("profiles", "profile:read:own")]
     public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
     {
