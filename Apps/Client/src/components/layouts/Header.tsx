@@ -165,19 +165,20 @@ const Header = () => {
                   initial="hidden"
                   animate="visible"
                >
-                  {!isAuthenticated ? (
-                     <div className="font-SFProText flex justify-between items-center">
-                        <h2 className="text-2xl font-medium font-SFProText">
-                           Bag
-                        </h2>
-                        <Button
-                           className="rounded-full bg-sky-400 text-white hover:bg-sky-500 font-light"
-                           variant="secondary"
-                        >
-                           Review Bag
-                        </Button>
-                     </div>
-                  ) : null}
+                  <div className="font-SFProText flex justify-between items-center">
+                     <h2 className="text-2xl font-medium font-SFProText">
+                        Bag
+                     </h2>
+                     <Button
+                        className="rounded-full bg-sky-500 text-white hover:bg-sky-600 font-normal"
+                        variant="secondary"
+                        onClick={() => {
+                           router.push('/cart');
+                        }}
+                     >
+                        Review Bag
+                     </Button>
+                  </div>
 
                   <div className="py-5 flex gap-5 flex-col">
                      {items.length > 0 &&

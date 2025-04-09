@@ -22,6 +22,7 @@ public sealed record CartItemResponse()
     public required string ProductNameTag { get; set; } 
     public required string ProductImage { get; set; }
     public required string ProductSlug { get; set; }
+    public required string CategoryId { get; set; }
     public required int Quantity { get; set; }
     public required decimal SubTotalAmount { get; set; }
     public PromotionResponse? Promotion { get; set; } = null;

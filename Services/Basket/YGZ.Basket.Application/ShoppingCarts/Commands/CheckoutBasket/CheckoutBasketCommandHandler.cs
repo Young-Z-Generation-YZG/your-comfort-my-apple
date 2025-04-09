@@ -10,12 +10,13 @@ using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.Discount.Grpc.Protos;
 using static YGZ.Basket.Domain.Core.Errors.Errors;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 
-public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketCommand, string>
+public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBasketCommand, CheckoutBasketResponse>
 {
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
@@ -42,7 +43,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
         _momoProvider = momoProvider;
     }
 
-    public async Task<Result<string>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)
     {
         //var userEmail = _userContext.GetUserEmail();
         //var userId = _userContext.GetUserId();
@@ -51,7 +52,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
         if (basket.Response is null || !basket.Response.CartItems.Any())
         {
-            return "false";
+            return Errors.Basket.BasketEmpty;
         }
 
         var discountAmount = 0;
@@ -127,7 +128,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                     return Errors.Payment.VnpayPaymentUrlInvalid;
                 }
 
-                return paymentUrl;
+                return new CheckoutBasketResponse() { PaymentRedirectUrl = paymentUrl };
             case nameof(PaymentMethod.MOMO):
                 var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
                 {
@@ -142,7 +143,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                     return Errors.Payment.MomoPaymentUrlInvalid;
                 }
 
-                return momoPaymentUrl!.PayUrl;
+                return new CheckoutBasketResponse() { PaymentRedirectUrl = momoPaymentUrl!.PayUrl };
             default:
                 return Errors.Payment.Invalid;
         }

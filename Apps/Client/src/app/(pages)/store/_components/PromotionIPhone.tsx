@@ -7,7 +7,6 @@ import CartWrapper from './CardWrapper';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ProductPromotion } from '../page';
-import { cn } from '~/infrastructure/lib/utils';
 import { useStoreBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import {
    StoreBasketFormType,
@@ -20,13 +19,14 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import { addCartItem } from '~/infrastructure/redux/features/cart.slice';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useLoading } from '~/components/contexts/loading.context';
+import { cn } from '~/infrastructure/lib/utils';
 
 interface PromotionIPhoneProps {
    index: number;
    item: ProductPromotion;
 }
 
-const PromotionIPhone = ({ index, item }: PromotionIPhoneProps) => {
+const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
    const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
    const { showLoading, hideLoading } = useLoading();
 
@@ -57,8 +57,6 @@ const PromotionIPhone = ({ index, item }: PromotionIPhoneProps) => {
          order: 0,
       },
    });
-
-   console.log('errors', errors);
 
    const [
       storeBasket,
@@ -116,11 +114,12 @@ const PromotionIPhone = ({ index, item }: PromotionIPhoneProps) => {
       }
    }, [isLoadingStoreBasket]);
 
+   // console.log('index', index);
+
    return (
-      <div className="col-span-1" key={index}>
+      <div className="col-span-1" key={index + 1}>
          {/* <LoadingOverlay isLoading={true} fullScreen={true}></LoadingOverlay> */}
          <CartWrapper>
-            {/* Product Image and Discount Badge */}
             <div className="relative cursor-pointer">
                <span className="absolute top-3 right-3 z-50 rounded-full bg-red-600 px-2 py-1 text-xs font-bold text-white">
                   Save{' '}

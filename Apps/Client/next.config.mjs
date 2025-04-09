@@ -22,17 +22,34 @@ const nextConfig = {
             protocol: 'https',
             hostname: 'shopdunk.com',
             port: '',
-            pathname: '/**'
+            pathname: '/**',
          },
          {
             protocol: 'https',
             hostname: 'store.storeimages.cdn-apple.com',
             port: '',
-            pathname: '/**'
+            pathname: '/**',
+         },
+         {
+            protocol: 'https',
+            hostname: 'res.cloudinary.com',
+            port: '',
+            pathname: '/**',
+         },
+         {
+            protocol: 'https',
+            hostname: 'cdn.discordapp.com',
+            port: '',
+            pathname: '/**',
+         },
+         {
+            protocol: 'https',
+            hostname: 'images.unsplash.com',
+            port: '',
+            pathname: '/**',
          },
       ],
    },
-  
 };
 
 export default nextConfig;

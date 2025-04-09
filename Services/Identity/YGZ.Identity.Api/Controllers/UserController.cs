@@ -19,7 +19,7 @@ public class UserController : ApiController
     private readonly ISender _sender;
 
     public UserController(ILogger<UserController> logger, ISender sender)
-    {
+    { 
         _logger = logger;
         _sender = sender;
     }

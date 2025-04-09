@@ -9,6 +9,8 @@ const svgs = {
    appleSecurityIcon: require('./apple-security-icon.svg').default,
    appleSettingsIcon: require('./apple-settings-icon.svg').default,
    vnpayLogo: require('./vnpay-logo.svg').default,
+   momoLogo: require('./momo-logo.svg').default,
+   truckIcon: require('./truck-icon.svg').default,
 };
 
 export default svgs;
