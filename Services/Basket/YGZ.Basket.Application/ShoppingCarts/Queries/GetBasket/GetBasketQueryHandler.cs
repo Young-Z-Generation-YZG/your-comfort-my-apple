@@ -386,6 +386,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
                 ProductNameTag = item.ProductNameTag,
                 ProductImage = item.ProductImage,
                 ProductSlug = item.ProductSlug,
+                CategoryId = item.CategoryId,
                 Quantity = item.Quantity,
                 SubTotalAmount = item.SubTotalAmount ?? (decimal)(item.Quantity * item.ProductUnitPrice),
                 Promotion = promotion ?? null,

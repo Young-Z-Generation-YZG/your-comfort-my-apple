@@ -286,9 +286,9 @@ export function FormBirthdaySelector<T extends FieldValues>({
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                      >
-                        {MONTHS.map((m) => (
+                        {MONTHS.map((m, index) => (
                            <div
-                              key={m}
+                              key={index}
                               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
                                  m === birthday?.month ? 'bg-gray-100' : ''
                               }`}
@@ -343,9 +343,9 @@ export function FormBirthdaySelector<T extends FieldValues>({
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                      >
-                        {validDays.map((d) => (
+                        {validDays.map((d, index) => (
                            <div
-                              key={d}
+                              key={index}
                               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${d === birthday?.day ? 'bg-gray-100' : ''}`}
                               onClick={(e) => {
                                  e.stopPropagation();
@@ -394,9 +394,9 @@ export function FormBirthdaySelector<T extends FieldValues>({
                         exit={{ opacity: 0, y: -10 }}
                         className="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                      >
-                        {YEARS.map((y) => (
+                        {YEARS.map((y, index) => (
                            <div
-                              key={y}
+                              key={index}
                               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
                                  y === birthday?.year ? 'bg-gray-100' : ''
                               }`}

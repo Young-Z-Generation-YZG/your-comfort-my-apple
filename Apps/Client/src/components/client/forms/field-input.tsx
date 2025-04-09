@@ -8,9 +8,20 @@ import {
    type Path,
    type FieldValues,
    type RegisterOptions,
+   UseFormRegister,
 } from 'react-hook-form';
 import { AlertCircle, CircleIcon as ExclamationCircleIcon } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
+
+const getNestedError = (errors: any, name: string): string | undefined => {
+   const keys = name.split('.');
+   let error = errors;
+   for (const key of keys) {
+      error = error?.[key];
+      if (!error) return undefined;
+   }
+   return error?.message as string | undefined;
+};
 
 interface FieldInputProps<T extends FieldValues> {
    form: UseFormReturn<T>;
@@ -46,11 +57,13 @@ export function FieldInput<T extends FieldValues>({
    const [isFocused, setIsFocused] = useState(false);
    const {
       control,
+      watch,
+      setValue,
       formState: { errors },
    } = form;
 
    // Get the error for this field if it exists
-   const errorMessage = errors[name]?.message as string | undefined;
+   const errorMessage = getNestedError(errors, name);
    const hasError = !!errorMessage;
 
    return (
@@ -121,6 +134,7 @@ export function FieldInput<T extends FieldValues>({
                            )}
                            onFocus={() => setIsFocused(true)}
                            {...field}
+                           value={field.value || ''}
                            onBlur={() => {
                               setIsFocused(false);
                               field.onBlur();

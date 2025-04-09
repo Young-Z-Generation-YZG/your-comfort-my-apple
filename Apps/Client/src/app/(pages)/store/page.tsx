@@ -113,7 +113,7 @@ const StorePage = () => {
          </div>
          <div className="row w-[1200px] mx-auto pt-[80px] pb-[64px]">
             <p className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
-               <p className="inline text-black">Store.</p>
+               <span className="inline text-black">Store.</span>
                The best way to buy the products you love.
             </p>
          </div>
@@ -123,12 +123,12 @@ const StorePage = () => {
          </div>
 
          <div className="w-[1200px] mx-auto pt-[80px] pb-[64px]">
-            <p className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
+            <span className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
                <p className="text-black">Black Friday Special</p>
                <p className="inline text-base text-slate-400 font-SFProText font-light relative -top-5">
                   Limited-time savings on your favorite Apple products.
                </p>
-            </p>
+            </span>
 
             <div className="w-full">
                {isLoading ? (
