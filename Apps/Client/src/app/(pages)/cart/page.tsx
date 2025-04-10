@@ -43,6 +43,9 @@ import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
 
 const CartPage = () => {
    const [loading, setLoading] = useState(false);
+   const [coupon, setCoupon] = useState<string | null>(null);
+   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null); // Coupon applied to query
+
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
 
@@ -54,10 +57,13 @@ const CartPage = () => {
    const {
       data: basketData,
       isLoading: isBasketLoading,
+      isFetching: isBasketFetching,
       isError: isErrorBasket,
       error: errorBasket,
       refetch: refetchBasket,
-   } = useGetBasketAsyncQuery();
+   } = useGetBasketAsyncQuery({
+      _couponCode: appliedCoupon,
+   });
 
    const [
       storeBasket,
@@ -76,6 +82,14 @@ const CartPage = () => {
          error: errorDeleteBasket,
       },
    ] = useDeleteBasketAsyncMutation();
+
+   const handleApplyCoupon = async () => {
+      setLoading(true);
+      setAppliedCoupon(coupon);
+      await refetchBasket();
+
+      setLoading(false);
+   };
 
    useEffect(() => {
       if (basketData) {
@@ -182,6 +196,7 @@ const CartPage = () => {
                   <LoadingOverlay
                      isLoading={
                         isBasketLoading ||
+                        isBasketFetching ||
                         isLoadingStoreBasket ||
                         isLoadingDeleteBasket ||
                         loading
@@ -205,8 +220,14 @@ const CartPage = () => {
                         className="w-[200px] h-fit p-0 border-[#999999] border-t-0 border-l-0 border-r-0 border-b-1 rounded-none 
                         focus-visible:ring-0 focus-visible:ring-offset-0 text-[18px] font-light tracking-[0.2px]"
                         placeholder="Enter promo code"
+                        value={coupon ?? ''}
+                        onChange={(e) => setCoupon(e.target.value)}
                      />
-                     <Button className="w-[80px] h-fit bg-black text-white rounded-full text-[14px] font-medium tracking-[0.2px]">
+                     <Button
+                        className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
+                        onClick={handleApplyCoupon}
+                        disabled={!coupon || loading || isBasketFetching}
+                     >
                         Apply
                      </Button>
                   </div>
@@ -246,7 +267,12 @@ const CartPage = () => {
                         ${basketData?.total_amount.toFixed(2) ?? 0}
                      </div>
                   </div>
-                  <Button className="w-full h-fit bg-[#0070f0] text-white hover:bg-[#fff] hover:text-[#0070f0] border border-[#0070f0] rounded-full text-[14px] font-medium tracking-[0.2px] mt-5">
+                  <Button
+                     className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
+                     disabled={
+                        cartItems.length === 0 || loading || isBasketFetching
+                     }
+                  >
                      <Link href="/checkout">Checkout</Link>
                   </Button>
                   <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">

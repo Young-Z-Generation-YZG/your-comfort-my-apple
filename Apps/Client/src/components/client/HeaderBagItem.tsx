@@ -9,6 +9,8 @@ interface HeaderBagItemProps {
 }
 
 const HeaderBagItem = ({ key, item }: HeaderBagItemProps) => {
+   console.log('item', item);
+
    var image =
       item?.product_image ||
       'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MDG04';

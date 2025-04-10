@@ -81,7 +81,7 @@ const CheckoutPage = () => {
       isError: isErrorBasket,
       error: errorBasket,
       refetch: refetchBasket,
-   } = useGetBasketAsyncQuery();
+   } = useGetBasketAsyncQuery({});
 
    const [
       checkoutBasket,
@@ -108,12 +108,12 @@ const CheckoutPage = () => {
             setIsLoading(false);
          }, 1000);
 
-         // if (
-         //    typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
-         //    dataCheckoutBasket.payment_redirect_url.startsWith('https://')
-         // ) {
-         //    window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
-         // }
+         if (
+            typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
+            dataCheckoutBasket.payment_redirect_url.startsWith('https://')
+         ) {
+            window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
+         }
       }
    }, [isSuccessCheckoutBasket]);
 

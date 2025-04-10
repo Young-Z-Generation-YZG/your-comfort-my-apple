@@ -183,7 +183,7 @@ const Header = () => {
                   <div className="py-5 flex gap-5 flex-col">
                      {items.length > 0 &&
                         items
-                           .filter((i) => i.order < 3)
+                           .filter((i) => i.order < 4)
                            .map((item) => {
                               return (
                                  <HeaderBagItem
@@ -194,7 +194,7 @@ const Header = () => {
                            })}
 
                      <p className="text-sm text-slate-500 mt-2">
-                        {items.filter((i) => i.order >= 3).length} more items in
+                        {items.filter((i) => i.order > 3).length} more items in
                         your bag
                      </p>
                   </div>

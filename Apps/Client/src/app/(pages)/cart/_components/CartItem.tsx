@@ -29,12 +29,16 @@ const CartItem = ({ item }: CartItemProps) => {
    };
 
    const handleQuantityChange = (quantity: number) => {
-      dispatch(
-         updateCartQuantity({
-            product_id: item.product_id,
-            quantity: quantity,
-         }),
-      );
+      if (quantity < 1) {
+         handleRemoveItem();
+      } else {
+         dispatch(
+            updateCartQuantity({
+               product_id: item.product_id,
+               quantity: quantity,
+            }),
+         );
+      }
    };
 
    return (
