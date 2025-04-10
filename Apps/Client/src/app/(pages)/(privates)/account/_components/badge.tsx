@@ -1,4 +1,5 @@
 import { cn } from '~/infrastructure/lib/utils';
+import { FaCheck } from 'react-icons/fa6';
 
 interface BadgeProps {
    className?: string;
@@ -18,12 +19,15 @@ const Badge = ({ className = '', variants = 'default' }: BadgeProps) => {
    return (
       <span
          className={cn(
-            'text-blue-700 px-2 py-1 h-fit text-xs rounded-full bg-blue-100/50 font-SFProText select-none',
+            'text-blue-700 px-2 py-1 h-fit font-medium text-xs rounded-full bg-blue-100/50 font-SFProText select-none',
             variantStyles[variants],
             className,
          )}
       >
-         {variants.charAt(0).toUpperCase() + variants.slice(1)}
+         <span className="flex gap-1 items-center">
+            <FaCheck />
+            <p className="first-letter:uppercase">{variants}</p>
+         </span>
       </span>
    );
 };

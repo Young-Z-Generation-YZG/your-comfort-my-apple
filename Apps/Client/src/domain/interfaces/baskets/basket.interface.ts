@@ -18,6 +18,10 @@ export interface IStoreBasketPayload {
    cart_items: IBasketItem[];
 }
 
+export interface IGetBasketQueries {
+   _couponCode?: string | null;
+}
+
 export interface IGetBasketResponse {
    user_email: string;
    cart_items: ICartItemResponse[];

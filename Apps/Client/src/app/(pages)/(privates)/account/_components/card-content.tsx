@@ -26,13 +26,11 @@ const DefaultActionContent = ({
    return (
       <div
          className={cn(
-            'flex justify-between w-full border px-5 py-4 rounded-lg mt-2',
+            'flex justify-between w-full border px-5 py-4 rounded-lg hover:bg-slate-100/50 transition-all duration-200 ease-in-out',
             className,
          )}
       >
-         <div>{children}</div>
-
-         <Badge variants="default" />
+         <div className="w-full">{children}</div>
       </div>
    );
 };
