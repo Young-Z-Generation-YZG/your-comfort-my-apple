@@ -1,9 +1,10 @@
 ﻿
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 
 namespace YGZ.Ordering.Application.Payments.Commands;
 
-public sealed record IpnCheckCommand() : ICommand<bool>
+public sealed record IpnCheckCommand() : ICommand<OrderDetailsResponse>
 {
     required public string Amount { get; set; }
     required public string OrderInfo { get; set; }

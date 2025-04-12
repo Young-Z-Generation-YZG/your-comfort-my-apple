@@ -58,7 +58,7 @@ public static class SeedData
 
     public static IEnumerable<PromotionCategory> promotionCategories => new List<PromotionCategory>()
     {
-        PromotionCategory.Create(id: CategoryId.Of("67346f7549189f7314e4ef0c"),
+        PromotionCategory.Create(id: CategoryId.Of("91dc470aa9ee0a5e6fbafdbc"),
             categoryName: "iPhone 16",
             categorySlug: "iphone-16",
             discountType: DiscountType.PERCENTAGE,

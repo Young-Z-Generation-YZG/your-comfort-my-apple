@@ -19,6 +19,7 @@
       ],
       "paths": {
          "@constants/*": ["./constants/*"],
+         "@components/*": ["./src/components/*"],
          "@assets/*": ["./assets/*"],
          "@public/*": ["./public/*"],
          "~/*": ["./src/*"],
@@ -30,8 +31,6 @@
       "**/*.tsx",
       ".next/types/**/*.ts",
       "src/components/Social/index.ts",
-      "src/components/Social/index.ts",
-      "src/components/Social/index.ts"
    ],
    "exclude": ["node_modules"]
 }

@@ -41,7 +41,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
             var couponDiscount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.CouponCode });
 
-            if (couponDiscount is null)
+            if (couponDiscount.PromotionCoupon is null)
             {
                 return Errors.Discount.PromotionCouponNotFound;
             }

@@ -1,4 +1,5 @@
 ﻿
+using System.Reflection.Emit;
 using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Domain.Users.Events;
 using YGZ.Identity.Domain.Users.ValueObjects;
@@ -16,6 +17,7 @@ public static class DomainMappingExtensions
             addressCountry: request.Country);
 
         return ShippingAddress.Create(id: ShippingAddressId.Create(),
+                                      label: "Home",
                                       contactName: $"{request.FirstName} {request.LastName}",
                                       contactPhoneNumber: request.User.PhoneNumber!,
                                       addressDetail: address,

@@ -20,7 +20,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { FieldInput } from '~/components/client/forms/field-input';
 import CardWrapper from './_components/card-wrapper';
-import { Separator } from '~/components/ui/Separator';
+import { Separator } from '@components/ui/separator';
 import { PaymentMethodSelector } from '~/components/client/forms/payment-method-selector';
 import { motion } from 'framer-motion';
 import { ShippingAddressSelector } from '~/components/client/forms/shipping-address-selector';
