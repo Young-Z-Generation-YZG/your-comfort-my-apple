@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
-import { Separator } from '~/components/ui/Separator';
+import { Separator } from '@components/ui/separator';
 
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';

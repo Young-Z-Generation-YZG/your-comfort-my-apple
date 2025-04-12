@@ -9,11 +9,11 @@ namespace YGZ.Identity.Application.Users.Events;
 
 public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDomainEvent>
 {
-    private readonly IShippingAddressRepository _shippingAddressRepository;
+    private readonly IAddressRepository _shippingAddressRepository;
     private readonly IProfileRepository _profileRepository;
     private readonly IUserRepository _userRepository;
 
-    public UserCreatedDomainEventHandler(IShippingAddressRepository shippingAddressRepository, IProfileRepository profileRepository, IUserRepository userRepository)
+    public UserCreatedDomainEventHandler(IAddressRepository shippingAddressRepository, IProfileRepository profileRepository, IUserRepository userRepository)
     {
         _shippingAddressRepository = shippingAddressRepository;
         _profileRepository = profileRepository;
@@ -24,9 +24,9 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDom
     {
         var profile = data.ToProfile();
 
-        var createProfileResult = await _profileRepository.AddAsync(profile);
+        var createProfileResult = await _profileRepository.AddAsync(profile, cancellationToken);
 
-        if (!createProfileResult)
+        if (createProfileResult.IsFailure)
         {
             throw new Exception("Error creating profile");
         }

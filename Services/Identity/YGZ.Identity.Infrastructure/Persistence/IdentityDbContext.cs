@@ -20,8 +20,6 @@ public class IdentityDbContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
 
-        builder.HasDefaultSchema("identity");
-
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
             var tableName = entityType.GetTableName()!;

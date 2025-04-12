@@ -62,7 +62,7 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 
-    app.ApplyMigrations();
+     app.ApplyMigrations();
     await app.ApplySeedDataAsync();
 }
 

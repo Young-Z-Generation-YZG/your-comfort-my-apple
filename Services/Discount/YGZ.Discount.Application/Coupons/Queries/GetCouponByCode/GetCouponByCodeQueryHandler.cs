@@ -3,6 +3,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 using YGZ.Discount.Domain.Abstractions.Data;
+using YGZ.Discount.Domain.Core.Errors;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
 
@@ -23,7 +24,7 @@ public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, G
 
         if(coupon is null)
         {
-            return null;
+            return Errors.Coupon.CouponNotFound;
         }
 
         GetCouponResponse response = MapToResponse(coupon);

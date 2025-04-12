@@ -14,6 +14,7 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
 
     private ShippingAddress() : base(null!) { }
 
+    required public string Label { get; set; }
     required public string ContactName { get; set; } 
     required public string ContactPhoneNumber { get; set; }
     required public Address AddressDetail { get; set; }
@@ -24,6 +25,7 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public static ShippingAddress Create(ShippingAddressId id,
+                                         string label,
                                          string contactName,
                                          string contactPhoneNumber,
                                          Address addressDetail,
@@ -32,6 +34,7 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
     {
         ShippingAddress shippingAddress = new ShippingAddress(id)
         {
+            Label = label,
             ContactName = contactName,
             ContactPhoneNumber = contactPhoneNumber,
             AddressDetail = addressDetail,

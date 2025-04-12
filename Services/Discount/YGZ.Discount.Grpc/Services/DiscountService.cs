@@ -45,6 +45,11 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         var result = await _sender.Send(query);
 
+        if(result.IsFailure)
+        {
+            return new CouponResponse();
+        }
+
         var response = _mapper.Map<CouponResponse>(result.Response!);
 
         return response;

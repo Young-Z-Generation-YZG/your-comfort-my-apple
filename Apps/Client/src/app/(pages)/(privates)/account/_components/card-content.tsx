@@ -30,7 +30,7 @@ const DefaultActionContent = ({
             className,
          )}
       >
-         <div className="w-full">{children}</div>
+         {children}
       </div>
    );
 };

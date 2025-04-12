@@ -8,9 +8,8 @@ import {
    type Path,
    type FieldValues,
    type RegisterOptions,
-   UseFormRegister,
 } from 'react-hook-form';
-import { AlertCircle, CircleIcon as ExclamationCircleIcon } from 'lucide-react';
+import { AlertCircle, CircleIcon } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
 
 const getNestedError = (errors: any, name: string): string | undefined => {
@@ -30,9 +29,11 @@ interface FieldInputProps<T extends FieldValues> {
    label: string;
    required?: boolean;
    className?: string;
+   labelClassName?: string;
    errorTextClassName?: string;
    disabled?: boolean;
    visibleError?: boolean;
+   visibleLabel?: boolean;
    hasArrowButton?: boolean;
    fetchingFunc?: (data: any) => void;
    rules?: RegisterOptions;
@@ -46,8 +47,10 @@ export function FieldInput<T extends FieldValues>({
    label,
    required = false,
    className = '',
+   labelClassName = '',
    errorTextClassName = '',
    visibleError = true,
+   visibleLabel = true,
    disabled = false,
    hasArrowButton = false,
    fetchingFunc,
@@ -89,36 +92,41 @@ export function FieldInput<T extends FieldValues>({
 
                   return (
                      <>
-                        <motion.label
-                           initial={{ y: 0, scale: 1 }}
-                           animate={{
-                              y: isActive ? -14 : 0,
-                              scale: isActive ? 0.8 : 1,
-                              color: hasError
-                                 ? '#ef4444'
-                                 : isActive
-                                   ? '#666'
-                                   : '#999',
-                           }}
-                           className="absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-base font-light"
-                           style={{
-                              top: '30%',
-                              transform: 'translateY(-50%)',
-                              transformOrigin: 'left top',
-                           }}
-                        >
-                           {label}
-                           {true && (
-                              <span
-                                 className={cn(
-                                    'ml-1',
-                                    isActive ? 'text-red-500' : '',
-                                 )}
-                              >
-                                 *
-                              </span>
-                           )}
-                        </motion.label>
+                        {visibleLabel && (
+                           <motion.label
+                              initial={{ y: 0, scale: 1 }}
+                              animate={{
+                                 y: isActive ? -14 : 0,
+                                 scale: isActive ? 0.8 : 1,
+                                 color: hasError
+                                    ? '#ef4444'
+                                    : isActive
+                                      ? '#666'
+                                      : '#999',
+                              }}
+                              className={cn(
+                                 'absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-base font-light',
+                                 labelClassName,
+                              )}
+                              style={{
+                                 top: '30%',
+                                 transform: 'translateY(-50%)',
+                                 transformOrigin: 'left top',
+                              }}
+                           >
+                              {label}
+                              {true && (
+                                 <span
+                                    className={cn(
+                                       'ml-1',
+                                       isActive ? 'text-red-500' : '',
+                                    )}
+                                 >
+                                    *
+                                 </span>
+                              )}
+                           </motion.label>
+                        )}
 
                         <input
                            type={type}
@@ -131,6 +139,9 @@ export function FieldInput<T extends FieldValues>({
                                     ? 'border-red-500 focus:border-red-500'
                                     : 'border-gray-300 focus:border-blue-500'
                               }`,
+                              {
+                                 'pt-2 font-SFProText': !visibleLabel,
+                              },
                            )}
                            onFocus={() => setIsFocused(true)}
                            {...field}

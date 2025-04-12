@@ -93,7 +93,10 @@ public class VnPayLibrary
     {
         if (!string.IsNullOrEmpty(value))
         {
-            _responseData.Add(key, value);
+            if (!_responseData.ContainsKey(key))
+            {
+                _responseData.Add(key, value);
+            }
         }
     }
 

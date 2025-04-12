@@ -136,5 +136,4 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
         return affectedRows;
     }
-
 }

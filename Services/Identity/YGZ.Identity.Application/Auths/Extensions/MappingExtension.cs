@@ -15,6 +15,7 @@ public static class MappingExtension
                            lastName: dto.LastName,
                            birthDay: DateTime.Parse(dto.BirthDay).ToUniversalTime(),
                            image: null,
-                           country: dto.Country);
+                           country: dto.Country,
+                           emailConfirmed: false);
     }
 }
