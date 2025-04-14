@@ -7,6 +7,7 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket.Extension
 public static class MappingExtension
 {
     public static BasketCheckoutIntegrationEvent ToBasketCheckoutIntegrationEvent(this CheckoutBasketCommand dto,
+                                                                                  Guid orderId,
                                                                                   string customerId,
                                                                                   string customerEmail,
                                                                                   List<ShoppingCartItem> cartItems,
@@ -16,6 +17,7 @@ public static class MappingExtension
     {
         return new BasketCheckoutIntegrationEvent
         {
+            OrderId = orderId,
             CustomerId = customerId,
             CustomerEmail = customerEmail,
             ContactName = dto.ShippingAddress.ContactName,
@@ -28,13 +30,28 @@ public static class MappingExtension
             DiscountAmount = dto.DiscountAmount,
             SubTotalAmount = dto.SubTotalAmount,
             TotalAmount = dto.TotalAmount,
-            CartItems = cartItems.Select(x => new OrderLineIntegrationEvent(x.ProductId,
-                                                                            x.ProductModel,
-                                                                            x.ProductColor,
-                                                                            x.ProductStorage,
-                                                                            x.ProductUnitPrice,
-                                                                            x.ProductImage,
-                                                                            x.Quantity)).ToList()
+            OrderItems = cartItems.Select(x => new OrderItemIntegrationEvent()
+            {
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ProductColorName = x.ProductColorName,
+                ProductUnitPrice = x.ProductUnitPrice,
+                ProductNameTag = x.ProductNameTag,
+                ProductImage = x.ProductImage,
+                ProductSlug = x.ProductSlug,
+                Quantity = x.Quantity,
+                Promotion = x.Promotion is not null ? new PromotionIntergrationEvent()
+                {
+                    PromotionIdOrCode = x.Promotion.PromotionIdOrCode,
+                    PromotionEventType = x.Promotion.PromotionEventType,
+                    PromotionTitle = x.Promotion.PromotionTitle,
+                    PromotionDiscountType = x.Promotion.PromotionDiscountType,
+                    PromotionDiscountValue = (decimal)(x.Promotion.PromotionDiscountValue ?? 0),
+                    PromotionDiscountUnitPrice = (decimal)(x.Promotion.PromotionDiscountUnitPrice ?? 0),
+                    PromotionAppliedProductCount = (int)(x.Promotion.PromotionAppliedProductCount ?? 0),
+                    PromotionFinalPrice = (decimal)(x.Promotion.PromotionFinalPrice ?? 0)
+                } : null
+            }).ToList()
         };
     }
 }

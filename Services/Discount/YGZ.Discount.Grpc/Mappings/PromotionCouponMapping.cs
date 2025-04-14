@@ -20,7 +20,7 @@ public class CouponModelMapping : IRegister
             .Map(dest => dest.Code, src => src.PromotionCouponModel.PromotionCouponCode)
             .Map(dest => dest.Description, src => src.PromotionCouponModel.PromotionCouponDescription)
             .Map(dest => dest.ProductNameTag, src => ProductNameTag.FromValue((int)src.PromotionCouponModel.PromotionCouponProductNameTag))
-            .Map(dest => dest.PromotionEventType, src => PromotionEventType.FromValue((int)src.PromotionCouponModel.PromotionCouponPromotionEventType))
+            .Map(dest => dest.PromotionEventType, src => PromotionEvent.FromValue((int)src.PromotionCouponModel.PromotionCouponPromotionEventType))
             .Map(dest => dest.DiscountState, src => DiscountState.FromValue((int)src.PromotionCouponModel.PromotionCouponDiscountState))
             .Map(dest => dest.DiscountType, src => DiscountType.FromValue((int)src.PromotionCouponModel.PromotionCouponDiscountType))
             .Map(dest => dest.DiscountValue, src => src.PromotionCouponModel.PromotionCouponDiscountValue)

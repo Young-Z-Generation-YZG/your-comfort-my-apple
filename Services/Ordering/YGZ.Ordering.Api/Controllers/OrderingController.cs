@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
 
 namespace YGZ.Ordering.Api.Controllers;
@@ -38,13 +37,13 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost()]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<CreateOrderCommand>(request);
+    //[HttpPost()]
+    //public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
+    //{
+    //    var cmd = _mapper.Map<CreateOrderCommand>(request);
 
-        var result = await _sender.Send(cmd, cancellationToken);
+    //    var result = await _sender.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
+    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    //}
 }

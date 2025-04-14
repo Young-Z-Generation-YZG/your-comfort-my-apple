@@ -11,33 +11,37 @@ public class OrderItem : Entity<OrderItemId>
     // For EF Core migration only
     private OrderItem() : base(null!) { }
 
+    public required string ProductId { get; set; }
+    public required string ProductName { get; set; }
+    public required string ProductColorName { get; set; }
+    public required decimal ProductUnitPrice { get; set; }
+    public required string ProductImage { get; set; }
+    public required string ProductSlug { get; set; }
+    public required int Quantity { get; set; }
+    public Promotion? Promotion { get; set; } = null;
+
+
+
     // Add this foreign key property
     public OrderId OrderId { get; set; }
 
     // Navigation property back to Order
     public Order Order { get; set; }
-    public string ProductId { get; set; } = default!;
-    public string ProductModel { get; set; } = default!;
-    public string ProductColor { get; set; } = default!;
-    public string ProductColorHex { get; set; } = default!;
-    public int ProductStorage { get; set; } = default!;
-    public decimal ProductUnitPrice { get; set; } = default!;
-    public string ProductImage { get; set; } = default!;
-    public int Quantity { get; set; } = default!;
 
     public static OrderItem Create(OrderItemId orderItemId,
                                    OrderId orderId,
                                    string productId,
-                                   string productModel,
-                                   string productColor,
-                                   int productStorage,
+                                   string productName,
+                                   string productColorName,
                                    decimal productUnitPrice,
                                    string productImage,
-                                   int quantity)
+                                   string productSlug,
+                                   int quantity,
+                                   Promotion? promotion)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(productId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(productModel);
-        ArgumentException.ThrowIfNullOrWhiteSpace(productColor);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(productColorName);
         ArgumentException.ThrowIfNullOrWhiteSpace(productImage);
         ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
 
@@ -47,12 +51,13 @@ public class OrderItem : Entity<OrderItemId>
             Id = orderItemId,
             OrderId = orderId,
             ProductId = productId,
-            ProductModel = productModel,
-            ProductColor = productColor,
-            ProductStorage = productStorage,
+            ProductName = productName,
+            ProductColorName = productColorName,
             ProductUnitPrice = productUnitPrice,
             ProductImage = productImage,
-            Quantity = quantity
+            ProductSlug = productSlug,
+            Quantity = quantity,
+            Promotion = promotion
         };
     }
 }

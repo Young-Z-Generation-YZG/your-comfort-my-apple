@@ -13,6 +13,6 @@ public class PaginationPromotionResponse<TData>
     public int PageSize { get; set; }
     public int CurrentPage { get; set; }
     public IEnumerable<TData> Items { get; set; } = new List<TData>();
-    public IEnumerable<PromotionDataResponse> PromotionItems { get; set; } = new List<PromotionDataResponse>();
+    //public IEnumerable<PromotionDataResponse> PromotionItems { get; set; } = new List<PromotionDataResponse>();
     public PaginationLinks Links { get; set; } = new PaginationLinks("", "", "", "");
 }

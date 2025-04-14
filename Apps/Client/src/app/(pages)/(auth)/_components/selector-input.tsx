@@ -106,9 +106,9 @@ export function FormSelector<T extends FieldValues>({
                               transition={{ duration: 0.15 }}
                               className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
                            >
-                              {options.map((option) => (
+                              {options.map((option, index) => (
                                  <div
-                                    key={option}
+                                    key={index}
                                     className={`px-3 py-2 cursor-pointer flex items-center justify-between ${
                                        option === field.value
                                           ? 'bg-blue-500 text-white'

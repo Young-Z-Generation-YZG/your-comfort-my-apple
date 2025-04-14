@@ -6,6 +6,7 @@ using NSwag.Annotations;
 using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
+using YGZ.Basket.Application.ShoppingCarts.Commands.IpnCheck;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
 using YGZ.BuildingBlocks.Shared.Extensions;
@@ -54,6 +55,16 @@ public class BasketController : ApiController
     public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("vnpay-ipn")]
+    public async Task<IActionResult> VnpayIpn([FromQuery] IpnCheckRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<IpnCheckCommand>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

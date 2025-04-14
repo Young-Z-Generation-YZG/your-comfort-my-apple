@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Emails;
@@ -11,6 +10,8 @@ using YGZ.Identity.Domain.Core.Errors;
 using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Domain.Core.Enums;
 using YGZ.Identity.Application.Abstractions.Data;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace YGZ.Identity.Application.Auths.Commands.Register;
 
@@ -22,15 +23,23 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand, EmailVeri
     private readonly IOtpGenerator _otpGenerator;
     private readonly IEmailService _emailService;
     private readonly ILogger<RegisterCommandHandler> _logger;
+    private readonly string _webClientUrl;
 
-    public RegisterCommandHandler(IIdentityService identityService, ILogger<RegisterCommandHandler> logger, IKeycloakService keycloakService, IOtpGenerator otpGenerator, IEmailService emailService, ICachedRepository cachedRepository)
+    public RegisterCommandHandler(IIdentityService identityService,
+                                  ILogger<RegisterCommandHandler> logger,
+                                  IKeycloakService keycloakService,
+                                  IOtpGenerator otpGenerator,
+                                  IEmailService emailService,
+                                  ICachedRepository cachedRepository,
+                                  IConfiguration configuration)
     {
         _logger = logger;
         _identityService = identityService;
         _keycloakService = keycloakService;
         _cachedRepository = cachedRepository;
-        _otpGenerator = otpGenerator;
         _emailService = emailService;
+        _otpGenerator = otpGenerator;
+        _webClientUrl = configuration.GetValue<string>("WebClientSettings:BaseUrl")!;
     }
 
     public async Task<Result<EmailVerificationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -75,7 +84,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand, EmailVeri
                     {
                         FullName = $"{request.FirstName} {request.LastName}",
                         VerifyOtp = otp,
-                        VerificationLink = $"https://ygz.zone/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
+                        VerificationLink = $"{_webClientUrl}/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
                     },
                     Attachments: null
         );

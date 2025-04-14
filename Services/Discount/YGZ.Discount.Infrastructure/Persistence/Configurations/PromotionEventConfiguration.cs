@@ -3,14 +3,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YGZ.Discount.Domain.Core.Enums;
-using YGZ.Discount.Domain.PromotionEvent;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Configurations;
 
-public class PromotionEventConfiguration : IEntityTypeConfiguration<PromotionEvent>
+public class PromotionEventConfiguration : IEntityTypeConfiguration<Domain.PromotionEvent.PromotionEvent>
 {
-    public void Configure(EntityTypeBuilder<PromotionEvent> builder)
+    public void Configure(EntityTypeBuilder<Domain.PromotionEvent.PromotionEvent> builder)
     {
         builder.ToTable("PromotionEvents");
 
@@ -31,7 +30,7 @@ public class PromotionEventConfiguration : IEntityTypeConfiguration<PromotionEve
         builder.Property(x => x.PromotionEventType)
                .HasConversion(
                    x => x.Name,
-                   x => PromotionEventType.FromName(x, false)
+                   x => PromotionEvent.FromName(x, false)
                )
                .HasColumnName("PromotionEventType");
 

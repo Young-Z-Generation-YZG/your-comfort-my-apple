@@ -11,9 +11,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Repositories;
 
 public class OrderRepository : GenericRepository<Order, OrderId>, IOrderRepository
 {
+    private readonly OrderDbContext _orderDbContext;
     public OrderRepository(OrderDbContext orderDbContext) : base(orderDbContext)
     {
-
+        _orderDbContext = orderDbContext;
     }
 
     public async Task<Order> GetOrderByCodeAsync(string code, CancellationToken cancellationToken)
@@ -33,5 +34,19 @@ public class OrderRepository : GenericRepository<Order, OrderId>, IOrderReposito
     public override Task<Order> GetByIdAsync(OrderId id, CancellationToken cancellationToken)
     {
         return base.GetByIdAsync(id, cancellationToken);
+    }
+
+    public async Task<Order> GetOrderByIdWithInclude(OrderId id, Expression<Func<Order, object>> expression, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _orderDbContext.Orders.Include(expression).FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+
+            return result ?? null!;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
     }
 }

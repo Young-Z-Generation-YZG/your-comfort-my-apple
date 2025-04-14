@@ -15,7 +15,6 @@ public class CheckoutBasketRequest
     [JsonPropertyName("payment_method")]
     public string PaymentMethod { get; set; }
 
-    [Required]
     [JsonPropertyName("discount_code")]
     public string? DiscountCode { get; set; } = null;
 

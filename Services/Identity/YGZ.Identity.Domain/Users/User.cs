@@ -23,7 +23,8 @@ public class User : IdentityUser, IAggregate
                               string lastName,
                               DateTime birthDay,
                               Image? image,
-                              string country
+                              string country,
+                              bool? emailConfirmed
         )
     {
 
@@ -37,6 +38,7 @@ public class User : IdentityUser, IAggregate
             PasswordHash = passwordHash,
             PhoneNumber = phoneNumber,
             PhoneNumberConfirmed = false,
+            EmailConfirmed = emailConfirmed ?? false,
         };
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user)
@@ -49,6 +51,14 @@ public class User : IdentityUser, IAggregate
         });
 
         return user;
+    }
+
+    public void Update( User user)
+    {
+        if (user == null)
+            throw new ArgumentNullException(nameof(user));
+        if (user.PhoneNumber != null)
+            PhoneNumber = user.PhoneNumber;
     }
 
     public IDomainEvent[] ClearDomainEvents()

@@ -48,7 +48,8 @@ public static class MappingExtensions
 
     public static PromotionItem ToEntity(this CreatePromotionItemCommand request)
     {
-        return PromotionItem.Create(productId: ProductId.Of(request.ProductId),
+        return PromotionItem.Create(promotionItemId: PromotionItemId.Create(),
+                                    productId: ProductId.Of(request.ProductId),
                                     title: request.Title,
                                     description: request.Description,
                                     discountState: request.DiscountState,

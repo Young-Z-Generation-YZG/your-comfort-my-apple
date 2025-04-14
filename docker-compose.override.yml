@@ -202,6 +202,7 @@ services:
         - ASPNETCORE_HTTPS_PORTS=8081
         - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog:27017/CatalogDb?authSource=admin
         - MongoDbSettings__DatabaseName=CatalogDb
+        - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
         ports:
         - "6001:8080"
         - "6061:8081"

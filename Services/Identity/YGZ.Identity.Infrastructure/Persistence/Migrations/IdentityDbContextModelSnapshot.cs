@@ -17,7 +17,6 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("identity")
                 .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -46,7 +45,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("Roles", "identity");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -71,7 +70,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims", "identity");
+                    b.ToTable("RoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -96,7 +95,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims", "identity");
+                    b.ToTable("UserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -118,7 +117,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins", "identity");
+                    b.ToTable("UserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -133,7 +132,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles", "identity");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -152,7 +151,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens", "identity");
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.Profile", b =>
@@ -188,7 +187,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Profiles", "identity");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("YGZ.Identity.Domain.Users.Entities.ShippingAddress", b =>
@@ -207,6 +206,10 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -218,7 +221,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ShippingAddresses", "identity");
+                    b.ToTable("ShippingAddresses");
                 });
 
             modelBuilder.Entity("YGZ.Identity.Domain.Users.User", b =>
@@ -229,15 +232,8 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("BirthDay")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
@@ -289,7 +285,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("Users", "identity");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -371,7 +367,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("ProfileId");
 
-                            b1.ToTable("Profiles", "identity");
+                            b1.ToTable("Profiles");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProfileId");
@@ -417,7 +413,7 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("ShippingAddressId");
 
-                            b1.ToTable("ShippingAddresses", "identity");
+                            b1.ToTable("ShippingAddresses");
 
                             b1.WithOwner()
                                 .HasForeignKey("ShippingAddressId");

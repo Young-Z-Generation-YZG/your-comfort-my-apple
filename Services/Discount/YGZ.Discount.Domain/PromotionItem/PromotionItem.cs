@@ -8,16 +8,16 @@ using YGZ.Discount.Domain.PromotionItem.ValueObjects;
 
 namespace YGZ.Discount.Domain.PromotionItem;
 
-public class PromotionItem : AggregateRoot<ProductId>, IAuditable, ISoftDelete
+public class PromotionItem : AggregateRoot<PromotionItemId>, IAuditable, ISoftDelete
 {
-    public PromotionItem(ProductId id) : base(id)
+    public PromotionItem(PromotionItemId id) : base(id)
     {
     }
 
     required public string Title { get; set; }
     public string Description { get; set; } = string.Empty;
     required public ProductNameTag ProductNameTag { get; set; }
-    required public PromotionEventType PromotionEventType { get; set; } = PromotionEventType.PROMOTION_ITEM;
+    required public Core.Enums.PromotionEvent PromotionEventType { get; set; } = Core.Enums.PromotionEvent.PROMOTION_ITEM;
     public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
     required public DiscountType DiscountType { get; set; } = DiscountType.PERCENTAGE;
     public EndDiscountType EndDiscountType { get; set; } = EndDiscountType.BY_END_DATE;
@@ -25,6 +25,7 @@ public class PromotionItem : AggregateRoot<ProductId>, IAuditable, ISoftDelete
     public DateTime? ValidFrom { get; set; } = null;
     public DateTime? ValidTo { get; set; } = null;
     public int? AvailableQuantity { get; set; } = null;
+    required public ProductId ProductId { get; set; }
     required public string ProductImage { get; set; }
     required public string ProductSlug { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -33,7 +34,8 @@ public class PromotionItem : AggregateRoot<ProductId>, IAuditable, ISoftDelete
     public DateTime? DeletedAt { get; set; } = null;
     public string? DeletedBy { get; set; } = null;
 
-    public static PromotionItem Create(ProductId productId,
+    public static PromotionItem Create(PromotionItemId promotionItemId,
+                                       ProductId productId,
                                        string title,
                                        string description,
                                        DiscountState discountState,
@@ -47,11 +49,11 @@ public class PromotionItem : AggregateRoot<ProductId>, IAuditable, ISoftDelete
                                        string productImage,
                                        string productSlug)
     {
-        return new PromotionItem(productId)
+        return new PromotionItem(promotionItemId)
         {
             Title = title,
             Description = description,
-            PromotionEventType = PromotionEventType.PROMOTION_ITEM,
+            PromotionEventType = Core.Enums.PromotionEvent.PROMOTION_ITEM,
             DiscountState = discountState,
             DiscountType = discountType,
             DiscountValue = discountValue,
@@ -59,6 +61,8 @@ public class PromotionItem : AggregateRoot<ProductId>, IAuditable, ISoftDelete
             ValidFrom = validFrom,
             ValidTo = validTo,
             AvailableQuantity = availableQuantity,
+            EndDiscountType = endDiscountType,
+            ProductId = productId,
             ProductSlug = productSlug,
             ProductImage = productImage
         };

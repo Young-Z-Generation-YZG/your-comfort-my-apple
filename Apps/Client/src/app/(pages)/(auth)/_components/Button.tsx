@@ -17,7 +17,7 @@ const Button = ({
    return (
       <div
          className={cn(
-            'button',
+            'button flex justify-center items-center duration-200 ease-in-out transition-all cursor-pointer',
             className,
             disabled ? 'bg-blue-400 cursor-auto active:bg-blue-400' : null,
          )}

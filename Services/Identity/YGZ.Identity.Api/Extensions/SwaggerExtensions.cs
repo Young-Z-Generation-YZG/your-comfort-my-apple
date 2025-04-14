@@ -7,6 +7,8 @@ using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using NSwag;
 using YGZ.Identity.Api.Contracts;
+using YGZ.Identity.Api.Contracts.Addresses;
+using YGZ.Identity.Api.Contracts.Profiles;
 
 namespace YGZ.Identity.Api.Extensions;
 
@@ -50,6 +52,9 @@ public static class SwaggerExtensions
             // Add the custom schema processor for LoginRequest examples
             settings.SchemaSettings.SchemaProcessors.Add(new LoginRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new RegisterRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new AddAddressRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new UpdateAddressRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new UpdateProfileRequestExample());
         });
 
         return services;

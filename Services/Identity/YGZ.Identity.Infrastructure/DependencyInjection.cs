@@ -37,6 +37,7 @@ public static class DependencyInjection
 
         services.Configure<KeycloakSettings>(configuration.GetSection(KeycloakSettings.SettingKey));
         services.Configure<MailSettings>(configuration.GetSection(MailSettings.SettingKey));
+        services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
 
         services.AddSingleton(_ =>
         {
@@ -49,7 +50,7 @@ public static class DependencyInjection
         services.AddHttpClient<IKeycloakService, KeycloakService>();
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ICachedRepository, CachedRepository>();
-        services.AddTransient<IShippingAddressRepository, ShippingAddressRepository>();
+        services.AddTransient<IAddressRepository, AddressRepository>();
         services.AddTransient<IProfileRepository, ProfileRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IEmailService, EmailService>();

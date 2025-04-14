@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Orders.Commands.CreateOrder.Extensions;
 
@@ -20,7 +19,7 @@ public class CreateOrderCommandHandler : ICommandHandler<CreateOrderCommand, boo
 
     public async Task<Result<bool>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = request.ToEntity(request.CustomerId, request.CustomerEmail);
+        var order = request.ToEntity(request.OrderId, request.CustomerId, request.CustomerEmail);
 
         var result = await _orderRepository.AddAsync(order, cancellationToken);
 
