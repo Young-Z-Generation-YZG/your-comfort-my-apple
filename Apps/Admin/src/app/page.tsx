@@ -1,27 +1,21 @@
-'use client';
-
-import { useDispatch } from 'react-redux';
-import { setAccessToken } from '~/redux/slices/auth.slice';
-import { useAppSelector } from '~/redux/store';
+import { Button } from '@components/ui/button';
+import Image from 'next/image';
 
 export default function Home() {
-   const accessToken = useAppSelector((state) => state.auth.value.token);
-
-   const dispatch = useDispatch();
-
-   console.log({ accessToken });
-
    return (
-      <div>
-         <h1>Base page</h1>
-         <button
-            onClick={() => {
-               dispatch(setAccessToken('123'));
-            }}
-         >
-            set Token
-         </button>
-         {accessToken && <p>{accessToken}</p>}
+      <div className="p-5">
+         <Button className="">Test</Button>
+
+         <div>
+            <Image
+               src={
+                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744120615/pngimg.com_-_iphone16_PNG37_meffth.png'
+               }
+               alt="iphone"
+               width={500}
+               height={500}
+            />
+         </div>
       </div>
    );
 }
