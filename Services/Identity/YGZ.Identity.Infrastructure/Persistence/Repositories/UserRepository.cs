@@ -23,11 +23,11 @@ public class UserRepository : IUserRepository
         _logger = logger;
     }
 
-    public async Task<Result<User>> GetUserByEmail(string userEmail)
+    public async Task<Result<User>> GetUserByEmailAsync(string userEmail, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Email == userEmail);
+            var result = await _dbSet.FirstOrDefaultAsync(x => x.Email == userEmail, cancellationToken);
 
             if(result is null)
             {
@@ -40,12 +40,12 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByEmail));
+            _logger.LogError(ex, ex.Message, nameof(GetUserByEmailAsync));
             throw;
         }
     }
 
-    public async Task<Result<User>> GetUserByEmail(string userEmail, params Expression<Func<User, object>>[] expressions)
+    public async Task<Result<User>> GetUserByEmailAsync(string userEmail, CancellationToken cancellationToken, params Expression<Func<User, object>>[] expressions)
     {
         try
         {
@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
                 query = query.Include(expression);
             }
 
-            var result = await query.FirstOrDefaultAsync(x => x.Email == userEmail);
+            var result = await query.FirstOrDefaultAsync(x => x.Email == userEmail, cancellationToken);
 
             if (result is null)
             {
@@ -69,18 +69,18 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByEmail));
+            _logger.LogError(ex, ex.Message, nameof(GetUserByEmailAsync));
             throw;
         }
     }
 
-    public async Task<Result<bool>> AddShippingAddressAsync(ShippingAddress shippingAddress, User user)
+    public async Task<Result<bool>> AddShippingAddressAsync(ShippingAddress shippingAddress, User user, CancellationToken cancellationToken)
     {
         try
         {
             user.ShippingAddresses.Add(shippingAddress);
 
-            var result = await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync(cancellationToken);
 
             if (result > 0)
             {
@@ -99,6 +99,29 @@ public class UserRepository : IUserRepository
         }
     }
 
+    public async Task<Result<bool>> UpdateUserAsync(User user, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _dbSet.Update(user);
+
+            var result = await _context.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.User.CannotBeUpdated;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, $"class:{nameof(UserRepository)} - method:{nameof(UpdateUserAsync)}");
+
+            throw;
+        }
+    }
+
     public DbSet<User> GetDbSet()
     {
         return _dbSet;
@@ -108,4 +131,6 @@ public class UserRepository : IUserRepository
     {
         await _context.SaveChangesAsync();
     }
+
+   
 }

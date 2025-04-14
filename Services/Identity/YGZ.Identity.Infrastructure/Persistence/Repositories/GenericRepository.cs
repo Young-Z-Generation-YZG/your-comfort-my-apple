@@ -1,9 +1,7 @@
 ﻿
 
-using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Core.Errors;
@@ -22,6 +20,27 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         _dbContext = discountDbContext;
         _dbSet = discountDbContext.Set<TEntity>();
         _logger = logger;
+    }
+
+    public async Task<Result<TEntity>> GetByIdAsync(TId id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+            if (result is null)
+            {
+                return Errors.Address.NotFound;
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(GetByIdAsync)}");
+
+            throw;
+        }
     }
 
     public async Task<Result<List<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
@@ -65,22 +84,57 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
     }
 
-    virtual public async Task<bool> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    virtual public async Task<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _dbSet.Update(entity);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Address.CanNotUpdate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(UpdateAsync)}");
+
+            throw;
+        }
     }
 
-    virtual public async Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> RemoveAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _dbSet.Remove(entity);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Address.CanNotDelete;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(RemoveAsync)}");
+            throw;
+        }
     }
 
-    virtual public async Task<bool> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

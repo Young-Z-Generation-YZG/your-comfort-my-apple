@@ -38,7 +38,7 @@ public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAllInfoResposne>
             x => x.ShippingAddresses.Where(sa => sa.IsDefault == true),
         };
 
-        var userAsync = await _userRepository.GetUserByEmail(userEmail, expressions);
+        var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken, expressions);
 
         if (userAsync.IsFailure)
         {
@@ -63,13 +63,13 @@ public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAllInfoResposne>
             BirthDate = user.Profile.BirthDay.ToString("yyyy-MM-dd"),
             ImageId = user.Profile.Image!.ImageId,
             ImageUrl = user.Profile.Image.ImageUrl,
-            DefaultAddressLabel = defaultAddress.Label,
-            DefaultContactName = defaultAddress.ContactName,
-            DefaultContactPhoneNumber = defaultAddress.ContactPhoneNumber,
-            DefaultAddressLine = defaultAddress.AddressDetail.AddressLine,
-            DefaultAddressDistrict = defaultAddress.AddressDetail.AddressDistrict,
-            DefaultAddressProvince = defaultAddress.AddressDetail.AddressProvince,
-            DefaultAddressCountry = defaultAddress.AddressDetail.AddressCountry,
+            DefaultAddressLabel = defaultAddress?.Label ?? "",
+            DefaultContactName = defaultAddress?.ContactName ?? "",
+            DefaultContactPhoneNumber = defaultAddress?.ContactPhoneNumber ?? "",
+            DefaultAddressLine = defaultAddress?.AddressDetail.AddressLine ?? "",
+            DefaultAddressDistrict = defaultAddress?.AddressDetail.AddressDistrict ?? "",
+            DefaultAddressProvince = defaultAddress?.AddressDetail.AddressProvince ?? "",
+            DefaultAddressCountry = defaultAddress?.AddressDetail.AddressCountry ?? "",
         };
     }
 }

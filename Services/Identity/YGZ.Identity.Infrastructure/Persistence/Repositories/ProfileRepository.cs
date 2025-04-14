@@ -27,7 +27,6 @@ public class ProfileRepository : GenericRepository<Profile, ProfileId>, IProfile
         {
             var result = await _dbSet
                 .AsNoTracking() // No need to track the entity as we are only reading it
-                .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.UserId == user.Id, cancellationToken);
 
             if(result is null)

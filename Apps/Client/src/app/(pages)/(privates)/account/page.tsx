@@ -31,8 +31,6 @@ const AccountPage = () => {
       error: meErrorResponse,
    } = useGetMeAsyncQuery();
 
-   console.log('meData', meData);
-
    useEffect(() => {
       if (meData) {
          setMeInfo(meData);
@@ -73,7 +71,7 @@ const AccountPage = () => {
             <CardContext className="mt-5">
                <ProfileForm
                   profile={{
-                     email: '',
+                     email: meInfo?.email || '',
                      firstName: meInfo?.first_name || '',
                      lastName: meInfo?.last_name || '',
                      phoneNumber: meInfo?.phone_number || '',

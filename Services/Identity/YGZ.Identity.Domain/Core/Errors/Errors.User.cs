@@ -12,5 +12,6 @@ public static partial class Errors
         public static Error AlreadyExists = Error.BadRequest(code: "User.AlreadyExists", message: "User already exists", serviceName: "IdentityService");
         public static Error CannotBeCreated = Error.BadRequest(code: "User.CannotBeCreated", message: "User cannot be created", serviceName: "IdentityService");
         public static Error InvalidCredentials = Error.BadRequest(code: "User.InvalidCredentials", message: "Invalid credentials", serviceName: "IdentityService");
+        public static Error CannotBeUpdated = Error.BadRequest(code: "User.CannotBeUpdated", message: "User cannot be updated", serviceName: "IdentityService");
     }
 }

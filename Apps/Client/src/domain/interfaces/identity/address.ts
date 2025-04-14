@@ -1,12 +1,11 @@
 export interface IAddressPayload {
+   label: string;
    contact_name: string;
-   contact_email: string;
-   contact_label: string;
    contact_phone_number: string;
-   contact_address_line: string;
-   contact_district: string;
-   contact_province: string;
-   contact_country: string;
+   address_line: string;
+   district: string;
+   province: string;
+   country: string;
 }
 
 export interface IAddressResponse {
