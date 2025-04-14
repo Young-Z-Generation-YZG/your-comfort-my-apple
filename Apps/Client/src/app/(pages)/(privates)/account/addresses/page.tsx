@@ -17,8 +17,14 @@ import { AddressResolver } from '~/domain/schemas/address.schema';
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { useGetAddressesAsyncQuery } from '~/infrastructure/services/identity.service';
-import { IAddressResponse } from '~/domain/interfaces/identity/address';
+import {
+   useGetAddressesAsyncQuery,
+   useSetDefaultAddressAsyncMutation,
+} from '~/infrastructure/services/identity.service';
+import {
+   IAddressPayload,
+   IAddressResponse,
+} from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
 
 const labelList = ['Home', 'Work', 'Other'];
@@ -39,41 +45,72 @@ const AddressesPage = () => {
    const [loading, setLoading] = useState(true);
    const [addressesList, setAddressesList] = useState<IAddressResponse[]>([]);
    const [open, setOpen] = useState(false);
-   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-
-   const {
-      data: addressesData,
-      isLoading: isLoadingAddresses,
-      error: errorAddresses,
-   } = useGetAddressesAsyncQuery();
+   const [editingAddress, setEditingAddress] = useState<{
+      id: string;
+      payload: IAddressPayload;
+   } | null>(null);
 
    const form = useForm({
       resolver: AddressResolver,
       defaultValues: {
+         label: '',
          contact_name: '',
-         contact_email: '',
-         contact_label: '',
          contact_phone_number: '',
-         contact_address_line: '',
-         contact_district: '',
-         contact_province: '',
-         contact_country: '',
-      },
+         address_line: '',
+         district: '',
+         province: '',
+         country: '',
+      } as IAddressPayload,
    });
 
+   const {
+      data: addressesData,
+      isLoading: isLoadingAddresses,
+      isFetching: isFetchingAddresses,
+      error: errorAddresses,
+      refetch: refetchAddresses,
+   } = useGetAddressesAsyncQuery();
+
+   const [
+      setDefaultAddressAsync,
+      {
+         isLoading: isLoadingSetDefaultAddress,
+         isSuccess: isSuccessSetDefaultAddress,
+         error: errorSetDefaultAddress,
+      },
+   ] = useSetDefaultAddressAsyncMutation();
+
+   const handleSetDefaultAddress = async (id: string) => {
+      await setDefaultAddressAsync(id).unwrap();
+
+      await refetchAddresses();
+   };
+
    useEffect(() => {
-      if (isLoadingAddresses) {
+      if (isLoadingAddresses || isFetchingAddresses) {
          setLoading(true);
       } else {
-         setLoading(false);
+         setTimeout(() => {
+            setLoading(false);
+         }, 500);
       }
-   }, [isLoadingAddresses]);
+   }, [isLoadingAddresses, isFetchingAddresses]);
 
    useEffect(() => {
       if (addressesData) {
          setAddressesList(addressesData);
       }
    }, [addressesData]);
+
+   const renderAddresses = () => {
+      const defaultAddress = addressesList.find((item) => item.is_default);
+
+      if (!defaultAddress) return addressesList;
+
+      const otherAddresses = addressesList.filter((item) => !item.is_default);
+
+      return [defaultAddress, ...otherAddresses] as IAddressResponse[];
+   };
 
    return (
       <CardContext>
@@ -105,8 +142,19 @@ const AddressesPage = () => {
                         </DialogTitle>
                      </DialogHeader>
                      <AddressForm
-                        initialAddress={editingAddress}
-                        onSubmit={() => {}}
+                        onSubmit={() => {
+                           setOpen(false);
+                           refetchAddresses();
+                        }}
+                        isEditing={!!editingAddress}
+                        initialAddress={
+                           editingAddress
+                              ? {
+                                   id: editingAddress.id,
+                                   payload: editingAddress.payload,
+                                }
+                              : null
+                        }
                      />
                   </DialogContent>
                </Dialog>
@@ -114,7 +162,7 @@ const AddressesPage = () => {
 
             {loading ? (
                <div>
-                  {Array(3)
+                  {Array(addressesList.length > 0 ? addressesList.length : 3)
                      .fill(0)
                      .map((_, index) => (
                         <DefaultActionContent
@@ -129,7 +177,7 @@ const AddressesPage = () => {
                      ))}
                </div>
             ) : addressesList.length > 0 ? (
-               addressesList.map((item) => {
+               renderAddresses().map((item) => {
                   return (
                      <DefaultActionContent
                         className="w-full mt-2"
@@ -149,6 +197,13 @@ const AddressesPage = () => {
                               <Button
                                  variant="outline"
                                  className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium"
+                                 onClick={() => {
+                                    setEditingAddress({
+                                       id: item.id,
+                                       payload: item,
+                                    });
+                                    setOpen(true);
+                                 }}
                               >
                                  <span>edit</span>
                                  <span>
@@ -170,7 +225,12 @@ const AddressesPage = () => {
                            </p>
 
                            {!item.is_default && (
-                              <p className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline">
+                              <p
+                                 className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline"
+                                 onClick={() => {
+                                    handleSetDefaultAddress(item.id);
+                                 }}
+                              >
                                  Set as Default
                               </p>
                            )}

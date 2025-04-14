@@ -26,7 +26,7 @@ public class GetAddressesQueryHandler : IQueryHandler<GetAddressesQuery, List<Ad
         //var userEmail = _userContext.GetUserEmail();
         var userEmail = "lov3rinve146@gmail.com";
 
-        var userAsync = await _userRepository.GetUserByEmail(userEmail);
+        var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
 
         if (userAsync.IsFailure)
         {

@@ -7,10 +7,10 @@ import { Button } from '@components/ui/button';
 import { Camera, Upload, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DefaultActionContent } from './card-content';
-// import { useToast } from "@/hooks/use-toast"
+import { useToast } from '~/hooks/use-toast';
 
 export function ProfilePicture() {
-   //   const { toast } = useToast()
+   const { toast } = useToast();
    const [profileImage, setProfileImage] = useState<string>(
       '/placeholder.svg?height=120&width=120',
    );
@@ -32,11 +32,12 @@ export function ProfilePicture() {
             if (event.target?.result) {
                setProfileImage(event.target.result as string);
                setIsUploading(false);
-               //   toast({
-               //     title: "Profile picture updated",
-               //     description: "Your profile picture has been successfully updated.",
-               //     duration: 3000,
-               //   })
+               toast({
+                  title: 'Profile picture updated',
+                  description:
+                     'Your profile picture has been successfully updated.',
+                  duration: 3000,
+               });
             }
          };
          reader.readAsDataURL(file);
@@ -45,11 +46,11 @@ export function ProfilePicture() {
 
    const handleRemoveImage = () => {
       setProfileImage('/placeholder.svg?height=120&width=120');
-      // toast({
-      //   title: "Profile picture removed",
-      //   description: "Your profile picture has been removed.",
-      //   duration: 3000,
-      // })
+      toast({
+         title: 'Profile picture removed',
+         description: 'Your profile picture has been removed.',
+         duration: 3000,
+      });
    };
 
    return (
@@ -75,7 +76,6 @@ export function ProfilePicture() {
                   ) : (
                      <img
                         src={profileImage || '/placeholder.svg'}
-                        alt="Profile"
                         className="h-full w-full object-cover"
                         style={{ objectFit: 'cover' }}
                      />

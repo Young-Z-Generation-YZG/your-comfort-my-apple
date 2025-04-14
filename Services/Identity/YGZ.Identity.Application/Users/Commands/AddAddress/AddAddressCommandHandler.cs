@@ -24,7 +24,7 @@ public class AddAddressCommandHandler : ICommandHandler<AddAddressCommand, bool>
         //var userEmail = _userContext.GetUserEmail();
         var userEmail = "lov3rinve146@gmail.com";
 
-        var userAsync = await _userRepository.GetUserByEmail(userEmail);
+        var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
 
         if (userAsync.IsFailure)
         {
@@ -33,7 +33,7 @@ public class AddAddressCommandHandler : ICommandHandler<AddAddressCommand, bool>
 
         var newAddress = request.ToShippingAddress(userId: userAsync.Response!.Id);
 
-        var result = await _userRepository.AddShippingAddressAsync(newAddress, userAsync.Response);
+        var result = await _userRepository.AddShippingAddressAsync(newAddress, userAsync.Response, cancellationToken);
 
         if (result.IsFailure)
         {

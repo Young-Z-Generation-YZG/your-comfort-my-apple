@@ -4,7 +4,7 @@ namespace YGZ.Identity.Api.Contracts.Addresses;
 
 public class UpdateAddressRequest
 {
-    [JsonPropertyName("label")] public required string Email { get; init; }
+    [JsonPropertyName("label")] public required string Label { get; init; }
     [JsonPropertyName("contact_name")] public required string ContactName { get; init; }
     [JsonPropertyName("contact_phone_number")] public required string ContactPhoneNumber { get; init; }
     [JsonPropertyName("address_line")] public required string AddressLine { get; init; }

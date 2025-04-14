@@ -10,7 +10,11 @@ const ProfileSchema = z.object({
       .string()
       .min(1, { message: 'Phone number is required' })
       .regex(/^\d+$/, { message: 'Phone number must be numeric' }),
-   birth_date: z.string().min(1, { message: 'Birth date is required' }),
+   birth_day: z.string().min(1, { message: 'Birth date is required' }),
+   gender: z
+      .string()
+      .min(1, { message: 'Gender is required' })
+      .default('OTHER'),
 } satisfies Record<keyof IProfilePayload, any>);
 
 export type ProfileFormType = z.infer<typeof ProfileSchema>;

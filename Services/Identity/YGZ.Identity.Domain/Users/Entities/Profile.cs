@@ -45,4 +45,13 @@ public class Profile : Entity<ProfileId>, IAuditable
         };
         return profile;
     }
+
+    public void Update(string firstName, string lastName, DateTime birthDay, Gender gender)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        BirthDay = birthDay;
+        Gender = gender;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

@@ -7,7 +7,6 @@ import { setAccessToken } from '../redux/features/auth.slice';
 import {
    CatchErrorResponse,
    HttpErrorResponse,
-   ServerErrorResponse,
 } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import {
@@ -20,7 +19,7 @@ export const AuthApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://4235-116-108-46-152.ngrok-free.app/identity-services',
+      baseUrl: 'https://c8fb-116-108-46-152.ngrok-free.app/identity-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

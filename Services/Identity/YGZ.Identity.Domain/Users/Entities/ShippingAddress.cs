@@ -44,4 +44,18 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
 
         return shippingAddress;
     }
+
+    public void Update(string label,
+                       string contactName,
+                       string contactPhoneNumber,
+                       Address addressDetail,
+                       bool isDefault)
+    {
+        Label = label;
+        ContactName = contactName;
+        ContactPhoneNumber = contactPhoneNumber;
+        AddressDetail = addressDetail;
+        IsDefault = isDefault;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

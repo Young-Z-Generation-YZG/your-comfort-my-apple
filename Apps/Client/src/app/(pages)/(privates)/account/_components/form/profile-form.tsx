@@ -4,7 +4,7 @@ import {
    ProfileResolver,
 } from '~/domain/schemas/profile.schema';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
@@ -37,6 +37,7 @@ import {
 } from '@components/ui/popover';
 import { Calendar } from '@components/ui/calendar';
 import { format } from 'date-fns';
+import { useUpdateProfileAsyncMutation } from '~/infrastructure/services/identity.service';
 
 type ProfileFormProps = {
    profile: {
@@ -61,13 +62,15 @@ const ProfileForm = ({
       imageUrl,
    },
 }: ProfileFormProps) => {
+   const [isLoading, setIsLoading] = useState(false);
    const [isEditing, setIsEditing] = useState(false);
    const [profile, setProfile] = useState<IProfilePayload | null>({
       first_name: firstName || '',
       last_name: lastName || '',
       email: email || '',
       phone_number: phoneNumber || '',
-      birth_date: birthDate || '2003-08-16',
+      birth_day: birthDate || '2003-08-16',
+      gender: 'OTHER',
    });
 
    const form = useForm<ProfileFormType>({
@@ -77,20 +80,35 @@ const ProfileForm = ({
          first_name: profile?.first_name || '',
          last_name: profile?.last_name || '',
          phone_number: profile?.phone_number || '',
-         birth_date: profile?.birth_date || '2003-08-16',
+         birth_day: profile?.birth_day || '2003-08-16',
+         gender: 'OTHER',
       },
    });
 
-   console.log('Form values:', form.getValues());
-   console.log('Form errors:', form.formState.errors);
+   const [
+      updateProfileAsync,
+      { isLoading: isUpdating, error: updateError, data: updateData },
+   ] = useUpdateProfileAsyncMutation();
 
    const handleSubmit = async (data: ProfileFormType) => {
       console.log('Form submitted:', data);
+
+      await updateProfileAsync(data).unwrap();
 
       setIsEditing(false);
    };
 
    const handleSelectChange = (name: string, value: string) => {};
+
+   useEffect(() => {
+      if (isUpdating) {
+         setIsLoading(true);
+      } else {
+         setTimeout(() => {
+            setIsLoading(false);
+         }, 500);
+      }
+   }, [isUpdating]);
 
    return (
       <motion.div
@@ -139,14 +157,14 @@ const ProfileForm = ({
                   form={form}
                   name="first_name"
                   label="First Name"
-                  disabled={!isEditing}
+                  disabled={!isEditing || isLoading}
                />
 
                <FieldInputSecond
                   form={form}
                   name="last_name"
                   label="Last Name"
-                  disabled={!isEditing}
+                  disabled={!isEditing || isLoading}
                />
 
                <FieldInputSecond
@@ -161,7 +179,7 @@ const ProfileForm = ({
                   type="number"
                   name="phone_number"
                   label="Phone Number"
-                  disabled={!isEditing}
+                  disabled={!isEditing || isLoading}
                />
 
                <motion.div
@@ -182,7 +200,7 @@ const ProfileForm = ({
                   <Form {...form}>
                      <FormField
                         control={form.control}
-                        name="birth_date"
+                        name="birth_day"
                         render={({ field }) => (
                            <FormItem className="flex flex-col">
                               <Label
@@ -196,7 +214,7 @@ const ProfileForm = ({
                                     <FormControl>
                                        <Button
                                           variant={'outline'}
-                                          disabled={!isEditing}
+                                          disabled={!isEditing || isLoading}
                                           className={cn(
                                              'w-full pl-3 text-left font-normal',
                                              !field.value &&
@@ -291,6 +309,7 @@ const ProfileForm = ({
             <div className="flex gap-3 justify-end px-6 py-4">
                <Button
                   variant="outline"
+                  disabled={isUpdating || isLoading}
                   onClick={() => {
                      setIsEditing(false);
                      form.reset({
@@ -298,7 +317,7 @@ const ProfileForm = ({
                         last_name: profile?.last_name || '',
                         email: profile?.email || '',
                         phone_number: profile?.phone_number || '',
-                        birth_date: profile?.birth_date || '',
+                        birth_day: profile?.birth_day || '',
                      });
                      form.clearErrors();
                   }}
@@ -310,8 +329,9 @@ const ProfileForm = ({
                   onClick={() => {
                      form.handleSubmit(handleSubmit)();
                   }}
+                  disabled={isUpdating || isLoading}
                >
-                  {false ? (
+                  {isLoading ? (
                      <span className="flex items-center">
                         <svg
                            className="animate-spin -ml-1 mr-2 text-white"
