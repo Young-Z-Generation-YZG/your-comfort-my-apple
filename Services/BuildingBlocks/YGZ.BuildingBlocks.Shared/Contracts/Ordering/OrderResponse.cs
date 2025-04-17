@@ -12,6 +12,7 @@ public sealed record class OrderResponse
     public string OrderStatus { get; init; }
     public string OrderPaymentMethod { get; init; }
     public ShippingAddressResponse OrderShippingAddress { get; init; }
+    required public int OrderItemsCount { get; set; }
     public decimal OrderSubTotalAmount { get; init; }
     public decimal OrderDiscountAmount { get; init; }
     public decimal OrderTotalAmount { get; init; }

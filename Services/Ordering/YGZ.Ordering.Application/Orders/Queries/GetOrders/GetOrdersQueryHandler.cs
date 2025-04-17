@@ -83,6 +83,7 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
                 ContactProvince = order.ShippingAddress.Province,
                 ContactCountry = order.ShippingAddress.Country
             },
+            OrderItemsCount = order.OrderItems.Count,
             OrderSubTotalAmount = order.SubTotalAmount,
             OrderDiscountAmount = order.DiscountAmount,
             OrderTotalAmount = order.TotalAmount,

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
-import { Separator } from '@components/ui/separator';
 
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
@@ -23,6 +22,7 @@ import { useToast } from '~/hooks/useToast';
 import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { Separator } from '@components/ui/separator';
 
 // List of countries - this would typically be more comprehensive
 const countries = [

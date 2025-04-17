@@ -6,6 +6,8 @@ using NSwag.Annotations;
 using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
+using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
+using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -31,6 +33,26 @@ public class OrderingController : ApiController
     public async Task<IActionResult> GetOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetOrdersByUserQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{orderId}/order-items")]
+    public async Task<IActionResult> GetOrderItems([FromRoute] string orderId, CancellationToken cancellationToken)
+    {
+        var query = new GetOrderItemsByOrderIdQuery(orderId);
 
         var result = await _sender.Send(query, cancellationToken);
 

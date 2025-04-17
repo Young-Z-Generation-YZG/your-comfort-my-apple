@@ -1,7 +1,7 @@
 ﻿using NSwag.Generation.Processors.Contexts;
 using NSwag.Generation.Processors;
-using YGZ.Catalog.Api.Controllers;
 using NJsonSchema;
+using YGZ.Catalog.Api.Controllers;
 
 namespace YGZ.Catalog.Api.Contracts;
 

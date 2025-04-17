@@ -51,7 +51,7 @@ const data = {
             },
             {
                title: 'iPhone Models',
-               url: '#',
+               url: '/dashboards/iphone/iphone-models',
             },
             {
                title: 'iPhone Details',

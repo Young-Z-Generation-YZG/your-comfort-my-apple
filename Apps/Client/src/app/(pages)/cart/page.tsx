@@ -153,8 +153,6 @@ const CartPage = () => {
    };
 
    useEffect(() => {
-      console.log('items.length', items.length);
-
       if (items.length > 0) {
          const isSameAsCartItems = items.every((item, index) => {
             const cartItem = cartItems[index];
@@ -166,7 +164,6 @@ const CartPage = () => {
          });
 
          if (!isSameAsCartItems) {
-            console.log('[POST]');
             handleStoreBasket();
          }
       } else {
@@ -239,7 +236,9 @@ const CartPage = () => {
                   <div className="w-full flex flex-col justify-between">
                      <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                         <div className="font-light">Subtotal</div>
-                        <div className="font-semibold">${subtotal}</div>
+                        <div className="font-semibold">
+                           ${subtotal.toFixed(2)}
+                        </div>
                      </div>
                      <Accordion type="multiple" className="w-full h-full ">
                         <AccordionItem value="item-1" className="border-none">
@@ -267,14 +266,16 @@ const CartPage = () => {
                         ${basketData?.total_amount.toFixed(2) ?? 0}
                      </div>
                   </div>
-                  <Button
-                     className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                     disabled={
-                        cartItems.length === 0 || loading || isBasketFetching
-                     }
-                  >
-                     <Link href="/checkout">Checkout</Link>
-                  </Button>
+                  <Link href="/checkout" className="w-full">
+                     <Button
+                        className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
+                        disabled={
+                           cartItems.length === 0 || loading || isBasketFetching
+                        }
+                     >
+                        Checkout
+                     </Button>
+                  </Link>
                   <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                      <div className="w-full flex flex-row items-center">
                         <Image

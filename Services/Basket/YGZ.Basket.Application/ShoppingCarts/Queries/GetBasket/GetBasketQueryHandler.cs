@@ -37,96 +37,96 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             return result.Error;
         }
 
-        if (!string.IsNullOrEmpty(request.CouponCode))
-        {
+        //if (!string.IsNullOrEmpty(request.CouponCode))
+        //{
 
-            var couponDiscount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.CouponCode });
+        //    var couponDiscount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.CouponCode });
 
-            if (couponDiscount.PromotionCoupon is null)
-            {
-                return Errors.Discount.PromotionCouponNotFound;
-            }
+        //    if (couponDiscount.PromotionCoupon is null)
+        //    {
+        //        return Errors.Discount.PromotionCouponNotFound;
+        //    }
 
-            if (result.Response!.CartItems.Any())
-            {
-                for (int i = 0; i < result.Response!.CartItems.Count; i++)
-                {
-                    var item = result.Response!.CartItems[i];
+        //    if (result.Response!.CartItems.Any())
+        //    {
+        //        for (int i = 0; i < result.Response!.CartItems.Count; i++)
+        //        {
+        //            var item = result.Response!.CartItems[i];
 
-                    if (item.Promotion is not null)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        ShoppingCartItem updatedItem;
+        //            if (item.Promotion is not null)
+        //            {
+        //                continue;
+        //            }
+        //            else
+        //            {
+        //                ShoppingCartItem updatedItem;
 
-                        switch (couponDiscount.PromotionCoupon.PromotionCouponPromotionEventType)
-                        {
-                            case PromotionEventTypeEnum.PromotionCoupon:
-                                updatedItem = HandleCouponPromotion(item, couponDiscount);
-                                result.Response!.CartItems[i] = updatedItem;
-                                break;
-                        }
-                    }
-                }
-            }
-        } else
-        {
-            for (int i = 0; i < result.Response!.CartItems.Count; i++)
-            {
-                var item = result.Response!.CartItems[i];
+        //                switch (couponDiscount.PromotionCoupon.PromotionCouponPromotionEventType)
+        //                {
+        //                    case PromotionEventTypeEnum.PromotionCoupon:
+        //                        updatedItem = HandleCouponPromotion(item, couponDiscount);
+        //                        result.Response!.CartItems[i] = updatedItem;
+        //                        break;
+        //                }
+        //            }
+        //        }
+        //    }
+        //} else
+        //{
+        //    for (int i = 0; i < result.Response!.CartItems.Count; i++)
+        //    {
+        //        var item = result.Response!.CartItems[i];
 
-                ShoppingCartItem updatedItem;
+        //        ShoppingCartItem updatedItem;
 
-                if(item.Promotion is null)
-                {
-                    continue;
-                }
-                else
-                {
-                    switch (item.Promotion.PromotionEventType)
-                    {
-                        case nameof(PromotionEvent.PROMOTION_ITEM):
-                            updatedItem = await HandleItemPromotion(item);
-                            result.Response.CartItems[i] = updatedItem; // Safe to update here
-                            break;
-                        case nameof(PromotionEvent.PROMOTION_EVENT):
-                            updatedItem = await HandleEventPromotion(item);
-                            result.Response.CartItems[i] = updatedItem; // Safe to update here 
-                            break;
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < result.Response!.CartItems.Count; i++)
-            {
-                var item = result.Response!.CartItems[i];
+        //        if(item.Promotion is null)
+        //        {
+        //            continue;
+        //        }
+        //        else
+        //        {
+        //            switch (item.Promotion.PromotionEventType)
+        //            {
+        //                case nameof(PromotionEvent.PROMOTION_ITEM):
+        //                    updatedItem = await HandleItemPromotion(item);
+        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here
+        //                    break;
+        //                case nameof(PromotionEvent.PROMOTION_EVENT):
+        //                    updatedItem = await HandleEventPromotion(item);
+        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here 
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    for (int i = 0; i < result.Response!.CartItems.Count; i++)
+        //    {
+        //        var item = result.Response!.CartItems[i];
 
-                ShoppingCartItem updatedItem;
+        //        ShoppingCartItem updatedItem;
 
-                if (item.Promotion is null)
-                {
-                    continue;
-                }
-                else
-                {
-                    switch (item.Promotion.PromotionEventType)
-                    {
-                        case nameof(PromotionEvent.PROMOTION_ITEM):
-                            updatedItem = await HandleItemPromotion(item);
-                            result.Response.CartItems[i] = updatedItem; // Safe to update here
-                            break;
-                        case nameof(PromotionEvent.PROMOTION_EVENT):
-                            updatedItem = await HandleEventPromotion(item);
-                            result.Response.CartItems[i] = updatedItem; // Safe to update here 
-                            break;
-                    }
-                }
-            }
-        }
+        //        if (item.Promotion is null)
+        //        {
+        //            continue;
+        //        }
+        //        else
+        //        {
+        //            switch (item.Promotion.PromotionEventType)
+        //            {
+        //                case nameof(PromotionEvent.PROMOTION_ITEM):
+        //                    updatedItem = await HandleItemPromotion(item);
+        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here
+        //                    break;
+        //                case nameof(PromotionEvent.PROMOTION_EVENT):
+        //                    updatedItem = await HandleEventPromotion(item);
+        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here 
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //}
 
         GetBasketResponse response = MapToResponse(result.Response);
 

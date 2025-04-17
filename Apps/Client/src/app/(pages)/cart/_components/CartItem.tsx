@@ -1,7 +1,6 @@
 'use client';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import Image from 'next/image';
 import { Button } from '~/components/ui/button';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Input } from '~/components/ui/input';
@@ -13,6 +12,7 @@ import {
    removeCartItem,
    updateCartQuantity,
 } from '~/infrastructure/redux/features/cart.slice';
+import { CldImage } from 'next-cloudinary';
 
 interface CartItemProps {
    item: ICartItemResponse;
@@ -50,16 +50,16 @@ const CartItem = ({ item }: CartItemProps) => {
          key={item.product_id}
       >
          <div className="product-item w-full flex flex-row justify-start">
-            <div className="flex items-center justify-center overflow-hidden w-[200px]">
-               <Link href={`/product-details/${item.product_slug}`}>
-                  <Image
-                     src={`https://res.cloudinary.com/delkyrtji/image/upload/v1744120615/pngimg.com_-_iphone16_PNG37_meffth.png`}
-                     alt={item.product_name}
-                     width={1000}
-                     height={1000}
-                     className=""
-                  />
-               </Link>
+            <div className="flex items-center justify-center overflow-hidden rounded-lg w-[200px]">
+               <CldImage
+                  src={`${item.product_image}`}
+                  alt={item.product_name}
+                  width={1000}
+                  height={1000}
+                  className="h-[180%] w-[60%] object-cover"
+               />
+               {/* <Link href={`/product-details/${item.product_slug}`}>
+               </Link> */}
             </div>
             <div className="flex-1 flex flex-col justify-start items-start pl-[16px]">
                <div className="w-full h-[60px] flex flex-row">

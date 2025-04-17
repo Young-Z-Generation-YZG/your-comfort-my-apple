@@ -31,6 +31,7 @@ export default function RootLayout({
                SFDisplayFont.variable,
                SFTextFont.variable,
             )}
+            suppressHydrationWarning
          >
             <ReduxProvider>
                <ThemeProvider

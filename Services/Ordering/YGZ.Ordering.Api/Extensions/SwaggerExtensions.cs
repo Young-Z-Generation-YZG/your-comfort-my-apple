@@ -46,7 +46,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new GetOrdersPaginationRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateOrderRequestExample());
-            settings.SchemaSettings.SchemaProcessors.Add(new IpnCheckRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new VnpayIpnCheckRequestExample());
         });
 
         return services;

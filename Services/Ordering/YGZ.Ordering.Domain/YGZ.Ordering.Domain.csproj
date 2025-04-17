@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Common\" />
+    <Compile Remove="Core\Common\**" />
+    <EmbeddedResource Remove="Core\Common\**" />
+    <None Remove="Core\Common\**" />
   </ItemGroup>
 
   <ItemGroup>

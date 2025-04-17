@@ -152,6 +152,7 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
 
             var promotionData = new PromotionDataResponse()
             {
+                PromotionId = promotionEvent!.PromotionEvent.PromotionEventId,
                 PromotionProductId = item.Id.Value!,
                 PromotionTitle = promotionEvent!.PromotionEvent.PromotionEventTitle,
                 PromotionDiscountType = DiscountType.ToString(),

@@ -19,8 +19,7 @@ public class OrderItem : Entity<OrderItemId>
     public required string ProductSlug { get; set; }
     public required int Quantity { get; set; }
     public Promotion? Promotion { get; set; } = null;
-
-
+    public bool IsReviewed { get; set; } = false;
 
     // Add this foreign key property
     public OrderId OrderId { get; set; }

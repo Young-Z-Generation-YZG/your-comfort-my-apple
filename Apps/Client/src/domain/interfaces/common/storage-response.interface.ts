@@ -1,4 +1,4 @@
 export interface IStorageResponse {
-   name: string;
-   value: number;
+   storage_name: string;
+   storage_value: number;
 }

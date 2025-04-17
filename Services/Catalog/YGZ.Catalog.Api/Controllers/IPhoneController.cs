@@ -11,6 +11,8 @@ using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
 using YGZ.Catalog.Api.Contracts.IPhoneRequest;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonePromotions;
+using YGZ.Catalog.Application.IPhone.Queries.GetModels;
+using YGZ.Catalog.Api.Contracts.modelRequest;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -32,7 +34,7 @@ public class IPhoneController : ApiController
     }
 
     [HttpGet("promotions")]
-    public async Task<IActionResult> GetIPhone16Promotion([FromQuery] GetIPhonePromotionRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetIPhone16WithPromotion([FromQuery] GetIPhonePromotionRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetIPhonePromotionsQuery>(request);
 
@@ -41,10 +43,20 @@ public class IPhoneController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("iphone-16/models")]
-    public async Task<IActionResult> GetIPhone16Models(CancellationToken cancellationToken)
+    [HttpGet("models")]
+    public async Task<IActionResult> GetModelsWithPromotion([FromQuery] GetModelsRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetIPhone16ModelsQuery();
+        var query = _mapper.Map<GetModelsQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{modelSlug}/models")]
+    public async Task<IActionResult> GetModelBySlug([FromRoute] string modelSlug, CancellationToken cancellationToken)
+    {
+        var query = new GetModelsBySlugQuery(modelSlug);
 
         var result = await _sender.Send(query, cancellationToken);
 

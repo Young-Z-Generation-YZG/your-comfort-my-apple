@@ -22,22 +22,22 @@ public class MomoProvider : IMomoProvider
 
     public async Task<MomoCreatePaymentResponseModel> CreatePaymentUrlAsync(MomoInformationModel model)
     {
-        model.OrderId = DateTime.UtcNow.Ticks.ToString();
-        model.OrderInfo = $"{model.FullName} {model.OrderId} {model.Amount}";
+        var requestId = DateTime.UtcNow.Ticks.ToString();
 
         var callBackUrl = $"{_webClientSettings.BaseUrl}/{_momoSettings.ReturnUrl}";
 
         var rawData = $"partnerCode={_momoSettings.PartnerCode}"
             + $"&accessKey={_momoSettings.AccessKey}"
-            + $"&requestId={model.OrderId}"
+            + $"&requestId={requestId}"
             + $"&amount={model.Amount}"
             + $"&orderId={model.OrderId}"
-            + $"&orderInfo={model.OrderInfo}"
+            + $"&orderInfo={model.FullName}"
             + $"&returnUrl={callBackUrl}"
             + $"&notifyUrl={_momoSettings.NotifyUrl}"
             + $"&extraData=";
 
         var signature = ComputeHmacSha256(rawData, _momoSettings.SecrectKey);
+        var signature2 = ComputeHmacSha256(rawData, _momoSettings.SecrectKey);
 
         var client = new RestClient(_momoSettings.MomoUrl);
         var request = new RestRequest() { Method = Method.Post };
@@ -52,8 +52,8 @@ public class MomoProvider : IMomoProvider
             returnUrl = callBackUrl,
             orderId = model.OrderId,
             amount = model.Amount.ToString(),
-            orderInfo = model.OrderInfo,
-            requestId = model.OrderId,
+            orderInfo = model.FullName,
+            requestId = requestId,
             extraData = "",
             signature = signature,
         };
@@ -95,4 +95,6 @@ public class MomoProvider : IMomoProvider
 
         return hashString;
     }
+
+
 }

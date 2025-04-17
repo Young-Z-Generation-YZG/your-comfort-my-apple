@@ -21,7 +21,9 @@ public static class SeedDataExtensions
 
 
         await SeedCategoriesAsync(categoryRepository);
+
         await SeedIPhone16ModelAsync(iPhone16ModelRepository);
+
         await SeedIPhone16DetailsAsync(iPhone16DetailRepository);
     }
 
@@ -48,6 +50,10 @@ public static class SeedDataExtensions
             {
                 await iPhone16ModelRepository.InsertOneAsync(item);
             }
+            foreach (var item in SeedData.IPhone16e_Models)
+            {
+                await iPhone16ModelRepository.InsertOneAsync(item);
+            }
         }
     }
 
@@ -58,6 +64,10 @@ public static class SeedDataExtensions
         if (existingItems.Count == 0)
         {
             foreach (var item in SeedData.IPhone16_16Plus_Details)
+            {
+                await iPhone16DetailRepository.InsertOneAsync(item);
+            }
+            foreach (var item in SeedData.IPhone16e_Details)
             {
                 await iPhone16DetailRepository.InsertOneAsync(item);
             }

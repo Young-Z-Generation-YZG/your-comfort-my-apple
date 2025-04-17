@@ -22,17 +22,3 @@ public sealed record OrderDetailsResponse()
     required public DateTime OrderUpdatedAt { get; set; }
     required public string? OrderLastModifiedBy { get; set; }
 }
-
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
-public sealed record OrderItemRepsonse()
-{
-    required public string OrderItemId { get; set; }
-    required public string ProductId { get; set; }
-    required public string ProductName { get; set; }
-    required public string ProductImage { get; set; }
-    required public string ProductColorName { get; set; }
-    required public decimal ProductUnitPrice { get; set; }
-    required public int quantity { get; set; }
-    public PromotionResponse? Promotion { get; set; } = null;
-    required public decimal SubTotalAmount { get; set; }
-}

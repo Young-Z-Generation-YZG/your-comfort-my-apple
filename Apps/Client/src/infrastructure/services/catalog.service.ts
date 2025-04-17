@@ -1,12 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IIphonePromotionResponse } from '~/domain/interfaces/catalogs/iPhone.interface';
-import { PaginationWithPromotionResponse } from '~/domain/interfaces/common/pagination-response.interface';
+import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import {
+   IIphonePromotionResponse,
+   IIphoneResponse,
+} from '~/domain/interfaces/catalogs/iPhone.interface';
+import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
-   tagTypes: ['Products'],
+   tagTypes: ['Catalogs'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://c8fb-116-108-46-152.ngrok-free.app/catalog-services',
+      baseUrl: 'https://be2c-116-108-46-152.ngrok-free.app/catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 
@@ -15,16 +19,36 @@ export const catalogApi = createApi({
    }),
    endpoints: (builder) => ({
       getIphonePromotionsAsync: builder.query<
-         PaginationWithPromotionResponse<IIphonePromotionResponse>,
+         PaginationResponse<IIphonePromotionResponse>,
          void
       >({
          query: () => '/api/v1/products/iphone/promotions',
-         providesTags: ['Products'],
+         providesTags: ['Catalogs'],
          transformResponse: (response) => {
-            return response as PaginationWithPromotionResponse<IIphonePromotionResponse>;
+            return response as PaginationResponse<IIphonePromotionResponse>;
          },
+      }),
+      getModelsAsync: builder.query<
+         PaginationResponse<IIphoneModelResponse>,
+         void
+      >({
+         query: () => '/api/v1/products/iphone/models',
+         providesTags: ['Catalogs'],
+      }),
+      getModelBySlugAsync: builder.query<IIphoneModelResponse, string>({
+         query: (slug) => `/api/v1/products/iphone/${slug}/models`,
+         providesTags: ['Catalogs'],
+      }),
+      getIPhonesByModelAsync: builder.query<IIphoneResponse[], string>({
+         query: (slug) => `/api/v1/products/iphone/models/${slug}/products`,
+         providesTags: ['Catalogs'],
       }),
    }),
 });
 
-export const { useGetIphonePromotionsAsyncQuery } = catalogApi;
+export const {
+   useGetIphonePromotionsAsyncQuery,
+   useGetModelBySlugAsyncQuery,
+   useGetIPhonesByModelAsyncQuery,
+   useGetModelsAsyncQuery,
+} = catalogApi;

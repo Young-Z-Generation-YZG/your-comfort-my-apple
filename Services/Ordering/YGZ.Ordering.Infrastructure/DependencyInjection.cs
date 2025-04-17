@@ -11,6 +11,8 @@ using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Infrastructure.Persistence.Repositories;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Vnpay;
 using YGZ.Ordering.Infrastructure.Payments.Vnpay;
+using YGZ.Ordering.Application.Abstractions.PaymentProviders.Momo;
+using YGZ.Ordering.Infrastructure.Payments.Momo;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -27,10 +29,13 @@ public static class DependencyInjection
         services.AddQueuesFromApplicationLayer(configuration);
 
         services.Configure<VnpaySettings>(configuration.GetSection(VnpaySettings.SettingKey));
+        services.Configure<MomoSettings>(configuration.GetSection(MomoSettings.SettingKey));
+        services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
 
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddSingleton<IVnpayProvider, VnpayProvider>();
+        services.AddSingleton<IMomoProvider, MomoProvider>();
 
         return services;
     }

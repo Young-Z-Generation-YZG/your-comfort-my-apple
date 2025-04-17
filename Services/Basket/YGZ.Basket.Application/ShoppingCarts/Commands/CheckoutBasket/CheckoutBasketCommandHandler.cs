@@ -12,7 +12,6 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.Discount.Grpc.Protos;
-using static YGZ.Basket.Domain.Core.Errors.Errors;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 
@@ -68,9 +67,9 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                 return Errors.Discount.PromotionCouponNotFound;
             }
 
-            //    var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
+            var discountType = DiscountType.FromValue((int)discount.PromotionCoupon.PromotionCouponDiscountType);
 
-            for (var i = 0; i <= basket.Response.CartItems.Count; i++)
+            for (var i = 0; i < basket.Response.CartItems.Count; i++)
             {
                 var cartItem = basket.Response.CartItems[i];
 
@@ -82,7 +81,6 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
                 var appliedCount = cartItem.Quantity;
 
-                var promotionFinalPrice = discountUnit * appliedCount;
 
                 var promotion = Promotion.Create(promotionIdOrCode: discount.PromotionCoupon.PromotionCouponCode,
                                                  promotionEventType: PromotionEvent.PROMOTION_COUPON.Name,
@@ -91,7 +89,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                                                  promotionDiscountValue: (decimal)discount.PromotionCoupon.PromotionCouponDiscountValue,
                                                  promotionDiscountUnitPrice: discountUnit,
                                                  promotionAppliedProductCount: appliedCount,
-                                                 promotionFinalPrice: promotionFinalPrice);
+                                                 promotionFinalPrice: discountUnit * appliedCount);
 
                 basket.Response.CartItems[i].SubTotalAmount = discountUnit * cartItem.Quantity;
                 basket.Response.CartItems[i].Promotion = promotion;
@@ -109,7 +107,9 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                                                                     discountAmount: discountAmount,
                                                                     totalAmount: total);
 
-        var promotionFinalPrice = discountUnit * appliedCount;
+        await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
+
+        //var promotionFinalPrice = discountUnit * appliedCount;
 
         switch (request.PaymentMethod)
         {
@@ -132,10 +132,10 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
             case nameof(PaymentMethod.MOMO):
                 var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
                 {
-                    FullName = request.ShippingAddress.ContactName,
-                    OrderId = $"{orderId}",
+                    FullName = $"{request.ShippingAddress.ContactName}",
+                    OrderId = $"ORDER_ID={orderId}",
                     OrderInfo = "MOMO_CHECKOUT",
-                    Amount = (double)basket.Response.TotalAmount * 25000,
+                    Amount = (double)10 * 25000,
                 });
 
                 if (momoPaymentUrl?.ErrorCode != 0)

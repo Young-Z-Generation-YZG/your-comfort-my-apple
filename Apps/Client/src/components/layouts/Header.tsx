@@ -20,7 +20,43 @@ import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import HeaderBagItem from '../client/HeaderBagItem';
 
-const mainCategoriesDefault = ['Mac', 'iPad', 'iPhone', 'Watch', 'HeadPhones'];
+const mainCategoriesDefault = [
+   {
+      category_id: 'Mac',
+      category_name: 'Mac',
+      category_parent_id: null,
+      category_slug: 'mac',
+      category_order: 1,
+   },
+   {
+      category_id: 'iPad',
+      category_name: 'iPad',
+      category_parent_id: null,
+      category_slug: 'ipad',
+      category_order: 2,
+   },
+   {
+      category_id: 'iPhone',
+      category_name: 'iPhone',
+      category_parent_id: null,
+      category_slug: 'iphone',
+      category_order: 3,
+   },
+   {
+      category_id: 'Watch',
+      category_name: 'Watch',
+      category_parent_id: null,
+      category_slug: 'watch',
+      category_order: 3,
+   },
+   {
+      category_id: 'HeadPhones',
+      category_name: 'HeadPhones',
+      category_parent_id: null,
+      category_slug: 'headphones',
+      category_order: 3,
+   },
+];
 
 const subCategories = ['iPhone 16 Pro', 'iPhone 16', 'iPhone 16e', 'iPhone 15'];
 
@@ -58,13 +94,16 @@ const Header = () => {
                   key={index}
                   className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
                   ref={(el) => {
-                     categoryRefs.current[category] = el;
+                     categoryRefs.current[category.category_id] = el;
                   }}
                   data-category_id={category}
-                  onMouseEnter={() => handleMouseEnter(category)}
+                  onMouseEnter={() => handleMouseEnter(category.category_name)}
+                  onClick={() => {
+                     router.push(`/shop`);
+                  }}
                >
                   <p className="antialiased opacity-[0.8] tracking-wide">
-                     {category}
+                     {category.category_name}
                   </p>
                </li>
             );
@@ -84,7 +123,12 @@ const Header = () => {
                }}
                data-category_id={category.category_id}
                className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
-               onMouseEnter={() => handleMouseEnter(category.category_name)}
+               onMouseEnter={() => {
+                  handleMouseEnter(category.category_name);
+               }}
+               onClick={() => {
+                  router.push(`/shop`);
+               }}
             >
                <p className="antialiased opacity-[0.8] tracking-wide">
                   {category.category_name}
@@ -723,7 +767,3 @@ const Header = () => {
 };
 
 export default Header;
-
-{
-   /* <div className="sub-category absolute top-[44px] left-0 h-auto px-[22px] pt-[40px] pb-[84px] bg-[#fafafc] w-screen"></div>; */
-}

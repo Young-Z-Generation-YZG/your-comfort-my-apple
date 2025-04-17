@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
@@ -13,7 +13,7 @@ using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
 
-public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery, IPhoneResponse>
+public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery, IPhoneDetailsWithPromotionResponse>
 {
     private readonly IMongoRepository<IPhone16Detail> _detailRepository;
     private readonly ILogger<GetProductBySlugQueryHandler> _logger;
@@ -26,24 +26,24 @@ public class GetProductBySlugQueryHandler : IQueryHandler<GetProductBySlugQuery,
         _mapper = mapper;
     }
 
-    public async Task<Result<IPhoneResponse>> Handle(GetProductBySlugQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IPhoneDetailsWithPromotionResponse>> Handle(GetProductBySlugQuery request, CancellationToken cancellationToken)
     {
         var filter = Builders<IPhone16Detail>.Filter.Eq(x => x.Slug, Slug.Of(request.slug));
 
         var product = await _detailRepository.GetByFilterAsync(filter, cancellationToken);
 
-        IPhoneResponse response = MapToResponse(product);
+        IPhoneDetailsWithPromotionResponse response = MapToResponse(product);
 
         return response;
     }
 
-    private IPhoneResponse MapToResponse(IPhone16Detail product)
+    private IPhoneDetailsWithPromotionResponse MapToResponse(IPhone16Detail product)
     {
         var colorResponse = _mapper.Map<ColorResponse>(product.Color);
 
         var imagesResponse = _mapper.Map<List<ImageResponse>>(product.Images);
 
-        var response = _mapper.Map<IPhoneResponse>(product);
+        var response = _mapper.Map<IPhoneDetailsWithPromotionResponse>(product);
 
         response.ProductColor = colorResponse;
 

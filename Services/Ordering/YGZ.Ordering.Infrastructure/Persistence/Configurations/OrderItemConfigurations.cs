@@ -21,33 +21,6 @@ public class OrderItemConfigurations : IEntityTypeConfiguration<OrderItem>
         builder.Property(oi => oi.OrderId)
             .HasConversion(id => id.Value, value => OrderId.Of(value));
 
-        //builder.ComplexProperty(builder => builder.Promotion, address =>
-        //{
-        //    address.Property(a => a.PromotionIdOrCode)
-        //        .HasColumnName(nameof(Promotion.PromotionIdOrCode));
-
-        //    address.Property(a => a.PromotionTitle)
-        //        .HasColumnName(nameof(Promotion.PromotionTitle));
-
-        //    address.Property(a => a.PromotionEventType)
-        //        .HasColumnName(nameof(Promotion.PromotionEventType));
-
-        //    address.Property(a => a.PromotionDiscountType)
-        //        .HasColumnName(nameof(Promotion.PromotionDiscountType));
-
-        //    address.Property(a => a.PromotionDiscountValue)
-        //        .HasColumnName(nameof(Promotion.PromotionDiscountValue));
-
-        //    address.Property(a => a.PromotionDiscountUnitPrice)
-        //        .HasColumnName(nameof(Promotion.PromotionDiscountUnitPrice));
-
-        //    address.Property(a => a.PromotionAppliedProductCount)
-        //        .HasColumnName(nameof(Promotion.PromotionAppliedProductCount));
-
-        //    address.Property(a => a.PromotionFinalPrice)
-        //        .HasColumnName(nameof(Promotion.PromotionFinalPrice));
-        //});
-
         builder.OwnsOne(oi => oi.Promotion, promotionBuilder =>
         {
             promotionBuilder.Property(a => a.PromotionIdOrCode).HasColumnName(nameof(Promotion.PromotionIdOrCode));
@@ -59,6 +32,7 @@ public class OrderItemConfigurations : IEntityTypeConfiguration<OrderItem>
             promotionBuilder.Property(a => a.PromotionAppliedProductCount).HasColumnName(nameof(Promotion.PromotionAppliedProductCount));
             promotionBuilder.Property(a => a.PromotionFinalPrice).HasColumnName(nameof(Promotion.PromotionFinalPrice));
         });
+
         builder.Navigation(oi => oi.Promotion).IsRequired(false); // Mark as optional
     }
 }

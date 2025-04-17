@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.Ordering.Application.Orders.Commands.Common;
 using YGZ.Ordering.Application.Orders.Commands.CreateOrder;
-using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Events.Integrations;
 

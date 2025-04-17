@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useTokenExpirationCheck } from '~/hooks/useTokenExpirationCheck';
 import { setRouter } from '~/infrastructure/redux/features/app.slice';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import SideBar from './_components/layouts/side-bar';
@@ -16,7 +15,6 @@ import Image from 'next/image';
 import Badge from './_components/badge';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
-   useTokenExpirationCheck();
    const router = useRouter();
    const dispatch = useDispatch();
 

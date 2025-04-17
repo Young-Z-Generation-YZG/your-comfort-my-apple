@@ -3,17 +3,19 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MapsterMapper;
 using MediatR;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 using YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
 using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
-using YGZ.Discount.Application.Coupons.Queries.GetPromotionItemById;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionGlobal;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionProduct;
 using YGZ.Discount.Application.Promotions.Queries.GetPromotionEventQuery;
+using YGZ.Discount.Application.Promotions.Queries.GetPromotionItem;
+using YGZ.Discount.Application.Promotions.Queries.GetPromotionItemById;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Grpc.Protos;
 
@@ -29,15 +31,6 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         _mapper = mapper;
         _sender = sender;
     }
-
-    //public override Task<GetAllDiscountsResponse> Get(GetAllDiscountsRequest request, ServerCallContext context)
-    //{
-    //    //var query = new GetAllCouponsQuery();
-
-    //    //var result = await _sender.Send(query);
-
-    //    return base.GetAllDiscountCoupons(request, context);
-    //}
 
     public override async Task<CouponResponse> GetDiscountByCode(GetDiscountRequest request, ServerCallContext context)
     {
@@ -101,6 +94,41 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         var result = await _sender.Send(query);
 
         var response = _mapper.Map<PromotionItemModel>(result.Response!);
+
+        return response;
+    }
+
+    public override async Task<PromotionItemsRepsonse> GetPromotionItems(GetPromotionItemsRequest request, ServerCallContext context)
+    {
+        var query = new GetPromotionItemsQuery();
+
+        var result = await _sender.Send(query);
+
+        if (result.IsFailure)
+        {
+            return new PromotionItemsRepsonse();
+        }
+
+        var response = new PromotionItemsRepsonse();
+
+        response.PromotionItems.AddRange(result.Response!.Select(p => new PromotionItemModel()
+        {
+            PromotionItemId = p.PromotionItemId,
+            PromotionItemProductId = p.ProductId,
+            PromotionItemTitle = p.Title,
+            PromotionItemDescription = p.Description,
+            PromotionItemNameTag = (ProductNameTagEnum)ProductNameTag.FromName(p.ProductNameTag, false).Value,
+            PromotionItemPromotionEventType = (PromotionEventTypeEnum)PromotionEvent.FromName(p.PromotionEventType, false).Value,
+            PromotionItemDiscountState = (DiscountStateEnum)DiscountState.FromName(p.DiscountState, false).Value,
+            PromotionItemDiscountType = (DiscountTypeEnum)DiscountType.FromName(p.DiscountType, false).Value,
+            PromotionItemEndDiscountType = (EndDiscountEnum)EndDiscountType.FromName(p.EndDiscountType, false).Value,
+            PromotionItemDiscountValue = (double)p.DiscountValue,
+            PromotionItemValidFrom = p.ValidFrom.HasValue ? p.ValidFrom.Value.ToTimestamp() : null,
+            PromotionItemValidTo = p.ValidTo.HasValue ? p.ValidTo.Value.ToTimestamp() : null,
+            PromotionItemAvailableQuantity = p.AvailableQuantity,
+            PromotionItemProductImage = p.PromotionItemProductImage,
+            PromotionItemProductSlug = p.PromotionItemProductSlug
+        }));
 
         return response;
     }

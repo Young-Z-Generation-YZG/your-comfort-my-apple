@@ -6,7 +6,6 @@ using MongoDB.Driver;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Infrastructure.Settings;
-using Polly;
 
 namespace YGZ.Catalog.Infrastructure.Persistence;
 
@@ -51,11 +50,17 @@ public class MongoRepository<TEntity> : IMongoRepository<TEntity> where TEntity 
                                                                                            CancellationToken cancellationToken)
     {
         var page = _page ?? 1;
-        var limit = _limit ?? 10;
+        var limit = _limit ?? 10000;
+
+        if(filter == null)
+        {
+            filter = Builders<TEntity>.Filter.Empty;
+        }
 
         var totalRecords = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
 
         var totalPages = (int)Math.Ceiling((double)totalRecords / limit);
+
 
         var items = await _collection.Find(filter)
                                      .Sort(sort)

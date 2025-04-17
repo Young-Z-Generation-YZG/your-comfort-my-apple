@@ -54,6 +54,7 @@ service DiscountProtoService {
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
 	rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
 	rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
+	rpc GetPromotionItems (GetPromotionItemsRequest) returns (PromotionItemsRepsonse);
 	rpc GetPromotionItemById (GetPromotionItemByIdRequest) returns (PromotionItemModel);
 
 	rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
@@ -86,20 +87,21 @@ message PromotionCouponModel {
 }
 
 message PromotionItemModel {
-	google.protobuf.StringValue promotion_item_product_id = 1;
-	google.protobuf.StringValue promotion_item_title = 2;
-	google.protobuf.StringValue promotion_item_description = 3;
-	ProductNameTagEnum			promotion_item_name_tag = 4;
-	PromotionEventTypeEnum		promotion_item_promotion_event_type = 5;
-	DiscountStateEnum			promotion_item_discount_state = 6;
-	DiscountTypeEnum			promotion_item_discount_type = 7;
-	EndDiscountEnum				promotion_item_end_discount_type = 8;
-	google.protobuf.DoubleValue promotion_item_discount_value = 9;
-	google.protobuf.Timestamp	promotion_item_valid_from = 10;
-	google.protobuf.Timestamp	promotion_item_valid_to = 11;
-	google.protobuf.Int32Value	promotion_item_available_quantity = 12;
-	google.protobuf.StringValue promotion_item_product_image = 13;
-	google.protobuf.StringValue promotion_item_product_slug = 14;
+	google.protobuf.StringValue promotion_item_id = 1;
+	google.protobuf.StringValue promotion_item_product_id = 2;
+	google.protobuf.StringValue promotion_item_title = 3;
+	google.protobuf.StringValue promotion_item_description = 4;
+	ProductNameTagEnum			promotion_item_name_tag = 5;
+	PromotionEventTypeEnum		promotion_item_promotion_event_type = 6;
+	DiscountStateEnum			promotion_item_discount_state = 7;
+	DiscountTypeEnum			promotion_item_discount_type = 8;
+	EndDiscountEnum				promotion_item_end_discount_type = 9;
+	google.protobuf.DoubleValue promotion_item_discount_value = 10;
+	google.protobuf.Timestamp	promotion_item_valid_from = 11;
+	google.protobuf.Timestamp	promotion_item_valid_to = 12;
+	google.protobuf.Int32Value	promotion_item_available_quantity = 13;
+	google.protobuf.StringValue promotion_item_product_image = 14;
+	google.protobuf.StringValue promotion_item_product_slug = 15;
 }
 
 message PromotionEventModel {
@@ -143,6 +145,7 @@ message GetDiscountRequest {
 }
 
 message GetPromotionEventRequest { }
+message GetPromotionItemsRequest { }
 
 message GetPromotionItemByIdRequest {
 	google.protobuf.StringValue promotion_id = 1;
@@ -154,6 +157,10 @@ message CouponResponse {
 
 message PromotionEventResponse {
 	repeated ListPromtionEventResponse promotion_events = 1;
+}
+
+message PromotionItemsRepsonse {
+	repeated PromotionItemModel promotion_items = 1;
 }
 
 message ListPromtionEventResponse {

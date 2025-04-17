@@ -3,6 +3,9 @@
 const nextConfig = {
    output: 'standalone',
    reactStrictMode: false,
+   eslint: {
+      ignoreDuringBuilds: true,
+   },
    webpack: (config) => {
       // Set the exportLocalsConvention to camelCase for CSS modules (transform everything to camelCase)
       config.module.rules

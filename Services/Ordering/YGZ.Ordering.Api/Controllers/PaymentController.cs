@@ -27,9 +27,19 @@ public class PaymentController : ApiController
     }
 
     [HttpPatch("vnpay-ipn-callback")]
-    public async Task<IActionResult> VnpayIpn([FromBody] IpnCheckRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> VnpayIpn([FromBody] VnpayIpnCheckRequest request, CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<IpnCheckCommand>(request);
+        var query = _mapper.Map<VnpayIpnCheckCommand>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPatch("momo-ipn-callback")]
+    public async Task<IActionResult> MomoIpn([FromBody] MomoIpnCheckRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<MomoIpnCheckCommand>(request);
 
         var result = await _sender.Send(query, cancellationToken);
 

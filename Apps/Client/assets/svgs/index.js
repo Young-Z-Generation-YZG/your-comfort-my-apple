@@ -8,6 +8,7 @@ const svgs = {
    appleOrderIcon: require('./apple-order-icon.svg').default,
    appleSecurityIcon: require('./apple-security-icon.svg').default,
    appleSettingsIcon: require('./apple-settings-icon.svg').default,
+   appleIntelligenceIcon: require('./apple-intelligence.svg').default,
    vnpayLogo: require('./vnpay-logo.svg').default,
    momoLogo: require('./momo-logo.svg').default,
    truckIcon: require('./truck-icon.svg').default,

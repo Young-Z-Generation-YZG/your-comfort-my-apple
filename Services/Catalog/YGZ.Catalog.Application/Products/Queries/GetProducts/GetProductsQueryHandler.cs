@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Abstractions.Data;
@@ -10,7 +10,7 @@ using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
-public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<IPhoneResponse>>
+public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<IPhoneDetailsWithPromotionResponse>>
 {
     private readonly IMongoRepository<IPhone16Detail> _iPhone16repository;
 
@@ -19,7 +19,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
         _iPhone16repository = iPhone16repository;
     }
 
-    public async Task<Result<PaginationResponse<IPhoneResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<IPhoneDetailsWithPromotionResponse>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var (filter, sort) = GetFilterDefinition(request);
 
@@ -84,7 +84,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
         return (filter, sort);
     }
 
-    private PaginationResponse<IPhoneResponse> MapToResponse(List<IPhone16Detail> productItems, int totalRecords, int totalPages, GetProductsQuery request)
+    private PaginationResponse<IPhoneDetailsWithPromotionResponse> MapToResponse(List<IPhone16Detail> productItems, int totalRecords, int totalPages, GetProductsQuery request)
     {
         var queryParams = QueryParamBuilder.Build(request);
 
@@ -93,7 +93,7 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
                                                  currentPage: request.Page ?? 1,
                                                  totalPages: totalPages);
 
-        var productResponses = productItems.Select(p => new IPhoneResponse
+        var productResponses = productItems.Select(p => new IPhoneDetailsWithPromotionResponse
         {
             ProductId = p.Id.Value!,
             ProductModel = p.Model,
@@ -104,10 +104,16 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
                 ColorImage = p.Color.ColorImage,
                 ColorOrder = p.Color.ColorOrder
             },
-            ProductStorage = p.Storage,
+            ProductStorage = new StorageResponse() { StorageName = p.Storage.Name, StorageValue = p.Storage.Value},
             ProductUnitPrice = p.UnitPrice,
             ProductAvailableInStock = p.AvailableInStock,
             ProductDescription = p.Description,
+            ProductNameTag = p.ProductNameTag.Name,
+            ProductState = p.State.Name,
+            TotalSold = p.TotalSold,
+            ProductSlug = p.Slug.Value,
+            CategoryId = p.CategoryId.Value!,
+            IphoneModelId = p.IPhoneModelId.Value!,
             ProductImages = p.Images.Select(i => new ImageResponse
             {
                 ImageId = i.ImageId,
@@ -119,10 +125,9 @@ public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, Paginatio
                 ImageBytes = i.ImageBytes,
                 ImageOrder = i.ImageOrder
             }).ToList(),
-            ProductSlug = p.Slug.Value,
         }).ToList();
 
-        var response = new PaginationResponse<IPhoneResponse>
+        var response = new PaginationResponse<IPhoneDetailsWithPromotionResponse>
         {
             TotalRecords = totalRecords,
             TotalPages = totalPages,

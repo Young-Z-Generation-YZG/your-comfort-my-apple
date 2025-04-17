@@ -7,7 +7,9 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record PromotionDataResponse
 {
+    required public string PromotionId { get; set; }
     required public string PromotionProductId { get; set; }
+    public string? ProductModelId { get; set; } = null;
     required public string PromotionProductSlug { get; set; }
     required public string? PromotionTitle { get; set; } = null;
     required public string PromotionEventType { get; set; }
