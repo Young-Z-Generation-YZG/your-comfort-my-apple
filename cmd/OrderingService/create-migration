@@ -1,5 +1,5 @@
 #! /bin/bash
-dotnet ef migrations add "InitialMigration" \
+dotnet ef migrations add "InitialMigrationReview" \
 --startup-project ../../Services/Ordering/YGZ.Ordering.Api \
 --project ../../Services/Ordering/YGZ.Ordering.Infrastructure \
 --output-dir Persistence/Migrations

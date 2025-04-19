@@ -6,9 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <Folder Include="Abstractions\Persistence\" />
+    <Compile Remove="Abstractions\Persistence\**" />
+    <EmbeddedResource Remove="Abstractions\Persistence\**" />
+    <None Remove="Abstractions\Persistence\**" />
   </ItemGroup>
 
   <ItemGroup>

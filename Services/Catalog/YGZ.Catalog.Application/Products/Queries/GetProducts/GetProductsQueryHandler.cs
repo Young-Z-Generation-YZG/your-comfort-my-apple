@@ -5,16 +5,17 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Utils;
-using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Iphone16.Entities;
+using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductsPagination;
 
 public class GetProductsQueryHandler : IQueryHandler<GetProductsQuery, PaginationResponse<IPhoneDetailsWithPromotionResponse>>
 {
-    private readonly IMongoRepository<IPhone16Detail> _iPhone16repository;
+    private readonly IMongoRepository<IPhone16Detail, IPhone16Id> _iPhone16repository;
 
-    public GetProductsQueryHandler(IMongoRepository<IPhone16Detail> iPhone16repository)
+    public GetProductsQueryHandler(IMongoRepository<IPhone16Detail, IPhone16Id> iPhone16repository)
     {
         _iPhone16repository = iPhone16repository;
     }

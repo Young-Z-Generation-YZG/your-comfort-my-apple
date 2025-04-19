@@ -7,19 +7,20 @@ using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 using YGZ.Catalog.Domain.Common.ValueObjects;
-using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone16;
+using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 
 namespace YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
 
 public class GetModelsBySlugQueryHandler : IQueryHandler<GetModelsBySlugQuery, IPhoneModelResponse>
 {
-    private readonly IMongoRepository<IPhone16Model> _modelRepository;
+    private readonly IMongoRepository<IPhone16Model, IPhone16ModelId> _modelRepository;
     private readonly ILogger<GetIPhonesByModelSlugQueryHandler> _logger;
 
-    public GetModelsBySlugQueryHandler(IMongoRepository<IPhone16Model> modelRepository, ILogger<GetIPhonesByModelSlugQueryHandler> logger)
+    public GetModelsBySlugQueryHandler(IMongoRepository<IPhone16Model, IPhone16ModelId> modelRepository, ILogger<GetIPhonesByModelSlugQueryHandler> logger)
     {
         _modelRepository = modelRepository;
         _logger = logger;

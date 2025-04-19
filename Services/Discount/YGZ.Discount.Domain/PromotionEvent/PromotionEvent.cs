@@ -15,7 +15,7 @@ public class PromotionEvent : AggregateRoot<PromotionEventId>, IAuditable, ISoft
 
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
-    public Core.Enums.PromotionEvent PromotionEventType { get; set; } = Core.Enums.PromotionEvent.PROMOTION_EVENT;
+    public PromotionEventType PromotionEventType { get; set; } = PromotionEventType.PROMOTION_EVENT;
     public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
     public DateTime? ValidFrom { get; set; } = null;
     public DateTime? ValidTo { get; set; } = null;

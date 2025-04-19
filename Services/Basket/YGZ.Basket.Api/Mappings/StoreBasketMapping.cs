@@ -15,6 +15,7 @@ public class StoreBasketMapping : IRegister
 
         config.NewConfig<CartItemRequest, CartItemCommand>()
             .Map(dest => dest.ProductId, src => src.ProductId)
+            .Map(dest => dest.ModelId, src => src.ModelId)
             .Map(dest => dest.ProductName, src => src.ProductName)
             .Map(dest => dest.ProductColorName, src => src.ProductColorName)
             .Map(dest => dest.ProductUnitPrice, src => src.ProductUnitPrice)

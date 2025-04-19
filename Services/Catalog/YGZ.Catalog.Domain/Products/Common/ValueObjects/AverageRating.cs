@@ -24,10 +24,10 @@ public class AverageRating : ValueObject
         return new AverageRating(averageValue, averageNumRating);
     }
 
-    public void AddNewRating(Rating rating)
+    public void AddNewRating(int rating)
     {
         RatingCount += 1;
-        RatingAverageValue = (RatingAverageValue * RatingCount + rating.Value) / RatingCount;
+        RatingAverageValue = (RatingAverageValue * RatingCount + rating) / RatingCount;
     }
 
     public void UpdateRating(Rating oldRating, Rating newRating)

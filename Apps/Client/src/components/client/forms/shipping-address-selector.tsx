@@ -5,22 +5,47 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronDown, Plus } from 'lucide-react';
 import type { UseFormSetValue } from 'react-hook-form';
 import { CheckoutFormType } from '~/domain/schemas/basket.schema';
+import { IAddressResponse } from '~/domain/interfaces/identity/address';
 
-interface ShippingAddress {
-   id: string;
-   isDefault: boolean;
-   contactName: string;
-   contactPhoneNumber: string;
-   addressLine: string;
-   district: string;
-   province: string;
-   country: string;
-}
+// Animation variants
+const dropdownVariants = {
+   hidden: {
+      opacity: 0,
+      height: 0,
+      transition: {
+         when: 'afterChildren',
+         staggerChildren: 0.05,
+         staggerDirection: -1,
+      },
+   },
+   visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+         when: 'beforeChildren',
+         staggerChildren: 0.05,
+      },
+   },
+};
+
+const itemVariants = {
+   hidden: { opacity: 0, y: -10 },
+   visible: { opacity: 1, y: 0 },
+};
+
+const checkVariants = {
+   hidden: { scale: 0, opacity: 0 },
+   visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { type: 'spring', stiffness: 500, damping: 25 },
+   },
+};
 
 interface ShippingAddressSelectorProps {
-   addresses: ShippingAddress[];
-   selectedAddress: ShippingAddress;
-   setSelectedAddress: (address: ShippingAddress) => void;
+   addresses: IAddressResponse[];
+   selectedAddress: IAddressResponse;
+   setSelectedAddress: (address: IAddressResponse) => void;
    setValue: UseFormSetValue<CheckoutFormType>;
 }
 
@@ -33,56 +58,21 @@ export function ShippingAddressSelector({
    const [showAddressSelector, setShowAddressSelector] = useState(false);
 
    // Handle address selection
-   const handleSelectAddress = (address: ShippingAddress) => {
+   const handleSelectAddress = (address: IAddressResponse) => {
       setSelectedAddress(address);
 
       // Update form values
-      setValue('shipping_address.contact_name', address.contactName);
+      setValue('shipping_address.contact_name', address.contact_name);
       setValue(
          'shipping_address.contact_phone_number',
-         address.contactPhoneNumber,
+         address.contact_phone_number,
       );
-      setValue('shipping_address.address_line', address.addressLine);
+      setValue('shipping_address.address_line', address.address_line);
       setValue('shipping_address.district', address.district);
       setValue('shipping_address.province', address.province);
       setValue('shipping_address.country', address.country);
 
       setShowAddressSelector(false);
-   };
-
-   // Animation variants
-   const dropdownVariants = {
-      hidden: {
-         opacity: 0,
-         height: 0,
-         transition: {
-            when: 'afterChildren',
-            staggerChildren: 0.05,
-            staggerDirection: -1,
-         },
-      },
-      visible: {
-         opacity: 1,
-         height: 'auto',
-         transition: {
-            when: 'beforeChildren',
-            staggerChildren: 0.05,
-         },
-      },
-   };
-
-   const itemVariants = {
-      hidden: { opacity: 0, y: -10 },
-      visible: { opacity: 1, y: 0 },
-   };
-
-   const checkVariants = {
-      hidden: { scale: 0, opacity: 0 },
-      visible: {
-         scale: 1,
-         opacity: 1,
-         transition: { type: 'spring', stiffness: 500, damping: 25 },
-      },
    };
 
    return (
@@ -116,18 +106,18 @@ export function ShippingAddressSelector({
          >
             <div className="flex-1">
                <p className="font-medium">
-                  {selectedAddress.contactName} |{' '}
-                  {selectedAddress.contactPhoneNumber}
+                  {selectedAddress.contact_name} |{' '}
+                  {selectedAddress.contact_phone_number}
                </p>
                <p className="text-sm text-gray-500">
-                  {selectedAddress.addressLine}
+                  {selectedAddress.address_line}
                </p>
                <p className="text-sm text-gray-500">
                   {selectedAddress.district}, {selectedAddress.province},{' '}
                   {selectedAddress.country}
                </p>
             </div>
-            {true && (
+            {selectedAddress.is_default && (
                <motion.span
                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -149,7 +139,7 @@ export function ShippingAddressSelector({
                   animate="visible"
                   exit="hidden"
                >
-                  {/* {addresses.map((address) => (
+                  {addresses.map((address) => (
                      <motion.div
                         key={address.id}
                         className={`p-4 flex items-start hover:bg-gray-50 cursor-pointer ${
@@ -165,9 +155,9 @@ export function ShippingAddressSelector({
                         <div className="flex-1">
                            <div className="flex items-center">
                               <p className="font-medium">
-                                 {address.firstName} {address.lastName}
+                                 {address.contact_name}
                               </p>
-                              {address.isDefault && (
+                              {address.is_default && (
                                  <motion.span
                                     className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                                     initial={{ opacity: 0 }}
@@ -179,10 +169,11 @@ export function ShippingAddressSelector({
                               )}
                            </div>
                            <p className="text-sm text-gray-500">
-                              {address.address}
+                              {address.address_line}
                            </p>
                            <p className="text-sm text-gray-500">
-                              {address.city}, {address.state} {address.zipCode}
+                              {address.district}, {address.province}{' '}
+                              {address.country}
                            </p>
                         </div>
                         {selectedAddress.id === address.id && (
@@ -195,7 +186,7 @@ export function ShippingAddressSelector({
                            </motion.div>
                         )}
                      </motion.div>
-                  ))} */}
+                  ))}
 
                   {/* Add New Address Option */}
                   <motion.div

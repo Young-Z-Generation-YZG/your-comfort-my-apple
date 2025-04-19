@@ -33,6 +33,7 @@ public static class MappingExtension
             OrderItems = cartItems.Select(x => new OrderItemIntegrationEvent()
             {
                 ProductId = x.ProductId,
+                ModelId = x.ModelId,
                 ProductName = x.ProductName,
                 ProductColorName = x.ProductColorName,
                 ProductUnitPrice = x.ProductUnitPrice,

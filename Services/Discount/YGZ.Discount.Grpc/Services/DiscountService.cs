@@ -65,7 +65,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 PromotionEventId = e.promotionEvent.PromotionEventId,
                 PromotionEventTitle = e.promotionEvent.PromotionEventTitle,
                 PromotionEventDescription = e.promotionEvent.PromotionEventDescription,
-                PromotionEventPromotionEventType = (PromotionEventTypeEnum)PromotionEvent.FromName(e.promotionEvent.PromotionEventType, false).Value,
+                PromotionEventPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(e.promotionEvent.PromotionEventType, false).Value,
                 PromotionEventState = (DiscountStateEnum)DiscountState.FromName(e.promotionEvent.PromotionEventState, false).Value,
                 PromotionEventValidFrom = e.promotionEvent.PromotionEventValidFrom.HasValue ? e.promotionEvent.PromotionEventValidFrom.Value.ToTimestamp() : null,
                 PromotionEventValidTo = e.promotionEvent.PromotionEventValidTo.HasValue ? e.promotionEvent.PromotionEventValidTo.Value.ToTimestamp() : null
@@ -118,7 +118,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             PromotionItemTitle = p.Title,
             PromotionItemDescription = p.Description,
             PromotionItemNameTag = (ProductNameTagEnum)ProductNameTag.FromName(p.ProductNameTag, false).Value,
-            PromotionItemPromotionEventType = (PromotionEventTypeEnum)PromotionEvent.FromName(p.PromotionEventType, false).Value,
+            PromotionItemPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(p.PromotionEventType, false).Value,
             PromotionItemDiscountState = (DiscountStateEnum)DiscountState.FromName(p.DiscountState, false).Value,
             PromotionItemDiscountType = (DiscountTypeEnum)DiscountType.FromName(p.DiscountType, false).Value,
             PromotionItemEndDiscountType = (EndDiscountEnum)EndDiscountType.FromName(p.EndDiscountType, false).Value,

@@ -7,6 +7,7 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone16;
@@ -116,5 +117,15 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
             Slug = Slug.Create(name),
             CategoryId = categoryId,
         };
+    }
+
+    public void UpdateRating(Review review)
+    {
+        if (review.Rating < 1 || review.Rating > 5)
+            throw new ArgumentOutOfRangeException(nameof(review.Rating), "Rating must be between 1 and 5.");
+
+        AverageRating.AddNewRating(review.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count += 1;
     }
 }

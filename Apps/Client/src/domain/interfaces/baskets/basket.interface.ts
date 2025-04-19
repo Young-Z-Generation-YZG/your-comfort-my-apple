@@ -2,6 +2,7 @@ import { IBasketPromotionResponse, IPromotion } from './promotion.interface';
 
 export interface IBasketItem {
    product_id: string;
+   model_id: string;
    product_name: string;
    product_color_name: string;
    product_unit_price: number;
@@ -30,6 +31,7 @@ export interface IGetBasketResponse {
 
 export interface ICartItemResponse {
    product_id: string;
+   model_id: string;
    product_name: string;
    product_color_name: string;
    product_unit_price: number;

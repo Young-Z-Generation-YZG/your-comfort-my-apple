@@ -2,10 +2,10 @@
 
 import { useGetIphonePromotionsAsyncQuery } from '~/infrastructure/services/catalog.service';
 import { useGetActivePromotionEventAsyncQuery } from '~/infrastructure/services/promotion.service';
-import CategoriesCarousel from '~/components/layouts/CategoriesCarousel';
+import CategoriesCarousel from '@components/layouts/categories-carousel';
 import { useEffect, useState } from 'react';
-import PromotionBanner from './_components/PromotionBanner';
-import { ProductGridSkeleton } from './_components/ProductCardSkeleton';
+import PromotionBanner from './_components/promotion-banner';
+import { ProductGridSkeleton } from './_components/product-card-skeleton';
 import {
    PROMOTION_EVENT_TYPE_ENUM,
    DISCOUNT_TYPE_ENUM,
@@ -13,7 +13,7 @@ import {
 
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import PromotionIPhone from './_components/PromotionIPhone';
+import PromotionIPhone from './_components/promotion-iPhone';
 
 export interface ProductPromotion {
    promotion_product_name: string;
@@ -27,6 +27,7 @@ export interface ProductPromotion {
    promotion_discount_value: number;
    promotion_final_price: number;
    promotion_product_slug: string;
+   product_model_id: string;
    category_id: string;
    product_name_tag: string;
    product_variants: ProductPromotionWithVariants[];
@@ -85,6 +86,7 @@ const StorePage = () => {
                   promotion_final_price: item.promotion_final_price,
                   promotion_product_slug: item.promotion_product_slug,
                   category_id: item.category_id,
+                  product_model_id: item.product_model_id,
                   product_name_tag: item.product_name_tag,
                   product_variants: (Array.isArray(item.product_variants)
                      ? item.product_variants.map((variant) => ({

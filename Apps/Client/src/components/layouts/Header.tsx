@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux';
 import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
-import HeaderBagItem from '../client/HeaderBagItem';
+import HeaderBagItem from './_components/header-bag-item';
 
 const mainCategoriesDefault = [
    {

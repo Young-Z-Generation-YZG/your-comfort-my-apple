@@ -65,7 +65,7 @@ public class PromotionItemConfiguration : IEntityTypeConfiguration<PromotionItem
         builder.Property(x => x.PromotionEventType)
                .HasConversion(
                    x => x.Name,
-                   x => PromotionEvent.FromName(x, false)
+                   x => PromotionEventType.FromName(x, false)
                )
                .HasColumnName("PromotionEventType");
     }

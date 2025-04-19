@@ -44,6 +44,7 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
         var orderItems = context.OrderItems.Select(x => new OrderItemCommand
         {
             ProductId = x.ProductId,
+            ModelId = x.ModelId,
             ProductName = x.ProductName,
             ProductColorName = x.ProductColorName,
             ProductUnitPrice = x.ProductUnitPrice,

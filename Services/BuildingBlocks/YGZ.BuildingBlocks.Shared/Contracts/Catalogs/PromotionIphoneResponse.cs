@@ -21,6 +21,7 @@ public sealed record PromotionIphoneResponse
     required public decimal PromotionFinalPrice { get; set; }
     required public string PromotionProductSlug { get; set; }
     required public string CategoryId { get; set; }
+    required public string ProductModelId { get; set; }
     required public string ProductNameTag { get; set; }
     required public List<ProductVariantResponse> ProductVariants { get; set; } = new List<ProductVariantResponse>();
 }

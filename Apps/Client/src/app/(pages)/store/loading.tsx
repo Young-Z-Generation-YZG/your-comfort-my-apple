@@ -1,5 +1,5 @@
 import { Skeleton } from '~/components/ui/skeleton';
-import { ProductGridSkeleton } from './_components/ProductCardSkeleton';
+import { ProductGridSkeleton } from './_components/product-card-skeleton';
 
 export default function Loading() {
    return (

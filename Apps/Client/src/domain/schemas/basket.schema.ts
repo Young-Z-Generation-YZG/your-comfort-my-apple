@@ -15,6 +15,7 @@ const promotionSchema = z.object({
 
 const basketItemSchema = z.object({
    product_id: z.string().min(1, { message: 'Product ID is required' }),
+   model_id: z.string().min(1, { message: 'Model ID is required' }),
    product_name: z.string().min(1, { message: 'Product name is required' }),
    product_color_name: z
       .string()

@@ -103,6 +103,7 @@ public class VnpayIpnCheckCommandHandler : ICommandHandler<VnpayIpnCheckCommand,
             {
                 OrderItemId = x.Id.Value.ToString(),
                 ProductId = x.ProductId,
+                ModelId = x.ModelId,
                 ProductName = x.ProductName,
                 ProductImage = x.ProductImage,
                 ProductColorName = x.ProductColorName,

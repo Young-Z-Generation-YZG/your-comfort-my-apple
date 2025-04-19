@@ -94,7 +94,7 @@ public static class SeedData
                 title: "April 2025",
                 description: "Discount for April 2025",
                 nameTag: ProductNameTag.IPHONE,
-                promotionEventType: Domain.Core.Enums.PromotionEvent.PROMOTION_COUPON,
+                promotionEventType: Domain.Core.Enums.PromotionEventType.PROMOTION_COUPON,
                 discountState: DiscountState.ACTIVE,
                 discountType: DiscountType.PERCENTAGE,
                 discountValue: (decimal)0.05,

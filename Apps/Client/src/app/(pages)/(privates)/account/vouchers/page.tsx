@@ -2,7 +2,7 @@
 
 import { VouchersList } from './_components/voucher-list';
 import { motion } from 'framer-motion';
-import CardWrapper from '~/app/(pages)/checkout/_components/card-wrapper';
+import CardWrapper from '~/app/(pages)/(privates)/checkout/_components/card-wrapper';
 
 const VoucherPage = () => {
    return (

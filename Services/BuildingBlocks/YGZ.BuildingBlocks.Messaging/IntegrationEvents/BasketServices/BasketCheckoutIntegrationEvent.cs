@@ -24,6 +24,7 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
 public record OrderItemIntegrationEvent()
 {
     public required string ProductId { get; set; }
+    public required string ModelId { get; set; }
     public required string ProductName { get; set; }
     public required string ProductColorName { get; set; }
     public required decimal ProductUnitPrice { get; set; }

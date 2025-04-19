@@ -32,6 +32,7 @@ public static class MappingExtension
         }
 
         return ShoppingCartItem.Create(productId: dto.ProductId,
+                                       modelId: dto.ModelId,
                                        productName: dto.ProductName,
                                        productColorName: dto.ProductColorName,
                                        productUnitPrice: dto.ProductUnitPrice,

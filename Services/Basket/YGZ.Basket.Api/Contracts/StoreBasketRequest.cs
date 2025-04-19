@@ -16,7 +16,11 @@ public sealed record CartItemRequest()
 {
     [Required]
     [JsonPropertyName("product_id")]
-    public string ProductId { get; set; }
+    required public string ProductId { get; set; }
+
+    [Required]
+    [JsonPropertyName("model_id")]
+    required public string ModelId { get; set; }
 
     [Required]
     [JsonPropertyName("product_name")]

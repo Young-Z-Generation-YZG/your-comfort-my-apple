@@ -1,6 +1,6 @@
 'use client';
 
-import CardWrapper from '~/app/(pages)/checkout/_components/card-wrapper';
+import CardWrapper from '~/app/(pages)/(privates)/checkout/_components/card-wrapper';
 import { PreferencesForm } from './_components/form/preference-form';
 import { motion } from 'framer-motion';
 

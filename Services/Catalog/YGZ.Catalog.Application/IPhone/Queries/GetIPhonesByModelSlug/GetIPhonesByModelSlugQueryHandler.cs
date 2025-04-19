@@ -3,7 +3,7 @@
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 using YGZ.Catalog.Domain.Products.Iphone16;
 using MongoDB.Driver;
@@ -14,18 +14,20 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Discount.Grpc.Protos;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 using YGZ.Catalog.Domain.Core.Enums;
+using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using Google.Protobuf.WellKnownTypes;
 
 namespace YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 
 public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModelSlugQuery, List<IPhoneDetailsWithPromotionResponse>>
 {
-    private readonly IMongoRepository<IPhone16Detail> _detailRepository;
-    private readonly IMongoRepository<IPhone16Model> _modelRepository;
+    private readonly IMongoRepository<IPhone16Detail, IPhone16Id> _detailRepository;
+    private readonly IMongoRepository<IPhone16Model, IPhone16ModelId> _modelRepository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
     private readonly ILogger<GetIPhonesByModelSlugQueryHandler> _logger;
     private readonly IMapper _mapper;
 
-    public GetIPhonesByModelSlugQueryHandler(IMongoRepository<IPhone16Detail> detailRepository, IMongoRepository<IPhone16Model> modelRepository, ILogger<GetIPhonesByModelSlugQueryHandler> logger, IMapper mapper, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+    public GetIPhonesByModelSlugQueryHandler(IMongoRepository<IPhone16Detail, IPhone16Id> detailRepository, IMongoRepository<IPhone16Model, IPhone16ModelId> modelRepository, ILogger<GetIPhonesByModelSlugQueryHandler> logger, IMapper mapper, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _detailRepository = detailRepository;
         _modelRepository = modelRepository;
@@ -38,9 +40,6 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
     {
         var filter = Builders<IPhone16Model>.Filter.Eq(x => x.Slug, Slug.Of(request.modelSlug));
 
-        var promotionEvents = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest());
-        var promotionItems = await _discountProtoServiceClient.GetPromotionItemsAsync(new GetPromotionItemsRequest());
-
         var model = await _modelRepository.GetByFilterAsync(filter, cancellationToken);
 
         if(model is null)
@@ -48,129 +47,261 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
             return Errors.Category.DoesNotExist;
         }
 
-        var products = await _detailRepository.GetAllAsync(Builders<IPhone16Detail>.Filter.Eq(x => x.IPhoneModelId, model.Id), cancellationToken);
-        
-        List<PromotionDataResponse> allPromotionProducts = PromotionMapping(products, promotionEvents, promotionItems);
+        var promotionEvent = await HandleCheckValidPromotionEvent();
+        var promotionItems = await _discountProtoServiceClient.GetPromotionItemsAsync(new GetPromotionItemsRequest());
 
+        List<PromotionProductModel> promotionProducts = new List<PromotionProductModel>();
+        List<PromotionCategoryModel> promotionCategories = new List<PromotionCategoryModel>();
+
+        if (promotionEvent is not null)
+        {
+            if (promotionEvent.PromotionProducts.Count != 0)
+            {
+                promotionProducts = promotionEvent.PromotionProducts.ToList();
+            }
+
+            if (promotionEvent.PromotionCategories.Count != 0)
+            {
+                promotionCategories = promotionEvent.PromotionCategories.ToList();
+            }
+        }
+
+        var products = await _detailRepository.GetAllAsync(Builders<IPhone16Detail>.Filter.Eq(x => x.IPhoneModelId, model.Id), cancellationToken);
+
+        List<PromotionDataResponse> allPromotionProducts = PromotionMapping(products, promotionEvent, promotionProducts, promotionCategories, promotionItems);
 
         List<IPhoneDetailsWithPromotionResponse> responses = MapToResponse(products, allPromotionProducts);
 
         return responses;
     }
 
-    private List<PromotionDataResponse> PromotionMapping(List<IPhone16Detail> products, PromotionEventResponse promotionEvents, PromotionItemsRepsonse promotionItems)
+    private async Task<ListPromtionEventResponse> HandleCheckValidPromotionEvent()
     {
-        var validEvent = promotionEvents.PromotionEvents.FirstOrDefault(pe => pe.PromotionEvent.PromotionEventState == DiscountStateEnum.Active);
+        var result = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest { });
 
-        List<PromotionProductModel> promotionProducts = new List<PromotionProductModel>();
-        List<PromotionCategoryModel> promotionCategories = new List<PromotionCategoryModel>();
-
-        if (validEvent is not null)
+        if (result is null || !result.PromotionEvents.Any())
         {
-            if (validEvent.PromotionProducts.Count != 0)
-            {
-                promotionProducts = validEvent.PromotionProducts.ToList();
-            }
+            return null;
+        }
+        var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
 
-            if (validEvent.PromotionCategories.Count != 0)
-            {
-                promotionCategories = validEvent.PromotionCategories.ToList();
-            }
+        var promotionEvent = result.PromotionEvents
+            .Where(x => x.PromotionEvent.PromotionEventState == DiscountStateEnum.Active)
+            .Where(x => x.PromotionEvent.PromotionEventValidFrom <= dateTimeNow && dateTimeNow <= x.PromotionEvent.PromotionEventValidTo)
+            .FirstOrDefault();
+
+        if (promotionEvent is null)
+        {
+            return null;
         }
 
+        return promotionEvent;
+    }
+
+    private List<PromotionDataResponse> PromotionMapping(List<IPhone16Detail> items,
+                                      ListPromtionEventResponse? promotionEvent,
+                                      List<PromotionProductModel> promotionProducts,
+                                      List<PromotionCategoryModel> promotionCategories,
+                                      PromotionItemsRepsonse promotionItems)
+    {
         var itemsWithPromotion = new List<PromotionDataResponse>();
 
-        products.ForEach(item =>
-        {
-            var promotionProduct = promotionProducts.FirstOrDefault(pp => pp.PromotionProductSlug == item.Slug.Value);
-            var promotionCategory = promotionCategories.FirstOrDefault(pc => pc.PromotionCategoryId == item.CategoryId.Value);
-            var promotionItem = promotionItems.PromotionItems.FirstOrDefault(pi => pi.PromotionItemProductId == item.Id.Value);
-
-            decimal promotionPrice = item.UnitPrice;
-            decimal promotionDiscountValue = 0;
-            DiscountTypeEnum DiscountType = DiscountTypeEnum.Percentage;
-            var promotionTitle = validEvent!.PromotionEvent.PromotionEventTitle;
-            var promotionType = validEvent!.PromotionEvent.PromotionEventPromotionEventType.ToString();
-            var promotionId = validEvent.PromotionEvent.PromotionEventId;
-
-
-            if (promotionProduct is not null)
-            {
-                DiscountType = promotionProduct.PromotionProductDiscountType;
-                decimal productDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)promotionProduct.PromotionProductDiscountValue!);
-                if (productDiscountPrice < promotionPrice)
-                {
-                    promotionPrice = productDiscountPrice;
-                    promotionDiscountValue = (decimal)promotionProduct.PromotionProductDiscountValue;
-                }
-            }
-
-            if (promotionCategory is not null)
-            {
-                DiscountType = promotionCategory.PromotionCategoryDiscountType;
-                decimal categoryDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)promotionCategory.PromotionCategoryDiscountValue!);
-                if (categoryDiscountPrice < promotionPrice)
-                {
-                    promotionPrice = categoryDiscountPrice;
-                    promotionDiscountValue = (decimal)promotionCategory.PromotionCategoryDiscountValue;
-                }
-            }
-
-            if (promotionItem is not null)
-            {
-                DiscountType = promotionItem.PromotionItemDiscountType;
-                decimal itemDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)promotionItem.PromotionItemDiscountValue!);
-                if (itemDiscountPrice < promotionPrice)
-                {
-                    promotionPrice = itemDiscountPrice;
-                    promotionDiscountValue = (decimal)promotionItem.PromotionItemDiscountValue;
-                    promotionTitle = promotionItem.PromotionItemTitle;
-                    promotionType = promotionItem.PromotionItemPromotionEventType.ToString();
-                    promotionId = promotionItem.PromotionItemId;
-                }
-            }
-
-            var productVariants = new List<ProductVariantResponse>();
-
-            var variants = products.Where(x => x.Slug.Value == item.Slug.Value).ToList();
-
-            variants.ForEach(p =>
-            {
-                var index = variants.IndexOf(p);
-                var productVariant = new ProductVariantResponse
-                {
-                    ProductId = p.Id.Value!,
-                    ProductColorImage = p.Images[0].ImageUrl,
-                    ColorName = p.Color.ColorName,
-                    ColorHex = p.Color.ColorHex,
-                    ColorImage = p.Color.ColorImage,
-                    Order = index,
-                };
-
-                productVariants.Add(productVariant);
-            });
-
-            var promotionData = new PromotionDataResponse()
-            {
-                PromotionId = promotionId,
-                PromotionProductId = item.Id.Value!,
-                ProductModelId = item.IPhoneModelId.Value!,
-                PromotionTitle = promotionTitle,
-                PromotionDiscountType = DiscountType.ToString(),
-                PromotionDiscountValue = promotionDiscountValue,
-                PromotionProductSlug = item.Slug.Value,
-                PromotionEventType = promotionType,
-                PromotionFinalPrice = promotionPrice,
-                CategoryId = item.CategoryId.Value!,
-                ProductNameTag = item.ProductNameTag.Name,
-                ProductVariants = productVariants,
-            };
-
-            itemsWithPromotion.Add(promotionData);
-        });
+        handlePromotionProducts(itemsWithPromotion, items, promotionProducts, promotionEvent);
+        handlePromotionCategories(itemsWithPromotion, items, promotionCategories, promotionEvent);
+        handlePromotionItem(itemsWithPromotion, items, promotionItems);
 
         return itemsWithPromotion;
     }
+
+    private void handlePromotionItem(List<PromotionDataResponse> itemsWithPromotion, List<IPhone16Detail> items, PromotionItemsRepsonse promotionItems)
+    {
+        foreach (var pi in promotionItems.PromotionItems)
+        {
+            var item = items.FirstOrDefault(i => i.Id.Value == pi.PromotionItemProductId);
+
+            if (item is not null)
+            {
+                decimal promotionPrice = item.UnitPrice;
+                decimal promotionDiscountValue = 0;
+
+                DiscountTypeEnum discountType = pi.PromotionItemDiscountType;
+                var promotionTitle = pi.PromotionItemTitle;
+                var promotionType = pi.PromotionItemPromotionEventType;
+                var promotionId = pi.PromotionItemId;
+
+                decimal itemDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)pi.PromotionItemDiscountValue!);
+
+                if (itemDiscountPrice < promotionPrice)
+                {
+                    promotionPrice = itemDiscountPrice;
+                    promotionDiscountValue = (decimal)pi.PromotionItemDiscountValue;
+                }
+
+                var productVariants = new List<ProductVariantResponse>();
+                var variants = items.Where(x => x.Slug.Value == item.Slug.Value).ToList();
+
+                foreach (var variant in variants)
+                {
+                    var index = variants.IndexOf(variant);
+                    var productVariant = new ProductVariantResponse
+                    {
+                        ProductId = variant.Id.Value!,
+                        ProductColorImage = variant.Images[0].ImageUrl,
+                        ColorName = variant.Color.ColorName,
+                        ColorHex = variant.Color.ColorHex,
+                        ColorImage = variant.Color.ColorImage,
+                        Order = index,
+                    };
+                    productVariants.Add(productVariant);
+                }
+
+                var promotionData = new PromotionDataResponse()
+                {
+                    PromotionId = promotionId,
+                    PromotionProductId = item.Id.Value!,
+                    ProductModelId = item.IPhoneModelId.Value!,
+                    PromotionTitle = promotionTitle,
+                    PromotionDiscountType = discountType.ToString(),
+                    PromotionDiscountValue = promotionDiscountValue,
+                    PromotionProductSlug = item.Slug.Value,
+                    PromotionEventType = promotionType.ToString(),
+                    PromotionFinalPrice = promotionPrice,
+                    CategoryId = item.CategoryId.Value!,
+                    ProductNameTag = item.ProductNameTag.Name,
+                    ProductVariants = productVariants,
+                };
+
+                itemsWithPromotion.Add(promotionData);
+            }
+        }
+    }
+
+    private void handlePromotionCategories(List<PromotionDataResponse> itemsWithPromotion, List<IPhone16Detail> items, List<PromotionCategoryModel> promotionCategories, ListPromtionEventResponse? promotionEvent)
+    {
+        foreach (var pc in promotionCategories)
+        {
+            var itemsInPromotion = items.Where(x => x.CategoryId.Value == pc.PromotionCategoryId).ToList();
+
+            foreach (var item in itemsInPromotion)
+            {
+                decimal promotionPrice = item.UnitPrice;
+                decimal promotionDiscountValue = 0;
+
+                DiscountTypeEnum discountType = pc.PromotionCategoryDiscountType;
+                var promotionTitle = promotionEvent!.PromotionEvent.PromotionEventTitle;
+                var promotionType = promotionEvent!.PromotionEvent.PromotionEventPromotionEventType.ToString();
+                var promotionId = promotionEvent.PromotionEvent.PromotionEventId;
+
+                decimal productDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)pc.PromotionCategoryDiscountValue!);
+
+                if (productDiscountPrice < promotionPrice)
+                {
+                    promotionPrice = productDiscountPrice;
+                    promotionDiscountValue = (decimal)pc.PromotionCategoryDiscountValue;
+                }
+
+                var productVariants = new List<ProductVariantResponse>();
+                var variants = items.Where(x => x.Slug.Value == item.Slug.Value).ToList();
+                variants.ForEach(p =>
+                {
+                    var index = variants.IndexOf(p);
+                    var productVariant = new ProductVariantResponse
+                    {
+                        ProductId = p.Id.Value!,
+                        ProductColorImage = p.Images[0].ImageUrl,
+                        ColorName = p.Color.ColorName,
+                        ColorHex = p.Color.ColorHex,
+                        ColorImage = p.Color.ColorImage,
+                        Order = index,
+                    };
+                    productVariants.Add(productVariant);
+                });
+
+                var promotionData = new PromotionDataResponse()
+                {
+                    PromotionId = promotionId,
+                    PromotionProductId = item.Id.Value!,
+                    ProductModelId = item.IPhoneModelId.Value!,
+                    PromotionTitle = promotionTitle,
+                    PromotionDiscountType = discountType.ToString(),
+                    PromotionDiscountValue = promotionDiscountValue,
+                    PromotionProductSlug = item.Slug.Value,
+                    PromotionEventType = promotionType,
+                    PromotionFinalPrice = promotionPrice,
+                    CategoryId = item.CategoryId.Value!,
+                    ProductNameTag = item.ProductNameTag.Name,
+                    ProductVariants = productVariants,
+                };
+
+                itemsWithPromotion.Add(promotionData);
+            }
+        }
+    }
+
+    private void handlePromotionProducts(List<PromotionDataResponse> itemsWithPromotion, List<IPhone16Detail> items, List<PromotionProductModel> promotionProducts, ListPromtionEventResponse? promotionEvent)
+    {
+        foreach (var pp in promotionProducts)
+        {
+            var item = items.FirstOrDefault(x => x.Slug.Value == pp.PromotionProductSlug);
+
+            if (item is not null)
+            {
+                decimal promotionPrice = item.UnitPrice;
+                decimal promotionDiscountValue = 0;
+
+                DiscountTypeEnum discountType = pp.PromotionProductDiscountType;
+                var promotionTitle = promotionEvent!.PromotionEvent.PromotionEventTitle;
+                var promotionType = promotionEvent!.PromotionEvent.PromotionEventPromotionEventType.ToString();
+                var promotionId = promotionEvent.PromotionEvent.PromotionEventId;
+
+                decimal productDiscountPrice = item.UnitPrice - (item.UnitPrice * (decimal)pp.PromotionProductDiscountValue!);
+
+                if (productDiscountPrice < promotionPrice)
+                {
+                    promotionPrice = productDiscountPrice;
+                    promotionDiscountValue = (decimal)pp.PromotionProductDiscountValue;
+                }
+
+                var productVariants = new List<ProductVariantResponse>();
+
+                var variants = items.Where(x => x.Slug.Value == item.Slug.Value).ToList();
+
+                variants.ForEach(p =>
+                {
+                    var index = variants.IndexOf(p);
+                    var productVariant = new ProductVariantResponse
+                    {
+                        ProductId = p.Id.Value!,
+                        ProductColorImage = p.Images[0].ImageUrl,
+                        ColorName = p.Color.ColorName,
+                        ColorHex = p.Color.ColorHex,
+                        ColorImage = p.Color.ColorImage,
+                        Order = index,
+                    };
+                    productVariants.Add(productVariant);
+                });
+
+                var promotionData = new PromotionDataResponse()
+                {
+                    PromotionId = promotionId,
+                    PromotionProductId = item.Id.Value!,
+                    ProductModelId = item.IPhoneModelId.Value!,
+                    PromotionTitle = promotionTitle,
+                    PromotionDiscountType = discountType.ToString(),
+                    PromotionDiscountValue = promotionDiscountValue,
+                    PromotionProductSlug = item.Slug.Value,
+                    PromotionEventType = promotionType,
+                    PromotionFinalPrice = promotionPrice,
+                    CategoryId = item.CategoryId.Value!,
+                    ProductNameTag = item.ProductNameTag.Name,
+                    ProductVariants = productVariants,
+                };
+
+                itemsWithPromotion.Add(promotionData);
+            }
+        }
+    }
+
 
     private List<IPhoneDetailsWithPromotionResponse> MapToResponse(List<IPhone16Detail> products, List<PromotionDataResponse> allPromotionProducts)
     {

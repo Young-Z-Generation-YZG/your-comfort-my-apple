@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import CardWrapper from '~/app/(pages)/checkout/_components/card-wrapper';
+import CardWrapper from '~/app/(pages)/(privates)/checkout/_components/card-wrapper';
 import { ChangePassword } from './change-password';
 import { TwoFactorAuth } from './two-factor-auth';
 import { LoginHistory } from './login-history';

@@ -124,6 +124,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsReviewed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ModelId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 

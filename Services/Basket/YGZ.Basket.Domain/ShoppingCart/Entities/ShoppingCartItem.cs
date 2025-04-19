@@ -7,6 +7,7 @@ namespace YGZ.Basket.Domain.ShoppingCart.Entities;
 public class ShoppingCartItem
 {
     required public string ProductId { get; set; }
+    required public string ModelId { get; set; }
     required public string ProductName { get; set; }
     required public string ProductColorName { get; set; }
     required public decimal ProductUnitPrice { get; set; }
@@ -20,6 +21,7 @@ public class ShoppingCartItem
     required public int OrderIndex { get; set; }
 
     public static ShoppingCartItem Create(string productId,
+                                          string modelId,
                                           string productName,
                                           string productColorName,
                                           decimal productUnitPrice,
@@ -35,6 +37,7 @@ public class ShoppingCartItem
         return new ShoppingCartItem
         {
             ProductId = productId,
+            ModelId = modelId,
             ProductName = productName,
             ProductColorName = productColorName,
             ProductUnitPrice = productUnitPrice,

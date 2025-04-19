@@ -4,6 +4,10 @@ import {
    IIphonePromotionResponse,
    IIphoneResponse,
 } from '~/domain/interfaces/catalogs/iPhone.interface';
+import {
+   IReviewPayload,
+   IReviewResponse,
+} from '~/domain/interfaces/catalogs/review.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 
 export const catalogApi = createApi({
@@ -43,6 +47,20 @@ export const catalogApi = createApi({
          query: (slug) => `/api/v1/products/iphone/models/${slug}/products`,
          providesTags: ['Catalogs'],
       }),
+      getReviewByModelIdAsync: builder.query<
+         PaginationResponse<IReviewResponse>,
+         string
+      >({
+         query: (modelId) => `/api/v1/reviews/${modelId}`,
+         providesTags: ['Catalogs'],
+      }),
+      createReviewAsync: builder.mutation({
+         query: (body: IReviewPayload) => ({
+            url: '/api/v1/reviews',
+            method: 'POST',
+            body,
+         }),
+      }),
    }),
 });
 
@@ -51,4 +69,6 @@ export const {
    useGetModelBySlugAsyncQuery,
    useGetIPhonesByModelAsyncQuery,
    useGetModelsAsyncQuery,
+   useGetReviewByModelIdAsyncQuery,
+   useCreateReviewAsyncMutation,
 } = catalogApi;

@@ -17,7 +17,7 @@ public class PromotionItem : AggregateRoot<PromotionItemId>, IAuditable, ISoftDe
     required public string Title { get; set; }
     public string Description { get; set; } = string.Empty;
     required public ProductNameTag ProductNameTag { get; set; }
-    required public Core.Enums.PromotionEvent PromotionEventType { get; set; } = Core.Enums.PromotionEvent.PROMOTION_ITEM;
+    required public Core.Enums.PromotionEventType PromotionEventType { get; set; } = Core.Enums.PromotionEventType.PROMOTION_ITEM;
     public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
     required public DiscountType DiscountType { get; set; } = DiscountType.PERCENTAGE;
     public EndDiscountType EndDiscountType { get; set; } = EndDiscountType.BY_END_DATE;
@@ -53,7 +53,7 @@ public class PromotionItem : AggregateRoot<PromotionItemId>, IAuditable, ISoftDe
         {
             Title = title,
             Description = description,
-            PromotionEventType = Core.Enums.PromotionEvent.PROMOTION_ITEM,
+            PromotionEventType = Core.Enums.PromotionEventType.PROMOTION_ITEM,
             DiscountState = discountState,
             DiscountType = discountType,
             DiscountValue = discountValue,

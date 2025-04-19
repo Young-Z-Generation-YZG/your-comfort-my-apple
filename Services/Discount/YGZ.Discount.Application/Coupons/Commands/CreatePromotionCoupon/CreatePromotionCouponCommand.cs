@@ -14,7 +14,7 @@ public sealed record CreatePromotionCouponCommand() : ICommand<bool>
     public string? Code { get; set; }
     public string Description { get; set; } = string.Empty;
     required public ProductNameTag ProductNameTag { get; set; }
-    required public PromotionEvent PromotionEventType { get; set; }
+    required public PromotionEventType PromotionEventType { get; set; }
     required public DiscountState DiscountState { get; set; }
     required public DiscountType DiscountType { get; set; }
     public decimal DiscountValue { get; set; }

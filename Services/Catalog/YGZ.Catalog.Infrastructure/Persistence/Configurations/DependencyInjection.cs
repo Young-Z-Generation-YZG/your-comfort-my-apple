@@ -13,7 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddMongoDbConfigurations(this IServiceCollection services)
     {
         BsonSerializer.RegisterSerializer(typeof(CategoryId), new CategoryIdSerialization());
-
+        BsonSerializer.RegisterSerializer(typeof(ReviewId), new ReviewIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(IPhone16Id), new IPhone16IdSerialization());
         BsonSerializer.RegisterSerializer(typeof(IPhone16ModelId), new IPhone16ModelIdSerialization());
 

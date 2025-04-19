@@ -1,0 +1,64 @@
+{
+  "clientId": "client-nextjs",
+  "name": "",
+  "description": "",
+  "rootUrl": "",
+  "adminUrl": "",
+  "baseUrl": "",
+  "surrogateAuthRequired": false,
+  "enabled": true,
+  "alwaysDisplayInConsole": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "1k1Szhjb4u3a9csJuVC0qviWg4Jww9lC",
+  "redirectUris": [
+    "*"
+  ],
+  "webOrigins": [
+    "*"
+  ],
+  "notBefore": 0,
+  "bearerOnly": false,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": true,
+  "directAccessGrantsEnabled": true,
+  "serviceAccountsEnabled": true,
+  "authorizationServicesEnabled": true,
+  "publicClient": false,
+  "frontchannelLogout": true,
+  "protocol": "openid-connect",
+  "attributes": {
+    "realm_client": "false",
+    "oidc.ciba.grant.enabled": "false",
+    "client.secret.creation.time": "1741246050",
+    "backchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "+",
+    "oauth2.device.authorization.grant.enabled": "false",
+    "backchannel.logout.revoke.offline.tokens": "false"
+  },
+  "authenticationFlowBindingOverrides": {},
+  "fullScopeAllowed": false,
+  "nodeReRegistrationTimeout": -1,
+  "defaultClientScopes": [
+    "web-origins",
+    "service_account",
+    "acr",
+    "roles",
+    "profile",
+    "[Realm-Client-Scope]_Audience_Mapping",
+    "basic",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "organization",
+    "microprofile-jwt"
+  ],
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  }
+}

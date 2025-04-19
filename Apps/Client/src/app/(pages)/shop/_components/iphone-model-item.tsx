@@ -1,7 +1,5 @@
-import { Badge } from '@components/ui/badge';
 import RatingStar from '@components/ui/rating-star';
 import { Separator } from '@components/ui/separator';
-import Image from 'next/image';
 import { Fragment } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
 import { CldImage } from 'next-cloudinary';
@@ -62,7 +60,7 @@ const IphoneModelItem = ({
             </div>
 
             {/* content */}
-            <div className="flex flex-col relative basis-[40%] lg:basis-[30%] px-7">
+            <div className="flex flex-col relative basis-[45%] px-7">
                {promotion && (
                   <div className="absolute right-10 w-[100px]">
                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 rounded-full animate-pulse"></div>
@@ -129,7 +127,9 @@ const IphoneModelItem = ({
                         size="md"
                         className="text-sm"
                      />
-                     <span className="text-base">{averageRating.rating}</span>
+                     <span className="text-base inline-block leading-7">
+                        {averageRating.rating.toFixed(2)}
+                     </span>
                      <span className="text-sm">({averageRating.count})</span>
                   </span>
 

@@ -36,7 +36,7 @@ public class PromotionItemMapping : IRegister
             .Map(dest => dest.PromotionItemTitle, src => src.Title)
             .Map(dest => dest.PromotionItemDescription, src => src.Description)
             .Map(dest => dest.PromotionItemNameTag, src => (ProductNameTagEnum)ProductNameTag.FromName(src.ProductNameTag, false).Value)
-            .Map(dest => dest.PromotionItemPromotionEventType, src => (PromotionEventTypeEnum)PromotionEvent.FromName(src.PromotionEventType, false).Value)
+            .Map(dest => dest.PromotionItemPromotionEventType, src => (PromotionEventTypeEnum)PromotionEventType.FromName(src.PromotionEventType, false).Value)
             .Map(dest => dest.PromotionItemDiscountState, src => (DiscountStateEnum)DiscountState.FromName(src.DiscountState, false).Value)
             .Map(dest => dest.PromotionItemDiscountType, src => (DiscountTypeEnum)DiscountType.FromName(src.DiscountType, false).Value)
             .Map(dest => dest.PromotionItemEndDiscountType, src => (EndDiscountEnum)EndDiscountType.FromName(src.EndDiscountType, false).Value)

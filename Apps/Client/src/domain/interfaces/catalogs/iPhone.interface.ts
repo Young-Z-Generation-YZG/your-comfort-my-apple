@@ -19,6 +19,7 @@ export interface IIphonePromotionResponse {
    promotion_final_price: number;
    promotion_product_slug: string;
    category_id: string;
+   product_model_id: string;
    product_name_tag: string;
    product_variants: IIphonePromotionResponseWithVariant;
 }

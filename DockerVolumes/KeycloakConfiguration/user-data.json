@@ -1,0 +1,27 @@
+{
+    "realm" : "ygz-realm",
+    "users" : [ {
+      "id" : "ed04b044-86de-475f-9122-d9807897f969",
+      "username" : "lov3rinve146@gmail.com",
+      "firstName" : "Bach",
+      "lastName" : "Le",
+      "email" : "lov3rinve146@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "9e002386-b0ff-4d1b-a051-5f684f1baac6",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "realmRoles" : [ "default-roles-test", "Admin" ],
+      "notBefore" : 0,
+      "groups" : [ ]
+    } ]
+  }

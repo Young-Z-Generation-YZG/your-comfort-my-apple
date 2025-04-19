@@ -40,6 +40,7 @@ public static class MappingExtension
         return OrderItem.Create(orderItemId: OrderItemId.Create(),
                                 orderId: orderId,
                                 productId: dto.ProductId,
+                                modelId: dto.ModelId,
                                 productName: dto.ProductName,
                                 productColorName: dto.ProductColorName,
                                 productUnitPrice: dto.ProductUnitPrice,

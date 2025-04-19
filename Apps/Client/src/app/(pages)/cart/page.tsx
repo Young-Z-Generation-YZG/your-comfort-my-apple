@@ -27,7 +27,7 @@ import {
 } from '~/components/ui/accordion';
 import Link from 'next/link';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import CartItem from './_components/CartItem';
+import CartItem from './_components/cart-item';
 import {
    useDeleteBasketAsyncMutation,
    useGetBasketAsyncQuery,
@@ -40,19 +40,22 @@ import {
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useDispatch } from 'react-redux';
 import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const CartPage = () => {
+   const searchParams = useSearchParams();
+   const router = useRouter();
    const [loading, setLoading] = useState(false);
    const [coupon, setCoupon] = useState<string | null>(null);
    const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null); // Coupon applied to query
-
+   const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
 
    const { items } = useAppSelector((state) => state.cart.value);
    const dispatch = useDispatch();
 
-   const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
+   const appliedCouponFromQuery = searchParams.get('_couponCode');
 
    const {
       data: basketData,
@@ -86,7 +89,10 @@ const CartPage = () => {
    const handleApplyCoupon = async () => {
       setLoading(true);
       setAppliedCoupon(coupon);
-      await refetchBasket();
+
+      router.replace(
+         `/cart?${new URLSearchParams({ _couponCode: coupon || '' }).toString()}`,
+      );
 
       setLoading(false);
    };
@@ -114,28 +120,34 @@ const CartPage = () => {
          setTotalDiscount(dcTotal);
          setSubtotal(dcSubtotal);
       }
-   }, [basketData]);
+   }, [basketData, appliedCouponFromQuery]);
 
    useEffect(() => {
-      if (cartItems.length > 0) {
-         const listCartItem: IBasketItem[] = cartItems.map((item, index) => {
-            return {
-               product_id: item.product_id,
-               product_name: item.product_name,
-               product_color_name: item.product_color_name,
-               product_unit_price: item.product_unit_price,
-               product_name_tag: item.product_name_tag,
-               product_image: item.product_image,
-               product_slug: item.product_slug,
-               category_id: item.category_id,
-               quantity: item.quantity,
-               promotion: item.promotion,
-               order: index,
-            };
-         });
-
-         dispatch(addRangeItems(listCartItem));
+      if (appliedCouponFromQuery) {
+         setAppliedCoupon(appliedCouponFromQuery);
       }
+   }, [appliedCouponFromQuery]);
+
+   useEffect(() => {
+      // if (cartItems.length > 0) {
+      //    const listCartItem: IBasketItem[] = cartItems.map((item, index) => {
+      //       return {
+      //          product_id: item.product_id,
+      //          model_id: item.model_id,
+      //          product_name: item.product_name,
+      //          product_color_name: item.product_color_name,
+      //          product_unit_price: item.product_unit_price,
+      //          product_name_tag: item.product_name_tag,
+      //          product_image: item.product_image,
+      //          product_slug: item.product_slug,
+      //          category_id: item.category_id,
+      //          quantity: item.quantity,
+      //          promotion: item.promotion,
+      //          order: index,
+      //       };
+      //    });
+      //    dispatch(addRangeItems(listCartItem));
+      // }
    }, [cartItems]);
 
    const handleStoreBasket = async () => {
@@ -266,16 +278,21 @@ const CartPage = () => {
                         ${basketData?.total_amount.toFixed(2) ?? 0}
                      </div>
                   </div>
-                  <Link href="/checkout" className="w-full">
-                     <Button
-                        className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                        disabled={
-                           cartItems.length === 0 || loading || isBasketFetching
-                        }
-                     >
-                        Checkout
-                     </Button>
-                  </Link>
+                  <Button
+                     className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
+                     disabled={
+                        cartItems.length === 0 || loading || isBasketFetching
+                     }
+                     onClick={() => {
+                        const searchParams = new URLSearchParams({
+                           _couponCode: coupon || '',
+                        }).toString();
+
+                        router.push(`/checkout?${coupon ? searchParams : ''}`);
+                     }}
+                  >
+                     Checkout
+                  </Button>
                   <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                      <div className="w-full flex flex-row items-center">
                         <Image

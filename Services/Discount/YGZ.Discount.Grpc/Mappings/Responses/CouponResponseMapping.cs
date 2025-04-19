@@ -20,7 +20,7 @@ public class CouponResponseMapping : IRegister
             .Map(dest => dest.PromotionCoupon.PromotionCouponCode, src => src.PromotionCouponCode)
             .Map(dest => dest.PromotionCoupon.PromotionCouponDescription, src => src.PromotionCouponDescription)
             .Map(dest => dest.PromotionCoupon.PromotionCouponProductNameTag, src => (ProductNameTagEnum)ProductNameTag.FromName(src.PromotionCouponProductNameTag, false).Value)
-            .Map(dest => dest.PromotionCoupon.PromotionCouponPromotionEventType, src => (PromotionEventTypeEnum)PromotionEvent.FromName(src.PromotionCouponPromotionEventType, false).Value)
+            .Map(dest => dest.PromotionCoupon.PromotionCouponPromotionEventType, src => (PromotionEventTypeEnum)PromotionEventType.FromName(src.PromotionCouponPromotionEventType, false).Value)
             .Map(dest => dest.PromotionCoupon.PromotionCouponDiscountState, src => (DiscountStateEnum)DiscountState.FromName(src.PromotionCouponDiscountState, false).Value)
             .Map(dest => dest.PromotionCoupon.PromotionCouponDiscountType, src => (DiscountTypeEnum)DiscountType.FromName(src.PromotionCouponDiscountType, false).Value)
             .Map(dest => dest.PromotionCoupon.PromotionCouponDiscountValue, src => src.PromotionCouponDiscountValue)

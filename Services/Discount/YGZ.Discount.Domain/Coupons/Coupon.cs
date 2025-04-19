@@ -23,7 +23,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public string Description { get; set; } = string.Empty;
     public DiscountState DiscountState { get; set; } = DiscountState.INACTIVE;
     required public ProductNameTag ProductNameTag { get; set; }
-    public Core.Enums.PromotionEvent PromotionEventType { get; set; } = Core.Enums.PromotionEvent.PROMOTION_COUPON;
+    public Core.Enums.PromotionEventType PromotionEventType { get; set; } = Core.Enums.PromotionEventType.PROMOTION_COUPON;
     public DiscountType DiscountType { get; set; } = DiscountType.PERCENTAGE;
     public decimal DiscountValue { get; set; } = 0;
     public decimal? MaxDiscountAmount { get; set; } = null;
@@ -41,7 +41,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
                                 string title,
                                 string description,
                                 ProductNameTag nameTag,
-                                Core.Enums.PromotionEvent promotionEventType,
+                                Core.Enums.PromotionEventType promotionEventType,
                                 DiscountState discountState,
                                 DiscountType discountType,
                                 decimal discountValue,

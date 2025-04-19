@@ -24,7 +24,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -35,7 +35,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -46,7 +46,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -57,7 +57,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -113,7 +113,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -124,7 +124,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -135,7 +135,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -146,7 +146,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -202,7 +202,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -213,7 +213,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -224,7 +224,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -235,7 +235,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -291,7 +291,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -302,7 +302,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -313,7 +313,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -324,7 +324,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -380,7 +380,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -391,7 +391,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -402,7 +402,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -413,7 +413,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -469,7 +469,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -480,7 +480,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -491,7 +491,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -502,7 +502,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -558,7 +558,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -569,7 +569,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -580,7 +580,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -591,7 +591,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -647,7 +647,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -658,7 +658,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -669,7 +669,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -680,7 +680,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -736,7 +736,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -747,7 +747,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -758,7 +758,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -769,7 +769,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -825,7 +825,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -836,7 +836,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -847,7 +847,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -858,7 +858,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -914,7 +914,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -925,7 +925,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -936,7 +936,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -947,7 +947,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1003,7 +1003,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1014,7 +1014,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1025,7 +1025,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1036,7 +1036,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1092,7 +1092,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1103,7 +1103,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1114,7 +1114,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1125,7 +1125,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1181,7 +1181,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1192,7 +1192,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1203,7 +1203,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1214,7 +1214,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1270,7 +1270,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1281,7 +1281,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1292,7 +1292,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1303,7 +1303,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1359,7 +1359,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1370,7 +1370,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1381,7 +1381,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1392,7 +1392,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1448,7 +1448,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1459,7 +1459,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1470,7 +1470,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1481,7 +1481,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1537,7 +1537,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1548,7 +1548,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1559,7 +1559,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1570,7 +1570,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1626,7 +1626,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1637,7 +1637,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1648,7 +1648,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1659,7 +1659,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1715,7 +1715,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1726,7 +1726,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1737,7 +1737,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1748,7 +1748,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1804,7 +1804,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1815,7 +1815,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1826,7 +1826,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1837,7 +1837,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1893,7 +1893,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1904,7 +1904,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -1915,7 +1915,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -1926,7 +1926,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -1982,7 +1982,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -1993,7 +1993,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2004,7 +2004,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2015,7 +2015,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2071,7 +2071,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2082,7 +2082,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811364/iphone-16-finish-select-202409-6-1inch-ultramarine_AV1_qbjznq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2093,7 +2093,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811375/iphone-16-finish-select-202409-6-1inch-ultramarine_AV2_apdetn.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2104,7 +2104,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811387/iphone-16-finish-select-202409-6-1inch-ultramarine_AV3_s7rdc9.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2160,7 +2160,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2171,7 +2171,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2182,7 +2182,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2193,7 +2193,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2249,7 +2249,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2260,7 +2260,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2271,7 +2271,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2282,7 +2282,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2338,7 +2338,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2349,7 +2349,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2360,7 +2360,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2371,7 +2371,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2427,7 +2427,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811404/iphone-16-finish-select-202409-6-1inch-teal_gfumfa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2438,7 +2438,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811411/iphone-16-finish-select-202409-6-1inch-teal_AV1_xkxfxu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2449,7 +2449,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811425/iphone-16-finish-select-202409-6-1inch-teal_AV2_bszuzd.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2460,7 +2460,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-teal_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811431/iphone-16-finish-select-202409-6-1inch-teal_AV3_ngsokk.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2516,7 +2516,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2527,7 +2527,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2538,7 +2538,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2549,7 +2549,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2605,7 +2605,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2616,7 +2616,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2627,7 +2627,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2638,7 +2638,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2694,7 +2694,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2705,7 +2705,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2716,7 +2716,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2727,7 +2727,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2783,7 +2783,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811098/iphone-16-finish-select-202409-6-1inch-pink_q2saue.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2794,7 +2794,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811146/iphone-16-finish-select-202409-6-1inch-pink_AV1_ri56uu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2805,7 +2805,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811161/iphone-16-finish-select-202409-6-1inch-pink_AV2_hyjn9b.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2816,7 +2816,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-pink_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811170/iphone-16-finish-select-202409-6-1inch-pink_AV3_ihm1mu.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2872,7 +2872,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2883,7 +2883,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2894,7 +2894,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2905,7 +2905,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -2961,7 +2961,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -2972,7 +2972,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -2983,7 +2983,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -2994,7 +2994,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3050,7 +3050,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3061,7 +3061,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3072,7 +3072,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3083,7 +3083,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3139,7 +3139,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811448/iphone-16-finish-select-202409-6-1inch-white_ghumel.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3150,7 +3150,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811462/iphone-16-finish-select-202409-6-1inch-white_AV1_qnax3q.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3161,7 +3161,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811468/iphone-16-finish-select-202409-6-1inch-white_AV2_lo7nxq.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3172,7 +3172,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-white_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811481/iphone-16-finish-select-202409-6-1inch-white_AV3_mpbrpa.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3228,7 +3228,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3239,7 +3239,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3250,7 +3250,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3261,7 +3261,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3317,7 +3317,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3328,7 +3328,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3339,7 +3339,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3350,7 +3350,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3406,7 +3406,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3417,7 +3417,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3428,7 +3428,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3439,7 +3439,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,
@@ -3495,7 +3495,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_1',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811496/iphone-16-finish-select-202409-6-1inch-black_wnfzl5.webp',
             image_name: 'iPhone 16',
             image_description: 'Place first',
             image_width: 0,
@@ -3506,7 +3506,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_2',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV1',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811502/iphone-16-finish-select-202409-6-1inch-black_AV1_azosbf.webp',
             image_name: 'iPhone 16',
             image_description: 'Place second',
             image_width: 0,
@@ -3517,7 +3517,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_3',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV2',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811527/iphone-16-finish-select-202409-6-1inch-black_AV2_ytj4vb.webp',
             image_name: 'iPhone 16',
             image_description: 'Place third',
             image_width: 0,
@@ -3528,7 +3528,7 @@ export const productModelsData = [
          {
             image_id: 'image_id_4',
             image_url:
-               'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-16-finish-select-202409-6-1inch-black_AV3',
+               'https://res.cloudinary.com/delkyrtji/image/upload/v1744811534/iphone-16-finish-select-202409-6-1inch-black_AV3_zcyu1p.webp',
             image_name: 'iPhone 16',
             image_description: 'Place four',
             image_width: 0,

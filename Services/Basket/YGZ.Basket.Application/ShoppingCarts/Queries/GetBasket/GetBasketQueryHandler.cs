@@ -1,8 +1,8 @@
 ﻿
+using Google.Protobuf.WellKnownTypes;
 using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Enums;
-using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -37,100 +37,122 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             return result.Error;
         }
 
-        //if (!string.IsNullOrEmpty(request.CouponCode))
-        //{
+        if (result.Response!.CartItems is null || !result.Response!.CartItems.Any())
+        {
+            return new GetBasketResponse()
+            {
+                UserEmail = result.Response.UserEmail,
+                CartItems = new List<CartItemResponse>(),
+                TotalAmount = 0
+            };
+        }
 
-        //    var couponDiscount = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = request.CouponCode });
+        if (!string.IsNullOrEmpty(request.CouponCode))
+        {
+            result.Response!.CartItems = await HandlerPromotionCoupon(request.CouponCode, result.Response!.CartItems);
+        }
 
-        //    if (couponDiscount.PromotionCoupon is null)
-        //    {
-        //        return Errors.Discount.PromotionCouponNotFound;
-        //    }
-
-        //    if (result.Response!.CartItems.Any())
-        //    {
-        //        for (int i = 0; i < result.Response!.CartItems.Count; i++)
-        //        {
-        //            var item = result.Response!.CartItems[i];
-
-        //            if (item.Promotion is not null)
-        //            {
-        //                continue;
-        //            }
-        //            else
-        //            {
-        //                ShoppingCartItem updatedItem;
-
-        //                switch (couponDiscount.PromotionCoupon.PromotionCouponPromotionEventType)
-        //                {
-        //                    case PromotionEventTypeEnum.PromotionCoupon:
-        //                        updatedItem = HandleCouponPromotion(item, couponDiscount);
-        //                        result.Response!.CartItems[i] = updatedItem;
-        //                        break;
-        //                }
-        //            }
-        //        }
-        //    }
-        //} else
-        //{
-        //    for (int i = 0; i < result.Response!.CartItems.Count; i++)
-        //    {
-        //        var item = result.Response!.CartItems[i];
-
-        //        ShoppingCartItem updatedItem;
-
-        //        if(item.Promotion is null)
-        //        {
-        //            continue;
-        //        }
-        //        else
-        //        {
-        //            switch (item.Promotion.PromotionEventType)
-        //            {
-        //                case nameof(PromotionEvent.PROMOTION_ITEM):
-        //                    updatedItem = await HandleItemPromotion(item);
-        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here
-        //                    break;
-        //                case nameof(PromotionEvent.PROMOTION_EVENT):
-        //                    updatedItem = await HandleEventPromotion(item);
-        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here 
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    for (int i = 0; i < result.Response!.CartItems.Count; i++)
-        //    {
-        //        var item = result.Response!.CartItems[i];
-
-        //        ShoppingCartItem updatedItem;
-
-        //        if (item.Promotion is null)
-        //        {
-        //            continue;
-        //        }
-        //        else
-        //        {
-        //            switch (item.Promotion.PromotionEventType)
-        //            {
-        //                case nameof(PromotionEvent.PROMOTION_ITEM):
-        //                    updatedItem = await HandleItemPromotion(item);
-        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here
-        //                    break;
-        //                case nameof(PromotionEvent.PROMOTION_EVENT):
-        //                    updatedItem = await HandleEventPromotion(item);
-        //                    result.Response.CartItems[i] = updatedItem; // Safe to update here 
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //}
+        await HandleCheckPromotion(result.Response!, cancellationToken);
 
         GetBasketResponse response = MapToResponse(result.Response);
 
         return response;
+    }
+
+    private async Task<List<ShoppingCartItem>> HandlerPromotionCoupon(string couponCode, List<ShoppingCartItem> cartItems)
+    {
+        var coupon = await _discountProtoServiceClient.GetDiscountByCodeAsync(new GetDiscountRequest { Code = couponCode });
+
+        if (coupon.PromotionCoupon is null)
+        {
+            return cartItems;
+        }
+
+        var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
+
+        if (coupon.PromotionCoupon.PromotionCouponDiscountState != DiscountStateEnum.Active)
+        {
+            return cartItems;
+        }
+
+        if(!(coupon.PromotionCoupon.PromotionCouponValidFrom < dateTimeNow && dateTimeNow < coupon.PromotionCoupon.PromotionCouponValidTo))
+        {
+            return cartItems;
+        }
+
+        for (int i = 0; i < cartItems.Count; i++)
+        {
+            var item = cartItems[i];
+
+            if (item.Promotion is not null)
+            {
+                continue;
+            }
+            else
+            {
+                ShoppingCartItem updatedItem;
+
+                switch (coupon.PromotionCoupon.PromotionCouponPromotionEventType)
+                {
+                    case PromotionEventTypeEnum.PromotionCoupon:
+                        updatedItem = HandleCouponPromotion(item, coupon);
+
+                        cartItems[i] = updatedItem;
+                        break;
+                }
+            }
+        }
+
+        return cartItems;
+    }
+
+    private async Task<ShoppingCart> HandleCheckPromotion(ShoppingCart shoppingCart, CancellationToken cancellation)
+     {
+        if (shoppingCart.CartItems is null || !shoppingCart.CartItems.Any())
+        {
+            return shoppingCart;
+        }
+
+        ListPromtionEventResponse promotionEvent = await HandleCheckValidPromotionEvent();
+
+        for (int i = 0; i < shoppingCart.CartItems.Count; i++)
+        {
+            var item = shoppingCart.CartItems[i];
+
+            if (item.Promotion is null)
+            {
+                continue;
+            }
+            else
+            {
+                ShoppingCartItem updatedItem;
+
+                switch (item.Promotion.PromotionEventType)
+                {
+                    case nameof(PromotionEvent.PROMOTION_ITEM):
+                        updatedItem = HandleItemPromotion(item).Result;
+                        shoppingCart.CartItems[i] = updatedItem;
+                        break;
+                    case nameof(PromotionEvent.PROMOTION_EVENT):
+                        if(promotionEvent is not null)
+                        {
+                            updatedItem = HandleEventPromotion(item, promotionEvent);
+                            shoppingCart.CartItems[i] = updatedItem;
+                        } else
+                        {
+                            shoppingCart.CartItems[i].Promotion = null;
+                            shoppingCart.CartItems[i].SubTotalAmount = shoppingCart.CartItems[i].ProductUnitPrice * shoppingCart.CartItems[i].Quantity;
+
+                            await _basketRepository.StoreBasketAsync(shoppingCart, cancellation);
+                        }
+                        break;
+                }
+            }
+        }
+
+        
+
+        return shoppingCart;
     }
 
     private ShoppingCartItem HandleCouponPromotion(ShoppingCartItem item, CouponResponse couponDiscount)
@@ -198,18 +220,33 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
     {
         decimal promotionDiscountUnitPrice = -1;
         decimal promotionFinalPrice = 0;
+        decimal discountValue = 0;
+        decimal subTotalAmount = item.Quantity * item.ProductUnitPrice;
         int promotionAppliedProductCount = 0;
         DiscountTypeEnum discountType = DiscountTypeEnum.Percentage;
-        decimal discountValue = 0;
-
-        decimal subTotalAmount = item.Quantity * item.ProductUnitPrice;
 
         var promotionItem = await _discountProtoServiceClient.GetPromotionItemByIdAsync(new GetPromotionItemByIdRequest
         {
             PromotionId = item.Promotion!.PromotionIdOrCode
         });
 
-        if (promotionItem is not null && item.ProductSlug == promotionItem.PromotionItemProductSlug)
+        var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
+
+        if(promotionItem is null)
+        {
+            item.Promotion = null;
+
+            return item;
+        }
+
+        if(promotionItem.PromotionItemDiscountState != DiscountStateEnum.Active)
+        {
+            item.Promotion = null;
+
+            return item;
+        }
+
+        if(promotionItem.PromotionItemEndDiscountType == EndDiscountEnum.ByEndDate && promotionItem.PromotionItemValidFrom <= dateTimeNow && dateTimeNow <= promotionItem.PromotionItemValidTo)
         {
             discountType = promotionItem.PromotionItemDiscountType;
             discountValue = (decimal)promotionItem.PromotionItemDiscountValue!;
@@ -229,11 +266,14 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
             promotionAppliedProductCount = item.Quantity;
             item.Promotion!.PromotionTitle = promotionItem.PromotionItemTitle;
-        }
-        else
+
+        } else if (promotionItem.PromotionItemEndDiscountType == EndDiscountEnum.ByQuantity && promotionItem.PromotionItemAvailableQuantity > 0)
         {
             item.Promotion = null;
-
+            return item;
+        } else
+        {
+            item.Promotion = null;
             return item;
         }
 
@@ -246,7 +286,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
         return item;
     }
 
-    private async Task<ShoppingCartItem> HandleEventPromotion(ShoppingCartItem item)
+    private ShoppingCartItem HandleEventPromotion(ShoppingCartItem item, ListPromtionEventResponse promotionEvent)
     {
         decimal promotionDiscountUnitPrice = -1;
         decimal promotionFinalPrice = 0;
@@ -256,18 +296,8 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
         decimal subTotalAmount = item.Quantity * item.ProductUnitPrice;
 
-        var promotionEvents = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest { });
-
-        if (promotionEvents is not null)
+        if (promotionEvent is not null)
         {
-            var promotionEvent = promotionEvents.PromotionEvents.FirstOrDefault(x => x.PromotionEvent.PromotionEventId == item.Promotion?.PromotionIdOrCode);
-
-            if (promotionEvent is null)
-            {
-                return item;
-            }
-
-            // else
             List<PromotionProductModel> promotionProducts = new List<PromotionProductModel>();
             List<PromotionCategoryModel> promotionCategories = new List<PromotionCategoryModel>();
 
@@ -349,6 +379,29 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
         return item;
     }
 
+    private async Task<ListPromtionEventResponse> HandleCheckValidPromotionEvent()
+    {
+        var result = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest { });
+
+        if (result is null || !result.PromotionEvents.Any())
+        {
+            return null;
+        }
+        var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
+
+        var promotionEvent = result.PromotionEvents
+            .Where(x => x.PromotionEvent.PromotionEventState == DiscountStateEnum.Active)
+            .Where(x => x.PromotionEvent.PromotionEventValidFrom <= dateTimeNow && dateTimeNow <= x.PromotionEvent.PromotionEventValidTo)
+            .FirstOrDefault();
+
+        if (promotionEvent is null)
+        {
+            return null;
+        }
+
+        return promotionEvent;
+    }
+
     private GetBasketResponse MapToResponse(ShoppingCart? response)
     {
         if (response is null)
@@ -380,6 +433,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             return new CartItemResponse()
             {
                 ProductId = item.ProductId,
+                ModelId = item.ModelId,
                 ProductName = item.ProductName,
                 ProductColorName = item.ProductColorName,
                 ProductUnitPrice = item.ProductUnitPrice,

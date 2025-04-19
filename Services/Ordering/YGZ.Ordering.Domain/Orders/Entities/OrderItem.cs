@@ -12,6 +12,7 @@ public class OrderItem : Entity<OrderItemId>
     private OrderItem() : base(null!) { }
 
     public required string ProductId { get; set; }
+    public required string ModelId { get; set; }
     public required string ProductName { get; set; }
     public required string ProductColorName { get; set; }
     public required decimal ProductUnitPrice { get; set; }
@@ -30,6 +31,7 @@ public class OrderItem : Entity<OrderItemId>
     public static OrderItem Create(OrderItemId orderItemId,
                                    OrderId orderId,
                                    string productId,
+                                   string modelId,
                                    string productName,
                                    string productColorName,
                                    decimal productUnitPrice,
@@ -50,6 +52,7 @@ public class OrderItem : Entity<OrderItemId>
             Id = orderItemId,
             OrderId = orderId,
             ProductId = productId,
+            ModelId = modelId,
             ProductName = productName,
             ProductColorName = productColorName,
             ProductUnitPrice = productUnitPrice,

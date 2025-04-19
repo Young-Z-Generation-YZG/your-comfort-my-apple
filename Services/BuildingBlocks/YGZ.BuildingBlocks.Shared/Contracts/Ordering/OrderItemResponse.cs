@@ -11,6 +11,7 @@ public sealed record OrderItemRepsonse()
 {
     required public string OrderItemId { get; set; }
     required public string ProductId { get; set; }
+    required public string ModelId { get; set; }
     required public string ProductName { get; set; }
     required public string ProductImage { get; set; }
     required public string ProductColorName { get; set; }

@@ -32,191 +32,135 @@ import { Search, ChevronRight, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@components/ui/button';
 
-type Order = {
-   id: string;
-   orderNumber: string;
-   date: string;
-   status: 'processing' | 'shipped' | 'delivered' | 'canceled';
-   total: string;
-   items: number;
+import { orderData } from './data';
+import { OrderResponse } from '~/domain/interfaces/orders/order.interface';
+import { useGetOrdersAsyncQuery } from '~/infrastructure/services/order.service';
+import { useRouter } from 'next/navigation';
+
+const containerVariants = {
+   hidden: { opacity: 0 },
+   visible: {
+      opacity: 1,
+      transition: {
+         staggerChildren: 0.05,
+      },
+   },
 };
 
-const sampleOrders: Order[] = [
-   {
-      id: '1',
-      orderNumber: 'W12345678',
-      date: 'Apr 12, 2023',
-      status: 'delivered',
-      total: '$2,399.00',
-      items: 2,
+const itemVariants = {
+   hidden: { opacity: 0, y: 20 },
+   visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+         type: 'spring',
+         stiffness: 300,
+         damping: 24,
+      },
    },
-   {
-      id: '2',
-      orderNumber: 'W12345679',
-      date: 'Mar 28, 2023',
-      status: 'shipped',
-      total: '$129.00',
-      items: 1,
-   },
-   {
-      id: '3',
-      orderNumber: 'W12345680',
-      date: 'Feb 15, 2023',
-      status: 'delivered',
-      total: '$1,299.00',
-      items: 1,
-   },
-   {
-      id: '4',
-      orderNumber: 'W12345681',
-      date: 'Jan 7, 2023',
-      status: 'delivered',
-      total: '$59.00',
-      items: 3,
-   },
-   {
-      id: '5',
-      orderNumber: 'W12345682',
-      date: 'Dec 24, 2022',
-      status: 'delivered',
-      total: '$249.00',
-      items: 2,
-   },
-   {
-      id: '6',
-      orderNumber: 'W12345683',
-      date: 'Nov 18, 2022',
-      status: 'delivered',
-      total: '$19.99',
-      items: 1,
-   },
-   {
-      id: '7',
-      orderNumber: 'W12345684',
-      date: 'Oct 5, 2022',
-      status: 'delivered',
-      total: '$549.00',
-      items: 1,
-   },
-   {
-      id: '8',
-      orderNumber: 'W12345685',
-      date: 'Apr 15, 2023',
-      status: 'processing',
-      total: '$1,599.00',
-      items: 1,
-   },
-   {
-      id: '9',
-      orderNumber: 'W12345686',
-      date: 'Apr 10, 2023',
-      status: 'canceled',
-      total: '$299.00',
-      items: 2,
-   },
-];
+};
 
 const OrderPage = () => {
+   const [isLoading, setIsLoading] = useState(true);
+   const [orders, setOrders] = useState<OrderResponse[]>([]);
    const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-   const [orders, setOrders] = useState<Order[]>([]);
    const [searchQuery, setSearchQuery] = useState('');
    const [statusFilter, setStatusFilter] = useState<string>('all');
    const [sortBy, setSortBy] = useState<string>('date-desc');
    const [currentPage, setCurrentPage] = useState(1);
-   const [isLoading, setIsLoading] = useState(true);
+
+   const router = useRouter();
 
    const ordersPerPage = 5;
 
-   // Simulate loading data
-   useEffect(() => {
-      const timer = setTimeout(() => {
-         setOrders(sampleOrders);
-         setIsLoading(false);
-      }, 800);
+   const {
+      data: orderDataAsync,
+      isLoading: loadingOrders,
+      isFetching: fetchingOrders,
+      isError: errorOrders,
+      error: errorOrdersMessage,
+      isSuccess: successOrders,
+      refetch: refetchOrders,
+   } = useGetOrdersAsyncQuery();
 
-      return () => clearTimeout(timer);
-   }, []);
+   useEffect(() => {
+      if (successOrders) {
+         console.log('orderDataAsync', orderDataAsync);
+         setOrders(orderDataAsync.items);
+         setTimeout(() => {
+            setIsLoading(false);
+         }, 500);
+      }
+   }, [orderDataAsync]);
+
+   // Simulate loading data
+   // useEffect(() => {
+   //    const timer = setTimeout(() => {
+   //       setOrders(sampleOrders);
+   //       setIsLoading(false);
+   //    }, 800);
+
+   //    return () => clearTimeout(timer);
+   // }, []);
 
    // Filter orders based on search query and status
-   const filteredOrders = orders.filter((order) => {
-      const matchesSearch = order.orderNumber
-         .toLowerCase()
-         .includes(searchQuery.toLowerCase());
-      const matchesStatus =
-         statusFilter === 'all' || order.status === statusFilter;
-      return matchesSearch && matchesStatus;
-   });
+   // const filteredOrders = orders.filter((order) => {
+   //    const matchesSearch = order.orderNumber
+   //       .toLowerCase()
+   //       .includes(searchQuery.toLowerCase());
+   //    const matchesStatus =
+   //       statusFilter === 'all' || order.status === statusFilter;
+   //    return matchesSearch && matchesStatus;
+   // });
 
    // Sort orders
-   const sortedOrders = [...filteredOrders].sort((a, b) => {
-      switch (sortBy) {
-         case 'date-asc':
-            return new Date(a.date).getTime() - new Date(b.date).getTime();
-         case 'date-desc':
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-         case 'total-asc':
-            return (
-               Number.parseFloat(a.total.replace('$', '').replace(',', '')) -
-               Number.parseFloat(b.total.replace('$', '').replace(',', ''))
-            );
-         case 'total-desc':
-            return (
-               Number.parseFloat(b.total.replace('$', '').replace(',', '')) -
-               Number.parseFloat(a.total.replace('$', '').replace(',', ''))
-            );
-         default:
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-      }
-   });
+   // const sortedOrders = [...filteredOrders].sort((a, b) => {
+   //    switch (sortBy) {
+   //       case 'date-asc':
+   //          return new Date(a.date).getTime() - new Date(b.date).getTime();
+   //       case 'date-desc':
+   //          return new Date(b.date).getTime() - new Date(a.date).getTime();
+   //       case 'total-asc':
+   //          return (
+   //             Number.parseFloat(a.total.replace('$', '').replace(',', '')) -
+   //             Number.parseFloat(b.total.replace('$', '').replace(',', ''))
+   //          );
+   //       case 'total-desc':
+   //          return (
+   //             Number.parseFloat(b.total.replace('$', '').replace(',', '')) -
+   //             Number.parseFloat(a.total.replace('$', '').replace(',', ''))
+   //          );
+   //       default:
+   //          return new Date(b.date).getTime() - new Date(a.date).getTime();
+   //    }
+   // });
 
    // Paginate orders
-   const indexOfLastOrder = currentPage * ordersPerPage;
-   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-   const currentOrders = sortedOrders.slice(
-      indexOfFirstOrder,
-      indexOfLastOrder,
-   );
-   const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
+   // const indexOfLastOrder = currentPage * ordersPerPage;
+   // const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+   // const currentOrders = sortedOrders.slice(
+   //    indexOfFirstOrder,
+   //    indexOfLastOrder,
+   // );
+   // const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
 
-   // Get status badge color
-   const getStatusColor = (status: Order['status']) => {
-      switch (status) {
-         case 'processing':
-            return 'bg-yellow-100 text-yellow-800';
-         case 'shipped':
-            return 'bg-blue-100 text-blue-800';
-         case 'delivered':
-            return 'bg-green-100 text-green-800';
-         case 'canceled':
-            return 'bg-red-100 text-red-800';
-         default:
-            return 'bg-gray-100 text-gray-800';
-      }
-   };
+   // // Get status badge color
+   // const getStatusColor = (status: Order['status']) => {
+   //    switch (status) {
+   //       case 'processing':
+   //          return 'bg-yellow-100 text-yellow-800';
+   //       case 'shipped':
+   //          return 'bg-blue-100 text-blue-800';
+   //       case 'delivered':
+   //          return 'bg-green-100 text-green-800';
+   //       case 'canceled':
+   //          return 'bg-red-100 text-red-800';
+   //       default:
+   //          return 'bg-gray-100 text-gray-800';
+   //    }
+   // };
 
    // Animation variants
-   const containerVariants = {
-      hidden: { opacity: 0 },
-      visible: {
-         opacity: 1,
-         transition: {
-            staggerChildren: 0.05,
-         },
-      },
-   };
-
-   const itemVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: {
-         opacity: 1,
-         y: 0,
-         transition: {
-            type: 'spring',
-            stiffness: 300,
-            damping: 24,
-         },
-      },
-   };
 
    return (
       <CardContext className="px-0 py-0">
@@ -231,7 +175,7 @@ const OrderPage = () => {
                   Manage your orders and track their status in one place.
                </p>
             </motion.div>
-            {/* <OrdersList onSelectOrder={setSelectedOrderId} /> */}
+            <OrdersList onSelectOrder={setSelectedOrderId} />
 
             <motion.div
                className="bg-white rounded-lg border border-gray-200 overflow-hidden mt-5"
@@ -239,15 +183,6 @@ const OrderPage = () => {
                initial="hidden"
                animate="visible"
             >
-               {/* <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <motion.h2
-               className="text-lg font-medium text-gray-900"
-               variants={itemVariants}
-            >
-               Orders
-            </motion.h2>
-         </div> */}
-
                <motion.div
                   className="px-6 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row gap-3"
                   variants={itemVariants}
@@ -262,7 +197,7 @@ const OrderPage = () => {
                      />
                   </div>
                   <div className="flex gap-3">
-                     <Select
+                     {/* <Select
                         value={statusFilter}
                         onValueChange={setStatusFilter}
                      >
@@ -297,7 +232,7 @@ const OrderPage = () => {
                               Lowest Amount
                            </SelectItem>
                         </SelectContent>
-                     </Select>
+                     </Select> */}
                   </div>
                </motion.div>
 
@@ -308,7 +243,7 @@ const OrderPage = () => {
                         Loading your orders...
                      </p>
                   </div>
-               ) : currentOrders.length > 0 ? (
+               ) : orderData.length > 0 ? (
                   <div className="overflow-x-auto">
                      <Table>
                         <TableHeader>
@@ -336,12 +271,14 @@ const OrderPage = () => {
                         </TableHeader>
                         <TableBody>
                            <AnimatePresence>
-                              {currentOrders.map((order, index) => (
+                              {orders.map((order, index: number) => (
                                  <motion.tr
-                                    key={order.id}
+                                    key={order.order_id}
                                     className="cursor-pointer hover:bg-gray-50"
                                     onClick={() => {
-                                       // onSelectOrder(order.id)
+                                       router.push(
+                                          `/account/orders/${order.order_id}`,
+                                       );
                                     }}
                                     variants={itemVariants}
                                     initial="hidden"
@@ -354,19 +291,27 @@ const OrderPage = () => {
                                     transition={{ duration: 0.2 }}
                                  >
                                     <TableCell className="font-medium">
-                                       {order.orderNumber}
+                                       {order.order_code}
                                     </TableCell>
-                                    <TableCell>{order.date}</TableCell>
                                     <TableCell>
-                                       <Badge
-                                          className={`${getStatusColor(order.status)} capitalize`}
-                                       >
-                                          {order.status}
+                                       {new Date(
+                                          order.order_created_at,
+                                       ).toLocaleDateString('en-US', {
+                                          year: 'numeric',
+                                          month: 'long',
+                                          day: 'numeric',
+                                       })}
+                                    </TableCell>
+                                    <TableCell>
+                                       <Badge className={` capitalize`}>
+                                          {order.order_status}
                                        </Badge>
                                     </TableCell>
-                                    <TableCell>{order.items}</TableCell>
+                                    <TableCell>
+                                       {order.order_items_count}
+                                    </TableCell>
                                     <TableCell className="text-right">
-                                       {order.total}
+                                       ${order.order_total_amount.toFixed(2)}
                                     </TableCell>
                                     <TableCell className="text-right">
                                        <Button
@@ -407,7 +352,7 @@ const OrderPage = () => {
                   </motion.div>
                )}
 
-               {!isLoading && sortedOrders.length > ordersPerPage && (
+               {/* {!isLoading && sortedOrders.length > ordersPerPage && (
                   <motion.div
                      className="px-6 py-4 border-t border-gray-200"
                      variants={itemVariants}
@@ -465,7 +410,7 @@ const OrderPage = () => {
                         </PaginationContent>
                      </Pagination>
                   </motion.div>
-               )}
+               )} */}
             </motion.div>
          </main>
       </CardContext>

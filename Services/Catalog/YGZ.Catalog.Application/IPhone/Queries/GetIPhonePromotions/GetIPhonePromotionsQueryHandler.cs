@@ -4,19 +4,20 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Utils;
-using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Products.Iphone16.Entities;
+using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Catalog.Application.IPhone16.Queries.GetIPhonePromotions;
 
 public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotionsQuery, PaginationPromotionResponse<PromotionIphoneResponse>>
 {
-    private readonly IMongoRepository<IPhone16Detail> _iPhone16repository;
+    private readonly IMongoRepository<IPhone16Detail, IPhone16Id> _iPhone16repository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
-    public GetIPhonePromotionsQueryHandler(IMongoRepository<IPhone16Detail> iPhone16repository, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+    public GetIPhonePromotionsQueryHandler(IMongoRepository<IPhone16Detail, IPhone16Id> iPhone16repository, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _iPhone16repository = iPhone16repository;
         _discountProtoServiceClient = discountProtoServiceClient;
@@ -77,6 +78,7 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
                 PromotionFinalPrice = finalPrice,
                 PromotionProductSlug = pp.PromotionProductSlug,
                 CategoryId = pp.CategoryId,
+                ProductModelId = pp.ProductModelId!,
                 ProductVariants = pp.ProductVariants,
                 ProductNameTag = pp.ProductNameTag,
             };
@@ -161,6 +163,7 @@ public class GetIPhonePromotionsQueryHandler : IQueryHandler<GetIPhonePromotions
                 PromotionEventType = promotionEvent!.PromotionEvent.PromotionEventPromotionEventType.ToString(),
                 PromotionFinalPrice = promotionPrice,
                 CategoryId = item.CategoryId.Value!,
+                ProductModelId = item.IPhoneModelId.Value,
                 ProductNameTag = item.ProductNameTag.Name,
                 ProductVariants = productVariants,
             };

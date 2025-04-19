@@ -1,6 +1,5 @@
 ﻿
 using System.Text.Json.Serialization;
-using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;

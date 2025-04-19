@@ -3,17 +3,19 @@ using MapsterMapper;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Categories;
-using YGZ.Catalog.Domain.Core.Abstractions.Data;
+using YGZ.Catalog.Domain.Categories.ValueObjects;
+
 
 namespace YGZ.Catalog.Application.Categories.Queries.GetCategories;
 
 public class GetCategoriesQueryHandler : IQueryHandler<GetCategoriesQuery, List<CategoryResponse>>
 {
-    private readonly IMongoRepository<Category> _repository;
+    private readonly IMongoRepository<Category, CategoryId> _repository;
     private readonly IMapper _mapper;
 
-    public GetCategoriesQueryHandler(IMongoRepository<Category> repository, IMapper mapper)
+    public GetCategoriesQueryHandler(IMongoRepository<Category, CategoryId> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
