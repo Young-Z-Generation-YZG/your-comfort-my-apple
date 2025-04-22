@@ -1,35 +1,43 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type InitialState = {
-   value: AppState;
-};
-
-type AppState = {
-   router: RouterState;
-};
-
-type RouterState = {
-   previousPath: string | null;
+export type FiltersType = {
+   colors: {
+      name: string;
+      hex: string;
+   }[];
+   models: {
+      name: string;
+      value: string;
+   }[];
+   storages: {
+      name: string;
+      value: string;
+   }[];
 };
 
 const initialState = {
    value: {
-      router: {
-         previousPath: null,
-      },
-   } as AppState,
-} as InitialState;
+      filters: {
+         colors: [],
+         models: [],
+         storages: [],
+      } as FiltersType,
+   },
+};
 
 const AppSlice = createSlice({
    name: 'app',
    initialState: initialState,
    reducers: {
-      setRouter: (state, action: PayloadAction<RouterState>) => {
-         state.value.router = action.payload;
+      setAppFilters: (state, action: PayloadAction<FiltersType>) => {
+         state.value.filters = action.payload;
+      },
+      clearAppFilters: (state) => {
+         state.value.filters = initialState.value.filters;
       },
    },
 });
 
-export const { setRouter } = AppSlice.actions;
+export const { setAppFilters, clearAppFilters } = AppSlice.actions;
 
 export default AppSlice.reducer;

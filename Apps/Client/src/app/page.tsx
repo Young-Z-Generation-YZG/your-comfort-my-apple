@@ -1,17 +1,8 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { SFDisplayFont } from '../../assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-   async function create() {
-      'use server';
-
-      // const store = cookies();
-      // store.set('access-token', '1234'); // Setting the cookie inside a server action
-   }
-
    redirect('/home');
    return (
       <div className={cn('')}>

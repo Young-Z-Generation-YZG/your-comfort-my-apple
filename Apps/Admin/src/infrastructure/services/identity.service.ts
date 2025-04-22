@@ -4,7 +4,7 @@ export const identityApi = createApi({
    reducerPath: 'identity-api',
    tagTypes: ['Identity'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://be2c-116-108-46-152.ngrok-free.app/identity-services',
+      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

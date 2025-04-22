@@ -14,6 +14,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './features/auth.slice';
 import appReducer from './features/app.slice';
 import cartReducer from './features/cart.slice';
+import searchReducer from './features/search.slice';
 import { CategoryApi } from '~/infrastructure/services/category.service';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
 import { AuthApi } from '~/infrastructure/services/auth.service';
@@ -39,13 +40,14 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       orderApi.reducerPath,
       identityApi.reducerPath,
    ], // Add the blacklist option
-   whitelist: ['auth', 'cart'],
+   whitelist: ['auth', 'cart', 'search'],
 };
 
 const reducers = combineReducers({
    app: appReducer,
    auth: authReducer,
    cart: cartReducer,
+   search: searchReducer,
    [CategoryApi.reducerPath]: CategoryApi.reducer,
    [AuthApi.reducerPath]: AuthApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,

@@ -8,9 +8,7 @@ import Image from 'next/image';
 
 import {
    Carousel,
-   CarouselApi,
    CarouselContent,
-   CarouselItem,
    CarouselNext,
    CarouselPrevious,
 } from '~/components/ui/carousel';
@@ -25,7 +23,6 @@ import {
    AccordionTrigger,
    AccordionContent,
 } from '~/components/ui/accordion';
-import Link from 'next/link';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import CartItem from './_components/cart-item';
 import {
@@ -33,13 +30,9 @@ import {
    useGetBasketAsyncQuery,
    useStoreBasketAsyncMutation,
 } from '~/infrastructure/services/basket.service';
-import {
-   IBasketItem,
-   ICartItemResponse,
-} from '~/domain/interfaces/baskets/basket.interface';
+import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useDispatch } from 'react-redux';
-import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const CartPage = () => {

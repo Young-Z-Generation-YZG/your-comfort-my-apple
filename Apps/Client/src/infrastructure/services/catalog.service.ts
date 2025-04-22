@@ -14,7 +14,7 @@ export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Catalogs'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://be2c-116-108-46-152.ngrok-free.app/catalog-services',
+      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 
@@ -34,9 +34,9 @@ export const catalogApi = createApi({
       }),
       getModelsAsync: builder.query<
          PaginationResponse<IIphoneModelResponse>,
-         void
+         String
       >({
-         query: () => '/api/v1/products/iphone/models',
+         query: (params = '') => `/api/v1/products/iphone/models?${params}`,
          providesTags: ['Catalogs'],
       }),
       getModelBySlugAsync: builder.query<IIphoneModelResponse, string>({

@@ -1,6 +1,4 @@
 'use client';
-/* eslint-disable react/react-in-jsx-scope */
-// import { useGetUsersQuery } from '~/services/example/user.service';
 import { motion } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
@@ -14,11 +12,20 @@ import {
    CarouselPrevious,
 } from '~/components/ui/carousel';
 
-import LatestItem from './_components/LatestItem';
+import LatestItem from './_components/latest-item';
 import ExperienceItem from '../../../components/client/experience-item';
 
-import { useState } from 'react';
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
+import {
+   useGetIphonePromotionsAsyncQuery,
+   useGetModelsAsyncQuery,
+} from '~/infrastructure/services/catalog.service';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import {
+   setSearchLinks,
+   setSearchProducts,
+} from '~/infrastructure/redux/features/search.slice';
 
 const listLatestItem = [
    {
@@ -167,6 +174,61 @@ const listExperienceItem = [
 ];
 
 const HomePage = () => {
+   const dispatch = useDispatch();
+
+   const { data: iphonePromotions, isSuccess: isSuccessIphonePromotions } =
+      useGetIphonePromotionsAsyncQuery();
+
+   const {
+      data: modelsDataAsync,
+      isLoading: modelsDataIsLoading,
+      isSuccess: modelsDataIsSuccess,
+   } = useGetModelsAsyncQuery();
+
+   useEffect(() => {
+      if (isSuccessIphonePromotions && modelsDataIsSuccess) {
+         const links = modelsDataAsync.items.map((model) => {
+            return {
+               label: model.model_items.map((item) => {
+                  return item.model_name;
+               }),
+               slug: model.model_slug,
+            };
+         });
+
+         const products = iphonePromotions.items.map((item) => {
+            const model = modelsDataAsync.items.find(
+               (model) => model.model_id === item.product_model_id,
+            );
+
+            return {
+               name: item.promotion_product_name
+                  .replace(/p/g, 'P')
+                  .replace(/g/g, 'G')
+                  .replace(/b/g, 'B')
+                  .replace(/t/g, 'T'),
+               image: item.promotion_product_image,
+               unit_price: item.promotion_product_unit_price,
+               promotion_price: item.promotion_final_price,
+               promotion_rate: item.promotion_discount_value,
+               slug: model!.model_slug,
+            };
+         });
+
+         dispatch(
+            setSearchLinks(
+               links.map((item) => {
+                  return {
+                     label: item.label.join(' and '),
+                     slug: item.slug,
+                  };
+               }),
+            ),
+         );
+         dispatch(setSearchProducts(products));
+      }
+   }, [iphonePromotions, modelsDataAsync]);
+
    return (
       <div
          className={cn(
@@ -186,12 +248,6 @@ const HomePage = () => {
                   services, power custom revenue models, and build a more
                   profitable business.
                </div>
-               {/* <div className='content-form pl-2'>
-               <div className='flex flex-row gap-2 border border-black rounded-[10px]'>
-                  <Input type='text' placeholder='Email address' className='rounded-[10px]'/>
-                  <Button variant="outline" className='bg-black text-white rounded-[10px]'>Start now</Button> 
-               </div>
-            </div> */}
             </div>
             <div className="hero-masonry basis-1/2 h-full bg-transparent relative z-10">
                <div className="bg-transparent h-full w-full absolute z-10">
@@ -201,8 +257,6 @@ const HomePage = () => {
                <div className="overflow-hidden h-full relative z-0 px-1">
                   <motion.div
                      animate={{ y: ['0px', '-3384px'] }}
-                     // animate={{ y: ["-3384px", "-3384px"] }}
-                     // animate={{ y: ["0px", "0px"] }}
                      transition={{
                         y: {
                            duration: 60,
@@ -265,8 +319,6 @@ const HomePage = () => {
                         );
                      })}
                   </CarouselContent>
-                  {/* <CarouselPrevious className='absolute top-1/2 -translate-y-1/2 left-0 '/>
-               <CarouselNext className='absolute top-1/2 -translate-y-1/2 right-0'/> */}
                   <CarouselPrevious className="absolute -top-[40px] -translate-y-1/2 left-[90%] border-black bg-[#ccc]" />
                   <CarouselNext className="absolute -top-[40px] -translate-y-1/2 right-[5%] border-black bg-[#ccc]" />
                </Carousel>

@@ -14,10 +14,10 @@ import {
 } from '~/components/ui/carousel';
 
 import images from '~/components/client/images';
-import ModelItem from '~/app/(pages)/product-details/_components/model-item';
-import HelpItem from '~/app/(pages)/product-details/_components/help-item';
+import ModelItem from '~/app/(pages)/model/_components/model-item';
+import HelpItem from '~/app/(pages)/model/_components/help-item';
 
-import StorageItem from '~/app/(pages)/product-details/_components/storage-item';
+import StorageItem from '~/app/(pages)/model/_components/storage-item';
 import { useForm } from 'react-hook-form';
 import {
    StoreBasketFormType,
@@ -43,7 +43,7 @@ import {
    selectorSchema,
    SelectorFormType,
    SelectorResolver,
-} from '~/app/(pages)/product-details/_schemas/selector-schema';
+} from '~/app/(pages)/model/_schemas/selector-schema';
 import { IIphoneResponse } from '~/domain/interfaces/catalogs/iPhone.interface';
 import {
    useGetIPhonesByModelAsyncQuery,

@@ -13,27 +13,30 @@ public class GetModelsRequestExample : IOperationProcessor
         {
             var operation = context.OperationDescription.Operation;
 
-            // Set example for _page parameter
+            // Set example for _page parameter  
             var pageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_page");
             if (pageParam != null)
             {
                 pageParam.Example = 1;
             }
 
-            // Set example for _limit parameter
+            // Set example for _limit parameter  
             var limitParam = operation.Parameters.FirstOrDefault(p => p.Name == "_limit");
             if (limitParam != null)
             {
                 limitParam.Example = 10;
             }
 
-            // Set example for _code parameter
-            var colorParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productColor");
+            // Set example for _code parameter  
+            var colorParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productColors");
             if (colorParam != null)
             {
-                colorParam.Example = "ultramarine";
+                colorParam.Example = new[] { "ultramarine", "pink" };
 
-                List<string> colorList = ["ultramarine", "teal", "pink", "white", "black", "desert-titanium", "natural-titanium", "white-titanium", "black-titanium"];
+                List<string> colorList = new List<string>
+               {
+                   "ultramarine", "teal", "pink", "white", "black", "desert-titanium", "natural-titanium", "white-titanium", "black-titanium"
+               };
 
                 colorParam.Schema = new NJsonSchema.JsonSchema
                 {
@@ -45,13 +48,13 @@ public class GetModelsRequestExample : IOperationProcessor
                 }
             }
 
-            // Set example for _status parameter
-            var storageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productStorage");
+            // Set example for _status parameter  
+            var storageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productStorages");
             if (storageParam != null)
             {
-                storageParam.Example = "256";
+                storageParam.Example = new[] { "128GB", "256GB" };
 
-                List<string> storageList = ["128", "256", "512", "1024"];
+                List<string> storageList = new List<string> { "128GB", "256GB", "512GB", "1024GB" };
 
                 storageParam.Schema = new NJsonSchema.JsonSchema
                 {
@@ -64,11 +67,12 @@ public class GetModelsRequestExample : IOperationProcessor
                 }
             }
 
-            var modelParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productModel");
-            if (modelParam != null) {
-                modelParam.Example = "iphone-16e";
+            var modelParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productModels");
+            if (modelParam != null)
+            {
+                modelParam.Example = new[] { "iphone-16", "iphone-16e" };
 
-                List<string> modelList = ["iphone-16e", "iphone-16"];
+                List<string> modelList = new List<string> { "iphone-15", "iphone-16", "iphone-16e", "iphone-16-pro" };
 
                 modelParam.Schema = new NJsonSchema.JsonSchema
                 {
@@ -97,7 +101,7 @@ public class GetModelsRequestExample : IOperationProcessor
             {
                 sortParam.Example = "asc";
 
-                List<string> sortList = ["asc", "desc"];
+                List<string> sortList = new List<string> { "asc", "desc" };
 
                 sortParam.Schema = new NJsonSchema.JsonSchema
                 {
@@ -110,6 +114,6 @@ public class GetModelsRequestExample : IOperationProcessor
                 }
             }
         }
-        return true; // Continue processing other processors
+        return true; // Continue processing other processors  
     }
 }

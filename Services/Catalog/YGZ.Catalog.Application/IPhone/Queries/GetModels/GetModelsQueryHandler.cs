@@ -56,9 +56,10 @@ public class GetModelsQueryHandler : IQueryHandler<GetModelsQuery, PaginationRes
         }
 
         var (filter, sort) = GetFilterDefinition(request);
+        var (filter2, sort2) = GetModelFilterDefinition(request);
 
         var allProducts = await _iPhone16repository.GetAllAsync(null, null, filter, sort, cancellationToken);
-        var allModels = await _modelRepository.GetAllAsync(request.Page,request.Limit, null, null, cancellationToken);
+        var allModels = await _modelRepository.GetAllAsync(request.Page,request.Limit, filter2, null, cancellationToken);
 
         List<PromotionDataResponse> allPromotionProducts = PromotionMapping(allProducts.items, promotionEvent, promotionProducts, promotionCategories, promotionItems);
 
@@ -389,24 +390,24 @@ public class GetModelsQueryHandler : IQueryHandler<GetModelsQuery, PaginationRes
         var filterBuilder = Builders<IPhone16Detail>.Filter;
         var filter = filterBuilder.Empty;
 
-        if (!string.IsNullOrEmpty(request.ProductColor))
+        if (request.ProductColors is not null && request.ProductColors.Any())
         {
-            filter &= filterBuilder.Eq(x => x.Color.ColorName, request.ProductColor);
+            var productColors = request.ProductColors.ToList();
+
+            filter &= filterBuilder.In(x => x.Color.ColorName, productColors);
         }
 
-        if (!string.IsNullOrEmpty(request.ProductStorage))
+        if (request.ProductStorages is not null && request.ProductStorages.Any())
         {
-            int.TryParse(request.ProductStorage, out var storageValue);
+            var productStorages = request.ProductStorages.ToList();
 
-            if (storageValue > 0)
-            {
-                filter &= filterBuilder.Eq(x => x.Storage.Value, storageValue);
-            }
+            filter &= filterBuilder.In(x => x.Storage.Name, productStorages);
         }
 
-        if (!string.IsNullOrEmpty(request.ProductModel))
+        if (request.ProductModels is not null && request.ProductModels.Any())
         {
-            filter &= filterBuilder.Eq(x => x.GeneralModel, request.ProductModel);
+            var productModels = request.ProductModels.Select(x => x.ToLower()).ToList();
+            filter &= filterBuilder.In(x => x.GeneralModel, productModels);
         }
 
         if (!string.IsNullOrEmpty(request.PriceFrom))
@@ -439,6 +440,39 @@ public class GetModelsQueryHandler : IQueryHandler<GetModelsQuery, PaginationRes
                 _ => sortBuilder.Ascending(x => x.UnitPrice),
             };
         }
+
+        return (filter, sort);
+    }
+
+    private (FilterDefinition<IPhone16Model> filterBuilder, SortDefinition<IPhone16Model> sort) GetModelFilterDefinition(GetModelsQuery request)
+    {
+        var filterBuilder = Builders<IPhone16Model>.Filter;
+        var filter = filterBuilder.Empty;
+
+        if (request.ProductColors is not null && request.ProductColors.Any())
+        {
+            var productColors = request.ProductColors.ToList();
+
+            filter &= filterBuilder.ElemMatch(x => x.Colors, color => productColors.Contains(color.ColorName));
+        }
+
+        if (request.ProductStorages is not null && request.ProductStorages.Any())
+        {
+            var productStorages = request.ProductStorages.ToList();
+
+            filter &= filterBuilder.ElemMatch(x => x.Storages, storage => productStorages.Contains(storage.Name));
+        }
+
+        if (request.ProductModels is not null && request.ProductModels.Any())
+        {
+            var productModels = request.ProductModels.Select(x => x.ToLower()).ToList();
+
+            filter &= filterBuilder.In(x => x.GeneralModel, productModels);
+        }
+
+        var sortBuilder = Builders<IPhone16Model>.Sort;
+        var sort = sortBuilder.Ascending(x => x.OverallSold); // default sort
+
 
         return (filter, sort);
     }
