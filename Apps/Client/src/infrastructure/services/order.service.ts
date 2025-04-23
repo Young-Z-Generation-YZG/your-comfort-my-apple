@@ -9,12 +9,13 @@ import {
    OrderDetailsResponse,
    OrderResponse,
 } from '~/domain/interfaces/orders/order.interface';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const orderApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/ordering-services',
+      baseUrl: envConfig.API_ENDPOINT + '/ordering-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

@@ -10,11 +10,11 @@ import { FieldInput } from '~/components/client/forms/field-input';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useLoginAsyncMutation } from '~/infrastructure/services/auth.service';
-import { useToast } from '~/hooks/useToast';
 import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { useToast } from '~/hooks/use-toast';
 
 const defaultValues: LoginFormType = {
    email: '',

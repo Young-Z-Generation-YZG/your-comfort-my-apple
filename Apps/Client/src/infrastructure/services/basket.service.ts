@@ -7,12 +7,13 @@ import {
 } from '~/domain/interfaces/baskets/basket.interface';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 import { createQueryEncodedUrl } from '../utils/query-encoded-url';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const basketApi = createApi({
    reducerPath: 'basket-api',
    tagTypes: ['Baskets'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/basket-services',
+      baseUrl: envConfig.API_ENDPOINT + '/basket-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

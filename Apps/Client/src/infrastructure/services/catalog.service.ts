@@ -9,12 +9,13 @@ import {
    IReviewResponse,
 } from '~/domain/interfaces/catalogs/review.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Catalogs'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

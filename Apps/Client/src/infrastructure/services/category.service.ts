@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { CategoryResponseType } from '~/domain/types/category.type';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const CategoryApi = createApi({
    reducerPath: 'category-api',
    tagTypes: ['Categories'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

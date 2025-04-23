@@ -14,12 +14,13 @@ import {
    IRegisterResponse,
 } from '~/domain/interfaces/auth/register.interface';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const AuthApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app',
+      baseUrl: envConfig.API_ENDPOINT + '/identity-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

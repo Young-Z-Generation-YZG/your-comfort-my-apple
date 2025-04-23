@@ -1,18 +1,9 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setRouter } from '~/infrastructure/redux/features/app.slice';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import SideBar from './_components/layouts/side-bar';
-import Link from 'next/link';
-import { CardContext, DefaultActionContent } from './_components/card-content';
-import { MdKeyboardArrowRight } from 'react-icons/md';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import svgs from '@assets/svgs';
-import Image from 'next/image';
-import Badge from './_components/badge';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    const router = useRouter();
@@ -23,33 +14,6 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    );
 
    const currentPath = window.location.pathname;
-
-   const appRouter = useAppSelector((state) => state.app.value.router);
-
-   useEffect(() => {
-      if (!isAuthenticated) {
-         if (isLogoutTriggered) {
-            dispatch(
-               setRouter({
-                  previousPath: null,
-               }),
-            );
-
-            router.push('/sign-in');
-         }
-
-         if (!isLogoutTriggered && appRouter.previousPath) {
-            router.push(appRouter.previousPath);
-         } else {
-            dispatch(
-               setRouter({
-                  previousPath: currentPath,
-               }),
-            );
-            router.push('/sign-in');
-         }
-      }
-   }, [isAuthenticated, timerId, router]);
 
    return (
       <div className="w-full bg-[#f5f5f7] px-5 py-10">

@@ -183,7 +183,7 @@ const HomePage = () => {
       data: modelsDataAsync,
       isLoading: modelsDataIsLoading,
       isSuccess: modelsDataIsSuccess,
-   } = useGetModelsAsyncQuery();
+   } = useGetModelsAsyncQuery('');
 
    useEffect(() => {
       if (isSuccessIphonePromotions && modelsDataIsSuccess) {

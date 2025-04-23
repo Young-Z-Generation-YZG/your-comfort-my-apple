@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import envConfig from '~/infrastructure/config/env.config';
 
 export const promotionApi = createApi({
    reducerPath: 'promotion-api',
    tagTypes: ['Promotions'],
    baseQuery: fetchBaseQuery({
-      baseUrl: 'https://54ff-116-108-46-152.ngrok-free.app/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

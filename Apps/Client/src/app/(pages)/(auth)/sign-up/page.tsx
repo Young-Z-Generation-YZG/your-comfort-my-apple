@@ -18,10 +18,10 @@ import { FormSelector } from '../_components/selector-input';
 import { FormBirthdaySelector } from '~/components/client/forms/birthday-selector';
 import { FormPhoneInput } from '~/components/client/forms/phone-input';
 import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
-import { useToast } from '~/hooks/useToast';
 import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { useToast } from '~/hooks/use-toast';
 import { Separator } from '@components/ui/separator';
 
 // List of countries - this would typically be more comprehensive
