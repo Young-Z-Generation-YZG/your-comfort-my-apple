@@ -13,7 +13,7 @@ export const basketApi = createApi({
    reducerPath: 'basket-api',
    tagTypes: ['Baskets'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/basket-services',
+      baseUrl: envConfig.API_ENDPOINT + 'basket-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

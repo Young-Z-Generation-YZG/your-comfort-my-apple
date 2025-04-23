@@ -5,7 +5,7 @@ export const promotionApi = createApi({
    reducerPath: 'promotion-api',
    tagTypes: ['Promotions'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

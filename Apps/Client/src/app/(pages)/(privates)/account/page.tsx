@@ -3,21 +3,19 @@
 import Link from 'next/link';
 import { CardContext, DefaultActionContent } from './_components/card-content';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import Badge from './_components/badge';
 import { useEffect, useState } from 'react';
 import { ProfilePicture } from './_components/profile-picture';
-import ProfileForm2 from './_components/form/profile-form';
-import ProfileForm from './_components/form/profile-form';
-import { Button } from '@components/ui/button';
-import { IoChevronBack } from 'react-icons/io5';
 import { useGetMeAsyncQuery } from '~/infrastructure/services/identity.service';
 import { IMeResponse } from '~/domain/interfaces/identity/me';
 import TwoRowSkeleton from '@components/ui/two-row-skeleton';
 import ImageSkeleton from '@components/ui/image-skeleton';
 import { Skeleton } from '@components/ui/skeleton';
+import { IoChevronBack } from 'react-icons/io5';
+import ProfileForm from './_components/form/profile-form';
 
 const AccountPage = () => {
    const [loading, setLoading] = useState(true);

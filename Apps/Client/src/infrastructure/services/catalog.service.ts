@@ -15,7 +15,7 @@ export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Catalogs'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

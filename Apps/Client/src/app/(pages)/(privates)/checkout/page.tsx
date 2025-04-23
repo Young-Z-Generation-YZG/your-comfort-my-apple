@@ -5,36 +5,36 @@ import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import images from '~/components/client/images';
-import { Button } from '~/components/ui/button';
+import images from '@components/client/images';
+import { Button } from '@components/ui/button';
 import {
    Accordion,
    AccordionItem,
    AccordionTrigger,
    AccordionContent,
-} from '~/components/ui/accordion';
+} from '@components/ui/accordion';
 import {
    CheckoutFormType,
    CheckoutResolver,
 } from '~/domain/schemas/basket.schema';
-import { useForm } from 'react-hook-form';
-import { FieldInput } from '~/components/client/forms/field-input';
+import { FieldInput } from '@components/client/forms/field-input';
 import CardWrapper from './_components/card-wrapper';
 import { Separator } from '@components/ui/separator';
-import { PaymentMethodSelector } from '~/components/client/forms/payment-method-selector';
+import { PaymentMethodSelector } from '@components/client/forms/payment-method-selector';
 import { motion } from 'framer-motion';
-import { ShippingAddressSelector } from '~/components/client/forms/shipping-address-selector';
+import { ShippingAddressSelector } from '@components/client/forms/shipping-address-selector';
 import { FiEdit3 } from 'react-icons/fi';
 import {
    useCheckoutBasketAsyncMutation,
    useGetBasketAsyncQuery,
 } from '~/infrastructure/services/basket.service';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
 import CartItem from './_components/cart-item';
 import { useSearchParams } from 'next/navigation';
 import { useGetAddressesAsyncQuery } from '~/infrastructure/services/identity.service';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
+import { useForm } from 'react-hook-form';
 
 const shippingAddresses = [
    {

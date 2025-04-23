@@ -1,0 +1,39 @@
+services:
+    nginx.webserver:
+        image: nginx:stable
+        ports:
+        - "80:80"
+        volumes:
+        - ./nginx.fe.conf:/etc/nginx/nginx.conf
+        depends_on:
+        - client.web
+        networks:
+        - client-network
+    
+    client.web:
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        ports:
+        - "3000:3000"
+        networks:
+        - client-network
+
+    admin.web:
+        build:
+            context: ./admin
+            dockerfile: Dockerfile
+        ports:
+        - "4000:3000"
+        networks:
+        - client-network
+
+networks:
+  client-network:
+    name: client-network
+    driver: bridge
+
+
+
+
+

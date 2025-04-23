@@ -6,17 +6,17 @@ import {
    useMomoIpnCallbackAsyncMutation,
    useVnpayIpnCallbackAsyncMutation,
 } from '~/infrastructure/services/order.service';
-import { useForm } from 'react-hook-form';
 import {
    MomoIpnFormType,
    MomoIpnResolver,
    VnpayIpnFormType,
    VnpayIpnResolver,
 } from '~/domain/schemas/order.schema';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import { OrderDetailsResponse } from '~/domain/interfaces/orders/order.interface';
 import SuccessResult from './_components/success-result';
 import FailureResult from './_components/failure-result';
+import { useForm } from 'react-hook-form';
 
 const PaymentCallbackPage = () => {
    const searchParams = useSearchParams();

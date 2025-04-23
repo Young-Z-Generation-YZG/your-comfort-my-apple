@@ -1,14 +1,14 @@
-import {
-   type UseFormReturn,
-   Controller,
-   type Path,
-   type FieldValues,
-   type RegisterOptions,
-} from 'react-hook-form';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
+import {
+   Controller,
+   FieldValues,
+   Path,
+   RegisterOptions,
+   UseFormReturn,
+} from 'react-hook-form';
 import { cn } from '~/infrastructure/lib/utils';
 
 const getNestedError = (errors: any, name: string): string | undefined => {

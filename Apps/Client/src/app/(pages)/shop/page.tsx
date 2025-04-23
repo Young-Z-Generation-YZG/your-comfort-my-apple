@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 import { FaFilter } from 'react-icons/fa6';
-import { Button } from '~/components/ui/button';
+import { Button } from '@components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
 import { GoMultiSelect } from 'react-icons/go';
 import {
@@ -15,7 +15,7 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '~/components/ui/select';
+} from '@components/ui/select';
 import IphoneModelItem from './_components/iphone-model-item';
 import { useGetModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
 import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';

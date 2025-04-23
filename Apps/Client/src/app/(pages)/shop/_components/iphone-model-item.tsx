@@ -261,7 +261,7 @@ const IphoneModelItem = ({
                <Button
                   className="rounded-full text-base"
                   onClick={() => {
-                     router.push(`/product-details/${modelSlug}`);
+                     router.push(`/model/${modelSlug}`);
                   }}
                >
                   Buy Now

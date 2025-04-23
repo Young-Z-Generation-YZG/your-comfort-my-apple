@@ -42,3 +42,6 @@ PS W:\projects\your-comfort-my-apple\Services\IdentityServer\YGZ.IdentityServer.
 PS W:\projects\your-comfort-my-apple\Services\Identity> dotnet ef migrations add Migration2 -o Persistence/Migrations -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api
 
 dotnet ef database update -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api
+
+### Docker 
+docker compose -f docker-compose.yml -f docker-compose.override.yml up -d

@@ -15,7 +15,7 @@ export const orderApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/ordering-services',
+      baseUrl: envConfig.API_ENDPOINT + 'ordering-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

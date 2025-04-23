@@ -10,10 +10,9 @@ import {
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '~/components/ui/carousel';
+} from '@components/ui/carousel';
 
 import LatestItem from './_components/latest-item';
-import ExperienceItem from '../../../components/client/experience-item';
 
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
 import {
@@ -26,6 +25,7 @@ import {
    setSearchLinks,
    setSearchProducts,
 } from '~/infrastructure/redux/features/search.slice';
+import ExperienceItem from '@components/client/experience-item';
 
 const listLatestItem = [
    {

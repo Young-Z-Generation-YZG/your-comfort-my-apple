@@ -21,7 +21,6 @@ import {
    type Province,
    type District,
 } from '../_lib/vietnam-provinces';
-import { useForm } from 'react-hook-form';
 import {
    AddressFormType,
    AddressResolver,
@@ -34,6 +33,7 @@ import {
    useUpdateAddressAsyncMutation,
 } from '~/infrastructure/services/identity.service';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
+import { useForm } from 'react-hook-form';
 
 const staggerDuration = 0.05;
 

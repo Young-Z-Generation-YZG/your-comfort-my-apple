@@ -11,36 +11,26 @@ import {
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '~/components/ui/carousel';
+} from '@components/ui/carousel';
 
-import images from '~/components/client/images';
+import images from '@components/client/images';
 import ModelItem from '~/app/(pages)/model/_components/model-item';
 import HelpItem from '~/app/(pages)/model/_components/help-item';
 
 import StorageItem from '~/app/(pages)/model/_components/storage-item';
-import { useForm } from 'react-hook-form';
-import {
-   StoreBasketFormType,
-   StoreBasketResolver,
-} from '~/domain/schemas/basket.schema';
+
 import { Form, FormControl, FormField, FormItem } from '@components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { Button } from '@components/ui/button';
 import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
 import { useStoreBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useDispatch } from 'react-redux';
-import {
-   IBasketItem,
-   IStoreBasketPayload,
-} from '~/domain/interfaces/baskets/basket.interface';
+import { IBasketItem } from '~/domain/interfaces/baskets/basket.interface';
 import { addCartItem } from '~/infrastructure/redux/features/cart.slice';
 import { Badge } from '@components/ui/badge';
 import {
-   selectorSchema,
    SelectorFormType,
    SelectorResolver,
 } from '~/app/(pages)/model/_schemas/selector-schema';
@@ -56,6 +46,7 @@ import Link from 'next/link';
 import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
 import ReviewSection from '../_components/review-section';
+import { useForm } from 'react-hook-form';
 
 const DetailProductPage = () => {
    const params = useParams<{ 'model-slug': string }>();

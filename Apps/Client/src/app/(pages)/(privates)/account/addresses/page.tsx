@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '~/components/ui/button';
+import { Button } from '@components/ui/button';
 import { CardContext, DefaultActionContent } from '../_components/card-content';
 import Badge from '../_components/badge';
 import { FiEdit3 } from 'react-icons/fi';
@@ -11,8 +11,7 @@ import {
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '~/components/ui/dialog';
-import { useForm } from 'react-hook-form';
+} from '@components/ui/dialog';
 import { AddressResolver } from '~/domain/schemas/address.schema';
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
@@ -26,6 +25,7 @@ import {
    IAddressResponse,
 } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
+import { useForm } from 'react-hook-form';
 
 const labelList = ['Home', 'Work', 'Other'];
 

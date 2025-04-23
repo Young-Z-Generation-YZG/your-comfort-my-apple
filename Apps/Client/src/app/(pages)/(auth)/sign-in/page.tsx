@@ -5,9 +5,8 @@ import Image from 'next/image';
 import googlePng from '@assets/images/google.png';
 import Link from 'next/link';
 import { LoginFormType, LoginResolver } from '~/domain/schemas/auth.schema';
-import { useForm } from 'react-hook-form';
-import { FieldInput } from '~/components/client/forms/field-input';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { FieldInput } from '@components/client/forms/field-input';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useLoginAsyncMutation } from '~/infrastructure/services/auth.service';
 import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
@@ -15,6 +14,7 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useToast } from '~/hooks/use-toast';
+import { useForm } from 'react-hook-form';
 
 const defaultValues: LoginFormType = {
    email: '',

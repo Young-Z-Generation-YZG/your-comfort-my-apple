@@ -22,7 +22,7 @@
          "@components/*": ["./src/components/*"],
          "@assets/*": ["./assets/*"],
          "@public/*": ["./public/*"],
-         "~/*": ["./src/*"],
+         "~/*": ["./src/*"]
       }
    },
    "include": [
@@ -30,7 +30,7 @@
       "**/*.ts",
       "**/*.tsx",
       ".next/types/**/*.ts",
-      "src/components/Social/index.ts",
+      "src/components/Social/index.ts"
    ],
    "exclude": ["node_modules"]
 }

@@ -1,9 +1,9 @@
 'use client';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { Button } from '~/components/ui/button';
+import { Button } from '@components/ui/button';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { Input } from '~/components/ui/input';
+import { Input } from '@components/ui/input';
 import { useState } from 'react';
 import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
 import Link from 'next/link';

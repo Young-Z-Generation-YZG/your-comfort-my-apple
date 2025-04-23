@@ -6,7 +6,7 @@ export const CategoryApi = createApi({
    reducerPath: 'category-api',
    tagTypes: ['Categories'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/catalog-services',
+      baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

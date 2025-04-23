@@ -11,7 +11,7 @@ export const identityApi = createApi({
    reducerPath: 'identity-api',
    tagTypes: ['Identity'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/identity-services',
+      baseUrl: envConfig.API_ENDPOINT + 'identity-services',
       prepareHeaders: (headers) => {
          headers.set('ngrok-skip-browser-warning', 'true');
 

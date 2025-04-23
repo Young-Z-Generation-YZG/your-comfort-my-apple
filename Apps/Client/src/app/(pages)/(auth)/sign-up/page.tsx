@@ -7,22 +7,22 @@ import { GoArrowUpRight } from 'react-icons/go';
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
 import Button from '../_components/Button';
-import { FieldInput } from '~/components/client/forms/field-input';
+import { FieldInput } from '@components/client/forms/field-input';
 import {
    RegisterFormType,
    RegisterResolver,
 } from '~/domain/schemas/auth.schema';
-import { useForm } from 'react-hook-form';
 import { useRegisterAsyncMutation } from '~/infrastructure/services/auth.service';
 import { FormSelector } from '../_components/selector-input';
-import { FormBirthdaySelector } from '~/components/client/forms/birthday-selector';
-import { FormPhoneInput } from '~/components/client/forms/phone-input';
+import { FormBirthdaySelector } from '@components/client/forms/birthday-selector';
+import { FormPhoneInput } from '@components/client/forms/phone-input';
 import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { useRouter } from 'next/navigation';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useToast } from '~/hooks/use-toast';
 import { Separator } from '@components/ui/separator';
+import { useForm } from 'react-hook-form';
 
 // List of countries - this would typically be more comprehensive
 const countries = [

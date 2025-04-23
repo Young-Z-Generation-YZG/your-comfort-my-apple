@@ -11,18 +11,18 @@ import {
    CarouselContent,
    CarouselNext,
    CarouselPrevious,
-} from '~/components/ui/carousel';
+} from '@components/ui/carousel';
 
-import images from '~/components/client/images';
+import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
+import { Button } from '@components/ui/button';
+import { Input } from '@components/ui/input';
 import {
    Accordion,
    AccordionItem,
    AccordionTrigger,
    AccordionContent,
-} from '~/components/ui/accordion';
+} from '@components/ui/accordion';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import CartItem from './_components/cart-item';
 import {
@@ -31,7 +31,7 @@ import {
    useStoreBasketAsyncMutation,
 } from '~/infrastructure/services/basket.service';
 import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 

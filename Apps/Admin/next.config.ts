@@ -2,6 +2,9 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
    output: 'standalone',
+   env: {
+      API_ENDPOINT: process.env.API_ENDPOINT,
+   },
    images: {
       remotePatterns: [
          {

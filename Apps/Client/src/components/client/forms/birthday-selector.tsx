@@ -5,8 +5,8 @@ import type React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, HelpCircle, AlertCircle } from 'lucide-react';
-import type { UseFormReturn, Path, FieldValues } from 'react-hook-form';
 import { cn } from '~/infrastructure/lib/utils';
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 
 // Define the months array with numeric values
 const MONTH_NAMES = [

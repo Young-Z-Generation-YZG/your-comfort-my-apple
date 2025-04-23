@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { OTPInput } from '~/components/client/forms/otp-input';
-import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { OTPInput } from '@components/client/forms/otp-input';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 import Button from '../../_components/Button';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
-import { useForm } from 'react-hook-form';
 import { useVerifyOtpAsyncMutation } from '~/infrastructure/services/auth.service';
+import { useForm } from 'react-hook-form';
 
 const defaultValues: OtpFormType = {
    email: '',

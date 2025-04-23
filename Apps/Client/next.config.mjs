@@ -2,6 +2,9 @@
 
 const nextConfig = {
    output: 'standalone',
+   env: {
+      API_ENDPOINT: process.env.API_ENDPOINT,
+   },
    reactStrictMode: false,
    eslint: {
       ignoreDuringBuilds: true,

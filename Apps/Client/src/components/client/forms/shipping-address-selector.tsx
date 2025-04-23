@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ChevronDown, Plus } from 'lucide-react';
-import type { UseFormSetValue } from 'react-hook-form';
 import { CheckoutFormType } from '~/domain/schemas/basket.schema';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
+import { UseFormSetValue } from 'react-hook-form';
 
 // Animation variants
 const dropdownVariants = {

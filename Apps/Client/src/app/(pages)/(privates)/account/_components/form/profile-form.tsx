@@ -1,4 +1,3 @@
-import { useForm } from 'react-hook-form';
 import {
    ProfileFormType,
    ProfileResolver,
@@ -6,21 +5,18 @@ import {
 
 import { useEffect, useState } from 'react';
 import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FiEdit3 } from 'react-icons/fi';
 import { cn } from '~/infrastructure/lib/utils';
 import {
    Form,
    FormControl,
-   FormDescription,
    FormField,
    FormItem,
-   FormLabel,
    FormMessage,
 } from '@components/ui/form';
-import { AlertCircle, CalendarIcon, Save } from 'lucide-react';
+import { CalendarIcon, Save } from 'lucide-react';
 import FieldInputSecond from '@components/client/forms/field-input-second';
 import {
    Select,
@@ -38,6 +34,7 @@ import {
 import { Calendar } from '@components/ui/calendar';
 import { format } from 'date-fns';
 import { useUpdateProfileAsyncMutation } from '~/infrastructure/services/identity.service';
+import { useForm } from 'react-hook-form';
 
 type ProfileFormProps = {
    profile: {

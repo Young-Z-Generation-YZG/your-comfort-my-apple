@@ -5,9 +5,9 @@ import {
    AccordionContent,
    AccordionItem,
    AccordionTrigger,
-} from '~/components/ui/accordion';
-import { DualRangeSlider } from '~/components/ui/dualRangeSlider';
-import { Button } from '~/components/ui/button';
+} from '@components/ui/accordion';
+import { DualRangeSlider } from '@components/ui/dualRangeSlider';
+import { Button } from '@components/ui/button';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';

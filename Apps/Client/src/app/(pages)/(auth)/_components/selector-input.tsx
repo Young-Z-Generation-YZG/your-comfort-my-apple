@@ -3,12 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, AlertCircle } from 'lucide-react';
-import {
-   Controller,
-   type UseFormReturn,
-   type Path,
-   type FieldValues,
-} from 'react-hook-form';
+import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
 
 interface FormSelectorProps<T extends FieldValues> {
    form: UseFormReturn<T>;

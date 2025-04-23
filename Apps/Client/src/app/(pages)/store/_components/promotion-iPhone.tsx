@@ -2,7 +2,7 @@
 
 import { ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from '~/components/ui/button';
+import { Button } from '@components/ui/button';
 import CartWrapper from './card-wrapper';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,13 +13,13 @@ import {
    StoreBasketResolver,
 } from '~/domain/schemas/basket.schema';
 import { IBasketItem } from '~/domain/interfaces/baskets/basket.interface';
-import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { addCartItem } from '~/infrastructure/redux/features/cart.slice';
-import { useLoading } from '~/components/contexts/loading.context';
+import { useLoading } from '@components/contexts/loading.context';
 import { cn } from '~/infrastructure/lib/utils';
 import { CldImage } from 'next-cloudinary';
+import { useForm } from 'react-hook-form';
 
 interface PromotionIPhoneProps {
    index: number;

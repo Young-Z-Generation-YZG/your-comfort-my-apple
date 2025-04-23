@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, X } from 'lucide-react';
-import { Button } from '~/components/ui/button';
+import { Button } from '@components/ui/button';
 import { cn } from '~/infrastructure/lib/utils';
 
 export default function PromotionBanner() {
