@@ -12,7 +12,7 @@ services:
     
     client.web:
         build:
-            context: ./client
+            context: ./Client
             dockerfile: Dockerfile
         ports:
         - "3000:3000"
@@ -21,7 +21,7 @@ services:
 
     admin.web:
         build:
-            context: ./admin
+            context: ./Admin
             dockerfile: Dockerfile
         ports:
         - "4000:3000"

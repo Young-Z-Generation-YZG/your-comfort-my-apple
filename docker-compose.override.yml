@@ -338,7 +338,7 @@ services:
     ygz.client.web:
         container_name: "ygz.client.web"
         build:
-            context: ./Apps/client
+            context: ./Apps/Client
             dockerfile: Dockerfile
         ports:
         - "3000:3000"
