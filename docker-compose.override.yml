@@ -318,38 +318,39 @@ services:
         networks:
         - app-network
 
-    ygz.nginx.webserver:
-        container_name: ygz.nginx.webserver
-        ports:
-        - "80:80"
-        volumes:
-        - ./nginx.prod.conf:/etc/nginx/nginx.conf
-        depends_on:
-        - ygz.gateways.yarp
-        - ygz.client.web
-        - ygz.identity.api
-        - ygz.catalog.api
-        - ygz.basket.api
-        - ygz.ordering.api
-        - ygz.discount.grpc
-        networks:
-        - app-network
+    # ygz.nginx.webserver:
+    #     image: nginx:stable
+    #     container_name: ygz.nginx.webserver
+    #     ports:
+    #     - "80:80"
+    #     volumes:
+    #     - ./nginx.prod.conf:/etc/nginx/nginx.conf
+    #     depends_on:
+    #     - ygz.gateways.yarp
+    #     - ygz.client.web
+    #     - ygz.identity.api
+    #     - ygz.catalog.api
+    #     - ygz.basket.api
+    #     - ygz.ordering.api
+    #     - ygz.discount.grpc
+    #     networks:
+    #     - app-network
     
-    ygz.client.web:
-        container_name: "ygz.client.web"
-        build:
-            context: ./Apps/Client
-            dockerfile: Dockerfile
-        ports:
-        - "3000:3000"
-        depends_on:
-        - ygz.identity.api
-        - ygz.catalog.api
-        - ygz.basket.api
-        - ygz.ordering.api
-        - ygz.discount.grpc
-        networks:
-        - app-network
+    # ygz.client.web:
+    #     container_name: "ygz.client.web"
+    #     build:
+    #         context: ./Apps/Client
+    #         dockerfile: Dockerfile
+    #     ports:
+    #     - "3000:3000"
+    #     depends_on:
+    #     - ygz.identity.api
+    #     - ygz.catalog.api
+    #     - ygz.basket.api
+    #     - ygz.ordering.api
+    #     - ygz.discount.grpc
+    #     networks:
+    #     - app-network
 
 volumes:
   postgres_identity:

@@ -40,7 +40,7 @@ const data = {
    },
    navMain: [
       {
-         title: 'iPhone Managements',
+         title: 'iPhone Management',
          url: '/dashboards/products',
          icon: TabletSmartphone,
          isActive: true,
@@ -53,24 +53,13 @@ const data = {
                title: 'iPhone Models',
                url: '/dashboards/iphone/iphone-models',
             },
-            {
-               title: 'iPhone Details',
-               url: '#',
-            },
-            {
-               title: "New iPhone's model",
-               url: '#',
-            },
-            {
-               title: 'Create New iPhone',
-               url: '#',
-            },
          ],
       },
       {
-         title: 'Promotion Managements',
+         title: 'Promotions Management',
          url: '#',
          icon: Tag,
+         isActive: true,
          items: [
             {
                title: 'Analytics',
@@ -78,26 +67,31 @@ const data = {
             },
             {
                title: 'Promotion Events',
-               url: '#',
+               url: '/dashboards/promotions/events',
             },
             {
                title: 'Promotion iPhone',
-               url: '#',
+               url: '/dashboards/promotions/items',
             },
             {
                title: 'Promotion Coupon',
-               url: '#',
+               url: '/dashboards/promotions/coupons',
             },
          ],
       },
       {
-         title: 'Order Managements',
+         title: 'Orders Management',
          url: '#',
          icon: ScrollText,
+         isActive: true,
          items: [
             {
                title: 'Analytics',
                url: '#',
+            },
+            {
+               title: 'Orders',
+               url: '/dashboards/orders',
             },
          ],
       },

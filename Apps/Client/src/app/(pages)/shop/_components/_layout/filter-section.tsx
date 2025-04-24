@@ -147,7 +147,8 @@ const FilterSection = () => {
             return foundColor ? foundColor : { name: '', hex: '' };
          }),
          models: selectedModels.map((model) => {
-            const foundModel = models.find((m) => m.name === model);
+            const foundModel = models.find((m) => m.value === model);
+
             return foundModel ? foundModel : { name: '', value: '' };
          }),
          storages: selectedStorages.map((storage) => {
@@ -237,7 +238,7 @@ const FilterSection = () => {
                </motion.div>
 
                {/* PRICE FILTER */}
-               <AccordionItem value="item-2">
+               <AccordionItem value="price">
                   <AccordionTrigger className="hover:no-underline text-[15px] font-semibold pb-0 uppercase ">
                      Price
                   </AccordionTrigger>
@@ -271,13 +272,13 @@ const FilterSection = () => {
                               return (
                                  <Button
                                     key={index}
-                                    onClick={() => toggleModel(model.name)}
+                                    onClick={() => toggleModel(model.value)}
                                     className={cn(
                                        'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white',
                                        {
                                           'bg-black text-white opacity-100':
                                              selectedModels.includes(
-                                                model.name,
+                                                model.value,
                                              ),
                                        },
                                     )}

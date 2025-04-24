@@ -18,7 +18,7 @@ import {
 } from '@components/ui/select';
 import IphoneModelItem from './_components/iphone-model-item';
 import { useGetModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
-import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { Skeleton } from '@components/ui/skeleton';
 import { Separator } from '@components/ui/separator';
@@ -135,6 +135,8 @@ const ShopPage = () => {
             }
          }
       }
+
+      console.log('queryParams', queryParams);
 
       router.push(`/shop?${queryParams}`);
    }, [filters]);

@@ -68,7 +68,4 @@ services:
 
   mq.rabbitmq:
     image: rabbitmq:management
-  
-  ygz.nginx.webserver:
-    image: nginx:alpine
 

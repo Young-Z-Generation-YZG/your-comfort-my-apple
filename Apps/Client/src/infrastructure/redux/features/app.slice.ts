@@ -30,6 +30,8 @@ const AppSlice = createSlice({
    initialState: initialState,
    reducers: {
       setAppFilters: (state, action: PayloadAction<FiltersType>) => {
+         console.log('setAppFilters', action.payload);
+
          state.value.filters = action.payload;
       },
       clearAppFilters: (state) => {

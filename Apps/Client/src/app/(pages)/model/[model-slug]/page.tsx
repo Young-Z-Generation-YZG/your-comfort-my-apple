@@ -23,7 +23,7 @@ import { Form, FormControl, FormField, FormItem } from '@components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@components/ui/radio-group';
 import { motion } from 'framer-motion';
 import { Button } from '@components/ui/button';
-import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 import { useStoreBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useDispatch } from 'react-redux';
