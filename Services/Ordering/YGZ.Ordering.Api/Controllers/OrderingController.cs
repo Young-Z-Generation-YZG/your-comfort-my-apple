@@ -8,7 +8,6 @@ using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
@@ -33,7 +32,7 @@ public class OrderingController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet()]
+    [HttpGet("admin")]
     public async Task<IActionResult> GetOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersQuery>(request);
@@ -53,7 +52,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("{orderId}/order-items")]
+    [HttpGet("{orderId}/details")]
     public async Task<IActionResult> GetOrderItems([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderItemsByOrderIdQuery(orderId);
@@ -63,7 +62,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPatch("/{orderId}/status/confirm")]
+    [HttpPatch("{orderId}/status/confirm")]
     public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new ConfirmOrderCommand(orderId);
@@ -73,7 +72,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPatch("/{orderId}/status/cancel")]
+    [HttpPatch("{orderId}/status/cancel")]
     public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new CancelOrderCommand(orderId);
@@ -83,10 +82,14 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPatch("/admin/{orderId}/status")]
+    [HttpPatch("admin/{orderId}/status")]
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
-        var cmd = _mapper.Map<UpdateOrderStatusCommand>(request);
+        var cmd = new UpdateOrderStatusCommand
+        {
+            OrderId = orderId,
+            UpdateStatus = request._updateStatus
+        };
 
         var result = await _sender.Send(cmd, cancellationToken);
 

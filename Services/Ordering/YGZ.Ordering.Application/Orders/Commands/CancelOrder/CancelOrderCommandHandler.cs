@@ -34,6 +34,9 @@ public class CancelOrderCommandHandler : ICommandHandler<CancelOrderCommand, boo
             case nameof(OrderStatus.PENDING):
                 order.Cancel();
                 break;
+            case nameof(OrderStatus.CONFIRMED):
+                order.Cancel();
+                break;
             case nameof(OrderStatus.PREPARING):
                 order.Cancel();
                 break;

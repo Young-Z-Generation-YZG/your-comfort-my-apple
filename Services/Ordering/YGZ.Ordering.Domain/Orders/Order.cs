@@ -94,11 +94,16 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
         {
             Status = OrderStatus.CANCELLED;
         }
+        else if (Status == OrderStatus.CONFIRMED)
+        {
+            Status = OrderStatus.CANCELLED;
+        }
+
     }
 
     public void Prepare()
     {
-        if (Status == OrderStatus.CONFIRMED)
+        if (Status == OrderStatus.CONFIRMED || Status == OrderStatus.PAID)
         {
             Status = OrderStatus.PREPARING;
         }
@@ -112,7 +117,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
         }
     }
 
-    public void Complete()
+    public void Delivered()
     {
         if (Status == OrderStatus.DELIVERING)
         {

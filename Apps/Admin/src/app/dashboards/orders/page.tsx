@@ -5,9 +5,9 @@ import ContentWrapper from '@components/ui/content-wrapper';
 import { Input } from '@components/ui/input';
 import { AnimatedTabsContent, Tabs, TabsTrigger } from '@components/ui/tabs';
 import { TabsList } from '@radix-ui/react-tabs';
-import { Search } from 'lucide-react';
-import { Fragment, useState } from 'react';
-import { CreditCard, Package, Truck } from 'lucide-react';
+import { Search, X, Loader } from 'lucide-react';
+import { Fragment, useEffect, useState } from 'react';
+import { CreditCard, Package, Truck, PackageSearch } from 'lucide-react';
 import {
    Table,
    TableBody,
@@ -18,133 +18,78 @@ import {
 } from '@components/ui/table';
 import Link from 'next/link';
 import { Badge } from '@components/ui/badge';
-
-// Mock data for orders
-const initialOrders = [
-   {
-      id: 'ORD-1234',
-      customer: 'John Smith',
-      date: '2023-04-24',
-      total: 1299.0,
-      status: 'pending',
-      paymentType: 'Credit Card',
-      items: [
-         {
-            name: 'iPhone 16 Pro',
-            color: 'Black',
-            storage: '256GB',
-            price: 1299.0,
-         },
-      ],
-      address: '123 Main St, New York, NY 10001',
-      email: 'john.smith@example.com',
-      phone: '+1 (555) 123-4567',
-   },
-   {
-      id: 'ORD-1235',
-      customer: 'Sarah Johnson',
-      date: '2023-04-23',
-      total: 594.15,
-      status: 'processing',
-      paymentType: 'PayPal',
-      items: [
-         { name: 'iPhone 16', color: 'Pink', storage: '128GB', price: 594.15 },
-      ],
-      address: '456 Oak Ave, San Francisco, CA 94102',
-      email: 'sarah.j@example.com',
-      phone: '+1 (555) 987-6543',
-   },
-   {
-      id: 'ORD-1236',
-      customer: 'Michael Brown',
-      date: '2023-04-22',
-      total: 2468.1,
-      status: 'shipped',
-      paymentType: 'Apple Pay',
-      items: [
-         {
-            name: 'iPhone 16 Pro',
-            color: 'Silver',
-            storage: '512GB',
-            price: 1399.0,
-         },
-         { name: 'iPhone 16', color: 'Blue', storage: '256GB', price: 1069.1 },
-      ],
-      address: '789 Pine St, Chicago, IL 60601',
-      email: 'mbrown@example.com',
-      phone: '+1 (555) 456-7890',
-   },
-   {
-      id: 'ORD-1237',
-      customer: 'Emily Davis',
-      date: '2023-04-21',
-      total: 1234.05,
-      status: 'delivered',
-      paymentType: 'Credit Card',
-      items: [
-         {
-            name: 'iPhone 16 Plus',
-            color: 'Ultramarine',
-            storage: '256GB',
-            price: 1234.05,
-         },
-      ],
-      address: '321 Elm St, Boston, MA 02108',
-      email: 'emily.d@example.com',
-      phone: '+1 (555) 234-5678',
-   },
-   {
-      id: 'ORD-1238',
-      customer: 'David Wilson',
-      date: '2023-04-20',
-      total: 594.15,
-      status: 'cancelled',
-      paymentType: 'Bank Transfer',
-      items: [
-         { name: 'iPhone 16', color: 'Pink', storage: '128GB', price: 594.15 },
-      ],
-      address: '654 Maple Ave, Seattle, WA 98101',
-      email: 'dwilson@example.com',
-      phone: '+1 (555) 876-5432',
-   },
-];
+import { cn } from '~/src/infrastructure/lib/utils';
+import { sampleData } from './_data';
+import { useGetOrdersAsyncQuery } from '~/src/infrastructure/services/order.service';
+import { OrderResponse } from '~/src/domain/interfaces/orders/order.interface';
+import { LoadingOverlay } from '@components/loading-overlay';
 
 // Status badge colors and icons
 const statusConfig = {
-   pending: {
+   PENDING: {
       color: 'bg-amber-50 text-amber-700 border-amber-200',
+      icon: <Loader className="h-4 w-4" />,
+   },
+   CONFIRMED: {
+      color: 'bg-green-50 text-green-700 border-green-200',
       icon: <Package className="h-4 w-4" />,
    },
-   processing: {
+   PAID: {
+      color: 'bg-green-50 text-green-700 border-green-200',
+      icon: <CreditCard className="h-4 w-4" />,
+   },
+   PREPARING: {
       color: 'bg-blue-50 text-blue-700 border-blue-200',
-      icon: <Package className="h-4 w-4" />,
+      icon: <PackageSearch className="h-4 w-4" />,
    },
-   shipped: {
+   DELIVERING: {
       color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
       icon: <Truck className="h-4 w-4" />,
    },
-   delivered: {
+   DELIVERED: {
       color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       icon: <Package className="h-4 w-4" />,
    },
-   cancelled: {
+   CANCELLED: {
       color: 'bg-rose-50 text-rose-700 border-rose-200',
-      icon: <Package className="h-4 w-4" />,
+      icon: <X className="h-4 w-4" />,
    },
 };
 
 const OrdersList = () => {
-   const [orders] = useState(initialOrders);
+   const [isLoading, setIsLoading] = useState(true);
+   const [orders, setOrders] = useState<OrderResponse[]>([]);
    const [statusFilter, setStatusFilter] = useState('all');
+
+   const {
+      data: orderDataAsync,
+      isLoading: loadingOrders,
+      isFetching: fetchingOrders,
+      isError: errorOrders,
+      error: errorOrdersMessage,
+      isSuccess: successOrders,
+      refetch: refetchOrders,
+   } = useGetOrdersAsyncQuery();
 
    // Filter orders based on status
    const filteredOrders =
       statusFilter === 'all'
          ? orders
-         : orders.filter((order) => order.status === statusFilter);
+         : orders.filter((order) => order.order_status === statusFilter);
+
+   useEffect(() => {
+      if (successOrders) {
+         setOrders(orderDataAsync.items);
+
+         setTimeout(() => {
+            setIsLoading(false);
+         }, 500);
+      }
+   }, [orderDataAsync]);
 
    return (
       <Fragment>
+         <LoadingOverlay isLoading={isLoading} fullScreen />
          <div className="p-4">
             <ContentWrapper>
                <div className="flex flex-col gap-6 p-6 bg-gray-50">
@@ -240,31 +185,31 @@ const OrdersList = () => {
                                        All Orders
                                     </TabsTrigger>
                                     <TabsTrigger
-                                       value="pending"
+                                       value="PENDING"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
                                        Pending
                                     </TabsTrigger>
                                     <TabsTrigger
-                                       value="processing"
+                                       value="PREPARING"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
-                                       Processing
+                                       Preparing
                                     </TabsTrigger>
                                     <TabsTrigger
-                                       value="shipped"
+                                       value="DELIVERING"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
-                                       Shipped
+                                       Delivering
                                     </TabsTrigger>
                                     <TabsTrigger
-                                       value="delivered"
+                                       value="DELIVERED"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
                                        Delivered
                                     </TabsTrigger>
                                     <TabsTrigger
-                                       value="cancelled"
+                                       value="CANCELLED"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
                                        Cancelled
@@ -278,7 +223,7 @@ const OrdersList = () => {
                                  <TableHeader>
                                     <TableRow className="bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50">
                                        <TableHead className="font-medium">
-                                          Order ID
+                                          Order Code
                                        </TableHead>
                                        <TableHead className="font-medium">
                                           Customer
@@ -289,7 +234,7 @@ const OrdersList = () => {
                                        <TableHead className="font-medium">
                                           Total
                                        </TableHead>
-                                       <TableHead className="font-medium">
+                                       <TableHead className="font-medium w-[150px]">
                                           Payment Type
                                        </TableHead>
                                        <TableHead className="font-medium">
@@ -303,49 +248,58 @@ const OrdersList = () => {
                                  <TableBody>
                                     {filteredOrders.map((order) => (
                                        <TableRow
-                                          key={order.id}
+                                          key={order.order_code}
                                           className="transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 animate-fadeIn border-b border-slate-200 dark:border-slate-700"
                                        >
-                                          <TableCell className="font-medium">
-                                             {order.id}
+                                          <TableCell className="order-id font-medium">
+                                             {order.order_code}
                                           </TableCell>
-                                          <TableCell>
-                                             {order.customer}
+                                          <TableCell className="customer-name">
+                                             {
+                                                order.order_shipping_address
+                                                   .contact_name
+                                             }
                                           </TableCell>
-                                          <TableCell>
+                                          <TableCell className="date">
                                              {new Date(
-                                                order.date,
+                                                order.order_created_at,
                                              ).toLocaleDateString()}
                                           </TableCell>
-                                          <TableCell className="font-medium">
-                                             ${order.total.toFixed(2)}
-                                          </TableCell>
-                                          <TableCell>
-                                             <div
-                                                className={`flex items-center gap-1.5 ${statusConfig[order.status as keyof typeof statusConfig]?.color}`}
-                                             >
-                                                <CreditCard className="h-3.5 w-3.5 text-slate-500" />
-                                                {order.paymentType}
-                                             </div>
+                                          <TableCell className="total-amount font-medium">
+                                             $
+                                             {order.order_total_amount.toFixed(
+                                                2,
+                                             )}
                                           </TableCell>
                                           <TableCell>
                                              <Badge
-                                                className={`$${statusConfig[order.status as keyof typeof statusConfig]?.color} border px-2 py-0.5 text-xs font-medium flex items-center gap-1.5`}
+                                                className={cn(
+                                                   'payment-type select-none flex items-center gap-1.5 font-medium py-1 px-2 mr-5 rounded-lg hover:bg-white',
+                                                   `${statusConfig[order.order_status as keyof typeof statusConfig]?.color}`,
+                                                )}
+                                             >
+                                                <CreditCard className="h-3.5 w-3.5 text-slate-500" />
+                                                {order.order_payment_method}
+                                             </Badge>
+                                          </TableCell>
+                                          <TableCell>
+                                             <Badge
+                                                className={cn(
+                                                   'border select-none text-xs font-medium flex items-center gap-1.5 py-1 px-2 mr-5 rounded-lg uppercase hover:bg-white',
+                                                   `${statusConfig[order.order_status as keyof typeof statusConfig]?.color}`,
+                                                )}
                                              >
                                                 {
                                                    statusConfig[
-                                                      order.status as keyof typeof statusConfig
+                                                      order.order_status as keyof typeof statusConfig
                                                    ].icon
                                                 }
-                                                {order.status
-                                                   .charAt(0)
-                                                   .toUpperCase() +
-                                                   order.status.slice(1)}
+                                                {order.order_status}
                                              </Badge>
                                           </TableCell>
                                           <TableCell className="text-right">
                                              <Link
-                                                href={`/dashboards/orders/${order.id}`}
+                                                href={`/dashboards/orders/${order.order_id}`}
                                              >
                                                 <Button
                                                    variant="ghost"
@@ -358,6 +312,8 @@ const OrdersList = () => {
                                           </TableCell>
                                        </TableRow>
                                     ))}
+
+                                    {}
                                  </TableBody>
                               </Table>
                            </div>

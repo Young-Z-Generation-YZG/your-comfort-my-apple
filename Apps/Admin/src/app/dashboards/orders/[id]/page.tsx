@@ -12,68 +12,171 @@ import {
 } from '@components/ui/select';
 import { Separator } from '@components/ui/separator';
 import {
-   CreditCard,
    Download,
    Mail,
    MapPin,
-   Package,
    Phone,
    Printer,
    Send,
    Truck,
    User,
+   CreditCard,
+   Package,
+   PackageSearch,
+   Loader,
+   X,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
+import { sampleData } from './_data';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '~/src/infrastructure/lib/utils';
+import {
+   useGetOrderDetailsAsyncQuery,
+   useUpdateOrderAsyncMutation,
+} from '~/src/infrastructure/services/order.service';
+import { useForm } from 'react-hook-form';
+import {
+   UpdateOrderStatusFormType,
+   UpdateOrderStatusResolver,
+} from '~/src/domain/schemas/order.schema';
+import { OrderDetailsResponse } from '~/src/domain/interfaces/orders/order.interface';
+import { LoadingOverlay } from '@components/loading-overlay';
 
 // Status badge colors and icons
 const statusConfig = {
-   pending: {
+   PENDING: {
       color: 'bg-amber-50 text-amber-700 border-amber-200',
-      icon: <Package className="h-4 w-4" />,
-      progress: 20,
+      icon: <Loader className="h-4 w-4" />,
    },
-   processing: {
+   CONFIRMED: {
+      color: 'bg-green-50 text-green-700 border-green-200',
+      icon: <Package className="h-4 w-4" />,
+   },
+   PAID: {
+      color: 'bg-green-50 text-green-700 border-green-200',
+      icon: <CreditCard className="h-4 w-4" />,
+   },
+   PREPARING: {
       color: 'bg-blue-50 text-blue-700 border-blue-200',
-      icon: <Package className="h-4 w-4" />,
-      progress: 40,
+      icon: <PackageSearch className="h-4 w-4" />,
    },
-   shipped: {
+   DELIVERING: {
       color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
       icon: <Truck className="h-4 w-4" />,
-      progress: 60,
    },
-   delivered: {
+   DELIVERED: {
       color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       icon: <Package className="h-4 w-4" />,
-      progress: 100,
    },
-   cancelled: {
+   CANCELLED: {
       color: 'bg-rose-50 text-rose-700 border-rose-200',
-      icon: <Package className="h-4 w-4" />,
-      progress: 100,
+      icon: <X className="h-4 w-4" />,
+   },
+};
+const itemVariants = {
+   hidden: { opacity: 0, y: 20 },
+   visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+         type: 'spring',
+         stiffness: 300,
+         damping: 24,
+      },
    },
 };
 
 const OrderDetails = () => {
-   const [loading, setLoading] = useState(true);
-   const [order, setOrder] = useState(null);
+   const [isLoading, setIsLoading] = useState(true);
+   const [order, setOrder] = useState<OrderDetailsResponse | null>(null);
    const router = useRouter();
 
-   const statusInfo = statusConfig.delivered || statusConfig.pending;
+   const params = useParams<{ id: string }>();
+
+   const {
+      data: orderDetailsData,
+      isLoading: orderDetailsLoading,
+      isError: orderDetailsError,
+      error: orderDetailsErrorResponse,
+      isSuccess: orderDetailsSuccess,
+      isFetching: orderDetailsFetching,
+      refetch: orderDetailsRefetch,
+   } = useGetOrderDetailsAsyncQuery(params.id);
+
+   const form = useForm({
+      resolver: UpdateOrderStatusResolver,
+   });
+
+   const [
+      updateOrderAsyncMutation,
+      { isLoading: isUpdating, isSuccess: isUpdated },
+   ] = useUpdateOrderAsyncMutation();
+
+   const AvailableUpdateStatus = () => {
+      if (order?.order_status === 'CONFIRMED') {
+         return <SelectItem value="PREPARING">Preparing</SelectItem>;
+      }
+
+      if (order?.order_status === 'PAID') {
+         return <SelectItem value="PREPARING">Preparing</SelectItem>;
+      }
+
+      if (order?.order_status === 'PREPARING') {
+         return <SelectItem value="DELIVERING">Delivering</SelectItem>;
+      }
+
+      if (order?.order_status === 'DELIVERING') {
+         return <SelectItem value="DELIVERED">Delivered</SelectItem>;
+      }
+
+      return null;
+   };
+
+   const handleUpdateStatus = async (data: UpdateOrderStatusFormType) => {
+      console.log('data', data);
+
+      if (
+         form.formState.errors.update_status &&
+         form.formState.errors.order_id
+      ) {
+         return;
+      }
+
+      await updateOrderAsyncMutation({
+         order_id: data.order_id,
+         update_status: data.update_status,
+      });
+
+      window.location.reload();
+   };
+
+   useEffect(() => {
+      if (orderDetailsSuccess) {
+         setOrder(orderDetailsData);
+
+         form.setValue('order_id', orderDetailsData.order_id);
+
+         setTimeout(() => {
+            setIsLoading(false);
+         }, 500);
+      }
+   }, [orderDetailsData]);
 
    return (
       <Fragment>
+         <LoadingOverlay isLoading={isLoading} fullScreen />
          <div className="p-4">
             <ContentWrapper>
                <div className="flex flex-col gap-6 p-6 bg-gray-50">
                   <div className="flex items-center justify-between">
                      <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                           Order Details
+                           Order {order?.order_code}
                         </h1>
-                        <p className="text-muted-foreground">
-                           Order ID: <span className="font-bold">123456</span>
+                        <p className="text-muted-foreground mt-2">
+                           Order ID:{' '}
+                           <span className="font-bold">{order?.order_id}</span>
                         </p>
                      </div>
                   </div>
@@ -88,44 +191,83 @@ const OrderDetails = () => {
                                  Order Items
                               </h2>
                            </div>
-                           <div className="divide-y divide-slate-200 dark:divide-slate-700">
-                              <div className="p-6 flex items-start gap-4">
-                                 <div className="h-16 w-16 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg
-                                       xmlns="http://www.w3.org/2000/svg"
-                                       width="24"
-                                       height="24"
-                                       viewBox="0 0 24 24"
-                                       fill="none"
-                                       stroke="currentColor"
-                                       strokeWidth="2"
-                                       strokeLinecap="round"
-                                       strokeLinejoin="round"
-                                       className="text-slate-500"
+                           <div className="divide-y divide-gray-200">
+                              <AnimatePresence>
+                                 {order?.order_items.map((item, index) => (
+                                    <motion.div
+                                       key={index}
+                                       className="p-4 flex items-center"
+                                       variants={itemVariants}
+                                       initial="hidden"
+                                       animate="visible"
+                                       custom={index}
                                     >
-                                       <rect
-                                          width="14"
-                                          height="20"
-                                          x="5"
-                                          y="2"
-                                          rx="2"
-                                          ry="2"
-                                       />
-                                       <path d="M12 18h.01" />
-                                    </svg>
-                                 </div>
-                                 <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-lg">
-                                       {'iphone 15-128gb'}
-                                    </div>
-                                    <div className="text-sm text-muted-foreground mt-1">
-                                       {'blue'}
-                                    </div>
-                                 </div>
-                                 <div className="font-medium text-lg">
-                                    ${Number(799).toFixed(2)}
-                                 </div>
-                              </div>
+                                       <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
+                                          <img
+                                             src={
+                                                item.product_image ||
+                                                '/placeholder.svg'
+                                             }
+                                             alt={item.product_name}
+                                             className="w-full h-full object-center object-cover"
+                                          />
+                                       </div>
+                                       <div className="ml-4 flex-1">
+                                          <h4 className="text-sm font-medium text-gray-900">
+                                             {item.product_name}
+                                          </h4>
+                                          <p className="mt-1 text-xs text-gray-500">
+                                             {item.product_color_name}
+                                          </p>
+                                          <div className="mt-1 flex justify-between">
+                                             <p className="text-sm text-gray-500">
+                                                Qty {item.quantity}
+                                             </p>
+                                             {item.promotion && (
+                                                <div className="">
+                                                   <p className="text-sm text-gray-500 inline-block mr-2">
+                                                      <span className="text-sm text-gray-500">
+                                                         Promotion:
+                                                      </span>{' '}
+                                                      {
+                                                         item.promotion
+                                                            .promotion_title
+                                                      }
+                                                   </p>
+                                                   <p className="text-sm text-gray-500 inline-block mr-2">
+                                                      Discount: %
+                                                      {item.promotion
+                                                         .promotion_discount_value *
+                                                         100}
+                                                   </p>
+                                                   <p className="font-semibold text-red-500 text-base inline-block mr-2">
+                                                      $
+                                                      {item.promotion.promotion_discount_unit_price.toFixed(
+                                                         2,
+                                                      )}
+                                                   </p>
+                                                   <p className="text-sm text-gray-500 line-through inline-block">
+                                                      $
+                                                      {item.product_unit_price.toFixed(
+                                                         2,
+                                                      )}
+                                                   </p>
+                                                </div>
+                                             )}
+
+                                             {!item.promotion && (
+                                                <p className="font-semibold text-gray-900 text-base">
+                                                   $
+                                                   {item.product_unit_price.toFixed(
+                                                      2,
+                                                   )}
+                                                </p>
+                                             )}
+                                          </div>
+                                       </div>
+                                    </motion.div>
+                                 ))}
+                              </AnimatePresence>
                            </div>
                         </div>
                      </div>
@@ -146,9 +288,16 @@ const OrderDetails = () => {
                                        <div className="font-medium">
                                           Shipping Address
                                        </div>
-                                       <div className="text-sm text-muted-foreground mt-1">
-                                          {'123 Main St, New York, NY 10001'}
-                                       </div>
+                                       <p className="text-sm text-muted-foreground mt-1">
+                                          {order?.order_shipping_address
+                                             .contact_address_line +
+                                             ', ' +
+                                             order?.order_shipping_address
+                                                .contact_district +
+                                             ' ' +
+                                             order?.order_shipping_address
+                                                .contact_province}
+                                       </p>
                                     </div>
                                  </div>
 
@@ -185,7 +334,7 @@ const OrderDetails = () => {
                                           Payment Method
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          {'VNPAY'}
+                                          {order?.order_payment_method}
                                        </div>
                                     </div>
                                  </div>
@@ -195,7 +344,26 @@ const OrderDetails = () => {
                                        <span className="text-muted-foreground">
                                           Subtotal
                                        </span>
-                                       <span>${Number(1290).toFixed(2)}</span>
+                                       <span>
+                                          $
+                                          {order?.order_sub_total_amount.toFixed(
+                                             2,
+                                          )}
+                                       </span>
+                                    </div>
+                                    <div className="flex justify-between text-sm mb-2">
+                                       <span className="text-muted-foreground">
+                                          Discount
+                                       </span>
+                                       <span>
+                                          $
+                                          {(order?.order_discount_amount ?? 0) >
+                                          0
+                                             ? order?.order_discount_amount.toFixed(
+                                                  2,
+                                               )
+                                             : '0.00'}
+                                       </span>
                                     </div>
                                     <div className="flex justify-between text-sm mb-2">
                                        <span className="text-muted-foreground">
@@ -212,7 +380,12 @@ const OrderDetails = () => {
                                     <Separator className="my-2" />
                                     <div className="flex justify-between font-medium text-lg mt-2">
                                        <span>Total</span>
-                                       <span>${Number(1290).toFixed(2)}</span>
+                                       <span>
+                                          $
+                                          {order?.order_total_amount?.toFixed(
+                                             2,
+                                          ) || '0.00'}
+                                       </span>
                                     </div>
                                  </div>
                               </div>
@@ -237,10 +410,13 @@ const OrderDetails = () => {
                                     </div>
                                     <div>
                                        <div className="font-medium">
-                                          {'John Smith'}
+                                          Customer Name
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          Customer since 2022
+                                          {
+                                             order?.order_shipping_address
+                                                .contact_name
+                                          }
                                        </div>
                                     </div>
                                  </div>
@@ -254,7 +430,10 @@ const OrderDetails = () => {
                                           Email Address
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          {'john.smith@example.com'}
+                                          {
+                                             order?.order_shipping_address
+                                                .contact_email
+                                          }
                                        </div>
                                     </div>
                                  </div>
@@ -268,13 +447,17 @@ const OrderDetails = () => {
                                           Phone Number
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          {'+1 (555) 123-4567'}
+                                          {
+                                             order?.order_shipping_address
+                                                .contact_phone_number
+                                          }
                                        </div>
                                     </div>
                                  </div>
                               </div>
                            </div>
                         </div>
+
                         <div className="bg-white flex-1 px-5 py-5 rounded-md">
                            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
                               <div className="px-6 py-5 border-b border-slate-200 dark:border-slate-700">
@@ -287,13 +470,21 @@ const OrderDetails = () => {
                                     <div className="font-medium mb-2">
                                        Current Status
                                     </div>
-                                    <Badge
-                                       className={`${statusInfo.color} border px-2.5 py-1 text-sm font-medium flex items-center gap-1.5`}
-                                    >
-                                       {statusInfo.icon}
-                                       {/* {order.status.charAt(0).toUpperCase() +
-                                          order.status.slice(1)} */}
-                                    </Badge>
+                                    {order ? (
+                                       <Badge
+                                          className={cn(
+                                             'border select-none text-sm font-medium flex items-center gap-1.5 py-2 px-2 mr-5 rounded-lg uppercase hover:bg-white',
+                                             `${statusConfig[order?.order_status as keyof typeof statusConfig]?.color}`,
+                                          )}
+                                       >
+                                          {
+                                             statusConfig[
+                                                order?.order_status as keyof typeof statusConfig
+                                             ].icon
+                                          }
+                                          {order?.order_status}
+                                       </Badge>
+                                    ) : null}
                                  </div>
 
                                  <div className="mb-6">
@@ -302,32 +493,42 @@ const OrderDetails = () => {
                                     </div>
                                     <Select
                                        defaultValue={'delivered'}
-                                       onValueChange={() => {}}
+                                       onValueChange={(value) => {
+                                          form.setValue(
+                                             'update_status',
+                                             value as any,
+                                          );
+                                       }}
+                                       disabled={
+                                          AvailableUpdateStatus() === null
+                                       }
                                     >
                                        <SelectTrigger className="w-full">
                                           <SelectValue placeholder="Select status" />
                                        </SelectTrigger>
-                                       <SelectContent>
-                                          <SelectItem value="pending">
-                                             Pending
-                                          </SelectItem>
-                                          <SelectItem value="processing">
-                                             Processing
-                                          </SelectItem>
-                                          <SelectItem value="shipped">
-                                             Shipped
-                                          </SelectItem>
-                                          <SelectItem value="delivered">
-                                             Delivered
-                                          </SelectItem>
-                                          <SelectItem value="cancelled">
-                                             Cancelled
-                                          </SelectItem>
+                                       <SelectContent className="w-full">
+                                          {AvailableUpdateStatus()}
                                        </SelectContent>
                                     </Select>
                                  </div>
 
-                                 <Button className="w-full">
+                                 <Button
+                                    className="w-full"
+                                    disabled={AvailableUpdateStatus() === null}
+                                    onClick={() => {
+                                       console.log(
+                                          'form',
+                                          form.getValues('order_id'),
+                                       );
+
+                                       console.log(
+                                          'form',
+                                          form.getValues('update_status'),
+                                       );
+
+                                       form.handleSubmit(handleUpdateStatus)();
+                                    }}
+                                 >
                                     Update Status
                                  </Button>
                               </div>

@@ -32,7 +32,7 @@ import { Search, ChevronRight, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@components/ui/button';
 
-import { orderData } from './data';
+import { orderData } from './_data';
 import { OrderResponse } from '~/domain/interfaces/orders/order.interface';
 import { useGetOrdersAsyncQuery } from '~/infrastructure/services/order.service';
 import { useRouter } from 'next/navigation';
@@ -85,8 +85,8 @@ const OrderPage = () => {
 
    useEffect(() => {
       if (successOrders) {
-         console.log('orderDataAsync', orderDataAsync);
          setOrders(orderDataAsync.items);
+
          setTimeout(() => {
             setIsLoading(false);
          }, 500);

@@ -1,6 +1,30 @@
 import { PromotionResponse } from '../common/promotion.interface';
 
-export interface OrderResponse {}
+export interface OrderResponse {
+   order_id: string;
+   order_code: string;
+   order_customer_email: string;
+   order_status: string;
+   order_payment_method: string;
+   order_shipping_address: OrderShippingAddress;
+   order_items_count: number;
+   order_sub_total_amount: number;
+   order_discount_amount: number;
+   order_total_amount: number;
+   order_created_at: string;
+   order_updated_at: string;
+   order_last_modified_by: string | null;
+}
+
+export interface OrderShippingAddress {
+   contact_name: string;
+   contact_email: string;
+   contact_phone_number: string;
+   contact_address_line: string;
+   contact_district: string;
+   contact_province: string;
+   contact_country: string;
+}
 
 export interface OrderDetailsResponse {
    order_id: string;

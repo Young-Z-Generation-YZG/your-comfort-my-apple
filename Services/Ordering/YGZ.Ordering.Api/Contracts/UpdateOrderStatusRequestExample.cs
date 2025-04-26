@@ -12,19 +12,18 @@ public class UpdateOrderStatusRequestExample : IOperationProcessor
         {
             var operation = context.OperationDescription.Operation;
 
-            // Set example for _page parameter
-            var updatedStautsParam = operation.Parameters.FirstOrDefault(p => p.Name == "_updatedStatus");
-            if (updatedStautsParam != null)
+            var updateStatusParam = operation.Parameters.FirstOrDefault(p => p.Name == "_updateStatus");
+            if (updateStatusParam != null)
             {
                 List<string> statusList = ["PREPARING", "DELIVERING", "DELIVERED"];
 
-                updatedStautsParam.Schema = new NJsonSchema.JsonSchema
+                updateStatusParam.Schema = new NJsonSchema.JsonSchema
                 {
                     Type = NJsonSchema.JsonObjectType.String
                 };
                 foreach (var name in statusList)
                 {
-                    updatedStautsParam.Schema.Enumeration.Add(name);
+                    updateStatusParam.Schema.Enumeration.Add(name);
                 }
             }
         }

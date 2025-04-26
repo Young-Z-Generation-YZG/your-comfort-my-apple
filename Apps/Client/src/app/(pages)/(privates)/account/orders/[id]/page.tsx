@@ -10,17 +10,22 @@ import {
    Truck,
    CheckCircle,
    AlertCircle,
-   RefreshCw,
+   Check,
+   X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGetOrderDetailsAsyncQuery } from '~/infrastructure/services/order.service';
-import { useParams } from 'next/navigation';
+import {
+   useCancelOrderAsyncMutation,
+   useConfirmOrderAsyncMutation,
+   useGetOrderDetailsAsyncQuery,
+} from '~/infrastructure/services/order.service';
+import { useParams, useRouter } from 'next/navigation';
 import {
    OrderDetailsResponse,
    OrderItemResponse,
 } from '~/domain/interfaces/orders/order.interface';
 import { cn } from '~/infrastructure/lib/utils';
-// import { toast } from 'sonner';
+import { toast } from 'sonner';
 import {
    Dialog,
    DialogContent,
@@ -59,8 +64,9 @@ export default function OrderDetails() {
    const [isLoading, setIsLoading] = useState(true);
    const [reviewItem, setReviewItem] = useState<OrderItemResponse | null>(null);
    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+   const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
    const { toast } = useToast();
-
+   const router = useRouter();
    const params = useParams<{ id: string }>();
 
    const {
@@ -73,9 +79,22 @@ export default function OrderDetails() {
       refetch: orderDetailsRefetch,
    } = useGetOrderDetailsAsyncQuery(params.id);
 
+   const [confirmOrder, { isLoading: isConfirmingOrder }] =
+      useConfirmOrderAsyncMutation();
+   const [cancelOrder, { isLoading: isCancellingOrder }] =
+      useCancelOrderAsyncMutation();
+
    useEffect(() => {
       if (orderDetailsSuccess) {
          setOrder(orderDetailsData);
+
+         const orderCreatedAt = new Date(orderDetailsData.order_created_at);
+         const currentTime = new Date();
+         const timeDifference =
+            currentTime.getTime() - orderCreatedAt.getTime();
+         const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+         setTimeLeft((30 - minutesDifference) * 60);
 
          setTimeout(() => {
             setIsLoading(false);
@@ -115,6 +134,84 @@ export default function OrderDetails() {
       }
    };
 
+   const CountdownTimer = () => {
+      useEffect(() => {
+         if (timeLeft <= 0) return;
+
+         const intervalId = setInterval(() => {
+            setTimeLeft((prevTime) => prevTime - 1);
+         }, 1000);
+
+         return () => clearInterval(intervalId);
+      }, [timeLeft]);
+
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+
+      return (
+         <p className="text-sm text-gray-500">
+            Order will be confirmed in{' '}
+            <span className="font-medium">
+               {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+            </span>
+         </p>
+      );
+   };
+
+   const renderButton = () => {
+      if (order?.order_status === 'PENDING') {
+         return (
+            <div className="flex items-center gap-2">
+               <CountdownTimer />
+
+               <Button
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => {
+                     handleConfirmOrder();
+                  }}
+               >
+                  <Check className="mr-2 h-4 w-4" />
+                  Confirm Order
+               </Button>
+            </div>
+         );
+      }
+
+      if (order?.order_status === 'CONFIRMED') {
+         return (
+            <div className="flex items-center gap-2">
+               <Button
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => {
+                     handleCancelOrder();
+                  }}
+               >
+                  <X className="mr-2 h-4 w-4" />
+                  Cancel Order
+               </Button>
+            </div>
+         );
+      }
+
+      return null;
+   };
+
+   const handleConfirmOrder = async () => {
+      if (order?.order_id) {
+         await confirmOrder(order.order_id).unwrap();
+
+         window.location.reload();
+      }
+   };
+
+   const handleCancelOrder = async () => {
+      if (order?.order_id) {
+         await cancelOrder(order.order_id).unwrap();
+
+         window.location.reload();
+      }
+   };
+
    return (
       <motion.div
          className="bg-white rounded-lg border border-gray-200 overflow-hidden"
@@ -145,10 +242,7 @@ export default function OrderDetails() {
                   variant="outline"
                   size="sm"
                   className="text-blue-600 hover:text-blue-800"
-               >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Reorder
-               </Button>
+               ></Button>
             </motion.div>
          </div>
 
@@ -372,18 +466,7 @@ export default function OrderDetails() {
                      <ArrowLeft className="mr-2 h-4 w-4" />
                      Back to Orders
                   </Button>
-                  <div className="space-x-2">
-                     <Button
-                        variant="outline"
-                        className="text-blue-600 hover:text-blue-800"
-                     >
-                        Get Help
-                     </Button>
-                     <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Reorder
-                     </Button>
-                  </div>
+                  {renderButton()}
                </motion.div>
             </div>
          ) : (

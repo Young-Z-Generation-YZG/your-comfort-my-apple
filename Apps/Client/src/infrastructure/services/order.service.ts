@@ -31,7 +31,7 @@ export const orderApi = createApi({
       }),
       getOrderDetailsAsync: builder.query<OrderDetailsResponse, string>({
          query: (orderId) => ({
-            url: `/api/v1/orders/${orderId}/order-items`,
+            url: `/api/v1/orders/${orderId}/details`,
             method: 'GET',
          }),
       }),
@@ -63,6 +63,18 @@ export const orderApi = createApi({
             return error.data;
          },
       }),
+      confirmOrderAsync: builder.mutation({
+         query: (orderId: string) => ({
+            url: '/api/v1/orders/${orderId}/status/confirm',
+            method: 'PATCH',
+         }),
+      }),
+      cancelOrderAsync: builder.mutation({
+         query: (orderId: string) => ({
+            url: '/api/v1/orders/${orderId}/status/cancel',
+            method: 'PATCH',
+         }),
+      }),
    }),
 });
 
@@ -71,4 +83,6 @@ export const {
    useMomoIpnCallbackAsyncMutation,
    useGetOrdersAsyncQuery,
    useGetOrderDetailsAsyncQuery,
+   useConfirmOrderAsyncMutation,
+   useCancelOrderAsyncMutation,
 } = orderApi;

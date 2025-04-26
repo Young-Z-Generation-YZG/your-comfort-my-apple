@@ -1,0 +1,38 @@
+export const sampleData = {
+   order_id: '60ec5de2-8f49-4c3d-8464-94c183475578',
+   order_code: '#842890',
+   order_customer_email: 'ed04b044-86de-475f-9122-d9807897f969',
+   order_status: 'PAID',
+   order_payment_method: 'VNPAY',
+   order_shipping_address: {
+      contact_name: 'Foo Bar',
+      contact_email: 'lov3rinve146@gmail.com',
+      contact_phone_number: '+84 123456789',
+      contact_address_line: '106* Kha Van Can',
+      contact_district: 'Thu Duc',
+      contact_province: 'Ho Chi Minh City',
+      contact_country: 'Vietnam',
+   },
+   order_items: [
+      {
+         order_item_id: 'dfe00ae4-8f6a-45eb-a885-ac6b8c36ef01',
+         product_id: '664351ae0087aa09993f5dc5',
+         model_id: '67c1871284c95016a7573f10',
+         product_name: 'iphone 15-128gb',
+         product_image:
+            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
+         product_color_name: 'blue',
+         product_unit_price: 799,
+         quantity: 1,
+         promotion: null,
+         sub_total_amount: 799,
+         is_reviewed: false,
+      },
+   ],
+   order_sub_total_amount: 799,
+   order_discount_amount: 0,
+   order_total_amount: 799,
+   order_created_at: '2025-04-19T06:39:00.319184Z',
+   order_updated_at: '2025-04-19T06:39:00.319184Z',
+   order_last_modified_by: null,
+};

@@ -30,7 +30,7 @@ public class UpdateOrderStatusCommandHandler : ICommandHandler<UpdateOrderStatus
             return Errors.Order.DoesNotExist;
         }
 
-        switch(request.UpdatedStatus)
+        switch(request.UpdateStatus)
         {
             case nameof(OrderStatus.PREPARING):
                 order.Prepare();
@@ -39,7 +39,7 @@ public class UpdateOrderStatusCommandHandler : ICommandHandler<UpdateOrderStatus
                 order.Deliver();
                 break;
             case nameof(OrderStatus.DELIVERED):
-                order.Complete();
+                order.Delivered();
                 break;
             default:
                 return Errors.Order.InvalidOrderStatus;
