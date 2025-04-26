@@ -65,16 +65,16 @@ public class OrderConfigurations : IEntityTypeConfiguration<Order>
         builder.Property(x => x.Status) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
-                   x => OrderStatusEnum.FromName(x, false)
+                   x => OrderStatus.FromName(x, false)
                )
-               .HasDefaultValue(OrderStatusEnum.PENDING)
+               .HasDefaultValue(OrderStatus.PENDING)
                .HasColumnName("Status");
 
         builder
             .Property(o => o.PaymentMethod)
             .HasConversion(
                    x => x.Name,
-                   x => PaymentMethodEnum.FromName(x, false)
+                   x => PaymentMethod.FromName(x, false)
             )
             .HasColumnName("PaymentMethod")
             .IsRequired();

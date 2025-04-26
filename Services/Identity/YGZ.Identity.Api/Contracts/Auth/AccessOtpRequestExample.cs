@@ -2,13 +2,13 @@
 using NSwag.Generation.Processors.Contexts;
 using YGZ.Identity.Api.Controllers;
 
-namespace YGZ.Identity.Api.Contracts;
+namespace YGZ.Identity.Api.Contracts.Auth;
 
 public class AccessOtpRequestExample : IOperationProcessor
 {
     public bool Process(OperationProcessorContext context)
     {
-        if(context.ControllerType == typeof(AuthController))
+        if (context.ControllerType == typeof(AuthController))
         {
             var operation = context.OperationDescription.Operation;
 

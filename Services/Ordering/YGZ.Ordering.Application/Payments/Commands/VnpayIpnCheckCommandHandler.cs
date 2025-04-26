@@ -59,9 +59,9 @@ public class VnpayIpnCheckCommandHandler : ICommandHandler<VnpayIpnCheckCommand,
 
             var order = await _orderRepository.GetOrderByIdWithInclude(OrderId.Of(orderId), (o => o.OrderItems),  cancellationToken);
 
-            if (order is not null && OrderStatusEnum.Equals(order.Status, OrderStatusEnum.PENDING))
+            if (order is not null && OrderStatus.Equals(order.Status, OrderStatus.PENDING))
             {
-                order.Status = OrderStatusEnum.PAID;
+                order.Status = OrderStatus.PAID;
 
                 var updatedResult = await _orderRepository.UpdateAsync(order, cancellationToken);
 
@@ -69,7 +69,7 @@ public class VnpayIpnCheckCommandHandler : ICommandHandler<VnpayIpnCheckCommand,
 
                 return response;
             } 
-            else if(order is not null && OrderStatusEnum.Equals(order.Status, OrderStatusEnum.PAID))
+            else if(order is not null && OrderStatus.Equals(order.Status, OrderStatus.PAID))
             {
                 OrderDetailsResponse response = MapToResponse(order);
 

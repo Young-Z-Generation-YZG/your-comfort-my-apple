@@ -17,8 +17,8 @@ public class AccessOtpPageCommandHandler : ICommandHandler<AccessOtpPageCommand,
 
     public async Task<Result<bool>> Handle(AccessOtpPageCommand request, CancellationToken cancellationToken)
     {
-        var result = await _identityService.CheckTokenIsValid(request.Email, request.Token);
+        //var result = await _identityService.CheckTokenIsValid(request.Email, request.Token);
 
-        return result.Response;
+        return true;
     }
 }

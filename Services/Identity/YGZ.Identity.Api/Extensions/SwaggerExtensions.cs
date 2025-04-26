@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using NSwag;
-using YGZ.Identity.Api.Contracts;
 using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Profiles;
+using YGZ.Identity.Api.Contracts.Auth;
 
 namespace YGZ.Identity.Api.Extensions;
 

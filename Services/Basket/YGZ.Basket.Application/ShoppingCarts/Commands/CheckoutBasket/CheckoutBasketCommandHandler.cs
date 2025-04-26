@@ -144,6 +144,8 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                 }
 
                 return new CheckoutBasketResponse() { PaymentRedirectUrl = momoPaymentUrl!.PayUrl };
+            case nameof(PaymentMethod.COD):
+                return new CheckoutBasketResponse() { OrderDetailsRedirectUrl = $"/account/orders/{orderId}" };
             default:
                 return Errors.Payment.Invalid;
         }

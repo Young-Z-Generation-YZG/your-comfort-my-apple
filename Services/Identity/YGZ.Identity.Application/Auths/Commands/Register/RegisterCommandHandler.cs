@@ -7,11 +7,10 @@ using YGZ.Identity.Application.Abstractions.Utils;
 using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Application.Emails;
 using YGZ.Identity.Domain.Core.Errors;
-using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Domain.Core.Enums;
 using YGZ.Identity.Application.Abstractions.Data;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
 namespace YGZ.Identity.Application.Auths.Commands.Register;
 

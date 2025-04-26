@@ -3,6 +3,7 @@ using System.Net.Mail;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using YamlDotNet.Core.Tokens;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
@@ -184,7 +185,7 @@ public class IdentityService : IIdentityService
             bool isValid = await _userManager.VerifyUserTokenAsync(
                 user,
                 "Default", // The provider name (matches AddDefaultTokenProviders)
-                "EmailConfirmation", // The purpose of the token
+                UserManager<User>.ConfirmEmailTokenPurpose, // The purpose of the token
                 decodedToken);
 
             if (!isValid)
@@ -222,13 +223,11 @@ public class IdentityService : IIdentityService
                 return searchResult.Error;
             }
 
-            var token = await _userManager
-                .GeneratePasswordResetTokenAsync(searchResult.Response!)
-                .ConfigureAwait(false);
+            var user = searchResult.Response!;
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
-            var result = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
-
-            return result;
+            return encodedToken;
         }
         catch (Exception ex)
         {
@@ -237,7 +236,7 @@ public class IdentityService : IIdentityService
         }
     }
 
-    public async Task<Result<bool>> CheckTokenIsValid(string email, string encodedToken)
+    public async Task<Result<bool>> VerifyResetPasswordTokenAsync(string email, string encodedToken, string newPassword)
     {
         try
         {
@@ -269,14 +268,26 @@ public class IdentityService : IIdentityService
             bool isValid = await _userManager.VerifyUserTokenAsync(
                 user,
                 "Default", // The provider name (matches AddDefaultTokenProviders)
-                "EmailConfirmation", // The purpose of the token
+                UserManager<User>.ResetPasswordTokenPurpose, // The purpose of the token
                 decodedToken);
 
-            return isValid;
+            if (!isValid)
+            {
+                return Errors.Auth.InvalidToken;
+            }
+
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
+
+            if (!resetPasswordResult.Succeeded)
+            {
+                return Errors.User.CannotResetPassword;
+            }
+
+            return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to verify email token for {Email}", email);
+            _logger.LogError(ex, ex.Message, nameof(VerifyResetPasswordTokenAsync));
             throw;
         }
     }

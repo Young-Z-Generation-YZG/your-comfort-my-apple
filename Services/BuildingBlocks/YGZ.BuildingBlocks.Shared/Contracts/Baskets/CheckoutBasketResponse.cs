@@ -8,5 +8,6 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record CheckoutBasketResponse()
 {
-    required public string PaymentRedirectUrl { get; set; }
+    public string? PaymentRedirectUrl { get; set; } = null;
+    public string? OrderDetailsRedirectUrl { get; set; } = null;
 }

@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Orders;
-using YGZ.Ordering.Domain.Core.Primitives;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Infrastructure.Persistence.Repositories;

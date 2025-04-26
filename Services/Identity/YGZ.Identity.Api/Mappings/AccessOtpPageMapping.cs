@@ -1,5 +1,5 @@
 ﻿using Mapster;
-using YGZ.Identity.Api.Contracts;
+using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 
 namespace YGZ.Identity.Api.Mappings;

@@ -51,7 +51,7 @@ public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationRes
 
         if (!string.IsNullOrWhiteSpace(request.OrderStatus))
         {
-            filterExpression = filterExpression.And(order => order.Status == OrderStatusEnum.FromName(request.OrderStatus, false));
+            filterExpression = filterExpression.And(order => order.Status == OrderStatus.FromName(request.OrderStatus, false));
         }
 
         return filterExpression;

@@ -16,5 +16,7 @@ public interface IKeycloakService
     Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request);
     Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request);
     Task<Result<bool>> VerifyEmailAsync(string email);
+    Task<Result<bool>> SendEmailResetPasswordAsync(string email);
+    Task<Result<bool>> ChangePasswordAsync(string email, string currPassword, string newPassword);
     Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
 }

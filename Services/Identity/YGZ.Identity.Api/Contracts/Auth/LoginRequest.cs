@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace YGZ.Identity.Api.Contracts;
+namespace YGZ.Identity.Api.Contracts.Auth;
 
 public sealed record LoginRequest(
     [property: JsonPropertyName("email")] string Email,

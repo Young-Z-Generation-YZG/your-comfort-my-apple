@@ -17,8 +17,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
     public UserId CustomerId { get; set; } = default!;
     public Code Code { get; set; } = default!;
-    public OrderStatusEnum Status { get; set; } = OrderStatusEnum.PENDING;
-    required public PaymentMethodEnum PaymentMethod { get; set; }
+    public OrderStatus Status { get; set; } = OrderStatus.PENDING;
+    required public PaymentMethod PaymentMethod { get; set; }
     public Address ShippingAddress { get; set; }
     public decimal SubTotalAmount
     {
@@ -39,8 +39,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
     public static Order Create(OrderId orderId,
                                UserId customerId,
                                Code code,
-                               OrderStatusEnum status,
-                               PaymentMethodEnum paymentMethod,
+                               OrderStatus status,
+                               PaymentMethod paymentMethod,
                                decimal discountAmount,
                                Address ShippingAddress)
     {
@@ -73,6 +73,50 @@ public class Order : AggregateRoot<OrderId>, IAuditable<UserId>
         if (item is not null)
         {
             _orderItems.Remove(item);
+        }
+    }
+
+    public void Confirm()
+    {
+        if (Status == OrderStatus.PENDING)
+        {
+            Status = OrderStatus.CONFIRMED;
+        }
+    }
+
+    public void Cancel()
+    {
+        if (Status == OrderStatus.PENDING)
+        {
+            Status = OrderStatus.CANCELLED;
+        }
+        else if (Status == OrderStatus.PREPARING)
+        {
+            Status = OrderStatus.CANCELLED;
+        }
+    }
+
+    public void Prepare()
+    {
+        if (Status == OrderStatus.CONFIRMED)
+        {
+            Status = OrderStatus.PREPARING;
+        }
+    }
+
+    public void Deliver()
+    {
+        if (Status == OrderStatus.PREPARING)
+        {
+            Status = OrderStatus.DELIVERING;
+        }
+    }
+
+    public void Complete()
+    {
+        if (Status == OrderStatus.DELIVERING)
+        {
+            Status = OrderStatus.DELIVERED;
         }
     }
 }

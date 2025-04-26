@@ -22,13 +22,6 @@ public class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand, boo
 
     public async Task<Result<bool>> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
-        var validToken = await _identityService.CheckTokenIsValid(request.Email, request.Token);
-
-        if (validToken.IsFailure)
-        {
-            return validToken.Error;
-        }
-
         var otp = await _cachedRepository.GetAsync(request.Email);
 
         if (otp is null)

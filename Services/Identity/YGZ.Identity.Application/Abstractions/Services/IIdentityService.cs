@@ -15,6 +15,5 @@ public interface IIdentityService
     Task<Result<string>> GenerateEmailVerificationTokenAsync(string email);
     Task<Result<string>> GenerateResetPasswordTokenAsync(string email);
     Task<Result<bool>> VerifyEmailTokenAsync(string email, string encodedToken);
-    Task<Result<bool>> CheckTokenIsValid(string email, string encodedToken);
-
+    Task<Result<bool>> VerifyResetPasswordTokenAsync(string email, string encodedToken, string newPassword);
 }

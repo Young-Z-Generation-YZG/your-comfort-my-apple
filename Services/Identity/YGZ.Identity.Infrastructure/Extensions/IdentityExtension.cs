@@ -15,6 +15,13 @@ public static class IdentityExtension
             .AddIdentityCore<User>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = true;
+
+                options.Password.RequiredLength = 1;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false; 
+                options.Password.RequireDigit = false;
+                options.Password.RequiredUniqueChars = 0;
             })
             .AddRoles<IdentityRole>()
             .AddDefaultTokenProviders()

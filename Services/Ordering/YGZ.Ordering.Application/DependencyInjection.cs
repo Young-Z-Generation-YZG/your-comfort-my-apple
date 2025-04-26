@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
+using Quartz;
 using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Ordering.Application;
@@ -20,6 +21,10 @@ public static class DependencyInjection
 
         // Add Feature Management 
         services.AddFeatureManagement();
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 
         return services;

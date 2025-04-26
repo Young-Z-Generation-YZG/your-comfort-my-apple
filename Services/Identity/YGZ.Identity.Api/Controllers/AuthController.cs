@@ -4,13 +4,15 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Identity.Api.Contracts;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
+using YGZ.Identity.Api.Contracts.Auth;
+using YGZ.Identity.Application.Auths.Commands.ResetPassword;
+using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -65,6 +67,26 @@ public class AuthController : ApiController
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyEmailCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("reset-password/request")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<ResetPasswordCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("reset-password/verification")]
+    public async Task<IActionResult> ResetPassword([FromBody] VerifyResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<VerifyResetPasswordCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 

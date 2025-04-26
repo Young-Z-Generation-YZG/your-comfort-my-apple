@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace YGZ.Identity.Api.Contracts;
+namespace YGZ.Identity.Api.Contracts.Auth;
 
 public sealed record RegisterRequest(
     [property: JsonPropertyName("email")] string Email,
@@ -10,4 +10,5 @@ public sealed record RegisterRequest(
     [property: JsonPropertyName("last_name")] string LastName,
     [property: JsonPropertyName("phone_number")] string PhoneNumber,
     [property: JsonPropertyName("birth_day")] string BirthDay,
-    [property: JsonPropertyName("country")] string Country) { }
+    [property: JsonPropertyName("country")] string Country)
+{ }

@@ -22,8 +22,8 @@ public static class MappingExtension
         var order = Order.Create(orderId: OrderId.Of(orderId),
                                  customerId: UserId.Of(new Guid(userId)),
                                  code: Code.GenerateCode(),
-                                 status: OrderStatusEnum.PENDING,
-                                 paymentMethod: PaymentMethodEnum.FromName(dto.PaymentMethod),
+                                 status: OrderStatus.PENDING,
+                                 paymentMethod: PaymentMethod.FromName(dto.PaymentMethod),
                                  discountAmount: dto.DiscountAmount,
                                  ShippingAddress: shippingAddress);
 

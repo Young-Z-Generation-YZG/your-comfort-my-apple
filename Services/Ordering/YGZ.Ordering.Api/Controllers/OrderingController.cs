@@ -8,6 +8,10 @@ using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
+using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
+using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -59,13 +63,36 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    //[HttpPost()]
-    //public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request, CancellationToken cancellationToken)
-    //{
-    //    var cmd = _mapper.Map<CreateOrderCommand>(request);
+    [HttpPatch("/{orderId}/status/confirm")]
+    public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    {
+        var cmd = new ConfirmOrderCommand(orderId);
 
-    //    var result = await _sender.Send(cmd, cancellationToken);
+        var result = await _sender.Send(cmd, cancellationToken);
 
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPatch("/{orderId}/status/cancel")]
+    public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    {
+        var cmd = new CancelOrderCommand(orderId);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPatch("/admin/{orderId}/status")]
+    public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<UpdateOrderStatusCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+
+    //[HttpPatch("/{orderId}/status/refund")]
 }

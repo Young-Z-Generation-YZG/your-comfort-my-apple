@@ -380,4 +380,147 @@ public class KeycloakService : IKeycloakService
             throw;
         }
     }
+
+    public async Task<Result<bool>> SendEmailResetPasswordAsync(string email)
+    {
+        try
+        {
+            // Step 1: Find the user by email
+            var userResult = await GetUserByUsernameOrEmailAsync(email);
+            if (userResult.IsFailure || userResult.Response == null)
+            {
+                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
+                return Errors.Keycloak.UserNotFound;
+            }
+
+            var userId = userResult.Response.Id;
+
+            // Step 2: Get admin token
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            // Step 3: Prepare the payload to trigger password reset email
+            var resetPayload = new
+            {
+                actions = new[] { "UPDATE_PASSWORD" }
+            };
+
+            // Step 4: Create the PUT request to execute the password reset action
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}/execute-actions-email"),
+                Content = new StringContent(JsonConvert.SerializeObject(resetPayload), Encoding.UTF8, "application/json"),
+                Headers =
+            {
+                { "Authorization", $"Bearer {adminToken}" },
+                { "Accept", "application/json" }
+            }
+            };
+
+            // Step 5: Send the request
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Password reset email sent successfully for user {Email} in Keycloak", email);
+                return true;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to send password reset email for {Email}. Status: {StatusCode}, Error: {Error}",
+                    email, response.StatusCode, errorContent);
+                return Errors.Keycloak.SendEmailResetPasswordFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending password reset email for {Email} in Keycloak", email);
+            return Errors.Keycloak.SendEmailResetPasswordFailed;
+        }
+    }
+
+    public async Task<Result<bool>> ChangePasswordAsync(string email, string currPassword, string newPassword)
+    {
+        try
+        {
+            // Step 1: Find the user by email
+            var userResult = await GetUserByUsernameOrEmailAsync(email);
+            if (userResult.IsFailure || userResult.Response == null)
+            {
+                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
+                return Errors.Keycloak.UserNotFound;
+            }
+
+            var userId = userResult.Response.Id;
+
+            // Step 2: Verify current password (optional, for additional security)
+            var loginRequest = new LoginCommand { Email = email, Password = currPassword };
+            try
+            {
+                var tokenResponse = await GetKeycloackTokenPairAsync(loginRequest);
+                if (string.IsNullOrEmpty(tokenResponse.AccessToken))
+                {
+                    _logger.LogWarning("Invalid current password for user {Email}", email);
+                    return Errors.Keycloak.InvalidCredentials;
+                }
+            }
+            catch
+            {
+                _logger.LogWarning("Invalid current password for user {Email}", email);
+                return Errors.Keycloak.InvalidCredentials;
+            }
+
+            // Step 3: Get admin token
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            // Step 4: Prepare the new password payload
+            var resetPayload = new
+            {
+                credentials = new[]
+                {
+                new
+                {
+                    type = "password",
+                    value = newPassword,
+                    temporary = false
+                }
+            }
+            };
+
+            // Step 5: Create the PUT request to update the user's password
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}"),
+                Content = new StringContent(JsonConvert.SerializeObject(resetPayload), Encoding.UTF8, "application/json"),
+                Headers =
+            {
+                { "Authorization", $"Bearer {adminToken}" },
+                { "Accept", "application/json" }
+            }
+            };
+
+            // Step 6: Send the request
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Password changed successfully for user {Email} in Keycloak", email);
+                return true;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to change password for {Email}. Status: {StatusCode}, Error: {Error}",
+                    email, response.StatusCode, errorContent);
+                return Errors.Keycloak.ChangePasswordFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
+            return Errors.Keycloak.ChangePasswordFailed;
+        }
+    }
 }
