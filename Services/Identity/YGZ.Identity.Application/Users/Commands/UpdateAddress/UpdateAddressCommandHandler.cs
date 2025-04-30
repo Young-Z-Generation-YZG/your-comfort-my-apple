@@ -3,6 +3,8 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
+using YGZ.Identity.Application.Abstractions.HttpContext;
+using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.UpdateAddress;
@@ -10,14 +12,18 @@ namespace YGZ.Identity.Application.Users.Commands.UpdateAddress;
 public class UpdateAddressCommandHandler : ICommandHandler<UpdateAddressCommand, bool>
 {
     private readonly IAddressRepository _addressRepository;
+    private readonly IUserContext _userContext;
 
-    public UpdateAddressCommandHandler(IAddressRepository addressRepository)
+    public UpdateAddressCommandHandler(IAddressRepository addressRepository, IUserContext userContext)
     {
         _addressRepository = addressRepository;
+        _userContext = userContext;
     }
 
     public async Task<Result<bool>> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
+        var userId = _userContext.GetUserId();
+
         var addressId = Guid.TryParse(request.AddressId, out var guid)
             ? ShippingAddressId.Of(guid)
             : ShippingAddressId.Of(Guid.Empty);
@@ -27,6 +33,11 @@ public class UpdateAddressCommandHandler : ICommandHandler<UpdateAddressCommand,
         if (addressResult.IsFailure)
         {
             return addressResult.Error;
+        }
+
+        if(addressResult.Response!.UserId != userId)
+        {
+            return Errors.Address.NotFound;
         }
 
         addressResult.Response!.Update(

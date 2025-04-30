@@ -15,44 +15,41 @@ using YGZ.Identity.Application.Users.Commands.UpdateAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateProfile;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
-//[Authorize(Roles = "[Role] USER")]
 [Route("api/v{version:apiVersion}/users")]
 [ApiVersion(1)]
 [OpenApiTag("users", Description = "Manage users.")]
-[ProtectedResource("profiles")]
+//[ProtectedResource("profiles")]
+//[Authorize(Roles = "USER")]
 public class UserController : ApiController
 {
-    private readonly ILogger<UserController> _logger;
     private readonly IMapper _mapper;
     private readonly ISender _sender;
 
-    public UserController(ILogger<UserController> logger, ISender sender, IMapper mapper)
+    public UserController(ISender sender, IMapper mapper)
     {
-        _logger = logger;
         _sender = sender;
         _mapper = mapper;
     }
 
-    //[Authorize(Policy = Policies.RequireClientRole)]
     //[OpenApiOperation("[profiles:read]", "")]
+    //[ProtectedResource("profiles", "READ:OWN")]
     [HttpGet("me")]
-    [ProtectedResource("profiles", "profile:read:own")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> GetMe(CancellationToken cancellationToken)
     {
         var query = new GetMeQuery();
-
+            
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpGet("addresses")]
-    [ProtectedResource("profiles", "profile:read:own")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> GetAddresses(CancellationToken cancellationToken)
     {
         var query = new GetAddressesQuery();
@@ -64,8 +61,7 @@ public class UserController : ApiController
 
 
     [HttpPost("addresses")]
-    [ProtectedResource("profiles", "profile:read:own")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> AddAddress([FromBody] AddAddressRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<AddAddressCommand>(request);
@@ -76,7 +72,7 @@ public class UserController : ApiController
     }
 
     [HttpPut("addresses/{addressId}")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> UpdateAddress([FromRoute] string addressId, [FromBody] UpdateAddressRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateAddressCommand>(request);
@@ -88,7 +84,7 @@ public class UserController : ApiController
     }
 
     [HttpPatch("addresses/{addressId}/is-default")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> SetDefaultAddress([FromRoute] string addressId, CancellationToken cancellationToken)
     {
         var cmd = new SetDefaultAddressCommand(addressId);
@@ -99,7 +95,7 @@ public class UserController : ApiController
     }
 
     [HttpPut("profiles")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateProfileCommand>(request);
@@ -110,7 +106,7 @@ public class UserController : ApiController
     }
 
     [HttpDelete("addresses/{addressId}")]
-    [AllowAnonymous]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> DeleteAddress([FromRoute] string addressId, CancellationToken cancellationToken)
     {
         var cmd = new DeleteAddressCommand(addressId);

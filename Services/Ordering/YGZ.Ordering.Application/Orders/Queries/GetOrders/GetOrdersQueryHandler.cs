@@ -4,6 +4,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Utils;
+using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Enums;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -13,10 +14,12 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrders;
 public class GetOrdersQueryHandler : IQueryHandler<GetOrdersQuery, PaginationResponse<OrderResponse>>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUserContext _userContext;
 
-    public GetOrdersQueryHandler(IOrderRepository orderRepository)
+    public GetOrdersQueryHandler(IOrderRepository orderRepository, IUserContext userContext)
     {
         _orderRepository = orderRepository;
+        _userContext = userContext;
     }
 
     public async Task<Result<PaginationResponse<OrderResponse>>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)

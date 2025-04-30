@@ -1,8 +1,9 @@
 ﻿
-using MediatR;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
+using YGZ.Identity.Application.Abstractions.HttpContext;
+using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.DeleteAddress;
@@ -11,16 +12,18 @@ public class DeleteAddressCommandHandler : ICommandHandler<DeleteAddressCommand,
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
-    public DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository)
+    private readonly IUserContext _userContext;
+    public DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserContext userContext)
     {
         _addressRepository = addressRepository;
         _userRepository = userRepository;
+        _userContext = userContext;
     }
 
     public async Task<Result<bool>> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
-        var userEmail = "lov3rinve146@gmail.com";
+        var userEmail = _userContext.GetUserEmail();
+        var userId = _userContext.GetUserId();
 
         var addressId = Guid.TryParse(request.AddressId, out var guid)
             ? ShippingAddressId.Of(guid)
@@ -38,6 +41,11 @@ public class DeleteAddressCommandHandler : ICommandHandler<DeleteAddressCommand,
         if (addressResult.IsFailure)
         {
             return addressResult.Error;
+        }
+
+        if(addressResult.Response!.UserId != userId)
+        {
+            return Errors.Address.NotFound;
         }
 
         var result = await _addressRepository.RemoveAsync(addressResult.Response!, cancellationToken);

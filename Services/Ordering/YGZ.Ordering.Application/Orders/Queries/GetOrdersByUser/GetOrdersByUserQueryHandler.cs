@@ -26,10 +26,9 @@ public class GetOrdersByUserQueryHandler : IQueryHandler<GetOrdersByUserQuery, P
 
     public async Task<Result<PaginationResponse<OrderResponse>>> Handle(GetOrdersByUserQuery request, CancellationToken cancellationToken)
     {
-        //var userId = _userContext.GetUserId();
-        UserId userId = UserId.Of(Guid.Parse("ed04b044-86de-475f-9122-d9807897f969"));
+        var userId = _userContext.GetUserId();
 
-        var expression = BuildExpression(request, userId);
+        var expression = BuildExpression(request, UserId.Of(Guid.Parse(userId)));
 
         var result = await _orderRepository.GetAllAsync(filterExpression: expression,
                                                         _page: request.Page,

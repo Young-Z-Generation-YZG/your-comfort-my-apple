@@ -48,17 +48,5 @@ public class CouponModelMapping : IRegister
         config
             .NewConfig<DeleteDiscountCouponRequest, DeleteCouponCommand>()
             .Map(dest => dest.CouponId, src => src.CouponId);
-
-        //config.NewConfig<Coupon, CouponModel>()
-        //    .Map(dest => dest.Title, src => src.Title)
-        //    .Map(dest => dest.Description, src => src.Description)
-        //    .Map(dest => dest.State, src => MapStateEnum(src.State.Name))
-        //    .Map(dest => dest.ProductNameTag, src => MapNameTagEnum(src.ProductNameTag.Name))
-        //    .Map(dest => dest.Type, src => MapTypeEnum(src.Type.Name))
-        //    .Map(dest => dest.DiscountValue, src => src.DiscountValue)
-        //    .Map(dest => dest.MaxDiscountAmount, src => src.MaxDiscountAmount.HasValue ? src.MaxDiscountAmount : null)
-        //    .Map(dest => dest.ValidFrom, src => src.ValidFrom.HasValue ? Timestamp.FromDateTime(src.ValidFrom.Value.ToUniversalTime()) : null)
-        //    .Map(dest => dest.ValidTo, src => src.ValidTo.HasValue ? Timestamp.FromDateTime(src.ValidTo.Value.ToUniversalTime()) : null)
-        //    .Map(dest => dest.AvailableQuantity, src => src.AvailableQuantity);
     }
 }

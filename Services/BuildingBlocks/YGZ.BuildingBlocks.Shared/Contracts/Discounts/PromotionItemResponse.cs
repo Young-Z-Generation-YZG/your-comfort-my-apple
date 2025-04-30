@@ -1,7 +1,11 @@
 ﻿
 
+using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
+
 namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record PromotionItemResponse
 {
     public required string PromotionItemId { get; init; }

@@ -3,6 +3,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
+using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -12,17 +13,23 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByOrderIdQuery, OrderDetailsResponse>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUserContext _userContext;
 
-    public GetOrderItemsByOrderIdQueryHandler(IOrderRepository orderRepository)
+    public GetOrderItemsByOrderIdQueryHandler(IOrderRepository orderRepository, IUserContext userContext)
     {
         _orderRepository = orderRepository;
+        _userContext = userContext;
     }
 
     public async Task<Result<OrderDetailsResponse>> Handle(GetOrderItemsByOrderIdQuery request, CancellationToken cancellationToken)
     {
         OrderId orderId = OrderId.Of(request.OrderId);
 
-        var order = await _orderRepository.GetOrderByIdWithInclude(orderId, (o => o.OrderItems), cancellationToken);
+        var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
+
+        var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
+
+        var order = orders.FirstOrDefault(x => x.Id == orderId);
 
         if (order is null)
         {

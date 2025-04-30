@@ -1,6 +1,10 @@
 ﻿
+using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
+
 namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public class PromotionGlobalEventResponse
 {
     public PromotionEventResponse promotionEvent { get; set; }
@@ -8,6 +12,7 @@ public class PromotionGlobalEventResponse
     public List<PromotionCategoryResponse> PromotionCategories { get; set; }
 }
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record PromotionEventResponse
 {
     required public string? PromotionEventId { get; set; }
@@ -19,6 +24,7 @@ public sealed record PromotionEventResponse
     public DateTime? PromotionEventValidTo { get; set; }
 }
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record PromotionProductResponse
 {
     required public string ProductId { get; set; }
@@ -29,6 +35,7 @@ public sealed record PromotionProductResponse
     required public string PromotionGlobalId { get; set; }
 }
 
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record PromotionCategoryResponse
 {
     required public string CategoryId { get; set; }

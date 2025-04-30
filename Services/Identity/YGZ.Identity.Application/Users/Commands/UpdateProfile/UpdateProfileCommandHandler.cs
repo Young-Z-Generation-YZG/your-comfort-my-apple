@@ -23,8 +23,7 @@ public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand,
 
     public async Task<Result<bool>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
-        var userEmail = "lov3rinve146@gmail.com";
+        var userEmail = _userContext.GetUserEmail();
 
         var userResult = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
 

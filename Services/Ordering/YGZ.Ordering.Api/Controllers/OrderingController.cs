@@ -11,6 +11,7 @@ using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -18,7 +19,6 @@ namespace YGZ.Ordering.Api.Controllers;
 [Route("api/v{version:apiVersion}/orders")]
 [OpenApiTag("orders", Description = "Manage orders.")]
 //[ProtectedResource("orders")]
-[AllowAnonymous]
 public class OrderingController : ApiController
 {
     private readonly ILogger<OrderingController> _logger;
@@ -33,7 +33,8 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
-    public async Task<IActionResult> GetOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
+    [Authorize(Policy = Policies.RequireClientRole)]
+    public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersQuery>(request);
 
@@ -43,6 +44,7 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("users")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByUserQuery>(request);
@@ -53,6 +55,7 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("{orderId}/details")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> GetOrderItems([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderItemsByOrderIdQuery(orderId);
@@ -63,6 +66,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/confirm")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new ConfirmOrderCommand(orderId);
@@ -73,6 +77,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/cancel")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new CancelOrderCommand(orderId);
@@ -83,6 +88,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("admin/{orderId}/status")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
         var cmd = new UpdateOrderStatusCommand

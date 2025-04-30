@@ -14,7 +14,7 @@ public class CouponResponseMapping : IRegister
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
         config
-            .NewConfig<GetCouponResponse, CouponResponse>()
+            .NewConfig<PromotionCouponResponse, CouponResponse>()
             .Map(dest => dest.PromotionCoupon.PromotionCouponId, src => src.PromotionCouponId)
             .Map(dest => dest.PromotionCoupon.PromotionCouponTitle, src => src.PromotionCouponTitle)
             .Map(dest => dest.PromotionCoupon.PromotionCouponCode, src => src.PromotionCouponCode)

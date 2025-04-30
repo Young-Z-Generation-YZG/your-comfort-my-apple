@@ -2,6 +2,7 @@
 
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Enums;
 using YGZ.Ordering.Domain.Core.Errors;
@@ -12,19 +13,24 @@ namespace YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 public class ConfirmOrderCommandHandler : ICommandHandler<ConfirmOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUserContext _userContext;
 
-    public ConfirmOrderCommandHandler(IOrderRepository orderRepository)
+    public ConfirmOrderCommandHandler(IOrderRepository orderRepository, IUserContext userContext)
     {
         _orderRepository = orderRepository;
+        _userContext = userContext;
     }
 
     public async Task<Result<bool>> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
     {
         var orderId = OrderId.Of(request.OrderId);
+        var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
 
-        var order = await _orderRepository.GetOrderByIdWithInclude(orderId, (o) => o.OrderItems, cancellationToken);
+        var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
 
-        if(order is null)
+        var order = orders.FirstOrDefault(x => x.Id == orderId);
+
+        if (order is null)
         {
             return Errors.Order.DoesNotExist;
         }

@@ -9,7 +9,7 @@ using YGZ.Discount.Domain.Coupons.ValueObjects;
 
 namespace YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 
-public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, GetCouponResponse>
+public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, PromotionCouponResponse>
 {
     private readonly IPromotionCouponRepository _repository;
 
@@ -18,7 +18,7 @@ public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, G
         _repository = repository;
     }
 
-    public async Task<Result<GetCouponResponse>> Handle(GetCouponByCodeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PromotionCouponResponse>> Handle(GetCouponByCodeQuery request, CancellationToken cancellationToken)
     {
         var coupon = await _repository.GetByCode(Code.Of(request.Code), cancellationToken);
 
@@ -27,14 +27,14 @@ public class GetCouponByCodeQueryHandler : IQueryHandler<GetCouponByCodeQuery, G
             return Errors.Coupon.CouponNotFound;
         }
 
-        GetCouponResponse response = MapToResponse(coupon);
+        PromotionCouponResponse response = MapToResponse(coupon);
 
         return response;
     }
 
-    private GetCouponResponse MapToResponse(Coupon coupon)
+    private PromotionCouponResponse MapToResponse(Coupon coupon)
     {
-        return new GetCouponResponse
+        return new PromotionCouponResponse
         {
             PromotionCouponId = coupon.Id.Value.ToString()!,
             PromotionCouponTitle = coupon.Title,

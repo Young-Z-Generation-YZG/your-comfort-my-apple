@@ -2,6 +2,7 @@
 
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Enums;
 using YGZ.Ordering.Domain.Core.Errors;
@@ -12,10 +13,12 @@ namespace YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 public class UpdateOrderStatusCommandHandler : ICommandHandler<UpdateOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
+    private readonly IUserContext _userContext;
 
-    public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository)
+    public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository, IUserContext userContext)
     {
         _orderRepository = orderRepository;
+        _userContext = userContext;
     }
 
 

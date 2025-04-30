@@ -21,8 +21,7 @@ public class AddAddressCommandHandler : ICommandHandler<AddAddressCommand, bool>
 
     public async Task<Result<bool>> Handle(AddAddressCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
-        var userEmail = "lov3rinve146@gmail.com";
+        var userEmail = _userContext.GetUserEmail();
 
         var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
 

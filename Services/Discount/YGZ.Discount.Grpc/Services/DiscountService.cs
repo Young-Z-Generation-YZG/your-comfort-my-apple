@@ -8,6 +8,7 @@ using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 using YGZ.Discount.Application.Coupons.Commands.CreatePromotionItem;
 using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
 using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
+using YGZ.Discount.Application.Coupons.Queries.GetAllPromotionCoupons;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
@@ -44,6 +45,40 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         }
 
         var response = _mapper.Map<CouponResponse>(result.Response!);
+
+        return response;
+    }
+
+    public override async Task<GetAllDiscountsResponse> GetAllPromotionCoupons(GetAllPromotionCouponsRequest request, ServerCallContext context)
+    {
+        var query = new GetAllPromotionCouponsQuery();
+
+        var result = await _sender.Send(query);
+
+        if (result.IsFailure)
+        {
+            return new GetAllDiscountsResponse();
+        }
+
+        var response = new GetAllDiscountsResponse();
+
+
+        response.PromotionCoupons.AddRange(result.Response!.Select(p => new PromotionCouponModel()
+        {
+            PromotionCouponId = p.PromotionCouponId,
+            PromotionCouponTitle = p.PromotionCouponTitle,
+            PromotionCouponCode = p.PromotionCouponCode,
+            PromotionCouponDescription = p.PromotionCouponDescription,
+            PromotionCouponProductNameTag = (ProductNameTagEnum)ProductNameTag.FromName(p.PromotionCouponProductNameTag, false).Value,
+            PromotionCouponPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(p.PromotionCouponPromotionEventType, false).Value,
+            PromotionCouponDiscountState = (DiscountStateEnum)DiscountState.FromName(p.PromotionCouponDiscountState, false).Value,
+            PromotionCouponDiscountType = (DiscountTypeEnum)DiscountType.FromName(p.PromotionCouponDiscountType, false).Value,
+            PromotionCouponDiscountValue = (double)p.PromotionCouponDiscountValue,
+            PromotionCouponMaxDiscountAmount = p.PromotionCouponMaxDiscountAmount.HasValue ? (double)p.PromotionCouponMaxDiscountAmount.Value : 0,
+            PromotionCouponValidFrom = p.PromotionCouponValidFrom.HasValue ? p.PromotionCouponValidFrom.Value.ToTimestamp() : null,
+            PromotionCouponValidTo = p.PromotionCouponValidTo.HasValue ? p.PromotionCouponValidTo.Value.ToTimestamp() : null,
+            PromotionCouponAvailableQuantity = p.PromotionCouponAvailableQuantity
+        }));
 
         return response;
     }
@@ -132,24 +167,6 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         return response;
     }
-
-    //public override async Task<GetAllDiscountsResponse> GetAllDiscounts(GetAllDiscountsRequest request, ServerCallContext context)
-    //{
-    //    var requestState = (int)request.State;
-    //    var state = DiscountState.FromValue(requestState);
-
-    //    var result = await _discountRepository.GetAllAsync(request.Page, request.Limit, state);
-
-    //    var response = new GetAllDiscountsResponse
-    //    {
-    //        TotalCount = result.TotalCount,
-    //        TotalPages = result.TotalPages
-    //    };
-
-    //    response.Coupous.AddRange(result.coupons.Select(c => _mapper.Map<CouponModel>(c)));
-
-    //    return response;
-    //}
 
     public override async Task<BooleanResponse> CreatePromotionCoupon(CreatePromotionCouponModel request, ServerCallContext context)
     {

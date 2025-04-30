@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Catalog.Application.Promotions.Queries.GetActivePromotionEvent;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Catalog.Application.Promotions.Queries.GetPromotionEvents;
+using YGZ.Discount.Grpc.Protos;
+using YGZ.Catalog.Application.Promotions.Queries.GetPromotionCoupons;
+using YGZ.Catalog.Application.Promotions.Queries.GetPromotionItems;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -26,12 +30,53 @@ public class PromotionController : ApiController
     }
 
     [HttpGet("events")]
-    public async Task<IActionResult> GetPromotionEvent(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetPromotionEvents(CancellationToken cancellationToken)
+    {
+        var query = new GetPromotionEventsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("items")]
+    public async Task<IActionResult> GetPromotionItems(CancellationToken cancellationToken)
+    {
+        var query = new GetPromotionItemsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+
+    [HttpGet("coupons")]
+    public async Task<IActionResult> GetPromotionCoupons(CancellationToken cancellationToken)
+    {
+        var query = new GetPromotionCouponsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+
+    [HttpGet("events/active")]
+    public async Task<IActionResult> GetActivePromotionEvent(CancellationToken cancellationToken)
     {
         var query = new GetActivePromotionEventQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPatch("events/{eventId}/state")]
+    public async Task<IActionResult> UpdatePromotionEventState([FromRoute] Guid eventId, [FromBody] UpdatePromotionEventRequest request, CancellationToken cancellationToken)
+    {
+        var command = _mapper.Map<UpdatePromotionEventCommand>(request);
+        command.EventId = eventId;
+        var result = await _sender.Send(command, cancellationToken);
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 }

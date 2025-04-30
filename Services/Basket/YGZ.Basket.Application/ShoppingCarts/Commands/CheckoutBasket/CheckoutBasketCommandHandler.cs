@@ -44,17 +44,17 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
     public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
-        //var userId = _userContext.GetUserId();
+        var userEmail = _userContext.GetUserEmail();
+        var userId = _userContext.GetUserId();
 
-        var basket = await _basketRepository.GetBasketAsync("lov3rinve146@gmail.com", cancellationToken);
+        var basket = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 
         if (basket.Response is null || !basket.Response.CartItems.Any())
         {
             return Errors.Basket.BasketEmpty;
         }
 
-        var discountAmount = 0;
+        decimal discountAmount = 0;
         var subTotal = basket.Response.CartItems.Sum(c => c.SubTotalAmount);
         var total = basket.Response.TotalAmount;
 
@@ -91,6 +91,10 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                                                  promotionAppliedProductCount: appliedCount,
                                                  promotionFinalPrice: discountUnit * appliedCount);
 
+
+             
+                discountAmount += (cartItem.ProductUnitPrice * promotion.PromotionDiscountValue!.Value) * appliedCount;
+
                 basket.Response.CartItems[i].SubTotalAmount = discountUnit * cartItem.Quantity;
                 basket.Response.CartItems[i].Promotion = promotion;
             }
@@ -100,16 +104,14 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
         subTotal = basket.Response.CartItems.Sum(c => c.SubTotalAmount);
 
-        var eventMessage = request.ToBasketCheckoutIntegrationEvent(orderId: orderId, customerId: "ed04b044-86de-475f-9122-d9807897f969",
-                                                                    customerEmail: "lov3rinve146@gmail.com",
+        var eventMessage = request.ToBasketCheckoutIntegrationEvent(orderId: orderId, customerId: userId,
+                                                                    customerEmail: userEmail,
                                                                     cartItems: basket.Response.CartItems,
                                                                     subTotalAmount: (decimal)subTotal!,
                                                                     discountAmount: discountAmount,
                                                                     totalAmount: total);
 
         await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
-
-        //var promotionFinalPrice = discountUnit * appliedCount;
 
         switch (request.PaymentMethod)
         {
@@ -119,7 +121,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
                     OrderType = "VNPAY_CHECKOUT",
                     OrderDescription = $"ORDER_ID={orderId}",
                     Amount = basket.Response.TotalAmount * 25000,
-                    Name = request.ShippingAddress.ContactName,
+                    Name = request.ContactName,
                 };
 
                 var paymentUrl = _vnpayProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
@@ -132,7 +134,7 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
             case nameof(PaymentMethod.MOMO):
                 var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
                 {
-                    FullName = $"{request.ShippingAddress.ContactName}",
+                    FullName = $"{request.ContactName}",
                     OrderId = $"ORDER_ID={orderId}",
                     OrderInfo = "MOMO_CHECKOUT",
                     Amount = (double)10 * 25000,

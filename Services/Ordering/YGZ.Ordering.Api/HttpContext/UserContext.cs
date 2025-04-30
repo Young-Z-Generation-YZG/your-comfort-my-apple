@@ -29,6 +29,15 @@ public class UserContext : IUserContext
 
     public string GetUserId()
     {
-        throw new NotImplementedException();
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst("sub")?.Value
+                    ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            _logger.LogWarning("No user ID found in user claims.");
+            throw new UnauthorizedAccessException("User ID not found in token.");
+        }
+
+        return userId;
     }
 }

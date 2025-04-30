@@ -6,10 +6,10 @@ using NSwag.Annotations;
 using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
-using YGZ.Basket.Application.ShoppingCarts.Commands.IpnCheck;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Basket.Api.Controllers;
 
@@ -17,7 +17,7 @@ namespace YGZ.Basket.Api.Controllers;
 [Route("api/v{version:apiVersion}/baskets")]
 [OpenApiTag("baskets", Description = "Manage baskets.")]
 //[ProtectedResource("baskets")]
-[AllowAnonymous]
+//[AllowAnonymous]
 public class BasketController : ApiController
 {
     private readonly ILogger<BasketController> _logger;
@@ -32,6 +32,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost()]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreBasketCommand>(request);
@@ -42,6 +43,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost("checkout")]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CheckoutBasketCommand>(request);
@@ -52,6 +54,7 @@ public class BasketController : ApiController
     }
 
     [HttpGet()]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
@@ -59,17 +62,8 @@ public class BasketController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("vnpay-ipn")]
-    public async Task<IActionResult> VnpayIpn([FromQuery] IpnCheckRequest request, CancellationToken cancellationToken)
-    {
-        var query = _mapper.Map<IpnCheckCommand>(request);
-
-        var result = await _sender.Send(query, cancellationToken);
-
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
-
     [HttpDelete()]
+    [Authorize(Policy = Policies.RequireClientRole)]
     public async Task<IActionResult> DeleteBasket(CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new DeleteBasketCommand(), cancellationToken);

@@ -17,6 +17,22 @@ public class PromotionCouponRepository : IPromotionCouponRepository
         _context = context;
     }
 
+    public async Task<List<Coupon>> GetAllAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _context.Coupons
+                .Where(c => !c.IsDeleted)
+                .ToListAsync(cancellationToken);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
+    }
+
     public async Task<Coupon?> GetByCode(Code code, CancellationToken cancellationToken)
     {
         try

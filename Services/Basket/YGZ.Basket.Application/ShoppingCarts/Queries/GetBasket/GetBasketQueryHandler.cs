@@ -28,9 +28,9 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
     public async Task<Result<GetBasketResponse>> Handle(GetBasketQuery request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
+        var userEmail = _userContext.GetUserEmail();
 
-        var result = await _basketRepository.GetBasketAsync("lov3rinve146@gmail.com", cancellationToken);
+        var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 
         if (result.IsFailure)
         {

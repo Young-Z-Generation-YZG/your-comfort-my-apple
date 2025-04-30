@@ -1,0 +1,161 @@
+{
+    "realm" : "ygz-realm",
+    "users" : [ 
+      {
+      "id" : "c77a114d-2dd8-4746-806b-030878618282",
+      "username" : "superadmin@gmail.com",
+      "firstName" : "SUPER ADMIN",
+      "lastName" : "CLIENT",
+      "email" : "superadmin@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "9e002386-b0ff-4d1b-a051-5f684f1baac6",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "notBefore" : 0,
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "groups" : [ ]
+    },
+    {
+      "id" : "a3f9cda2-ac4f-4f1b-9103-e24b586f98ae",
+      "username" : "admin@gmail.com",
+      "firstName" : "ADMIN",
+      "lastName" : "CLIENT",
+      "email" : "admin@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "7c9ed3c9-389b-46f3-9cbf-874071f3561e",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "notBefore" : 0,
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "groups" : [ ]
+    },
+    {
+      "id" : "3edc9527-4f3b-4619-b4b2-18025e143eda",
+      "username" : "staff@gmail.com",
+      "firstName" : "STAFF",
+      "lastName" : "CLIENT",
+      "email" : "staff@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "f3018661-b319-4c6b-8cb4-133edacc5817",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "notBefore" : 0,
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "groups" : [ ]
+    },
+    {
+      "id" : "068b089e-588b-4a40-9dc7-41474dcdbfa8",
+      "username" : "user@gmail.com",
+      "firstName" : "USER",
+      "lastName" : "CLIENT",
+      "email" : "user@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "15918187-5945-4106-8666-8377458b18b9",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "notBefore" : 0,
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "groups" : [ ]
+    },
+    {
+      "id" : "ed04b044-86de-475f-9122-d9807897f969",
+      "username" : "lov3rinve146@gmail.com",
+      "firstName" : "Bach",
+      "lastName" : "Le",
+      "email" : "lov3rinve146@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "e4d239d6-97ef-410b-a99d-e6eae578bd1e",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "notBefore" : 0,
+      "groups" : [ ]
+    },
+    {
+      "id" : "919d5784-2275-451f-9c4c-af80fb0b5cb3",
+      "username" : "foobar@gmail.com",
+      "firstName" : "FOO",
+      "lastName" : "BAR",
+      "email" : "foobar@gmail.com",
+      "emailVerified" : true,
+      "createdTimestamp" : 1715203376448,
+      "enabled" : true,
+      "totp" : false,
+      "credentials" : [ {
+        "id" : "de42b9d6-16ef-410b-a99d-e6eae578bc1e",
+        "type" : "password",
+        "userLabel" : "My password",
+        "createdDate" : 1715203387396,
+        "secretData" : "{\"value\":\"3JgcmK4MZgKQtEIcqfrrR+INIhDJdOJ/FFrM0JAhtcazpQkvd2s5BCAEmmBlVAHH40JpP8zD/uZQEqTBHZvssQ==\",\"salt\":\"CJMklLYKN68Efch0O+p+mg==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "clientRoles" : {
+        "client-nextjs" : [ "USER" ]
+      },
+      "notBefore" : 0,
+      "groups" : [ ]
+    }
+   ]
+  }

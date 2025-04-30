@@ -1,8 +1,12 @@
 ﻿
 
+using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
+
 namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
-public sealed record GetCouponResponse
+[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+public sealed record PromotionCouponResponse
 {
     public string PromotionCouponId { get; init; }
     public string PromotionCouponTitle { get; init; }

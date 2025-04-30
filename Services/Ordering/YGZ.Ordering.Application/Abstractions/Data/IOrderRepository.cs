@@ -9,5 +9,6 @@ namespace YGZ.Ordering.Application.Abstractions.Data;
 public interface IOrderRepository : IGenericRepository<Order,OrderId>
 {
     Task<Order> GetOrderByCodeAsync(string code, CancellationToken cancellationToken);
+    Task<List<Order>> GetUserOrdersWithItemAsync(UserId userId, CancellationToken cancellationToken);
     Task<Order> GetOrderByIdWithInclude(OrderId id, Expression<Func<Order, object>> expression, CancellationToken cancellationToken);
 }

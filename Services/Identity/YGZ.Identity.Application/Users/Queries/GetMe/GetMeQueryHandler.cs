@@ -29,8 +29,7 @@ public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAllInfoResposne>
 
     public async Task<Result<GetAllInfoResposne>> Handle(GetMeQuery request, CancellationToken cancellationToken)
     {
-        // var userEmail = _userContext.GetUserEmail();
-        var userEmail = "lov3rinve146@gmail.com";
+        var userEmail = _userContext.GetUserEmail();
 
         var expressions = new Expression<Func<User, object>>[]
         {

@@ -32,9 +32,9 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
 
     public async Task<Result<bool>> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
+        var userEmail = _userContext.GetUserEmail();
 
-        ShoppingCart shoppingCart = request.ToEntity("lov3rinve146@gmail.com");
+        ShoppingCart shoppingCart = request.ToEntity(userEmail);
 
         if (shoppingCart.CartItems.Any())
         {

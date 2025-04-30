@@ -48,4 +48,18 @@ public class OrderRepository : GenericRepository<Order, OrderId>, IOrderReposito
             throw new Exception(ex.Message);
         }
     }
+
+    public async Task<List<Order>> GetUserOrdersWithItemAsync(UserId userId, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await _orderDbContext.Orders.Include(o => o.OrderItems).ToListAsync(cancellationToken);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 }

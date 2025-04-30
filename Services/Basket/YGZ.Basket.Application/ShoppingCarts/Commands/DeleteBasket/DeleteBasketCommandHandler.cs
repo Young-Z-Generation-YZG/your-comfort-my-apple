@@ -19,9 +19,9 @@ public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, b
 
     public async Task<Result<bool>> Handle(DeleteBasketCommand request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
+        var userEmail = _userContext.GetUserEmail();
 
-        var result = await _basketRepository.DeleteBasketAsync("lov3rinve146@gmail.com", cancellationToken);
+        var result = await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
 
         if (result.IsFailure)
         {

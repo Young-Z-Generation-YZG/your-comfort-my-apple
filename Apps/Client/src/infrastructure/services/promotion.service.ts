@@ -14,7 +14,7 @@ export const promotionApi = createApi({
    }),
    endpoints: (builder) => ({
       getActivePromotionEventAsync: builder.query<any, void>({
-         query: () => '/api/v1/promotions/events',
+         query: () => '/api/v1/promotions/events/active',
          providesTags: ['Promotions'],
       }),
    }),

@@ -23,8 +23,7 @@ public class GetAddressesQueryHandler : IQueryHandler<GetAddressesQuery, List<Ad
 
     public async Task<Result<List<AddressResponse>>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        //var userEmail = _userContext.GetUserEmail();
-        var userEmail = "lov3rinve146@gmail.com";
+        var userEmail = _userContext.GetUserEmail();
 
         var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
 
