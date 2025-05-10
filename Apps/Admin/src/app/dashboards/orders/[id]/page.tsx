@@ -193,80 +193,83 @@ const OrderDetails = () => {
                            </div>
                            <div className="divide-y divide-gray-200">
                               <AnimatePresence>
-                                 {order?.order_items.map((item, index) => (
-                                    <motion.div
-                                       key={index}
-                                       className="p-4 flex items-center"
-                                       variants={itemVariants}
-                                       initial="hidden"
-                                       animate="visible"
-                                       custom={index}
-                                    >
-                                       <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-                                          <img
-                                             src={
-                                                item.product_image ||
-                                                '/placeholder.svg'
-                                             }
-                                             alt={item.product_name}
-                                             className="w-full h-full object-center object-cover"
-                                          />
-                                       </div>
-                                       <div className="ml-4 flex-1">
-                                          <h4 className="text-sm font-medium text-gray-900">
-                                             {item.product_name}
-                                          </h4>
-                                          <p className="mt-1 text-xs text-gray-500">
-                                             {item.product_color_name}
-                                          </p>
-                                          <div className="mt-1 flex justify-between">
-                                             <p className="text-sm text-gray-500">
-                                                Qty {item.quantity}
-                                             </p>
-                                             {item.promotion && (
-                                                <div className="">
-                                                   <p className="text-sm text-gray-500 inline-block mr-2">
-                                                      <span className="text-sm text-gray-500">
-                                                         Promotion:
-                                                      </span>{' '}
-                                                      {
-                                                         item.promotion
-                                                            .promotion_title
-                                                      }
-                                                   </p>
-                                                   <p className="text-sm text-gray-500 inline-block mr-2">
-                                                      Discount: %
-                                                      {item.promotion
-                                                         .promotion_discount_value *
-                                                         100}
-                                                   </p>
-                                                   <p className="font-semibold text-red-500 text-base inline-block mr-2">
-                                                      $
-                                                      {item.promotion.promotion_discount_unit_price.toFixed(
-                                                         2,
-                                                      )}
-                                                   </p>
-                                                   <p className="text-sm text-gray-500 line-through inline-block">
-                                                      $
-                                                      {item.product_unit_price.toFixed(
-                                                         2,
-                                                      )}
-                                                   </p>
-                                                </div>
-                                             )}
-
-                                             {!item.promotion && (
-                                                <p className="font-semibold text-gray-900 text-base">
-                                                   $
-                                                   {item.product_unit_price.toFixed(
-                                                      2,
-                                                   )}
+                                 <Fragment>
+                                    {order &&
+                                       order.order_items.map((item, index) => (
+                                          <motion.div
+                                             key={index}
+                                             className="p-4 flex items-center"
+                                             variants={itemVariants}
+                                             initial="hidden"
+                                             animate="visible"
+                                             custom={index}
+                                          >
+                                             <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
+                                                <img
+                                                   src={
+                                                      item.product_image ||
+                                                      '/placeholder.svg'
+                                                   }
+                                                   alt={item.product_name}
+                                                   className="w-full h-full object-center object-cover"
+                                                />
+                                             </div>
+                                             <div className="ml-4 flex-1">
+                                                <h4 className="text-sm font-medium text-gray-900">
+                                                   {item.product_name}
+                                                </h4>
+                                                <p className="mt-1 text-xs text-gray-500">
+                                                   {item.product_color_name}
                                                 </p>
-                                             )}
-                                          </div>
-                                       </div>
-                                    </motion.div>
-                                 ))}
+                                                <div className="mt-1 flex justify-between">
+                                                   <p className="text-sm text-gray-500">
+                                                      Qty {item.quantity}
+                                                   </p>
+                                                   {item.promotion && (
+                                                      <div className="">
+                                                         <p className="text-sm text-gray-500 inline-block mr-2">
+                                                            <span className="text-sm text-gray-500">
+                                                               Promotion:
+                                                            </span>{' '}
+                                                            {
+                                                               item.promotion
+                                                                  .promotion_title
+                                                            }
+                                                         </p>
+                                                         <p className="text-sm text-gray-500 inline-block mr-2">
+                                                            Discount: %
+                                                            {item.promotion
+                                                               .promotion_discount_value *
+                                                               100}
+                                                         </p>
+                                                         <p className="font-semibold text-red-500 text-base inline-block mr-2">
+                                                            $
+                                                            {item.promotion.promotion_discount_unit_price.toFixed(
+                                                               2,
+                                                            )}
+                                                         </p>
+                                                         <p className="text-sm text-gray-500 line-through inline-block">
+                                                            $
+                                                            {item.product_unit_price.toFixed(
+                                                               2,
+                                                            )}
+                                                         </p>
+                                                      </div>
+                                                   )}
+
+                                                   {!item.promotion && (
+                                                      <p className="font-semibold text-gray-900 text-base">
+                                                         $
+                                                         {item.product_unit_price.toFixed(
+                                                            2,
+                                                         )}
+                                                      </p>
+                                                   )}
+                                                </div>
+                                             </div>
+                                          </motion.div>
+                                       ))}
+                                 </Fragment>
                               </AnimatePresence>
                            </div>
                         </div>

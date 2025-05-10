@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IBasketItem } from '../interfaces/baskets/basket.interface';
-import { IPromotion } from '../interfaces/baskets/promotion.interface';
+import { IBasketItemPayload } from '../interfaces/baskets/basket.interface';
+import { IPromotionPayload } from '../interfaces/baskets/promotion.interface';
 import { ICheckoutPayload } from '../interfaces/baskets/checkout.interface';
 
 const promotionSchema = z.object({
@@ -11,7 +11,22 @@ const promotionSchema = z.object({
    promotion_event_type: z.string().min(1, {
       message: 'Promotion event type is required',
    }),
-} satisfies Record<keyof IPromotion, any>);
+   promotion_title: z.string().min(1, {
+      message: 'Promotion title is required',
+   }),
+   promotion_discount_type: z.string().min(1, {
+      message: 'Promotion discount type is required',
+   }),
+   promotion_discount_value: z.number().min(0, {
+      message: 'Promotion discount value is required',
+   }),
+   promotion_discount_unit_price: z.number().min(0, {
+      message: 'Promotion discount unit price is required',
+   }),
+   promotion_final_price: z.number().min(0, {
+      message: 'Promotion final price is required',
+   }),
+} satisfies Record<keyof IPromotionPayload, any>);
 
 const basketItemSchema = z.object({
    product_id: z.string().min(1, { message: 'Product ID is required' }),
@@ -32,7 +47,7 @@ const basketItemSchema = z.object({
    promotion: promotionSchema.optional().nullable(),
    quantity: z.number().min(1, { message: 'Quantity is required' }),
    order: z.number(),
-} satisfies Record<keyof IBasketItem, any>);
+} satisfies Record<keyof IBasketItemPayload, any>);
 
 const storeBasketSchema = z.object({
    cart_items: z.array(basketItemSchema).min(1, {

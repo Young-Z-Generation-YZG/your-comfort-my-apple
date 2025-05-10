@@ -39,6 +39,7 @@ import {
 } from '@components/ui/select';
 import { motion, AnimatePresence } from 'framer-motion';
 import ContentWrapper from '@components/ui/content-wrapper';
+// Removed unused import for PageProps as it is not exported by 'next'
 
 // Mock data for demonstration
 const mockPromotions = [
@@ -104,24 +105,27 @@ const mockPromotions = [
    },
 ];
 
+// Define PromotionListProps
 type PromotionListProps = {
    filter: 'all' | 'event' | 'product' | 'coupon';
 };
 
-const PromotionEventPage = ({ filter = 'all' }: PromotionListProps) => {
+// Combine with PageProps
+type Props = PromotionListProps;
+
+const PromotionEventPage = () => {
    const [searchQuery, setSearchQuery] = useState('');
    const [statusFilter, setStatusFilter] = useState('all');
 
    // Filter promotions based on type, search query, and status
    const filteredPromotions = mockPromotions.filter((promotion) => {
-      const matchesType = filter === 'all' || promotion.type === filter;
-      const matchesSearch = promotion.name
-         .toLowerCase()
-         .includes(searchQuery.toLowerCase());
-      const matchesStatus =
-         statusFilter === 'all' || promotion.status === statusFilter;
-
-      return matchesType && matchesSearch && matchesStatus;
+      // const matchesType = filter === 'all' || promotion.type === filter;
+      // const matchesSearch = promotion.name
+      //    .toLowerCase()
+      //    .includes(searchQuery.toLowerCase());
+      // const matchesStatus =
+      //    statusFilter === 'all' || promotion.status === statusFilter;
+      // return matchesType && matchesSearch && matchesStatus;
    });
 
    const getTypeIcon = (type: string) => {

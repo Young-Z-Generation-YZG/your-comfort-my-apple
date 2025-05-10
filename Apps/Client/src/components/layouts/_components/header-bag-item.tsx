@@ -1,11 +1,11 @@
 'use client';
 import Image from 'next/image';
 import React from 'react';
-import { IBasketItem } from '~/domain/interfaces/baskets/basket.interface';
+import { IBasketItemPayload } from '~/domain/interfaces/baskets/basket.interface';
 
 interface HeaderBagItemProps {
    key?: string | number;
-   item: IBasketItem;
+   item: IBasketItemPayload;
 }
 
 const HeaderBagItem = ({ key, item }: HeaderBagItemProps) => {
