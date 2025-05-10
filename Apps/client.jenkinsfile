@@ -3,6 +3,9 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY_CREDS_ID = 'ygz.dockerhub'
+        API_ENDPOINT = 'https://bb7b-116-108-118-49.ngrok-free.app/'
+        NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = "delkyrtji"
+
     }
 
     parameters {
@@ -16,6 +19,15 @@ pipeline {
                 git branch: 'main', url: "https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git"
 
                 sh label: "list files", script: "ls -la"
+            }
+        }
+
+        stage("Add env.production") {
+            steps {
+                echo "Adding env file..."
+                sh label: "add env.prod", script: "echo \"API_ENDPOINT=${API_ENDPOINT}\" > .env.production"
+                sh label: "add env.prod", script: "echo \"NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}\" > .env.production"
+
             }
         }
 
