@@ -25,8 +25,8 @@ pipeline {
         stage("Add env.production") {
             steps {
                 echo "Adding env file..."
-                sh label: "add env.prod", script: "echo \"API_ENDPOINT=${API_ENDPOINT}\" > .env.production"
-                sh label: "add env.prod", script: "echo \"NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}\" > .env.production"
+                sh label: "add env.prod", script: "echo \"API_ENDPOINT=${API_ENDPOINT}\" > Apps/Client/.env.production"
+                sh label: "add env.prod", script: "echo \"NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}\" > Apps/Client/.env.production"
 
             }
         }
