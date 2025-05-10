@@ -49,7 +49,7 @@ const ItemReview = ({ review }: ItemReviewProps) => {
       >
          <div
             className={cn(
-               'basis-[25%] h-[120px] border-r border-[#ccc] flex flex-row',
+               'basis-[25%] h-[120px] border-r border-[#ccc] flex flex-row pr-2',
             )}
          >
             <FaUserAlt className={cn('h-16 w-16 mr-2')} />
@@ -58,9 +58,9 @@ const ItemReview = ({ review }: ItemReviewProps) => {
                   {starsRating(review.rating, 4)}
                </div>
                <p className={cn('font-medium')}>
-                  {review.customer_name?.length > 0
-                     ? review.customer_name
-                     : 'Ellenvs'}
+                  {review.customer_username?.length > 0
+                     ? review.customer_username
+                     : 'Anonymous Name'}
                </p>
                <p className={cn('font-thin')}>
                   {new Date(review.created_at).toLocaleDateString('en-US', {

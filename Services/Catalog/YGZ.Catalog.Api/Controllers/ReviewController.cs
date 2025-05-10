@@ -27,6 +27,7 @@ public class ReviewController : ApiController
     }
 
     [HttpGet("{modelId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetReviewsOfModel([FromRoute] string modelId, [FromQuery] GetReviewsByModelRequest request, CancellationToken cancellationToken)
     {
         var query = new GetReviewsByModelQuery(modelId)

@@ -47,7 +47,7 @@ public class GetReviewsByModelQueryHandler : IQueryHandler<GetReviewsByModelQuer
         var reviewResponses = reviews.Select(r => new ProductReviewResponse
         {
             ReviewId = r.Id.Value!,
-            CustomerUserName = r.CustomerUserName,
+            CustomerUsername = r.CustomerUserName,
             CustomerImage = "",
             Rating = r.Rating,
             Content = r.Content,

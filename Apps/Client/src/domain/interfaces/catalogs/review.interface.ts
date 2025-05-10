@@ -15,7 +15,7 @@ export interface IUpdateReviewPayload {
 
 export interface IReviewResponse {
    review_id: string;
-   customer_name: string;
+   customer_username: string;
    customer_image: string;
    rating: number;
    content: string;
