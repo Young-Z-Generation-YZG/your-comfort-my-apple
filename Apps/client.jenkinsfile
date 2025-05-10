@@ -13,7 +13,7 @@ pipeline {
         stage("Clone") {
             steps {
                 echo "Cloning the repository..."
-                git branch: 'main', url: "https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git ./"
+                git branch: 'main', url: "https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git"
 
                 sh label: "list files", script: "ls -la"
             }
