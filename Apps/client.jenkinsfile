@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY_CREDS_ID = 'ygz.dockerhub'
+    }
+
+    parameters {
+        choice(name: 'ACTION', choices: ['Build', 'Remove all'], description: 'Pick something')
+    }
+
+    stages {
+        stage('Build') {
+           when {
+                expression { params.ACTION == 'Build' }
+           }
+           steps {
+                withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS_ID}", url: 'https://index.docker.io/v1/') {
+                    sh label: "build images", script: "docker compose -f ~/ybzone/Apps/docker-compose.fe.yml build"
+                    sh label: "push images", script: "docker compose -f ~/ybzone/Apps/docker-compose.fe.yml push"
+                }
+           }
+        }
+
+        stage("Deploy") {
+            steps {
+                sh label: "list images", script: "docker images"
+            }
+        }
+    }
+
+    post {
+        // Clean after build
+        always {
+            cleanWs()
+        }
+    }
+}

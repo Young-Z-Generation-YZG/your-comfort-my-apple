@@ -13,6 +13,7 @@ services:
         - client-network
     
     client.web:
+        image: baledev/client.web
         build:
             context: ./Client
             dockerfile: Dockerfile
@@ -22,6 +23,7 @@ services:
         - client-network
 
     admin.web:
+        image: baledev/admin.web
         build:
             context: ./Admin
             dockerfile: Dockerfile
