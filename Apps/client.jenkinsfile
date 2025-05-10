@@ -24,18 +24,18 @@ pipeline {
                 expression { params.ACTION == 'Build' }
            }
            steps {
-                sh "docker -v"
+                sh "sudo docker -v"
             
                 withDockerRegistry(credentialsId: "${DOCKER_REGISTRY_CREDS_ID}", url: 'https://index.docker.io/v1/') {
-                    sh label: "build images", script: "docker compose -f Apps/docker-compose.fe.yml build"
-                    sh label: "push images", script: "docker compose -f Apps/docker-compose.fe.yml push"
+                    sh label: "build images", script: "sudo docker compose -f Apps/docker-compose.fe.yml build"
+                    sh label: "push images", script: "sudo docker compose -f Apps/docker-compose.fe.yml push"
                 }
            }
         }
 
         stage("Deploy") {
             steps {
-                sh label: "list images", script: "docker images"
+                sh label: "list images", script: "sudo docker images"
             }
         }
     }
