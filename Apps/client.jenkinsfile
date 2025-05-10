@@ -11,8 +11,10 @@ pipeline {
 
     stages {
         stage("Clone") {
-            echo "Cloning the repository..."
-            git branch: 'main', url: "https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git"
+            steps {
+                echo "Cloning the repository..."
+                git branch: 'main', url: "https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git"
+            }
         }
 
         stage('Build') {
