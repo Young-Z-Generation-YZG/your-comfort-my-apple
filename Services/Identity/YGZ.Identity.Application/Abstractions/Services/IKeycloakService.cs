@@ -18,5 +18,6 @@ public interface IKeycloakService
     Task<Result<bool>> VerifyEmailAsync(string email);
     Task<Result<bool>> SendEmailResetPasswordAsync(string email);
     Task<Result<bool>> ChangePasswordAsync(string email, string currPassword, string newPassword);
+    Task<Result<bool>> ResetPasswordAsync(string email, string newPassword);
     Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
 }

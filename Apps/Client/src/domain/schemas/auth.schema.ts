@@ -3,6 +3,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
 import { IOtpPayload } from '../interfaces/auth/otp.interface';
 import { IRegisterPayload } from '../interfaces/auth/register.interface';
+import {
+   IChangePasswordPayload,
+   IResetPasswordPayload,
+   ISendEmailResetPasswordPayload,
+} from '../interfaces/auth/password.interface';
 
 /// Login Schema
 const LoginSchema = z.object({
@@ -15,7 +20,6 @@ const LoginSchema = z.object({
 } satisfies Record<keyof ILoginPayload, any>);
 
 export type LoginFormType = z.infer<typeof LoginSchema>;
-
 export const LoginResolver = zodResolver(LoginSchema);
 
 /// Register Schema
@@ -106,7 +110,6 @@ const RegisterSchema = z.object({
 } satisfies Record<keyof IRegisterPayload, any>);
 
 export type RegisterFormType = z.infer<typeof RegisterSchema>;
-
 export const RegisterResolver = zodResolver(RegisterSchema);
 
 ////////////////
@@ -125,5 +128,54 @@ const OtpSchema = z.object({
 } satisfies Record<keyof IOtpPayload, any>);
 
 export type OtpFormType = z.infer<typeof OtpSchema>;
-
 export const OtpResolver = zodResolver(OtpSchema);
+
+////////////////
+
+// send email reset password schema
+const sendEmailResetPasswordSchema = z.object({
+   email: z.string().min(1, {
+      message: 'email is required',
+   }),
+} satisfies Record<keyof ISendEmailResetPasswordPayload, any>);
+
+export type sendEmailResetPasswordFormType = z.infer<
+   typeof sendEmailResetPasswordSchema
+>;
+export const sendEmailResetPasswordResolver = zodResolver(
+   sendEmailResetPasswordSchema,
+);
+
+////////////////
+// reset password schema
+const resetPasswordSchema = z.object({
+   email: z.string().min(1, {
+      message: 'email is required',
+   }),
+   token: z.string().min(1, {
+      message: 'Token is required',
+   }),
+   new_password: z.string().min(1, {
+      message: 'New password is required',
+   }),
+   confirm_password: z.string().min(1, {
+      message: 'Confirm password is required',
+   }),
+} satisfies Record<keyof IResetPasswordPayload, any>);
+
+export type resetPasswordFormType = z.infer<typeof resetPasswordSchema>;
+export const resetPasswordResolver = zodResolver(resetPasswordSchema);
+
+////////////////
+// change password schema
+const changePasswordSchema = z.object({
+   old_password: z.string().min(1, {
+      message: 'Old password is required',
+   }),
+   new_password: z.string().min(1, {
+      message: 'New password is required',
+   }),
+} satisfies Record<keyof IChangePasswordPayload, any>);
+
+export type changePasswordFormType = z.infer<typeof changePasswordSchema>;
+export const changePasswordResolver = zodResolver(changePasswordSchema);

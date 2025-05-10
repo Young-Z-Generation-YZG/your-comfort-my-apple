@@ -9,8 +9,14 @@ const reviewSchema = z.object({
    model_id: z.string().min(1, {
       message: 'Model ID is required',
    }),
+   order_id: z.string().min(1, {
+      message: 'Order ID is required',
+   }),
    order_item_id: z.string().min(1, {
       message: 'Order Item ID is required',
+   }),
+   customer_username: z.string().min(1, {
+      message: 'Customer Username is required',
    }),
    rating: z.number().min(1, {
       message: 'Rating is required',

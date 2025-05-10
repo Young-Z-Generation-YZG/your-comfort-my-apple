@@ -51,9 +51,10 @@ export interface OrderDetailsResponse {
 }
 
 export interface OrderItemResponse {
-   order_item_id: string;
-   product_id: string;
    model_id: string;
+   product_id: string;
+   order_id: string;
+   order_item_id: string;
    product_name: string;
    product_image: string;
    product_color_name: string;

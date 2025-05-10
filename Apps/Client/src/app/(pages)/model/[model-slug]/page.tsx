@@ -27,7 +27,7 @@ import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.
 import { useStoreBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useDispatch } from 'react-redux';
-import { IBasketItem } from '~/domain/interfaces/baskets/basket.interface';
+import { IBasketItemPayload } from '~/domain/interfaces/baskets/basket.interface';
 import { addCartItem } from '~/infrastructure/redux/features/cart.slice';
 import { Badge } from '@components/ui/badge';
 import {
@@ -147,6 +147,8 @@ const DetailProductPage = () => {
 
             const promotion = onPromotion ? onPromotion.promotion : null;
 
+            console.log('promotion', promotion);
+
             const basketItem = {
                product_id: validProduct.product_id,
                model_id: validProduct.iphone_model_id,
@@ -161,11 +163,21 @@ const DetailProductPage = () => {
                promotion: promotion
                   ? {
                        promotion_id_or_code: promotion.promotion_id,
+                       promotion_title: promotion.promotion_title,
                        promotion_event_type: promotion.promotion_event_type,
+                       promotion_discount_unit_price:
+                          validProduct.product_unit_price,
+                       promotion_discount_type:
+                          promotion.promotion_discount_type,
+                       promotion_discount_value:
+                          promotion.promotion_discount_value,
+                       promotion_final_price: promotion.promotion_final_price,
                     }
                   : null,
                order: 0,
-            } as IBasketItem;
+            } as IBasketItemPayload;
+
+            console.log('basketItem', basketItem);
 
             dispatch(addCartItem(basketItem));
 
@@ -213,6 +225,8 @@ const DetailProductPage = () => {
             const promotion = onPromotion ? onPromotion.promotion : null;
 
             if (promotion) {
+               console.log('promotion', promotion);
+
                setProductDetails({
                   ...validProduct,
                   promotion: {
@@ -464,21 +478,19 @@ const DetailProductPage = () => {
                         <CarouselPrevious className="left-[1rem]" />
                         <CarouselNext className="right-[1rem]" />
 
-                        {/* <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
+                        <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
                            {/* Slide {current} of {count} */}
-                        {/* {Array.from({ length: count }).map((_, index) => (
+                           {Array.from({ length: 2 }).map((_, index) => (
                               <div
                                  className="w-[10px] h-[10px] rounded-full"
                                  style={{
                                     backgroundColor:
-                                       current === index + 1
-                                          ? '#6b7280'
-                                          : '#d1d5db',
+                                       1 === index + 1 ? '#6b7280' : '#d1d5db',
                                  }}
                                  key={index}
                               />
                            ))}
-                        </div> */}
+                        </div>
                      </Carousel>
                   </div>
                </div>

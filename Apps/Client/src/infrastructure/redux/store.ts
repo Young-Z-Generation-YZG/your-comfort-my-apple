@@ -19,6 +19,7 @@ import { CategoryApi } from '~/infrastructure/services/category.service';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
 import { AuthApi } from '~/infrastructure/services/auth.service';
 import { catalogApi } from '~/infrastructure/services/catalog.service';
+import { reviewApi } from '~/infrastructure/services/review.service';
 import { basketApi } from '~/infrastructure/services/basket.service';
 import { identityApi } from '~/infrastructure/services/identity.service';
 import { orderApi } from '~/infrastructure/services/order.service';
@@ -36,6 +37,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       AuthApi.reducerPath,
       promotionApi.reducerPath,
       catalogApi.reducerPath,
+      reviewApi.reducerPath,
       basketApi.reducerPath,
       orderApi.reducerPath,
       identityApi.reducerPath,
@@ -52,6 +54,7 @@ const reducers = combineReducers({
    [AuthApi.reducerPath]: AuthApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [catalogApi.reducerPath]: catalogApi.reducer,
+   [reviewApi.reducerPath]: reviewApi.reducer,
    [basketApi.reducerPath]: basketApi.reducer,
    [orderApi.reducerPath]: orderApi.reducer,
    [identityApi.reducerPath]: identityApi.reducer,
@@ -71,6 +74,7 @@ export const reduxStore = configureStore({
          AuthApi.middleware,
          promotionApi.middleware,
          catalogApi.middleware,
+         reviewApi.middleware,
          basketApi.middleware,
          orderApi.middleware,
          identityApi.middleware,

@@ -58,6 +58,7 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16ModelRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16DetailRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateReviewRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new UpdateReviewRequestExample());
         });
 
         return services;

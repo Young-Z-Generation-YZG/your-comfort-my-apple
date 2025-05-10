@@ -19,7 +19,7 @@ public class VerifyResetPasswordCommandHandler : ICommandHandler<VerifyResetPass
     {
         if(request.NewPassword != request.ConfirmPassword)
         {
-            return Errors.Auth.PasswordNotMatched;
+            return Errors.Auth.ResetPasswordNotMatched;
         }
 
         var result = await _identityService.VerifyResetPasswordTokenAsync(request.Email, request.Token, request.NewPassword);

@@ -18,7 +18,7 @@ public class ReviewRepository : MongoRepository<Review, ReviewId>, IReviewReposi
     private readonly IDispatchDomainEventInterceptor _dispatchDomainEventInterceptor;
     private readonly ILogger<ReviewRepository> _logger;
 
-    public ReviewRepository(IOptions<MongoDbSettings> options, ILogger<ReviewRepository> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor) : base(options, logger)
+    public ReviewRepository(IOptions<MongoDbSettings> options, ILogger<ReviewRepository> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor) : base(options, logger, dispatchDomainEventInterceptor)
     {
         _dispatchDomainEventInterceptor = dispatchDomainEventInterceptor;
         _logger = logger;

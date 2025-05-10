@@ -17,7 +17,7 @@ public class IPhone16ModelRepository : MongoRepository<IPhone16Model, IPhone16Mo
     private readonly IDispatchDomainEventInterceptor _dispatchDomainEventInterceptor;
     private readonly ILogger<IPhone16ModelRepository> _logger;
 
-    public IPhone16ModelRepository(IOptions<MongoDbSettings> options, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor, ILogger<IPhone16ModelRepository> logger) : base(options, logger)
+    public IPhone16ModelRepository(IOptions<MongoDbSettings> options, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor, ILogger<IPhone16ModelRepository> logger) : base(options, logger, dispatchDomainEventInterceptor)
     {
         _dispatchDomainEventInterceptor = dispatchDomainEventInterceptor;
         _logger = logger;

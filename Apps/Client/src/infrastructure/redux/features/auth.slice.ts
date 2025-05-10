@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ILoginResponse } from '~/domain/interfaces/auth/login.interface';
 
 type InitialState = {
    value: AuthState;
@@ -7,6 +6,7 @@ type InitialState = {
 
 type AuthState = {
    userEmail: string | null;
+   username: string | null;
    accessToken: string | null;
    refreshToken: string | null;
    accessTokenExpiredIn: number | null;
@@ -18,6 +18,7 @@ type AuthState = {
 const initialState = {
    value: {
       userEmail: null,
+      username: null,
       accessToken: null,
       refreshToken: null,
       accessTokenExpiredIn: null,
@@ -35,12 +36,14 @@ const authSlice = createSlice({
          state,
          action: PayloadAction<{
             user_email: string;
+            username: string;
             access_token: string | null;
             refresh_token: string | null;
             access_token_expires_in: number | null;
          }>,
       ) => {
          state.value.userEmail = action.payload.user_email;
+         state.value.username = action.payload.username;
          state.value.accessToken = action.payload.access_token;
          state.value.refreshToken = action.payload.refresh_token;
          state.value.accessTokenExpiredIn =

@@ -16,32 +16,57 @@ import ImageSkeleton from '@components/ui/image-skeleton';
 import { Skeleton } from '@components/ui/skeleton';
 import { IoChevronBack } from 'react-icons/io5';
 import ProfileForm from './_components/form/profile-form';
+import { useToast } from '~/hooks/use-toast';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 const AccountPage = () => {
    const [loading, setLoading] = useState(true);
    const [editProfile, setEditProfile] = useState(false);
-   const [meInfo, setMeInfo] = useState<IMeResponse | null>(null);
+
+   const [meInfo, setMeInfo] = useState<IMeResponse>({
+      email: '',
+      first_name: '',
+      last_name: '',
+      phone_number: '',
+      birth_date: '',
+      image_id: '',
+      image_url: '',
+      default_address_label: '',
+      default_contact_name: '',
+      default_contact_phone_number: '',
+      default_address_line: '',
+      default_address_district: '',
+      default_address_province: '',
+      default_address_country: '',
+   } as IMeResponse);
+
+   const { toast } = useToast();
 
    const {
-      data: meData,
-      isLoading: meLoading,
-      isError: meError,
-      error: meErrorResponse,
+      data: meDataAsync,
+      isLoading,
+      isSuccess,
+      isError,
+      error,
    } = useGetMeAsyncQuery();
 
    useEffect(() => {
-      if (meData) {
-         setMeInfo(meData);
+      if (isSuccess && meDataAsync) {
+         setMeInfo(meDataAsync);
       }
-   }, [meData]);
+
+      if (isError && isServerErrorResponse(error)) {
+         toast({
+            variant: 'destructive',
+            title: `${error.data.error?.message || 'Something went wrong'}`,
+         });
+      }
+   }, [isSuccess, isError]);
 
    useEffect(() => {
-      if (meLoading) {
-         setLoading(true);
-      } else {
-         setLoading(false);
-      }
-   }, [meLoading]);
+      setLoading(isLoading);
+   }, [isLoading]);
 
    const renderEditProfile = () => {
       return (
@@ -69,13 +94,13 @@ const AccountPage = () => {
             <CardContext className="mt-5">
                <ProfileForm
                   profile={{
-                     email: meInfo?.email || '',
-                     firstName: meInfo?.first_name || '',
-                     lastName: meInfo?.last_name || '',
-                     phoneNumber: meInfo?.phone_number || '',
-                     birthDate: meInfo?.birth_date || '',
-                     imageId: meInfo?.image_id || '',
-                     imageUrl: meInfo?.image_url || '',
+                     email: meInfo.email,
+                     firstName: meInfo.first_name,
+                     lastName: meInfo.last_name,
+                     phoneNumber: meInfo.phone_number,
+                     birthDate: meInfo.birth_date,
+                     imageId: meInfo.image_id,
+                     imageUrl: meInfo.image_url,
                   }}
                />
             </CardContext>
@@ -126,7 +151,7 @@ const AccountPage = () => {
                                     {meInfo?.first_name} {meInfo?.last_name}
                                  </span>
                                  <span className="text-sm font-light text-slate-500 font-SFProText">
-                                    john.doe@example.com
+                                    {meInfo?.email}
                                  </span>
                               </span>
                            )}

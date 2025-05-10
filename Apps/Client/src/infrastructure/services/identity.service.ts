@@ -6,18 +6,52 @@ import {
 import { IMeResponse } from '~/domain/interfaces/identity/me';
 import { IProfilePayload } from '~/domain/interfaces/identity/profile';
 import envConfig from '~/infrastructure/config/env.config';
+import { RootState } from '../redux/store';
+import { setLogout } from '../redux/features/auth.slice';
+
+const baseQueryWithAuth = fetchBaseQuery({
+   baseUrl: envConfig.API_ENDPOINT + 'identity-services',
+   prepareHeaders: (headers, { getState }) => {
+      const accessToken = (getState() as RootState).auth.value.accessToken;
+
+      if (accessToken) {
+         headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+
+      headers.set('ngrok-skip-browser-warning', 'true');
+
+      return headers;
+   },
+   responseHandler: (response) => {
+      return response.json();
+   },
+});
+
+const baseQueryWithUnauthorizedHandler = async (
+   args: any,
+   api: any,
+   extraOptions: any,
+) => {
+   const result = await baseQueryWithAuth(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+
+      // Handle redirect on client-side only
+      // if (typeof window !== 'undefined') {
+      //    window.location.href = '/sign-in';
+      // }
+   }
+
+   return result;
+};
 
 export const identityApi = createApi({
    reducerPath: 'identity-api',
    tagTypes: ['Identity'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'identity-services',
-      prepareHeaders: (headers) => {
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: baseQueryWithUnauthorizedHandler,
    endpoints: (builder) => ({
       getMeAsync: builder.query<IMeResponse, void>({
          query: () => '/api/v1/users/me',

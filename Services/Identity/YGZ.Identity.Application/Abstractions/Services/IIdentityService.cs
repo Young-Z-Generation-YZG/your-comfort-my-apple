@@ -10,8 +10,9 @@ namespace YGZ.Identity.Application.Abstractions.Services;
 public interface IIdentityService
 {
     Task<Result<User>> FindUserAsync(string email);
-    Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId);
     Task<Result<User>> LoginAsync(LoginCommand request);
+    Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId);
+    Task<Result<bool>> ChangePasswordAsync(User user, string oldPassword, string newPassword);
     Task<Result<string>> GenerateEmailVerificationTokenAsync(string email);
     Task<Result<string>> GenerateResetPasswordTokenAsync(string email);
     Task<Result<bool>> VerifyEmailTokenAsync(string email, string encodedToken);

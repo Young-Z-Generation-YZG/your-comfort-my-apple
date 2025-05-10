@@ -1,5 +1,6 @@
 ﻿
 
+using System.Reflection.Metadata;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -8,6 +9,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Primitives;
+using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
 using YGZ.Catalog.Infrastructure.Settings;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Repositories;
@@ -17,14 +19,16 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
     private readonly IMongoCollection<TEntity> _collection;
     private readonly MongoDbSettings _mongoDbSettings;
     private readonly ILogger<MongoRepository<TEntity, TId>> _logger;
+    private readonly IDispatchDomainEventInterceptor _dispatchDomainEventInterceptor;
 
-    public MongoRepository(IOptions<MongoDbSettings> options, ILogger<MongoRepository<TEntity, TId>> logger)
+    public MongoRepository(IOptions<MongoDbSettings> options, ILogger<MongoRepository<TEntity, TId>> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor)
     {
         _mongoDbSettings = options.Value;
         var mongoClient = new MongoClient(_mongoDbSettings.ConnectionString);
         var database = mongoClient.GetDatabase(_mongoDbSettings.DatabaseName);
         _collection = database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
         _logger = logger;
+        _dispatchDomainEventInterceptor = dispatchDomainEventInterceptor;
     }
 
     private protected string GetCollectionName(Type documentType)
@@ -87,6 +91,15 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
     {
         try
         {
+            var domainEventEntities = document.DomainEvents.ToList();
+
+            document.ClearDomainEvents();
+
+            foreach (var domainEvent in domainEventEntities)
+            {
+                await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
+            }
+
             await _collection.InsertOneAsync(document);
 
             return true;
@@ -98,11 +111,20 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(string id, TEntity entity, CancellationToken cancellationToken)
+    public async Task<Result<bool>> UpdateAsync(string id, TEntity document, CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _collection.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), entity);
+            var result = await _collection.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), document);
+
+            var domainEventEntities = document.DomainEvents.ToList();
+
+            document.ClearDomainEvents();
+
+            foreach (var domainEvent in domainEventEntities)
+            {
+                await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
+            }
 
 
             if (result.ModifiedCount > 0)
@@ -119,8 +141,32 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task DeleteAsync(string id)
+    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken cancellationToken)
     {
-        await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)));
+        try
+        {
+            var result = await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), cancellationToken);
+
+            var domainEventEntities = document.DomainEvents.ToList();
+
+            document.ClearDomainEvents();
+
+            foreach (var domainEvent in domainEventEntities)
+            {
+                await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
+            }
+
+            if (result.DeletedCount > 0)
+            {
+                return true;
+            }
+
+            return Errors.IPhone16Model.UpdatedFailure;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, $"class:{nameof(MongoRepository<TEntity, TId>)} - method:{nameof(DeleteAsync)}");
+            throw;
+        }
     }
 }

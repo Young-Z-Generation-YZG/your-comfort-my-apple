@@ -25,7 +25,6 @@ import {
    SelectTrigger,
    SelectValue,
 } from '@components/ui/select';
-import { IProfilePayload } from '~/domain/interfaces/identity/profile';
 import {
    Popover,
    PopoverContent,
@@ -35,16 +34,20 @@ import { Calendar } from '@components/ui/calendar';
 import { format } from 'date-fns';
 import { useUpdateProfileAsyncMutation } from '~/infrastructure/services/identity.service';
 import { useForm } from 'react-hook-form';
+import { useToast } from '~/hooks/use-toast';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import { toast as sonnerToast } from 'sonner';
+import isDifferentValue from '~/infrastructure/utils/is-different-value';
 
 type ProfileFormProps = {
    profile: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phoneNumber?: string;
-      birthDate?: string;
-      imageId?: string;
-      imageUrl?: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      phoneNumber: string;
+      birthDate: string;
+      imageId: string;
+      imageUrl: string;
    };
 };
 
@@ -61,36 +64,38 @@ const ProfileForm = ({
 }: ProfileFormProps) => {
    const [isLoading, setIsLoading] = useState(false);
    const [isEditing, setIsEditing] = useState(false);
-   const [profile, setProfile] = useState<IProfilePayload | null>({
-      first_name: firstName || '',
-      last_name: lastName || '',
-      email: email || '',
-      phone_number: phoneNumber || '',
-      birth_day: birthDate || '2003-08-16',
-      gender: 'OTHER',
-   });
+
+   const { toast } = useToast();
 
    const form = useForm<ProfileFormType>({
       resolver: ProfileResolver,
       defaultValues: {
-         email: profile?.email || '',
-         first_name: profile?.first_name || '',
-         last_name: profile?.last_name || '',
-         phone_number: profile?.phone_number || '',
-         birth_day: profile?.birth_day || '2003-08-16',
+         email: email,
+         first_name: firstName,
+         last_name: lastName,
+         phone_number: phoneNumber,
+         birth_day: new Date(birthDate),
          gender: 'OTHER',
       },
    });
 
    const [
       updateProfileAsync,
-      { isLoading: isUpdating, error: updateError, data: updateData },
+      {
+         isLoading: isUpdating,
+         isError: isUpdateError,
+         isSuccess: isUpdateSuccess,
+         error: updateError,
+      },
    ] = useUpdateProfileAsyncMutation();
 
    const handleSubmit = async (data: ProfileFormType) => {
       console.log('Form submitted:', data);
 
-      await updateProfileAsync(data).unwrap();
+      await updateProfileAsync({
+         ...data,
+         birth_day: new Date(data.birth_day).toISOString(),
+      }).unwrap();
 
       setIsEditing(false);
    };
@@ -98,13 +103,22 @@ const ProfileForm = ({
    const handleSelectChange = (name: string, value: string) => {};
 
    useEffect(() => {
-      if (isUpdating) {
-         setIsLoading(true);
-      } else {
-         setTimeout(() => {
-            setIsLoading(false);
-         }, 500);
+      if (isUpdateSuccess) {
+         sonnerToast.success('Profile updated successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
       }
+
+      // if (isUpdateError) {
+
+      // }
+   }, [isUpdateSuccess, isUpdateError]);
+
+   useEffect(() => {
+      setIsLoading(isUpdating);
    }, [isUpdating]);
 
    return (
@@ -134,7 +148,9 @@ const ProfileForm = ({
                   <Button
                      variant="outline"
                      className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium"
-                     onClick={() => setIsEditing(true)}
+                     onClick={() => {
+                        setIsEditing(true);
+                     }}
                   >
                      <span>edit</span>
                      <span>
@@ -310,11 +326,11 @@ const ProfileForm = ({
                   onClick={() => {
                      setIsEditing(false);
                      form.reset({
-                        first_name: profile?.first_name || '',
-                        last_name: profile?.last_name || '',
-                        email: profile?.email || '',
-                        phone_number: profile?.phone_number || '',
-                        birth_day: profile?.birth_day || '',
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        phone_number: phoneNumber,
+                        birth_day: new Date(birthDate),
                      });
                      form.clearErrors();
                   }}
@@ -326,7 +342,19 @@ const ProfileForm = ({
                   onClick={() => {
                      form.handleSubmit(handleSubmit)();
                   }}
-                  disabled={isUpdating || isLoading}
+                  disabled={
+                     isUpdating ||
+                     isLoading ||
+                     !isDifferentValue(
+                        {
+                           first_name: firstName,
+                           last_name: lastName,
+                           email: email,
+                           phone_number: phoneNumber,
+                        },
+                        form.getValues(),
+                     )
+                  }
                >
                   {isLoading ? (
                      <span className="flex items-center">

@@ -6,7 +6,7 @@ namespace YGZ.Catalog.Domain.Core.Primitives;
 
 public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents where TId : ValueObject
 {
-    private readonly List<IDomainEvent> _domainEvents = new();
+    private List<IDomainEvent> _domainEvents { get; set; } = new List<IDomainEvent>();
 
     public TId Id { get; protected set; }
 
@@ -34,6 +34,8 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
 
     public void AddDomainEvent(IDomainEvent domainEvent)
     {
+        this._domainEvents ??= new List<IDomainEvent>();
+
         _domainEvents.Add(domainEvent);
     }
 

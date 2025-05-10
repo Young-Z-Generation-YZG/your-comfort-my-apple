@@ -55,6 +55,7 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new AddAddressRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateAddressRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateProfileRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new ChangePasswordRequestExample());
         });
 
         return services;

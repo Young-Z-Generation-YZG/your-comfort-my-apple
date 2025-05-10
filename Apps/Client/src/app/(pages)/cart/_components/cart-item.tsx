@@ -19,9 +19,6 @@ interface CartItemProps {
 }
 
 const CartItem = ({ item }: CartItemProps) => {
-   const [quantity, setQuantity] = useState(item.quantity);
-   const [currentQuantity, setCurrentQuantity] = useState(0);
-
    const dispatch = useDispatch();
 
    const handleRemoveItem = () => {
@@ -69,10 +66,17 @@ const CartItem = ({ item }: CartItemProps) => {
                   {item.promotion && (
                      <div className="h-full flex flex-col text-[16px] font-normal text-end">
                         <div className="w-full font-medium text-red-500">
-                           ${item.promotion.promotion_final_price.toFixed(2)}
+                           $
+                           {(
+                              item.promotion.promotion_final_price *
+                              item.quantity
+                           ).toFixed(2)}
                         </div>
                         <div className="w-full line-through text-[14px] font-light ">
-                           ${item.product_unit_price * item.quantity}
+                           $
+                           {(item.product_unit_price * item.quantity).toFixed(
+                              2,
+                           )}
                         </div>
                         <div className="w-full text-[14px] font-light ">
                            x {item.quantity}
@@ -83,7 +87,10 @@ const CartItem = ({ item }: CartItemProps) => {
                   {!item.promotion && (
                      <div className="h-full flex flex-col text-[16px] font-normal text-end">
                         <div className="w-full font-medium">
-                           ${item.sub_total_amount.toFixed(2)}
+                           $
+                           {(item.product_unit_price * item.quantity).toFixed(
+                              2,
+                           )}
                         </div>
                         <div className="w-full text-[14px] font-light ">
                            x {item.quantity}

@@ -14,5 +14,6 @@ public static partial class Errors
         public static Error InvalidCredentials = Error.BadRequest(code: "User.InvalidCredentials", message: "Invalid credentials", serviceName: "IdentityService");
         public static Error CannotBeUpdated = Error.BadRequest(code: "User.CannotBeUpdated", message: "User cannot be updated", serviceName: "IdentityService");
         public static Error CannotResetPassword = Error.BadRequest(code: "User.CannotResetPassword", message: "User cannot reset password", serviceName: "IdentityService");
+        public static Error CannotChangePassword = Error.BadRequest(code: "User.CannotChangePassword", message: "User cannot change password", serviceName: "IdentityService");
     }
 }

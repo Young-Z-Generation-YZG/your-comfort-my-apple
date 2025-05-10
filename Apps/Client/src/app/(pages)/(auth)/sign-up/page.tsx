@@ -23,6 +23,7 @@ import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useToast } from '~/hooks/use-toast';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 // List of countries - this would typically be more comprehensive
 const countries = [
@@ -340,6 +341,12 @@ const SignUpPage = () => {
                         onClick={() => {
                            form.handleSubmit(handleSubmitRegister)();
                         }}
+                        disabled={
+                           form.formState.isSubmitting ||
+                           isLoading ||
+                           isFetching ||
+                           form.formState.isValidating
+                        }
                      >
                         {isLoading || isFetching
                            ? 'Registering...'
@@ -353,4 +360,4 @@ const SignUpPage = () => {
    );
 };
 
-export default SignUpPage;
+export default withAuth(SignUpPage);

@@ -99,7 +99,9 @@ const BasketMenu = () => {
                <ul className="pt-2">
                   <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
                      <LiaBoxSolid className="size-4" />
-                     <p>Orders</p>
+                     <Link href="/account/orders">
+                        <p>Orders</p>
+                     </Link>
                   </li>
                   <li className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600">
                      <IoBookmarkOutline className="size-4" />
@@ -124,6 +126,7 @@ const BasketMenu = () => {
                         className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600"
                         onClick={() => {
                            dispatch(setLogout());
+                           router.replace('/sign-in');
                         }}
                      >
                         <RiLogoutBoxRLine

@@ -1,6 +1,9 @@
-import { IBasketPromotionResponse, IPromotion } from './promotion.interface';
+import {
+   IBasketPromotionResponse,
+   IPromotionPayload,
+} from './promotion.interface';
 
-export interface IBasketItem {
+export interface IBasketItemPayload {
    product_id: string;
    model_id: string;
    product_name: string;
@@ -11,12 +14,12 @@ export interface IBasketItem {
    product_slug: string;
    category_id: string;
    quantity: number;
-   promotion: IPromotion | null;
+   promotion: IPromotionPayload | null;
    order: number;
 }
 
 export interface IStoreBasketPayload {
-   cart_items: IBasketItem[];
+   cart_items: IBasketItemPayload[];
 }
 
 export interface IGetBasketQueries {
@@ -41,10 +44,11 @@ export interface ICartItemResponse {
    category_id: string;
    quantity: number;
    sub_total_amount: number;
-   promotion: IBasketPromotionResponse;
+   promotion: IBasketPromotionResponse | null;
    order_index: number;
 }
 
 export interface ICheckoutResponse {
-   payment_redirect_url: string;
+   payment_redirect_url: string | null;
+   order_details_redirect_url: string | null;
 }

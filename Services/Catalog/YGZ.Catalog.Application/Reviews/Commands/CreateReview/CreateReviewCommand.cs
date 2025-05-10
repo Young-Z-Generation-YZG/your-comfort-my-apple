@@ -5,9 +5,11 @@ namespace YGZ.Catalog.Application.Reviews.Commands;
 
 public sealed record CreateReviewCommand : ICommand<bool>
 {
-    required public string ProductId { get; set; }
-    required public string ModelId { get; set; }
-    required public string OrderItemId { get; set; }
-    required public string Content { get; set; }
-    required public int Rating { get; set; }
+    public required string ProductId { get; set; }
+    public required string ModelId { get; set; }
+    public required string OrderId { get; set; }
+    public required string OrderItemId { get; set; }
+    public required string CustomerUserName { get; set; }
+    public required string Content { get; set; }
+    public required int Rating { get; set; }
 }

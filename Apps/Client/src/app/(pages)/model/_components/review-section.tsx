@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import ItemReview from './review-item';
 import { FaRegStar, FaStar } from 'react-icons/fa6';
-import { IRatingStarResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import { IRatingStarResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 import { Star } from 'lucide-react';
-import { useGetReviewByModelIdAsyncQuery } from '~/infrastructure/services/catalog.service';
 import { IReviewResponse } from '~/domain/interfaces/catalogs/review.interface';
+import { useGetReviewByModelIdAsyncQuery } from '~/infrastructure/services/review.service';
 
 type ReviewSectionProps = {
    modelId: string;

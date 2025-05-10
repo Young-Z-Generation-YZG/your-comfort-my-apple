@@ -3,6 +3,7 @@ using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Api.HttpContext;
 using YGZ.Ordering.Application.Abstractions;
 using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.Ordering.Api.RpcServices;
 
 namespace YGZ.Ordering.Api;
 
@@ -21,5 +22,12 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
 
         return services;
+    }
+
+    public static IEndpointRouteBuilder MapGrpcEndpoints(this IEndpointRouteBuilder endpoints)
+    {
+        endpoints.MapGrpcService<OrderingRpcService>();
+
+        return endpoints;
     }
 }

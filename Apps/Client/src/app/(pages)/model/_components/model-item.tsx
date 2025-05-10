@@ -2,7 +2,6 @@
 'use client';
 import Image from 'next/image';
 import { cn } from '~/infrastructure/lib/utils';
-import { SFDisplayFont } from '@assets/fonts/font.config';
 
 type ModelItemProps = {
    modelName: string;

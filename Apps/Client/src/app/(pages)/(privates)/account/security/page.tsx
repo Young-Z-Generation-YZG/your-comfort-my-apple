@@ -7,6 +7,7 @@ import { TwoFactorAuth } from './two-factor-auth';
 import { LoginHistory } from './login-history';
 import { SecuritySettings } from './security-settings';
 import { motion } from 'framer-motion';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 const SecurityPage = () => {
    const [activeSection, setActiveSection] = useState<string>('password');
@@ -43,4 +44,4 @@ const SecurityPage = () => {
    );
 };
 
-export default SecurityPage;
+export default withAuth(SecurityPage);

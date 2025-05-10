@@ -10,7 +10,14 @@ const ProfileSchema = z.object({
       .string()
       .min(1, { message: 'Phone number is required' })
       .regex(/^\d+$/, { message: 'Phone number must be numeric' }),
-   birth_day: z.string().min(1, { message: 'Birth date is required' }),
+   birth_day: z
+      .date({
+         required_error: 'A date of birth is required.',
+      })
+      .transform((date) => {
+         // format to YYYY-MM-DD +7
+         return new Date(date.getTime() + 7 * 60 * 60 * 1000);
+      }),
    gender: z
       .string()
       .min(1, { message: 'Gender is required' })

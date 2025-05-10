@@ -35,6 +35,9 @@ import {
 
 import { ReviewModal } from '../_components/review-model';
 import { useToast } from '~/hooks/use-toast';
+import { useGetReviewByOrderIdAsyncQuery } from '~/infrastructure/services/review.service';
+import { IReviewByOrderResponse } from '~/domain/interfaces/catalogs/review.interface';
+import { ORDER_STATUS_TYPE_ENUM } from '~/domain/enums/order-type.enum';
 
 const containerVariants = {
    hidden: { opacity: 0 },
@@ -61,6 +64,9 @@ const itemVariants = {
 
 export default function OrderDetails() {
    const [order, setOrder] = useState<OrderDetailsResponse | null>(null);
+   const [reviewsInOrder, setReviewInOrder] = useState<
+      IReviewByOrderResponse[]
+   >([]);
    const [isLoading, setIsLoading] = useState(true);
    const [reviewItem, setReviewItem] = useState<OrderItemResponse | null>(null);
    const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -71,36 +77,26 @@ export default function OrderDetails() {
 
    const {
       data: orderDetailsData,
-      isLoading: orderDetailsLoading,
-      isError: orderDetailsError,
-      error: orderDetailsErrorResponse,
-      isSuccess: orderDetailsSuccess,
-      isFetching: orderDetailsFetching,
+      isLoading: isOrderDetailsLoading,
+      isError: isOrderDetailsError,
+      error: orderDetailsError,
+      isSuccess: isOrderDetailsDataSuccess,
       refetch: orderDetailsRefetch,
    } = useGetOrderDetailsAsyncQuery(params.id);
+
+   const {
+      data: reviewsInOrderDataAsync,
+      isLoading: isReviewsInOrderLoading,
+      isError: isReviewsInOrderError,
+      error: reviewsInOrderError,
+      isSuccess: isReviewsInOrderSuccess,
+      refetch: reviewsInOrderRefetch,
+   } = useGetReviewByOrderIdAsyncQuery(params.id);
 
    const [confirmOrder, { isLoading: isConfirmingOrder }] =
       useConfirmOrderAsyncMutation();
    const [cancelOrder, { isLoading: isCancellingOrder }] =
       useCancelOrderAsyncMutation();
-
-   useEffect(() => {
-      if (orderDetailsSuccess) {
-         setOrder(orderDetailsData);
-
-         const orderCreatedAt = new Date(orderDetailsData.order_created_at);
-         const currentTime = new Date();
-         const timeDifference =
-            currentTime.getTime() - orderCreatedAt.getTime();
-         const minutesDifference = Math.floor(timeDifference / (1000 * 60));
-
-         setTimeLeft((30 - minutesDifference) * 60);
-
-         setTimeout(() => {
-            setIsLoading(false);
-         }, 500);
-      }
-   }, [orderDetailsData]);
 
    // Get status icon
    const getStatusIcon = (status: string) => {
@@ -136,7 +132,11 @@ export default function OrderDetails() {
 
    const CountdownTimer = () => {
       useEffect(() => {
-         if (timeLeft <= 0) return;
+         if (timeLeft <= 0) {
+            window.location.reload();
+
+            return;
+         }
 
          const intervalId = setInterval(() => {
             setTimeLeft((prevTime) => prevTime - 1);
@@ -161,8 +161,18 @@ export default function OrderDetails() {
    const renderButton = () => {
       if (order?.order_status === 'PENDING') {
          return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
                <CountdownTimer />
+
+               <Button
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  onClick={() => {
+                     handleCancelOrder();
+                  }}
+               >
+                  <X className="mr-2 h-4 w-4" />
+                  Cancel Order
+               </Button>
 
                <Button
                   className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -211,6 +221,39 @@ export default function OrderDetails() {
          window.location.reload();
       }
    };
+
+   useEffect(() => {
+      if (isOrderDetailsDataSuccess && orderDetailsData) {
+         setOrder(orderDetailsData);
+
+         const orderCreatedAt = new Date(orderDetailsData.order_created_at);
+         const currentTime = new Date();
+         const timeDifference =
+            currentTime.getTime() - orderCreatedAt.getTime();
+         const minutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+         setTimeLeft((30 - minutesDifference) * 60);
+      }
+
+      if (isReviewsInOrderSuccess && reviewsInOrderDataAsync) {
+         setReviewInOrder(reviewsInOrderDataAsync);
+      }
+
+      if (isOrderDetailsError && orderDetailsError) {
+      }
+
+      if (isReviewsInOrderError && reviewsInOrderError) {
+      }
+   }, [
+      isOrderDetailsDataSuccess,
+      isOrderDetailsError,
+      isReviewsInOrderSuccess,
+      isReviewsInOrderError,
+   ]);
+
+   useEffect(() => {
+      setIsLoading(isOrderDetailsLoading || isReviewsInOrderLoading);
+   }, [isOrderDetailsLoading, isReviewsInOrderLoading]);
 
    return (
       <motion.div
@@ -397,7 +440,26 @@ export default function OrderDetails() {
                                              item.product_unit_price.toFixed(2)}
                                        </p>
                                     </div>
-                                    {true && !item.is_reviewed && (
+                                    {order?.order_status ===
+                                       ORDER_STATUS_TYPE_ENUM.DELIVERED &&
+                                       !item.is_reviewed && (
+                                          <div className="mt-2 flex justify-end">
+                                             <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="text-blue-600 hover:text-blue-800 text-xs"
+                                                onClick={(e) => {
+                                                   e.stopPropagation();
+                                                   setReviewItem(item);
+                                                   setReviewModalOpen(true);
+                                                }}
+                                             >
+                                                Write a Review
+                                             </Button>
+                                          </div>
+                                       )}
+
+                                    {item.is_reviewed && (
                                        <div className="mt-2 flex justify-end">
                                           <Button
                                              variant="ghost"
@@ -409,7 +471,7 @@ export default function OrderDetails() {
                                                 setReviewModalOpen(true);
                                              }}
                                           >
-                                             Write a Review
+                                             View review
                                           </Button>
                                        </div>
                                     )}
@@ -494,17 +556,34 @@ export default function OrderDetails() {
                </DialogHeader>
                {reviewItem && (
                   <ReviewModal
+                     order={order}
                      item={{
                         product_id: reviewItem.product_id,
                         model_id: reviewItem.model_id,
+                        order_id: reviewItem.order_id,
                         order_item_id: reviewItem.order_item_id,
                         name: reviewItem.product_name,
                         image: reviewItem.product_image,
                         options: reviewItem.product_color_name,
+                        isReviewed: reviewItem.is_reviewed,
+                     }}
+                     reviewedData={{
+                        reviewId: reviewsInOrder.find(
+                           (review) =>
+                              review.order_item_id === reviewItem.order_item_id,
+                        )?.review_id,
+                        rating: reviewsInOrder.find(
+                           (review) =>
+                              review.order_item_id === reviewItem.order_item_id,
+                        )?.rating,
+                        content: reviewsInOrder.find(
+                           (review) =>
+                              review.order_item_id === reviewItem.order_item_id,
+                        )?.content,
                      }}
                      onClose={() => setReviewModalOpen(false)}
                      onSubmit={() => {
-                        orderDetailsRefetch();
+                        window.location.reload();
                      }}
                   />
                )}

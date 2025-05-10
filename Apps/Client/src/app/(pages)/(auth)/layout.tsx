@@ -1,3 +1,5 @@
+'use client';
+
 const AuthLayout = ({
    children,
 }: Readonly<{

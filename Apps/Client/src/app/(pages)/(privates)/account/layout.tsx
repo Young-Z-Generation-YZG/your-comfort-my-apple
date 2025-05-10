@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import SideBar from './_components/layouts/side-bar';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    const router = useRouter();
@@ -35,4 +36,4 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    );
 };
 
-export default AccountLayout;
+export default withAuth(AccountLayout);

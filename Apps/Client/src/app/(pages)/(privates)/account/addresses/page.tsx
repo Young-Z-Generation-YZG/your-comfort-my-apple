@@ -26,6 +26,9 @@ import {
 } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
 import { useForm } from 'react-hook-form';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import { useToast } from '~/hooks/use-toast';
+import { toast as sonnerToast } from 'sonner';
 
 const labelList = ['Home', 'Work', 'Other'];
 
@@ -42,13 +45,15 @@ type Address = {
 };
 
 const AddressesPage = () => {
-   const [loading, setLoading] = useState(true);
+   const [isLoading, setIsLoading] = useState(true);
    const [addressesList, setAddressesList] = useState<IAddressResponse[]>([]);
    const [open, setOpen] = useState(false);
    const [editingAddress, setEditingAddress] = useState<{
       id: string;
       payload: IAddressPayload;
    } | null>(null);
+
+   const { toast } = useToast();
 
    const form = useForm({
       resolver: AddressResolver,
@@ -64,10 +69,11 @@ const AddressesPage = () => {
    });
 
    const {
-      data: addressesData,
+      data: addressesAsync,
       isLoading: isLoadingAddresses,
-      isFetching: isFetchingAddresses,
-      error: errorAddresses,
+      isSuccess: isSuccessAddressesAsync,
+      isError: isErrorAddressesAsync,
+      error: errorAddressesAsync,
       refetch: refetchAddresses,
    } = useGetAddressesAsyncQuery();
 
@@ -76,31 +82,14 @@ const AddressesPage = () => {
       {
          isLoading: isLoadingSetDefaultAddress,
          isSuccess: isSuccessSetDefaultAddress,
+         isError: isErrorSetDefaultAddress,
          error: errorSetDefaultAddress,
       },
    ] = useSetDefaultAddressAsyncMutation();
 
    const handleSetDefaultAddress = async (id: string) => {
       await setDefaultAddressAsync(id).unwrap();
-
-      await refetchAddresses();
    };
-
-   useEffect(() => {
-      if (isLoadingAddresses || isFetchingAddresses) {
-         setLoading(true);
-      } else {
-         setTimeout(() => {
-            setLoading(false);
-         }, 500);
-      }
-   }, [isLoadingAddresses, isFetchingAddresses]);
-
-   useEffect(() => {
-      if (addressesData) {
-         setAddressesList(addressesData);
-      }
-   }, [addressesData]);
 
    const renderAddresses = () => {
       const defaultAddress = addressesList.find((item) => item.is_default);
@@ -111,6 +100,40 @@ const AddressesPage = () => {
 
       return [defaultAddress, ...otherAddresses] as IAddressResponse[];
    };
+
+   useEffect(() => {
+      if (isSuccessAddressesAsync && addressesAsync) {
+         setAddressesList(addressesAsync);
+      }
+   }, [isSuccessAddressesAsync, addressesAsync]);
+
+   useEffect(() => {
+      if (isSuccessSetDefaultAddress) {
+         sonnerToast.success('Set Default Successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+      }
+
+      if (isErrorSetDefaultAddress && errorSetDefaultAddress) {
+         if (isServerErrorResponse(errorSetDefaultAddress)) {
+            toast({
+               variant: 'destructive',
+               title: `${errorSetDefaultAddress.data.error.message ?? 'Server busy, please try again later'}`,
+            });
+         }
+      }
+   }, [
+      isSuccessSetDefaultAddress,
+      isErrorSetDefaultAddress,
+      errorSetDefaultAddress,
+   ]);
+
+   useEffect(() => {
+      setIsLoading(isLoadingAddresses || isLoadingSetDefaultAddress);
+   }, [isLoadingAddresses, isLoadingSetDefaultAddress]);
 
    return (
       <CardContext>
@@ -160,7 +183,7 @@ const AddressesPage = () => {
                </Dialog>
             </div>
 
-            {loading ? (
+            {isLoading ? (
                <div>
                   {Array(addressesList.length > 0 ? addressesList.length : 3)
                      .fill(0)

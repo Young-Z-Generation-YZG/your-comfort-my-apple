@@ -27,19 +27,25 @@ public class Review : Entity<ReviewId>, IAuditable
     [BsonElement("rating")]
     required public int Rating { get; set; }
 
+    [BsonElement("order_id")]
+    required public string OrderId { get; set; }
+
     [BsonElement("order_item_id")]
     required public string OrderItemId { get; set; }
 
     [BsonElement("customer_id")]
     required public string CustomerId { get; set; }
 
+    [BsonElement("customer_username")]
+    required public string CustomerUserName { get; set; }
+    
     [BsonElement("created_at")]
     public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
 
     [BsonElement("updated_at")]
     public DateTime UpdatedAt => Id.Id?.CreationTime ?? DateTime.Now;
 
-    public static Review Create(string content, int rating, IPhone16Id productId, IPhone16ModelId modelId, string orderItemId, string customerId)
+    public static Review Create(string content, int rating, IPhone16Id productId, IPhone16ModelId modelId, string OrderId, string orderItemId, string customerId, string customerUserName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
         ArgumentOutOfRangeException.ThrowIfLessThan(rating, 1);
@@ -47,16 +53,34 @@ public class Review : Entity<ReviewId>, IAuditable
 
         var review = new Review(ReviewId.Create())
         {
-            ProductId = productId,
             ModelId = modelId,
+            ProductId = productId,
+            OrderId = OrderId,
+            OrderItemId = orderItemId,
+            CustomerId = customerId,
+            CustomerUserName = customerUserName,
             Content = content,
             Rating = rating,
-            OrderItemId = orderItemId,
-            CustomerId = customerId
         };
 
         review.AddDomainEvent(new ReviewCreatedDomainEvent(review));
 
         return review;
+    }
+
+    public void Update(string newContent, int newRating, Review oldReview)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(newContent);
+        ArgumentOutOfRangeException.ThrowIfLessThan(newRating, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(newRating, 5);
+        Content = newContent;
+        Rating = newRating;
+
+        AddDomainEvent(new ReviewUpdatedDomainEvent(oldReview, this));
+    }
+
+    public void Delete()
+    {
+        AddDomainEvent(new ReviewDeletedDomainEvent(this));
     }
 }

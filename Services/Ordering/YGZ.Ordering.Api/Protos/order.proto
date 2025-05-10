@@ -7,3 +7,21 @@ import "google/protobuf/timestamp.proto";
 
 package order;
 
+service OrderingProtoService {
+	rpc UpdateReviewOrderItem (UpdateReviewOrderItemRquest) returns (BooleanResponse);
+}
+
+message UpdateReviewOrderItemRquest {
+	google.protobuf.StringValue		order_item_id = 2;
+	google.protobuf.StringValue		review_id = 3;
+	google.protobuf.StringValue		customer_id = 4;
+	google.protobuf.StringValue		review_content = 5;
+	google.protobuf.Int32Value		review_star = 6;
+	bool							is_reviewed = 7;
+}
+
+message BooleanResponse {
+	bool						is_success = 1;
+	bool						is_failure = 2;
+	google.protobuf.StringValue error_message = 3;
+}

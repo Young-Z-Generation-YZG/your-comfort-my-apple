@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBasketItem } from '~/domain/interfaces/baskets/basket.interface';
+import { IBasketItemPayload } from '~/domain/interfaces/baskets/basket.interface';
 
 const initialState = {
    value: {
-      items: [] as IBasketItem[],
+      items: [] as IBasketItemPayload[],
       currentOrder: 0,
    },
 };
@@ -12,7 +12,7 @@ const cartSlice = createSlice({
    name: 'cart',
    initialState: initialState,
    reducers: {
-      addRangeItems: (state, action: PayloadAction<IBasketItem[]>) => {
+      addRangeItems: (state, action: PayloadAction<IBasketItemPayload[]>) => {
          if (action.payload.length === 0) return;
 
          state.value.items = action.payload.map((item) => {
@@ -20,11 +20,11 @@ const cartSlice = createSlice({
 
             return {
                ...item,
-               order: state.value.currentOrder,
+               order_index: state.value.currentOrder,
             };
          });
       },
-      addCartItem: (state, action: PayloadAction<IBasketItem>) => {
+      addCartItem: (state, action: PayloadAction<IBasketItemPayload>) => {
          const existingItem = state.value.items.find(
             (item) => item.product_id === action.payload.product_id,
          );

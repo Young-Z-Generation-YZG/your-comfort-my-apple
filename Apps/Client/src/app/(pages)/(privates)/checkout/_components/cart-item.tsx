@@ -33,9 +33,24 @@ const CartItem = ({ item }: CartItemProps) => {
                <div className="font-light">
                   <span>{item.product_color_name}</span>
                </div>
-               <div className="font-semibold mt-1">
-                  ${item.product_unit_price.toFixed(2)} x {item.quantity}
-               </div>
+
+               {!item.promotion && (
+                  <div className="font-semibold mt-1">
+                     ${item.product_unit_price.toFixed(2)} x {item.quantity}
+                  </div>
+               )}
+
+               {item.promotion && (
+                  <div className="">
+                     <span className="font-semibold mt-1 text-sm inline-block text-red-500">
+                        ${item.promotion.promotion_final_price.toFixed(2)} x{' '}
+                        {item.quantity}
+                     </span>
+                     <span className="font-semibold mt-1 text-xs inline-block text-[#A0A0A0] line-through ml-2">
+                        ${item.product_unit_price.toFixed(2)}
+                     </span>
+                  </div>
+               )}
             </div>
          </div>
       </div>

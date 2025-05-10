@@ -25,7 +25,7 @@ public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreate
 
         var model = await _modelRepository.GetByIdAsync(iphone.IPhoneModelId.Value!, cancellationToken);
 
-        model.UpdateRating(notification.Review);
+        model.AddNewRating(notification.Review);
 
         await _modelRepository.UpdateAsync(model.Id.Value!, model, cancellationToken);
     }

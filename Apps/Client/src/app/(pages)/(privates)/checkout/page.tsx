@@ -35,6 +35,7 @@ import { useSearchParams } from 'next/navigation';
 import { useGetAddressesAsyncQuery } from '~/infrastructure/services/identity.service';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 const shippingAddresses = [
    {
@@ -55,9 +56,7 @@ const CheckoutPage = () => {
    const [editable, setEditable] = useState(false);
    const [addressesList, setAddressesList] = useState<IAddressResponse[]>([]);
    const [selectedAddress, setSelectedAddress] =
-      useState<IAddressResponse | null>(
-         addressesList.find((addr) => addr.is_default) || null,
-      );
+      useState<IAddressResponse | null>(null);
    const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
@@ -132,6 +131,12 @@ const CheckoutPage = () => {
             dataCheckoutBasket.payment_redirect_url.startsWith('https://')
          ) {
             window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
+         } else if (
+            typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
+            dataCheckoutBasket.order_details_redirect_url
+         ) {
+            window.location.href =
+               dataCheckoutBasket.order_details_redirect_url; // Redirect to the order details page
          }
       }
    }, [isSuccessCheckoutBasket]);
@@ -140,9 +145,13 @@ const CheckoutPage = () => {
       if (isSuccessAddresses) {
          setAddressesList(addressesDataAsync);
 
+         console.log('addressesDataAsync', addressesDataAsync);
+
          var defaultValue = addressesDataAsync.find((addr) => addr.is_default);
 
          if (defaultValue) {
+            setSelectedAddress(defaultValue);
+
             form.setValue(
                'shipping_address.contact_name',
                defaultValue.contact_name,
@@ -158,6 +167,35 @@ const CheckoutPage = () => {
             form.setValue('shipping_address.district', defaultValue.district);
             form.setValue('shipping_address.province', defaultValue.province);
             form.setValue('shipping_address.country', defaultValue.country);
+         } else {
+            if (addressesList.length > 0) {
+               setSelectedAddress(addressesList[0]);
+
+               form.setValue(
+                  'shipping_address.contact_name',
+                  addressesList[0].contact_name,
+               );
+               form.setValue(
+                  'shipping_address.contact_phone_number',
+                  addressesList[0].contact_phone_number,
+               );
+               form.setValue(
+                  'shipping_address.address_line',
+                  addressesList[0].address_line,
+               );
+               form.setValue(
+                  'shipping_address.district',
+                  addressesList[0].district,
+               );
+               form.setValue(
+                  'shipping_address.province',
+                  addressesList[0].province,
+               );
+               form.setValue(
+                  'shipping_address.country',
+                  addressesList[0].country,
+               );
+            }
          }
       }
    }, [addressesDataAsync]);
@@ -406,7 +444,7 @@ const CheckoutPage = () => {
                         Order Summary
                      </div>
                      <div className="text-[16px] font-light tracking-[0.2px] font-SFProText">
-                        You have 5 items in your cart
+                        You have {cartItems.length} items in your cart
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
                         {cartItems.map((item) => {
@@ -462,7 +500,7 @@ const CheckoutPage = () => {
                            form.handleSubmit(handleSubmit)();
                         }}
                      >
-                        Checkout
+                        Place Order
                      </Button>
                      <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                         <div className="w-full flex flex-row items-center">
@@ -507,4 +545,4 @@ const CheckoutPage = () => {
    );
 };
 
-export default CheckoutPage;
+export default withAuth(CheckoutPage);

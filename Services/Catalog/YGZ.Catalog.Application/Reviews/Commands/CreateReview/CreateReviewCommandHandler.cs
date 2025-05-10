@@ -5,8 +5,8 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions;
 using YGZ.Catalog.Application.Reviews.Extensions;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
-using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Ordering.Api.Protos;
+using YGZ.BuildingBlocks.Shared.Errors.Common;
 
 namespace YGZ.Catalog.Application.Reviews.Commands;
 
@@ -14,25 +14,41 @@ public class CreateReviewCommandHandler : ICommandHandler<CreateReviewCommand, b
 {
     private readonly IReviewRepository _reviewRepository;
     private readonly IUserContext _userContext;
+    private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
 
-    public CreateReviewCommandHandler(IReviewRepository reviewRepository, IUserContext userContext)
+    public CreateReviewCommandHandler(IReviewRepository reviewRepository, IUserContext userContext, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
     {
         _reviewRepository = reviewRepository;
         _userContext = userContext;
+        _orderingProtoServiceClient = orderingProtoServiceClient;
     }
 
     public async Task<Result<bool>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
     {
-        //var userId = _userContext.GetUserId();
-        var customerId = "ed04b044-86de-475f-9122-d9807897f969";
+        var userId = _userContext.GetUserId();
 
-        var review = request.ToEntity(customerId);
+        var review = request.ToEntity(userId);
 
         var result = await _reviewRepository.InsertOneAsync(review);
 
         if(result.IsFailure)
         {
             return result.Error;
+        }
+
+        var rpcResult = await _orderingProtoServiceClient.UpdateReviewOrderItemAsync(new UpdateReviewOrderItemRquest()
+        {
+            ReviewId = review.Id.ToString(),
+            OrderItemId = request.OrderItemId,
+            CustomerId = userId,
+            ReviewContent = request.Content,
+            ReviewStar = request.Rating,
+            IsReviewed = true,
+        });
+
+        if(rpcResult.IsFailure)
+        {
+            return Errors.OrderingGrpc.CannotUpdateReviewOrderItem;
         }
 
         return true;

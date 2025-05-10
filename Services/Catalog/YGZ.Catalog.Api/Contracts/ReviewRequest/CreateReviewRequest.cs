@@ -22,6 +22,13 @@ public class CreateReviewRequest
     [JsonPropertyName("rating")]
     required public int Rating { get; set; }
 
+    [JsonPropertyName("customer_username")]
+    required public string CustomerUserName { get; set; }
+
+    [Required]
+    [JsonPropertyName("order_id")]
+    required public string OrderId { get; set; }
+
     [Required]
     [JsonPropertyName("order_item_id")]
     required public string OrderItemId { get; set; }

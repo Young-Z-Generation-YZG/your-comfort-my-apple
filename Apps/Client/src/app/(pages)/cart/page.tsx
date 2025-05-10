@@ -30,35 +30,43 @@ import {
    useGetBasketAsyncQuery,
    useStoreBasketAsyncMutation,
 } from '~/infrastructure/services/basket.service';
-import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
+import {
+   IBasketItemPayload,
+   ICartItemResponse,
+} from '~/domain/interfaces/baskets/basket.interface';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
 
 const CartPage = () => {
    const searchParams = useSearchParams();
    const router = useRouter();
-   const [loading, setLoading] = useState(false);
+   const dispatch = useDispatch();
+   const [isLoading, setIsLoading] = useState(true);
    const [coupon, setCoupon] = useState<string | null>(null);
    const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null); // Coupon applied to query
    const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
+
+   const [doneLoadCart, setDoneLoadCart] = useState(false);
+
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
 
-   const { items } = useAppSelector((state) => state.cart.value);
-   const dispatch = useDispatch();
+   const cartSlice = useAppSelector((state) => state.cart.value);
+   const auth = useAppSelector((state) => state.auth.value);
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
 
    const {
       data: basketData,
-      isLoading: isBasketLoading,
-      isFetching: isBasketFetching,
-      isError: isErrorBasket,
+      isLoading: isLoadingBasket,
+      isSuccess: isSuccessGetBasket,
+      isError: isErrorGetBasket,
       error: errorBasket,
       refetch: refetchBasket,
    } = useGetBasketAsyncQuery({
-      _couponCode: appliedCoupon,
+      _couponCode: appliedCoupon || undefined,
    });
 
    const [
@@ -80,102 +88,157 @@ const CartPage = () => {
    ] = useDeleteBasketAsyncMutation();
 
    const handleApplyCoupon = async () => {
-      setLoading(true);
+      if (!coupon) return;
       setAppliedCoupon(coupon);
 
-      router.replace(
-         `/cart?${new URLSearchParams({ _couponCode: coupon || '' }).toString()}`,
+      window.location.replace(
+         `/cart?${new URLSearchParams({ _couponCode: coupon }).toString()}`,
       );
-
-      setLoading(false);
    };
 
-   useEffect(() => {
-      if (basketData) {
-         setCartItems(basketData.cart_items);
-
-         let dcTotal = 0;
-
-         basketData.cart_items.forEach((item) => {
-            if (item.promotion) {
-               dcTotal +=
-                  (item.product_unit_price -
-                     item.promotion.promotion_discount_unit_price) *
-                  item.quantity;
-            }
-         });
-
-         const dcSubtotal = basketData.cart_items.reduce(
-            (acc, item) => acc + item.sub_total_amount,
-            0,
-         );
-
-         setTotalDiscount(dcTotal);
-         setSubtotal(dcSubtotal);
-      }
-   }, [basketData, appliedCouponFromQuery]);
-
-   useEffect(() => {
-      if (appliedCouponFromQuery) {
-         setAppliedCoupon(appliedCouponFromQuery);
-      }
-   }, [appliedCouponFromQuery]);
-
-   useEffect(() => {
-      // if (cartItems.length > 0) {
-      //    const listCartItem: IBasketItem[] = cartItems.map((item, index) => {
-      //       return {
-      //          product_id: item.product_id,
-      //          model_id: item.model_id,
-      //          product_name: item.product_name,
-      //          product_color_name: item.product_color_name,
-      //          product_unit_price: item.product_unit_price,
-      //          product_name_tag: item.product_name_tag,
-      //          product_image: item.product_image,
-      //          product_slug: item.product_slug,
-      //          category_id: item.category_id,
-      //          quantity: item.quantity,
-      //          promotion: item.promotion,
-      //          order: index,
-      //       };
-      //    });
-      //    dispatch(addRangeItems(listCartItem));
-      // }
-   }, [cartItems]);
-
-   const handleStoreBasket = async () => {
+   const handleStoreBasket = async (items: IBasketItemPayload[]) => {
       await storeBasket({
          cart_items: items,
       }).unwrap();
-
-      await refetchBasket();
    };
 
    const handleDeleteBasket = async () => {
       await deleteBasket({}).unwrap();
-
-      await refetchBasket();
    };
 
    useEffect(() => {
-      if (items.length > 0) {
-         const isSameAsCartItems = items.every((item, index) => {
-            const cartItem = cartItems[index];
-            return (
-               cartItem &&
-               item.product_id === cartItem.product_id &&
-               item.quantity === cartItem.quantity
-            );
-         });
-
-         if (!isSameAsCartItems) {
-            handleStoreBasket();
-         }
-      } else {
-         handleDeleteBasket();
+      if (appliedCouponFromQuery) {
+         setAppliedCoupon(appliedCouponFromQuery);
+         setCoupon(appliedCouponFromQuery); // Sync input field with query param
       }
-   }, [items]);
+   }, []);
 
+   useEffect(() => {
+      console.log('cartSlice', cartSlice);
+      console.log('doneLoadCart', doneLoadCart);
+
+      if (doneLoadCart) {
+         const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
+            (item) => {
+               console.log('item', item);
+               return {
+                  ...item,
+                  sub_total_amount: 0,
+                  order_index: item.order,
+                  promotion: item.promotion
+                     ? {
+                          ...item.promotion,
+                          promotion_applied_product_count: 0, // Provide a default or calculated value
+                       }
+                     : null,
+               };
+            },
+         );
+
+         console.log('cartItemsFromRedux', cartItemsFromRedux);
+
+         setCartItems(cartItemsFromRedux);
+      }
+   }, [cartSlice]);
+
+   useEffect(() => {
+      if (auth.isAuthenticated) {
+         if (cartItems.length > 0) {
+            handleStoreBasket(cartSlice.items);
+         } else {
+            if (!doneLoadCart) {
+               // handleDeleteBasket();
+            }
+         }
+      }
+   }, [cartItems]);
+
+   // Calculate subtotal and total discount
+   useEffect(() => {
+      let dcTotal = 0;
+      let subtotal = 0;
+
+      cartItems.forEach((item) => {
+         if (item.promotion) {
+            dcTotal +=
+               (item.product_unit_price -
+                  item.promotion.promotion_discount_unit_price) *
+               item.quantity;
+         }
+      });
+
+      subtotal = cartItems.reduce(
+         (acc, item) => acc + item.product_unit_price * item.quantity,
+         0,
+      );
+
+      setTotalDiscount(dcTotal);
+      setSubtotal(subtotal);
+   }, [cartItems]);
+
+   // Set loading state based on basket operations
+   useEffect(() => {
+      setIsLoading(
+         isLoadingBasket || isLoadingStoreBasket || isLoadingDeleteBasket,
+      );
+   }, [isLoadingBasket, isLoadingStoreBasket, isLoadingDeleteBasket]);
+
+   // Set init cart async
+   useEffect(() => {
+      if (basketData) {
+         const cartItemRedux: IBasketItemPayload[] = basketData.cart_items.map(
+            (item) => {
+               return {
+                  ...item,
+                  order: item.order_index ?? 0,
+               };
+            },
+         );
+
+         if (!appliedCoupon) {
+            dispatch(addRangeItems(cartItemRedux));
+         } else {
+            const cartItemsFromRedux: ICartItemResponse[] =
+               basketData.cart_items.map((item) => {
+                  return {
+                     ...item,
+                     sub_total_amount: 0,
+                     order_index: item.order_index ?? 0,
+                     promotion: item.promotion
+                        ? {
+                             ...item.promotion,
+                             promotion_applied_product_count: 0, // Provide a default or calculated value
+                          }
+                        : null,
+                  };
+               });
+
+            setCartItems(cartItemsFromRedux);
+         }
+
+         setDoneLoadCart(true);
+      } else {
+         const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
+            (item) => {
+               return {
+                  ...item,
+                  sub_total_amount: 0,
+                  order_index: item.order ?? 0,
+                  promotion: item.promotion
+                     ? {
+                          ...item.promotion,
+                          promotion_applied_product_count: 0, // Provide a default or calculated value
+                       }
+                     : null,
+               };
+            },
+         );
+
+         setCartItems(cartItemsFromRedux);
+
+         setDoneLoadCart(true);
+      }
+   }, [isSuccessGetBasket]);
    return (
       <div
          className={cn(
@@ -195,15 +258,7 @@ const CartPage = () => {
                   <div className="text-[16px] font-light tracking-[0.2px]">
                      You have {cartItems.length} items in your cart
                   </div>
-                  <LoadingOverlay
-                     isLoading={
-                        isBasketLoading ||
-                        isBasketFetching ||
-                        isLoadingStoreBasket ||
-                        isLoadingDeleteBasket ||
-                        loading
-                     }
-                  >
+                  <LoadingOverlay isLoading={isLoading}>
                      {cartItems.length > 0
                         ? cartItems.map((item, index) => {
                              return <CartItem item={item} key={index} />;
@@ -224,15 +279,29 @@ const CartPage = () => {
                         placeholder="Enter promo code"
                         value={coupon ?? ''}
                         onChange={(e) => setCoupon(e.target.value)}
+                        disabled={
+                           isLoading ||
+                           !auth.accessToken ||
+                           cartItems.length === 0
+                        }
                      />
                      <Button
                         className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
                         onClick={handleApplyCoupon}
-                        disabled={!coupon || loading || isBasketFetching}
+                        disabled={
+                           isLoading ||
+                           !auth.accessToken ||
+                           cartItems.length === 0
+                        }
                      >
                         Apply
                      </Button>
                   </div>
+                  {!auth.accessToken && (
+                     <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
+                        Sign in to apply promo code
+                     </p>
+                  )}
                </div>
                <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
                   <div className="w-full pb-3 text-[22px] text-black font-bold tracking-[0.8px]">
@@ -268,14 +337,12 @@ const CartPage = () => {
                   <div className="w-full flex flex-row justify-between items-center text-[24px] font-semibold tracking-[0.2px]">
                      <div className="">Total</div>
                      <div className="">
-                        ${basketData?.total_amount.toFixed(2) ?? 0}
+                        ${(subtotal - totalDiscount).toFixed(2)}
                      </div>
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                     disabled={
-                        cartItems.length === 0 || loading || isBasketFetching
-                     }
+                     disabled={cartItems.length === 0 || isLoading}
                      onClick={() => {
                         const searchParams = new URLSearchParams({
                            _couponCode: coupon || '',

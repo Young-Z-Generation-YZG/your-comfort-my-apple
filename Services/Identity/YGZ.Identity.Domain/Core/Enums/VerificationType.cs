@@ -11,5 +11,5 @@ public class VerificationType : SmartEnum<VerificationType>
     public static readonly VerificationType UNKONW_VERIFICATION = new("UNKONW_VERIFICATION", 0);
     public static readonly VerificationType CREDENTIALS_VERIFICATION = new("CREDENTIALS_VERIFICATION", 1);
     public static readonly VerificationType EMAIL_VERIFICATION = new("EMAIL_VERIFICATION", 2);
-    public static readonly VerificationType PASSWORD_VERIFICATION = new("PASSWORD_VERIFICATION", 3);
+    public static readonly VerificationType RESET_PASSWORD_VERIFICATION = new("RESET_PASSWORD_VERIFICATION", 3);
 }

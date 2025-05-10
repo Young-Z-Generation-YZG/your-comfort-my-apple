@@ -20,7 +20,7 @@ public interface IMongoRepository<TEntity, TId> where TEntity : Entity<TId> wher
 
     Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken);
 
-    Task<Result<bool>> InsertOneAsync(TEntity entity);
-    Task<Result<bool>> UpdateAsync(string id, TEntity entity, CancellationToken cancellationToken);
-    Task DeleteAsync(string id);
+    Task<Result<bool>> InsertOneAsync(TEntity document);
+    Task<Result<bool>> UpdateAsync(string id, TEntity document, CancellationToken cancellationToken);
+    Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken cancellationToken);
 }

@@ -26,19 +26,17 @@ public class AverageRating : ValueObject
 
     public void AddNewRating(int rating)
     {
-        RatingCount += 1;
-        RatingAverageValue = (RatingAverageValue * RatingCount + rating) / RatingCount;
+        RatingAverageValue = (RatingAverageValue * RatingCount + rating) / ++RatingCount;
     }
 
-    public void UpdateRating(Rating oldRating, Rating newRating)
+    public void UpdateRating(int oldRating, int newRating)
     {
-        RatingAverageValue = (RatingAverageValue * RatingCount - oldRating.Value + newRating.Value) / RatingCount;
+        RatingAverageValue = (RatingAverageValue * RatingCount - oldRating + newRating) / RatingCount;
     }
 
-    public void RemoveRating(Rating rating)
+    public void RemoveRating(int rating)
     {
-        RatingCount -= 1;
-        RatingAverageValue = (RatingAverageValue * RatingCount - rating.Value) / RatingCount;
+        RatingAverageValue = (RatingAverageValue * RatingCount - rating) / RatingCount--;
     }
 
     public override IEnumerable<object> GetEqualityComponents()

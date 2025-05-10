@@ -31,6 +31,13 @@
     <Protobuf Include="..\..\Discount\YGZ.Discount.Grpc\Protos\discount.proto" GrpcServices="Client">
       <Link>Protos\discount.proto</Link>
     </Protobuf>
+    <Protobuf Include="..\..\Ordering\YGZ.Ordering.Api\Protos\order.proto" GrpcServices="Client">
+      <Link>Protos\order.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Reviews\Events\IntegationEvents\" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Reviews;
 
 namespace YGZ.Catalog.Application.Reviews.Commands;
 
-public sealed record GetReviewsByModelQuery(string ModelId) : IQuery<PaginationResponse<ReviewResponse>> 
+public sealed record GetReviewsByModelQuery(string ModelId) : IQuery<PaginationResponse<ProductReviewResponse>> 
 {
     public int? Page { get; set; }
     public int? Limit { get; set; }

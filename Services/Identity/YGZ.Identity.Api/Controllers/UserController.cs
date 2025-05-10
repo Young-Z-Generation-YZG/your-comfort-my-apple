@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Keycloak.AuthServices.Authorization;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

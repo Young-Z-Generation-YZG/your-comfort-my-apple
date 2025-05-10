@@ -9,12 +9,12 @@ import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useLoginAsyncMutation } from '~/infrastructure/services/auth.service';
-import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useToast } from '~/hooks/use-toast';
 import { useForm } from 'react-hook-form';
+import withAuth from '@components/HoCs/with-auth.hoc';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 
 const defaultValues: LoginFormType = {
    email: '',
@@ -25,10 +25,6 @@ const SignInPage = () => {
    const [isLoading, setIsLoading] = useState(false);
    const router = useRouter();
 
-   const isAuthenticated = useAppSelector(
-      (state) => state.auth.value.isAuthenticated,
-   );
-
    const { toast } = useToast();
 
    const form = useForm<LoginFormType>({
@@ -38,47 +34,61 @@ const SignInPage = () => {
 
    const [
       loginAsync,
-      { isLoading: isFetching, error: loginError, isError, reset },
+      {
+         isLoading: isFetching,
+         data: dataAsync,
+         isSuccess,
+         error: errorAsync,
+         isError,
+         reset,
+      },
    ] = useLoginAsyncMutation();
 
    const onSubmit = async (data: LoginFormType) => {
-      const result = await loginAsync(data).unwrap();
-
-      if (result.verification_type === VERIFICATION_TYPES.EMAIL_VERIFICATION) {
-         const queryParams = new URLSearchParams();
-
-         if (result.params) {
-            for (const [key, value] of Object.entries(result.params)) {
-               queryParams.append(key, value as string);
-            }
-         }
-
-         router.replace(`/verify/otp?${queryParams}`);
-      }
+      await loginAsync(data).unwrap();
    };
 
    useEffect(() => {
-      if (isError) {
-         const serverError = loginError as ServerErrorResponse;
-         toast({
-            variant: 'destructive',
-            title: `${serverError?.error?.message ?? 'Server busy, please try again later'}`,
-            // description: `${serverError.error.code}`,
-         });
-         reset(); // Reset the mutation state to clear isError
+      if (typeof dataAsync === 'object' && dataAsync !== null) {
+         if (
+            dataAsync.verification_type ===
+            VERIFICATION_TYPES.EMAIL_VERIFICATION
+         ) {
+            const queryParams = new URLSearchParams();
+
+            if (dataAsync.params) {
+               for (const [key, value] of Object.entries(dataAsync.params)) {
+                  queryParams.append(key, value as string);
+               }
+            }
+
+            router.replace(`/verify/otp?${queryParams}`);
+         } else {
+            router.replace('/account');
+         }
       }
-   }, [isError, loginError, reset]);
+   }, [isSuccess, dataAsync]);
 
    useEffect(() => {
-      if (isAuthenticated) {
-         router.push('/account'); // Redirect to the home page or any other page
+      if (isServerErrorResponse(errorAsync)) {
+         if (errorAsync?.data?.error?.message) {
+            toast({
+               variant: 'destructive',
+               title: `${errorAsync.data.error.message ?? 'Server busy, please try again later'}`,
+               description: `Wrong email or password`,
+            });
+         } else {
+            toast({
+               variant: 'destructive',
+               title: `Server busy, please try again later`,
+            });
+         }
       }
-   }, [isAuthenticated, router]);
+   }, [isError]);
 
-   // Prevent rendering the page if the user is authenticated
-   if (isAuthenticated) {
-      return null; // or a loading spinner
-   }
+   useEffect(() => {
+      setIsLoading(isFetching);
+   }, [isFetching]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -99,8 +109,19 @@ const SignInPage = () => {
                <h3 className="text-4xl font-SFProDisplay font-medium">
                   Account
                </h3>
-               <p className="text-base font-SFProText font-light py-5">
+               <p className="text-base font-SFProText font-light pt-5">
                   Manage Your Account
+               </p>
+
+               <p className="text-base font-SFProText font-light py-1 flex gap-2">
+                  Not have account yet?{' '}
+                  <Link
+                     href="/sign-up"
+                     className="text-blue-500 flex underline"
+                  >
+                     Create your account
+                     <GoArrowUpRight className="size-4" />
+                  </Link>
                </p>
 
                <div className="w-[480px]">
@@ -134,9 +155,10 @@ const SignInPage = () => {
                               label="Password"
                               type="password"
                               disabled={isLoading || isFetching}
+                              visibleEyeIcon={false}
                               className="rounded-xl rounded-t-none"
                               fetchingFunc={onSubmit}
-                              hasArrowButton={true}
+                              hasEnterArrowButton={true}
                            />
                         </form>
                      </div>
@@ -157,12 +179,12 @@ const SignInPage = () => {
                         </div>
 
                         <div className="mt-2 flex text-blue-500">
-                           <a
-                              href="#"
+                           <Link
+                              href="/forgot-password"
                               className="text-sm font-normal text-end w-full block hover:underline"
                            >
                               Forgot password?
-                           </a>
+                           </Link>
                            <GoArrowUpRight className="size-4" />
                         </div>
                      </div>
@@ -202,4 +224,4 @@ const SignInPage = () => {
    );
 };
 
-export default SignInPage;
+export default withAuth(SignInPage);

@@ -2,17 +2,58 @@
 
 import type React from 'react';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Progress } from '@components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
-// import { useToast } from "@hooks/use-toast"
+import { useToast } from '~/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import {
+   changePasswordFormType,
+   changePasswordResolver,
+} from '~/domain/schemas/auth.schema';
+import { useChangePasswordAsyncMutation } from '~/infrastructure/services/auth.service';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import { toast as sonnerToast } from 'sonner';
+
+// Password strength calculation
+const calculatePasswordStrength = (password: string): number => {
+   if (!password) return 0;
+
+   let strength = 0;
+   // Length check
+   if (password.length >= 6) strength += 25;
+   // Contains lowercase
+   if (/[a-z]/.test(password)) strength += 25;
+   // Contains uppercase
+   if (/[A-Z]/.test(password)) strength += 25;
+   // Contains number or special char
+   if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
+
+   return strength;
+};
+
+const getPasswordStrengthLabel = (strength: number): string => {
+   if (strength === 0) return 'None';
+   if (strength <= 25) return 'Weak';
+   if (strength <= 50) return 'Fair';
+   if (strength <= 75) return 'Good';
+   return 'Strong';
+};
+
+const getPasswordStrengthColor = (strength: number): string => {
+   if (strength === 0) return 'bg-gray-200';
+   if (strength <= 25) return 'bg-red-500';
+   if (strength <= 50) return 'bg-yellow-500';
+   if (strength <= 75) return 'bg-blue-500';
+   return 'bg-green-500';
+};
 
 export function ChangePassword() {
-   //   const { toast } = useToast()
+   const { toast } = useToast();
    const [currentPassword, setCurrentPassword] = useState('');
    const [newPassword, setNewPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,49 +63,35 @@ export function ChangePassword() {
    const [isSubmitting, setIsSubmitting] = useState(false);
    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
-   // Password strength calculation
-   const calculatePasswordStrength = (password: string): number => {
-      if (!password) return 0;
-
-      let strength = 0;
-      // Length check
-      if (password.length >= 8) strength += 25;
-      // Contains lowercase
-      if (/[a-z]/.test(password)) strength += 25;
-      // Contains uppercase
-      if (/[A-Z]/.test(password)) strength += 25;
-      // Contains number or special char
-      if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
-
-      return strength;
-   };
-
-   const getPasswordStrengthLabel = (strength: number): string => {
-      if (strength === 0) return 'None';
-      if (strength <= 25) return 'Weak';
-      if (strength <= 50) return 'Fair';
-      if (strength <= 75) return 'Good';
-      return 'Strong';
-   };
-
-   const getPasswordStrengthColor = (strength: number): string => {
-      if (strength === 0) return 'bg-gray-200';
-      if (strength <= 25) return 'bg-red-500';
-      if (strength <= 50) return 'bg-yellow-500';
-      if (strength <= 75) return 'bg-blue-500';
-      return 'bg-green-500';
-   };
-
    const passwordStrength = calculatePasswordStrength(newPassword);
    const passwordStrengthLabel = getPasswordStrengthLabel(passwordStrength);
    const passwordStrengthColor = getPasswordStrengthColor(passwordStrength);
+
+   const form = useForm<changePasswordFormType>({
+      resolver: changePasswordResolver,
+      defaultValues: {
+         old_password: '',
+         new_password: '',
+      },
+   });
+
+   const [
+      changePasswordAsync,
+      {
+         isLoading: isUpdating,
+         error: changePasswordError,
+         isError: isChangePasswordError,
+         isSuccess: isChangePasswordSuccess,
+         reset,
+      },
+   ] = useChangePasswordAsyncMutation();
 
    // Password requirements
    const requirements = [
       {
          id: 'length',
-         label: 'At least 8 characters',
-         met: newPassword.length >= 8,
+         label: 'At least 6 characters',
+         met: newPassword.length >= 6,
       },
       {
          id: 'lowercase',
@@ -76,11 +103,11 @@ export function ChangePassword() {
          label: 'At least one uppercase letter',
          met: /[A-Z]/.test(newPassword),
       },
-      {
-         id: 'number-special',
-         label: 'At least one number or special character',
-         met: /[0-9!@#$%^&*(),.?":{}|<>]/.test(newPassword),
-      },
+      // {
+      //    id: 'number-special',
+      //    label: 'At least one number or special character',
+      //    met: /[0-9!@#$%^&*(),.?":{}|<>]/.test(newPassword),
+      // },
    ];
 
    const handleSubmit = async (e: React.FormEvent) => {
@@ -113,26 +140,43 @@ export function ChangePassword() {
          return;
       }
 
-      // Submit form
-      setIsSubmitting(true);
+      form.setValue('old_password', currentPassword);
+      form.setValue('new_password', confirmPassword);
 
-      // Simulate API call
-      setTimeout(() => {
-         setIsSubmitting(false);
+      form.trigger(); // Trigger validation
+      const validationErrors = form.formState.errors;
 
-         // Success
-         //   toast({
-         //     title: "Password updated",
-         //     description: "Your password has been successfully changed.",
-         //     duration: 5000,
-         //   })
+      await changePasswordAsync(form.getValues()).unwrap();
 
-         // Reset form
-         setCurrentPassword('');
-         setNewPassword('');
-         setConfirmPassword('');
-      }, 1500);
+      // Reset form
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
    };
+
+   useEffect(() => {
+      if (isChangePasswordSuccess) {
+         sonnerToast.success('password updated successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+      }
+
+      if (isChangePasswordError) {
+         if (isServerErrorResponse(changePasswordError)) {
+            toast({
+               variant: 'destructive',
+               title: `${changePasswordError.data.error?.message ?? 'Server busy, please try again later'}`,
+            });
+         }
+      }
+   }, [isChangePasswordSuccess, isChangePasswordError]);
+
+   useEffect(() => {
+      setIsSubmitting(isUpdating);
+   }, [isUpdating]);
 
    return (
       <motion.div
@@ -353,8 +397,15 @@ export function ChangePassword() {
                </Button>
                <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={
+                     isSubmitting ||
+                     !confirmPassword ||
+                     !(newPassword.trim() === confirmPassword.trim())
+                  }
                   className="relative"
+                  onInput={() => {
+                     form.trigger(); // Trigger validation on input change
+                  }}
                >
                   {isSubmitting ? (
                      <span className="flex items-center">

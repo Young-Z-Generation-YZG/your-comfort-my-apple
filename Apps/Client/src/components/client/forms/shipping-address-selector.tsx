@@ -6,6 +6,7 @@ import { Check, ChevronDown, Plus } from 'lucide-react';
 import { CheckoutFormType } from '~/domain/schemas/basket.schema';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { UseFormSetValue } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 // Animation variants
 const dropdownVariants = {
@@ -55,6 +56,7 @@ export function ShippingAddressSelector({
    setSelectedAddress,
    setValue,
 }: ShippingAddressSelectorProps) {
+   const router = useRouter();
    const [showAddressSelector, setShowAddressSelector] = useState(false);
 
    // Handle address selection
@@ -202,7 +204,12 @@ export function ShippingAddressSelector({
                      >
                         <Plus className="h-5 w-5" />
                      </motion.div>
-                     <span className="font-medium">
+                     <span
+                        className="font-medium"
+                        onClick={() => {
+                           router.push('/account/addresses');
+                        }}
+                     >
                         Add a new shipping address
                      </span>
                   </motion.div>

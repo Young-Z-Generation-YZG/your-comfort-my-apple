@@ -23,6 +23,7 @@ public class KeycloakService : IKeycloakService
     private readonly KeycloakSettings _keycloakSettings;
     private readonly HttpClient _httpClient;
 
+    private readonly string _nextjsClientUUID;
     private readonly string _nextjsClientId;
     private readonly string _nextjsClientSecret;
 
@@ -38,6 +39,7 @@ public class KeycloakService : IKeycloakService
         _keycloakSettings = options.Value;
         _httpClient = httpClient;
 
+        _nextjsClientUUID = _keycloakSettings.NextjsClient.ClientUUID;
         _nextjsClientId = _keycloakSettings.NextjsClient.ClientId;
         _nextjsClientSecret = _keycloakSettings.NextjsClient.ClientSecret;
 
@@ -130,19 +132,22 @@ public class KeycloakService : IKeycloakService
             lastName = request.LastName,
             emailVerified = false,
             credentials = new[]
-            {
-                new
-                {
-                    type = "password",
-                    value = request.Password,
-                    temporary = false
-                }
-            }
+           {
+               new
+               {
+                   type = "password",
+                   value = request.Password,
+                   temporary = false
+               }
+           }
         };
+
+        string? userId = null;
+
+        var adminToken = await GetAdminTokenResponseAsync();
 
         try
         {
-            var adminToken = await GetAdminTokenResponseAsync();
 
             var requestMessage = new HttpRequestMessage
             {
@@ -168,10 +173,9 @@ public class KeycloakService : IKeycloakService
                     int usersIndex = Array.IndexOf(parts, "users");
                     if (usersIndex != -1 && usersIndex + 1 < parts.Length)
                     {
-                        string userId = parts[usersIndex + 1];
-                        _logger.LogInformation("Created user with ID: " + userId);
+                        userId = parts[usersIndex + 1];
 
-                        return userId;
+                        _logger.LogInformation("Created user with ID: " + userId);
                     }
                     else
                     {
@@ -194,8 +198,47 @@ public class KeycloakService : IKeycloakService
             throw;
         }
 
-        return Errors.Keycloak.CannotBeCreated;
+        try
+        {
+            var initRole = new[]
+            {
+                new
+                {
+                    id = "621bb53d-816e-4dac-ba6b-d7b645a9c72f",
+                    name = "USER",
+                    description = "",
+                    composite = false
+                }
+            };
+
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}/role-mappings/clients/{_nextjsClientUUID}"),
+                Content = new StringContent(JsonConvert.SerializeObject(initRole), Encoding.UTF8, "application/json"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" }
+                }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode != HttpStatusCode.NoContent)
+            {
+                return Errors.Keycloak.CannotAssignRole;
+            } 
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(CreateKeycloakUserAsync));
+            throw;
+        }
+
+        return userId!;
     }
+
+
 
     public async Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request)
     {
@@ -444,7 +487,6 @@ public class KeycloakService : IKeycloakService
     {
         try
         {
-            // Step 1: Find the user by email
             var userResult = await GetUserByUsernameOrEmailAsync(email);
             if (userResult.IsFailure || userResult.Response == null)
             {
@@ -479,13 +521,13 @@ public class KeycloakService : IKeycloakService
             {
                 credentials = new[]
                 {
-                new
-                {
-                    type = "password",
-                    value = newPassword,
-                    temporary = false
+                    new
+                    {
+                        type = "password",
+                        value = newPassword,
+                        temporary = false
+                    }
                 }
-            }
             };
 
             // Step 5: Create the PUT request to update the user's password
@@ -521,6 +563,68 @@ public class KeycloakService : IKeycloakService
         {
             _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
             return Errors.Keycloak.ChangePasswordFailed;
+        }
+    }
+
+    public async Task<Result<bool>> ResetPasswordAsync(string email, string newPassword)
+    {
+        try
+        {
+            var userResult = await GetUserByUsernameOrEmailAsync(email);
+            if (userResult.IsFailure || userResult.Response == null)
+            {
+                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
+                return Errors.Keycloak.UserNotFound;
+            }
+
+            var userId = userResult.Response.Id;
+
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            var resetPayload = new
+            {
+                credentials = new[]
+                {
+                new
+                {
+                    type = "password",
+                    value = newPassword,
+                    temporary = false
+                }
+            }
+            };
+
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}"),
+                Content = new StringContent(JsonConvert.SerializeObject(resetPayload), Encoding.UTF8, "application/json"),
+                Headers =
+            {
+                { "Authorization", $"Bearer {adminToken}" },
+                { "Accept", "application/json" }
+            }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Password changed successfully for user {Email} in Keycloak", email);
+                return true;
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to change password for {Email}. Status: {StatusCode}, Error: {Error}",
+                    email, response.StatusCode, errorContent);
+                return Errors.Keycloak.ChangePasswordFailed;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
+            return Errors.Keycloak.ResetPasswordFailed;
         }
     }
 }

@@ -119,7 +119,7 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
         };
     }
 
-    public void UpdateRating(Review review)
+    public void AddNewRating(Review review)
     {
         if (review.Rating < 1 || review.Rating > 5)
             throw new ArgumentOutOfRangeException(nameof(review.Rating), "Rating must be between 1 and 5.");
@@ -127,5 +127,29 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
         AverageRating.AddNewRating(review.Rating);
 
         RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count += 1;
+    }
+
+    public void UpdateRating(Review oldReview, Review newReview)
+    {
+        if (oldReview.Rating < 1 || oldReview.Rating > 5)
+            throw new ArgumentOutOfRangeException(nameof(oldReview.Rating), "Rating must be between 1 and 5.");
+
+        if (newReview.Rating < 1 || newReview.Rating > 5)
+            throw new ArgumentOutOfRangeException(nameof(newReview.Rating), "Rating must be between 1 and 5.");
+
+        AverageRating.UpdateRating(oldReview.Rating, newReview.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == oldReview.Rating)!.Count -= 1;
+        RatingStars.FirstOrDefault(x => x.Star == newReview.Rating)!.Count += 1;
+    }
+
+    public void DeleteRating(Review review)
+    {
+        if (review.Rating < 1 || review.Rating > 5)
+            throw new ArgumentOutOfRangeException(nameof(review.Rating), "Rating must be between 1 and 5.");
+
+        AverageRating.RemoveRating(review.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count -= 1;
     }
 }

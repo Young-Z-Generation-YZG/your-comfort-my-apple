@@ -101,6 +101,7 @@ public class VnpayIpnCheckCommandHandler : ICommandHandler<VnpayIpnCheckCommand,
             },
             OrderItems = order.OrderItems.Select(x => new OrderItemRepsonse()
             {
+                OrderId = order.Id.Value.ToString(),
                 OrderItemId = x.Id.Value.ToString(),
                 ProductId = x.ProductId,
                 ModelId = x.ModelId,

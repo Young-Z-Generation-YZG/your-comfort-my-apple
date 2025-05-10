@@ -7,6 +7,7 @@ export interface ILoginPayload {
 
 export interface ILoginResponse {
    user_email: string;
+   username: string;
    access_token: string | null;
    refresh_token: string | null;
    access_token_expires_in: number | null;

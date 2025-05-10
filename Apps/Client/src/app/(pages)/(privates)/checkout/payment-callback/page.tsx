@@ -177,7 +177,7 @@ const PaymentCallbackPage = () => {
    };
 
    useEffect(() => {
-      // handleVnpayIpnCallback(vnpayForm.getValues());
+      handleVnpayIpnCallback(vnpayForm.getValues());
       handleMomoIpnCallback(momoForm.getValues());
    }, []);
 

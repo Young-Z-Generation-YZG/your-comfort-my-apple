@@ -32,6 +32,9 @@ services.AddControllers(options => options.AddProtectedResources())
         });
 
 builder.Services.AddEndpointsApiExplorer();
+// Add services to the container.
+builder.Services.AddGrpc();
+builder.Services.AddGrpcReflection();
 
 services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("OrderingDb")!);
 
@@ -68,6 +71,9 @@ app.UseExceptionHandler("/error");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapGrpcReflectionService();
 app.MapControllers();
+// Add this line to map gRPC endpoints
+app.MapGrpcEndpoints();
 
 app.Run();

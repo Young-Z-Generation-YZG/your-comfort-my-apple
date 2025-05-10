@@ -4,10 +4,7 @@ import {
    ILoginResponse,
 } from '~/src/domain/interfaces/auth/login.interface';
 import { setAccessToken } from '../redux/features/auth.slice';
-import {
-   CatchErrorResponse,
-   HttpErrorResponse,
-} from '~/src/domain/interfaces/errors/error.interface';
+import { HttpErrorResponse } from '~/src/domain/interfaces/errors/error.interface';
 
 import { VERIFICATION_TYPES } from '~/src/domain/enums/verification-type.enum';
 
@@ -53,8 +50,7 @@ export const authApi = createApi({
                   );
                }
             } catch (error) {
-               const serverError = error as CatchErrorResponse;
-               console.error('Login failed:', serverError.error);
+               console.warn('Error', error);
             }
          },
       }),

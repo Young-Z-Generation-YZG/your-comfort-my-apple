@@ -83,6 +83,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
             var emailVerificationResponse = new LoginResponse
             {
                 UserEmail = user.Response.Email!,
+                Username = $"{user.Response.UserName}",
                 AccessToken = null,
                 RefreshToken = null,
                 AccessTokenExpiresInSeconds = null,
@@ -99,6 +100,7 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
         var loginResponse = new LoginResponse
         {
             UserEmail = user.Response.Email!,
+            Username = $"{user.Response.UserName}",
             AccessToken = tokenResponse.AccessToken,
             RefreshToken = tokenResponse.RefreshToken,
             AccessTokenExpiresInSeconds = tokenResponse.ExpiresIn,

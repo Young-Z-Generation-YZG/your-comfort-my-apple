@@ -34,6 +34,10 @@ import {
 } from '~/infrastructure/services/identity.service';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import { toast as sonnerToast } from 'sonner';
+import { useToast } from '~/hooks/use-toast';
+import isDifferentValue from '~/infrastructure/utils/is-different-value';
 
 const staggerDuration = 0.05;
 
@@ -74,6 +78,8 @@ export function AddressForm({
    );
    const [districts, setDistricts] = useState<District[]>([]);
 
+   const { toast } = useToast();
+
    const form = useForm<AddressFormType>({
       resolver: AddressResolver,
       defaultValues: {
@@ -84,23 +90,38 @@ export function AddressForm({
          address_line: initialAddress?.payload.address_line || '',
          district: initialAddress?.payload.district || '',
          province: initialAddress?.payload.province || '',
-         country: 'Viet Nam',
+         country: 'Vietnam',
       } as AddressFormType,
    });
 
    const [
       addAddressAsync,
-      { isLoading: isAddAddressLoading, error: addAddressError },
+      {
+         isLoading: isAddAddressLoading,
+         isSuccess: isAddAddressSuccess,
+         isError: isAddAddressError,
+         error: addAddressError,
+      },
    ] = useAddAddressAsyncMutation();
 
    const [
       updateAddressAsync,
-      { isLoading: isUpdateAddressLoading, error: updateAddressError },
+      {
+         isLoading: isUpdateAddressLoading,
+         isSuccess: isUpdateAddressSuccess,
+         isError: isUpdateAddressError,
+         error: updateAddressError,
+      },
    ] = useUpdateAddressAsyncMutation();
 
    const [
       deleteAddressAsync,
-      { isLoading: isDeleteAddressLoading, error: deleteAddressError },
+      {
+         isLoading: isDeleteAddressLoading,
+         isSuccess: isDeleteAddressSuccess,
+         isError: isDeleteAddressError,
+         error: deleteAddressError,
+      },
    ] = useDeleteAddressAsyncMutation();
 
    useEffect(() => {
@@ -170,10 +191,70 @@ export function AddressForm({
    };
 
    useEffect(() => {
-      if (isAddAddressLoading) {
-         setLoading(true);
+      if (isAddAddressError && isServerErrorResponse(addAddressError)) {
+         toast({
+            variant: 'destructive',
+            title: `${addAddressError.data.error.message ?? 'Server busy, please try again later'}`,
+         });
       }
-   }, [isAddAddressLoading]);
+
+      if (isAddAddressSuccess) {
+         sonnerToast.success('Add Address Successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+      }
+   }, [isAddAddressError, addAddressError, isAddAddressSuccess]);
+
+   useEffect(() => {
+      if (isUpdateAddressError && isServerErrorResponse(updateAddressError)) {
+         toast({
+            variant: 'destructive',
+            title: `${updateAddressError.data.error.message ?? 'Server busy, please try again later'}`,
+         });
+      }
+
+      if (isUpdateAddressSuccess) {
+         sonnerToast.success('Update Address Successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+      }
+   }, [isUpdateAddressError, updateAddressError, isUpdateAddressSuccess]);
+
+   useEffect(() => {
+      if (isDeleteAddressError && isServerErrorResponse(deleteAddressError)) {
+         toast({
+            variant: 'destructive',
+            title: `${deleteAddressError.data.error.message ?? 'Server busy, please try again later'}`,
+         });
+      }
+
+      if (isDeleteAddressSuccess) {
+         sonnerToast.success('Delete Address Successfully', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+      }
+   }, [isDeleteAddressError, deleteAddressError, isDeleteAddressSuccess]);
+
+   isAddAddressSuccess;
+   isUpdateAddressSuccess;
+   isDeleteAddressSuccess;
+
+   useEffect(() => {
+      setLoading(
+         isAddAddressLoading ||
+            isUpdateAddressLoading ||
+            isDeleteAddressLoading,
+      );
+   }, [isAddAddressLoading, isUpdateAddressLoading, isDeleteAddressLoading]);
 
    return (
       <Form {...form}>
@@ -415,7 +496,24 @@ export function AddressForm({
                      <Button
                         type="submit"
                         className="transition-colors duration-200 relative"
-                        disabled={loading}
+                        disabled={
+                           loading ||
+                           !isDifferentValue(
+                              {
+                                 label: initialAddress?.payload.label,
+                                 contact_name:
+                                    initialAddress?.payload.contact_name,
+                                 contact_phone_number:
+                                    initialAddress?.payload
+                                       .contact_phone_number,
+                                 address_line:
+                                    initialAddress?.payload.address_line,
+                                 district: initialAddress?.payload.district,
+                                 province: initialAddress?.payload.province,
+                              },
+                              form.getValues(),
+                           )
+                        }
                      >
                         {loading ? (
                            <span className="flex items-center">

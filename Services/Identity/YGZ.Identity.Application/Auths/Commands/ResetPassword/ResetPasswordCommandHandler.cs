@@ -51,7 +51,7 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
                     Model: new ResetPasswordModel
                     {
                         FullName = $"{request.Email}",
-                        ResetPasswordLink = $"{_webClientUrl}/reset-password?_email={request.Email}&_token={tokenResult.Response}"
+                        ResetPasswordLink = $"{_webClientUrl}/forgot-password/reset?_email={request.Email}&_token={tokenResult.Response}"
                     },
                     Attachments: null
         );
@@ -67,7 +67,7 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
         var response = new ResetPasswordVerificationResponse
         {
             Params = Params,
-            VerificationType = VerificationType.PASSWORD_VERIFICATION.Name,
+            VerificationType = VerificationType.RESET_PASSWORD_VERIFICATION.Name,
         };
 
         return response;

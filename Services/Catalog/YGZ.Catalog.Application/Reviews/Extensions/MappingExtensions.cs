@@ -16,7 +16,9 @@ public static class MappingExtensions
                              rating: dto.Rating,
                              productId: productId,
                              modelId: modelId,
+                             OrderId: dto.OrderId,
                              orderItemId: dto.OrderItemId,
-                             customerId: customerId);
+                             customerId: customerId,
+                             customerUserName: dto.CustomerUserName);
     }
 }

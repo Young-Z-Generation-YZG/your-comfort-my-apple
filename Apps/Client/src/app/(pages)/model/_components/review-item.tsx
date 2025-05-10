@@ -58,7 +58,7 @@ const ItemReview = ({ review }: ItemReviewProps) => {
                   {starsRating(review.rating, 4)}
                </div>
                <p className={cn('font-medium')}>
-                  {review.customer_name.length > 0
+                  {review.customer_name?.length > 0
                      ? review.customer_name
                      : 'Ellenvs'}
                </p>

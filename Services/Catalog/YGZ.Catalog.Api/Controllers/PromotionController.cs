@@ -71,12 +71,12 @@ public class PromotionController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPatch("events/{eventId}/state")]
-    public async Task<IActionResult> UpdatePromotionEventState([FromRoute] Guid eventId, [FromBody] UpdatePromotionEventRequest request, CancellationToken cancellationToken)
-    {
-        var command = _mapper.Map<UpdatePromotionEventCommand>(request);
-        command.EventId = eventId;
-        var result = await _sender.Send(command, cancellationToken);
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
+    //[HttpPatch("events/{eventId}/state")]
+    //public async Task<IActionResult> UpdatePromotionEventState([FromRoute] Guid eventId, [FromBody] UpdatePromotionEventRequest request, CancellationToken cancellationToken)
+    //{
+    //    var command = _mapper.Map<UpdatePromotionEventCommand>(request);
+    //    command.EventId = eventId;
+    //    var result = await _sender.Send(command, cancellationToken);
+    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    //}
 }

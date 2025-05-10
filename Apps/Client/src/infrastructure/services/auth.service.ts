@@ -5,8 +5,8 @@ import {
 } from '~/domain/interfaces/auth/login.interface';
 import { setAccessToken } from '../redux/features/auth.slice';
 import {
-   CatchErrorResponse,
    HttpErrorResponse,
+   ServerErrorResponse,
 } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import {
@@ -15,13 +15,25 @@ import {
 } from '~/domain/interfaces/auth/register.interface';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import envConfig from '~/infrastructure/config/env.config';
+import {
+   changePasswordFormType,
+   resetPasswordFormType,
+   sendEmailResetPasswordFormType,
+} from '~/domain/schemas/auth.schema';
+import { RootState } from '../redux/store';
 
 export const AuthApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'identity-services',
-      prepareHeaders: (headers) => {
+      prepareHeaders: (headers, { getState }) => {
+         const accessToken = (getState() as RootState).auth.value.accessToken;
+
+         if (accessToken) {
+            headers.set('Authorization', `Bearer ${accessToken}`);
+         }
+
          headers.set('ngrok-skip-browser-warning', 'true');
 
          return headers;
@@ -34,12 +46,6 @@ export const AuthApi = createApi({
             method: 'POST',
             body: payload,
          }),
-         transformResponse: (response: ILoginResponse) => {
-            return response;
-         },
-         transformErrorResponse: (error: HttpErrorResponse) => {
-            return error.data;
-         },
          async onQueryStarted(arg, { dispatch, queryFulfilled }) {
             try {
                const { data } = await queryFulfilled;
@@ -51,6 +57,7 @@ export const AuthApi = createApi({
                   dispatch(
                      setAccessToken({
                         user_email: data.user_email,
+                        username: data.username,
                         access_token: data.access_token,
                         refresh_token: data.refresh_token,
                         access_token_expires_in: data.access_token_expires_in,
@@ -58,8 +65,7 @@ export const AuthApi = createApi({
                   );
                }
             } catch (error) {
-               const serverError = error as CatchErrorResponse;
-               console.error('Login failed:', serverError.error);
+               console.warn('[TRY/CATCH ERROR]::', error);
             }
          },
       }),
@@ -89,6 +95,30 @@ export const AuthApi = createApi({
             return response;
          },
       }),
+      sendEmailResetPasswordAsync: builder.mutation({
+         query: (payload: sendEmailResetPasswordFormType) => ({
+            url: '/api/v1/auth/reset-password',
+            method: 'POST',
+            body: payload,
+         }),
+      }),
+      resetPasswordAsync: builder.mutation({
+         query: (payload: resetPasswordFormType) => ({
+            url: '/api/v1/auth/reset-password/verification',
+            method: 'POST',
+            body: payload,
+         }),
+      }),
+      changePasswordAsync: builder.mutation({
+         query: (payload: changePasswordFormType) => ({
+            url: '/api/v1/auth/change-password',
+            method: 'POST',
+            body: payload,
+         }),
+         transformErrorResponse: (error: HttpErrorResponse) => {
+            return error.data;
+         },
+      }),
    }),
 });
 
@@ -96,4 +126,7 @@ export const {
    useLoginAsyncMutation,
    useRegisterAsyncMutation,
    useVerifyOtpAsyncMutation,
+   useSendEmailResetPasswordAsyncMutation,
+   useResetPasswordAsyncMutation,
+   useChangePasswordAsyncMutation,
 } = AuthApi;

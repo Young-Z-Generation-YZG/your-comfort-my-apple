@@ -9,15 +9,16 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 [JsonConverter(typeof(SnakeCaseSerializerConverter))]
 public sealed record OrderItemRepsonse()
 {
-    required public string OrderItemId { get; set; }
-    required public string ProductId { get; set; }
-    required public string ModelId { get; set; }
-    required public string ProductName { get; set; }
-    required public string ProductImage { get; set; }
-    required public string ProductColorName { get; set; }
-    required public decimal ProductUnitPrice { get; set; }
-    required public int Quantity { get; set; }
+    public required string OrderId { get; set; }
+    public required string OrderItemId { get; set; }
+    public required string ProductId { get; set; }
+    public required string ModelId { get; set; }
+    public required string ProductName { get; set; }
+    public required string ProductImage { get; set; }
+    public required string ProductColorName { get; set; }
+    public required decimal ProductUnitPrice { get; set; }
+    public required int Quantity { get; set; }
     public PromotionResponse? Promotion { get; set; } = null;
-    required public decimal SubTotalAmount { get; set; }
-    required public bool IsReviewed { get; set; }
+    public required decimal SubTotalAmount { get; set; }
+    public required bool IsReviewed { get; set; }
 }

@@ -9,8 +9,8 @@ import {
    type FieldValues,
    type RegisterOptions,
 } from 'react-hook-form';
-import { AlertCircle, CircleIcon } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
+import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 const getNestedError = (errors: any, name: string): string | undefined => {
    const keys = name.split('.');
@@ -34,7 +34,8 @@ interface FieldInputProps<T extends FieldValues> {
    disabled?: boolean;
    visibleError?: boolean;
    visibleLabel?: boolean;
-   hasArrowButton?: boolean;
+   visibleEyeIcon?: boolean;
+   hasEnterArrowButton?: boolean;
    fetchingFunc?: (data: any) => void;
    rules?: RegisterOptions;
    defaultValue?: string;
@@ -51,13 +52,15 @@ export function FieldInput<T extends FieldValues>({
    errorTextClassName = '',
    visibleError = true,
    visibleLabel = true,
+   visibleEyeIcon = true,
    disabled = false,
-   hasArrowButton = false,
+   hasEnterArrowButton = false,
    fetchingFunc,
    rules,
    defaultValue = '',
 }: FieldInputProps<T>) {
    const [isFocused, setIsFocused] = useState(false);
+   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
    const {
       control,
       watch,
@@ -128,31 +131,48 @@ export function FieldInput<T extends FieldValues>({
                            </motion.label>
                         )}
 
-                        <input
-                           type={type}
-                           disabled={disabled}
-                           className={cn(
-                              'w-full px-4 py-2 pt-5 focus:outline-none text-base h-[56px] border',
-                              className,
-                              `${
-                                 hasError && visibleError
-                                    ? 'border-red-500 focus:border-red-500'
-                                    : 'border-gray-300 focus:border-blue-500'
-                              }`,
-                              {
-                                 'pt-2 font-SFProText': !visibleLabel,
-                              },
+                        <div>
+                           <input
+                              type={showCurrentPassword ? 'text' : type}
+                              disabled={disabled}
+                              className={cn(
+                                 'w-full px-4 py-2 pt-5 focus:outline-none text-base h-[56px] border',
+                                 className,
+                                 `${
+                                    hasError && visibleError
+                                       ? 'border-red-500 focus:border-red-500'
+                                       : 'border-gray-300 focus:border-blue-500'
+                                 }`,
+                                 {
+                                    'pt-2 font-SFProText': !visibleLabel,
+                                 },
+                              )}
+                              onFocus={() => setIsFocused(true)}
+                              {...field}
+                              value={field.value || ''}
+                              onBlur={() => {
+                                 setIsFocused(false);
+                                 field.onBlur();
+                              }}
+                           />
+                           {type === 'password' && visibleEyeIcon && (
+                              <button
+                                 type="button"
+                                 className="absolute inset-y-0 right-2 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                 onClick={() =>
+                                    setShowCurrentPassword(!showCurrentPassword)
+                                 }
+                              >
+                                 {showCurrentPassword ? (
+                                    <EyeOff className="h-5 w-5" />
+                                 ) : (
+                                    <Eye className="h-5 w-5" />
+                                 )}
+                              </button>
                            )}
-                           onFocus={() => setIsFocused(true)}
-                           {...field}
-                           value={field.value || ''}
-                           onBlur={() => {
-                              setIsFocused(false);
-                              field.onBlur();
-                           }}
-                        />
+                        </div>
 
-                        {hasArrowButton && (
+                        {hasEnterArrowButton && (
                            <button
                               type="button"
                               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"

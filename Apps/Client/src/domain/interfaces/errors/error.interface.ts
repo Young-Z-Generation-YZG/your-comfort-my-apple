@@ -3,10 +3,6 @@ export interface HttpErrorResponse {
    data: ServerErrorResponse;
 }
 
-export interface CatchErrorResponse {
-   error: ServerErrorResponse;
-}
-
 export interface ServerErrorResponse {
    title: string;
    path: string;

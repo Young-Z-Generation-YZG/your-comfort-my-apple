@@ -82,11 +82,7 @@ const OtpPage = () => {
    }, [verifyOtpIsSuccess]);
 
    useEffect(() => {
-      if (isFetching) {
-         setIsVerifying(true);
-      } else {
-         setIsVerifying(false);
-      }
+      setIsVerifying(isFetching);
    }, [isFetching]);
 
    // Reset timer
@@ -149,12 +145,10 @@ const OtpPage = () => {
                         </h2>
                         <p className="text-gray-600 mt-2 font-SFProText">
                            We've sent a 6-digit code to your email:
-                           {userEmail || 'userEmail'}
+                           {userEmail}
                         </p>
                      </div>
 
-                     {/* <LoadingOverlay isLoading={false} text="Signing in...">
-                        </LoadingOverlay> */}
                      <OTPInput
                         length={6}
                         onComplete={handleComplete}

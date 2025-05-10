@@ -5,7 +5,7 @@ import { cn } from '~/infrastructure/lib/utils';
 import { CldImage } from 'next-cloudinary';
 import { Button } from '@components/ui/button';
 import { useRouter } from 'next/navigation';
-import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 
 type ColorProps = {
    name: string;
@@ -138,7 +138,7 @@ const IphoneModelItem = ({
                         <div>
                            <p className="text-sm font-normal line-through">
                               {unitPriceRange
-                                 .map((price) => `$${price}`)
+                                 .map((price) => `$${price.toFixed(2)}`)
                                  .join(' - ')}
                            </p>
                            <p className="text-lg font-bold text-[#E11C48]">
@@ -153,7 +153,7 @@ const IphoneModelItem = ({
                            })}
                         >
                            {unitPriceRange
-                              .map((price) => `$${price}`)
+                              .map((price) => `$${price.toFixed(2)}`)
                               .join(' - ')}
                         </p>
                      )}

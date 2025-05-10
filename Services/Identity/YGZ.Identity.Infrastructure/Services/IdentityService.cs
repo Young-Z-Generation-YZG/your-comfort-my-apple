@@ -1,9 +1,7 @@
 ﻿
-using System.Net.Mail;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using YamlDotNet.Core.Tokens;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
@@ -283,12 +281,48 @@ public class IdentityService : IIdentityService
                 return Errors.User.CannotResetPassword;
             }
 
+            var resetPasswordKeycloak = await _keycloakService.ResetPasswordAsync(email, newPassword);
+
             return true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message, nameof(VerifyResetPasswordTokenAsync));
             throw;
+        }
+    }
+
+    public async Task<Result<bool>> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+    {
+        try
+        {
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, oldPassword);
+
+            if (passwordVerificationResult == PasswordVerificationResult.Failed)
+            {
+                return Errors.User.InvalidCredentials;
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            if (!changePasswordResult.Succeeded)
+            {
+                return Errors.User.CannotChangePassword;
+            }
+
+            var keycloakResult = await _keycloakService.ResetPasswordAsync(user.Email!, newPassword);
+
+            if (keycloakResult.IsFailure)
+            {
+                return keycloakResult.Error;
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
+            return Errors.User.CannotChangePassword;
         }
     }
 }

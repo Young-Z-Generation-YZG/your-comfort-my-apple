@@ -26,6 +26,7 @@ public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByO
         OrderId orderId = OrderId.Of(request.OrderId);
 
         var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
+        var userEmail = _userContext.GetUserEmail();
 
         var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
 
@@ -36,18 +37,18 @@ public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByO
             return Errors.Order.DoesNotExist;
         }
 
-        var response = MapToResponse(order);
+        var response = MapToResponse(order, userEmail);
 
         return response;
     }
 
-    private OrderDetailsResponse MapToResponse(Order order)
+    private OrderDetailsResponse MapToResponse(Order order, string userEmail)
     {
         var res = new OrderDetailsResponse()
         {
             OrderId = order.Id.Value.ToString(),
             OrderCode = order.Code.Value,
-            OrderCustomerEmail = order.CustomerId.Value.ToString(),
+            OrderCustomerEmail = userEmail,
             OrderStatus = order.Status.Name,
             OrderPaymentMethod = order.PaymentMethod.Name,
             OrderShippingAddress = new ShippingAddressResponse()
@@ -62,6 +63,7 @@ public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByO
             },
             OrderItems = order.OrderItems.Select(x => new OrderItemRepsonse()
             {
+                OrderId = order.Id.Value.ToString(),
                 OrderItemId = x.Id.Value.ToString(),
                 ProductId = x.ProductId,
                 ModelId = x.ModelId,

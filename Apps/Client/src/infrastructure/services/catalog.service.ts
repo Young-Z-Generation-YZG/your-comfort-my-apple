@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.inteface';
+import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 import {
    IIphonePromotionResponse,
    IIphoneResponse,
@@ -10,13 +10,20 @@ import {
 } from '~/domain/interfaces/catalogs/review.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import envConfig from '~/infrastructure/config/env.config';
+import { RootState } from '../redux/store';
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Catalogs'],
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
-      prepareHeaders: (headers) => {
+      prepareHeaders: (headers, { getState }) => {
+         const accessToken = (getState() as RootState).auth.value.accessToken;
+
+         if (accessToken) {
+            headers.set('Authorization', `Bearer ${accessToken}`);
+         }
+
          headers.set('ngrok-skip-browser-warning', 'true');
 
          return headers;
@@ -48,20 +55,6 @@ export const catalogApi = createApi({
          query: (slug) => `/api/v1/products/iphone/models/${slug}/products`,
          providesTags: ['Catalogs'],
       }),
-      getReviewByModelIdAsync: builder.query<
-         PaginationResponse<IReviewResponse>,
-         string
-      >({
-         query: (modelId) => `/api/v1/reviews/${modelId}`,
-         providesTags: ['Catalogs'],
-      }),
-      createReviewAsync: builder.mutation({
-         query: (body: IReviewPayload) => ({
-            url: '/api/v1/reviews',
-            method: 'POST',
-            body,
-         }),
-      }),
    }),
 });
 
@@ -70,6 +63,4 @@ export const {
    useGetModelBySlugAsyncQuery,
    useGetIPhonesByModelAsyncQuery,
    useGetModelsAsyncQuery,
-   useGetReviewByModelIdAsyncQuery,
-   useCreateReviewAsyncMutation,
 } = catalogApi;

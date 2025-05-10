@@ -13,6 +13,7 @@ using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
 using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
+using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -53,6 +54,16 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<ChangePasswordCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
     [HttpGet("private/page/otp")]
      public async Task<IActionResult> GetOtpPage([FromQuery] AccessOtpRequest request, CancellationToken cancellationToken)
     {
@@ -73,7 +84,7 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("reset-password/request")]
+    [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<ResetPasswordCommand>(request);

@@ -1,20 +1,29 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
+   IBasketItemPayload,
    ICheckoutResponse,
    IGetBasketQueries,
    IGetBasketResponse,
    IStoreBasketPayload,
 } from '~/domain/interfaces/baskets/basket.interface';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
-import { createQueryEncodedUrl } from '../utils/query-encoded-url';
+import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
 import envConfig from '~/infrastructure/config/env.config';
+import { RootState } from '~/infrastructure/redux/store';
+import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
 
 export const basketApi = createApi({
    reducerPath: 'basket-api',
    tagTypes: ['Baskets'],
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'basket-services',
-      prepareHeaders: (headers) => {
+      prepareHeaders: (headers, { getState }) => {
+         const accessToken = (getState() as RootState).auth.value.accessToken;
+
+         if (accessToken) {
+            headers.set('Authorization', `Bearer ${accessToken}`);
+         }
+
          headers.set('ngrok-skip-browser-warning', 'true');
 
          return headers;
