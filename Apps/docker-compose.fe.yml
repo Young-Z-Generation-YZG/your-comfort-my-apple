@@ -6,7 +6,6 @@ services:
         - "443:443"
         volumes:
         - ./nginx.fe.conf:/etc/nginx/nginx.conf
-        - /etc/letsencrypt:/etc/letsencrypt:ro
         depends_on:
         - client.web
         networks:
