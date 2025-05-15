@@ -36,6 +36,8 @@ import { useGetAddressesAsyncQuery } from '~/infrastructure/services/identity.se
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
+import { useDispatch } from 'react-redux';
+import { deleteCart } from '~/infrastructure/redux/features/cart.slice';
 
 const shippingAddresses = [
    {
@@ -60,6 +62,8 @@ const CheckoutPage = () => {
    const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
+
+   const dispatch = useDispatch();
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
 
@@ -126,13 +130,15 @@ const CheckoutPage = () => {
             setIsLoading(false);
          }, 1000);
 
+         dispatch(deleteCart());
+
          if (
             typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
-            dataCheckoutBasket.payment_redirect_url.startsWith('https://')
+            dataCheckoutBasket.payment_redirect_url
          ) {
             window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
          } else if (
-            typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
+            typeof dataCheckoutBasket.order_details_redirect_url === 'string' &&
             dataCheckoutBasket.order_details_redirect_url
          ) {
             window.location.href =

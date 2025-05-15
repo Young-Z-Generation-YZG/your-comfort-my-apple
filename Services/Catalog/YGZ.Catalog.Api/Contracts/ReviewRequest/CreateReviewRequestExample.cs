@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿
 using NJsonSchema.Generation;
 
 namespace YGZ.Catalog.Api.Contracts.ReviewRequest;

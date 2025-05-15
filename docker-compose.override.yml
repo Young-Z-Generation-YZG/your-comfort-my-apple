@@ -191,7 +191,7 @@ services:
         - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
         - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
         - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-        - WebClientSettings__BaseUrl=http://localhost:3000
+        - WebClientSettings__BaseUrl=https://ybzone.io.vn
         ports:
         - "6005:8080"
         - "6065:8081"
@@ -235,6 +235,7 @@ services:
         - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
         - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
         - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+        - WebClientSettings__BaseUrl=https://ybzone.io.vn
         ports:
         - "6002:8080"
         - "6062:8081"
@@ -276,7 +277,7 @@ services:
         - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
         - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
         - FeatureManagement__OrderFulfillment=false
-        - WebClientSettings__BaseUrl=http://localhost:3000
+        - WebClientSettings__BaseUrl=https://ybzone.io.vn
         ports:
         - "6004:8080"
         - "6064:8081"

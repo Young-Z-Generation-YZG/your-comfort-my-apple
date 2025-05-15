@@ -88,6 +88,8 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
 
         await _publishIntegrationEvent.Publish(eventMessage, cancellationToken);
 
+        await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
+
         switch (request.PaymentMethod)
         {
             case nameof(PaymentMethod.VNPAY):

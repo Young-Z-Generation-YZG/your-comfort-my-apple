@@ -25,7 +25,6 @@ import {
    OrderItemResponse,
 } from '~/domain/interfaces/orders/order.interface';
 import { cn } from '~/infrastructure/lib/utils';
-import { toast } from 'sonner';
 import {
    Dialog,
    DialogContent,
@@ -265,7 +264,8 @@ export default function OrderDetails() {
          <div className="flex items-center px-6 py-4 border-b border-gray-200">
             <motion.button
                onClick={() => {
-                  window.history.back();
+                  router.push('/account/orders');
+                  router.refresh();
                }}
                className="mr-3 text-gray-500 hover:text-gray-700 transition-colors"
                variants={itemVariants}
