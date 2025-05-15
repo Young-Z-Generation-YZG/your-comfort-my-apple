@@ -235,6 +235,7 @@ services:
         - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
         - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
         - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+        - WebClientSettings__BaseUrl=https://ybzone.io.vn
         ports:
         - "6002:8080"
         - "6062:8081"

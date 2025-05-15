@@ -55,12 +55,21 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
          promotion: {
             promotion_id_or_code: item.promotion_id,
             promotion_event_type: item.promotion_event_type,
+            promotion_title: item.promotion_title,
+            promotion_discount_type: item.promotion_discount_type,
+            promotion_discount_value: item.promotion_discount_value,
+            promotion_discount_unit_price: item.promotion_product_unit_price,
+            promotion_final_price: item.promotion_final_price,
          },
          order: currentOrder,
       },
    });
 
+   console.log('errors', errors);
+
    const onBuySubmit = async (data: StoreBasketFormType) => {
+      console.log('data', data);
+
       var basketItem: TCartItem = {
          product_id: data.product_id,
          model_id: data.model_id,
@@ -92,6 +101,8 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
    };
 
    const onAddToCartSubmit = async (data: StoreBasketFormType) => {
+      console.log('data', data);
+
       var basketItem: TCartItem = {
          product_id: data.product_id,
          model_id: data.model_id,
@@ -237,6 +248,7 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
                   <Button
                      className="w-full cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700"
                      onClick={() => {
+                        alert('Buy Now');
                         handleSubmit(onBuySubmit)();
                      }}
                   >
