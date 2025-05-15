@@ -164,7 +164,7 @@ const ReviewSection = ({
                      </div>
                      <div className="p-2 pt-0 flex flex-row">
                         <div className="text-5xl font-bold mr-3">
-                           {averageRating}
+                           {averageRating.toFixed(2)}
                         </div>
                         <div className="flex flex-col justify-center">
                            <div className="flex flex-row gap-[2px] items-center">
