@@ -30,6 +30,10 @@ export function MainNav({
       items?: {
          title: string;
          url: string;
+         items?: {
+            title: string;
+            url: string;
+         }[]
       }[];
    }[];
 }) {
@@ -67,6 +71,34 @@ export function MainNav({
                                              <span>{subItem.title}</span>
                                           </a>
                                        </SidebarMenuSubButton>
+
+                                       {
+                                          subItem.items?.length ? (
+                                             <Collapsible
+                                                className='relative'
+                                             >
+                                                <CollapsibleTrigger asChild className='absolute -top-6'>
+                                                   <SidebarMenuAction className="data-[state=open]:rotate-90">
+                                                      <ChevronRight />
+                                                      <span className="sr-only">Toggle</span>
+                                                   </SidebarMenuAction>
+                                                </CollapsibleTrigger>
+                                                <CollapsibleContent>
+                                                   <SidebarMenuSub>
+                                                      {subItem.items?.map((subSubItem) => (
+                                                         <SidebarMenuSubItem key={subSubItem.title}>
+                                                            <SidebarMenuSubButton asChild>
+                                                               <a href={subSubItem.url}>
+                                                                  <span>{subSubItem.title}</span>
+                                                               </a>
+                                                            </SidebarMenuSubButton>
+                                                         </SidebarMenuSubItem>
+                                                      ))}
+                                                   </SidebarMenuSub>
+                                                </CollapsibleContent>
+                                             </Collapsible>
+                                          ) : null
+                                       }
                                     </SidebarMenuSubItem>
                                  ))}
                               </SidebarMenuSub>

@@ -73,7 +73,6 @@ export function EventPromotionForm() {
    return (
       <Form {...form}>
          <form
-            id="event-promotion-form"
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 py-4"
          >

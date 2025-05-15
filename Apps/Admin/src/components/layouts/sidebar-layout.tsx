@@ -50,8 +50,18 @@ const data = {
                url: '/dashboards/products/analytics',
             },
             {
-               title: 'iPhone Models',
+               title: 'Model Management',
                url: '/dashboards/iphone/iphone-models',
+               items: [
+                  {
+                     title: 'iPhone 15',
+                     url: '/dashboards/iphone/iphone-models/iphone-14-pro',
+                  },
+                  {
+                     title: 'iPhone 16e',
+                     url: '/dashboards/iphone/iphone-models/iphone-14-pro-max',
+                  },
+               ]
             },
          ],
       },

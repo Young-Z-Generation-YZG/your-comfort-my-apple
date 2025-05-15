@@ -38,6 +38,16 @@ const getPromotionById = (id: string) => {
    };
 };
 
+const mockData = {
+   promotion_event_id: 'f55f322f-6406-4dfa-b2ea-2777f7813e70',
+   promotion_event_title: 'Black Friday',
+   promotion_event_description: 'Sale all item in shop with special price',
+   promotion_event_type: 'PROMOTION_EVENT',
+   promotion_event_state: 'ACTIVE',
+   promotion_event_valid_from: '2025-05-01T00:00:00Z',
+   promotion_event_valid_to: '2025-05-30T00:00:00Z',
+};
+
 const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
    // Unwrap the params Promise using React.use()
    const resolvedParams = use(params);
@@ -60,7 +70,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
    const getStatusBadge = (status: string) => {
       switch (status) {
-         case 'active':
+         case 'ACTIVE':
             return <Badge className="bg-green-500">Active</Badge>;
          case 'scheduled':
             return <Badge className="bg-yellow-500">Scheduled</Badge>;
@@ -87,26 +97,29 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
             transition={{ duration: 0.5, delay: 0.2 }}
          >
             <Button variant="ghost" size="icon" asChild>
-               <Link href="/dashboards/promotions/events">
+               <Link href={`/dashboards/promotions/events`}>
                   <ArrowLeft className="h-4 w-4" />
                </Link>
             </Button>
             <div className="flex-1">
                <h1 className="text-3xl font-bold tracking-tight">
-                  {promotion.name}
+                  {mockData.promotion_event_title}
                </h1>
                <div className="flex items-center gap-2 mt-1">
                   <div className="flex items-center">
-                     {getTypeIcon(promotion.type)}
+                     {/* {getTypeIcon(mockData.promotion_event_state)} */}
+                     <Calendar className="mr-2 h-5 w-5" />
                      <span className="capitalize">
-                        {promotion.type} Promotion
+                        {mockData.promotion_event_type}
                      </span>
                   </div>
                   <span className="text-muted-foreground">•</span>
-                  {getStatusBadge(promotion.status)}
+                  {getStatusBadge(mockData.promotion_event_state)}
                </div>
             </div>
-            <Link href={`/dashboards/promotions/events/${promotion.id}/edit`}>
+            <Link
+               href={`/dashboards/promotions/events/${mockData.promotion_event_id}/edit`}
+            >
                <Edit className="mr-2 h-4 w-4" />
                Edit
             </Link>
@@ -127,7 +140,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                            Promotion Type
                         </dt>
                         <dd className="mt-1 text-sm capitalize">
-                           {promotion.type}
+                           {mockData.promotion_event_type}
                         </dd>
                      </div>
                      <div>
@@ -135,7 +148,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                            Status
                         </dt>
                         <dd className="mt-1 text-sm">
-                           {getStatusBadge(promotion.status)}
+                           {getStatusBadge(mockData.promotion_event_state)}
                         </dd>
                      </div>
                      <div>
@@ -143,7 +156,9 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                            Start Date
                         </dt>
                         <dd className="mt-1 text-sm">
-                           {new Date(promotion.startDate).toLocaleDateString()}
+                           {new Date(
+                              mockData.promotion_event_valid_from,
+                           ).toLocaleDateString()}
                         </dd>
                      </div>
                      <div>
@@ -151,21 +166,9 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                            End Date
                         </dt>
                         <dd className="mt-1 text-sm">
-                           {new Date(promotion.endDate).toLocaleDateString()}
-                        </dd>
-                     </div>
-                     <div>
-                        <dt className="text-sm font-medium text-muted-foreground">
-                           Discount
-                        </dt>
-                        <dd className="mt-1 text-sm">{promotion.discount}</dd>
-                     </div>
-                     <div>
-                        <dt className="text-sm font-medium text-muted-foreground">
-                           Coupon Code
-                        </dt>
-                        <dd className="mt-1 text-sm">
-                           {promotion.code || 'N/A'}
+                           {new Date(
+                              mockData.promotion_event_valid_to,
+                           ).toLocaleDateString()}
                         </dd>
                      </div>
                      <div className="sm:col-span-2">
@@ -173,7 +176,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                            Description
                         </dt>
                         <dd className="mt-1 text-sm">
-                           {promotion.description}
+                           {mockData.promotion_event_description}
                         </dd>
                      </div>
                   </dl>

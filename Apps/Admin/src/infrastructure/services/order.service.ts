@@ -1,22 +1,18 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import {
    OrderDetailsResponse,
    OrderResponse,
 } from '~/src/domain/interfaces/orders/order.interface';
 import { UpdateOrderStatusFormType } from '~/src/domain/schemas/order.schema';
+import { baseQueryHandler } from '~/src/infrastructure/services/base-query';
 
 export const orderApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: 'https://213f-116-108-46-152.ngrok-free.app/ordering-services',
-      prepareHeaders: (headers) => {
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: (args, api, extraOptions) => {
+      return baseQueryHandler(args, api, extraOptions, 'ordering-services');
+   },
    endpoints: (builder) => ({
       getOrdersAsync: builder.query<PaginationResponse<OrderResponse>, void>({
          query: () => ({

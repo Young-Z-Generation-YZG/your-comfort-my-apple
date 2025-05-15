@@ -105,6 +105,18 @@ const mockPromotions = [
    },
 ];
 
+const mockData = [
+   {
+      promotion_event_id: 'f55f322f-6406-4dfa-b2ea-2777f7813e70',
+      promotion_event_title: 'Black Friday',
+      promotion_event_description: 'Sale all item in shop with special price',
+      promotion_event_type: 'PROMOTION_EVENT',
+      promotion_event_state: 'ACTIVE',
+      promotion_event_valid_from: '2025-05-01T00:00:00Z',
+      promotion_event_valid_to: '2025-05-30T00:00:00Z',
+   },
+];
+
 // Define PromotionListProps
 type PromotionListProps = {
    filter: 'all' | 'event' | 'product' | 'coupon';
@@ -125,7 +137,7 @@ const PromotionEventPage = () => {
       //    .includes(searchQuery.toLowerCase());
       // const matchesStatus =
       //    statusFilter === 'all' || promotion.status === statusFilter;
-      // return matchesType && matchesSearch && matchesStatus;
+      return mockPromotions;
    });
 
    const getTypeIcon = (type: string) => {
@@ -143,7 +155,7 @@ const PromotionEventPage = () => {
 
    const getStatusBadge = (status: string) => {
       switch (status) {
-         case 'active':
+         case 'ACTIVE':
             return <Badge className="bg-green-500">Active</Badge>;
          case 'scheduled':
             return <Badge className="bg-yellow-500">Scheduled</Badge>;
@@ -164,12 +176,18 @@ const PromotionEventPage = () => {
                   <div className="flex items-center justify-between">
                      <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                           Modify Event Promotion
+                           Manage Event Promotion
                         </h1>
                         <p className="text-muted-foreground">
                            Manage your promotional campaigns and events here.
                         </p>
                      </div>
+
+                     <Button>
+                        <Link href="/dashboards/promotions/events/create">
+                           New Event
+                        </Link>
+                     </Button>
                   </div>
 
                   <motion.div
@@ -230,12 +248,14 @@ const PromotionEventPage = () => {
                         <Table>
                            <TableHeader>
                               <TableRow>
-                                 <TableHead>Name</TableHead>
+                                 <TableHead className="min-w-[200px]">
+                                    Name
+                                 </TableHead>
                                  <TableHead>Type</TableHead>
                                  <TableHead>Status</TableHead>
                                  <TableHead>Duration</TableHead>
-                                 <TableHead>Discount</TableHead>
-                                 <TableHead>Code</TableHead>
+                                 <TableHead>Categories</TableHead>
+                                 <TableHead>Products</TableHead>
                                  <TableHead className="text-right">
                                     Actions
                                  </TableHead>
@@ -243,7 +263,7 @@ const PromotionEventPage = () => {
                            </TableHeader>
                            <TableBody>
                               <AnimatePresence>
-                                 {filteredPromotions.length === 0 ? (
+                                 {mockData.length === 0 ? (
                                     <TableRow>
                                        <TableCell
                                           colSpan={7}
@@ -253,93 +273,95 @@ const PromotionEventPage = () => {
                                        </TableCell>
                                     </TableRow>
                                  ) : (
-                                    filteredPromotions.map(
-                                       (promotion, index) => (
-                                          <motion.tr
-                                             key={promotion.id}
-                                             initial={{ opacity: 0, y: 20 }}
-                                             animate={{ opacity: 1, y: 0 }}
-                                             exit={{ opacity: 0, y: -20 }}
-                                             transition={{
-                                                duration: 0.3,
-                                                delay: index * 0.05,
-                                             }}
-                                             className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                                          >
-                                             <TableCell className="font-medium">
-                                                {promotion.name}
-                                             </TableCell>
-                                             <TableCell>
-                                                <div className="flex items-center">
-                                                   {getTypeIcon(promotion.type)}
-                                                   <span className="capitalize">
-                                                      {promotion.type}
-                                                   </span>
-                                                </div>
-                                             </TableCell>
-                                             <TableCell>
-                                                {getStatusBadge(
-                                                   promotion.status,
-                                                )}
-                                             </TableCell>
-                                             <TableCell>
-                                                {new Date(
-                                                   promotion.startDate,
-                                                ).toLocaleDateString()}{' '}
-                                                -{' '}
-                                                {new Date(
-                                                   promotion.endDate,
-                                                ).toLocaleDateString()}
-                                             </TableCell>
-                                             <TableCell>
-                                                {promotion.discount}
-                                             </TableCell>
-                                             <TableCell>
-                                                {promotion.code || '-'}
-                                             </TableCell>
-                                             <TableCell className="text-right">
-                                                <DropdownMenu>
-                                                   <DropdownMenuTrigger asChild>
-                                                      <Button
-                                                         variant="ghost"
-                                                         className="h-8 w-8 p-0"
+                                    mockData.map((event, index) => (
+                                       <motion.tr
+                                          key={event.promotion_event_id}
+                                          initial={{ opacity: 0, y: 20 }}
+                                          animate={{ opacity: 1, y: 0 }}
+                                          exit={{ opacity: 0, y: -20 }}
+                                          transition={{
+                                             duration: 0.3,
+                                             delay: index * 0.05,
+                                          }}
+                                          className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                                       >
+                                          <TableCell className="font-medium">
+                                             {event.promotion_event_title}
+                                          </TableCell>
+                                          <TableCell>
+                                             <div className="flex items-center">
+                                                <Calendar className="mr-2 h-4 w-4" />
+                                                <span className="capitalize">
+                                                   {event.promotion_event_type}
+                                                </span>
+                                             </div>
+                                          </TableCell>
+                                          <TableCell>
+                                             {getStatusBadge(
+                                                event.promotion_event_state,
+                                             )}
+                                          </TableCell>
+                                          <TableCell>
+                                             {new Date(
+                                                event.promotion_event_valid_from,
+                                             ).toLocaleDateString()}{' '}
+                                             -{' '}
+                                             {new Date(
+                                                event.promotion_event_valid_to,
+                                             ).toLocaleDateString()}
+                                          </TableCell>
+                                          <TableCell>
+                                             <p className="text-xs font-medium p-1 bg-slate-100 rounded-md">
+                                                {'2 categories'}
+                                             </p>
+                                          </TableCell>
+                                          <TableCell>
+                                             <p className="text-xs font-medium p-1 bg-slate-100 rounded-md">
+                                                {'3 products'}
+                                             </p>
+                                          </TableCell>
+                                          <TableCell className="text-right">
+                                             <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                   <Button
+                                                      variant="ghost"
+                                                      className="h-8 w-8 p-0"
+                                                   >
+                                                      <span className="sr-only">
+                                                         Open menu
+                                                      </span>
+                                                      <MoreHorizontal className="h-4 w-4" />
+                                                   </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                   <DropdownMenuLabel>
+                                                      Actions
+                                                   </DropdownMenuLabel>
+                                                   {/* <DropdownMenuItem asChild>
+                                                      <Link
+                                                         href={`/dashboards/promotions/events/${event.promotion_event_id}`}
                                                       >
-                                                         <span className="sr-only">
-                                                            Open menu
-                                                         </span>
-                                                         <MoreHorizontal className="h-4 w-4" />
-                                                      </Button>
-                                                   </DropdownMenuTrigger>
-                                                   <DropdownMenuContent align="end">
-                                                      <DropdownMenuLabel>
-                                                         Actions
-                                                      </DropdownMenuLabel>
-                                                      <DropdownMenuItem asChild>
-                                                         <Link
-                                                            href={`/dashboards/promotions/events/${promotion.id}`}
-                                                         >
-                                                            View details
-                                                         </Link>
-                                                      </DropdownMenuItem>
-                                                      <DropdownMenuItem asChild>
-                                                         <Link
-                                                            href={`/dashboard/promotions/${promotion.id}/edit`}
-                                                         >
-                                                            <Edit className="mr-2 h-4 w-4" />
-                                                            Edit
-                                                         </Link>
-                                                      </DropdownMenuItem>
-                                                      <DropdownMenuSeparator />
-                                                      <DropdownMenuItem className="text-destructive">
-                                                         <Trash2 className="mr-2 h-4 w-4" />
-                                                         Delete
-                                                      </DropdownMenuItem>
-                                                   </DropdownMenuContent>
-                                                </DropdownMenu>
-                                             </TableCell>
-                                          </motion.tr>
-                                       ),
-                                    )
+                                                         View details
+                                                      </Link>
+                                                   </DropdownMenuItem> */}
+                                                   <DropdownMenuSeparator />
+                                                   <DropdownMenuItem asChild>
+                                                      <Link
+                                                         href={`/dashboards/promotions/events/${event.promotion_event_id}/edit`}
+                                                      >
+                                                         <Edit className="mr-2 h-4 w-4" />
+                                                         Edit
+                                                      </Link>
+                                                   </DropdownMenuItem>
+                                                   {/* <DropdownMenuItem className="text-destructive">
+                                                      <Trash2 className="mr-2 h-4 w-4" />
+                                                      Delete
+                                                   </DropdownMenuItem> */}
+                                                </DropdownMenuContent>
+                                             </DropdownMenu>
+                                          </TableCell>
+                                       </motion.tr>
+                                    ))
                                  )}
                               </AnimatePresence>
                            </TableBody>

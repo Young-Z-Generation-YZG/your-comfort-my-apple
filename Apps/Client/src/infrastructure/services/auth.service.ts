@@ -1,12 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
    ILoginPayload,
-   ILoginResponse,
 } from '~/domain/interfaces/auth/login.interface';
 import { setAccessToken } from '../redux/features/auth.slice';
 import {
    HttpErrorResponse,
-   ServerErrorResponse,
 } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import {

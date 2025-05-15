@@ -295,7 +295,7 @@ const iPhoneModelsPage = () => {
                         asChild
                         className="bg-black hover:bg-black/90 rounded-full"
                      >
-                        <Link href="/dashboard/products/iphones/new">
+                        <Link href="/dashboards/products/iphones/new">
                            <Plus className="mr-2 h-4 w-4" />
                            Add iPhone
                         </Link>

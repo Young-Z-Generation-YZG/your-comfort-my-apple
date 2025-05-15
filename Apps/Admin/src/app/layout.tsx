@@ -10,6 +10,7 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import { ReduxProvider } from '~/src/infrastructure/redux/provider';
 import { ThemeProvider } from '@components/ui/theme-provider';
 import { Toaster } from '@components/ui/toaster';
+import { Toaster as SonnerToaster } from '@components/ui/sonner';
 
 export const metadata: Metadata = {
    title: 'Create Next App',
@@ -33,19 +34,23 @@ export default function RootLayout({
             )}
             suppressHydrationWarning
          >
-            <ReduxProvider>
-               <ThemeProvider
-                  attribute="class"
-                  defaultTheme="system"
-                  enableSystem
-                  disableTransitionOnChange
-               >
-                  <main>
-                     <Toaster />
-                     {children}
-                  </main>
-               </ThemeProvider>
-            </ReduxProvider>
+            <main>
+               <ReduxProvider>
+                  <ThemeProvider
+                     attribute="class"
+                     defaultTheme="system"
+                     enableSystem
+                     disableTransitionOnChange
+                  >
+                     <main>
+                        <Toaster />
+                        {children}
+                     </main>
+                  </ThemeProvider>
+               </ReduxProvider>
+            </main>
+            <Toaster />
+            <SonnerToaster />
          </body>
       </html>
    );

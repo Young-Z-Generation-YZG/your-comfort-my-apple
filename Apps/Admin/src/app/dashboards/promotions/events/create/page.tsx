@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@components/ui/button';
 import {
    Card,
@@ -14,16 +12,9 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { EventPromotionForm } from '../../_components/event-promotion-form';
+import PromotionEventForm from '~/src/app/dashboards/promotions/_components/_form/promotion-event-form';
 
 const CreateEventPage = () => {
-   const router = useRouter();
-   const [promotionType, setPromotionType] = useState<string>('event');
-
-   const handleCancel = () => {
-      router.push('/dashboard/promotions');
-   };
-
    return (
       <motion.div
          className="flex flex-col gap-6 p-6"
@@ -38,12 +29,12 @@ const CreateEventPage = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
          >
             <Button variant="ghost" size="icon" asChild>
-               <Link href="/dashboard/promotions">
+               <Link href="/dashboards/promotions/events">
                   <ArrowLeft className="h-4 w-4" />
                </Link>
             </Button>
             <h1 className="text-3xl font-bold tracking-tight">
-               Create New Promotion
+               New Event Promotion
             </h1>
          </motion.div>
 
@@ -61,19 +52,9 @@ const CreateEventPage = () => {
                   </CardDescription>
                </CardHeader>
                <CardContent>
-                  <EventPromotionForm />
+                  <PromotionEventForm />
                </CardContent>
-               <CardFooter className="flex justify-between">
-                  <Button variant="outline" onClick={handleCancel}>
-                     Cancel
-                  </Button>
-                  <Button
-                     type="submit"
-                     form={`${promotionType}-promotion-form`}
-                  >
-                     Create Promotion
-                  </Button>
-               </CardFooter>
+               <CardFooter className="flex justify-between"></CardFooter>
             </Card>
          </motion.div>
       </motion.div>
