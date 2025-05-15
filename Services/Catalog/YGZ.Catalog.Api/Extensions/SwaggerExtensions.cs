@@ -14,6 +14,7 @@ using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Api.Contracts;
 using YGZ.Catalog.Api.Contracts.modelRequest;
 using YGZ.Catalog.Api.Contracts.ReviewRequest;
+using YGZ.Catalog.Api.Contracts.PromotionRequest;
 
 namespace YGZ.Catalog.Api.Extensions;
 
@@ -59,6 +60,9 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16DetailRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateReviewRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateReviewRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreatePromotionEventRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreatePromotionGlobalRequestExample());
+
         });
 
         return services;

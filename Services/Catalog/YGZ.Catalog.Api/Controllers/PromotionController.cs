@@ -9,6 +9,9 @@ using YGZ.Catalog.Application.Promotions.Queries.GetPromotionEvents;
 using YGZ.Discount.Grpc.Protos;
 using YGZ.Catalog.Application.Promotions.Queries.GetPromotionCoupons;
 using YGZ.Catalog.Application.Promotions.Queries.GetPromotionItems;
+using YGZ.Catalog.Api.Contracts.PromotionRequest;
+using YGZ.Catalog.Application.Promotions.Commands.CreatePromotionEvent;
+using YGZ.Catalog.Application.Promotions.Commands.CreatePromotionGlobal;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -35,6 +38,26 @@ public class PromotionController : ApiController
         var query = new GetPromotionEventsQuery();
 
         var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("events")]
+    public async Task<IActionResult> CreatePromotionEvent([FromBody] CreatePromotionEventRequest request, CancellationToken cancellationToken)
+    {
+        var command = _mapper.Map<CreatePromotionEventCommand>(request);
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("global-events")]
+    public async Task<IActionResult> CreatePromotionEventGlobal([FromBody] CreatePromotionGlobalRequest request, CancellationToken cancellationToken)
+    {
+        var command = _mapper.Map<CreatePromotionGlobalCommand>(request);
+
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
@@ -70,6 +93,8 @@ public class PromotionController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
+
+    
 
     //[HttpPatch("events/{eventId}/state")]
     //public async Task<IActionResult> UpdatePromotionEventState([FromRoute] Guid eventId, [FromBody] UpdatePromotionEventRequest request, CancellationToken cancellationToken)

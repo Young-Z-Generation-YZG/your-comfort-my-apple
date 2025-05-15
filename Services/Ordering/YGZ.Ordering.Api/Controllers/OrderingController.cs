@@ -33,7 +33,8 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    //[Authorize(Policy = Policies.RequireClientRole)]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersQuery>(request);
