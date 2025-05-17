@@ -14,6 +14,8 @@ using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
+using YGZ.Identity.Api.Contracts.Auth.Keycloak;
+using YGZ.Identity.Application.Keycloak.Commands;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -38,6 +40,16 @@ public class AuthController : ApiController
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<LoginCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("keycloak/authorization-code")]
+    public async Task<IActionResult> LoginAsAuthorizationCode([FromBody] AuthorizationCodeRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<AuthorizationCodeCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 

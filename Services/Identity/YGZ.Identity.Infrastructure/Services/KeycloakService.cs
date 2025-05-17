@@ -14,6 +14,7 @@ using YGZ.Identity.Infrastructure.Settings;
 using YGZ.Identity.Domain.Core.Errors;
 using System.Net;
 using YGZ.Identity.Domain.Users.Entities;
+using YGZ.Identity.Application.Keycloak.Commands;
 
 namespace YGZ.Identity.Infrastructure.Services;
 
@@ -237,8 +238,6 @@ public class KeycloakService : IKeycloakService
 
         return userId!;
     }
-
-
 
     public async Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request)
     {
@@ -625,6 +624,43 @@ public class KeycloakService : IKeycloakService
         {
             _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
             return Errors.Keycloak.ResetPasswordFailed;
+        }
+    }
+
+    public async Task<TokenResponse> AuthorizationCode(AuthorizationCodeCommand request)
+    {
+        var requestBody = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("grant_type", OpenIdConnectGrantTypes.AuthorizationCode),
+            new KeyValuePair<string, string>("client_id", _nextjsClientId),
+            new KeyValuePair<string, string>("client_secret", _nextjsClientSecret),
+            new KeyValuePair<string, string>("code", request.Code),
+            new KeyValuePair<string, string>("redirect_uri", "http://localhost:3000/auth/callback")
+        });
+
+        try
+        {
+            var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+
+                if (tokenResponse == null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+                {
+                    throw new Exception("Failed to retrieve user token.");
+                }
+                return tokenResponse;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message, nameof(AuthorizationCode));
+            throw;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using YGZ.Ordering.Application.Abstractions;
+﻿using System.Text.Json;
+using YGZ.Ordering.Application.Abstractions;
 
 namespace YGZ.Ordering.Api.HttpContext;
 
@@ -39,5 +40,38 @@ public class UserContext : IUserContext
         }
 
         return userId;
+    }
+
+    public List<string> GetUserRoles()
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+
+        if (user == null)
+        {
+            _logger.LogWarning("No user context available.");
+            return new List<string>();
+        }
+
+        var resourceAccessClaim = user.Claims.FirstOrDefault(c => c.Type == "resource_access")?.Value;
+        if (string.IsNullOrEmpty(resourceAccessClaim))
+        {
+            return new List<string>();
+        }
+
+        // Parse the resource_access claim JSON  
+        using var jsonDoc = JsonDocument.Parse(resourceAccessClaim);
+        var root = jsonDoc.RootElement;
+
+        // Navigate to client-nextjs roles  
+        if (root.TryGetProperty("client-nextjs", out var client) &&
+            client.TryGetProperty("roles", out var rolesElement))
+        {
+            return rolesElement.EnumerateArray()
+                .Select(role => role.GetString())
+                .Where(role => !string.IsNullOrEmpty(role))
+                .ToList()!;
+        }
+
+        return new List<string>();
     }
 }

@@ -14,10 +14,9 @@ import { useCreatePromotionEventMutation } from '~/src/infrastructure/services/p
 import isServerErrorResponse from '~/src/infrastructure/utils/is-server-error';
 import { toast as sonnerToast } from 'sonner';
 import { Button } from '@components/ui/button';
-import {
-   MultipleSelectField,
-   OptionType,
-} from '@components/multiple-select-field';
+import { OptionType } from '@components/multiple-select-field';
+import CategoryArrayField from '@components/category-array-field';
+import ProductArrayField from '@components/product-array-field';
 
 const stateOptions = [
    {
@@ -67,6 +66,9 @@ const PromotionEventForm = () => {
          event_description: '',
       },
    });
+
+   console.log('form.getValues()', form.getValues());
+   console.log('form.formState.errors', form.formState.errors);
 
    const [
       createEventAsync,
@@ -153,16 +155,9 @@ const PromotionEventForm = () => {
                   value={undefined}
                />
 
-               <MultipleSelectField
-                  form={form}
-                  name="promotion_categories"
-                  label="Promotion Categories"
-                  optionsData={storagesList}
-                  onValueChange={(value) => {
-                     // setSelectedStorages(value);
-                  }}
-                  placeholder="Select storages..."
-               />
+               <CategoryArrayField form={form} name="promotion_categories" />
+
+               {/* <ProductArrayField form={form} name="promotion_products" /> */}
 
                <div className="flex justify-between mt-5">
                   <Button

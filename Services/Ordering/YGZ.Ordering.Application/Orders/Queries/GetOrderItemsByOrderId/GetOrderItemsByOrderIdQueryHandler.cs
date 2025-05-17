@@ -7,6 +7,7 @@ using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
+using static YGZ.Ordering.Domain.Core.Constants.AuthorizationConstants;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 
@@ -25,21 +26,34 @@ public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByO
     {
         OrderId orderId = OrderId.Of(request.OrderId);
 
+        var roles = _userContext.GetUserRoles();
+
+        if (roles.Contains(ROLES.ADMIN))
+        {
+            var adminOrder = await _orderRepository.GetOrderByIdWithInclude(orderId, x => x.OrderItems, cancellationToken);
+
+            if (adminOrder is null)
+            {
+                return Errors.Order.DoesNotExist;
+            }
+
+            return MapToResponse(adminOrder, adminOrder.ShippingAddress.ContactEmail);
+        }
+
         var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
+
         var userEmail = _userContext.GetUserEmail();
 
         var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
 
-        var order = orders.FirstOrDefault(x => x.Id == orderId);
+        var userOrder = orders.FirstOrDefault(x => x.Id == orderId);
 
-        if (order is null)
+        if (userOrder is null)
         {
             return Errors.Order.DoesNotExist;
         }
 
-        var response = MapToResponse(order, userEmail);
-
-        return response;
+        return MapToResponse(userOrder, userEmail);
     }
 
     private OrderDetailsResponse MapToResponse(Order order, string userEmail)

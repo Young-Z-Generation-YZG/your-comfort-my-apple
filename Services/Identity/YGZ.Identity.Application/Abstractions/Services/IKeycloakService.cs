@@ -4,6 +4,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
+using YGZ.Identity.Application.Keycloak.Commands;
 using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Application.Abstractions.Services;
@@ -14,6 +15,7 @@ public interface IKeycloakService
     Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
     Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request);
+    Task<TokenResponse> AuthorizationCode(AuthorizationCodeCommand request);
     Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request);
     Task<Result<bool>> VerifyEmailAsync(string email);
     Task<Result<bool>> SendEmailResetPasswordAsync(string email);

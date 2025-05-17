@@ -18,5 +18,6 @@ public static partial class Errors
         public static Error SendEmailResetPasswordFailed = Error.BadRequest(code: "Keycloak.SendEmailResetPasswordFailed", message: "Send email reset password failed", serviceName: "KeycloakService");
         public static Error ResetPasswordFailed = Error.BadRequest(code: "Keycloak.ResetPasswordFailed", message: "Reset password failed", serviceName: "KeycloakService");
         public static Error ChangePasswordFailed = Error.BadRequest(code: "Keycloak.ChangePasswordFailed", message: "Change password failed", serviceName: "KeycloakService");
+        public static Error AuthorizationCodeFailed = Error.BadRequest(code: "Keycloak.AuthorizationCodeFailed", message: "Authorization code failed", serviceName: "KeycloakService");
     }
 }

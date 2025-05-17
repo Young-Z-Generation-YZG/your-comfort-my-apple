@@ -5,6 +5,7 @@ import {
    type UseFormReturn,
    type Path,
    type FieldValues,
+   ArrayPath,
 } from 'react-hook-form';
 import { cn } from '~/src/infrastructure/lib/utils';
 import {
@@ -31,13 +32,16 @@ export type OptionType = {
 
 type SelectFieldProps<T extends FieldValues> = {
    form: UseFormReturn<T>;
-   name: Path<T>;
+   name: Path<T> | ArrayPath<T>;
    label: string;
    optionsData: OptionType[];
    description?: string;
    className?: string;
    placeholder?: string;
    disabled?: boolean;
+   defaultValue?: string;
+   onChange?: (value: string) => void;
+   onRenderOptions?: () => React.ReactNode;
 };
 
 export function SelectField<T extends FieldValues>({
@@ -49,20 +53,46 @@ export function SelectField<T extends FieldValues>({
    className = '',
    placeholder = '',
    disabled = false,
+   defaultValue,
+   onRenderOptions,
+   onChange,
 }: SelectFieldProps<T>) {
+   const renderOptions = () => {
+      if (onRenderOptions) {
+         return onRenderOptions();
+      }
+
+      return optionsData.length > 0 ? (
+         optionsData.map((item, index) => {
+            return (
+               <SelectItem key={index} value={item.value}>
+                  {item.label}
+               </SelectItem>
+            );
+         })
+      ) : (
+         <p className="ml-3 text-sm">Empty item</p>
+      );
+   };
+
    return (
       <div className={cn('pb-2', className)}>
          <FormField
             control={form.control}
-            name={name}
+            name={name as Path<T>}
             render={({ field }) => (
                <Fragment>
                   <FormItem>
                      <FormLabel className="">{label}</FormLabel>
 
                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        onValueChange={(value) => {
+                           field.onChange(value);
+                           if (onChange) {
+                              onChange(value);
+                           }
+                        }}
+                        defaultValue={defaultValue || field.value}
                         disabled={disabled}
                      >
                         <FormControl>
@@ -72,22 +102,11 @@ export function SelectField<T extends FieldValues>({
                                     placeholder ??
                                     'Select a verified email to display'
                                  }
+                                 defaultValue={field.value}
                               />
                            </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                           {optionsData.length ? (
-                              optionsData.map((item, index) => {
-                                 return (
-                                    <SelectItem key={index} value={item.value}>
-                                       {item.label}
-                                    </SelectItem>
-                                 );
-                              })
-                           ) : (
-                              <p className="ml-3 text-sm">Empty item</p>
-                           )}
-                        </SelectContent>
+                        <SelectContent>{renderOptions()}</SelectContent>
                      </Select>
 
                      {description && (

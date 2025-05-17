@@ -29,12 +29,14 @@ type InputFieldProps<T extends FieldValues> = {
       | 'email'
       | 'password'
       | 'number'
+      | 'percentage'
       | 'color'
       | 'url'
       | 'textarea';
    description?: string;
    className?: string;
    disabled?: boolean;
+   onChange?: (value: string | number) => void;
 };
 
 export function InputField<T extends FieldValues>({
@@ -45,6 +47,7 @@ export function InputField<T extends FieldValues>({
    description,
    className = '',
    disabled = false,
+   onChange,
 }: InputFieldProps<T>) {
    const renderInput = (field: ControllerRenderProps<T, Path<T>>) => {
       switch (type) {
@@ -54,6 +57,64 @@ export function InputField<T extends FieldValues>({
                   {...field}
                   value={field.value || ''}
                   disabled={disabled}
+                  onChange={(e) => {
+                     const value = e.target.value;
+                     field.onChange(value);
+                     if (onChange) {
+                        onChange(value);
+                     }
+                  }}
+               />
+            );
+         case 'number':
+            return (
+               <Input
+                  type="number"
+                  {...field}
+                  value={Number(field.value)}
+                  disabled={disabled}
+                  onChange={(e) => {
+                     const value = e.target.value;
+                     field.onChange(value);
+                     if (onChange) {
+                        onChange(value);
+                     }
+                  }}
+               />
+            );
+         case 'percentage':
+            return (
+               <Input
+                  type="text"
+                  {...field}
+                  value={
+                     field.value
+                        ? `${Math.min(100, Math.max(0, Number(field.value) * 100))}%`
+                        : '0%'
+                  }
+                  disabled={disabled}
+                  onChange={(e) => {
+                     let value = e.target.value.replace(/%/g, '');
+                     let numValue = parseFloat(value);
+
+                     if (!isNaN(numValue)) {
+                        numValue = Math.min(100, Math.max(0, numValue));
+
+                        const decimalValue = numValue / 100;
+
+                        field.onChange(decimalValue);
+
+                        if (onChange) {
+                           onChange(decimalValue);
+                        }
+                     } else {
+                        field.onChange(0);
+
+                        if (onChange) {
+                           onChange(0);
+                        }
+                     }
+                  }}
                />
             );
          default:
@@ -63,6 +124,13 @@ export function InputField<T extends FieldValues>({
                   {...field}
                   value={field.value || ''}
                   disabled={disabled}
+                  onChange={(e) => {
+                     const value = e.target.value;
+                     field.onChange(value);
+                     if (onChange) {
+                        onChange(value);
+                     }
+                  }}
                />
             );
       }

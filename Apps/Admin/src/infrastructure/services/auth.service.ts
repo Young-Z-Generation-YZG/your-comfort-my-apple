@@ -3,7 +3,7 @@ import {
    ILoginPayload,
    ILoginResponse,
 } from '~/src/domain/interfaces/auth/login.interface';
-import { setAccessToken } from '../redux/features/auth.slice';
+import { setLogin } from '../redux/features/auth.slice';
 import { HttpErrorResponse } from '~/src/domain/interfaces/errors/error.interface';
 
 import { VERIFICATION_TYPES } from '~/src/domain/enums/verification-type.enum';
@@ -41,11 +41,10 @@ export const authApi = createApi({
                   VERIFICATION_TYPES.EMAIL_VERIFICATION
                ) {
                   dispatch(
-                     setAccessToken({
+                     setLogin({
                         user_email: data.user_email,
                         access_token: data.access_token,
                         refresh_token: data.refresh_token,
-                        access_token_expires_in: data.access_token_expires_in,
                      }),
                   );
                }

@@ -16,6 +16,7 @@ import authReducer from './features/auth.slice';
 import { CategoryApi } from '~/src/infrastructure/services/category.service';
 import { promotionApi } from '~/src/infrastructure/services/promotion.service';
 import { authApi } from '~/src/infrastructure/services/auth.service';
+import { keycloakApi } from '~/src/infrastructure/services/keycloak.service';
 import { uploadImageApi } from '~/src/infrastructure/services/upload.service';
 import { catalogApi } from '~/src/infrastructure/services/catalog.service';
 import { basketApi } from '~/src/infrastructure/services/basket.service';
@@ -33,6 +34,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
    blacklist: [
       CategoryApi.reducerPath,
       authApi.reducerPath,
+      keycloakApi.reducerPath,
       uploadImageApi.reducerPath,
       promotionApi.reducerPath,
       catalogApi.reducerPath,
@@ -48,6 +50,7 @@ const reducers = combineReducers({
    auth: authReducer,
    [CategoryApi.reducerPath]: CategoryApi.reducer,
    [authApi.reducerPath]: authApi.reducer,
+   [keycloakApi.reducerPath]: keycloakApi.reducer,
    [uploadImageApi.reducerPath]: uploadImageApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [catalogApi.reducerPath]: catalogApi.reducer,
@@ -70,6 +73,7 @@ export const reduxStore = configureStore({
          authApi.middleware,
          uploadImageApi.middleware,
          promotionApi.middleware,
+         keycloakApi.middleware,
          catalogApi.middleware,
          basketApi.middleware,
          orderApi.middleware,

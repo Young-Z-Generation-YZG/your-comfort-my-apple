@@ -14,10 +14,10 @@ export interface ICreatePromotionCategoryPayload {
    category_slug: string;
    discount_type: string;
    discount_value: number;
+   promotion_products: ICreatePromotionCategoryPayload[];
 }
 
 export interface ICreatePromotionProductPayload {
-   product_id: string;
    product_slug: string;
    product_image: string;
    discount_type: string;

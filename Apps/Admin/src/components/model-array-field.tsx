@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import { FormDescription, FormLabel } from './ui/form';
 import {
    Sortable,
@@ -12,8 +11,6 @@ import {
    ArrayPath,
    FieldArray,
 } from 'react-hook-form';
-import { RxDragHandleDots2 } from 'react-icons/rx';
-import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from './ui/button';
 import { InputField } from './input-field';
 import { cn } from '../infrastructure/lib/utils';

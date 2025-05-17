@@ -18,7 +18,6 @@ namespace YGZ.Ordering.Api.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/orders")]
 [OpenApiTag("orders", Description = "Manage orders.")]
-//[ProtectedResource("orders")]
 public class OrderingController : ApiController
 {
     private readonly ILogger<OrderingController> _logger;
@@ -33,7 +32,6 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
-    //[Authorize(Policy = Policies.RequireClientRole)]
     [AllowAnonymous]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +55,7 @@ public class OrderingController : ApiController
 
     [HttpGet("{orderId}/details")]
     [Authorize(Policy = Policies.RequireClientRole)]
-    public async Task<IActionResult> GetOrderItems([FromRoute] string orderId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderItemsByOrderIdQuery(orderId);
 
