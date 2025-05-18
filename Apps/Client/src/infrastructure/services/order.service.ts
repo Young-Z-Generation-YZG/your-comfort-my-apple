@@ -42,11 +42,6 @@ const baseQueryWithUnauthorizedHandler = async (
    if (result.error && result.error.status === 401) {
       // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
-
-      // Handle redirect on client-side only
-      // if (typeof window !== 'undefined') {
-      //    window.location.href = '/sign-in';
-      // }
    }
 
    return result;

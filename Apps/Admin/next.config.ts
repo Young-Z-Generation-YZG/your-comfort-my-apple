@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
    output: 'standalone',
+   reactStrictMode: false,
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,
       IDENTITY_PROVIDER_CLIENT_ID: process.env.IDENTITY_PROVIDER_CLIENT_ID,

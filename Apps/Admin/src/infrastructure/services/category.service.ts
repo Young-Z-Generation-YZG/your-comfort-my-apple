@@ -1,23 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-// import { CategoryResponseType } from '~/src/domain/types/category.type';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryHandler } from './base-query';
 
 export const CategoryApi = createApi({
    reducerPath: 'category-api',
    tagTypes: ['Categories'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: 'https://213f-116-108-46-152.ngrok-free.app/catalog-services',
-      prepareHeaders: (headers) => {
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
-   // endpoints: (builder) => ({
-   //    getCategoriesAsync: builder.query<CategoryResponseType[], void>({
-   //       query: () => '/api/v1/categories',
-   //       providesTags: ['Categories'],
-   //    }),
-   // }),
+   baseQuery: (args, api, extraOptions) => {
+      return baseQueryHandler(args, api, extraOptions, 'catalog-services');
+   },
    endpoints: (builder) => ({}),
 });
 

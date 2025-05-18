@@ -1,16 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseQueryHandler } from './base-query';
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Products'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: 'https://213f-116-108-46-152.ngrok-free.app/catalog-services',
-      prepareHeaders: (headers) => {
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: (args, api, extraOptions) => {
+      return baseQueryHandler(args, api, extraOptions, 'identity-services');
+   },
    endpoints: (builder) => ({}),
 });
 

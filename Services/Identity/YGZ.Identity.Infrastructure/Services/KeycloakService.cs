@@ -660,7 +660,7 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             _logger.LogError(ex, ex.Message, nameof(AuthorizationCode));
-            throw;
+            return null;
         }
     }
 }

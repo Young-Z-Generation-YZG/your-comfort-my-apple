@@ -41,14 +41,14 @@ const data = {
    navMain: [
       {
          title: 'iPhone Management',
-         url: '/dashboards/products',
+         url: '#',
          icon: TabletSmartphone,
          isActive: true,
          items: [
-            {
-               title: 'Analytics',
-               url: '/dashboards/products/analytics',
-            },
+            // {
+            //    title: 'Analytics',
+            //    url: '/dashboards/products/analytics',
+            // },
             {
                title: 'Model Management',
                url: '/dashboards/iphone/iphone-models',
@@ -61,7 +61,7 @@ const data = {
                      title: 'iPhone 16e',
                      url: '/dashboards/iphone/iphone-models/iphone-14-pro-max',
                   },
-               ]
+               ],
             },
          ],
       },
@@ -71,10 +71,10 @@ const data = {
          icon: Tag,
          isActive: true,
          items: [
-            {
-               title: 'Analytics',
-               url: '#',
-            },
+            // {
+            //    title: 'Analytics',
+            //    url: '#',
+            // },
             {
                title: 'Promotion Events',
                url: '/dashboards/promotions/events',
@@ -95,10 +95,10 @@ const data = {
          icon: ScrollText,
          isActive: true,
          items: [
-            {
-               title: 'Analytics',
-               url: '#',
-            },
+            // {
+            //    title: 'Analytics',
+            //    url: '#',
+            // },
             {
                title: 'Orders',
                url: '/dashboards/orders',

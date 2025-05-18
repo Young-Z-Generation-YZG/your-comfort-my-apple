@@ -1,10 +1,9 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import envConfig from '~/src/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
+import { setLogout } from '../redux/features/auth.slice';
 
 const baseQuery = (args: any, api: any, extraOptions: any, service: string) => {
-   console.log('envConfig', envConfig.API_ENDPOINT);
-
    return fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + service,
       prepareHeaders: (headers, { getState }) => {
@@ -36,7 +35,7 @@ export const baseQueryHandler = async (
    // Check if we received a 401 Unauthorized response
    if (response.error && response.error.status === 401) {
       // Dispatch logout action to clear auth state
-      //   api.dispatch(setLogout());
+      api.dispatch(setLogout());
    }
 
    return response;

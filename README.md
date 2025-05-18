@@ -45,3 +45,9 @@ dotnet ef database update -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api
 
 ### Docker 
 docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
+
+### export realm CLI
+/opt/keycloak/bin/kc.sh export --dir /tmp/export  --realm ygz-realm   --users realm_file
+
+### CP Docker to local
+docker cp ygz.keycloak.server:/tmp/export ./DockerVolumes/KeycloakConfiguration/production

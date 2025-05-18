@@ -36,9 +36,9 @@ const authSlice = createSlice({
          state.value.refreshToken = action.payload.refresh_token;
       },
       setLogout: (state) => {
+         state.value.userEmail = null;
          state.value.accessToken = null;
          state.value.refreshToken = null;
-         state.value.userEmail = null;
       },
    },
 });

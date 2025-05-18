@@ -7,20 +7,16 @@ import { setLogin } from '../redux/features/auth.slice';
 import { HttpErrorResponse } from '~/src/domain/interfaces/errors/error.interface';
 
 import { VERIFICATION_TYPES } from '~/src/domain/enums/verification-type.enum';
+import { baseQueryHandler } from './base-query';
 
 export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: 'https://213f-116-108-46-152.ngrok-free.app',
-      prepareHeaders: (headers) => {
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: (args, api, extraOptions) => {
+      return baseQueryHandler(args, api, extraOptions, 'identity-services');
+   },
    endpoints: (builder) => ({
-      loginAsync: builder.mutation({
+      login: builder.mutation({
          query: (payload: ILoginPayload) => ({
             url: '/api/v1/auth/login',
             method: 'POST',
@@ -56,4 +52,4 @@ export const authApi = createApi({
    }),
 });
 
-export const { useLoginAsyncMutation } = authApi;
+export const { useLoginMutation } = authApi;

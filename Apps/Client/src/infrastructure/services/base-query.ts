@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
 

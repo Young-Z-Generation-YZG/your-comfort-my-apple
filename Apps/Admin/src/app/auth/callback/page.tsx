@@ -1,7 +1,7 @@
 'use client';
 
 import { LoadingOverlay } from '@components/loading-overlay';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuthorizationCodeMutation } from '~/src/infrastructure/services/keycloak.service';
 
@@ -11,32 +11,41 @@ const AuthCallbackPage = () => {
    const code = searchParams.get('code') ?? '';
    const iss = searchParams.get('iss') ?? '';
 
-   const [authorizationCode, { isSuccess, isError, error }] =
+   // Use a ref to track if the API has been called
+   const hasCalledApi = useRef(false);
+
+   const [authorizationCode, { isSuccess, isError, error, data }] =
       useAuthorizationCodeMutation();
 
-   //    useEffect(() => {
-   //       // Close the opener window and redirect to the main application
-   //       if (window.opener) {
-
-   //          // Close the popup window
-   //          window.opener.postMessage('AUTH_COMPLETED', window.location.origin);
-   //          // Optionally redirect the main window if needed
-   //          // window.opener.location.href = '/dashboard';
-
-   //          // Close this window
-   //          window.close();
-   //       }
-   //    }, []);
+   console.log('isSuccess', isSuccess);
+   console.log('isError', isError);
+   console.log('error', error);
+   console.log('data', data);
 
    useEffect(() => {
       const fetchAuthorizationCode = async () => {
-         await authorizationCode({
-            code: code,
-         }).unwrap();
+         if (hasCalledApi.current) {
+            console.log('API call skipped: Already called');
+            return;
+         }
+
+         try {
+            console.log('CALLBACK:: code:', code, 'state:', state, 'iss:', iss);
+            hasCalledApi.current = true;
+            await authorizationCode({ code }).unwrap();
+         } catch (err) {
+            console.error('Error fetching authorization code:', err);
+            hasCalledApi.current = false; // Allow retry on error if needed
+         }
       };
 
-      fetchAuthorizationCode();
-   }, []);
+      if (code) {
+         fetchAuthorizationCode();
+      } else {
+         console.error('No authorization code provided');
+      }
+   }, [code, authorizationCode]);
+
    useEffect(() => {
       if (window.opener) {
          if (isSuccess) {
@@ -52,7 +61,6 @@ const AuthCallbackPage = () => {
             window.opener.postMessage(
                {
                   status: 'AUTH_FAILED',
-                  error: error.toString(),
                },
                window.location.origin,
             );

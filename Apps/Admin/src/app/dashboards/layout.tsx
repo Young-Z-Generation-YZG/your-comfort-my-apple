@@ -1,3 +1,5 @@
+'use client';
+
 import { Fragment } from 'react';
 import {
    Breadcrumb,
@@ -15,6 +17,7 @@ import {
 } from '@components/ui/sidebar';
 import { SidebarLayout } from '@components/layouts/sidebar-layout';
 import { ActionNav } from '@components/layouts/sidebar-navigation/actions-nav';
+import withAuth from '@components/HoCs/with-auth.hoc';
 
 const DashboardLayout = ({
    children,
@@ -55,4 +58,4 @@ const DashboardLayout = ({
    );
 };
 
-export default DashboardLayout;
+export default withAuth(DashboardLayout);

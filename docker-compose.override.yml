@@ -160,9 +160,9 @@ services:
                 '--import-realm',
                 '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
                 '--log-console-color=true',
-                # '--hostname=http://ygz.keycloak.server:17070',
-                # # '--hostname=http://localhost:17070',
-                # '--hostname-backchannel-dynamic=true'
+                '--hostname-debug=true',
+                '--hostname=http://localhost:17070',
+                '--hostname-backchannel-dynamic=true'
             ]
         environment:
         - KEYCLOAK_ADMIN=admin

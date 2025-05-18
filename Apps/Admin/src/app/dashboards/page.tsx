@@ -1,9 +1,7 @@
+import { redirect } from 'next/navigation';
+
 const DashboardPage = () => {
-  return (
-    <div>
-      <h1>Dashboard page</h1>
-    </div>
-  );
+   redirect('/dashboards/revenue-analytics');
 };
 
 export default DashboardPage;

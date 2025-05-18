@@ -117,6 +117,22 @@ export function InputField<T extends FieldValues>({
                   }}
                />
             );
+         case 'password':
+            return (
+               <Input
+                  type="password"
+                  {...field}
+                  value={field.value || ''}
+                  disabled={disabled}
+                  onChange={(e) => {
+                     const value = e.target.value;
+                     field.onChange(value);
+                     if (onChange) {
+                        onChange(value);
+                     }
+                  }}
+               />
+            );
          default:
             return (
                <Input
