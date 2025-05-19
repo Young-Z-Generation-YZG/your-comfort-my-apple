@@ -9,7 +9,7 @@ import {
    CardHeader,
    CardTitle,
 } from '@components/ui/card';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import PromotionEventForm from '~/src/app/dashboards/promotions/_components/_form/promotion-event-form';

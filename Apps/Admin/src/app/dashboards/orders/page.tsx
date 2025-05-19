@@ -3,7 +3,7 @@
 import { Button } from '@components/ui/button';
 import ContentWrapper from '@components/ui/content-wrapper';
 import { Input } from '@components/ui/input';
-import { AnimatedTabsContent, Tabs, TabsTrigger } from '@components/ui/tabs';
+import { Tabs, TabsTrigger } from '@components/ui/tabs';
 import { TabsList } from '@radix-ui/react-tabs';
 import { Search, X, Loader } from 'lucide-react';
 import { Fragment, useEffect, useState } from 'react';
@@ -19,10 +19,14 @@ import {
 import Link from 'next/link';
 import { Badge } from '@components/ui/badge';
 import { cn } from '~/src/infrastructure/lib/utils';
-import { sampleData } from './_data';
 import { useGetOrdersAsyncQuery } from '~/src/infrastructure/services/order.service';
 import { OrderResponse } from '~/src/domain/interfaces/orders/order.interface';
 import { LoadingOverlay } from '@components/loading-overlay';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ORDER_STATUS } from '~/src/domain/constants/order-status.constant';
+import { urlSerializer } from '~/src/infrastructure/utils/url-serializer';
+import { PaginationLinks } from '~/src/domain/interfaces/common/pagination-response.interface';
+import { parseQueryParams } from '~/src/infrastructure/utils/parse-query-params';
 
 // Status badge colors and icons
 const statusConfig = {
@@ -58,34 +62,104 @@ const statusConfig = {
 
 const OrdersList = () => {
    const [isLoading, setIsLoading] = useState(true);
+   const [currentPage, setCurrentPage] = useState(1);
+   const [pageSize, setPageSize] = useState(10); // Number of items per page
+
    const [orders, setOrders] = useState<OrderResponse[]>([]);
-   const [statusFilter, setStatusFilter] = useState('all');
+   const [totalOrder, setTotalOrder] = useState(0);
+   const [links, setLinks] = useState<PaginationLinks>({
+      first: null,
+      last: null,
+      prev: null,
+      next: null,
+   });
+
+   const router = useRouter();
+   const params = useSearchParams();
+
+   const searchParams = Object.fromEntries(params.entries());
+
+   const handleQueryParams = (params: any) => {
+      let cleanParams = {};
+
+      const page = params._page ? Number(params._page) : 1;
+      const limit = params._limit ? Number(params._limit) : pageSize;
+      const orderStatus = ORDER_STATUS.includes(params._orderStatus);
+
+      if (params._page || page) {
+         cleanParams = {
+            ...cleanParams,
+            _page: page,
+         };
+      }
+
+      if (params._limit || limit) {
+         cleanParams = {
+            ...cleanParams,
+            _limit: limit,
+         };
+      }
+
+      if (params._orderStatus && orderStatus) {
+         cleanParams = {
+            ...cleanParams,
+            _orderStatus: params._orderStatus,
+         };
+      }
+
+      return cleanParams;
+   };
+
+   const cleanParams = handleQueryParams(searchParams);
+
+   console.log('Clean Params', cleanParams);
 
    const {
-      data: orderDataAsync,
-      isLoading: loadingOrders,
-      isFetching: fetchingOrders,
-      isError: errorOrders,
-      error: errorOrdersMessage,
-      isSuccess: successOrders,
-      refetch: refetchOrders,
-   } = useGetOrdersAsyncQuery();
+      data: orderData,
+      isLoading: isLoadingOrders,
+      isError: isFetchingError,
+      error: orderError,
+      isSuccess: isFetchingSuccess,
+   } = useGetOrdersAsyncQuery({
+      ...cleanParams,
+   });
 
-   // Filter orders based on status
-   const filteredOrders =
-      statusFilter === 'all'
-         ? orders
-         : orders.filter((order) => order.order_status === statusFilter);
+   // Calculate pagination
+   const totalPages = Math.ceil(totalOrder / pageSize);
+
+   // Handle page change
+   const handlePageChange = (page: number) => {
+      if (page >= 1 && page <= totalPages) {
+         router.push(
+            urlSerializer(`/dashboards/orders`, {
+               ...cleanParams,
+               _page: page,
+            }),
+         );
+
+         window.scrollTo(0, 0); // Scroll to top on page change
+      }
+   };
 
    useEffect(() => {
-      if (successOrders) {
-         setOrders(orderDataAsync.items);
+      if (isFetchingSuccess && orderData) {
+         setOrders(orderData.items);
+         setTotalOrder(orderData.total_records);
+         setLinks(orderData.links);
+         setCurrentPage(orderData.current_page);
+         setPageSize(orderData.page_size);
 
-         setTimeout(() => {
-            setIsLoading(false);
-         }, 500);
+         return;
       }
-   }, [orderDataAsync]);
+
+      if (isFetchingError && orderError) {
+         return;
+      }
+   }, [isFetchingSuccess, orderData, isFetchingError, orderError]);
+
+   useEffect(() => {
+      setIsLoading(isLoadingOrders);
+   }, [isLoadingOrders]);
 
    return (
       <Fragment>
@@ -173,13 +247,25 @@ const OrdersList = () => {
                         <div>
                            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
                               <Tabs
-                                 defaultValue="all"
+                                 defaultValue="ALL"
                                  className="w-full"
-                                 onValueChange={setStatusFilter}
+                                 onValueChange={(value) => {
+                                    router.push(
+                                       urlSerializer(`/dashboards/orders`, {
+                                          ...cleanParams,
+                                          _page: 1,
+                                          _orderStatus: value,
+                                       }),
+                                    );
+
+                                    // router.push(
+                                    //    `/dashboards/orders?_page=1&_limit=${itemsPerPage}&_orderStatus=${value}`,
+                                    // );
+                                 }}
                               >
                                  <TabsList className="bg-slate-100 dark:bg-slate-700/50 p-1 h-auto">
                                     <TabsTrigger
-                                       value="all"
+                                       value="ALL"
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
                                        All Orders
@@ -189,6 +275,12 @@ const OrdersList = () => {
                                        className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
                                     >
                                        Pending
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                       value="CONFIRMED"
+                                       className="px-4 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800"
+                                    >
+                                       Confirmed
                                     </TabsTrigger>
                                     <TabsTrigger
                                        value="PREPARING"
@@ -246,7 +338,7 @@ const OrdersList = () => {
                                     </TableRow>
                                  </TableHeader>
                                  <TableBody>
-                                    {filteredOrders.map((order) => (
+                                    {orders.map((order) => (
                                        <TableRow
                                           key={order.order_code}
                                           className="transition-all hover:bg-slate-50 dark:hover:bg-slate-800/50 animate-fadeIn border-b border-slate-200 dark:border-slate-700"
@@ -313,9 +405,149 @@ const OrdersList = () => {
                                        </TableRow>
                                     ))}
 
-                                    {}
+                                    {/* {paginatedOrders.length === 0 && (
+                                       <TableRow>
+                                          <TableCell
+                                             colSpan={7}
+                                             className="text-center py-4 text-muted-foreground"
+                                          >
+                                             No orders found.
+                                          </TableCell>
+                                       </TableRow>
+                                    )} */}
                                  </TableBody>
                               </Table>
+                           </div>
+
+                           {/* Pagination Controls */}
+                           <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-700">
+                              <div className="text-sm text-muted-foreground">
+                                 Showing {1 + 1} to {Math.min(1, totalOrder)} of{' '}
+                                 {totalOrder} orders
+                              </div>
+                              <div className="flex items-center gap-2">
+                                 <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={!links.first || currentPage === 1}
+                                    onClick={() => {
+                                       // handlePageChange(currentPage - 1);
+
+                                       if (links.first) {
+                                          const params = parseQueryParams(
+                                             links.first,
+                                          );
+
+                                          router.push(
+                                             urlSerializer(
+                                                '/dashboards/orders',
+                                                {
+                                                   ...params,
+                                                },
+                                             ),
+                                          );
+                                       }
+                                    }}
+                                 >
+                                    First
+                                 </Button>
+                                 <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={!links.prev}
+                                    onClick={() => {
+                                       // handlePageChange(currentPage - 1);
+
+                                       if (links.prev) {
+                                          const params = parseQueryParams(
+                                             links.prev,
+                                          );
+
+                                          router.push(
+                                             urlSerializer(
+                                                '/dashboards/orders',
+                                                {
+                                                   ...params,
+                                                },
+                                             ),
+                                          );
+                                       }
+                                    }}
+                                 >
+                                    Previous
+                                 </Button>
+                                 {Array.from(
+                                    { length: totalPages },
+                                    (_, i) => i + 1,
+                                 ).map((page) => (
+                                    <Button
+                                       key={page}
+                                       variant={
+                                          currentPage === page
+                                             ? 'default'
+                                             : 'outline'
+                                       }
+                                       size="sm"
+                                       onClick={() => handlePageChange(page)}
+                                    >
+                                       {page}
+                                    </Button>
+                                 ))}
+                                 <Button
+                                    variant="outline"
+                                    size="sm"
+                                    // disabled={currentPage === totalPages}
+                                    disabled={!links.next}
+                                    onClick={() => {
+                                       // handlePageChange(currentPage + 1);
+
+                                       if (links.next) {
+                                          const params = parseQueryParams(
+                                             links.next,
+                                          );
+
+                                          router.push(
+                                             urlSerializer(
+                                                '/dashboards/orders',
+                                                {
+                                                   ...params,
+                                                },
+                                             ),
+                                          );
+                                       }
+                                    }}
+                                 >
+                                    Next
+                                 </Button>
+                                 <Button
+                                    variant="outline"
+                                    size="sm"
+                                    // disabled={currentPage === totalPages}
+                                    disabled={
+                                       !links.last || currentPage == totalPages
+                                    }
+                                    onClick={() => {
+                                       // handlePageChange(currentPage + 1);
+
+                                       if (links.last) {
+                                          const params = parseQueryParams(
+                                             links.last,
+                                          );
+
+                                          router.push(
+                                             urlSerializer(
+                                                '/dashboards/orders',
+                                                {
+                                                   ...params,
+                                                },
+                                             ),
+                                          );
+                                       }
+                                    }}
+                                 >
+                                    Last
+                                 </Button>
+                              </div>
                            </div>
                         </div>
                      </div>

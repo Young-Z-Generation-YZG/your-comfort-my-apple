@@ -116,9 +116,9 @@ const IphoneModelItem = ({ className = '', item }: IphoneModelItemProps) => {
             </div>
 
             {/* Promotion */}
-            {item?.model_promotion && (
+            {/* {item?.model_promotion && (
                <PromotionSection promotion={item.model_promotion} />
-            )}
+            )} */}
 
             <div className="border-l border-mute py-2 px-5">
                <div className="flex flex-col items-center gap-2 px-10 py-5 border border-dashed border-slate-400 rounded-lg bg-[#F9F9F9]">

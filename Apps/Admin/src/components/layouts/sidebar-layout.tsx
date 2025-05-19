@@ -51,15 +51,15 @@ const data = {
             // },
             {
                title: 'Model Management',
-               url: '/dashboards/iphone/iphone-models',
+               url: '/dashboards/iphone/models',
                items: [
                   {
                      title: 'iPhone 15',
-                     url: '/dashboards/iphone/iphone-models/iphone-14-pro',
+                     url: '/dashboards/iphone/models/iphone-14-pro',
                   },
                   {
                      title: 'iPhone 16e',
-                     url: '/dashboards/iphone/iphone-models/iphone-14-pro-max',
+                     url: '/dashboards/iphone/models/iphone-14-pro-max',
                   },
                ],
             },

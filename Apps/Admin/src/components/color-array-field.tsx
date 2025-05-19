@@ -12,7 +12,6 @@ import {
    ArrayPath,
    FieldArray,
 } from 'react-hook-form';
-import { RxDragHandleDots2 } from 'react-icons/rx';
 import { Button } from '@components/ui/button';
 import { InputField } from '@components/input-field';
 import { GradientPicker } from '@components/color-picker';
@@ -35,6 +34,24 @@ function ColorArrayField<T extends FieldValues>({
       control: form.control,
    });
 
+   const handleMove = (event: { activeIndex: number; overIndex: number }) => {
+      const { activeIndex, overIndex } = event;
+      // Move the item in the fields array
+      move(activeIndex, overIndex);
+
+      // Update model_order for all fields based on their new indices
+      const updatedFields = form.getValues(name as Path<T>);
+      updatedFields.forEach((field: any, index: number) => {
+         form.setValue(
+            `${name}.${index}.color_order` as Path<T>,
+            index as any,
+            {
+               shouldDirty: true,
+            },
+         );
+      });
+   };
+
    const rootErrorMessage = (form.formState.errors[name] as any)?.root?.message;
 
    return (
@@ -47,11 +64,9 @@ function ColorArrayField<T extends FieldValues>({
          <div className="border rounded-xl mt-2 p-3 flex flex-col gap-3">
             <Sortable
                value={fields}
-               onMove={({ activeIndex, overIndex }) => {
-                  move(activeIndex, overIndex);
-               }}
+               onMove={handleMove}
                overlay={
-                  <div className="flex flex-col gap-1 py-8 bg-primary/10 rounded-md">
+                  <div className="flex flex-col gap-1 h-full p-3 bg-primary/10 rounded-md">
                      <div className="w-20 h-8 rounded-sm bg-primary/20" />
                      <div className="w-full h-8 rounded-sm bg-primary/20 mb-2" />
                      <div className="w-full h-[80px] rounded-sm bg-primary/20" />
@@ -158,8 +173,8 @@ function ColorArrayField<T extends FieldValues>({
                         append({
                            color_name: '',
                            color_hex: '',
-                           color_image: 'empty',
-                           order_index: fields.length,
+                           color_image: '',
+                           color_order: fields.length,
                         } as unknown as FieldArray<T, ArrayPath<T>>);
                      }}
                   >

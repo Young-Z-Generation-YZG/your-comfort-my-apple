@@ -249,7 +249,7 @@ const container = {
    },
 };
 
-const iPhoneModelsPage = () => {
+const IPhoneModelsPage = () => {
    const [searchQuery, setSearchQuery] = useState('');
    const [sortBy, setSortBy] = useState('newest');
    const [viewMode, setViewMode] = useState('list');
@@ -291,11 +291,8 @@ const iPhoneModelsPage = () => {
                            View and manage all iPhone models in your inventory
                         </p>
                      </div>
-                     <Button
-                        asChild
-                        className="bg-black hover:bg-black/90 rounded-full"
-                     >
-                        <Link href="/dashboards/products/iphones/new">
+                     <Button asChild className="rounded-full">
+                        <Link href="/dashboards/iphone/models/create">
                            <Plus className="mr-2 h-4 w-4" />
                            Add iPhone
                         </Link>
@@ -599,4 +596,4 @@ const iPhoneModelsPage = () => {
    );
 };
 
-export default iPhoneModelsPage;
+export default IPhoneModelsPage;

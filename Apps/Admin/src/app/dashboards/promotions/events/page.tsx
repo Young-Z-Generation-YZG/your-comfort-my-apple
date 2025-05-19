@@ -24,6 +24,7 @@ import {
    Calendar,
    Edit,
    MoreHorizontal,
+   Plus,
    Search,
    Tag,
    Ticket,
@@ -185,6 +186,7 @@ const PromotionEventPage = () => {
 
                      <Button>
                         <Link href="/dashboards/promotions/events/create">
+                           <Plus className="mr-2 h-4 w-4" />
                            New Event
                         </Link>
                      </Button>

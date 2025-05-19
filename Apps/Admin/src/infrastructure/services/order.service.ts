@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import {
+   IGetOrdersParams,
    OrderDetailsResponse,
    OrderResponse,
 } from '~/src/domain/interfaces/orders/order.interface';
@@ -14,10 +15,16 @@ export const orderApi = createApi({
       return baseQueryHandler(args, api, extraOptions, 'ordering-services');
    },
    endpoints: (builder) => ({
-      getOrdersAsync: builder.query<PaginationResponse<OrderResponse>, void>({
-         query: () => ({
+      getOrdersAsync: builder.query<
+         PaginationResponse<OrderResponse>,
+         IGetOrdersParams
+      >({
+         query: (params: IGetOrdersParams) => ({
             url: '/api/v1/orders/admin',
             method: 'GET',
+            params: {
+               ...params,
+            },
          }),
       }),
       getOrderDetailsAsync: builder.query<OrderDetailsResponse, string>({

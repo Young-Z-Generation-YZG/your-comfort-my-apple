@@ -1,5 +1,3 @@
-import { IPromotionProductResponse } from '../discounts/promotion-product-response.interface';
-
 export interface PaginationResponse<T> {
    total_records: number;
    total_pages: number;

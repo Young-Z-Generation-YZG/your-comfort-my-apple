@@ -10,6 +10,7 @@ import {
    useFieldArray,
    ArrayPath,
    FieldArray,
+   Path,
 } from 'react-hook-form';
 import { Button } from './ui/button';
 import { InputField } from './input-field';
@@ -32,6 +33,24 @@ function ModelArrayField<T extends FieldValues>({
       control: form.control,
    });
 
+   const handleMove = (event: { activeIndex: number; overIndex: number }) => {
+      const { activeIndex, overIndex } = event;
+      // Move the item in the fields array
+      move(activeIndex, overIndex);
+
+      // Update model_order for all fields based on their new indices
+      const updatedFields = form.getValues(name as Path<T>);
+      updatedFields.forEach((field: any, index: number) => {
+         form.setValue(
+            `${name}.${index}.model_order` as Path<T>,
+            index as any,
+            {
+               shouldDirty: true,
+            },
+         );
+      });
+   };
+
    const rootErrorMessage = (form.formState.errors[name] as any)?.root?.message;
 
    return (
@@ -44,11 +63,9 @@ function ModelArrayField<T extends FieldValues>({
          <div className="border rounded-xl mt-2 p-3 flex flex-col gap-3">
             <Sortable
                value={fields}
-               onMove={({ activeIndex, overIndex }) => {
-                  move(activeIndex, overIndex);
-               }}
+               onMove={handleMove}
                overlay={
-                  <div className="flex flex-col gap-1 py-6 bg-primary/10 rounded-md">
+                  <div className="flex flex-col gap-1 h-full p-3 bg-primary/10 rounded-md">
                      <div className="w-20 h-8 rounded-sm bg-primary/20" />
                      <div className="w-full h-8 rounded-sm bg-primary/20" />
                   </div>

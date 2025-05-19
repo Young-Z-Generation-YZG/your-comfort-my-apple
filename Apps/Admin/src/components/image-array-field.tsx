@@ -12,8 +12,6 @@ import {
    ArrayPath,
    FieldArray,
 } from 'react-hook-form';
-import { RxDragHandleDots2 } from 'react-icons/rx';
-import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from '@components/ui/button';
 import { InputField } from '@components/input-field';
 import { cn } from '../infrastructure/lib/utils';
@@ -37,6 +35,24 @@ function ImageArrayField<T extends FieldValues>({
       control: form.control,
    });
 
+   const handleMove = (event: { activeIndex: number; overIndex: number }) => {
+      const { activeIndex, overIndex } = event;
+      // Move the item in the fields array
+      move(activeIndex, overIndex);
+
+      // Update model_order for all fields based on their new indices
+      const updatedFields = form.getValues(name as Path<T>);
+      updatedFields.forEach((field: any, index: number) => {
+         form.setValue(
+            `${name}.${index}.image_order` as Path<T>,
+            index as any,
+            {
+               shouldDirty: true,
+            },
+         );
+      });
+   };
+
    const rootErrorMessage = (form.formState.errors[name] as any)?.root?.message;
 
    return (
@@ -47,11 +63,9 @@ function ImageArrayField<T extends FieldValues>({
          <div className="border rounded-xl mt-2 p-3 flex flex-col gap-3">
             <Sortable
                value={fields}
-               onMove={({ activeIndex, overIndex }) => {
-                  move(activeIndex, overIndex);
-               }}
+               onMove={handleMove}
                overlay={
-                  <div className="flex flex-row py-8 bg-primary/10 rounded-md h-full">
+                  <div className="flex flex-row h-full p-3 bg-primary/10 rounded-md">
                      <div className="flex flex-col gap-2 justify-between basis-2/3">
                         <div className="w-full h-full rounded-sm bg-primary/20" />
                         <div className="w-full h-8 rounded-sm bg-primary/20" />
@@ -63,9 +77,9 @@ function ImageArrayField<T extends FieldValues>({
                }
             >
                {fields.map((field, index) => {
-                  const colorHexErrorMessage =
-                     (form.formState?.errors[name] as any)?.[index]?.color_hex
-                        ?.message ?? '';
+                  // const colorHexErrorMessage =
+                  //    (form.formState?.errors[name] as any)?.[index]?.color_hex
+                  //       ?.message ?? '';
 
                   const imageUrl = form.watch(
                      `${name}.${index}.image_url` as unknown as Path<T>,
@@ -181,8 +195,8 @@ function ImageArrayField<T extends FieldValues>({
                         append({
                            image_id: '',
                            image_url: '',
-                           image_name: '',
-                           image_description: '',
+                           image_name: 'name',
+                           image_description: 'desc',
                            image_width: 0,
                            image_height: 0,
                            image_bytes: 0,

@@ -61,3 +61,12 @@ interface OrderItemResponse {
    promotion: PromotionResponse | null;
    sub_total_amount: number;
 }
+
+interface IPaginationParams {
+   _page?: number | null;
+   _limit?: number | null;
+}
+
+export interface IGetOrdersParams extends IPaginationParams {
+   _orderStatus?: string | null;
+}

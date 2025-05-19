@@ -1,4 +1,54 @@
 services:
+    db.keycloak:
+        image: postgres:alpine
+        container_name: db.keycloak
+        environment:
+        - POSTGRES_USER=bale
+        - POSTGRES_PASSWORD=bale
+        - POSTGRES_DB=KeycloakDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d KeycloakDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+        - "1432:5432"
+        volumes:
+        - postgres_keycloak:/var/lib/postgresql/data/
+        networks:
+        - client-network
+
+    ygz.keycloak.server:
+        image: quay.io/keycloak/keycloak:latest
+        container_name: ygz.keycloak.server
+        command:
+            [
+                'start-dev',
+                '--import-realm',
+                '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
+                '--log-console-color=true',
+                '--hostname-debug=true',
+                '--hostname=http://localhost:17070',
+                '--hostname-backchannel-dynamic=true'
+            ]
+        environment:
+        - KEYCLOAK_ADMIN=admin
+        - KEYCLOAK_ADMIN_PASSWORD=admin
+        - KC_HEALTH_ENABLED=true
+        - KC_DB=postgres
+        - KC_DB_URL=jdbc:postgresql://db.keycloak:5432/KeycloakDb
+        - KC_DB_USERNAME=bale
+        - KC_DB_PASSWORD=bale
+        - KC_HTTP_PORT=17070
+        restart: always
+        depends_on:
+        - db.keycloak
+        ports:
+        - "17070:17070"
+        networks:
+        - client-network
+
     nginx.webserver:
         image: nginx:stable
         ports:
@@ -17,8 +67,6 @@ services:
         build:
             context: ./Client
             dockerfile: Dockerfile
-        ports:
-        - "3000:3000"
         networks:
         - client-network
 
@@ -27,10 +75,11 @@ services:
         build:
             context: ./Admin
             dockerfile: Dockerfile
-        ports:
-        - "4000:3000"
         networks:
         - client-network
+
+volumes:
+  postgres_keycloak:
 
 networks:
   client-network:
