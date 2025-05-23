@@ -5,7 +5,7 @@ const nextConfig = {
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,
    },
-   reactStrictMode: false,
+   reactStrictMode: true,
    eslint: {
       ignoreDuringBuilds: true,
    },

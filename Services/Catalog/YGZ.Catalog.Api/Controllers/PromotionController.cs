@@ -6,12 +6,12 @@ using NSwag.Annotations;
 using YGZ.Catalog.Application.Promotions.Queries.GetActivePromotionEvent;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Promotions.Queries.GetPromotionEvents;
-using YGZ.Discount.Grpc.Protos;
 using YGZ.Catalog.Application.Promotions.Queries.GetPromotionCoupons;
 using YGZ.Catalog.Application.Promotions.Queries.GetPromotionItems;
 using YGZ.Catalog.Api.Contracts.PromotionRequest;
 using YGZ.Catalog.Application.Promotions.Commands.CreatePromotionEvent;
 using YGZ.Catalog.Application.Promotions.Commands.CreatePromotionGlobal;
+using YGZ.Catalog.Application.Promotions.Queries.GetPromotionCouponByCode;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -77,6 +77,16 @@ public class PromotionController : ApiController
     public async Task<IActionResult> GetPromotionCoupons(CancellationToken cancellationToken)
     {
         var query = new GetPromotionCouponsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("coupons/{couponCode}")]
+    public async Task<IActionResult> GetPromotionCouponByCode([FromRoute] string couponCode, CancellationToken cancellationToken)
+    {
+        var query = new GetPromotionCouponByCodeQuery(couponCode);
 
         var result = await _sender.Send(query, cancellationToken);
 

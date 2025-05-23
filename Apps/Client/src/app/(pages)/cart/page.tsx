@@ -114,13 +114,9 @@ const CartPage = () => {
    }, []);
 
    useEffect(() => {
-      console.log('cartSlice', cartSlice);
-      console.log('doneLoadCart', doneLoadCart);
-
       if (doneLoadCart) {
          const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
             (item) => {
-               console.log('item', item);
                return {
                   ...item,
                   sub_total_amount: 0,
@@ -134,8 +130,6 @@ const CartPage = () => {
                };
             },
          );
-
-         console.log('cartItemsFromRedux', cartItemsFromRedux);
 
          setCartItems(cartItemsFromRedux);
       }

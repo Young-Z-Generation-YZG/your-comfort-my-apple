@@ -248,7 +248,6 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
                   <Button
                      className="w-full cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700"
                      onClick={() => {
-                        alert('Buy Now');
                         handleSubmit(onBuySubmit)();
                      }}
                   >

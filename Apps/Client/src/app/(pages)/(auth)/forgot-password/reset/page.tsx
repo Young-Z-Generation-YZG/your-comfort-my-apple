@@ -13,6 +13,7 @@ import {
    resetPasswordFormType,
    resetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
+import Button from '../../_components/Button';
 
 const ResetPasswordPage = () => {
    const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +94,7 @@ const ResetPasswordPage = () => {
                                  label="New Password"
                                  type="password"
                                  disabled={isLoading}
+                                 errorTextClassName="mb-5"
                                  className="rounded-xl rounded-b-none"
                               />
 
@@ -104,8 +106,24 @@ const ResetPasswordPage = () => {
                                  disabled={isLoading}
                                  className="rounded-xl rounded-t-none"
                                  fetchingFunc={onSubmit}
-                                 hasEnterArrowButton={true}
                               />
+
+                              <Button
+                                 className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center"
+                                 onClick={() => {
+                                    form.handleSubmit(onSubmit)();
+                                 }}
+                                 disabled={
+                                    form.formState.isSubmitting ||
+                                    isLoading ||
+                                    isFetching ||
+                                    form.formState.isValidating
+                                 }
+                              >
+                                 {isLoading || isFetching
+                                    ? 'Loading...'
+                                    : 'Submit'}
+                              </Button>
                            </form>
                         </div>
 

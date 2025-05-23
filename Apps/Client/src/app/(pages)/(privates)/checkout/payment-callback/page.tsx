@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
    useMomoIpnCallbackAsyncMutation,
@@ -24,6 +24,8 @@ const PaymentCallbackPage = () => {
    const [loading, setLoading] = useState(false);
    const [showRedirect, setShowRedirect] = useState(false);
    const [order, setOrder] = useState<OrderDetailsResponse | null>(null);
+
+   const hasCalledApi = useRef(false);
 
    const amount = searchParams.get('vnp_Amount');
    const bankCode = searchParams.get('vnp_BankCode');
@@ -121,6 +123,7 @@ const PaymentCallbackPage = () => {
 
    const handleVnpayIpnCallback = async (data: VnpayIpnFormType) => {
       console.log('VNPAY IPN Callback Data:', data);
+
       const isValid = await vnpayForm.trigger();
 
       if (isValid) {
@@ -177,8 +180,15 @@ const PaymentCallbackPage = () => {
    };
 
    useEffect(() => {
+      if (hasCalledApi.current) {
+         console.log('API call skipped: Already called');
+         return;
+      }
+
       handleVnpayIpnCallback(vnpayForm.getValues());
       handleMomoIpnCallback(momoForm.getValues());
+
+      hasCalledApi.current = true;
    }, []);
 
    return (
