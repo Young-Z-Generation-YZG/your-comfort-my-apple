@@ -7,6 +7,7 @@ import { Separator } from '@components/ui/separator';
 import {
    ArrowLeft,
    Package,
+   PackageCheck,
    Truck,
    CheckCircle,
    AlertCircle,
@@ -31,9 +32,9 @@ import {
    DialogHeader,
    DialogTitle,
 } from '@components/ui/dialog';
+import { toast as sonnerToast } from 'sonner';
 
 import { ReviewModal } from '../_components/review-model';
-import { useToast } from '~/hooks/use-toast';
 import { useGetReviewByOrderIdAsyncQuery } from '~/infrastructure/services/review.service';
 import { IReviewByOrderResponse } from '~/domain/interfaces/catalogs/review.interface';
 import { ORDER_STATUS_TYPE_ENUM } from '~/domain/enums/order-type.enum';
@@ -70,7 +71,6 @@ export default function OrderDetails() {
    const [reviewItem, setReviewItem] = useState<OrderItemResponse | null>(null);
    const [reviewModalOpen, setReviewModalOpen] = useState(false);
    const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
-   const { toast } = useToast();
    const router = useRouter();
    const params = useParams<{ id: string }>();
 
@@ -80,7 +80,6 @@ export default function OrderDetails() {
       isError: isOrderDetailsError,
       error: orderDetailsError,
       isSuccess: isOrderDetailsDataSuccess,
-      refetch: orderDetailsRefetch,
    } = useGetOrderDetailsAsyncQuery(params.id);
 
    const {
@@ -89,23 +88,28 @@ export default function OrderDetails() {
       isError: isReviewsInOrderError,
       error: reviewsInOrderError,
       isSuccess: isReviewsInOrderSuccess,
-      refetch: reviewsInOrderRefetch,
    } = useGetReviewByOrderIdAsyncQuery(params.id);
 
-   const [confirmOrder, { isLoading: isConfirmingOrder }] =
-      useConfirmOrderAsyncMutation();
-   const [cancelOrder, { isLoading: isCancellingOrder }] =
-      useCancelOrderAsyncMutation();
+   const [
+      confirmOrder,
+      { isLoading: isConfirmingOrder, isSuccess: isSuccessConfirmOrder },
+   ] = useConfirmOrderAsyncMutation();
+   const [
+      cancelOrder,
+      { isLoading: isCancellingOrder, isSuccess: isSuccessCancelOrder },
+   ] = useCancelOrderAsyncMutation();
 
    // Get status icon
    const getStatusIcon = (status: string) => {
       switch (status) {
          case 'PENDING':
             return <Package className="h-5 w-5 text-yellow-500" />;
+         case 'CONFIRMED':
+            return <PackageCheck className="h-5 w-5 text-green-600" />;
          case 'PAID':
             return <CheckCircle className="h-5 w-5 text-blue-500" />;
          case 'DELIVERED':
-            return <Truck className="h-5 w-5 text-green-500" />;
+            return <Truck className="h-5 w-5 text-green-800" />;
          case 'CANCELLED':
             return <AlertCircle className="h-5 w-5 text-red-500" />;
          default:
@@ -118,6 +122,8 @@ export default function OrderDetails() {
       switch (status) {
          case 'PENDING':
             return 'bg-yellow-100 text-yellow-800';
+         case 'CONFIRMED':
+            return 'bg-green-100 text-green-600';
          case 'PAID':
             return 'bg-blue-100 text-blue-800';
          case 'DELIVERED':
@@ -207,17 +213,13 @@ export default function OrderDetails() {
 
    const handleConfirmOrder = async () => {
       if (order?.order_id) {
-         await confirmOrder(order.order_id).unwrap();
-
-         window.location.reload();
+         await confirmOrder(order.order_id);
       }
    };
 
    const handleCancelOrder = async () => {
       if (order?.order_id) {
-         await cancelOrder(order.order_id).unwrap();
-
-         window.location.reload();
+         await cancelOrder(order.order_id);
       }
    };
 
@@ -251,8 +253,40 @@ export default function OrderDetails() {
    ]);
 
    useEffect(() => {
-      setIsLoading(isOrderDetailsLoading || isReviewsInOrderLoading);
-   }, [isOrderDetailsLoading, isReviewsInOrderLoading]);
+      setIsLoading(
+         isOrderDetailsLoading ||
+            isReviewsInOrderLoading ||
+            isConfirmingOrder ||
+            isCancellingOrder,
+      );
+   }, [
+      isOrderDetailsLoading,
+      isReviewsInOrderLoading,
+      isConfirmingOrder,
+      isCancellingOrder,
+   ]);
+
+   useEffect(() => {
+      if (isSuccessConfirmOrder) {
+         sonnerToast.success('Confirmed order', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+         window.location.reload();
+      }
+
+      if (isSuccessCancelOrder) {
+         sonnerToast.success('Canceled order', {
+            style: {
+               backgroundColor: '#4CAF50', // Custom green background color
+               color: '#FFFFFF', // White text color
+            },
+         });
+         window.location.reload();
+      }
+   }, [isSuccessConfirmOrder, isSuccessCancelOrder, router.refresh]);
 
    return (
       <motion.div

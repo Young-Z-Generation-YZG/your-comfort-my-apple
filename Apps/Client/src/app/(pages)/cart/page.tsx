@@ -3,7 +3,7 @@
 import '/globals.css';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 import {
@@ -48,8 +48,6 @@ const CartPage = () => {
    const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null); // Coupon applied to query
    const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
 
-   const [doneLoadCart, setDoneLoadCart] = useState(false);
-
    const [totalDiscount, setTotalDiscount] = useState(0);
    const [subtotal, setSubtotal] = useState(0);
 
@@ -58,34 +56,27 @@ const CartPage = () => {
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
 
+   const hasFetchedBasket = useRef(false);
+
+   console.log('cartSlice', cartSlice);
+
    const {
       data: basketData,
       isLoading: isLoadingBasket,
       isSuccess: isSuccessGetBasket,
-      isError: isErrorGetBasket,
-      error: errorBasket,
-      refetch: refetchBasket,
    } = useGetBasketAsyncQuery({
       _couponCode: appliedCoupon || undefined,
    });
 
-   const [
-      storeBasket,
-      {
-         isLoading: isLoadingStoreBasket,
-         isError: isErrorStoreBasket,
-         error: errorStoreBasket,
-      },
-   ] = useStoreBasketAsyncMutation();
+   const [storeBasket, { isLoading: isLoadingStoreBasket }] =
+      useStoreBasketAsyncMutation();
 
-   const [
-      deleteBasket,
-      {
-         isLoading: isLoadingDeleteBasket,
-         isError: isErrorDeleteBasket,
-         error: errorDeleteBasket,
-      },
-   ] = useDeleteBasketAsyncMutation();
+   const [deleteBasket, { isLoading: isLoadingDeleteBasket }] =
+      useDeleteBasketAsyncMutation();
+
+   const handleDeleteBasket = async () => {
+      await deleteBasket({}).unwrap();
+   };
 
    const handleApplyCoupon = async () => {
       if (!coupon) return;
@@ -102,10 +93,6 @@ const CartPage = () => {
       }).unwrap();
    };
 
-   const handleDeleteBasket = async () => {
-      await deleteBasket({}).unwrap();
-   };
-
    useEffect(() => {
       if (appliedCouponFromQuery) {
          setAppliedCoupon(appliedCouponFromQuery);
@@ -114,38 +101,26 @@ const CartPage = () => {
    }, []);
 
    useEffect(() => {
-      if (doneLoadCart) {
-         const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
-            (item) => {
-               return {
-                  ...item,
-                  sub_total_amount: 0,
-                  order_index: item.order,
-                  promotion: item.promotion
-                     ? {
-                          ...item.promotion,
-                          promotion_applied_product_count: 0, // Provide a default or calculated value
-                       }
-                     : null,
-               };
-            },
-         );
+      const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
+         (item) => {
+            return {
+               ...item,
+               sub_total_amount: 0,
+               order_index: item.order,
+               promotion: item.promotion
+                  ? {
+                       ...item.promotion,
+                       promotion_applied_product_count: 0, // Provide a default or calculated value
+                    }
+                  : null,
+            };
+         },
+      );
 
-         setCartItems(cartItemsFromRedux);
-      }
+      console.log('cartItemsFromRedux::', cartItemsFromRedux);
+
+      setCartItems(cartItemsFromRedux);
    }, [cartSlice]);
-
-   useEffect(() => {
-      if (auth.isAuthenticated) {
-         if (cartItems.length > 0) {
-            handleStoreBasket(cartSlice.items);
-         } else {
-            if (!doneLoadCart) {
-               // handleDeleteBasket();
-            }
-         }
-      }
-   }, [cartItems]);
 
    // Calculate subtotal and total discount
    useEffect(() => {
@@ -155,9 +130,8 @@ const CartPage = () => {
       cartItems.forEach((item) => {
          if (item.promotion) {
             dcTotal +=
-               (item.product_unit_price -
-                  item.promotion.promotion_discount_unit_price) *
-               item.quantity;
+               item.product_unit_price * item.quantity -
+               item.promotion.promotion_final_price;
          }
       });
 
@@ -166,9 +140,22 @@ const CartPage = () => {
          0,
       );
 
+      console.log('dcTotal::', dcTotal);
+      console.log('subtotal::', subtotal);
+
       setTotalDiscount(dcTotal);
       setSubtotal(subtotal);
-   }, [cartItems]);
+
+      if (auth.isAuthenticated) {
+         if (cartItems.length > 0) {
+            handleStoreBasket(cartSlice.items);
+         }
+
+         if (cartSlice.items.length === 0) {
+            handleDeleteBasket();
+         }
+      }
+   }, [cartItems, cartSlice]);
 
    // Set loading state based on basket operations
    useEffect(() => {
@@ -179,25 +166,48 @@ const CartPage = () => {
 
    // Set init cart async
    useEffect(() => {
-      if (basketData) {
-         const cartItemRedux: IBasketItemPayload[] = basketData.cart_items.map(
-            (item) => {
-               return {
-                  ...item,
-                  order: item.order_index ?? 0,
-               };
-            },
-         );
+      if (auth.isAuthenticated) {
+         if (cartSlice.items.length === 0) {
+            setCartItems([]);
+            return;
+         }
 
-         if (!appliedCoupon) {
-            dispatch(addRangeItems(cartItemRedux));
-         } else {
-            const cartItemsFromRedux: ICartItemResponse[] =
+         if (isSuccessGetBasket && basketData) {
+            const cartItemToRedux: IBasketItemPayload[] =
                basketData.cart_items.map((item) => {
                   return {
                      ...item,
+                     order: item.order_index ?? 0,
+                  };
+               });
+
+            if (!appliedCoupon) {
+               dispatch(addRangeItems(cartItemToRedux));
+            } else {
+               const cartItemToRedux: ICartItemResponse[] =
+                  basketData.cart_items.map((item) => {
+                     return {
+                        ...item,
+                        sub_total_amount: 0,
+                        order_index: item.order_index ?? 0,
+                        promotion: item.promotion
+                           ? {
+                                ...item.promotion,
+                                promotion_applied_product_count: 0, // Provide a default or calculated value
+                             }
+                           : null,
+                     };
+                  });
+
+               setCartItems(cartItemToRedux);
+            }
+         } else {
+            const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
+               (item) => {
+                  return {
+                     ...item,
                      sub_total_amount: 0,
-                     order_index: item.order_index ?? 0,
+                     order_index: item.order ?? 0,
                      promotion: item.promotion
                         ? {
                              ...item.promotion,
@@ -205,34 +215,13 @@ const CartPage = () => {
                           }
                         : null,
                   };
-               });
-
+               },
+            );
             setCartItems(cartItemsFromRedux);
          }
-
-         setDoneLoadCart(true);
-      } else {
-         const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
-            (item) => {
-               return {
-                  ...item,
-                  sub_total_amount: 0,
-                  order_index: item.order ?? 0,
-                  promotion: item.promotion
-                     ? {
-                          ...item.promotion,
-                          promotion_applied_product_count: 0, // Provide a default or calculated value
-                       }
-                     : null,
-               };
-            },
-         );
-
-         setCartItems(cartItemsFromRedux);
-
-         setDoneLoadCart(true);
       }
    }, [isSuccessGetBasket]);
+
    return (
       <div
          className={cn(

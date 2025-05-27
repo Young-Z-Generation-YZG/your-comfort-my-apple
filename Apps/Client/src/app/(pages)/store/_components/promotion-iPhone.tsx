@@ -65,8 +65,6 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
       },
    });
 
-   console.log('errors', errors);
-
    const onBuySubmit = async (data: StoreBasketFormType) => {
       console.log('data', data);
 
@@ -139,16 +137,6 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
          },
       });
    };
-
-   // useEffect(() => {
-   //    if (isLoadingStoreBasket) {
-   //       showLoading();
-   //    } else {
-   //       setTimeout(() => {
-   //          hideLoading();
-   //       }, 500);
-   //    }
-   // }, [isLoadingStoreBasket]);
 
    const getRandomIndex = (length: number) => {
       return Math.floor(Math.random() * length);

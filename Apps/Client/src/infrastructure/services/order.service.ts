@@ -94,7 +94,7 @@ export const orderApi = createApi({
       }),
       confirmOrderAsync: builder.mutation({
          query: (orderId: string) => ({
-            url: '/api/v1/orders/${orderId}/status/confirm',
+            url: `/api/v1/orders/${orderId}/status/confirm`,
             method: 'PATCH',
          }),
       }),

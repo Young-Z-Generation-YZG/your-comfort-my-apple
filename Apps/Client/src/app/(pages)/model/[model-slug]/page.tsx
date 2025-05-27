@@ -47,11 +47,12 @@ import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
 import ReviewSection from '../_components/review-section';
 import { useForm } from 'react-hook-form';
+import { toast as sonnerToast } from 'sonner';
 
 const DetailProductPage = () => {
    const params = useParams<{ 'model-slug': string }>();
 
-   const [isLoading, setIsLoading] = useState(false);
+   const [isLoading, setIsLoading] = useState(true);
    const [selectedColor, setSelectedColor] = useState<string | null>(null);
    const [selectedModel, setSelectedModel] = useState<string | null>(null);
    const [selectedStorage, setSelectedStorage] = useState<string | null>(null);
@@ -79,29 +80,19 @@ const DetailProductPage = () => {
 
    const [
       storeBasket,
-      {
-         isLoading: isLoadingStoreBasket,
-         isError: isErrorStoreBasket,
-         error: errorStoreBasket,
-      },
+      { isLoading: isLoadingStoreBasket, isSuccess: isSuccessStoreBasket },
    ] = useStoreBasketAsyncMutation();
 
    const {
       data: modelDataAsync,
-      error: errorModelData,
       isLoading: isLoadingModelData,
-      isFetching: isFetchingModelData,
-      isSuccess: isSuccessModelData,
-      refetch: refetchModelData,
+      isSuccess: isSuccessGetModelData,
    } = useGetModelBySlugAsyncQuery(params['model-slug']);
 
    const {
       data: iPhonesWithModelAsync,
-      error: errorIPhonesWithModelAsync,
       isLoading: isLoadingIPhonesWithModelAsync,
-      isFetching: isFetchingIPhonesWithModelAsync,
-      isSuccess: isSuccessIPhonesWithModelAsync,
-      refetch,
+      isSuccess: isSuccessGetIPhonesWithModelAsync,
    } = useGetIPhonesByModelAsyncQuery(params['model-slug']);
 
    const form = useForm<SelectorFormType>({
@@ -147,8 +138,6 @@ const DetailProductPage = () => {
 
             const promotion = onPromotion ? onPromotion.promotion : null;
 
-            console.log('promotion', promotion);
-
             const basketItem = {
                product_id: validProduct.product_id,
                model_id: validProduct.iphone_model_id,
@@ -177,9 +166,14 @@ const DetailProductPage = () => {
                order: 0,
             } as IBasketItemPayload;
 
-            console.log('basketItem', basketItem);
-
             dispatch(addCartItem(basketItem));
+
+            sonnerToast.success('Added to cart', {
+               style: {
+                  backgroundColor: '#4CAF50',
+                  color: '#FFFFFF',
+               },
+            });
 
             await storeBasket({
                cart_items: [
@@ -225,8 +219,6 @@ const DetailProductPage = () => {
             const promotion = onPromotion ? onPromotion.promotion : null;
 
             if (promotion) {
-               console.log('promotion', promotion);
-
                setProductDetails({
                   ...validProduct,
                   promotion: {
@@ -244,41 +236,48 @@ const DetailProductPage = () => {
    }, [selectedModel, selectedColor, selectedStorage]);
 
    useEffect(() => {
-      if (modelDataAsync) {
-         setModel(modelDataAsync);
+      if (isSuccessStoreBasket) {
+         setSelectedColor(null);
+         setSelectedModel(null);
+         setSelectedStorage(null);
+         setVisibleColor({
+            visible: false,
+            order: 2,
+         });
+         setVisibleStorage({
+            visible: false,
+            order: 3,
+         });
+
+         form.reset();
       }
-   }, [modelDataAsync]);
+   }, [isSuccessStoreBasket, form]);
 
    useEffect(() => {
-      if (iPhonesWithModelAsync) {
+      if (
+         isSuccessGetModelData &&
+         isSuccessGetIPhonesWithModelAsync &&
+         modelDataAsync &&
+         iPhonesWithModelAsync
+      ) {
+         setModel(modelDataAsync);
          setIPhones(iPhonesWithModelAsync);
       }
-   }, [iPhonesWithModelAsync]);
+   }, [
+      isSuccessGetModelData,
+      modelDataAsync,
+      isSuccessGetIPhonesWithModelAsync,
+      iPhonesWithModelAsync,
+   ]);
 
    useEffect(() => {
-      if (isLoadingModelData) {
-         setIsLoading(true);
-      } else {
-         setTimeout(() => {
-            setIsLoading(!isLoading);
-         }, 500);
-      }
-
-      if (isLoadingIPhonesWithModelAsync) {
-         setIsLoading(true);
-      } else {
-         setTimeout(() => {
-            setIsLoading(!isLoading);
-         }, 500);
-      }
-
-      if (isLoadingStoreBasket) {
-         setIsLoading(true);
-      } else {
-         setTimeout(() => {
-            setIsLoading(!isLoading);
-         }, 500);
-      }
+      setTimeout(() => {
+         setIsLoading(
+            isLoadingStoreBasket ||
+               isLoadingModelData ||
+               isLoadingIPhonesWithModelAsync,
+         );
+      }, 500);
    }, [
       isLoadingStoreBasket,
       isLoadingModelData,
