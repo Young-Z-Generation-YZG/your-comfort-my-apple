@@ -1,12 +1,11 @@
 'use client';
 
 import { ShoppingBag } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@components/ui/button';
 import CartWrapper from './card-wrapper';
 import Link from 'next/link';
 import { ProductPromotion } from '../page';
-import { useStoreBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import {
    StoreBasketFormType,
    StoreBasketResolver,
@@ -14,7 +13,6 @@ import {
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { addCartItem } from '~/infrastructure/redux/features/cart.slice';
-import { useLoading } from '@components/contexts/loading.context';
 import { cn } from '~/infrastructure/lib/utils';
 import { CldImage } from 'next-cloudinary';
 import { useForm } from 'react-hook-form';
@@ -30,10 +28,9 @@ interface PromotionIPhoneProps {
 const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
    const router = useRouter();
    const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
-   const { showLoading, hideLoading } = useLoading();
 
    const dispatch = useDispatch();
-   const { items, currentOrder } = useAppSelector((state) => state.cart.value);
+   const cart = useAppSelector((state) => state.cart.value);
 
    const {
       handleSubmit,
@@ -61,7 +58,7 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
             promotion_discount_unit_price: item.promotion_product_unit_price,
             promotion_final_price: item.promotion_final_price,
          },
-         order: currentOrder,
+         order: cart.currentOrder,
       },
    });
 
@@ -88,10 +85,8 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
             promotion_discount_unit_price: item.promotion_product_unit_price,
             promotion_final_price: item.promotion_final_price,
          },
-         order: currentOrder,
+         order: cart.currentOrder,
       };
-
-      console.log('basketItem', basketItem);
 
       dispatch(addCartItem(basketItem));
 
@@ -118,13 +113,11 @@ const PromotionIPhone = ({ item, index }: PromotionIPhoneProps) => {
             promotion_title: item.promotion_title,
             promotion_discount_type: item.promotion_discount_type,
             promotion_discount_value: item.promotion_discount_value,
-            promotion_discount_unit_price: item.promotion_product_unit_price,
+            promotion_discount_unit_price: item.promotion_final_price,
             promotion_final_price: item.promotion_final_price,
          },
-         order: currentOrder,
+         order: cart.currentOrder,
       };
-
-      console.log('basketItem', basketItem);
 
       dispatch(addCartItem(basketItem));
 

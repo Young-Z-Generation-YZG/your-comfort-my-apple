@@ -235,23 +235,23 @@ const DetailProductPage = () => {
       }
    }, [selectedModel, selectedColor, selectedStorage]);
 
-   useEffect(() => {
-      if (isSuccessStoreBasket) {
-         setSelectedColor(null);
-         setSelectedModel(null);
-         setSelectedStorage(null);
-         setVisibleColor({
-            visible: false,
-            order: 2,
-         });
-         setVisibleStorage({
-            visible: false,
-            order: 3,
-         });
+   // useEffect(() => {
+   //    if (isSuccessStoreBasket) {
+   //       setSelectedColor(null);
+   //       setSelectedModel(null);
+   //       setSelectedStorage(null);
+   //       setVisibleColor({
+   //          visible: false,
+   //          order: 2,
+   //       });
+   //       setVisibleStorage({
+   //          visible: false,
+   //          order: 3,
+   //       });
 
-         form.reset();
-      }
-   }, [isSuccessStoreBasket, form]);
+   //       form.reset();
+   //    }
+   // }, [isSuccessStoreBasket, form]);
 
    useEffect(() => {
       if (

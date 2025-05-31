@@ -131,7 +131,7 @@ const CartPage = () => {
          if (item.promotion) {
             dcTotal +=
                item.product_unit_price * item.quantity -
-               item.promotion.promotion_final_price;
+               item.promotion.promotion_discount_unit_price * item.quantity;
          }
       });
 

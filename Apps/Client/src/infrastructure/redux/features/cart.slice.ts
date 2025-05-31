@@ -31,6 +31,11 @@ const cartSlice = createSlice({
 
          if (existingItem) {
             existingItem.quantity += action.payload.quantity;
+            if (existingItem.promotion) {
+               existingItem.promotion.promotion_final_price =
+                  existingItem.promotion.promotion_discount_unit_price *
+                  existingItem.quantity;
+            }
          } else {
             state.value.items.push({
                ...action.payload,
