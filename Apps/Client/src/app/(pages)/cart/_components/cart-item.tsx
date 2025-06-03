@@ -59,9 +59,7 @@ const CartItem = ({ item }: CartItemProps) => {
             <div className="flex-1 flex flex-col justify-start items-start pl-[16px]">
                <div className="w-full h-[60px] flex flex-row">
                   <div className="flex-1 h-full text-[22px] font-medium font-SFProText">
-                     <Link href={`/product-details/${item.product_slug}`}>
-                        {item.product_name}
-                     </Link>
+                     <Link href={`#`}>{item.product_name}</Link>
                   </div>
                   {item.promotion && (
                      <div className="h-full flex flex-col text-[16px] font-normal text-end">

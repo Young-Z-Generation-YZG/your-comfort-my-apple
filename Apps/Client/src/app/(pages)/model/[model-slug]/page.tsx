@@ -426,7 +426,7 @@ const DetailProductPage = () => {
                      New
                   </span>
                   <h1 className="text-[48px] font-semibold leading-[52px] pb-2 mb-[13px]">
-                     Buy iPhone 16 Pro{' '}
+                     {model?.model_name}
                   </h1>
                   <div className="text-[15px] font-light leading-[20px]">
                      From $999 or $41.62/mo. for 24 mo.

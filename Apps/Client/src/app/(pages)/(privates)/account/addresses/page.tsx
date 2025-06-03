@@ -25,24 +25,9 @@ import {
    IAddressResponse,
 } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
-import { useForm } from 'react-hook-form';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 import { useToast } from '~/hooks/use-toast';
 import { toast as sonnerToast } from 'sonner';
-
-const labelList = ['Home', 'Work', 'Other'];
-
-type Address = {
-   id: string;
-   name: string;
-   label: string;
-   street: string;
-   city: string;
-   state: string;
-   zip: string;
-   country: string;
-   isDefault: boolean;
-};
 
 const AddressesPage = () => {
    const [isLoading, setIsLoading] = useState(true);
@@ -55,25 +40,10 @@ const AddressesPage = () => {
 
    const { toast } = useToast();
 
-   const form = useForm({
-      resolver: AddressResolver,
-      defaultValues: {
-         label: '',
-         contact_name: '',
-         contact_phone_number: '',
-         address_line: '',
-         district: '',
-         province: '',
-         country: '',
-      } as IAddressPayload,
-   });
-
    const {
       data: addressesAsync,
       isLoading: isLoadingAddresses,
       isSuccess: isSuccessAddressesAsync,
-      isError: isErrorAddressesAsync,
-      error: errorAddressesAsync,
       refetch: refetchAddresses,
    } = useGetAddressesAsyncQuery();
 

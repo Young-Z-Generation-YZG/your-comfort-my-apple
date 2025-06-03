@@ -392,7 +392,17 @@ export function ChangePassword() {
                animate={{ opacity: 1, y: 0 }}
                transition={{ duration: 0.3, delay: 0.4 }}
             >
-               <Button type="button" variant="outline">
+               <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                     setCurrentPassword('');
+                     setNewPassword('');
+                     setConfirmPassword('');
+                     reset(); // Reset form state
+                     setFormErrors({}); // Clear errors
+                  }}
+               >
                   Cancel
                </Button>
                <Button

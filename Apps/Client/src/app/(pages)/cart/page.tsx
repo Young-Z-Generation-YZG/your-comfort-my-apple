@@ -38,6 +38,9 @@ import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
+import { toast as sonnerToast } from 'sonner';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
+import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 
 const CartPage = () => {
    const searchParams = useSearchParams();
@@ -64,6 +67,8 @@ const CartPage = () => {
       data: basketData,
       isLoading: isLoadingBasket,
       isSuccess: isSuccessGetBasket,
+      isError: isErrorGetBasket,
+      error: errorGetBasket,
    } = useGetBasketAsyncQuery({
       _couponCode: appliedCoupon || undefined,
    });
@@ -221,6 +226,30 @@ const CartPage = () => {
          }
       }
    }, [isSuccessGetBasket]);
+
+   useEffect(() => {
+      if (isErrorGetBasket && appliedCoupon) {
+         setAppliedCoupon(null);
+         setCoupon(null);
+         router.push('/cart'); // Redirect to cart without coupon
+
+         if (isServerErrorResponse(errorGetBasket)) {
+            if (errorGetBasket.data.status === 401) {
+               sonnerToast.error(
+                  'Failed to apply coupon. Please sign-in or coupon expired.',
+                  {
+                     style: {
+                        backgroundColor: '#f44336', // Custom red background color
+                        color: '#FFFFFF', // White text color
+                     },
+                  },
+               );
+
+               dispatch(setLogout());
+            }
+         }
+      }
+   }, [appliedCoupon, isErrorGetBasket]);
 
    return (
       <div
