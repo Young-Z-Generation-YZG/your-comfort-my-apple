@@ -3,7 +3,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record class OrderResponse
 {
     public string OrderId { get; init; }
@@ -21,7 +21,7 @@ public sealed record class OrderResponse
     public string? OrderLastModifiedBy { get; init; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record ShippingAddressResponse
 {
     public string ContactName { get; init; }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Reflection;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Api.HttpContext;
 using YGZ.Identity.Application.Abstractions.HttpContext;
 
@@ -9,7 +11,7 @@ namespace YGZ.Identity.Api;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
+    public static IServiceCollection AddPresentationLayer(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddRazorPages();
 
@@ -18,21 +20,42 @@ public static class DependencyInjection
             options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml");
         });
 
-        services.AddApiVersioningExtension();
+        services.AddSwaggerExtensions(); // Add Swagger Extensions
+        services.AddApiVersioningExtension(); // Add Api Versioning Extension
+        services.AddSharedExtensions(Assembly.GetExecutingAssembly()); // Add Shared Extensions
+        AddMonitoringAndLogging(services, builder);
 
-        services.AddMappingExtensions(Assembly.GetExecutingAssembly());
-
-        services.AddGlobalExceptionHandler();
-
-        services.AddHttpContextAccessor();
+        services.AddGlobalExceptionHandler(); // Add Global Exception Handler
 
         services.AddScoped<IUserContext, UserContext>();
 
         return services;
     }
 
-    public static IServiceCollection AddMappings(this IServiceCollection services)
+    public static IServiceCollection AddMonitoringAndLogging(IServiceCollection services, WebApplicationBuilder builder)
     {
+        builder.Host.AddSerilogExtension(builder.Configuration);
+
+        // Add OpenTelemetry Logging
+        builder.Logging.AddOpenTelemetry(logging =>
+        {
+            logging.IncludeFormattedMessage = true;
+            logging.IncludeScopes = true;
+        });
+
+        services.AddHealthChecks()
+        .AddNpgSql(
+            connectionString: builder.Configuration.GetConnectionString("IdentityDb")!,
+            name: "IdentityDb",
+            failureStatus: HealthStatus.Unhealthy,
+            tags: new[] { "db", "postgres" })
+        .AddNpgSql(
+            connectionString: builder.Configuration.GetConnectionString("KeycloakDb")!,
+            name: "KeycloakDb",
+            failureStatus: HealthStatus.Unhealthy,
+            tags: new[] { "db", "postgres" });
+
+
         return services;
     }
 }

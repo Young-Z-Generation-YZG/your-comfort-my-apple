@@ -61,11 +61,11 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
 
             var command = new EmailCommand(
                         ReceiverEmail: request.Email,
-                        Subject: "YGZ Zone Email Verifycation",
+                        Subject: "YGZ Zone Email Verification",
                         ViewName: "EmailVerification",
                         Model: new EmailVerificationModel
                         {
-                            FullName = $"Foo Bar",
+                            FullName = $"{user.Response.Profile.FullName}",
                             VerifyOtp = otp,
                             VerificationLink = $"https://ygz.zone/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
                         },
@@ -95,12 +95,12 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
             return emailVerificationResponse;
         }
 
-        var tokenResponse = await _keycloakService.GetKeycloackTokenPairAsync(request);
+        var tokenResponse = await _keycloakService.GetKeycloakTokenPairAsync(request);
 
         var loginResponse = new LoginResponse
         {
             UserEmail = user.Response.Email!,
-            Username = $"{user.Response.UserName}",
+            Username = user.Response.UserName!,
             AccessToken = tokenResponse.AccessToken,
             RefreshToken = tokenResponse.RefreshToken,
             AccessTokenExpiresInSeconds = tokenResponse.ExpiresIn,

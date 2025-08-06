@@ -14,7 +14,7 @@ public static class DependencyInjection
         // Add MediatR
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
 
-        services.AddMappingExtensions(assembly);
+        services.AddSharedExtensions(assembly);
 
         return services;
     }

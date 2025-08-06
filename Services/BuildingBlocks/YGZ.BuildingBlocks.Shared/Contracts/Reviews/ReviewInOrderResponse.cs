@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Reviews;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record ReviewInOrderResponse
 {
     public required string ReviewId { get; set; }

@@ -5,13 +5,13 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record ActivePromotionEventResponse
 {
     public ActivePromotionEvent? PromotionEvent { get; init; } = null;
 }
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record ActivePromotionEvent
 {
     public string PromotionEventId { get; set; } = string.Empty;

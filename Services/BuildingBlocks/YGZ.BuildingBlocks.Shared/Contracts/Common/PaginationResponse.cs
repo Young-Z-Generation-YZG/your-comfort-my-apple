@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public class PaginationResponse<TData>
 {
     public int TotalRecords { get; set; }

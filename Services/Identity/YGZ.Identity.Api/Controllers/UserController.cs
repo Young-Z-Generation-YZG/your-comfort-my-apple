@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Profiles;

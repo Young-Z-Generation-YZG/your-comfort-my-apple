@@ -2,13 +2,29 @@
 
 namespace YGZ.Identity.Api.Contracts.Auth;
 
-public sealed record RegisterRequest(
-    [property: JsonPropertyName("email")] string Email,
-    [property: JsonPropertyName("password")] string Password,
-    [property: JsonPropertyName("confirm_password")] string ConfirmPassword,
-    [property: JsonPropertyName("first_name")] string FirstName,
-    [property: JsonPropertyName("last_name")] string LastName,
-    [property: JsonPropertyName("phone_number")] string PhoneNumber,
-    [property: JsonPropertyName("birth_day")] string BirthDay,
-    [property: JsonPropertyName("country")] string Country)
-{ }
+public sealed record RegisterRequest
+{ 
+    [JsonPropertyName("email")]
+    public required string Email { get; init; }
+
+    [JsonPropertyName("password")]
+    public required string Password { get; init; }
+
+    [JsonPropertyName("confirm_password")]
+    public required string ConfirmPassword { get; init; }
+
+    [JsonPropertyName("first_name")]
+    public required string FirstName { get; init; }
+
+    [JsonPropertyName("last_name")]
+    public required string LastName { get; init; }
+
+    [JsonPropertyName("phone_number")]
+    public required string PhoneNumber { get; init; }
+
+    [JsonPropertyName("birthday")]
+    public required string BirthDay { get; init; }
+
+    [JsonPropertyName("country")]
+    public required string Country { get; init; }
+}

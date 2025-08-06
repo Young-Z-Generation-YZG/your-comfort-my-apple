@@ -56,7 +56,6 @@ const AddressesPage = () => {
          error: errorSetDefaultAddress,
       },
    ] = useSetDefaultAddressAsyncMutation();
-
    const handleSetDefaultAddress = async (id: string) => {
       await setDefaultAddressAsync(id).unwrap();
    };

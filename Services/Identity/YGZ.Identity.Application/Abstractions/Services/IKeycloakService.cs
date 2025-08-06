@@ -14,7 +14,7 @@ public interface IKeycloakService
     Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId);
     Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
-    Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request);
+    Task<TokenResponse> GetKeycloakTokenPairAsync(LoginCommand request);
     Task<TokenResponse> AuthorizationCode(AuthorizationCodeCommand request);
     Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request);
     Task<Result<bool>> VerifyEmailAsync(string email);

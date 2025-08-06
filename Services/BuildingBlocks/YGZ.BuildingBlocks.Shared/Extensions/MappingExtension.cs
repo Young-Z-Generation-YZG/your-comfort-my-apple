@@ -9,7 +9,7 @@ namespace YGZ.BuildingBlocks.Shared.Extensions;
 
 public static class MappingExtension
 {
-    public static IServiceCollection AddMappingExtensions(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddSharedExtensions(this IServiceCollection services, Assembly assembly)
     {
         var config = TypeAdapterConfig.GlobalSettings;
 

@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record CheckoutBasketResponse()
 {
     public string? PaymentRedirectUrl { get; set; } = null;

@@ -1,0 +1,9 @@
+---
+alwaysApply: false
+---
+
+**read by the order**
+
+1. `read-first.mdc`
+2. `backend-rules.mdc`
+3. `/docs`

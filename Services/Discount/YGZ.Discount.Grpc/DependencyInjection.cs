@@ -7,7 +7,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
     {
-        services.AddMappingExtensions(Assembly.GetExecutingAssembly());
+        services.AddSharedExtensions(Assembly.GetExecutingAssembly());
 
         return services;
     }

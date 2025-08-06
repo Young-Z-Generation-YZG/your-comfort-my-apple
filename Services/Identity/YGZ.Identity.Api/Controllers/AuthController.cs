@@ -4,9 +4,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
+
+using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
-using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
@@ -14,8 +15,6 @@ using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
-using YGZ.Identity.Api.Contracts.Auth.Keycloak;
-using YGZ.Identity.Application.Keycloak.Commands;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -27,11 +26,9 @@ public class AuthController : ApiController
 {
     private readonly ISender _sender;
     private readonly IMapper _mapper;
-    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(ILogger<AuthController> logger, ISender sender, IMapper mapper)
+    public AuthController(ISender sender, IMapper mapper)
     {
-        _logger = logger;
         _sender = sender;
         _mapper = mapper;
     }
@@ -45,17 +42,7 @@ public class AuthController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-
-    [HttpPost("keycloak/authorization-code")]
-    public async Task<IActionResult> LoginAsAuthorizationCode([FromBody] AuthorizationCodeRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<AuthorizationCodeCommand>(request);
-
-        var result = await _sender.Send(cmd, cancellationToken);
-
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
-
+    
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -116,7 +103,7 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("refresh/access-token")]
+    [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshAccessTokenRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<RefreshAccessTokenCommand>(request);

@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         services.AddApiVersioningExtension();
 
-        services.AddMappingExtensions(Assembly.GetExecutingAssembly());
+        services.AddSharedExtensions(Assembly.GetExecutingAssembly());
 
         services.AddGlobalExceptionHandler();
 

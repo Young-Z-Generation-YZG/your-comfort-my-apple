@@ -4,7 +4,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record PromotionDataResponse
 {
     required public string PromotionId { get; set; }
@@ -21,7 +21,7 @@ public sealed record PromotionDataResponse
     required public List<ProductVariantResponse> ProductVariants { get; set; } = new List<ProductVariantResponse>();
 }
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record ProductVariantResponse
 {
     required public string ProductId { get; set; }

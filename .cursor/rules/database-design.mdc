@@ -1,0 +1,358 @@
+---
+alwaysApply: false
+---
+# Database Design as Code
+
+## Overview
+The TLCN_Microservices project implements a **polyglot persistence** strategy, using different database technologies optimized for specific service requirements and data access patterns.
+
+## Schemas design
+- read in `/docs/databases`
+
+## Database Strategy
+
+### 1. **PostgreSQL** - Relational Database
+**Services**: Identity, Basket, Discount, Ordering
+
+**Characteristics**:
+- ACID compliance for transactional data
+- Complex relationships and joins
+- Structured data with well-defined schemas
+- Entity Framework Core with Code-First approach
+
+**Key Features**:
+- **Auditing**: Automatic tracking of CreatedAt, UpdatedAt, ModifiedBy
+- **Soft Delete**: ISoftDelete interface for logical deletion
+- **Domain Events**: Event sourcing with DispatchDomainEventInterceptor
+- **Migrations**: Code-first migrations for schema evolution
+
+### 2. **MongoDB** - Document Database
+**Services**: Catalog
+
+**Characteristics**:
+- Schema-flexible document storage
+- Complex nested objects and arrays
+- High read/write performance for product data
+- Native JSON support
+
+**Key Features**:
+- **Collection-based**: BsonCollection attribute for collection naming
+- **Document Mapping**: MongoDB.Driver with BsonElement attributes
+- **Aggregation Support**: Complex queries and data analysis
+- **Flexible Schema**: Dynamic product attributes and variations
+
+### 3. **Redis** - In-Memory Cache
+**Purpose**: Distributed caching and session storage
+<!-- **Use Cases**: 
+- Shopping cart sessions
+- Product cache
+- User session management
+- Rate limiting -->
+
+## Database Architecture Patterns
+
+### 1. **Clean Architecture Database Layer**
+```
+Infrastructure Layer
+├── Persistence/
+│   ├── DbContext/          # Entity Framework contexts
+│   ├── Repositories/       # Data access implementations
+│   ├── Configurations/     # Entity configurations
+│   └── Interceptors/       # EF Core interceptors
+└── Settings/              # Database connection settings
+```
+
+<!-- ### 2. **Repository Pattern**
+**Generic Repository Interface**:
+```csharp
+public interface IGenericRepository<TEntity, TId> 
+    where TEntity : AggregateRoot<TId> 
+    where TId : ValueObject
+{
+    Task<TEntity?> GetByIdAsync(TId id);
+    Task<List<TEntity>> GetAllAsync();
+    Task<TEntity> AddAsync(TEntity entity);
+    Task UpdateAsync(TEntity entity);
+    Task DeleteAsync(TId id);
+}
+```
+
+**MongoDB Repository**:
+```csharp
+public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId>
+    where TEntity : Entity<TId> 
+    where TId : ValueObject
+{
+    // MongoDB-specific implementation
+    // Pagination, filtering, sorting support
+}
+```
+
+### 3. **Domain-Driven Design Entities**
+
+#### Aggregate Roots
+- **Order** (Ordering Service): Order management with OrderItems
+- **User** (Identity Service): User management with Profile and ShippingAddresses
+- **IPhone16Model** (Catalog Service): Product catalog with Models, Colors, Storages
+- **Coupon** (Discount Service): Promotion management
+- **ShoppingCart** (Basket Service): Cart management with CartItems
+
+#### Value Objects
+- **Strongly-typed IDs**: OrderId, UserId, CouponId, etc.
+- **Domain-specific values**: Code, Address, Slug, AverageRating
+- **Immutable objects**: RatingStar, Image, Color, Storage
+
+### 4. **Auditing & Tracking**
+
+#### PostgreSQL Auditing
+```csharp
+public interface IAuditable
+{
+    DateTime CreatedAt { get; set; }
+    DateTime UpdatedAt { get; set; }
+    Guid? ModifiedBy { get; set; }
+}
+
+public interface ISoftDelete
+{
+    bool IsDeleted { get; set; }
+    DateTime? DeletedAt { get; set; }
+    string? DeletedBy { get; set; }
+}
+```
+
+#### MongoDB Auditing
+```csharp
+[BsonElement("created_at")]
+public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
+
+[BsonElement("updated_at")]
+public DateTime UpdatedAt => Id.Id?.CreationTime ?? DateTime.Now;
+```
+
+### 5. **Event Sourcing & Domain Events**
+
+#### Domain Event Interceptors
+```csharp
+public class DispatchDomainEventInterceptor : ISaveChangesInterceptor
+{
+    // Automatically dispatches domain events on save
+    // Ensures consistency across aggregates
+}
+```
+
+#### Event Types
+- **OrderCreatedDomainEvent**: Order lifecycle events
+- **UserCreatedDomainEvent**: User management events
+- **ProductRatingUpdatedEvent**: Product review events
+
+## Database Configurations
+
+### 1. **Entity Framework Configurations**
+```csharp
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
+{
+    public void Configure(EntityTypeBuilder<Order> builder)
+    {
+        // Table configuration
+        // Index configuration
+        // Relationship configuration
+    }
+}
+```
+
+### 2. **MongoDB Document Mapping**
+```csharp
+[BsonCollection("IphoneModels")]
+public class IPhone16Model : AggregateRoot<IPhone16ModelId>
+{
+    [BsonElement("name")]
+    public string Name { get; set; }
+    
+    [BsonElement("models")]
+    public List<Model> Models { get; set; }
+}
+```
+
+### 3. **Connection String Management**
+```csharp
+public static class ConnectionStrings
+{
+    public const string IdentityDb = "IdentityDb";
+    public const string CatalogDb = "CatalogDb";
+    public const string BasketDb = "BasketDb";
+    public const string DiscountDb = "DiscountDb";
+    public const string OrderingDb = "OrderingDb";
+}
+``` -->
+
+<!-- ## Data Access Patterns
+
+### 1. **CQRS Pattern** (Command Query Responsibility Segregation)
+- **Commands**: Write operations (Create, Update, Delete)
+- **Queries**: Read operations with optimized data retrieval
+- **Separate Models**: Command and Query models for different use cases
+
+### 2. **Pagination & Filtering**
+```csharp
+public async Task<(List<TEntity> items, int totalRecords, int totalPages)> 
+    GetAllAsync(int? page, int? limit, FilterDefinition<TEntity>? filter, 
+                SortDefinition<TEntity>? sort, CancellationToken cancellationToken)
+```
+
+### 3. **Transaction Management**
+- **Unit of Work Pattern**: Coordinated transactions across repositories
+- **SaveChanges Interceptors**: Automatic event dispatching
+- **Distributed Transactions**: Saga pattern for cross-service operations -->
+
+## Database Migration Strategy
+
+### 1. **Entity Framework Migrations**
+```bash
+# Create migration
+dotnet ef migrations add InitialCreate --project Services/Ordering/YGZ.Ordering.Infrastructure
+
+# Update database
+dotnet ef database update --project Services/Ordering/YGZ.Ordering.Infrastructure
+```
+<!-- 
+### 2. **MongoDB Schema Evolution**
+- **Backward Compatibility**: Schema evolution without breaking changes
+- **Versioning**: Document versioning for schema changes
+- **Migration Scripts**: Custom migration scripts for complex changes
+
+## Performance Optimization
+
+### 1. **Indexing Strategy**
+- **Primary Keys**: Auto-generated IDs for fast lookups
+- **Foreign Keys**: Indexed relationships for joins
+- **Composite Indexes**: Multi-column indexes for complex queries
+- **Text Indexes**: Full-text search capabilities (MongoDB)
+
+### 2. **Caching Strategy**
+- **Redis Caching**: Frequently accessed data
+- **Query Result Caching**: Expensive query results
+- **Session Storage**: User session data
+- **Distributed Locking**: Concurrency control
+
+### 3. **Connection Pooling**
+- **PostgreSQL**: Connection pooling for high concurrency
+- **MongoDB**: Connection management for document operations
+- **Redis**: Connection multiplexing for cache operations
+
+## Security & Data Protection
+
+### 1. **Data Encryption**
+- **Connection Encryption**: TLS/SSL for database connections
+- **Data at Rest**: Database-level encryption
+- **Sensitive Data**: Field-level encryption for PII
+
+### 2. **Access Control**
+- **Database Users**: Service-specific database accounts
+- **Row-Level Security**: PostgreSQL RLS for multi-tenancy
+- **Audit Logging**: Comprehensive audit trails
+
+### 3. **Backup & Recovery**
+- **Automated Backups**: Scheduled database backups
+- **Point-in-Time Recovery**: PostgreSQL WAL-based recovery
+- **Disaster Recovery**: Cross-region backup replication
+
+## Monitoring & Observability
+
+### 1. **Database Metrics**
+- **Query Performance**: Slow query monitoring
+- **Connection Pool**: Connection utilization metrics
+- **Storage Usage**: Database size and growth monitoring
+
+### 2. **Health Checks**
+- **Database Connectivity**: Service health checks
+- **Migration Status**: Schema version monitoring
+- **Performance Alerts**: Threshold-based alerting
+
+## Database Schema Examples
+
+### PostgreSQL Schema (Ordering Service)
+```sql
+-- Orders table
+CREATE TABLE "Orders" (
+    "Id" uuid PRIMARY KEY,
+    "CustomerId" uuid NOT NULL,
+    "Code" text NOT NULL,
+    "Status" integer NOT NULL,
+    "PaymentMethod" integer NOT NULL,
+    "DiscountAmount" decimal(18,2) NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "UpdatedAt" timestamp with time zone NOT NULL,
+    "LastModifiedBy" uuid NULL
+);
+
+-- OrderItems table
+CREATE TABLE "OrderItems" (
+    "Id" uuid PRIMARY KEY,
+    "OrderId" uuid NOT NULL,
+    "ProductId" text NOT NULL,
+    "ProductName" text NOT NULL,
+    "ProductUnitPrice" decimal(18,2) NOT NULL,
+    "Quantity" integer NOT NULL,
+    FOREIGN KEY ("OrderId") REFERENCES "Orders" ("Id")
+);
+```
+
+### MongoDB Schema (Catalog Service)
+```json
+{
+  "_id": ObjectId("..."),
+  "name": "iPhone 16 Pro",
+  "models": [
+    {
+      "name": "iPhone 16 Pro",
+      "price": 999.99
+    }
+  ],
+  "colors": [
+    {
+      "name": "Natural Titanium",
+      "hexCode": "#8E8E93"
+    }
+  ],
+  "storages": [
+    {
+      "capacity": "128GB",
+      "price": 0
+    }
+  ],
+  "average_rating": {
+    "value": 4.5,
+    "count": 1250
+  },
+  "rating_stars": [
+    {"star": 1, "count": 10},
+    {"star": 2, "count": 25},
+    {"star": 3, "count": 100},
+    {"star": 4, "count": 500},
+    {"star": 5, "count": 615}
+  ],
+  "created_at": ISODate("2024-01-01T00:00:00Z"),
+  "updated_at": ISODate("2024-01-01T00:00:00Z")
+}
+```
+
+## Best Practices
+
+### 1. **Database Design Principles**
+- **Single Responsibility**: Each service owns its data
+- **Data Locality**: Keep related data together
+- **Performance First**: Optimize for read/write patterns
+- **Scalability**: Design for horizontal scaling
+
+### 2. **Data Consistency**
+- **Eventual Consistency**: Acceptable for most use cases
+- **Strong Consistency**: Required for financial transactions
+- **Saga Pattern**: Distributed transaction management
+- **Event Sourcing**: Audit trail and state reconstruction
+
+### 3. **Development Workflow**
+- **Database-First Development**: Schema changes through migrations
+- **Environment Parity**: Identical schemas across environments
+- **Data Seeding**: Automated test data generation
+- **Rollback Strategy**: Safe migration rollback procedures -->

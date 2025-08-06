@@ -1,0 +1,170 @@
+---
+alwaysApply: false
+---
+
+
+# Project Description
+
+## Project Overview
+- **Project Name**: TLCN_Microservices (YGZ.CA.Microservices)
+- **Backend Architecture**: Microservices with Clean Architecture and Domain-Driven Design
+- **Solution File**: `YGZ.CA.Microservices.sln`
+
+## Frontend Applications (`/Apps`)
+
+### Frontend Technologies
+- **Framework**: Next.js (React-based)
+- **Styling**: Tailwind CSS
+<!-- - **UI Components**: Radix UI primitives -->
+- **State Management**: Redux Toolkit with Redux Persist
+- **Form Handling**: React Hook Form with Zod validation
+- **Icons**: Lucide React, React Icons
+- **Animations**: Framer Motion
+<!-- - **Theming**: Next Themes -->
+- **Development Tools**: TypeScript, ESLint, Prettier, Storybook
+
+### 1. Frontend Client (`/Apps/Client`)
+- **Purpose**: Customer-facing e-commerce application
+- **Key Features**: 
+  - Product browsing and shopping
+  - Shopping cart management
+  <!-- - User authentication -->
+  <!-- - Order management -->
+  <!-- - Responsive design with mobile support -->
+- **Notable Dependencies**:
+  <!-- - gRPC client for service communication -->
+  - Cloudinary for image management
+  <!-- - Embla Carousel for product galleries -->
+  <!-- - React Day Picker for date selection -->
+
+### 2. Frontend Admin (`/Apps/Admin`)
+- **Purpose**: Administrative dashboard for business operations
+- **Key Features**:
+  - Product management (CRUD operations)
+  - Order management and tracking
+  - User management
+  - Analytics and reporting
+  - Advanced data tables with sorting/filtering
+- **Notable Dependencies**:
+  - TanStack React Table for data tables
+  - DND Kit for drag-and-drop functionality
+  - Recharts for data visualization
+  <!-- - NextAuth for authentication -->
+  <!-- - Command palette (cmdk) for quick navigation -->
+
+## Backend Services (`/Services`)
+
+### Microservices Architecture
+Each service follows Clean Architecture with layers:
+- **API**: HTTP/gRPC endpoints
+- **Application**: Use cases and business rules
+- **Domain**: Business entities and logic
+- **Infrastructure**: External concerns (databases, APIs)
+
+### Core Services
+
+#### 1. Catalog Service (`/Services/Catalog`)
+- **Purpose**: Product catalog management
+- **Database**: MongoDB
+- **Features**: Product CRUD, categories, reviews, promotions
+- **Technologies**: .NET 8, Entity Framework Core
+
+#### 2. Basket Service (`/Services/Basket`)
+- **Purpose**: Shopping cart management
+- **Database**: PostgreSQL
+- **Features**: Cart operations, item management
+- **Technologies**: .NET 8, Entity Framework Core
+
+#### 3. Discount Service (`/Services/Discount`)
+- **Purpose**: Promotions and coupon management
+- **Database**: PostgreSQL
+- **Communication**: gRPC
+- **Features**: Coupon validation, promotion rules
+- **Technologies**: .NET 8, gRPC
+
+#### 4. Ordering Service (`/Services/Ordering`)
+- **Purpose**: Order processing and management
+- **Database**: PostgreSQL
+- **Features**: Order creation, status tracking, payment integration
+- **Technologies**: .NET 8, Entity Framework Core
+
+#### 5. Identity Service (`/Services/Identity`)
+- **Purpose**: User authentication and authorization
+- **Database**: PostgreSQL
+- **Features**: User management, authentication, authorization
+- **Technologies**: .NET 8, Entity Framework Core
+- **Authentication & Authorization Integrated**: Keycloak
+
+## Authentication & Authorization
+- **Technology**: Keycloak
+- **Purpose**: Centralized identity and access management
+- **Configuration**: `/DockerVolumes/KeycloakConfiguration`
+
+### Shared Building Blocks (`/Services/BuildingBlocks`)
+- **YGZ.BuildingBlocks.Shared**: Common contracts, utilities, extensions
+- **YGZ.BuildingBlocks.Messaging**: Event-driven communication patterns
+
+## Infrastructure & DevOps
+
+### API Gateway
+- **Technology**: YARP (Yet Another Reverse Proxy)
+- **Purpose**: Route requests to appropriate microservices
+- **Location**: `/Gateways/YGZ.Gateways.Yarp`
+
+### Containerization
+- **Technology**: Docker
+- **Orchestration**: Docker Compose
+- **Services**: All microservices containerized
+- **Databases**: PostgreSQL, MongoDB, Redis
+- **Message Queue**: RabbitMQ
+- **Monitoring**: Seq (logging), Jaeger (tracing)
+
+### Database Strategy
+- **PostgreSQL**: Identity, Basket, Discount, Ordering services
+- **MongoDB**: Catalog service (document-based for product flexibility)
+- **Redis**: Distributed caching
+- **Initialization**: MongoDB scripts in `/DockerVolumes/MongoDb`
+
+## Development Tools & Standards
+
+### Code Quality
+- **Linting**: ESLint with TypeScript support
+- **Formatting**: Prettier
+- **Type Safety**: TypeScript throughout
+- **Testing**: Unit tests and integration tests
+
+### Frontend Development
+- **Storybook**: Component development and documentation
+- **Hot Reload**: Next.js development server
+- **Build Optimization**: Next.js build system
+
+### Backend Development
+- **Clean Architecture**: 4 main layers (Api/Application/Domain/Infrastructure)
+- **Domain-driven design**: Pattern for separate business logic into 4 main services
+- **Dependency Injection**: Built-in .NET DI container
+- **API Documentation**: Swagger/OpenAPI
+- **Logging**: Structured logging with Seq
+
+## Deployment & CI/CD
+- **Container Registry**: Docker registry support
+- **Environment**: Development, staging, production configurations
+- **Nginx**: Reverse proxy configuration for frontend
+<!-- - **Jenkins**: CI/CD pipeline configuration -->
+
+## Project Structure Summary
+```
+TLCN_ADMIN/
+├── Apps/                    # Frontend applications
+│   ├── Client/             # Customer-facing app
+│   └── Admin/              # Administrative dashboard
+├── Services/               # Backend microservices
+│   ├── Catalog/           # Product management
+│   ├── Basket/            # Shopping cart
+│   ├── Discount/          # Promotions & coupons
+│   ├── Ordering/          # Order processing
+│   ├── Identity/          # User management
+│   └── BuildingBlocks/    # Shared components
+├── Gateways/              # API Gateway (YARP)
+├── DockerVolumes/         # Database and service configs
+└── Infrastructure/        # DevOps and deployment
+```

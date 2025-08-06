@@ -7,7 +7,7 @@ namespace YGZ.Ordering.Api.Contracts;
 
 #pragma warning disable CS8618
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record CreateOrderRequest
 {
     [Required]

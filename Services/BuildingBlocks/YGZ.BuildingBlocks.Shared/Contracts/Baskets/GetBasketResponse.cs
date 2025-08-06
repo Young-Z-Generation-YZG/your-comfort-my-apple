@@ -4,7 +4,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record GetBasketResponse()
 {
     required public string UserEmail { get; set; } = default!;
@@ -12,7 +12,7 @@ public sealed record GetBasketResponse()
     required public decimal TotalAmount { get; set; } = 0;
 }
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record CartItemResponse()
 {
     required public string ProductId { get; set; }
@@ -30,7 +30,7 @@ public sealed record CartItemResponse()
     required public int OrderIndex { get; set; } = 0;
 }
 
-[JsonConverter(typeof(SnakeCaseSerializerConverter))]
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record class PromotionResponse()
 {
     public string PromotionIdOrCode { get; set; }

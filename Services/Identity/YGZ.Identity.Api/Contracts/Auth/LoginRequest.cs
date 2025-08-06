@@ -2,7 +2,11 @@
 
 namespace YGZ.Identity.Api.Contracts.Auth;
 
-public sealed record LoginRequest(
-    [property: JsonPropertyName("email")] string Email,
-    [property: JsonPropertyName("password")] string Password)
-{ }
+public sealed record LoginRequest
+{ 
+    [JsonPropertyName("email")]
+    public required string Email { get; init; }
+
+    [JsonPropertyName("password")]
+    public required string Password { get; init; }
+}

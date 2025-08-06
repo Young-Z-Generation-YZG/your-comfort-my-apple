@@ -1,14 +1,13 @@
 ﻿
-
 using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
+[JsonConverter(typeof(SnakeCaseSerializer))]
 public sealed record RefreshAccessTokenResponse
 {
-    [property: JsonPropertyName("access_token")]
-    required public string AccessToken { get; init; }
+    public required string AccessToken { get; init; }
 
-    [property: JsonPropertyName("access_token_expires_in_seconds")]
-    required public int AccessTokenExpiresInSeconds { get; init; }
+    public required int AccessTokenExpiresInSeconds { get; init; }
 }

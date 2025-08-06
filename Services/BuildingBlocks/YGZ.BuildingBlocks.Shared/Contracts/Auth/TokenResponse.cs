@@ -1,13 +1,17 @@
 ﻿
-
 using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
-public sealed record TokenResponse([property: JsonPropertyName("access_token")] string AccessToken,
-                                   [property: JsonPropertyName("expires_in")] int ExpiresIn,
-                                   [property: JsonPropertyName("refresh_expires_in")] int RefreshExpiresIn,
-                                   [property: JsonPropertyName("refresh_token")] string RefreshToken,
-                                   [property: JsonPropertyName("not-before-policy")] int NotBeforePolicy,
-                                   [property: JsonPropertyName("token_type")] string TokenType,
-                                   [property: JsonPropertyName("scope")] string Scope) { }
+[JsonConverter(typeof(SnakeCaseSerializer))]
+public sealed record TokenResponse
+{
+    public string AccessToken { get; init; }
+    public int ExpiresIn { get; init; }
+    public int RefreshExpiresIn { get; init; }
+    public string RefreshToken { get; init; }
+    public int NotBeforePolicy { get; init; }
+    public string TokenType { get; init; }
+    public string Scope { get; init; }
+}

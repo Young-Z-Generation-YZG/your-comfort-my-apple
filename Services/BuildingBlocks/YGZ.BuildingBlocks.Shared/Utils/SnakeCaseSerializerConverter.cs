@@ -3,16 +3,13 @@
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
 namespace YGZ.BuildingBlocks.Shared.Utils;
 
-public class SnakeCaseSerializerConverter : JsonConverter<object>
+public class SnakeCaseSerializer : JsonConverter<object>
 {
     public override bool CanConvert(Type typeToConvert)
     {
-        // List types that should use this converter
-        // return typeToConvert == typeof(LoginResponse); // Add more: || typeToConvert == typeof(RegisterResponse)
         return true;
     }
 
@@ -43,7 +40,9 @@ public class SnakeCaseSerializerConverter : JsonConverter<object>
     private static string ToSnakeCase(string str)
     {
         if (string.IsNullOrEmpty(str)) return str;
+
         var chars = new List<char> { char.ToLowerInvariant(str[0]) };
+
         for (int i = 1; i < str.Length; i++)
         {
             if (char.IsUpper(str[i]))
@@ -56,6 +55,7 @@ public class SnakeCaseSerializerConverter : JsonConverter<object>
                 chars.Add(str[i]);
             }
         }
+
         return new string(chars.ToArray());
     }
 }

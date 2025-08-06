@@ -21,7 +21,7 @@ public static class DependencyInjection
         // Add Fluent Validation
         services.AddFluentValidationExtension(assembly);
 
-        services.AddMappingExtensions(Assembly.GetExecutingAssembly());
+        services.AddSharedExtensions(Assembly.GetExecutingAssembly());
 
 
         services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>

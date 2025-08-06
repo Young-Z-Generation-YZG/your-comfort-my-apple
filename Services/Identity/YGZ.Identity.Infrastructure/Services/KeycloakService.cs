@@ -239,7 +239,7 @@ public class KeycloakService : IKeycloakService
         return userId!;
     }
 
-    public async Task<TokenResponse> GetKeycloackTokenPairAsync(LoginCommand request)
+    public async Task<TokenResponse> GetKeycloakTokenPairAsync(LoginCommand request)
     {
         var requestBody = new FormUrlEncodedContent(new[]
         {
@@ -265,7 +265,7 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetKeycloackTokenPairAsync));
+            _logger.LogError(ex, ex.Message, nameof(GetKeycloakTokenPairAsync));
             throw;
         }
     }
@@ -499,7 +499,7 @@ public class KeycloakService : IKeycloakService
             var loginRequest = new LoginCommand { Email = email, Password = currPassword };
             try
             {
-                var tokenResponse = await GetKeycloackTokenPairAsync(loginRequest);
+                var tokenResponse = await GetKeycloakTokenPairAsync(loginRequest);
                 if (string.IsNullOrEmpty(tokenResponse.AccessToken))
                 {
                     _logger.LogWarning("Invalid current password for user {Email}", email);

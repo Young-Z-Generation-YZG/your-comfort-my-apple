@@ -15,7 +15,7 @@ public class UpdateProfileRequestExample : ISchemaProcessor
                 first_name = "Bale",
                 last_name = "Le",
                 phone_number = "0333234390",
-                birth_day = "2003-09-16",
+                birthday = "2003-09-16",
                 gender = "OTHER",
             };
         }
