@@ -9,9 +9,9 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, bool>
 {
     private readonly IBasketRepository _basketRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public DeleteBasketCommandHandler(IBasketRepository basketRepository, IUserContext userContext)
+    public DeleteBasketCommandHandler(IBasketRepository basketRepository, IUserRequestContext userContext)
     {
         _basketRepository = basketRepository;
         _userContext = userContext;

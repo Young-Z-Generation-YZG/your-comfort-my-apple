@@ -16,9 +16,9 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 public class GetOrdersByUserQueryHandler : IQueryHandler<GetOrdersByUserQuery, PaginationResponse<OrderResponse>>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public GetOrdersByUserQueryHandler(IOrderRepository orderRepository, IUserContext userContext)
+    public GetOrdersByUserQueryHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
     {
         _orderRepository = orderRepository;
         _userContext = userContext;

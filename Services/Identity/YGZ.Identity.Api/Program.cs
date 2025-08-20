@@ -17,7 +17,7 @@ services
     .AddInfrastructureLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration);
 
-// Explain details
+
 services.AddProblemDetails();
 services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
@@ -34,9 +34,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
-    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+    app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
-     app.ApplyMigrations();
+    app.ApplyMigrations();
     await app.ApplySeedDataAsync();
 }
 

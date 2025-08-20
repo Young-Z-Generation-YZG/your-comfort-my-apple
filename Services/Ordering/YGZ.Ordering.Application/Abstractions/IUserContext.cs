@@ -2,7 +2,7 @@
 
 namespace YGZ.Ordering.Application.Abstractions;
 
-public interface IUserContext
+public interface IUserRequestContext
 {
     string GetUserEmail();
     string GetUserId();

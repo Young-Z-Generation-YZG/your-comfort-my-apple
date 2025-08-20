@@ -17,9 +17,9 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 {
     private readonly IBasketRepository _basketRepository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public GetBasketQueryHandler(IBasketRepository basketRepository, IUserContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+    public GetBasketQueryHandler(IBasketRepository basketRepository, IUserRequestContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _discountProtoServiceClient = discountProtoServiceClient;
         _basketRepository = basketRepository;

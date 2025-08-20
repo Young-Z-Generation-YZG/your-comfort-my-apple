@@ -14,10 +14,10 @@ namespace YGZ.Catalog.Application.Reviews.Queries.GetReviewsByOrder;
 public class GetReviewsByOrderQueryHandler : IQueryHandler<GetReviewsByOrderQuery, List<ReviewInOrderResponse>>
 {
     private readonly IReviewRepository _reviewRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
     private readonly ILogger<GetReviewsByOrderQueryHandler> _logger;
 
-    public GetReviewsByOrderQueryHandler(IReviewRepository reviewRepository, ILogger<GetReviewsByOrderQueryHandler> logger, IUserContext userContext)
+    public GetReviewsByOrderQueryHandler(IReviewRepository reviewRepository, ILogger<GetReviewsByOrderQueryHandler> logger, IUserRequestContext userContext)
     {
         _reviewRepository = reviewRepository;
         _logger = logger;

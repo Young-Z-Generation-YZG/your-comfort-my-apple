@@ -14,12 +14,12 @@ namespace YGZ.Identity.Application.Users.Queries.GetProfile;
 
 public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAllInfoResposne>
 {
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
     private readonly ILogger<GetMeQueryHandler> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IProfileRepository _profileRepository;
 
-    public GetMeQueryHandler(IUserContext userContext, ILogger<GetMeQueryHandler> logger, IUserRepository userRepository, IProfileRepository profileRepository)
+    public GetMeQueryHandler(IUserRequestContext userContext, ILogger<GetMeQueryHandler> logger, IUserRepository userRepository, IProfileRepository profileRepository)
     {
         _userContext = userContext;
         _logger = logger;

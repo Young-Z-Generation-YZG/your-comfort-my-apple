@@ -16,9 +16,9 @@ namespace YGZ.Catalog.Application.Reviews.Commands;
 public class DeleteReviewCommandHandler : ICommandHandler<DeleteReviewCommand, bool>
 {
     private readonly IReviewRepository _reviewRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
     private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
-    public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IUserContext userContext, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
+    public DeleteReviewCommandHandler(IReviewRepository reviewRepository, IUserRequestContext userContext, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
     {
         _reviewRepository = reviewRepository;
         _userContext = userContext;

@@ -12,9 +12,9 @@ public class GetAddressesQueryHandler : IQueryHandler<GetAddressesQuery, List<Ad
 {
     private readonly IUserRepository _userRepository;
     private readonly IAddressRepository _addressRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public GetAddressesQueryHandler(IUserRepository userRepository, IUserContext userContext, IAddressRepository shippingAddressRepository)
+    public GetAddressesQueryHandler(IUserRepository userRepository, IUserRequestContext userContext, IAddressRepository shippingAddressRepository)
     {
         _userRepository = userRepository;
         _userContext = userContext;

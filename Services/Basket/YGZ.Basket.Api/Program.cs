@@ -19,7 +19,7 @@ services
 
 // Add services to the container.
 services.AddProblemDetails();
-services.AddSwaggerExtensions();
+services.AddSwaggerExtension();
 
 services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 
@@ -45,7 +45,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
-    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+    app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 }
 
 app.UseHealthChecks("/health", new HealthCheckOptions

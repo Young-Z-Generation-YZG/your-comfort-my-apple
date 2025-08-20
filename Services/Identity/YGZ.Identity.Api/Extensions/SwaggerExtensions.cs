@@ -14,7 +14,7 @@ namespace YGZ.Identity.Api.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static IServiceCollection AddSwaggerExtensions(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
     {
         services.AddOpenApiDocument((settings, sp) =>
         {
@@ -61,7 +61,7 @@ public static class SwaggerExtensions
         return services;
     }
 
-    public static void UseApplicationSwaggerSettings(this SwaggerUiSettings ui, IConfiguration configuration)
+    public static void SwaggerOAuthSettings(this SwaggerUiSettings ui, IConfiguration configuration)
     {
         var keycloakOptions = configuration.GetKeycloakOptions<KeycloakAuthenticationOptions>()!;
 

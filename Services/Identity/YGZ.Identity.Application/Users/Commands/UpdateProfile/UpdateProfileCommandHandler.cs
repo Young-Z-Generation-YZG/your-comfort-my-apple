@@ -12,9 +12,9 @@ public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand,
 {
     private readonly IProfileRepository _profileRepository;
     private readonly IUserRepository _userRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public UpdateProfileCommandHandler(IUserContext userContext, IProfileRepository profileRepository, IUserRepository userRepository)
+    public UpdateProfileCommandHandler(IUserRequestContext userContext, IProfileRepository profileRepository, IUserRepository userRepository)
     {
         _userContext = userContext;
         _profileRepository = profileRepository;

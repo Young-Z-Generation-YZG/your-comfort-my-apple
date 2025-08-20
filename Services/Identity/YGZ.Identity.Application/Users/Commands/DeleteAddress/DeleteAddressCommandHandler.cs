@@ -12,8 +12,8 @@ public class DeleteAddressCommandHandler : ICommandHandler<DeleteAddressCommand,
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
-    private readonly IUserContext _userContext;
-    public DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserContext userContext)
+    private readonly IUserRequestContext _userContext;
+    public DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userRepository = userRepository;

@@ -3,12 +3,12 @@ using YGZ.Ordering.Application.Abstractions;
 
 namespace YGZ.Ordering.Api.HttpContext;
 
-public class UserContext : IUserContext
+public class UserRequestContext : IUserRequestContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<UserContext> _logger;
+    private readonly ILogger<UserRequestContext> _logger;
 
-    public UserContext(IHttpContextAccessor httpContextAccessor, ILogger<UserContext> logger)
+    public UserRequestContext(IHttpContextAccessor httpContextAccessor, ILogger<UserRequestContext> logger)
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;

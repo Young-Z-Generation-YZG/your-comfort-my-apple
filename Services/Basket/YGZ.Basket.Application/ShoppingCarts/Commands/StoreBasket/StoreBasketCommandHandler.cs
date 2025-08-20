@@ -17,11 +17,11 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, boo
     private readonly IBasketRepository _basketRepository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
     private readonly ILogger<StoreBasketCommandHandler> _logger;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
     public StoreBasketCommandHandler(IBasketRepository basketRepository,
                                      ILogger<StoreBasketCommandHandler> logger,
-                                     IUserContext userContext,
+                                     IUserRequestContext userContext,
                                      DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _basketRepository = basketRepository;

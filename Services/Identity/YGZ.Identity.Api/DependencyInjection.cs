@@ -20,14 +20,14 @@ public static class DependencyInjection
             options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml");
         });
 
-        services.AddSwaggerExtensions(); // Add Swagger Extensions
-        services.AddApiVersioningExtension(); // Add Api Versioning Extension
-        services.AddSharedExtensions(Assembly.GetExecutingAssembly()); // Add Shared Extensions
+        services.AddSwaggerExtension();
+        services.AddApiVersioningExtension();
+        services.AddSharedExtensions(Assembly.GetExecutingAssembly());
         AddMonitoringAndLogging(services, builder);
 
-        services.AddGlobalExceptionHandler(); // Add Global Exception Handler
+        services.AddGlobalExceptionHandler();
 
-        services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<IUserRequestContext, UserRequestContext>();
 
         return services;
     }

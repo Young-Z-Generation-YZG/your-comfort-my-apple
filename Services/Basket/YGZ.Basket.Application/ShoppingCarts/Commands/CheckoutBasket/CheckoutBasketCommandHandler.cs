@@ -24,14 +24,14 @@ public sealed record CheckoutBasketCommandHandler : ICommandHandler<CheckoutBask
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
     private readonly IVnpayProvider _vnpayProvider;
     private readonly IMomoProvider _momoProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CheckoutBasketCommandHandler(IBasketRepository basketRepository,
                                         IPublishEndpoint publishEndpoint,
-                                        IUserContext userContext,
+                                        IUserRequestContext userContext,
                                         DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
                                         IVnpayProvider vnpayProvider,
                                         IHttpContextAccessor httpContextAccessor,

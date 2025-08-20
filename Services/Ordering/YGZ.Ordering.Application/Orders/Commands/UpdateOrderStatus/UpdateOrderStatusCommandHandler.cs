@@ -13,9 +13,9 @@ namespace YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 public class UpdateOrderStatusCommandHandler : ICommandHandler<UpdateOrderStatusCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository, IUserContext userContext)
+    public UpdateOrderStatusCommandHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
     {
         _orderRepository = orderRepository;
         _userContext = userContext;

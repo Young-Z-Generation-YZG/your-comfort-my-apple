@@ -12,9 +12,9 @@ namespace YGZ.Identity.Application.Users.Commands.UpdateAddress;
 public class UpdateAddressCommandHandler : ICommandHandler<UpdateAddressCommand, bool>
 {
     private readonly IAddressRepository _addressRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public UpdateAddressCommandHandler(IAddressRepository addressRepository, IUserContext userContext)
+    public UpdateAddressCommandHandler(IAddressRepository addressRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userContext = userContext;

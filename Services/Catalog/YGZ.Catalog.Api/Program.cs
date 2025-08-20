@@ -22,7 +22,7 @@ services
 
 // Add services to the container.
 services.AddProblemDetails();
-services.AddSwaggerExtensions();
+services.AddSwaggerExtension();
 
 builder.Logging.AddOpenTelemetry(logging =>
 {
@@ -63,7 +63,7 @@ app.UseCors(options =>
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
-    app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
+    app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
     await app.ApplySeedDataAsync();
 }

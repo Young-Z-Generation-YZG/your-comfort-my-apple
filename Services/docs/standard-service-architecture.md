@@ -1,4 +1,4 @@
-# Service Architecture Documentation
+# Standard Service Architecture Documentation
 
 ## Overview
 
@@ -18,17 +18,18 @@ All services follow the Clean Architecture pattern with clear separation of conc
 ```
 ┌─────────────────────────────────────────┐
 │              API Layer                  │
-│    (Controllers, Middleware, HTTP)      │
+│                                         │
 ├─────────────────────────────────────────┤
 │           Application Layer             │
-│     (CQRS, Business Logic, DTOs)        │
+│                                         │
 ├─────────────────────────────────────────┤
 │            Domain Layer                 │
-│   (Entities, Value Objects, Events)     │
+│                                         │
 ├─────────────────────────────────────────┤
 │          Infrastructure Layer           │
-│  (Database, External Services, Cache)   │
+│                                         │
 └─────────────────────────────────────────┘
+
 ```
 
 ### 📁 Standard Project Structure
@@ -65,29 +66,34 @@ ServiceName/
 
 ### 🌐 API Layer (Presentation)
 
-- **Purpose**: Handle HTTP requests and responses
+- **Purpose**: Entry layer, handle HTTP requests and responses
 - **Components**:
   - Controllers with API endpoints
   - Request/Response contracts (DTOs)
-  - Swagger/OpenAPI documentation
-  - Authentication/Authorization middleware
+  - Swagger/OpenAPI documentation extension
+  - Middlewares setup
   - Global exception handling
   - Health checks
 
 **Example from Identity service:**
 
-```csharp
-services
-    .AddPresentationLayer(builder)
-    .AddInfrastructureLayer(configuration)
-    .AddApplicationLayer(configuration);
+- `Program.cs`: startup file
+- **What it does**:
+  - Add layers (Presentation/Application/Infrastructure)
+  - Add necessary services
 
-// Additional common services
-services.AddProblemDetails();           // RFC 7807 error responses
-services.AddHttpContextAccessor();     // Access HttpContext in services
-services.AddEndpointsApiExplorer();     // API endpoint discovery
-services.ConfigureHttpClientDefaults(http =>
-    http.AddStandardResilienceHandler()); // HTTP resilience patterns
+```csharp
+// Add layers
+services
+    .AddPresentationLayer(builder) // Add Presentation layer
+    .AddInfrastructureLayer(configuration) // Add Infrastructure layer
+    .AddApplicationLayer(configuration); // Add Application layer
+
+// Add necessary services
+services.AddProblemDetails();
+services.AddHttpContextAccessor();
+services.AddEndpointsApiExplorer();
+services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 ```
 
 ### 🔧 **Common Service Registrations Explained**
@@ -107,7 +113,7 @@ services.ConfigureHttpClientDefaults(http =>
   "title": "Bad Request",
   "status": 400,
   "detail": "The request is invalid",
-  "traceId": "0HMVH8H2M7QAK:00000001"
+  "traceId": "0HMVH8H2M7QAK:00000001" // for tracking in Seq
 }
 ```
 
@@ -121,11 +127,11 @@ services.ConfigureHttpClientDefaults(http =>
 - **Usage Example**:
 
 ```csharp
-public class UserContext : IUserContext
+public class UserRequestContext : IUserRequestContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserContext(IHttpContextAccessor httpContextAccessor)
+    public UserRequestContext(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -166,7 +172,7 @@ public class UserContext : IUserContext
   - Command/Query Handlers
   - FluentValidation validators
   - Application service interfaces
-  - DTOs and mapping profiles
+  <!-- - DTOs and mapping profiles -->
 
 **Key Patterns:**
 
@@ -245,7 +251,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
     }
 }
 
-// Validation Pipeline Behavior (Automatic)
+// Validation Pipeline Behavior
 public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
@@ -349,15 +355,16 @@ Contains common patterns and utilities used across all services:
 - **Logging**: Serilog with structured logging
 - **Tracing**: OpenTelemetry
 - **Health Checks**: ASP.NET Core health checks
-- **Metrics**: Application performance monitoring
+  <!-- - **Database Health checks**:  -->
+  <!-- - **Metrics**: Application performance monitoring -->
 
-### 🚀 API Standards
+<!-- ### 🚀 API Standards
 
 - **Documentation**: Swagger/OpenAPI 3.0
 - **Versioning**: API versioning support
 - **Serialization**: System.Text.Json with snake_case
 - **Validation**: FluentValidation
-- **Error Handling**: Problem Details (RFC 7807)
+- **Error Handling**: Problem Details (RFC 7807) -->
 
 ## Service Implementation Examples
 
@@ -371,7 +378,7 @@ Contains common patterns and utilities used across all services:
 | **Ordering** | PostgreSQL          | Order processing, payment integration |
 | **Discount** | PostgreSQL          | Coupon management, gRPC services      |
 
-### 🔄 Common Integration Patterns
+<!-- ### 🔄 Common Integration Patterns
 
 #### Dependency Injection Registration
 
@@ -396,7 +403,7 @@ services.AddHealthChecks()
 ```csharp
 services.AddKeycloakIdentityServerExtension(configuration);
 services.AddKeycloakOpenTelemetryExtensions();
-```
+``` -->
 
 ### 🔄 **Middleware Pipeline Configuration**
 
@@ -439,7 +446,7 @@ app.MapControllers();          // Map controller endpoints
 app.MapRazorPages();          // Map Razor pages (if used)
 ```
 
-#### **Middleware Explanations**
+<!-- #### **Middleware Explanations**
 
 ##### `app.UseOpenApi()` & `app.UseSwaggerUi()`
 
@@ -473,7 +480,7 @@ app.MapRazorPages();          // Map Razor pages (if used)
     }
   }
 }
-```
+``` -->
 
 ##### `app.UseCors()`
 
@@ -510,89 +517,58 @@ All controllers follow consistent patterns for API endpoints:
 [ApiVersion("1.0")]
 public class UsersController : ApiController
 {
-    public UsersController(ISender sender) : base(sender) { }
+    private readonly IMapper _mapper; // Mapping Request to Command
+    private readonly ISender _sender; // Sending to Command/Query Handler
 
-    /// <summary>
-    /// Register a new user
-    /// </summary>
-    /// <param name="request">User registration details</param>
-    /// <returns>Created user ID</returns>
-    [HttpPost("register")]
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Register([FromBody] RegisterUserRequest request)
+    public UserController(ISender sender, IMapper mapper)
     {
-        var command = request.Adapt<RegisterUserCommand>();
-        var result = await Sender.Send(command);
-
-        return result.IsSuccess
-            ? CreatedAtAction(nameof(GetUser), new { id = result.Response }, result.Response)
-            : HandleFailure(result);
-    }
-
-    /// <summary>
-    /// Get user by ID
-    /// </summary>
-    /// <param name="id">User ID</param>
-    /// <returns>User details</returns>
-    [HttpGet("{id:guid}")]
-    [Authorize] // Requires authentication
-    [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetUser([FromRoute] Guid id)
-    {
-        var query = new GetUserQuery(id);
-        var result = await Sender.Send(query);
-
-        return result.IsSuccess ? Ok(result.Response) : HandleFailure(result);
+        _sender = sender;
+        _mapper = mapper;
     }
 }
 
-// Base controller with common functionality
+// Base controller where others controller implement
+// Handle failure/error from Result object (Result pattern)
+// Instead of throw an error, we return a structured error response
+// This functionality reduce "Throw" keyword which reduce memory allocate help optimize performance
 public abstract class ApiController : ControllerBase
 {
-    protected readonly ISender Sender;
-
-    protected ApiController(ISender sender)
+    protected IActionResult HandleFailure<TResponse>(Result<TResponse> result)
     {
-        Sender = sender;
-    }
-
-    protected IActionResult HandleFailure(Result result)
-    {
-        return result.Error.Code switch
+        if (result.IsSuccess)
         {
-            "User.NotFound" => NotFound(CreateProblemDetails("User not found", StatusCodes.Status404NotFound)),
-            "User.AlreadyExists" => Conflict(CreateProblemDetails("User already exists", StatusCodes.Status409Conflict)),
-            "Validation.Error" => BadRequest(CreateProblemDetails("Validation failed", StatusCodes.Status400BadRequest)),
-            _ => StatusCode(StatusCodes.Status500InternalServerError, CreateProblemDetails("Internal server error", StatusCodes.Status500InternalServerError))
-        };
-    }
+            throw new InvalidOperationException("Result is not failure");
+        }
 
-    private ProblemDetails CreateProblemDetails(string title, int status)
-    {
-        return new ProblemDetails
+        try
         {
-            Title = title,
-            Status = status,
-            Instance = HttpContext.Request.Path
-        };
+            IValidationResult validationResult = (IValidationResult)result;
+
+            HttpContext.Items.Add("errors", validationResult.Errors); // add "errors" key stand for validation errors from FluentValidation if schema of income request validate fail
+
+            return BadRequest(Problem(title: "BadRequest", statusCode: (int)HttpStatusCode.BadRequest).Value);
+        }
+        catch (InvalidCastException)
+        {
+            HttpContext.Items.Add("error", result.Error);
+
+            return BadRequest(Problem(title: "BadRequest", statusCode: (int)HttpStatusCode.BadRequest).Value);
+        }
     }
 }
 ```
 
-#### **Controller Standards**
+<!-- #### **Controller Standards**
 
 1. **API Versioning**: All controllers use `[ApiVersion("1.0")]`
 2. **Route Convention**: `api/v{version:apiVersion}/[controller]`
 3. **Response Types**: Explicit `[ProducesResponseType]` attributes
 4. **Documentation**: XML comments for Swagger generation
-5. **Error Handling**: Consistent error response format
+3. **Error Handling**: Consistent error response format
 6. **Authorization**: `[Authorize]` attributes where needed
-7. **Validation**: Automatic through FluentValidation pipeline
+4. **Validation**: Automatic through FluentValidation pipeline -->
 
-#### **Request/Response Contracts**
+<!-- #### **Request/Response Contracts**
 
 ```csharp
 // Request DTO
@@ -624,7 +600,7 @@ public class UserMappingConfig : IRegister
             .Map(dest => dest.IsEmailVerified, src => src.EmailConfirmed);
     }
 }
-```
+``` -->
 
 ## Development Guidelines
 
@@ -639,16 +615,16 @@ public class UserMappingConfig : IRegister
 7. **Test Thoroughly**: Unit, integration, and contract tests
 8. **Document APIs**: Maintain OpenAPI specifications
 
-### 🚫 Anti-Patterns to Avoid
+<!-- ### 🚫 Anti-Patterns to Avoid
 
 - ❌ Direct database access from controllers
 - ❌ Business logic in infrastructure layer
 - ❌ Tight coupling between services
 - ❌ Inconsistent error handling
 - ❌ Missing validation
-- ❌ Poor logging practices
+- ❌ Poor logging practices -->
 
-### 📋 Service Checklist
+<!-- ### 📋 Service Checklist
 
 When creating a new service, ensure:
 
@@ -661,9 +637,9 @@ When creating a new service, ensure:
 - [ ] Uses structured logging
 - [ ] Has proper error handling
 - [ ] Includes API documentation
-- [ ] Follows naming conventions
+- [ ] Follows naming conventions -->
 
-## Getting Started
+<!-- ## Getting Started
 
 To create a new service following this architecture:
 
@@ -674,7 +650,7 @@ To create a new service following this architecture:
 5. **Configure database and external integrations**
 6. **Add service-specific validation rules**
 7. **Create API contracts and mappings**
-8. **Write comprehensive tests**
+8. **Write comprehensive tests** -->
 
 ## Conclusion
 

@@ -13,9 +13,9 @@ public class SetDefaultAddressCommandHandler : ICommandHandler<SetDefaultAddress
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public SetDefaultAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserContext userContext)
+    public SetDefaultAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userRepository = userRepository;

@@ -13,10 +13,10 @@ namespace YGZ.Catalog.Application.Reviews.Commands;
 public class CreateReviewCommandHandler : ICommandHandler<CreateReviewCommand, bool>
 {
     private readonly IReviewRepository _reviewRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
     private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
 
-    public CreateReviewCommandHandler(IReviewRepository reviewRepository, IUserContext userContext, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
+    public CreateReviewCommandHandler(IReviewRepository reviewRepository, IUserRequestContext userContext, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
     {
         _reviewRepository = reviewRepository;
         _userContext = userContext;

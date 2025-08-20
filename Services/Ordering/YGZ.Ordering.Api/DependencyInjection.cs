@@ -19,7 +19,7 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IUserContext, UserContext>();
+        services.AddScoped<IUserRequestContext, UserRequestContext>();
 
         return services;
     }

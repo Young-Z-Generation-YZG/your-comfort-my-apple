@@ -13,9 +13,9 @@ namespace YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 public class ConfirmOrderCommandHandler : ICommandHandler<ConfirmOrderCommand, bool>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public ConfirmOrderCommandHandler(IOrderRepository orderRepository, IUserContext userContext)
+    public ConfirmOrderCommandHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
     {
         _orderRepository = orderRepository;
         _userContext = userContext;

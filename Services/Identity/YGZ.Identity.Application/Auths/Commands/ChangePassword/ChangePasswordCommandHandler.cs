@@ -10,9 +10,9 @@ namespace YGZ.Identity.Application.Auths.Commands.ChangePassword;
 public class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommand, bool>
 {
     private readonly IIdentityService _identityService;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public ChangePasswordCommandHandler(IIdentityService identityService, IUserContext userContext)
+    public ChangePasswordCommandHandler(IIdentityService identityService, IUserRequestContext userContext)
     {
         _identityService = identityService;
         _userContext = userContext;

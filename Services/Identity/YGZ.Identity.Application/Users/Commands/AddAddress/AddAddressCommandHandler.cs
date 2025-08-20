@@ -11,9 +11,9 @@ namespace YGZ.Identity.Application.Users.Commands.AddAddress;
 public class AddAddressCommandHandler : ICommandHandler<AddAddressCommand, bool>
 {
     private readonly IUserRepository _userRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public AddAddressCommandHandler(IUserRepository userRepository, IUserContext userContext)
+    public AddAddressCommandHandler(IUserRepository userRepository, IUserRequestContext userContext)
     {
         _userRepository = userRepository;
         _userContext = userContext;

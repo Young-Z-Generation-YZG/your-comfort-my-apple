@@ -22,23 +22,30 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddKeycloakIdentityServerExtension(configuration);
+        // Configure Settings
+        services.Configure<KeycloakSettings>(configuration.GetSection(KeycloakSettings.SettingKey));
+        services.Configure<MailSettings>(configuration.GetSection(MailSettings.SettingKey));
+        services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
 
+        // Add Postgres Database
         services.AddPostgresDatabase(configuration);
 
-        services.AddIdentityExtension();
-
-        services.AddKeycloakOpenTelemetryExtensions();
-
+                // Add Redis Cache
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = configuration.GetConnectionString(ConnectionStrings.RedisDb);
         });
 
-        services.Configure<KeycloakSettings>(configuration.GetSection(KeycloakSettings.SettingKey));
-        services.Configure<MailSettings>(configuration.GetSection(MailSettings.SettingKey));
-        services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
+        // Add Keycloak Identity Server
+        services.AddKeycloakIdentityServerExtension(configuration);
 
+        // Add Identity Extension
+        services.AddIdentityExtension();
+
+        // Add Monitoring and Logging
+        services.AddMonitoringAndLogging(configuration);
+
+        // Add Email Classifier
         services.AddSingleton(_ =>
         {
             return new List<IEmailClassifier>()
@@ -47,6 +54,7 @@ public static class DependencyInjection
             };
         });
 
+        // Register services in DI container
         services.AddHttpClient<IKeycloakService, KeycloakService>();
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ICachedRepository, CachedRepository>();
@@ -70,6 +78,13 @@ public static class DependencyInjection
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddMonitoringAndLogging(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddKeycloakOpenTelemetryExtensions();
 
         return services;
     }

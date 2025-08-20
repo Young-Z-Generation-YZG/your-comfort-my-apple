@@ -13,9 +13,9 @@ namespace YGZ.Catalog.Application.Reviews.Commands;
 public class UpdateReviewCommandHandler : ICommandHandler<UpdateReviewCommand, bool>
 {
     private readonly IReviewRepository _reviewRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IUserContext userContext)
+    public UpdateReviewCommandHandler(IReviewRepository reviewRepository, IUserRequestContext userContext)
     {
         _reviewRepository = reviewRepository;
         _userContext = userContext;

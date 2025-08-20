@@ -14,9 +14,9 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByOrderIdQuery, OrderDetailsResponse>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IUserContext _userContext;
+    private readonly IUserRequestContext _userContext;
 
-    public GetOrderItemsByOrderIdQueryHandler(IOrderRepository orderRepository, IUserContext userContext)
+    public GetOrderItemsByOrderIdQueryHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
     {
         _orderRepository = orderRepository;
         _userContext = userContext;
