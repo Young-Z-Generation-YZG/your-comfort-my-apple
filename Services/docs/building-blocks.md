@@ -220,7 +220,7 @@ public static class KeycloakIdentityServerExtension
 ```csharp
 public static class OpenTelemetryExtension
 {
-    public static IServiceCollection AddKeycloakOpenTelemetryExtensions(this IServiceCollection services)
+    public static IServiceCollection AddKeycloakOpenTelemetryExtension(this IServiceCollection services)
     {
         services.AddOpenTelemetry()
             .WithTracing(builder =>
@@ -647,7 +647,7 @@ public static class DependencyInjection
         services.AddKeycloakIdentityServerExtension(configuration);
 
         // Add OpenTelemetry
-        services.AddKeycloakOpenTelemetryExtensions();
+        services.AddKeycloakOpenTelemetryExtension();
 
         // Add Message Broker
         services.AddMessageBrokerExtensions(configuration, Assembly.GetExecutingAssembly());

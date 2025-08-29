@@ -27,8 +27,6 @@ public static class KeycloakIdentityServerExtension
             .AddKeycloakAuthorization(configuration)
             .AddAuthorizationServer(configuration);
 
-
-
         return services;
     }
 }

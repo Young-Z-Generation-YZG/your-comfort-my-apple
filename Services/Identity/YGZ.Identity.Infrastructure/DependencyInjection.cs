@@ -30,7 +30,7 @@ public static class DependencyInjection
         // Add Postgres Database
         services.AddPostgresDatabase(configuration);
 
-                // Add Redis Cache
+        // Add Redis Cache
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = configuration.GetConnectionString(ConnectionStrings.RedisDb);
@@ -38,12 +38,6 @@ public static class DependencyInjection
 
         // Add Keycloak Identity Server
         services.AddKeycloakIdentityServerExtension(configuration);
-
-        // Add Identity Extension
-        services.AddIdentityExtension();
-
-        // Add Monitoring and Logging
-        services.AddMonitoringAndLogging(configuration);
 
         // Add Email Classifier
         services.AddSingleton(_ =>
@@ -53,7 +47,6 @@ public static class DependencyInjection
                 new EmailVerificationTemplate(),
             };
         });
-
         // Register services in DI container
         services.AddHttpClient<IKeycloakService, KeycloakService>();
         services.AddTransient<IIdentityService, IdentityService>();
@@ -71,6 +64,9 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStrings.IdentityDb);
 
+        // Add Identity Extension
+        services.AddIdentityExtension();
+
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventInterceptor>();
 
         services.AddDbContext<Persistence.IdentityDbContext>((sp, options) =>
@@ -78,13 +74,6 @@ public static class DependencyInjection
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
-
-        return services;
-    }
-
-    public static IServiceCollection AddMonitoringAndLogging(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddKeycloakOpenTelemetryExtensions();
 
         return services;
     }

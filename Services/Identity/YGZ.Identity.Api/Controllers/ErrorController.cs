@@ -6,12 +6,24 @@ namespace YGZ.Identity.Api.Controllers;
 
 public class ErrorController : ControllerBase
 {
+    private readonly ILogger<ErrorController> _logger;
+
+    public ErrorController(ILogger<ErrorController> logger)
+    {
+        _logger = logger;
+    }
+
     [Route("error")]
     [ApiExplorerSettings(IgnoreApi = true)]
     [AllowAnonymous]
     public IActionResult Error()
     {
         Exception? exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        if(exception is not null)
+        {
+            _logger.LogError("[/error] {@Exception}", exception);
+        }
 
         return Problem(exception?.Message);
     }

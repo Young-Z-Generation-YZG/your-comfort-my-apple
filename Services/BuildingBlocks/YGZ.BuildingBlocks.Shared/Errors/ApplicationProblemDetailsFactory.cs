@@ -100,44 +100,19 @@ public class ApplicationProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions["path"] = path;
         }
 
-        //if (httpContext?.Items["error_type"] is string errorType)
-        //{
-        //    problemDetails.Extensions.Add("error_type", errorType);
-
-        //    if(errorType == "VALIDATION")
-        //    {
-        //        var ex = new ValidationException("Validation failed");
-
-        //        _logger.LogError(ex, "Exception occurred: {Title}", ex.Message);
-        //    }
-
-        //    if (errorType == "USER")
-        //    {
-        //        var ex = new Exception("User behavior failed");
-
-        //        _logger.LogError(ex, "Exception occurred: {ExTitle}", ex.Message);
-        //    }
-        //}
-
         if (httpContext?.Items["errors"] is Error[] errors)
         {
             problemDetails.Extensions.Add("errors", errors);
 
             var ex = new ValidationException("Validation failed");
 
-            _logger.LogError(ex, "Exception occurred: {Title} {@Errors} {@Exception}", ex.Message, errors, ex);
+            _logger.LogError(ex, "Exception occurred: {@Title} {@Errors} {@Exception} {@TraceId} {@DateTimeUtc}", ex.Message, errors, ex, traceId, DateTime.UtcNow);
         }
         if (httpContext?.Items["error"] is Error error)
         {
             problemDetails.Extensions.Add("error", error);
+
+            _logger.LogError("Exception occurred: {@Title} {@Error} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", error.Message, error, problemDetails, traceId, DateTime.UtcNow);
         }
-
-        
-
-        //var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
-        //if (errors is not null)
-        //{
-        //    problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
-        //}
     }
 }

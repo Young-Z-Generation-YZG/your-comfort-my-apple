@@ -57,8 +57,8 @@ services:
       context: .
       dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
 
-  ygz.seq:
-    image: datalust/seq
+  ygz.logging.seq:
+    image: datalust/seq:latest
   
   ygz.keycloak.server:
     image: quay.io/keycloak/keycloak:latest

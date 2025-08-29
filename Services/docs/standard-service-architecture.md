@@ -41,7 +41,6 @@ ServiceName/
 ├── YGZ.ServiceName.Api/           # Presentation Layer
 │   ├── Controllers/
 │   ├── Contracts/
-│   ├── Mappings/
 │   ├── Extensions/
 │   └── Program.cs
 ├── YGZ.ServiceName.Application/   # Application Layer
@@ -66,10 +65,10 @@ ServiceName/
 
 ### 🌐 API Layer (Presentation)
 
-- **Purpose**: Entry layer, handle HTTP requests and responses
+- **Purpose**: Entry layer, handle HTTP requests
 - **Components**:
   - Controllers with API endpoints
-  - Request/Response contracts (DTOs)
+  - Request contracts (DTOs) and request example (Response contract stored in BuildingBlocks/Shared)
   - Swagger/OpenAPI documentation extension
   - Middlewares setup
   - Global exception handling
@@ -402,7 +401,7 @@ services.AddHealthChecks()
 
 ```csharp
 services.AddKeycloakIdentityServerExtension(configuration);
-services.AddKeycloakOpenTelemetryExtensions();
+services.AddKeycloakOpenTelemetryExtension();
 ``` -->
 
 ### 🔄 **Middleware Pipeline Configuration**
@@ -494,7 +493,7 @@ app.MapRazorPages();          // Map Razor pages (if used)
 
 - **Purpose**: Global exception handling
 - **What it does**:
-  - Catches unhandled exceptions
+  - Catches unhandled exceptions (reset request path and execute request with /error (ErrorController))
   - Converts to Problem Details format
   - Logs exceptions with context
   - Returns user-friendly error responses
@@ -589,17 +588,6 @@ public record UserResponse(
     DateTime CreatedAt,
     bool IsEmailVerified
 );
-
-// Mapping Configuration (Mapster)
-public class UserMappingConfig : IRegister
-{
-    public void Register(TypeAdapterConfig config)
-    {
-        config.NewConfig<RegisterUserRequest, RegisterUserCommand>();
-        config.NewConfig<User, UserResponse>()
-            .Map(dest => dest.IsEmailVerified, src => src.EmailConfirmed);
-    }
-}
 ``` -->
 
 ## Development Guidelines
@@ -638,19 +626,6 @@ When creating a new service, ensure:
 - [ ] Has proper error handling
 - [ ] Includes API documentation
 - [ ] Follows naming conventions -->
-
-<!-- ## Getting Started
-
-To create a new service following this architecture:
-
-1. **Copy the Identity service structure**
-2. **Rename namespaces and projects**
-3. **Adapt domain models to your business context**
-4. **Implement service-specific business logic**
-5. **Configure database and external integrations**
-6. **Add service-specific validation rules**
-7. **Create API contracts and mappings**
-8. **Write comprehensive tests** -->
 
 ## Conclusion
 
