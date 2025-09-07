@@ -74,18 +74,18 @@ public class IdentityService : IIdentityService
 
             var result = await _userManager.CreateAsync(newUser);
 
-            if (!await _roleManager.RoleExistsAsync("[ROLE]:USER"))
-            {
-                return Errors.User.CannotBeCreated; // Or a custom error
-            }
+            //if (!await _roleManager.RoleExistsAsync("[ROLE]:USER"))
+            //{
+            //    return Errors.User.CannotBeCreated; // Or a custom error
+            //}
 
             // Add the user to the "USER" role
-            var roleResult = await _userManager.AddToRoleAsync(newUser, "[ROLE]:USER");
+            //var roleResult = await _userManager.AddToRoleAsync(newUser, "[ROLE]:USER");
 
-            if (!roleResult.Succeeded)
-            {
-                return Errors.User.CannotBeCreated; // Or a custom error for role assignment failure
-            }
+            //if (!roleResult.Succeeded)
+            //{
+            //    return Errors.User.CannotBeCreated; // Or a custom error for role assignment failure
+            //}
 
             if (!result.Succeeded)
             {

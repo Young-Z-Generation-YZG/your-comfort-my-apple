@@ -6,7 +6,9 @@ alwaysApply: true
 # Instructions
 
 ## 1. Read rules first
+
 **Read rules by the order**:
-1. `read-first.mdc`
-2. `project-description.mdc`
-3. `database-design.mdc`
+
+1. [./docs/databases/basket-db/README.md]
+2. `@project-description.mdc`
+3. `@database-design.mdc`
