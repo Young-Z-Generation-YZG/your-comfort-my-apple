@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using YGZ.Identity.Api;
 using YGZ.Identity.Api.Extensions;
+using YGZ.Identity.Api.Middlewares;
 using YGZ.Identity.Application;
 using YGZ.Identity.Infrastructure;
 using YGZ.Identity.Infrastructure.Persistence.Extensions;
@@ -50,7 +51,9 @@ Log.Logger = new LoggerConfiguration()
     }
 
     // Middleware configurations
-    //app.UseSerilogRequestLogging(); // Log HTTP requests
+    app.UseMiddleware<RequestLogContextMiddleware>();
+
+    app.UseSerilogRequestLogging(); // Logging middleware
 
     app.UseHealthChecks("/health", new HealthCheckOptions
     {
@@ -61,9 +64,6 @@ Log.Logger = new LoggerConfiguration()
     {
         options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
     });
-
-    // Logging middleware
-    app.UseSerilogRequestLogging();
 
     app.UseStatusCodePages();
     app.UseExceptionHandler("/error");

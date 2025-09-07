@@ -225,7 +225,7 @@ public class OrdersController : ApiController
     /// Create order - requires client role policy
     /// </summary>
     [HttpPost]
-    [Authorize(Policy = AuthorizationConstants.Policies.RequireClientRole)]
+    [Authorize(Policy = AuthorizationConstants.Policies.RoleStaff)]
     [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)

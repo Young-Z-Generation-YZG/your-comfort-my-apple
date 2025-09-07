@@ -12,14 +12,14 @@ namespace YGZ.Identity.Infrastructure.Persistence.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IdentityDbContext _context;
+    private readonly IdentityDbContext _dbContext;
     private readonly DbSet<User> _dbSet;
     private readonly ILogger<UserRepository> _logger;
 
-    public UserRepository(IdentityDbContext context, ILogger<UserRepository> logger)
+    public UserRepository(IdentityDbContext dbContext, ILogger<UserRepository> logger)
     {
-        _context = context;
-        _dbSet = context.Set<User>();
+        _dbContext = dbContext;
+        _dbSet = dbContext.Set<User>();
         _logger = logger;
     }
 
@@ -80,7 +80,7 @@ public class UserRepository : IUserRepository
         {
             user.ShippingAddresses.Add(shippingAddress);
 
-            var result = await _context.SaveChangesAsync(cancellationToken);
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
 
             if (result > 0)
             {
@@ -105,7 +105,7 @@ public class UserRepository : IUserRepository
         {
             _dbSet.Update(user);
 
-            var result = await _context.SaveChangesAsync(cancellationToken);
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
 
             if (result > 0)
             {
@@ -129,7 +129,7 @@ public class UserRepository : IUserRepository
 
     public async Task SaveChange()
     {
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
     }
 
    

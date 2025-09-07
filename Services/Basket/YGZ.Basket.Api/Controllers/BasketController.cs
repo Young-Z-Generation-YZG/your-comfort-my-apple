@@ -32,7 +32,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost()]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreBasketCommand>(request);
@@ -43,7 +43,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost("checkout")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CheckoutBasketCommand>(request);
@@ -54,7 +54,7 @@ public class BasketController : ApiController
     }
 
     [HttpGet()]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
@@ -63,7 +63,7 @@ public class BasketController : ApiController
     }
 
     [HttpDelete()]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> DeleteBasket(CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new DeleteBasketCommand(), cancellationToken);

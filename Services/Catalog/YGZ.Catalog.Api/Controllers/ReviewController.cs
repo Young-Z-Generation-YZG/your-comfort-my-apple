@@ -44,7 +44,7 @@ public class ReviewController : ApiController
     }
 
     [HttpGet("orders/{orderId}")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetReviewsByOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetReviewsByOrderQuery(orderId);
@@ -55,7 +55,7 @@ public class ReviewController : ApiController
     }
 
     [HttpPost()]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CreateView([FromBody] CreateReviewRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CreateReviewCommand>(request);
@@ -66,7 +66,7 @@ public class ReviewController : ApiController
     }
 
     [HttpPut("{reviewId}")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> UpdateReview([FromRoute] string reviewId, [FromBody] UpdateReviewRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateReviewCommand>(request);
@@ -78,7 +78,7 @@ public class ReviewController : ApiController
     }
 
     [HttpDelete("{reviewId}")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> DeleteReview([FromRoute] string reviewId, CancellationToken cancellationToken)
     {
         var cmd = new DeleteReviewCommand(reviewId);

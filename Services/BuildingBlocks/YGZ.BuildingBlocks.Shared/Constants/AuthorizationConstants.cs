@@ -6,6 +6,11 @@ public static class AuthorizationConstants
 {
     public static class Policies
     {
-        public const string RequireClientRole = nameof(RequireClientRole);
+        public const string RoleStaff = nameof(RoleStaff);
+    }
+
+    public static class Roles
+    {
+        public const string STAFF = nameof(STAFF);
     }
 }

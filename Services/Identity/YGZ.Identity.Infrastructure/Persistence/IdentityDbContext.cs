@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Users;
 using YGZ.Identity.Domain.Users.Entities;
 
@@ -28,8 +27,8 @@ public class IdentityDbContext : IdentityDbContext<User>
             {
                 entityType.SetTableName(tableName.Substring(6));
             }
-        }
 
+        }
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

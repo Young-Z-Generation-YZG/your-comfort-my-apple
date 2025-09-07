@@ -15,10 +15,10 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     protected readonly DbSet<TEntity> _dbSet;
     private readonly ILogger<GenericRepository<TEntity, TId>> _logger;
 
-    public GenericRepository(IdentityDbContext discountDbContext, ILogger<GenericRepository<TEntity, TId>> logger)
+    public GenericRepository(IdentityDbContext dbContext, ILogger<GenericRepository<TEntity, TId>> logger)
     {
-        _dbContext = discountDbContext;
-        _dbSet = discountDbContext.Set<TEntity>();
+        _dbContext = dbContext;
+        _dbSet = dbContext.Set<TEntity>();
         _logger = logger;
     }
 

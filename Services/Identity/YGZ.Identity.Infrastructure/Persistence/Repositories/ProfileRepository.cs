@@ -13,11 +13,11 @@ namespace YGZ.Identity.Infrastructure.Persistence.Repositories;
 
 public class ProfileRepository : GenericRepository<Profile, ProfileId>, IProfileRepository
 {
-    private readonly IdentityDbContext _context;
+    private readonly IdentityDbContext _dbContext;
     private readonly ILogger<ProfileRepository> _logger;
-    public ProfileRepository(IdentityDbContext context, ILogger<ProfileRepository> logger) : base(context, logger)
+    public ProfileRepository(IdentityDbContext dbContext, ILogger<ProfileRepository> logger) : base(dbContext, logger)
     {
-        _context = context;
+        _dbContext = dbContext;
         _logger = logger;
     }
 
@@ -26,7 +26,7 @@ public class ProfileRepository : GenericRepository<Profile, ProfileId>, IProfile
         try
         {
             var result = await _dbSet
-                .AsNoTracking() // No need to track the entity as we are only reading it
+                .AsNoTracking() // No need to track the entity as we are only reading it => performance optimization
                 .FirstOrDefaultAsync(x => x.UserId == user.Id, cancellationToken);
 
             if(result is null)

@@ -32,7 +32,7 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersQuery>(request);
@@ -43,7 +43,7 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("users")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByUserQuery>(request);
@@ -54,7 +54,7 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("{orderId}/details")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderItemsByOrderIdQuery(orderId);
@@ -65,7 +65,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/confirm")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new ConfirmOrderCommand(orderId);
@@ -76,7 +76,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/cancel")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new CancelOrderCommand(orderId);
@@ -87,7 +87,7 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("admin/{orderId}/status")]
-    [Authorize(Policy = Policies.RequireClientRole)]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
         var cmd = new UpdateOrderStatusCommand

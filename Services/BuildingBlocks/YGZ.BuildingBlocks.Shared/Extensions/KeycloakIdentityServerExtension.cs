@@ -19,9 +19,9 @@ public static class KeycloakIdentityServerExtension
         services
             .AddAuthorization(o =>
             {
-                o.AddPolicy(Policies.RequireClientRole, b =>
+                o.AddPolicy(Policies.RoleStaff, b =>
                 {
-                    b.RequireResourceRoles("USER", "ADMIN");
+                    b.RequireResourceRoles(Roles.STAFF);
                 });
             })
             .AddKeycloakAuthorization(configuration)

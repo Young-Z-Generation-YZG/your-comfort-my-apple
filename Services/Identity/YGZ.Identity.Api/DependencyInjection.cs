@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System.Reflection;
+using YGZ.BuildingBlocks.Shared.Behaviors;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Extensions;
@@ -40,6 +40,13 @@ public static class DependencyInjection
     public static IServiceCollection AddTracingAndLogging(WebApplicationBuilder builder)
     {
         builder.Host.AddSerilogExtension(builder.Configuration);
+
+        builder.Services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+
+            config.AddOpenBehavior(typeof(RequestLoggingPipelineBehavior<,>));
+        });
 
         var otelSettings = new OpenTelemetrySettings();
         builder.Configuration.GetSection(OpenTelemetrySettings.SettingKey).Bind(otelSettings);

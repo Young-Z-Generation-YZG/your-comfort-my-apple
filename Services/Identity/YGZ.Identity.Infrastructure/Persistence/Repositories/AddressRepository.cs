@@ -15,9 +15,9 @@ public class AddressRepository : GenericRepository<ShippingAddress, ShippingAddr
 {
     private readonly IdentityDbContext _dbContext;
     private readonly ILogger<AddressRepository> _logger;
-    public AddressRepository(IdentityDbContext context, ILogger<AddressRepository> logger) : base(context, logger)
+    public AddressRepository(IdentityDbContext dbContext, ILogger<AddressRepository> logger) : base(dbContext, logger)
     {
-        _dbContext = context;
+        _dbContext = dbContext;
         _logger = logger;
     }
 

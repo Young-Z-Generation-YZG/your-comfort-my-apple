@@ -158,11 +158,12 @@ services:
             [
                 'start-dev',
                 '--import-realm',
+                '--http-enabled=false',
                 '--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info',
                 '--log-console-color=true',
                 '--hostname-debug=true',
                 '--hostname=http://localhost:17070',
-                '--hostname-backchannel-dynamic=true'
+                '--hostname-backchannel-dynamic=true',
             ]
         environment:
         - KEYCLOAK_ADMIN=admin
@@ -174,6 +175,8 @@ services:
         - KC_DB_PASSWORD=bale
         - KC_HTTP_PORT=17070
         restart: always
+        volumes:
+        - ./DockerVolumes/Keycloak:/opt/keycloak/data/import
         depends_on:
         - db.keycloak
         ports:
