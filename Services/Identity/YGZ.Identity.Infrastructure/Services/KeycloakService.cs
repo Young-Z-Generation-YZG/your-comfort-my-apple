@@ -254,9 +254,13 @@ public class KeycloakService : IKeycloakService
         {
             var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
 
-            var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+            response.EnsureSuccessStatusCode();
 
-            if (tokenResponse == null && string.IsNullOrWhiteSpace(tokenResponse!.AccessToken))
+            var tokenResponseJsonString = await response.Content.ReadAsStringAsync();
+
+            var tokenResponse = System.Text.Json.JsonSerializer.Deserialize<TokenResponse>(tokenResponseJsonString);
+
+            if (tokenResponse == null)
             {
                 throw new Exception("Failed to retrieve user token.");
             }

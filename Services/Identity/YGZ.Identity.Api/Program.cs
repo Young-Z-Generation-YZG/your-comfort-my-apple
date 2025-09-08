@@ -33,7 +33,7 @@ Log.Logger = new LoggerConfiguration()
     services.AddControllers(options => options.AddProtectedResources())
             .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.WriteIndented = true; // Optional
+                // options.JsonSerializerOptions.WriteIndented = true; // Optional
             });
             
     services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
