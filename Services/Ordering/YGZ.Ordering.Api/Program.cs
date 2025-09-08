@@ -51,8 +51,8 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
-    //await app.ApplyMigrationAsync();
-    await app.ApplySeedDataAsync();
+    await app.ApplyMigrationAsync();
+  await app.ApplySeedDataAsync();
 }
 
 app.UseHealthChecks("/health", new HealthCheckOptions
