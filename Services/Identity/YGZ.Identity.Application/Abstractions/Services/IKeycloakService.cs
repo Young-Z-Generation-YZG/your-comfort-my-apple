@@ -12,7 +12,7 @@ namespace YGZ.Identity.Application.Abstractions.Services;
 public interface IKeycloakService
 {
     Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId);
-    Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
+    Task<Result<KeycloakUser?>> GetUserByUsernameOrEmailAsync(string usernameOrEmail);
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
     Task<TokenResponse> GetKeycloakTokenPairAsync(LoginCommand request);
     Task<TokenResponse> AuthorizationCode(AuthorizationCodeCommand request);

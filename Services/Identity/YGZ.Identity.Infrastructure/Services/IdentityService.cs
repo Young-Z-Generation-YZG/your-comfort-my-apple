@@ -52,7 +52,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(FindUserAsync));
             throw;
         }
     }
@@ -74,18 +73,18 @@ public class IdentityService : IIdentityService
 
             var result = await _userManager.CreateAsync(newUser);
 
-            //if (!await _roleManager.RoleExistsAsync("[ROLE]:USER"))
-            //{
-            //    return Errors.User.CannotBeCreated; // Or a custom error
-            //}
+            if (!await _roleManager.RoleExistsAsync("USER"))
+            {
+               return Errors.User.CannotBeCreated;
+            }
 
-            // Add the user to the "USER" role
-            //var roleResult = await _userManager.AddToRoleAsync(newUser, "[ROLE]:USER");
+            // Add role "USER" to user
+            var roleResult = await _userManager.AddToRoleAsync(newUser, "USER");
 
-            //if (!roleResult.Succeeded)
-            //{
-            //    return Errors.User.CannotBeCreated; // Or a custom error for role assignment failure
-            //}
+            if (!roleResult.Succeeded)
+            {
+               return Errors.User.CannotBeCreated;
+            }
 
             if (!result.Succeeded)
             {
@@ -96,7 +95,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(CreateUserAsync));
             throw;
         }
     }
@@ -106,6 +104,8 @@ public class IdentityService : IIdentityService
         try
         {
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
+
+            return Errors.User.DoesNotExist;
 
             if (existingUser is null)
             {
@@ -123,7 +123,7 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(LoginAsync));
+            //_logger.LogError(ex, "Exception occurred: {Message} {@Exception}", ex.Message, ex);
             throw;
         }
     }
@@ -146,7 +146,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to generate email verification token for {Email}", email);
             throw;
         }
     }
@@ -175,7 +174,6 @@ public class IdentityService : IIdentityService
             }
             catch (FormatException ex)
             {
-                _logger.LogWarning(ex, "Invalid Base64 token format for email {Email}", email);
                 return Errors.Auth.InvalidToken;
             }
 
@@ -195,9 +193,6 @@ public class IdentityService : IIdentityService
 
             if (!confirmResult.Succeeded)
             {
-                _logger.LogWarning("Failed to confirm email for {Email}: {Errors}",
-                    email, string.Join(", ", confirmResult.Errors.Select(e => e.Description)));
-
                 return Errors.Auth.ConfirmEmailVerificationFailure;
             }
 
@@ -205,7 +200,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to verify email token for {Email}", email);
             throw;
         }
     }
@@ -229,7 +223,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GenerateResetPasswordTokenAsync));
             throw;
         }
     }
@@ -258,7 +251,6 @@ public class IdentityService : IIdentityService
             }
             catch (FormatException ex)
             {
-                _logger.LogWarning(ex, "Invalid Base64 token format for email {Email}", email);
                 return Errors.Auth.InvalidToken;
             }
 
@@ -287,7 +279,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(VerifyResetPasswordTokenAsync));
             throw;
         }
     }
@@ -321,7 +312,6 @@ public class IdentityService : IIdentityService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
             return Errors.User.CannotChangePassword;
         }
     }

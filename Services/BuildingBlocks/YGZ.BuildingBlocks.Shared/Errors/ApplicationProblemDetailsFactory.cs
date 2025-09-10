@@ -113,6 +113,8 @@ public class ApplicationProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions.Add("error", error);
 
             _logger.LogError("Exception occurred: {@Title} {@Error} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", error.Message, error, problemDetails, traceId, DateTime.UtcNow);
+        } else {
+            _logger.LogError("[Global exception occurred]: {@Title} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", problemDetails.Title, problemDetails, traceId, DateTime.UtcNow);
         }
     }
 }

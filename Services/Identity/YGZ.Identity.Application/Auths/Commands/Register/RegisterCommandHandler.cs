@@ -47,7 +47,7 @@ public class RegisterCommandHandler : ICommandHandler<RegisterCommand, EmailVeri
 
         if (keycloakUser.Response is not null)
         {
-            return Errors.Keycloak.UserAlreadyExist;
+            return keycloakUser.Error;
         }
 
         var keycloakResult = await _keycloakService.CreateKeycloakUserAsync(request);

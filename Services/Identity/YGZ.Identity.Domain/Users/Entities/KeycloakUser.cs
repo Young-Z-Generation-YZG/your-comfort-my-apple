@@ -1,13 +1,23 @@
-﻿
-
+﻿using System.Text.Json.Serialization;
 namespace YGZ.Identity.Domain.Users.Entities;
 
-public class KeycloakUser
+public sealed record KeycloakUser
 {
-    public string Id { get; set; } = default!;
-    public string Username { get; set; } = default!;
-    public string Email { get; set; } = default!;
-    public string Firstname { get; set; } = default!;
-    public string Lastname { get; set; } = default!;
-    public bool EmailVerified { get; set; } = default!;
+  [JsonPropertyName("id")]
+  public required string Id { get; init; }
+
+  [JsonPropertyName("username")]
+  public required string Username { get; init; }
+
+  [JsonPropertyName("firstName")]
+  public required string FirstName { get; init; }
+
+  [JsonPropertyName("lastName")]
+  public required string LastName { get; init; }
+
+  [JsonPropertyName("email")]
+  public required string Email { get; init; }
+
+  [JsonPropertyName("emailVerified")]
+  public required bool EmailVerified { get; init; }
 }

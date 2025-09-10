@@ -37,8 +37,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(GetByIdAsync)}");
-
             throw;
         }
     }
@@ -55,8 +53,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(AddAsync)}");
-
             throw;
         }
     }
@@ -78,8 +74,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(AddAsync)}");
-
             throw;
         }
     }
@@ -106,8 +100,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(UpdateAsync)}");
-
             throw;
         }
     }
@@ -129,7 +121,6 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(GenericRepository<TEntity, TId>)} - method:{nameof(RemoveAsync)}");
             throw;
         }
     }

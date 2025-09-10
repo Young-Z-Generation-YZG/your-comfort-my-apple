@@ -20,11 +20,6 @@ public class ErrorController : ControllerBase
     {
         Exception? exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-        if(exception is not null)
-        {
-            _logger.LogError("[/error] {@Exception}", exception);
-        }
-
         return Problem(exception?.Message);
     }
 }

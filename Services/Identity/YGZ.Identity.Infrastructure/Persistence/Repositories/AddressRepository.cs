@@ -33,7 +33,6 @@ public class AddressRepository : GenericRepository<ShippingAddress, ShippingAddr
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(AddressRepository)} - method:{nameof(GetAllByUser)}");
             throw;
         }
     }
@@ -85,7 +84,6 @@ public class AddressRepository : GenericRepository<ShippingAddress, ShippingAddr
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(AddressRepository)} - method:{nameof(SetDefaultAddressAsync)}");
             throw;
         }
     }

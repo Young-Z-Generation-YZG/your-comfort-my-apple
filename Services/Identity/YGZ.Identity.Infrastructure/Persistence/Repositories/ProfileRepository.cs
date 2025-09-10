@@ -38,8 +38,6 @@ public class ProfileRepository : GenericRepository<Profile, ProfileId>, IProfile
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(ProfileRepository)} - method:{nameof(GetProfileByUser)}");
-
             throw;
         }
     }

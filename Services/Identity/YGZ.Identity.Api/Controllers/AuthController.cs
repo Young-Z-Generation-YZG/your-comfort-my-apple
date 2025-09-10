@@ -4,17 +4,16 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Identity.Application.Auths.Commands.Login;
-using YGZ.Identity.Application.Auths.Commands.Register;
-using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
-using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
-using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
 using YGZ.Identity.Api.Contracts.Auth;
-using YGZ.Identity.Application.Auths.Commands.ResetPassword;
-using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
+using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
+using YGZ.Identity.Application.Auths.Commands.Login;
+using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
+using YGZ.Identity.Application.Auths.Commands.Register;
+using YGZ.Identity.Application.Auths.Commands.ResetPassword;
+using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
+using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -42,7 +41,7 @@ public class AuthController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-    
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
@@ -64,7 +63,7 @@ public class AuthController : ApiController
     }
 
     [HttpGet("private/page/otp")]
-     public async Task<IActionResult> GetOtpPage([FromQuery] AccessOtpRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOtpPage([FromQuery] AccessOtpRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<AccessOtpPageCommand>(request);
 

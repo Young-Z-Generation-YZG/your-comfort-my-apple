@@ -31,7 +31,6 @@ public class UserRepository : IUserRepository
 
             if(result is null)
             {
-                _logger.LogError("User with email \"{userEmail}\" does not exist", userEmail);
 
                 return Errors.User.DoesNotExist;
             }
@@ -40,7 +39,6 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByEmailAsync));
             throw;
         }
     }
@@ -60,7 +58,6 @@ public class UserRepository : IUserRepository
 
             if (result is null)
             {
-                _logger.LogError("User with email \"{userEmail}\" does not exist", userEmail);
 
                 return Errors.User.DoesNotExist;
             }
@@ -69,7 +66,6 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByEmailAsync));
             throw;
         }
     }
@@ -93,8 +89,6 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(AddShippingAddressAsync));
-
             throw;
         }
     }
@@ -116,8 +110,6 @@ public class UserRepository : IUserRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(UserRepository)} - method:{nameof(UpdateUserAsync)}");
-
             throw;
         }
     }

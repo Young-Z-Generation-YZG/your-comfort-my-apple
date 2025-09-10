@@ -20,7 +20,6 @@ namespace YGZ.Identity.Infrastructure.Services;
 
 public class KeycloakService : IKeycloakService
 {
-    private readonly ILogger<KeycloakService> _logger;
     private readonly KeycloakSettings _keycloakSettings;
     private readonly HttpClient _httpClient;
 
@@ -36,7 +35,6 @@ public class KeycloakService : IKeycloakService
 
     public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger)
     {
-        _logger = logger;
         _keycloakSettings = options.Value;
         _httpClient = httpClient;
 
@@ -79,14 +77,13 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByIdAsync));
             throw;
         }
 
         return null!;
     }
 
-    public async Task<Result<KeycloakUser>> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
+    public async Task<Result<KeycloakUser?>> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
     {
         var adminToken = await GetAdminTokenResponseAsync();
         var url = new Uri(_adminEndpoint + "?q=" + usernameOrEmail);
@@ -110,16 +107,18 @@ public class KeycloakService : IKeycloakService
                 var users = JsonConvert.DeserializeObject<List<KeycloakUser>>(content);
                 var user = users.Find(u => u.Email == usernameOrEmail);
 
-                return user!;
+                if (user != null)
+                {
+                  return user;
+                }
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetUserByUsernameOrEmailAsync));
             throw;
         }
 
-        return null!;
+        return Errors.Keycloak.UserNotFound;
     }
 
     public async Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request)
@@ -176,18 +175,15 @@ public class KeycloakService : IKeycloakService
                     {
                         userId = parts[usersIndex + 1];
 
-                        _logger.LogInformation("Created user with ID: " + userId);
                     }
                     else
                     {
-                        _logger.LogError("Could not extract user ID from Location header.");
 
                         return Errors.Keycloak.CannotBeCreated;
                     }
                 }
                 else
                 {
-                    _logger.LogError("No Location header in response.");
 
                     return Errors.Keycloak.CannotBeCreated;
                 }
@@ -195,7 +191,6 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(CreateKeycloakUserAsync));
             throw;
         }
 
@@ -205,7 +200,7 @@ public class KeycloakService : IKeycloakService
             {
                 new
                 {
-                    id = "621bb53d-816e-4dac-ba6b-d7b645a9c72f",
+                    id = "11118cf4-b9d1-430d-96c1-4e5272d6d112",
                     name = "USER",
                     description = "",
                     composite = false
@@ -232,7 +227,6 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(CreateKeycloakUserAsync));
             throw;
         }
 
@@ -256,20 +250,19 @@ public class KeycloakService : IKeycloakService
 
             response.EnsureSuccessStatusCode();
 
-            var tokenResponseJsonString = await response.Content.ReadAsStringAsync();
+            var responseJsonString = await response.Content.ReadAsStringAsync();
 
-            var tokenResponse = System.Text.Json.JsonSerializer.Deserialize<TokenResponse>(tokenResponseJsonString);
+            var deserializedResp = System.Text.Json.JsonSerializer.Deserialize<TokenResponse>(responseJsonString);
 
-            if (tokenResponse == null)
+            if (deserializedResp == null)
             {
                 throw new Exception("Failed to retrieve user token.");
             }
 
-            return tokenResponse;
+            return deserializedResp;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetKeycloakTokenPairAsync));
             throw;
         }
     }
@@ -319,18 +312,19 @@ public class KeycloakService : IKeycloakService
 
             response.EnsureSuccessStatusCode();
 
-            var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
+            var responseJsonString = await response.Content.ReadAsStringAsync();
 
-            if (tokenResponse == null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+            var deserializedResp = System.Text.Json.JsonSerializer.Deserialize<TokenResponse>(responseJsonString);
+
+            if (deserializedResp == null)
             {
-                throw new Exception("Failed to retrieve admin token.");
+                throw new Exception("Failed to retrieve user token.");
             }
 
-            return tokenResponse.AccessToken;
+            return deserializedResp.AccessToken;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(GetAdminTokenResponseAsync));
             throw;
         }
     }
@@ -344,7 +338,6 @@ public class KeycloakService : IKeycloakService
 
             if (userResult.IsFailure || userResult.Response == null)
             {
-                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
 
                 return Errors.Keycloak.UserNotFound;
             }
@@ -378,22 +371,18 @@ public class KeycloakService : IKeycloakService
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Email verified successfully for user {Email} in Keycloak", email);
                 return true;
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
 
-                _logger.LogError("Failed to verify email for {Email}. Status: {StatusCode}, Error: {Error}",
-                    email, response.StatusCode, errorContent);
 
                 return Errors.Keycloak.EmailVerificationFailed;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error verifying email {Email} in Keycloak", email);
             throw;
         }
     }
@@ -422,7 +411,6 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(RefreshAccessTokenAsync));
             throw;
         }
     }
@@ -435,7 +423,6 @@ public class KeycloakService : IKeycloakService
             var userResult = await GetUserByUsernameOrEmailAsync(email);
             if (userResult.IsFailure || userResult.Response == null)
             {
-                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
                 return Errors.Keycloak.UserNotFound;
             }
 
@@ -468,20 +455,17 @@ public class KeycloakService : IKeycloakService
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Password reset email sent successfully for user {Email} in Keycloak", email);
                 return true;
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Failed to send password reset email for {Email}. Status: {StatusCode}, Error: {Error}",
-                    email, response.StatusCode, errorContent);
+                
                 return Errors.Keycloak.SendEmailResetPasswordFailed;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error sending password reset email for {Email} in Keycloak", email);
             return Errors.Keycloak.SendEmailResetPasswordFailed;
         }
     }
@@ -493,7 +477,6 @@ public class KeycloakService : IKeycloakService
             var userResult = await GetUserByUsernameOrEmailAsync(email);
             if (userResult.IsFailure || userResult.Response == null)
             {
-                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
                 return Errors.Keycloak.UserNotFound;
             }
 
@@ -506,13 +489,11 @@ public class KeycloakService : IKeycloakService
                 var tokenResponse = await GetKeycloakTokenPairAsync(loginRequest);
                 if (string.IsNullOrEmpty(tokenResponse.AccessToken))
                 {
-                    _logger.LogWarning("Invalid current password for user {Email}", email);
                     return Errors.Keycloak.InvalidCredentials;
                 }
             }
             catch
             {
-                _logger.LogWarning("Invalid current password for user {Email}", email);
                 return Errors.Keycloak.InvalidCredentials;
             }
 
@@ -551,20 +532,17 @@ public class KeycloakService : IKeycloakService
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Password changed successfully for user {Email} in Keycloak", email);
                 return true;
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Failed to change password for {Email}. Status: {StatusCode}, Error: {Error}",
-                    email, response.StatusCode, errorContent);
+                
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
             return Errors.Keycloak.ChangePasswordFailed;
         }
     }
@@ -576,7 +554,6 @@ public class KeycloakService : IKeycloakService
             var userResult = await GetUserByUsernameOrEmailAsync(email);
             if (userResult.IsFailure || userResult.Response == null)
             {
-                _logger.LogWarning("User with email {Email} not found in Keycloak", email);
                 return Errors.Keycloak.UserNotFound;
             }
 
@@ -613,20 +590,17 @@ public class KeycloakService : IKeycloakService
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Password changed successfully for user {Email} in Keycloak", email);
                 return true;
             }
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Failed to change password for {Email}. Status: {StatusCode}, Error: {Error}",
-                    email, response.StatusCode, errorContent);
+
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error changing password for {Email} in Keycloak", email);
             return Errors.Keycloak.ResetPasswordFailed;
         }
     }
@@ -663,7 +637,6 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, nameof(AuthorizationCode));
             return null;
         }
     }
