@@ -59,23 +59,17 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     [BsonElement("category_id")]
     required public CategoryId CategoryId { get; set; }
 
-    [BsonElement("created_at")]
     public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
 
-    [BsonElement("updated_at")]
     public DateTime UpdatedAt => Id.Id?.CreationTime ?? DateTime.Now;
 
-    [BsonElement("modified_by")]
-    public Guid? ModifiedBy => null;
+    public string? ModifiedBy => null;
 
-    [BsonElement("is_deleted")]
     public bool IsDeleted => false;
 
-    [BsonElement("deleted_at")]
     public DateTime? DeletedAt => null;
 
-    [BsonElement("deleted_by")]
-    public Guid? DeletedBy => null;
+    public string? DeletedBy => null;
 
     public static IPhone16Detail Create(string model,
                                         Color color,

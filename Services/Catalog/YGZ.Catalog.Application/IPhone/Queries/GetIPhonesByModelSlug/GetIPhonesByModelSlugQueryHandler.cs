@@ -1,21 +1,21 @@
 ﻿
 
+using Google.Protobuf.WellKnownTypes;
+using MapsterMapper;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
-using YGZ.Catalog.Domain.Products.Iphone16;
-using MongoDB.Driver;
-using YGZ.Catalog.Domain.Common.ValueObjects;
-using YGZ.Catalog.Domain.Core.Errors;
-using MapsterMapper;
-using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.Discount.Grpc.Protos;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Enums;
+using YGZ.Catalog.Domain.Core.Errors;
+using YGZ.Catalog.Domain.Products.Iphone16;
+using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
-using Google.Protobuf.WellKnownTypes;
+using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 
@@ -42,7 +42,7 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
 
         var model = await _modelRepository.GetByFilterAsync(filter, cancellationToken);
 
-        if(model is null)
+        if (model is null)
         {
             return Errors.Category.DoesNotExist;
         }
@@ -312,7 +312,7 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
 
             IPhonePromotionResponse promotion = null;
 
-            if(existPromotion is not null)
+            if (existPromotion is not null)
             {
                 var promotionEvent = PromotionEventType.PROMOTION_UNKNOWN.Name;
                 var promotionDiscountType = DiscountType.UNKNOWN.Name;
@@ -320,30 +320,30 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
                 switch (existPromotion.PromotionEventType)
                 {
                     case var eventType when eventType == PromotionEventTypeEnum.PromotionEvent.ToString():
-                        promotionEvent = PromotionEventType.PROMOTION_EVENT.Name;
-                        break;
+                    promotionEvent = PromotionEventType.PROMOTION_EVENT.Name;
+                    break;
                     case var eventType when eventType == PromotionEventTypeEnum.PromotionItem.ToString():
-                        promotionEvent = PromotionEventType.PROMOTION_ITEM.Name;
-                        break;
+                    promotionEvent = PromotionEventType.PROMOTION_ITEM.Name;
+                    break;
                     case var eventType when eventType == PromotionEventTypeEnum.PromotionCoupon.ToString():
-                        promotionEvent = PromotionEventType.PROMOTION_COUPON.Name;
-                        break;
+                    promotionEvent = PromotionEventType.PROMOTION_COUPON.Name;
+                    break;
                     case var eventType when eventType == PromotionEventType.PROMOTION_UNKNOWN.Name:
-                        promotionEvent = PromotionEventType.PROMOTION_UNKNOWN.Name;
-                        break;
+                    promotionEvent = PromotionEventType.PROMOTION_UNKNOWN.Name;
+                    break;
                 }
 
                 switch (existPromotion.PromotionDiscountType)
                 {
                     case var discountType when discountType == DiscountTypeEnum.Percentage.ToString():
-                        promotionDiscountType = DiscountType.PERCENTAGE.Name;
-                        break;
+                    promotionDiscountType = DiscountType.PERCENTAGE.Name;
+                    break;
                     case var discountType when discountType == DiscountTypeEnum.Fixed.ToString():
-                        promotionDiscountType = DiscountType.FIXED.Name;
-                        break;
+                    promotionDiscountType = DiscountType.FIXED.Name;
+                    break;
                     case var discountType when discountType == DiscountTypeEnum.Unknown.ToString():
-                        promotionDiscountType = DiscountType.UNKNOWN.Name;
-                        break;
+                    promotionDiscountType = DiscountType.UNKNOWN.Name;
+                    break;
                 }
 
                 promotion = new IPhonePromotionResponse()
@@ -368,7 +368,7 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
                 ProductId = product.Id.Value!,
                 ProductModel = product.Model,
                 ProductColor = colorResponse,
-                ProductStorage = new StorageResponse() {StorageName = product.Storage.Name, StorageValue = product.Storage.Value},
+                ProductStorage = new StorageResponse() { StorageName = product.Storage.Name, StorageValue = product.Storage.Value },
                 ProductUnitPrice = product.UnitPrice,
                 ProductAvailableInStock = product.AvailableInStock,
                 ProductState = product.State.ToString(),
@@ -382,14 +382,14 @@ public class GetIPhonesByModelSlugQueryHandler : IQueryHandler<GetIPhonesByModel
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
                 DeletedAt = product.DeletedAt,
-                DeletedBy = product.DeletedBy is not null ? product.DeletedBy.Value.ToString() : null,
+                DeletedBy = null,
                 IsDeleted = product.IsDeleted,
                 ProductImages = imagesResponse
             };
 
             response.ProductColor = colorResponse;
             response.ProductImages = imagesResponse;
-            
+
 
             return response;
         }).ToList();

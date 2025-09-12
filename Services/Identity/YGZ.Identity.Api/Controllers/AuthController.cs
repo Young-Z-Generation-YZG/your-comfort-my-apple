@@ -72,7 +72,7 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("email/verification")]
+    [HttpPost("verification/email")]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyEmailCommand>(request);
@@ -92,7 +92,7 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("reset-password/verification")]
+    [HttpPost("verification/reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] VerifyResetPasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyResetPasswordCommand>(request);

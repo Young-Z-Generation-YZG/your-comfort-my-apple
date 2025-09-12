@@ -1,0 +1,599 @@
+[{
+  "_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "name": "Mac",
+  "description": "Mac categories.",
+  "slug": "mac",
+  "order": 0,
+  "parent_id": null,
+  "created_at": {
+    "$date": "2025-03-20T16:35:58.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:35:58.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "name": "iPad",
+  "description": "iPad categories.",
+  "slug": "ipad",
+  "order": 1,
+  "parent_id": null,
+  "created_at": {
+    "$date": "2025-03-20T16:49:12.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:49:12.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "name": "iPhone",
+  "description": "iPhone categories.",
+  "slug": "iphone",
+  "order": 2,
+  "parent_id": null,
+  "created_at": {
+    "$date": "2025-03-20T16:49:14.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:49:14.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc470ca9ee0a5e6fbafdac"
+  },
+  "name": "Watch",
+  "description": "Watch categories.",
+  "slug": "watch",
+  "order": 3,
+  "parent_id": null,
+  "created_at": {
+    "$date": "2025-03-20T16:49:16.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:49:16.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc470ea9ee0a5e6fbafdad"
+  },
+  "name": "HeadPhones",
+  "description": "HeadPhones categories.",
+  "slug": "headphones",
+  "order": 4,
+  "parent_id": null,
+  "created_at": {
+    "$date": "2025-03-20T16:49:18.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:49:18.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc43ee9b19c6773e9cec41"
+  },
+  "name": "MacBook Air",
+  "description": "MacBookAir category.",
+  "slug": "macbook-air",
+  "order": 0,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2025-03-20T16:35:58.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T16:35:58.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "68dc43ee9b19c6773e9cec42"
+  },
+  "name": "MacBook Pro",
+  "description": "MacBook Pro category.",
+  "slug": "macbook-pro",
+  "order": 1,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2025-09-30T20:56:14.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-09-30T20:56:14.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "69dc43ee9b19c6773e9cec43"
+  },
+  "name": "iMac",
+  "description": "iMac category.",
+  "slug": "imac",
+  "order": 2,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2026-04-13T01:16:30.000Z"
+  },
+  "updated_at": {
+    "$date": "2026-04-13T01:16:30.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "70dc43ee9b19c6773e9cec44"
+  },
+  "name": "Mac mini",
+  "description": "Mac mini category.",
+  "slug": "mac-mini",
+  "order": 3,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2030-01-01T07:38:22.000Z"
+  },
+  "updated_at": {
+    "$date": "2030-01-01T07:38:22.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "71dc43ee9b19c6773e9cec45"
+  },
+  "name": "Mac Studio",
+  "description": "Mac Studio category.",
+  "slug": "mac-studio",
+  "order": 4,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2030-07-14T11:58:38.000Z"
+  },
+  "updated_at": {
+    "$date": "2030-07-14T11:58:38.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "72dc43ee9b19c6773e9cec46"
+  },
+  "name": "Mac Pro",
+  "description": "Mac Pro category.",
+  "slug": "mac-pro",
+  "order": 5,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2031-01-24T16:18:54.000Z"
+  },
+  "updated_at": {
+    "$date": "2031-01-24T16:18:54.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "73dc43ee9b19c6773e9cec47"
+  },
+  "name": "Displays",
+  "description": "Displays category.",
+  "slug": "displays",
+  "order": 6,
+  "parent_id": {
+    "$oid": "67dc43ee9b19c6773e9cec55"
+  },
+  "created_at": {
+    "$date": "2031-08-06T20:39:10.000Z"
+  },
+  "updated_at": {
+    "$date": "2031-08-06T20:39:10.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "81c4708a9ee0a5e6fbafdabd"
+  },
+  "name": "iPad Pro",
+  "description": "iPad Pro category.",
+  "slug": "ipad-pro",
+  "order": 0,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2038-12-28T07:38:50.000Z"
+  },
+  "updated_at": {
+    "$date": "2038-12-28T07:38:50.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "82dc4708a9ee0a5e6fbafdac"
+  },
+  "name": "iPad Air",
+  "description": "iPad Air category.",
+  "slug": "ipad-air",
+  "order": 1,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2039-07-28T13:56:24.000Z"
+  },
+  "updated_at": {
+    "$date": "2039-07-28T13:56:24.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc5336a9ee0a5e6fbafdb3"
+  },
+  "name": "iPad",
+  "description": "iPad category.",
+  "slug": "ipad",
+  "order": 2,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:41:10.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:41:10.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc5338a9ee0a5e6fbafdb4"
+  },
+  "name": "iPad mini",
+  "description": "iPad mini category.",
+  "slug": "ipad-mini",
+  "order": 3,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:41:12.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:41:12.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc533aa9ee0a5e6fbafdb5"
+  },
+  "name": "Apple Pencil",
+  "description": "Apple Pencil category.",
+  "slug": "apple-pencil",
+  "order": 4,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:41:14.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:41:14.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc533ca9ee0a5e6fbafdb6"
+  },
+  "name": "Keyboards",
+  "description": "Keyboards category.",
+  "slug": "keyboards",
+  "order": 5,
+  "parent_id": {
+    "$oid": "67dc4708a9ee0a5e6fbafdaa"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:41:16.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:41:16.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "91dc470aa9ee0a5e6fbafdbc"
+  },
+  "name": "iPhone 16",
+  "description": "iPhone 16 category.",
+  "slug": "iphone-16",
+  "order": 0,
+  "parent_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "created_at": {
+    "$date": "2047-07-19T07:00:26.000Z"
+  },
+  "updated_at": {
+    "$date": "2047-07-19T07:00:26.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "92dc470aa9ee0a5e6fbafdbd"
+  },
+  "name": "iPhone 15",
+  "description": "iPhone 15 category.",
+  "slug": "iphone-15",
+  "order": 1,
+  "parent_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "created_at": {
+    "$date": "2048-01-29T11:20:42.000Z"
+  },
+  "updated_at": {
+    "$date": "2048-01-29T11:20:42.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "93dc470aa9ee0a5e6fbafdbe"
+  },
+  "name": "iPhone 14",
+  "description": "iPhone 14 category.",
+  "slug": "iphone-14",
+  "order": 2,
+  "parent_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "created_at": {
+    "$date": "2048-08-10T15:40:58.000Z"
+  },
+  "updated_at": {
+    "$date": "2048-08-10T15:40:58.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "94dc470aa9ee0a5e6fbafdbf"
+  },
+  "name": "iPhone 13",
+  "description": "iPhone 13 category.",
+  "slug": "iphone-13",
+  "order": 3,
+  "parent_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "created_at": {
+    "$date": "2049-02-20T20:01:14.000Z"
+  },
+  "updated_at": {
+    "$date": "2049-02-20T20:01:14.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "000000000000000000000000"
+  },
+  "name": "iPhone 12",
+  "description": "iPhone 12 category.",
+  "slug": "iphone-12",
+  "order": 4,
+  "parent_id": {
+    "$oid": "67dc470aa9ee0a5e6fbafdab"
+  },
+  "created_at": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updated_at": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc5378a9ee0a5e6fbafdb8"
+  },
+  "name": "Apple Watch Series 10",
+  "description": "Apple Watch Series 10 category.",
+  "slug": "apple-watch-series-10",
+  "order": 0,
+  "parent_id": {
+    "$oid": "67dc470ca9ee0a5e6fbafdac"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:16.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:16.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc5379a9ee0a5e6fbafdb9"
+  },
+  "name": "Apple Watch Series 9",
+  "description": "Apple Watch Series 9 category.",
+  "slug": "apple-watch-series-9",
+  "order": 1,
+  "parent_id": {
+    "$oid": "67dc470ca9ee0a5e6fbafdac"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:17.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:17.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc537ba9ee0a5e6fbafdba"
+  },
+  "name": "Apple Watch Ultra 2",
+  "description": "Apple Watch Ultra 2 category.",
+  "slug": "apple-watch-ultra-2",
+  "order": 2,
+  "parent_id": {
+    "$oid": "67dc470ca9ee0a5e6fbafdac"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:19.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:19.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc537ca9ee0a5e6fbafdbb"
+  },
+  "name": "Apple Watch SE 2",
+  "description": "Apple Watch SE 2 category.",
+  "slug": "apple-watch-se-2",
+  "order": 3,
+  "parent_id": {
+    "$oid": "67dc470ca9ee0a5e6fbafdac"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:20.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:20.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc5397a9ee0a5e6fbafdbc"
+  },
+  "name": "AirPods",
+  "description": "AirPods category.",
+  "slug": "airpods",
+  "order": 1,
+  "parent_id": {
+    "$oid": "67dc470ea9ee0a5e6fbafdad"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:47.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:47.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+},
+{
+  "_id": {
+    "$oid": "67dc539aa9ee0a5e6fbafdbd"
+  },
+  "name": "EarPods",
+  "description": "EarPods category.",
+  "slug": "earpods",
+  "order": 2,
+  "parent_id": {
+    "$oid": "67dc470ea9ee0a5e6fbafdad"
+  },
+  "created_at": {
+    "$date": "2025-03-20T17:42:50.000Z"
+  },
+  "updated_at": {
+    "$date": "2025-03-20T17:42:50.000Z"
+  },
+  "is_deleted": false,
+  "deleted_at": null,
+  "deleted_by": null
+}]

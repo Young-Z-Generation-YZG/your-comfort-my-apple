@@ -1,11 +1,12 @@
 db = db.getSiblingDB("admin");
 db.auth("bale", "bale");
 
-db = db.getSiblingDB("CatalogDb");
+catalogDb = db.getSiblingDB("CatalogDb");
 
-db.createCollection("Products");
-db.createCollection("ProductItems");
-db.createCollection("Categories");
+catalogDb.createCollection("Categories");
+
+// db.createCollection("Products");
+// db.createCollection("ProductItems");
 
 // db.createUser({
 //   user: "test",
@@ -18,4 +19,4 @@ db.createCollection("Categories");
 //   ],
 // });
 
-db.createCollection("test_docker");
+// db.createCollection("test_docker");

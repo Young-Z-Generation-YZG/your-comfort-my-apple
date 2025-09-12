@@ -8,7 +8,6 @@ using YGZ.Catalog.Api;
 using YGZ.Catalog.Api.Extensions;
 using YGZ.Catalog.Application;
 using YGZ.Catalog.Infrastructure;
-using YGZ.Catalog.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -65,7 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
-    await app.ApplySeedDataAsync();
+    //await app.ApplySeedDataAsync();
 }
 
 app.UseStatusCodePages();

@@ -5,15 +5,12 @@ using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Iphone16.Events;
 using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 
-namespace YGZ.Catalog.Domain.Products.Iphone16.Entities;
+namespace YGZ.Catalog.Domain.Products.Iphone.Entities;
 
 [BsonCollection("Reviews")]
 public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
 {
-    public Review(ReviewId id) : base(id)
-    {
-
-    }
+    public Review(ReviewId id) : base(id) { }
 
     [BsonElement("product_id")]
     required public IPhone16Id ProductId { get; set; } = default!;
@@ -69,7 +66,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
             Rating = rating,
         };
 
-        review.AddDomainEvent(new ReviewCreatedDomainEvent(review));
+        //review.AddDomainEvent(new ReviewCreatedDomainEvent(review));
 
         return review;
     }

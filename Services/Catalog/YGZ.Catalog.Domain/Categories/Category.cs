@@ -31,20 +31,18 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("parent_id")]
     public CategoryId? ParentId { get; set; } = null;
 
-    [BsonElement("created_at")]
     public DateTime CreatedAt => Id?.Id!.Value.CreationTime ?? DateTime.Now;
 
-    [BsonElement("updated_at")]
     public DateTime UpdatedAt => Id?.Id!.Value.CreationTime ?? DateTime.Now;
 
-    [BsonElement("is_deleted")]
+    public string? ModifiedBy => null;
+
     public bool IsDeleted => false;
 
-    [BsonElement("deleted_at")]
     public DateTime? DeletedAt => null;
 
-    [BsonElement("deleted_by")]
-    public Guid? DeletedBy => null;
+    public string? DeletedBy => null;
+
 
     public static Category Create(CategoryId id, string name, string description, int order, CategoryId? parentId)
     {
