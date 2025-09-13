@@ -24,10 +24,10 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     required public string Model { get; set; }
 
     [BsonElement("color")]
-    required public Color Color { get; set; }
+    required public ColorBK Color { get; set; }
 
     [BsonElement("storage")]
-    required public Storage Storage { get; set; }
+    required public StorageBK Storage { get; set; }
 
     [BsonElement("unit_price")]
     required public decimal UnitPrice { get; set; } = 0;
@@ -72,7 +72,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     public string? DeletedBy => null;
 
     public static IPhone16Detail Create(string model,
-                                        Color color,
+                                        ColorBK color,
                                         int storage,
                                         decimal unitPrice,
                                         string description,
@@ -80,7 +80,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
                                         string iPhoneModelId,
                                         string categoryId)
     {
-        var storageEnum = Storage.FromValue(storage);
+        var storageEnum = StorageBK.FromValue(storage);
 
         return new IPhone16Detail(IPhone16Id.Of(iPhoneModelId))
         {

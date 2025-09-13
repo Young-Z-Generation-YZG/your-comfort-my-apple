@@ -14,8 +14,8 @@ public partial class Seeds
     {
         get
         {
-            var color_white = Color.Create("white", "#FAFAFA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-white-202409", null);
-            var color_black = Color.Create("black", "#3C4042", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202409", null);
+            var color_white = ColorBK.Create("white", "#FAFAFA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-white-202409", null);
+            var color_black = ColorBK.Create("black", "#3C4042", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202409", null);
 
             var imageList_white = new List<Image>
             {

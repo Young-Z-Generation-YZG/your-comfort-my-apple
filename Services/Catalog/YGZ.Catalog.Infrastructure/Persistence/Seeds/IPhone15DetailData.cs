@@ -14,11 +14,11 @@ public partial class Seeds
     {
         get
         {
-            var color_blue = Color.Create(colorName: "blue", colorHex: "#D5DDDF", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-blue-202309", colorOrder: 0);
-            var color_pink = Color.Create(colorName: "pink", colorHex: "#EBD3D4", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-pink-202309", colorOrder: 1);
-            var color_yellow = Color.Create(colorName: "yellow", colorHex: "#EDE6C8", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-yellow-202309", colorOrder: 2);
-            var color_green = Color.Create(colorName: "green", colorHex: "#D0D9CA", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-green-202309", colorOrder: 3);
-            var color_black = Color.Create(colorName: "black", colorHex: "#4B4F50", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202309", colorOrder: 4);
+            var color_blue = ColorBK.Create(colorName: "blue", colorHex: "#D5DDDF", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-blue-202309", colorOrder: 0);
+            var color_pink = ColorBK.Create(colorName: "pink", colorHex: "#EBD3D4", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-pink-202309", colorOrder: 1);
+            var color_yellow = ColorBK.Create(colorName: "yellow", colorHex: "#EDE6C8", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-yellow-202309", colorOrder: 2);
+            var color_green = ColorBK.Create(colorName: "green", colorHex: "#D0D9CA", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-green-202309", colorOrder: 3);
+            var color_black = ColorBK.Create(colorName: "black", colorHex: "#4B4F50", colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202309", colorOrder: 4);
 
             var imageList_blue = new List<Image>
             {

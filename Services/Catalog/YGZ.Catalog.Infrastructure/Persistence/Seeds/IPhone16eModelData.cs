@@ -30,19 +30,19 @@ public partial class Seeds
                 Storage.STORAGE_1024,
             };
 
-            var modelList1 = new List<Model>
+            var modelList1 = new List<ModelBK>
             {
-                Model.Create(modelName: "iPhone 16e",
+                ModelBK.Create(modelName: "iPhone 16e",
                              modelOrder: 0),
             };
 
-            var colorList1 = new List<Color>
+            var colorList1 = new List<ColorBK>
             {
-                Color.Create(colorName: "white",
+                ColorBK.Create(colorName: "white",
                              colorHex: "#FAFAFA",
                              colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-white-202409",
                              colorOrder: 3),
-                Color.Create(colorName: "black",
+                ColorBK.Create(colorName: "black",
                              colorHex: "#3C4042",
                              colorImage:"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202409",
                              colorOrder: 4),

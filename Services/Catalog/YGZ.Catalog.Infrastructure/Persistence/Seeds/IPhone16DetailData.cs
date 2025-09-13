@@ -15,11 +15,11 @@ public partial class Seeds
     {
         get
         {
-            var color_ultramarine = Color.Create("ultramarine", "#9AADF6", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-ultramarine-202409", null);
-            var color_teal = Color.Create("teal", "#B0D4D2", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-teal-202409", null);
-            var color_pink = Color.Create("pink", "#F2ADDA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-pink-202409", null);
-            var color_white = Color.Create("white", "#FAFAFA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-white-202409", null);
-            var color_black = Color.Create("black", "#3C4042", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202409", null);
+            var color_ultramarine = ColorBK.Create("ultramarine", "#9AADF6", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-ultramarine-202409", null);
+            var color_teal = ColorBK.Create("teal", "#B0D4D2", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-teal-202409", null);
+            var color_pink = ColorBK.Create("pink", "#F2ADDA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-pink-202409", null);
+            var color_white = ColorBK.Create("white", "#FAFAFA", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-white-202409", null);
+            var color_black = ColorBK.Create("black", "#3C4042", "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202409", null);
 
             var imageList_ultramarine = new List<Image>
             {

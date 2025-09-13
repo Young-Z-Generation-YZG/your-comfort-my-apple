@@ -13,7 +13,7 @@ public static class MappingExtension
 {
     public static IPhone16Model ToEntity(this CreateIPhone16ModelCommand dto)
     {
-        List<Color> colors = dto.Colors.Select(color => Color.Create(color.ColorName,
+        List<ColorBK> colors = dto.Colors.Select(color => ColorBK.Create(color.ColorName,
                                                                      color.ColorHex,
                                                                      color.ColorImage,
                                                                      color.ColorOrder)).ToList();
@@ -27,7 +27,7 @@ public static class MappingExtension
                                                                                 imageBytes: image.ImageBytes,
                                                                                 imageOrder: image.ImageOrder)).ToList();
 
-        var models = dto.Models.Select(model => Model.Create(modelName: model.ModelName,
+        var models = dto.Models.Select(model => ModelBK.Create(modelName: model.ModelName,
                                                              modelOrder: model.ModelOrder)).ToList();
 
         var storages = dto.Storages.Select(s => Storage.FromValue(s)).ToList();
@@ -58,7 +58,7 @@ public static class MappingExtension
 
     public static IPhone16Detail ToEntity(this CreateIPhone16DetailsCommand dto)
     {
-        var color = Color.Create(dto.Color.ColorName,
+        var color = ColorBK.Create(dto.Color.ColorName,
                                  dto.Color.ColorHex,
                                  dto.Color.ColorImage,
                                  dto.Color.ColorOrder);

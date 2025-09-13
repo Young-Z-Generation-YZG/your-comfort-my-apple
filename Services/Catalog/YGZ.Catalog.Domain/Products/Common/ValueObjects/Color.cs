@@ -1,42 +1,44 @@
 ﻿
-
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 public class Color : ValueObject
 {
-    [BsonElement("color_name")]
-    public string ColorName { get; set; }
+    [BsonElement("name")]
+    public string Name { get; init; }
 
-    [BsonElement("color_hex")]
-    public string ColorHex { get; set; }
+    [BsonElement("hex_code")]
+    public string HexCode { get; init; }
 
-    [BsonElement("color_Image")]
-    public string ColorImage { get; set; }
+    [BsonElement("order")]
+    public int Order { get; init; } = 0;
 
-    [BsonElement("color_order")]
-    public int? ColorOrder { get; set; }
-
-    private Color(string name, string hex, string image, int? order)
+    private Color(string name, string hexCode, int order)
     {
-        ColorName = name;
-        ColorHex = hex;
-        ColorImage = image;
-        ColorOrder = order;
+        Name = name;
+        HexCode = hexCode;
+        Order = order;
     }
 
-    public static Color Create(string colorName, string colorHex, string colorImage, int? colorOrder)
+    public static Color Create(string name, string hexCode, int order)
     {
-        return new Color(colorName, colorHex, colorImage, colorOrder);
+        EColor.TryFromName(name, out var color);
+
+        if (color is null)
+        {
+            throw new ArgumentException("Invalid EColor ${name}", name);
+        }
+
+        return new Color(name, hexCode, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return ColorName;
-        yield return ColorHex;
-        yield return ColorImage;
-        yield return ColorOrder;
+        yield return Name;
+        yield return HexCode;
+        yield return Order;
     }
 }

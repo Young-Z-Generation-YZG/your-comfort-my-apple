@@ -29,10 +29,10 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
     public string Name { get; set; }
 
     [BsonElement("models")]
-    public List<Model> Models { get; set; }
+    public List<ModelBK> Models { get; set; }
 
     [BsonElement("colors")]
-    public List<Color> Colors { get; set; } = [];
+    public List<ColorBK> Colors { get; set; } = [];
 
     [BsonElement("storages")]
     public List<Storage> Storages { get; set; } = [];
@@ -93,8 +93,8 @@ public class IPhone16Model : AggregateRoot<IPhone16ModelId>, IAuditable, ISoftDe
 
     public static IPhone16Model Create(IPhone16ModelId iPhone16ModelId,
                                        string name,
-                                       List<Model> models,
-                                       List<Color> colors,
+                                       List<ModelBK> models,
+                                       List<ColorBK> colors,
                                        List<Storage> storages,
                                        string description,
                                        List<Image> descriptionImages,

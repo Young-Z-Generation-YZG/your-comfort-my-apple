@@ -30,33 +30,33 @@ public partial class Seeds
                 Storage.STORAGE_1024,
             };
 
-            var modelList1 = new List<Model>
+            var modelList1 = new List<ModelBK>
             {
-                Model.Create(modelName: "iPhone 15",
+                ModelBK.Create(modelName: "iPhone 15",
                              modelOrder: 0),
-                Model.Create(modelName: "iPhone 15 Plus",
+                ModelBK.Create(modelName: "iPhone 15 Plus",
                              modelOrder: 1),
             };
 
-            var colorList1 = new List<Color>
+            var colorList1 = new List<ColorBK>
             {
-                Color.Create(colorName: "blue",
+                ColorBK.Create(colorName: "blue",
                              colorHex: "#D5DDDF",
                              colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-blue-202309",
                              colorOrder: 0),
-                Color.Create(colorName: "pink",
+                ColorBK.Create(colorName: "pink",
                              colorHex: "#EBD3D4",
                              colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-pink-202309",
                              colorOrder: 1),
-                Color.Create(colorName: "yellow",
+                ColorBK.Create(colorName: "yellow",
                              colorHex: "#EDE6C8",
                              colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-yellow-202309",
                              colorOrder: 2),
-                Color.Create(colorName: "green",
+                ColorBK.Create(colorName: "green",
                              colorHex: "#D0D9CA",
                              colorImage: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-green-202309",
                              colorOrder: 3),
-                Color.Create(colorName: "black",
+                ColorBK.Create(colorName: "black",
                              colorHex: "#4B4F50",
                              colorImage:"https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/finish-black-202309",
                              colorOrder: 4),

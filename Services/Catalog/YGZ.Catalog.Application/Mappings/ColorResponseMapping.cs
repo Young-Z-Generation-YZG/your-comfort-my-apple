@@ -11,7 +11,7 @@ public class ColorResponseMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<Color, ColorResponse>()
+        config.NewConfig<ColorBK, ColorResponse>()
             .Map(dest => dest.ColorName, src => src.ColorName)
             .Map(dest => dest.ColorHex, src => src.ColorHex)
             .Map(dest => dest.ColorImage, src => src.ColorImage)

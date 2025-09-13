@@ -22,10 +22,10 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     public required SKUCode SKUCode { get; init; }
 
     [BsonElement("product_type")]
-    public required EProductType ProductType { get; init; }
+    public string ProductType { get; private set; }
 
     [BsonElement("state")]
-    public State State { get; set; } = State.INACTIVE;
+    public string State { get; private set; }
 
     [BsonElement("model")]
     public Model Model { get; set; } = default!;
@@ -74,7 +74,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         {
             SKUCode = skuCode,
             CategoryId = categoryId,
-            ProductType = productType,
+            ProductType = productType.Name,
             Model = model,
             Color = color,
             Storage = storage,
@@ -84,5 +84,15 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         };
 
         return sku;
+    }
+
+    public void SetType(EProductType productType)
+    {
+        ProductType = productType.Name;
+    }
+
+    public void SetState(EState state)
+    {
+        State = state.Name;
     }
 }

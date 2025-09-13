@@ -1,31 +1,39 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 public class Model : ValueObject
 {
-    [BsonElement("model_name")]
-    public string ModelName { get; set; }
+    [BsonElement("name")]
+    public string Name { get; set; }
 
-    [BsonElement("model_order")]
-    public int? ModelOrder { get; set; }
+    [BsonElement("order")]
+    public int Order { get; set; } = 0;
 
-    private Model(string name, int? order)
+    private Model(EIphoneModel model, int order)
     {
-        ModelName = name;
-        ModelOrder = order;
+        Name = model.Name;
+        Order = order;
     }
 
-    public static Model Create(string modelName, int? modelOrder)
+    public static Model Create(string name, int order)
     {
-        return new Model(modelName, modelOrder);
+        EIphoneModel.TryFromName(name, out var model);
+
+        if (model is null)
+        {
+            throw new ArgumentException("Invalid EStorage ${name}", name);
+        }
+
+        return new Model(model, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return ModelName;
-        yield return ModelOrder;
+        yield return Name;
+        yield return Order;
     }
 }
