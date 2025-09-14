@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Text;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Common.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 public class Slug : ValueObject
 {

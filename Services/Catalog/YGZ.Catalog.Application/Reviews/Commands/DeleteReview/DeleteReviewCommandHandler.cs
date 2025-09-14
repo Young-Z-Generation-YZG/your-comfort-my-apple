@@ -6,8 +6,8 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
-using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Ordering.Api.Protos;
 using OrderingGrpcErrors = YGZ.BuildingBlocks.Shared.Errors.Common.Errors;
 

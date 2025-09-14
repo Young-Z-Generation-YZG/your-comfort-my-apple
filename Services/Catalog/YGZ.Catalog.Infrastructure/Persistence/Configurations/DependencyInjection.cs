@@ -2,7 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson.Serialization;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
-using YGZ.Catalog.Domain.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Configurations.Serializers;
 
@@ -15,7 +16,9 @@ public static class DependencyInjection
         BsonSerializer.RegisterSerializer(typeof(CategoryId), new CategoryIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(ReviewId), new ReviewIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(IPhone16Id), new IPhone16IdSerialization());
-        BsonSerializer.RegisterSerializer(typeof(IPhone16ModelId), new IPhone16ModelIdSerialization());
+
+        BsonSerializer.RegisterSerializer(typeof(ModelId), new ModelIdSerialization());
+        BsonSerializer.RegisterSerializer(typeof(SKUId), new SKUIdSerialization());
 
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerialization());
 

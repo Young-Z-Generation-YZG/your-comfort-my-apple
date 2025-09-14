@@ -29,6 +29,6 @@ public sealed record ImageRequest
     [JsonPropertyName("image_bytes")]
     public decimal ImageBytes { get; set; } = 0;
 
-    [JsonPropertyName("image_order")]
-    public int? ImageOrder { get; set; } = null;
+    [JsonPropertyName("order")]
+    public int Order { get; init; }
 }

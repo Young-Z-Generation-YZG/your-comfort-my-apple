@@ -1,7 +1,4 @@
-﻿
-
-using System.Reflection.Metadata;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -67,7 +64,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
         var totalPages = (int)Math.Ceiling((double)totalRecords / limit);
 
-
         var items = await _collection.Find(filter)
                                      .Sort(sort)
                                      .Skip((page - 1) * limit)
@@ -106,7 +102,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(MongoRepository<TEntity, TId>)} - method:{nameof(InsertOneAsync)}");
             throw;
         }
     }
@@ -126,7 +121,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                 await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
             }
 
-
             if (result.ModifiedCount > 0)
             {
                 return true;
@@ -136,7 +130,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(MongoRepository<TEntity, TId>)} - method:{nameof(UpdateAsync)}");
             throw;
         }
     }
@@ -165,7 +158,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message, $"class:{nameof(MongoRepository<TEntity, TId>)} - method:{nameof(DeleteAsync)}");
             throw;
         }
     }

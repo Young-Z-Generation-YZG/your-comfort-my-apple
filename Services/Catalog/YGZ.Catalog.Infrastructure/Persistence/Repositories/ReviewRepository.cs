@@ -6,8 +6,8 @@ using Microsoft.Extensions.Options;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
-using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
 using YGZ.Catalog.Infrastructure.Settings;
 

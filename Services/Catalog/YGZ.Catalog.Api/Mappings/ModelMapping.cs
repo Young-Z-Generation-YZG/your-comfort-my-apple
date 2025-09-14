@@ -4,15 +4,14 @@ using YGZ.Catalog.Application.Common.Commands;
 
 namespace YGZ.Catalog.Api.Mappings;
 
-public class ColorMapping : IRegister
+public class ModelMapping : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<ColorRequest, ColorCommand>()
-            .Map(dest => dest.Name, src => src.ColorName)
-            .Map(dest => dest.HexCode, src => src.ColorHexCode)
+        config.NewConfig<ModelRequest, IPhoneModelCommand>()
+            .Map(dest => dest.Name, src => src.ModelName)
             .Map(dest => dest.Order, src => src.Order);
     }
 }

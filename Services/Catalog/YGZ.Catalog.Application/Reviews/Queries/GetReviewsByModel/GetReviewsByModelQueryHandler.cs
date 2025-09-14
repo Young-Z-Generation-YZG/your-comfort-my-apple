@@ -7,8 +7,8 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Reviews;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
-using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
 
 namespace YGZ.Catalog.Application.Reviews.Commands;
 
@@ -25,7 +25,7 @@ public class GetReviewsByModelQueryHandler : IQueryHandler<GetReviewsByModelQuer
 
     public async Task<Result<PaginationResponse<ProductReviewResponse>>> Handle(GetReviewsByModelQuery request, CancellationToken cancellationToken)
     {
-        var filter = Builders<Review>.Filter.Eq(x => x.ModelId, IPhone16ModelId.Of(request.ModelId));
+        var filter = Builders<Review>.Filter.Eq(x => x.ModelId, ModelId.Of(request.ModelId));
         var sort = Builders<Review>.Sort.Descending(x => x.Rating);
 
         var result = await _reviewRepository.GetAllAsync(request.Page, request.Limit, filter, sort, cancellationToken);
@@ -47,7 +47,7 @@ public class GetReviewsByModelQueryHandler : IQueryHandler<GetReviewsByModelQuer
         var reviewResponses = reviews.Select(r => new ProductReviewResponse
         {
             ReviewId = r.Id.Value!,
-            CustomerUsername = r.CustomerUserName,
+            CustomerUsername = r.CustomerFullName,
             CustomerImage = "",
             Rating = r.Rating,
             Content = r.Content,

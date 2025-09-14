@@ -9,7 +9,7 @@ namespace YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
 public sealed record CreateIPhone16DetailsCommand : ICommand<bool>
 {
     public string Model { get; set; } = default!;
-    public ColorCommand Color { get; set; } = default!;
+    public ColorCommandBK Color { get; set; } = default!;
     public int Storage { get; set; } = 0;
     public decimal UnitPrice { get; set; } = 0;
     public string Description { get; set; } = default!;

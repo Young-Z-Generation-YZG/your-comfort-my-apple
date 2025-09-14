@@ -2,8 +2,9 @@
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
-using YGZ.Catalog.Domain.Products.Iphone16.Events;
-using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.Events;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone.Entities;
 
@@ -12,33 +13,33 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
 {
     public Review(ReviewId id) : base(id) { }
 
-    [BsonElement("product_id")]
-    required public IPhone16Id ProductId { get; set; } = default!;
-
     [BsonElement("model_id")]
-    required public IPhone16ModelId ModelId { get; set; } = default!;
+    public ModelId ModelId { get; init; }
 
-    [BsonElement("content")]
-    required public string Content { get; set; }
-
-    [BsonElement("rating")]
-    required public int Rating { get; set; }
+    [BsonElement("sku_id")]
+    public SKUId SKUId { get; init; }
 
     [BsonElement("order_id")]
-    required public string OrderId { get; set; }
+    public string OrderId { get; init; }
 
     [BsonElement("order_item_id")]
-    required public string OrderItemId { get; set; }
+    public string OrderItemId { get; init; }
 
     [BsonElement("customer_id")]
-    required public string CustomerId { get; set; }
+    public string CustomerId { get; init; }
 
-    [BsonElement("customer_username")]
-    required public string CustomerUserName { get; set; }
+    [BsonElement("customer_full_name")]
+    public string CustomerFullName { get; init; }
 
-    public DateTime CreatedAt => Id.Id?.CreationTime ?? DateTime.Now;
+    [BsonElement("content")]
+    public string Content { get; private set; }
 
-    public DateTime UpdatedAt => Id.Id?.CreationTime ?? DateTime.Now;
+    [BsonElement("rating")]
+    public int Rating { get; private set; }
+
+    public DateTime CreatedAt => DateTime.Now;
+
+    public DateTime UpdatedAt => DateTime.Now;
 
     public bool IsDeleted => false;
 
@@ -48,7 +49,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
 
     public string? ModifiedBy => null;
 
-    public static Review Create(string content, int rating, IPhone16Id productId, IPhone16ModelId modelId, string OrderId, string orderItemId, string customerId, string customerUserName)
+    public static Review Create(ModelId modelId, SKUId skuId, string OrderId, string orderItemId, string customerId, string customerFullName, string content, int rating)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
         ArgumentOutOfRangeException.ThrowIfLessThan(rating, 1);
@@ -57,11 +58,11 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
         var review = new Review(ReviewId.Create())
         {
             ModelId = modelId,
-            ProductId = productId,
+            SKUId = skuId,
             OrderId = OrderId,
             OrderItemId = orderItemId,
             CustomerId = customerId,
-            CustomerUserName = customerUserName,
+            CustomerFullName = customerFullName,
             Content = content,
             Rating = rating,
         };
@@ -76,6 +77,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
         ArgumentException.ThrowIfNullOrWhiteSpace(newContent);
         ArgumentOutOfRangeException.ThrowIfLessThan(newRating, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(newRating, 5);
+
         Content = newContent;
         Rating = newRating;
 

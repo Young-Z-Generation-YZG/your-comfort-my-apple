@@ -9,5 +9,6 @@ public sealed record ImageCommand(string ImageId,
                                   decimal ImageWidth,
                                   decimal ImageHeight,
                                   decimal ImageBytes,
-                                  int? ImageOrder) { }
+                                  int Order)
+{ }
 

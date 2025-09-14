@@ -1,7 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
-using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;

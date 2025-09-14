@@ -7,7 +7,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Reviews;
 using YGZ.Catalog.Application.Abstractions;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
 
 namespace YGZ.Catalog.Application.Reviews.Queries.GetReviewsByOrder;
 
@@ -40,7 +40,7 @@ public class GetReviewsByOrderQueryHandler : IQueryHandler<GetReviewsByOrderQuer
         return result.Select(r => new ReviewInOrderResponse
         {
             ReviewId = r.Id.Value!,
-            ProductId = r.ProductId.Value!,
+            ProductId = "",
             ModelId = r.ModelId.Value!,
             OrderId = r.OrderId,
             OrderItemId = r.OrderItemId,

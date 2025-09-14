@@ -6,14 +6,13 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
-using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone;
 
 [BsonCollection("IphoneModels")]
-public class IPhoneModel : AggregateRoot<IphoneModelId>, IAuditable, ISoftDelete
+public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
 {
-    public IPhoneModel(IphoneModelId id) : base(id)
+    public IphoneModel(ModelId id) : base(id)
     {
         RatingStars = InitRatingStar();
     }
@@ -35,6 +34,10 @@ public class IPhoneModel : AggregateRoot<IphoneModelId>, IAuditable, ISoftDelete
 
     [BsonElement("storages")]
     public List<Storage> Storages { get; set; } = [];
+
+    [BsonElement("showcase_image")]
+    public List<Image> ShowcaseImage { get; set; } = [];
+
 
     [BsonElement("description")]
     public string Description { get; set; } = default!;
@@ -81,24 +84,26 @@ public class IPhoneModel : AggregateRoot<IphoneModelId>, IAuditable, ISoftDelete
         return ratingStars;
     }
 
-    public static IPhoneModel Create(IphoneModelId iPhoneModelId,
+    public static IphoneModel Create(ModelId iPhoneModelId,
                                      string name,
                                      List<Model> models,
                                      List<Color> colors,
                                      List<Storage> storages,
+                                     List<Image> showcaseImages,
                                      string description,
                                      AverageRating averageRating,
                                      List<RatingStar> ratingStars,
                                      CategoryId categoryId,
                                      int? overallSold = 0)
     {
-        return new IPhoneModel(iPhoneModelId)
+        return new IphoneModel(iPhoneModelId)
         {
             Name = name,
             NormalizedModel = NormalizeString.Normalize(name),
             Models = models,
             Colors = colors,
             Storages = storages,
+            ShowcaseImage = showcaseImages,
             Description = description,
             AverageRating = averageRating,
             OverallSold = (int)overallSold!,

@@ -3,16 +3,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Catalog.Api.Contracts.IPhone16;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Model;
-using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
-using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
-using YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
+using YGZ.Catalog.Api.Contracts.IPhone16;
+using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Api.Contracts.IPhoneRequest;
-using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonePromotions;
-using YGZ.Catalog.Application.IPhone.Queries.GetModels;
 using YGZ.Catalog.Api.Contracts.modelRequest;
+using YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
+using YGZ.Catalog.Application.IPhone.Queries.GetModels;
+using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
+using YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
+using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonePromotions;
+using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -63,10 +64,10 @@ public class IPhoneController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("iphone-16/models")]
-    public async Task<IActionResult> CreateIPhone16ModelItem([FromBody] CreateIPhone16ModelRequest request, CancellationToken cancellationToken)
+    [HttpPost("iphone/models")]
+    public async Task<IActionResult> CreateIphoneModel([FromBody] CreateIphoneModelRequest request, CancellationToken cancellationToken)
     {
-        var cmd = _mapper.Map<CreateIPhone16ModelCommand>(request);
+        var cmd = _mapper.Map<CreateIphoneModelCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 

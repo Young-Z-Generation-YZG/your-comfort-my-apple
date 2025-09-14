@@ -1,11 +1,11 @@
 ﻿
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
-public class IPhone16ModelId : ValueObject
+public class ReviewId : ValueObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -17,12 +17,12 @@ public class IPhone16ModelId : ValueObject
         yield return Id!;
     }
 
-    public static IPhone16ModelId Create()
+    public static ReviewId Create()
     {
-        return new IPhone16ModelId { Id = ObjectId.GenerateNewId() };
+        return new ReviewId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static IPhone16ModelId Of(string? id)
+    public static ReviewId Of(string? id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
@@ -30,6 +30,6 @@ public class IPhone16ModelId : ValueObject
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 
-        return new IPhone16ModelId { Id = value };
+        return new ReviewId { Id = value };
     }
 }

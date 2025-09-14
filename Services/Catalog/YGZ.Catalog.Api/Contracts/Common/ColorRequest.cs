@@ -7,15 +7,15 @@ public sealed record ColorRequest
 {
     [Required]
     [JsonPropertyName("color_name")]
-    public string ColorName { get; set; } = string.Empty;
+    public required string ColorName { get; init; }
 
     [Required]
-    [JsonPropertyName("color_hex")]
-    public string ColorHex { get; set; } = string.Empty;
+    [JsonPropertyName("color_hex_code")]
+    public required string ColorHexCode { get; init; }
 
-    [JsonPropertyName("color_image")]
-    public string ColorImage { get; set; } = string.Empty;
+    [JsonPropertyName("showcase_image_id")]
+    public string? ShowcaseImageId { get; init; } = null;
 
-    [JsonPropertyName("color_order")]
-    public int? ColorOrder { get; set; } = null;
+    [JsonPropertyName("order")]
+    public int Order { get; init; }
 }

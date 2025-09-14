@@ -7,8 +7,8 @@ public sealed record ModelRequest
 {
     [Required]
     [JsonPropertyName("model_name")]
-    public string ModelName { get; set; } = string.Empty;
+    public required string ModelName { get; init; }
 
-    [JsonPropertyName("model_order")]
-    public int? ModelOrder { get; set; } = null;
+    [JsonPropertyName("order")]
+    public int Order { get; init; }
 }

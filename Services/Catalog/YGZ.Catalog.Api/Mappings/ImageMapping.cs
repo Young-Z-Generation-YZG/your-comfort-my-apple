@@ -18,6 +18,6 @@ public class ImageMapping : IRegister
             .Map(dest => dest.ImageWidth, src => src.ImageWidth)
             .Map(dest => dest.ImageHeight, src => src.ImageHeight)
             .Map(dest => dest.ImageBytes, src => src.ImageBytes)
-            .Map(dest => dest.ImageOrder, src => src.ImageOrder);
+            .Map(dest => dest.Order, src => src.Order);
     }
 }

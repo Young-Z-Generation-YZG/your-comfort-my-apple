@@ -7,10 +7,10 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 using YGZ.Catalog.Domain.Products.Iphone16.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductBySlug;
 

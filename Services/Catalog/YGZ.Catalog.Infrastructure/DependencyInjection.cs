@@ -26,7 +26,7 @@ public static class DependencyInjection
         services.AddMongoDbConfigurations();
 
         services.AddScoped(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
-        services.AddScoped<IIPhone16ModelRepository, IPhone16ModelRepository>();
+        //services.AddScoped<IIPhone16ModelRepository, IPhone16ModelRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IUploadImageService, UploadImageService>();
 

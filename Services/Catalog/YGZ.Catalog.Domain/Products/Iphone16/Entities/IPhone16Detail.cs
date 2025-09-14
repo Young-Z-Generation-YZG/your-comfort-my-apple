@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
-using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -54,7 +53,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
     required public Slug Slug { get; set; } = default!;
 
     [BsonElement("iphone_model_id")]
-    required public IPhone16ModelId IPhoneModelId { get; set; }
+    required public ModelId IPhoneModelId { get; set; }
 
     [BsonElement("category_id")]
     required public CategoryId CategoryId { get; set; }
@@ -94,7 +93,7 @@ public class IPhone16Detail : Entity<IPhone16Id>, IAuditable, ISoftDelete
             TotalSold = 0,
             Images = images,
             Slug = Slug.Create(model),
-            IPhoneModelId = IPhone16ModelId.Of(iPhoneModelId),
+            IPhoneModelId = ModelId.Of(iPhoneModelId),
             CategoryId = CategoryId.Of(categoryId)
         };
     }

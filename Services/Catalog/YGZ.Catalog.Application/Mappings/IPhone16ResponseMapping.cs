@@ -19,6 +19,5 @@ public class IPhone16ResponseMapping : IRegister
             .Map(dest => dest.ProductUnitPrice, src => src.UnitPrice)
             .Map(dest => dest.ProductAvailableInStock, src => src.AvailableInStock)
             .Map(dest => dest.ProductSlug, src => src.Slug.Value);
-
     }
 }

@@ -2,9 +2,9 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
-using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Categories;
 
@@ -31,9 +31,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("parent_id")]
     public CategoryId? ParentId { get; set; } = null;
 
-    public DateTime CreatedAt => Id?.Id!.Value.CreationTime ?? DateTime.Now;
+    public DateTime CreatedAt => DateTime.Now;
 
-    public DateTime UpdatedAt => Id?.Id!.Value.CreationTime ?? DateTime.Now;
+    public DateTime UpdatedAt => DateTime.Now;
 
     public string? ModifiedBy => null;
 

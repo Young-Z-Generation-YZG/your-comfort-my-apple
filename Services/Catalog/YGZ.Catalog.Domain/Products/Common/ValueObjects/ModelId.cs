@@ -3,9 +3,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
-public class IphoneModelId : ValueObject
+public class ModelId : ValueObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -17,12 +17,12 @@ public class IphoneModelId : ValueObject
         yield return Id!;
     }
 
-    public static IphoneModelId Create()
+    public static ModelId Create()
     {
-        return new IphoneModelId { Id = ObjectId.GenerateNewId() };
+        return new ModelId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static IphoneModelId Of(string? id)
+    public static ModelId Of(string? id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
@@ -30,6 +30,6 @@ public class IphoneModelId : ValueObject
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 
-        return new IphoneModelId { Id = value };
+        return new ModelId { Id = value };
     }
 }
