@@ -6,6 +6,7 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.Events;
 
 namespace YGZ.Catalog.Domain.Products.Iphone;
 
@@ -96,7 +97,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      CategoryId categoryId,
                                      int? overallSold = 0)
     {
-        return new IphoneModel(iPhoneModelId)
+        var newModel = new IphoneModel(iPhoneModelId)
         {
             Name = name,
             NormalizedModel = NormalizeString.Normalize(name),
@@ -110,6 +111,10 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Slug = Slug.Create(name),
             CategoryId = categoryId,
         };
+
+        newModel.AddDomainEvent(new IphoneModelCreatedDomainEvent(newModel));
+
+        return newModel;
     }
 
     public void AddNewRating(Review review)

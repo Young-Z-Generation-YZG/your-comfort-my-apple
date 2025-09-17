@@ -23,7 +23,7 @@ public class DispatchDomainEventInterceptor : IDispatchDomainEventInterceptor
 
     public async Task BeforeInsert(IDomainEvent domainEvent)
     {
-        _logger.LogInformation("Dispatching domain event: {DomainEvent}", domainEvent.GetType().Name);
+        _logger.LogInformation("[Domain Event Dispatched]: {DomainEvent}", domainEvent.GetType().Name);
 
         await _mediator.Publish(domainEvent);
     }

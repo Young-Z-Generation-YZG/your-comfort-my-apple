@@ -1,6 +1,5 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
-using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -14,17 +13,11 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
 {
     public SKU(SKUId id) : base(id) { }
 
-    [BsonElement("category_id")]
-    public CategoryId CategoryId { get; set; } = default!;
-
     [BsonElement("sku_code")]
     public required SKUCode SKUCode { get; init; }
 
     [BsonElement("product_type")]
     public string ProductType { get; private set; }
-
-    [BsonElement("state")]
-    public string State { get; private set; }
 
     [BsonElement("model")]
     public Model Model { get; set; } = default!;
@@ -44,6 +37,9 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     [BsonElement("total_sold")]
     public int TotalSold { get; set; } = 0;
 
+    [BsonElement("state")]
+    public string State { get; private set; }
+
     [BsonElement("slug")]
     public Slug Slug { get; set; } = default!;
 
@@ -61,7 +57,6 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
 
     public static SKU Create(
         SKUCode skuCode,
-        CategoryId categoryId,
         EProductType productType,
         Model model,
         Color color,
@@ -72,13 +67,13 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         var sku = new SKU(SKUId.Create())
         {
             SKUCode = skuCode,
-            CategoryId = categoryId,
             ProductType = productType.Name,
             Model = model,
             Color = color,
             Storage = storage,
             UnitPrice = unitPrice,
             AvailableInStock = availableInStock,
+            State = EState.INACTIVE.Name,
             Slug = Slug.Create(skuCode.Value)
         };
 

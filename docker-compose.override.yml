@@ -1,400 +1,481 @@
 services:
-  ygz.gateways.yarp:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-    ports:
-      - "6006:8080"
-      - "6066:8081"
-    depends_on:
-      - ygz.identity.api
-      - ygz.catalog.api
-      - ygz.basket.api
-      - ygz.ordering.api
-      - ygz.discount.grpc
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    ygz.gateways.yarp:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+        ports:
+            - "6006:8080"
+            - "6066:8081"
+        depends_on:
+            - ygz.identity.api
+            - ygz.catalog.api
+            - ygz.basket.api
+            - ygz.ordering.api
+            - ygz.discount.grpc
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
 
-  db.keycloak:
-    container_name: db.keycloak
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=KeycloakDb
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bale -d KeycloakDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "1432:5432"
-    volumes:
-      - postgres_keycloak:/var/lib/postgresql/data/
-    networks:
-      - app-network
+    db.keycloak:
+        container_name: db.keycloak
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=KeycloakDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d KeycloakDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "1432:5432"
+        volumes:
+            - postgres_keycloak:/var/lib/postgresql/data/
+        networks:
+            - app-network
 
-  db.identity:
-    container_name: db.identity
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=IdentityDb
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bale -d IdentityDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "2432:5432"
-    volumes:
-      - postgres_identity:/var/lib/postgresql/data/
-    networks:
-      - app-network
+    db.identity:
+        container_name: db.identity
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=IdentityDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d IdentityDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "2432:5432"
+        volumes:
+            - postgres_identity:/var/lib/postgresql/data/
+        networks:
+            - app-network
 
-  db.catalog:
-    container_name: mongodb
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=bale
-      - MONGO_INITDB_ROOT_PASSWORD=bale
-      - MONGO_INITDB_DATABASE=CatalogDb
-    restart: always
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mongosh",
-          "--host",
-          "localhost",
-          "--username",
-          "bale",
-          "--password",
-          "bale",
-          "--eval",
-          "db.runCommand('ping').ok",
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "37017:27017"
-    volumes:
-      - mongodb_catalog:/data/db
-      - ./DockerVolumes/MongoDb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
-    networks:
-      - app-network
+    db.catalog.replica.primary:
+        container_name: db.catalog.replica.primary
+        restart: always
+        environment:
+            - MONGO_INITDB_REPLICASET=rs0
+        ports:
+            - 27001:27017
+        volumes:
+            - ./provision/dockerVolumes/mongoDb/volumes/replica-primary:/data/db
+            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+        depends_on:
+            # - db.catalog.replica.secondary
+            # - db.catalog.replica.arbiter
+        command: mongod --replSet "rs0"
+        networks:
+            - app-network
 
-  db.basket:
-    image: postgres:alpine
-    container_name: db.basket
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=BasketDb
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "3432:5432"
-    volumes:
-      - postgres_basket:/var/lib/postgresql/data/
-    networks:
-      - app-network
+    db.catalog.replica.secondary:
+        container_name: db.catalog.replica.secondary
+        restart: always
+        environment:
+            - MONGO_INITDB_REPLICASET=rs0
+        ports:
+            - 27002:27017
+        environment:
+            - MONGO_INITDB_REPLICASET=rs0
+        volumes:
+            - ./provision/dockerVolumes/mongoDb/volumes/replica-secondary:/data/db
+            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+        command: mongod --replSet "rs0"
+        networks:
+            - app-network
 
-  db.discount:
-    image: postgres:alpine
-    container_name: db.discount
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=DiscountDb
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bale -d DiscountDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "4432:5432"
-    volumes:
-      - postgres_discount:/var/lib/postgresql/data/
-    networks:
-      - app-network
+    db.catalog.replica.arbiter:
+        container_name: db.catalog.replica.arbiter
+        restart: always
+        environment:
+            - MONGO_INITDB_REPLICASET=rs0
+        ports:
+            - 27003:27017
+        volumes:
+            - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
+            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+        command: mongod --replSet "rs0"
+        networks:
+            - app-network
 
-  db.ordering:
-    container_name: db.ordering
-    environment:
-      - POSTGRES_USER=bale
-      - POSTGRES_PASSWORD=bale
-      - POSTGRES_DB=OrderingDb
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bale -d OrderingDb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "6432:5432"
-    volumes:
-      - postgres_ordering:/var/lib/postgresql/data/
-    networks:
-      - app-network
+    # db.catalog.replica.primary:
+    #     container_name: db.catalog.replica.primary
+    #     restart: always
+    #     environment:
+    #         - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+    #         - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    #     ports:
+    #         - ${MONGODB_PORT}:27017
+    #     volumes:
+    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-primary:/data/db
+    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+    #     depends_on:
+    #         - db.catalog.replica.secondary
+    #         - db.catalog.replica.arbiter
+    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
 
-  db.distributedcache:
-    image: redis:alpine
-    container_name: db.distributedcache
-    restart: always
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_basket:/data
-    networks:
-      - app-network
+    # db.catalog.replica.secondary:
+    #     container_name: db.catalog.replica.secondary
+    #     restart: always
+    #     expose:
+    #         - 27017
+    #     volumes:
+    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-secondary:/data/db
+    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
 
-  ygz.keycloak.server:
-    container_name: ygz.keycloak.server
-    command:
-      [
-        "start-dev",
-        "--import-realm",
-        "--http-enabled=false",
-        "--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info",
-        "--log-console-color=true",
-        "--hostname-debug=true",
-        "--hostname=http://localhost:17070",
-        "--hostname-backchannel-dynamic=true",
-      ]
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_HEALTH_ENABLED=true
-      - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://db.keycloak:5432/KeycloakDb
-      - KC_DB_USERNAME=bale
-      - KC_DB_PASSWORD=bale
-      - KC_HTTP_PORT=17070
-    restart: always
-    volumes:
-      - ./provision/dockerVolumes/keycloak/seed-realm:/opt/keycloak/data/import
-    depends_on:
-      - db.keycloak
-    ports:
-      - "17070:17070"
-    networks:
-      - app-network
+    # db.catalog.replica.arbiter:
+    #     container_name: db.catalog.replica.arbiter
+    #     restart: always
+    #     expose:
+    #         - 27017
+    #     volumes:
+    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
+    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
+    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
 
-  ygz.identity.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
-      - ConnectionStrings__RedisDb=db.distributedcache:6379
-      - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
-      - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
-      # - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
-      # - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
-      # - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
-      - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-      - WebClientSettings__BaseUrl=https://ybzone.io.vn
-      - Logging__Seq__ServerUrl=http://ygz.logging.seq:5341
-    ports:
-      - "6005:8080"
-      - "6065:8081"
-    depends_on:
-      - db.identity
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    # mongo.setup:
+    #     container_name: mongo.setup
+    #     restart: on-failure
+    #     environment:
+    #         - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+    #         - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    #     depends_on:
+    #         - db.catalog.replica.primary
+    #         - db.catalog.replica.secondary
+    #         - db.catalog.replica.arbiter
+    #     volumes:
+    #         - ./provision/dockerVolumes/mongoDb/scripts/init_test_two.sh:/scripts/init_test_two.sh
+    #     entrypoint: ["/bin/bash", "/scripts/init_test_two.sh"]
+    #     networks:
+    #         - app-network
 
-  ygz.catalog.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog:27017/CatalogDb?authSource=admin
-      - MongoDbSettings__DatabaseName=CatalogDb
-      - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-      - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
-      - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
-    ports:
-      - "6001:8080"
-      - "6061:8081"
-    depends_on:
-      db.catalog:
-        condition: service_started
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    # mongo.express:
+    #     container_name: mongo.express
+    #     restart: always
+    #     ports:
+    #         - ${MONGOEXP_PORT}:8081
+    #     environment:
+    #         - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXP_USERNAME}
+    #         - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXP_PASSWORD}
+    #         - ME_CONFIG_MONGODB_URL="mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db.catalog.replica.primary:27017/?replicaSet=rs0"
+    #     depends_on:
+    #         - db.catalog.replica.primary
 
-  ygz.basket.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
-      - ConnectionStrings__RedisDb=db.distributedcache:6379
-      - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-      - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
-      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-      - WebClientSettings__BaseUrl=https://ybzone.io.vn
-    ports:
-      - "6002:8080"
-      - "6062:8081"
-    depends_on:
-      - db.basket
-      - db.distributedcache
-      - ygz.discount.grpc
-      - mq.rabbitmq
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    db.basket:
+        image: postgres:alpine
+        container_name: db.basket
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=BasketDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "3432:5432"
+        volumes:
+            - postgres_basket:/var/lib/postgresql/data/
+        networks:
+            - app-network
 
-  ygz.discount.grpc:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
-    ports:
-      - "6003:8080"
-      - "6063:8081"
-    depends_on:
-      db.discount:
-        condition: service_healthy
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    db.discount:
+        image: postgres:alpine
+        container_name: db.discount
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=DiscountDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d DiscountDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "4432:5432"
+        volumes:
+            - postgres_discount:/var/lib/postgresql/data/
+        networks:
+            - app-network
 
-  ygz.ordering.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
-      - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-      - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-      - FeatureManagement__OrderFulfillment=false
-      - WebClientSettings__BaseUrl=https://ybzone.io.vn
-    ports:
-      - "6004:8080"
-      - "6064:8081"
-    depends_on:
-      db.ordering:
-        condition: service_healthy
-      mq.rabbitmq:
-        condition: service_healthy
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-    networks:
-      - app-network
+    db.ordering:
+        container_name: db.ordering
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=OrderingDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d OrderingDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "6432:5432"
+        volumes:
+            - postgres_ordering:/var/lib/postgresql/data/
+        networks:
+            - app-network
 
-  mq.rabbitmq:
-    container_name: mq.rabbitmq
-    hostname: rabbitmq-host
-    restart: always
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=bale
-      - RABBITMQ_DEFAULT_PASS=bale
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 5s
-      timeout: 20s
-      retries: 5
-    networks:
-      - app-network
+    db.distributedcache:
+        image: redis:alpine
+        container_name: db.distributedcache
+        restart: always
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_basket:/data
+        networks:
+            - app-network
 
-  ygz.logging.seq:
-    container_name: ygz.logging.seq
-    volumes:
-      - ./containers/seq:/data
-    environment:
-      - ACCEPT_EULA=Y
-    ports:
-      - "18080:80"
-      - "5341:5341"
-    networks:
-      - app-network
+    ygz.keycloak.server:
+        container_name: ygz.keycloak.server
+        command:
+            [
+                "start-dev",
+                "--import-realm",
+                "--http-enabled=false",
+                "--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info",
+                "--log-console-color=true",
+                "--hostname-debug=true",
+                "--hostname=http://localhost:17070",
+                "--hostname-backchannel-dynamic=true",
+            ]
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+            - KC_HEALTH_ENABLED=true
+            - KC_DB=postgres
+            - KC_DB_URL=jdbc:postgresql://db.keycloak:5432/KeycloakDb
+            - KC_DB_USERNAME=bale
+            - KC_DB_PASSWORD=bale
+            - KC_HTTP_PORT=17070
+        restart: always
+        volumes:
+            - ./provision/dockerVolumes/keycloak/seed-realm:/opt/keycloak/data/import
+        depends_on:
+            - db.keycloak
+        ports:
+            - "17070:17070"
+        networks:
+            - app-network
 
-  ygz.jaeger.opentelemetry:
-    container_name: ygz.jaeger.opentelemetry
-    ports:
-      - "4317:4317"
-      - "4318:4318"
-      - "16686:16686"
-    networks:
-      - app-network
+    ygz.identity.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
+            - ConnectionStrings__RedisDb=db.distributedcache:6379
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
+            # - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.jaeger.opentelemetry:4317
+            # - OTEL_EXPORTER_OTLP_ENDPOINT=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            # - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+            - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - Logging__Seq__ServerUrl=http://ygz.logging.seq:5341
+        ports:
+            - "6005:8080"
+            - "6065:8081"
+        depends_on:
+            - db.identity
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
 
-  # ygz.nginx.webserver:
-  #     image: nginx:stable
-  #     container_name: ygz.nginx.webserver
-  #     ports:
-  #     - "80:80"
-  #     volumes:
-  #     - ./nginx.prod.conf:/etc/nginx/nginx.conf
-  #     depends_on:
-  #     - ygz.gateways.yarp
-  #     - ygz.client.web
-  #     - ygz.identity.api
-  #     - ygz.catalog.api
-  #     - ygz.basket.api
-  #     - ygz.ordering.api
-  #     - ygz.discount.grpc
-  #     networks:
-  #     - app-network
+    ygz.catalog.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog.replica.primary:27017/CatalogDb?replicaSet=rs0
+            - MongoDbSettings__DatabaseName=CatalogDb
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+            - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
+        ports:
+            - "6001:8080"
+            - "6061:8081"
+        depends_on:
+            db.catalog.replica.primary:
+                condition: service_started
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
 
-  # ygz.client.web:
-  #     container_name: "ygz.client.web"
-  #     build:
-  #         context: ./Apps/Client
-  #         dockerfile: Dockerfile
-  #     ports:
-  #     - "3000:3000"
-  #     depends_on:
-  #     - ygz.identity.api
-  #     - ygz.catalog.api
-  #     - ygz.basket.api
-  #     - ygz.ordering.api
-  #     - ygz.discount.grpc
-  #     networks:
-  #     - app-network
+    ygz.basket.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
+            - ConnectionStrings__RedisDb=db.distributedcache:6379
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+            - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+        ports:
+            - "6002:8080"
+            - "6062:8081"
+        depends_on:
+            - db.basket
+            - db.distributedcache
+            - ygz.discount.grpc
+            - mq.rabbitmq
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
+
+    ygz.discount.grpc:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
+        ports:
+            - "6003:8080"
+            - "6063:8081"
+        depends_on:
+            db.discount:
+                condition: service_healthy
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
+
+    ygz.ordering.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
+            - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - FeatureManagement__OrderFulfillment=false
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+        ports:
+            - "6004:8080"
+            - "6064:8081"
+        depends_on:
+            db.ordering:
+                condition: service_healthy
+            mq.rabbitmq:
+                condition: service_healthy
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - app-network
+
+    mq.rabbitmq:
+        container_name: mq.rabbitmq
+        hostname: rabbitmq-host
+        restart: always
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            - RABBITMQ_DEFAULT_USER=bale
+            - RABBITMQ_DEFAULT_PASS=bale
+        healthcheck:
+            test: ["CMD", "rabbitmqctl", "status"]
+            interval: 5s
+            timeout: 20s
+            retries: 5
+        networks:
+            - app-network
+
+    ygz.logging.seq:
+        container_name: ygz.logging.seq
+        volumes:
+            - ./containers/seq:/data
+        environment:
+            - ACCEPT_EULA=Y
+        ports:
+            - "18080:80"
+            - "5341:5341"
+        networks:
+            - app-network
+
+    ygz.jaeger.opentelemetry:
+        container_name: ygz.jaeger.opentelemetry
+        ports:
+            - "4317:4317"
+            - "4318:4318"
+            - "16686:16686"
+        networks:
+            - app-network
+
+    # ygz.nginx.webserver:
+    #     image: nginx:stable
+    #     container_name: ygz.nginx.webserver
+    #     ports:
+    #     - "80:80"
+    #     volumes:
+    #     - ./nginx.prod.conf:/etc/nginx/nginx.conf
+    #     depends_on:
+    #     - ygz.gateways.yarp
+    #     - ygz.client.web
+    #     - ygz.identity.api
+    #     - ygz.catalog.api
+    #     - ygz.basket.api
+    #     - ygz.ordering.api
+    #     - ygz.discount.grpc
+    #     networks:
+    #     - app-network
+
+    # ygz.client.web:
+    #     container_name: "ygz.client.web"
+    #     build:
+    #         context: ./Apps/Client
+    #         dockerfile: Dockerfile
+    #     ports:
+    #     - "3000:3000"
+    #     depends_on:
+    #     - ygz.identity.api
+    #     - ygz.catalog.api
+    #     - ygz.basket.api
+    #     - ygz.ordering.api
+    #     - ygz.discount.grpc
+    #     networks:
+    #     - app-network
 
 volumes:
-  postgres_identity:
-  postgres_keycloak:
-  postgres_discount:
-  postgres_ordering:
-  postgres_basket:
-  redis_basket:
-  mongodb_catalog:
+    postgres_identity:
+    postgres_keycloak:
+    postgres_discount:
+    postgres_ordering:
+    postgres_basket:
+    redis_basket:
+    db.catalog.replica.primary:
+    db.catalog.replica.secondary:
+    db.catalog.replica.arbiter:
 
 networks:
-  app-network:
-    name: app-network
-    driver: bridge
+    app-network:
+        name: app-network
+        driver: bridge

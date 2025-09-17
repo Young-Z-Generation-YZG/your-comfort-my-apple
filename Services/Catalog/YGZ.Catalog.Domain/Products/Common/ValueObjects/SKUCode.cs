@@ -12,9 +12,19 @@ public class SKUCode : ValueObject
         Value = value;
     }
 
-    public static SKUCode Create(EProductType productType, EIphoneModel model, EStorage storage, EColor color)
+    public static SKUCode Create(string productType, string model, string storage, string color)
     {
-        return new SKUCode($"{productType.Name}-{model.Name}-{storage.Name}-{color.Name}");
+        EProductType.TryFromName(productType, out var productTypeEnum);
+        EIphoneModel.TryFromName(model, out var modelEnum);
+        EStorage.TryFromName(storage, out var storageEnum);
+        EColor.TryFromName(color, out var colorEnum);
+
+        if (productTypeEnum is null || modelEnum is null || storageEnum is null || colorEnum is null)
+        {
+            throw new ArgumentException("Invalid product type, model, storage or color");
+        }
+
+        return new SKUCode($"{productTypeEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
     }
 
     public override IEnumerable<object> GetEqualityComponents()

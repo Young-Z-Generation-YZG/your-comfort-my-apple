@@ -15,16 +15,16 @@ public class Storage : ValueObject
     [BsonElement("order")]
     public int Order { get; init; } = 0;
 
-    private Storage(EStorage storage, int order)
+    private Storage(EStorage storage, int value, int order)
     {
 
 
         Name = storage.Name;
-        Value = storage.Value;
+        Value = value;
         Order = order;
     }
 
-    public static Storage Create(string name, int order)
+    public static Storage Create(string name, int value, int order)
     {
         EStorage.TryFromName(name, out var storage);
 
@@ -33,7 +33,7 @@ public class Storage : ValueObject
             throw new ArgumentException("Invalid EStorage ${name}", name);
         }
 
-        return new Storage(storage, order);
+        return new Storage(storage, value, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

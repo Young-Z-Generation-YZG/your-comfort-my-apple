@@ -3,9 +3,7 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
@@ -24,22 +22,22 @@ public class ReviewRepository : MongoRepository<Review, ReviewId>, IReviewReposi
         _logger = logger;
     }
 
-    public override async Task<Result<bool>> InsertOneAsync(Review document)
-    {
-        var domainEventEntities = document.DomainEvents.ToList();
-        document.ClearDomainEvents();
+    //public override async Task<Result<bool>> InsertOneAsync(Review document)
+    //{
+    //    var domainEventEntities = document.DomainEvents.ToList();
+    //    document.ClearDomainEvents();
 
-        foreach (var domainEvent in domainEventEntities)
-        {
-            await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
-        }
-        try
-        {
-            return await base.InsertOneAsync(document);
-        }
-        catch
-        {
-            return Errors.Review.AddReviewFailure;
-        }
-    }
+    //    foreach (var domainEvent in domainEventEntities)
+    //    {
+    //        await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
+    //    }
+    //    try
+    //    {
+    //        return await base.InsertOneAsync(document);
+    //    }
+    //    catch
+    //    {
+    //        return Errors.Review.AddReviewFailure;
+    //    }
+    //}
 }

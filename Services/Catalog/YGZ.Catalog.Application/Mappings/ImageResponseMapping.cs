@@ -1,10 +1,8 @@
 ﻿
 
 using Mapster;
-using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Iphone16.Entities;
 
 namespace YGZ.Catalog.Application.Mappings;
 

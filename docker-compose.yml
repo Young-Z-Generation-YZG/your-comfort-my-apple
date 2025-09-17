@@ -1,71 +1,86 @@
 services:
-  ygz.gateways.yarp:
-    image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
-    build:
-      context: .
-      dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
+    ygz.gateways.yarp:
+        image: ${DOCKER_REGISTRY-}ygzgatewaysyarp
+        build:
+            context: .
+            dockerfile: Gateways/YGZ.Gateways.Yarp/Dockerfile
 
-  db.keycloak:
-    image: postgres:alpine
+    db.keycloak:
+        image: postgres:alpine
 
-  db.identity:
-    image: postgres:alpine
+    db.identity:
+        image: postgres:alpine
 
-  db.catalog:
-    image: mongo:latest
+    db.catalog.replica.primary:
+        image: mongo:latest
 
-  db.basket:
-    image: postgres:alpine
+    db.catalog.replica.secondary:
+        image: mongo:latest
 
-  db.discount:
-    image: postgres:alpine
+    db.catalog.replica.arbiter:
+        image: mongo:latest
 
-  db.ordering:
-    image: postgres:alpine
+    # mongo.setup:
+    #     image: mongo:6.0
 
-  db.distributedcache:
-    image: redis:alpine
+    # mongo.express:
+    #     image: mongo-express:latest
 
+    # db.catalog.replica.primary:
+    #     build:
+    #         context: ./provision/dockerVolumes/mongoDb/
+    #         dockerfile: mongo.dockerfile
 
-  ygz.identity.api:
-    image: ${DOCKER_REGISTRY-}ygzidentityapi
-    build:
-      context: .
-      dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+    db.basket:
+        image: postgres:alpine
 
-  ygz.catalog.api:
-    image: ${DOCKER_REGISTRY-}ygzcatalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
+    db.discount:
+        image: postgres:alpine
 
-  ygz.basket.api:
-    image: ${DOCKER_REGISTRY-}ygzbasketapi
-    build:
-      context: .
-      dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+    db.ordering:
+        image: postgres:alpine
 
-  ygz.discount.grpc:
-    image: ${DOCKER_REGISTRY-}ygzdiscountgrpc
-    build:
-      context: .
-      dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
+    db.distributedcache:
+        image: redis:alpine
 
-  ygz.ordering.api:
-    image: ${DOCKER_REGISTRY-}ygzorderingapi
-    build:
-      context: .
-      dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+    ygz.identity.api:
+        image: ${DOCKER_REGISTRY-}ygzidentityapi
+        build:
+            context: .
+            dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
 
-  ygz.logging.seq:
-    image: datalust/seq:latest
-  
-  ygz.keycloak.server:
-    image: quay.io/keycloak/keycloak:latest
+    ygz.catalog.api:
+        image: ${DOCKER_REGISTRY-}ygzcatalogapi
+        build:
+            context: .
+            dockerfile: Services/Catalog/YGZ.Catalog.Api/Dockerfile
 
-  ygz.jaeger.opentelemetry:
-    image: jaegertracing/all-in-one:latest
+    ygz.basket.api:
+        image: ${DOCKER_REGISTRY-}ygzbasketapi
+        build:
+            context: .
+            dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
 
-  mq.rabbitmq:
-    image: rabbitmq:management
+    ygz.discount.grpc:
+        image: ${DOCKER_REGISTRY-}ygzdiscountgrpc
+        build:
+            context: .
+            dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
 
+    ygz.ordering.api:
+        image: ${DOCKER_REGISTRY-}ygzorderingapi
+        build:
+            context: .
+            dockerfile: Services/Ordering/YGZ.Ordering.Api/Dockerfile
+
+    ygz.logging.seq:
+        image: datalust/seq:latest
+
+    ygz.keycloak.server:
+        image: quay.io/keycloak/keycloak:latest
+
+    ygz.jaeger.opentelemetry:
+        image: jaegertracing/all-in-one:latest
+
+    mq.rabbitmq:
+        image: rabbitmq:management

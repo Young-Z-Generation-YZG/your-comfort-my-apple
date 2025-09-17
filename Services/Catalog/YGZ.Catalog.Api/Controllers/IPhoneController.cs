@@ -4,13 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Api.Contracts.IPhone16;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Api.Contracts.IPhoneRequest;
 using YGZ.Catalog.Api.Contracts.modelRequest;
 using YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
 using YGZ.Catalog.Application.IPhone.Queries.GetModels;
-using YGZ.Catalog.Application.IPhone16.Commands.CreateIPhone16Detail;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonePromotions;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhonesByModelSlug;
@@ -80,17 +78,6 @@ public class IPhoneController : ApiController
         var query = new GetIPhonesByModelSlugQuery(modelSlug);
 
         var result = await _sender.Send(query, cancellationToken);
-
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
-
-
-    [HttpPost("details")]
-    public async Task<IActionResult> CreateIPhone16DetailItem([FromBody] CreateIPhone16DetailRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<CreateIPhone16DetailsCommand>(request);
-
-        var result = await _sender.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
