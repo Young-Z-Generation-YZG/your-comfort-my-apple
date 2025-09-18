@@ -11,7 +11,6 @@ services:
         volumes:
             - ./provision/dockerVolumes/mongoDb/volumes/replica-primary:/data/db
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/docker-entrypoint-initdb.d/rs_config.sh:ro
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
         networks:
@@ -27,7 +26,6 @@ services:
             - MONGO_INITDB_REPLICASET=rs0
         volumes:
             - ./provision/dockerVolumes/mongoDb/volumes/replica-secondary:/data/db
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
         networks:
@@ -43,7 +41,6 @@ services:
             - 27003:27017
         volumes:
             - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
         networks:
@@ -60,11 +57,14 @@ services:
             - MONGO_HOST_IP=192.168.0.4
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
+            - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
         command: >
             bash -c "
             chmod +x /scripts/rs_config.sh &&
+            chmod +x /scripts/init_catalog_db.sh &&
             sleep 10 &&
-            /scripts/rs_config.sh
+            /scripts/rs_config.sh &&
+            /scripts/init_catalog_db.sh
             "
         networks:
             - app-network

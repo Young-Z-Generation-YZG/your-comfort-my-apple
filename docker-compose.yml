@@ -20,8 +20,8 @@ services:
     db.catalog.replica.arbiter:
         image: mongo:latest
 
-    # mongo.setup:
-    #     image: mongo:6.0
+    mongo.setup:
+        image: mongo:latest
 
     # mongo.express:
     #     image: mongo-express:latest

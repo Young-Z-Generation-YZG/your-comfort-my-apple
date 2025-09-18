@@ -62,31 +62,28 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
+            - MONGO_HOST_IP=192.168.0.4
         ports:
             - 27001:27017
         volumes:
-            - ./provision/dockerVolumes/mongoDb/volumes/replica-primary:/data/db
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-        depends_on:
-            # - db.catalog.replica.secondary
-            # - db.catalog.replica.arbiter
-        command: mongod --replSet "rs0"
+            - mongodb_replica_primary:/data/db
+            - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/docker-entrypoint-initdb.d/rs_config.sh:ro
+        command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
+        user: "999:999"
         networks:
             - app-network
 
     db.catalog.replica.secondary:
         container_name: db.catalog.replica.secondary
         restart: always
-        environment:
-            - MONGO_INITDB_REPLICASET=rs0
         ports:
             - 27002:27017
         environment:
             - MONGO_INITDB_REPLICASET=rs0
         volumes:
-            - ./provision/dockerVolumes/mongoDb/volumes/replica-secondary:/data/db
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-        command: mongod --replSet "rs0"
+            - mongodb_replica_secondary:/data/db
+        command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
+        user: "999:999"
         networks:
             - app-network
 
@@ -98,27 +95,11 @@ services:
         ports:
             - 27003:27017
         volumes:
-            - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
-            # - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-        command: mongod --replSet "rs0"
+            - mongodb_replica_arbiter:/data/db
+        command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
+        user: "999:999"
         networks:
             - app-network
-
-    # db.catalog.replica.primary:
-    #     container_name: db.catalog.replica.primary
-    #     restart: always
-    #     environment:
-    #         - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    #         - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    #     ports:
-    #         - ${MONGODB_PORT}:27017
-    #     volumes:
-    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-primary:/data/db
-    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-    #     depends_on:
-    #         - db.catalog.replica.secondary
-    #         - db.catalog.replica.arbiter
-    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
 
     # db.catalog.replica.secondary:
     #     container_name: db.catalog.replica.secondary
@@ -139,6 +120,29 @@ services:
     #         - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
     #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
     #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
+
+    mongo.setup:
+        container_name: mongo.setup
+        depends_on:
+            - db.catalog.replica.primary
+            - db.catalog.replica.secondary
+            - db.catalog.replica.arbiter
+        environment:
+            - MONGO_HOST_IP=192.168.0.4
+        volumes:
+            - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
+            - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
+        command: >
+            bash -c "
+            chmod +x /scripts/rs_config.sh &&
+            chmod +x /scripts/init_catalog_db.sh &&
+            sleep 10 &&
+            /scripts/rs_config.sh &&
+            /scripts/init_catalog_db.sh
+            "
+        networks:
+            - app-network
+        restart: "no"
 
     # mongo.setup:
     #     container_name: mongo.setup
@@ -307,7 +311,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
-            - MongoDbSettings__ConnectionString=mongodb://bale:bale@db.catalog.replica.primary:27017/CatalogDb?replicaSet=rs0
+            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0&directConnection=true
             - MongoDbSettings__DatabaseName=CatalogDb
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
@@ -471,9 +475,9 @@ volumes:
     postgres_ordering:
     postgres_basket:
     redis_basket:
-    db.catalog.replica.primary:
-    db.catalog.replica.secondary:
-    db.catalog.replica.arbiter:
+    mongodb_replica_primary:
+    mongodb_replica_secondary:
+    mongodb_replica_arbiter:
 
 networks:
     app-network:
