@@ -3,8 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Application.Abstractions.Uploading;
 using YGZ.Catalog.Infrastructure.Persistence.Configurations;
+using YGZ.Catalog.Infrastructure.Persistence.Context;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
 using YGZ.Catalog.Infrastructure.Persistence.Repositories;
 using YGZ.Catalog.Infrastructure.Services.ImageUploader;
@@ -25,8 +27,8 @@ public static class DependencyInjection
 
         services.AddMongoDbConfigurations();
 
+        services.AddScoped<ITransactionContext, TransactionContext>();
         services.AddScoped(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
-        //services.AddScoped<IIPhone16ModelRepository, IPhone16ModelRepository>();
         services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IUploadImageService, UploadImageService>();
 

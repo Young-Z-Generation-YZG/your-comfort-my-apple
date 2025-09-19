@@ -42,16 +42,15 @@ public static class MappingExtension
 
         var categoryId = CategoryId.Of(dto.CategoryId);
 
-        return IphoneModel.Create(
-                                    ModelId.Create(),
-                                    name: dto.Name,
-                                    models: models,
-                                    colors: colors,
-                                    storages: storages,
-                                    showcaseImages: showcaseImages,
-                                    description: dto.Description,
-                                    averageRating: AverageRating.Create(0, 0),
-                                    ratingStars: ratingInit,
-                                    categoryId: categoryId);
+        return IphoneModel.Create(ModelId.Create(),
+                                  name: dto.Name,
+                                  models: models,
+                                  colors: colors,
+                                  storages: storages,
+                                  showcaseImages: showcaseImages,
+                                  description: dto.Description,
+                                  averageRating: AverageRating.Create(0, 0),
+                                  ratingStars: ratingInit,
+                                  categoryId: categoryId);
     }
 }

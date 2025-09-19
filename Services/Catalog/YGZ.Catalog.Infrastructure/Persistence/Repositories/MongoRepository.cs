@@ -4,6 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -19,9 +20,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
     private readonly IMongoCollection<TEntity> _collection;
     private readonly MongoDbSettings _mongoDbSettings;
     private readonly IDispatchDomainEventInterceptor _dispatchDomainEventInterceptor;
-    private IClientSessionHandle _session;
+    private readonly ITransactionContext _transactionContext;
+    private IClientSessionHandle? _session;
 
-    public MongoRepository(IOptions<MongoDbSettings> options, ILogger<MongoRepository<TEntity, TId>> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor)
+    public MongoRepository(IOptions<MongoDbSettings> options,
+                           ILogger<MongoRepository<TEntity, TId>> logger,
+                           IDispatchDomainEventInterceptor dispatchDomainEventInterceptor,
+                           ITransactionContext transactionContext)
     {
         _mongoDbSettings = options.Value;
 
@@ -30,6 +35,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
         _collection = database.GetCollection<TEntity>(GetCollectionName(typeof(TEntity)));
         _dispatchDomainEventInterceptor = dispatchDomainEventInterceptor;
+        _transactionContext = transactionContext;
         _logger = logger;
     }
 
@@ -46,21 +52,40 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         _session = await _mongoClient.StartSessionAsync(cancellationToken: cancellationToken ?? CancellationToken.None);
         _session.StartTransaction();
 
-        _logger.LogInformation("Started transaction");
+        _transactionContext.SetSession(_session);
+
+        _logger.LogInformation("[Transaction] Started transaction");
     }
 
-    public async Task RollbackTransaction(IClientSessionHandle session, CancellationToken? cancellationToken = null)
+    public async Task RollbackTransaction(CancellationToken? cancellationToken = null)
     {
-        await session.AbortTransactionAsync(cancellationToken ?? CancellationToken.None);
+        if (_session == null)
+        {
+            throw new InvalidOperationException("Transaction not started");
+        }
 
-        _logger.LogInformation("Rolled back transaction");
+        await _session.AbortTransactionAsync(cancellationToken ?? CancellationToken.None);
+        _transactionContext.ClearSession();
+
+        _logger.LogInformation("[Transaction] Rolled back transaction");
     }
 
-    public async Task CommitTransaction(IClientSessionHandle session, CancellationToken? cancellationToken = null)
+    public async Task CommitTransaction(CancellationToken? cancellationToken = null)
     {
-        await session.CommitTransactionAsync(cancellationToken ?? CancellationToken.None);
+        if (_session == null)
+        {
+            throw new InvalidOperationException("Transaction not started");
+        }
 
-        _logger.LogInformation("Committed transaction");
+        await _session.CommitTransactionAsync(cancellationToken ?? CancellationToken.None);
+        _transactionContext.ClearSession();
+
+        _logger.LogInformation("[Transaction] Committed transaction");
+    }
+
+    public IClientSessionHandle? GetCurrentSession()
+    {
+        return _transactionContext.CurrentSession;
     }
 
     public async Task<List<TEntity>> GetAllAsync()
@@ -123,9 +148,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
         try
         {
-            if (session != null)
-            {
-                await _collection.InsertOneAsync(session, document);
+            if(_transactionContext.CurrentSession != null) {
+                await _collection.InsertOneAsync(_transactionContext.CurrentSession, document);
             }
             else
             {
@@ -140,12 +164,10 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public virtual async Task<Result<bool>> InsertManyAsync(IEnumerable<TEntity> documents, IClientSessionHandle? session = null)
+    public virtual async Task<Result<bool>> InsertManyAsync(IEnumerable<TEntity> documents)
     {
         try
         {
-            await StartTransactionAsync();
-
             var documentsList = documents.ToList();
             var allDomainEvents = new List<IDomainEvent>();
 
@@ -161,11 +183,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                 await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
             }
 
-            var isInTransaction = _session?.IsInTransaction;
-
-            if (_session != null)
-            {
-                await _collection.InsertManyAsync(_session, documentsList);
+            if(_transactionContext.CurrentSession != null) {
+                await _collection.InsertManyAsync(_transactionContext.CurrentSession, documentsList);
             }
             else
             {
@@ -176,13 +195,6 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
         catch (Exception ex)
         {
-            if (_session != null)
-            {
-                _logger.LogError(ex, "[Transaction-Rollback] Exception occurred: {Message} {@Exception}", ex.Message, ex);
-
-                await _session.AbortTransactionAsync();
-            }
-
             throw;
         }
     }

@@ -21,8 +21,28 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
     {
         IphoneModel newModel = request.ToEntity();
 
-        var result = await _repository.InsertOneAsync(newModel);
+        try
+        {
+            await _repository.StartTransactionAsync(cancellationToken);
 
-        return result.Response;
+            var result = await _repository.InsertOneAsync(newModel);
+
+            if (result.IsFailure)
+            {
+                await _repository.RollbackTransaction(cancellationToken);
+
+                return result.Error;
+            }
+
+            await _repository.CommitTransaction(cancellationToken);
+
+            return result.Response;
+        }
+        catch (Exception ex)
+        {
+            await _repository.RollbackTransaction(cancellationToken);
+
+            throw;
+        }
     }
 }

@@ -4,6 +4,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
@@ -15,11 +16,13 @@ public class ReviewRepository : MongoRepository<Review, ReviewId>, IReviewReposi
 {
     private readonly IDispatchDomainEventInterceptor _dispatchDomainEventInterceptor;
     private readonly ILogger<ReviewRepository> _logger;
+    private readonly ITransactionContext _transactionContext;
 
-    public ReviewRepository(IOptions<MongoDbSettings> options, ILogger<ReviewRepository> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor) : base(options, logger, dispatchDomainEventInterceptor)
+    public ReviewRepository(IOptions<MongoDbSettings> options, ILogger<ReviewRepository> logger, IDispatchDomainEventInterceptor dispatchDomainEventInterceptor, ITransactionContext transactionContext) : base(options, logger, dispatchDomainEventInterceptor, transactionContext)
     {
         _dispatchDomainEventInterceptor = dispatchDomainEventInterceptor;
         _logger = logger;
+        _transactionContext = transactionContext;
     }
 
     //public override async Task<Result<bool>> InsertOneAsync(Review document)

@@ -20,10 +20,11 @@ public interface IMongoRepository<TEntity, TId> where TEntity : Entity<TId> wher
     Task<TEntity> GetByIdAsync(string id, CancellationToken cancellationToken);
     Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken);
     Task StartTransactionAsync(CancellationToken? cancellationToken = null);
-    Task RollbackTransaction(IClientSessionHandle session, CancellationToken? cancellationToken = null);
-    Task CommitTransaction(IClientSessionHandle session, CancellationToken? cancellationToken = null);
+    Task RollbackTransaction(CancellationToken? cancellationToken = null);
+    Task CommitTransaction(CancellationToken? cancellationToken = null);
+    IClientSessionHandle? GetCurrentSession();
     Task<Result<bool>> InsertOneAsync(TEntity document, IClientSessionHandle? session = null);
-    Task<Result<bool>> InsertManyAsync(IEnumerable<TEntity> documents, IClientSessionHandle? session = null);
+    Task<Result<bool>> InsertManyAsync(IEnumerable<TEntity> documents);
     Task<Result<bool>> UpdateAsync(string id, TEntity document, IClientSessionHandle? session = null);
     Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken cancellationToken);
 }
