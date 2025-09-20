@@ -29,7 +29,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
+
+            throw;
         }
     }
 
@@ -41,7 +43,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
+
+            throw;
         }
     }
 
@@ -53,7 +57,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
+
+            throw;
         }
     }
 
@@ -69,9 +75,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message, nameof(AddAsync));
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
 
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            return false;
         }
     }
 
@@ -87,9 +93,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message, nameof(AddAsync));
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
 
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            return false;
         }
     }
 
@@ -108,14 +114,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
     virtual public Task RemoveAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        try
-        {
-            throw new NotImplementedException();
-        }
-        catch (Exception ex)
-        {
-            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-        }
+        throw new NotImplementedException();
     }
 
     virtual public Task RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)

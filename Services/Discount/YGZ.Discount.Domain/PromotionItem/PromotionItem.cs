@@ -34,6 +34,8 @@ public class PromotionItem : AggregateRoot<PromotionItemId>, IAuditable, ISoftDe
     public DateTime? DeletedAt { get; set; } = null;
     public string? DeletedBy { get; set; } = null;
 
+    public string? UpdatedBy => throw new NotImplementedException();
+
     public static PromotionItem Create(PromotionItemId promotionItemId,
                                        ProductId productId,
                                        string title,

@@ -36,6 +36,8 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public DateTime? DeletedAt { get; set; } = null;
     public string? DeletedBy { get; set; } = null;
 
+    public string? UpdatedBy => throw new NotImplementedException();
+
     public static Coupon Create(CouponId couponId,
                                 Code code,
                                 string title,

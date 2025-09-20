@@ -40,6 +40,28 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Events",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<string>(type: "text", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Events", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PromotionEvents",
                 columns: table => new
                 {
@@ -89,6 +111,37 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PromotionItems", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventProductSKUs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    EventId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SKUId = table.Column<string>(type: "text", nullable: false),
+                    ProductType = table.Column<string>(type: "text", nullable: false),
+                    AvailableQuantity = table.Column<int>(type: "integer", nullable: false),
+                    DiscountType = table.Column<string>(type: "text", nullable: false),
+                    DiscountValue = table.Column<decimal>(type: "numeric", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventProductSKUs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventProductSKUs_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +215,11 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_EventProductSKUs_EventId",
+                table: "EventProductSKUs",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PromotionCategories_PromotionGlobalId",
                 table: "PromotionCategories",
                 column: "PromotionGlobalId");
@@ -184,6 +242,9 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                 name: "Coupons");
 
             migrationBuilder.DropTable(
+                name: "EventProductSKUs");
+
+            migrationBuilder.DropTable(
                 name: "PromotionCategories");
 
             migrationBuilder.DropTable(
@@ -191,6 +252,9 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "PromotionProducts");
+
+            migrationBuilder.DropTable(
+                name: "Events");
 
             migrationBuilder.DropTable(
                 name: "PromotionGlobals");

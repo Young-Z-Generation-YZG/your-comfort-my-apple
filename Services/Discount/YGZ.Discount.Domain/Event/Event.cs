@@ -9,12 +9,12 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
 {
     public Event(EventId id) : base(id) { }
 
-    public string Title { get; set; }
-    public string Description { get; set; } = default!;
-    public EState State { get; set; } = EState.INACTIVE;
-    public DateTime? StartFrom { get; set; } = null;
-    public DateTime? EndTo { get; set; } = null;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public required string Title { get; set; }
+    public string Description { get; set; }
+    public EState State { get; set; }
+    public DateTime? StartDate { get; set; } = null;
+    public DateTime? EndDate { get; set; } = null;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
     public bool IsDeleted { get; set; } = false;
@@ -23,18 +23,17 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
 
     public static Event Create(EventId id,
                                string title,
-                               string description,
-                               EState state,
-                               DateTime? startFrom,
-                               DateTime? endTo)
+                               string? description,
+                               DateTime? startDate,
+                               DateTime? endDate)
     {
         return new Event(id)
         {
             Title = title,
-            Description = description,
-            State = state,
-            StartFrom = startFrom,
-            EndTo = endTo
+            Description = description ?? String.Empty,
+            State = EState.INACTIVE,
+            StartDate = startDate,
+            EndDate = endDate
         };
     }
 }
