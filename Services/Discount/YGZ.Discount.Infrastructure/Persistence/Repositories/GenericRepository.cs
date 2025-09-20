@@ -21,6 +21,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         _dbSet = discountDbContext.Set<TEntity>();
         _logger = logger;
     }
+
+    public IQueryable<TEntity> DbSet => _dbSet;
+
     public async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         try
@@ -86,6 +89,24 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         try
         {
             await _dbSet.AddRangeAsync(entities, cancellationToken);
+
+            var affectedRows = await SaveChangesAsync();
+
+            return affectedRows > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
+
+            return false;
+        }
+    }
+
+    virtual public async Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _dbSet.Update(entity);
 
             var affectedRows = await SaveChangesAsync();
 

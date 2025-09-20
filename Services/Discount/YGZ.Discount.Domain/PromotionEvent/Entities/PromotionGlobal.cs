@@ -1,5 +1,4 @@
-﻿
-using YGZ.Discount.Application.Abstractions;
+﻿using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.PromotionEvent.ValueObjects;

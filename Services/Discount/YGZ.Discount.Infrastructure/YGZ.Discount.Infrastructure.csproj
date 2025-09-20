@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
-    <ProjectReference Include="..\YGZ.Discount.Application\YGZ.Discount.Application.csproj" />
     <ProjectReference Include="..\YGZ.Discount.Domain\YGZ.Discount.Domain.csproj" />
   </ItemGroup>
 

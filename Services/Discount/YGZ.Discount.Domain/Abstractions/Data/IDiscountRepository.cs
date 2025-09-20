@@ -1,7 +1,7 @@
 ﻿using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 
-namespace YGZ.Discount.Application.Abstractions.Data;
+namespace YGZ.Discount.Domain.Abstractions.Data;
 
 public interface IDiscountRepository
 {

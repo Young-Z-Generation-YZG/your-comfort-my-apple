@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -120,12 +119,17 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     EventId = table.Column<Guid>(type: "uuid", nullable: false),
                     SKUId = table.Column<string>(type: "text", nullable: false),
+                    ModelId = table.Column<string>(type: "text", nullable: false),
+                    ModelName = table.Column<string>(type: "text", nullable: false),
+                    StorageName = table.Column<string>(type: "text", nullable: false),
+                    ColorHaxCode = table.Column<string>(type: "text", nullable: false),
                     ProductType = table.Column<string>(type: "text", nullable: false),
-                    AvailableQuantity = table.Column<int>(type: "integer", nullable: false),
+                    ImageUrl = table.Column<string>(type: "text", nullable: false),
                     DiscountType = table.Column<string>(type: "text", nullable: false),
                     DiscountValue = table.Column<decimal>(type: "numeric", nullable: false),
-                    ImageUrl = table.Column<string>(type: "text", nullable: false),
-                    Slug = table.Column<string>(type: "text", nullable: false),
+                    OriginalPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    Stock = table.Column<int>(type: "integer", nullable: false),
+                    Sold = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedBy = table.Column<string>(type: "text", nullable: true),

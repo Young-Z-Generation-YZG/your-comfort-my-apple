@@ -1,6 +1,4 @@
-﻿
-
-namespace YGZ.Discount.Application.Abstractions;
+﻿namespace YGZ.Discount.Domain.Abstractions.Data;
 
 public interface IAuditable
 {
