@@ -5,7 +5,7 @@ import { GoArrowUpRight } from 'react-icons/go';
 
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
-import Button from '../_components/button';
+import Button from '../_components/Button';
 import { FieldInput } from '@components/client/forms/field-input';
 import {
    RegisterFormType,
@@ -79,23 +79,23 @@ const SignUpPage = () => {
                <h2 className="text-2xl font-medium">Account</h2>
             </div>
 
-            <div className="flex gap-3 font-SFProText text-slate-500 text-sm">
+            <div className="flex gap-3 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
                <Link href="/sign-in">Sign in</Link>
                <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
          </section>
 
-         <div className="h-full px-[200px] py-[50px]">
-            <div className="w-full  flex flex-col justify-center items-center">
-               <h3 className="text-4xl font-SFProDisplay font-medium">
+         <div className="h-full lg:px-[200px] md:px-[100px] px-0 py-[50px]">
+            <div className="w-full flex flex-col justify-center items-center">
+               <h3 className="font-SFProDisplay font-medium lg:text-3xl md:text-5xl text-7xl">
                   Create Your Account
                </h3>
-               <p className="text-base font-SFProText font-light p3-5">
+               <p className="font-SFProText font-light pt-5 lg:text-base md:text-xl text-2xl">
                   One Account is all you need to access all of our services
                </p>
 
-               <p className="text-base font-SFProText font-light py-5 flex gap-2">
+               <p className="font-SFProText font-light pt-5 flex gap-2 lg:text-base md:text-xl text-2xl lg:pb-2 md:pb-5 pb-10">
                   Already have an account?{' '}
                   <Link
                      href="/sign-in"
@@ -106,7 +106,7 @@ const SignUpPage = () => {
                   </Link>
                </p>
 
-               <div className="w-[500px]">
+               <div className="lg:w-[500px] md:w-[80%] w-full">
                   <LoadingOverlay isLoading={isLoading} text="Loading...">
                      <div className="w-full mt-2">
                         <div className="flex gap-2">
@@ -127,25 +127,27 @@ const SignUpPage = () => {
                                     }
                                  }}
                               >
-                                 <div className="w-full flex gap-2 justify-between mt-3">
+                                 <div className="w-full grid grid-cols-2 gap-2 mt-3">
                                     <FieldInput
                                        form={form}
                                        name="first_name"
                                        label="First Name"
-                                       className="rounded-xl w-full"
                                        type="text"
                                        disabled={isLoading}
-                                       errorTextClassName="pb-1"
+                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                       labelClassName="lg:text-base md:text-xl text-3xl"
+                                       errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                                     />
 
                                     <FieldInput
                                        form={form}
                                        name="last_name"
                                        label="Last Name"
-                                       className="rounded-xl w-full"
                                        type="text"
                                        disabled={isLoading}
-                                       errorTextClassName="pb-1"
+                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                       labelClassName="lg:text-base md:text-xl text-3xl"
+                                       errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                                     />
                                  </div>
                               </form>
@@ -161,6 +163,10 @@ const SignUpPage = () => {
                                  placeholder="Select a country"
                                  options={countries}
                                  required
+                                 className="lg:text-base md:text-xl text-3xl rounded-xl"
+                                 labelClassName="lg:text-sm md:text-base text-2xl"
+                                 inputClassName="lg:text-base md:text-xl text-3xl rounded-xl"
+                                 errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                               />
                            </div>
                         </div>
@@ -170,6 +176,9 @@ const SignUpPage = () => {
                               form={form}
                               name="birth_day"
                               required
+                              className="lg:text-base md:text-xl text-3xl rounded-xl"
+                              // inputClassName="lg:text-base md:text-xl text-3xl rounded-xl"
+                              // errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                            />
                         </div>
 
@@ -181,26 +190,28 @@ const SignUpPage = () => {
                                  form={form}
                                  name="email"
                                  label="Email"
-                                 className="rounded-xl w-full"
                                  type="text"
                                  disabled={isLoading}
-                                 errorTextClassName="pb-5"
+                                 className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                 labelClassName="lg:text-base md:text-xl text-3xl"
+                                 errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                               />
-                              <p className="mt-2 text-sm font-light text-slate-500">
+                              <p className="mt-2 lg:text-sm md:text-lg text-2xl font-light text-slate-500">
                                  *Note: This will be your new Account.
                               </p>
                            </div>
                         </div>
 
-                        <div className="w-full mt-4">
+                        <div className="w-full my-4">
                            <FieldInput
                               form={form}
                               name="password"
                               label="Password"
-                              className="rounded-xl w-full mb-2"
                               type="password"
                               disabled={isLoading}
-                              errorTextClassName="pb-5"
+                              className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                              labelClassName="lg:text-base md:text-xl text-3xl"
+                              errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                            />
                         </div>
 
@@ -208,10 +219,11 @@ const SignUpPage = () => {
                            form={form}
                            name="confirm_password"
                            label="Confirm Password"
-                           className="rounded-xl w-full"
                            type="password"
                            disabled={isLoading}
-                           errorTextClassName="pb-5"
+                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                           labelClassName="lg:text-base md:text-xl text-3xl"
+                           errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                         />
                      </div>
 
@@ -223,6 +235,9 @@ const SignUpPage = () => {
                            name="phone_number"
                            label="Phone Number"
                            required
+                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                           labelClassName="lg:text-base md:text-xl text-3xl"
+                           errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                         />
                      </div>
                   </LoadingOverlay>
