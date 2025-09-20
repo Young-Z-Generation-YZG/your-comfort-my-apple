@@ -353,7 +353,7 @@ const Header = () => {
          onMouseLeave={handleMouseLeave}
       >
          <div className="flex flex-row items-center max-w-[1180px] h-auto px-[22px] mx-auto">
-            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full bg-red-500">
+            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -452,7 +452,7 @@ const Header = () => {
                </div>
             </ul>
 
-            <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
+            {/* <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
