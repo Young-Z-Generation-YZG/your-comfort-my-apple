@@ -22,6 +22,8 @@ public class PromotionGlobal : Entity<PromotionGlobalId>, IAuditable, ISoftDelet
     public string? DeletedBy { get; set; } = null;
     public PromotionEvent PromotionEvent { get; set; } = null!; // Navigation property
 
+    public string? UpdatedBy => throw new NotImplementedException();
+
     public static PromotionGlobal Create(PromotionGlobalId id,
                                          string title,
                                          string description,

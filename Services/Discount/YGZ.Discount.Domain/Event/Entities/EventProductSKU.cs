@@ -18,7 +18,7 @@ public class EventProductSKU : Entity<EventProducSKUId>, IAuditable, ISoftDelete
     public required decimal DiscountValue { get; set; }
     public required string ImageUrl { get; set; }
     public required string Slug { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
     public bool IsDeleted { get; set; } = false;

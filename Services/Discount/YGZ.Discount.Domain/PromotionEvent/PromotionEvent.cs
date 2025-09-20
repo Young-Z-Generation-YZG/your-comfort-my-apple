@@ -22,6 +22,8 @@ public class PromotionEvent : AggregateRoot<PromotionEventId>, IAuditable, ISoft
     public DateTime? DeletedAt { get; set; } = null;
     public string? DeletedBy { get; set; } = null;
 
+    public string? UpdatedBy => throw new NotImplementedException();
+
     public static PromotionEvent Create(PromotionEventId id,
                                         string title,
                                         string description,

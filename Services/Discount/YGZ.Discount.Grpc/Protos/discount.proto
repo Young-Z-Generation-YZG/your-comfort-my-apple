@@ -50,6 +50,7 @@ enum ProductNameTagEnum {
 	ACCESSORY = 6;
 }
 
+
 service DiscountProtoService {
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
 	rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
@@ -67,6 +68,8 @@ service DiscountProtoService {
 	rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
 	rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
 	rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
+
+    rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
 }
 
 // Coupon message definition
@@ -217,4 +220,11 @@ message GetAllDiscountsResponse {
 	int32 page_size = 3;
 	int32 current_page = 4;
 	repeated PromotionCouponModel promotion_coupons = 5;
+}
+
+message CreateEventRequest {
+    google.protobuf.StringValue title = 1;
+    google.protobuf.StringValue description = 2;
+    google.protobuf.Timestamp start_date = 3;
+    google.protobuf.Timestamp end_date = 4;
 }
