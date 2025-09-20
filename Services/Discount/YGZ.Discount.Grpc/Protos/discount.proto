@@ -50,6 +50,22 @@ enum ProductNameTagEnum {
 	ACCESSORY = 6;
 }
 
+enum EProductType {
+	PRODUCT_TYPE_UNKNOWN = 0;
+	PRODUCT_TYPE_IPHONE = 1;
+	PRODUCT_TYPE_IPAD = 2;
+	PRODUCT_TYPE_MACBOOK = 3;
+	PRODUCT_TYPE_WATCH = 4;
+	PRODUCT_TYPE_HEADPHONE = 5;
+	PRODUCT_TYPE_ACCESSORY = 6;
+}
+
+enum EDiscountType {
+    DISCOUNT_TYPE_UNKNOWN = 0;
+    DISCOUNT_TYPE_PERCENTAGE = 1;
+    DISCOUNT_TYPE_FIXED = 2;
+}
+
 
 service DiscountProtoService {
 	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
@@ -70,6 +86,7 @@ service DiscountProtoService {
 	rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
 
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
+    rpc AddEventProductSKUsGrpc (AddEventProductSKUsRequest) returns (BooleanResponse);
 }
 
 // Coupon message definition
@@ -227,4 +244,23 @@ message CreateEventRequest {
     google.protobuf.StringValue description = 2;
     google.protobuf.Timestamp start_date = 3;
     google.protobuf.Timestamp end_date = 4;
+}
+
+message AddEventProductSKUsRequest {
+    repeated EventProductSKUModel event_product_skus = 1;
+}
+
+message EventProductSKUModel {
+    google.protobuf.StringValue event_id = 1;
+    google.protobuf.StringValue sku_id = 2;
+    google.protobuf.StringValue model_id = 3;
+    google.protobuf.StringValue model_name = 4;
+    google.protobuf.StringValue storage_name = 5;
+    google.protobuf.StringValue color_hex_code = 6;
+    google.protobuf.StringValue image_url = 7;
+    EProductType product_type = 8;
+    EDiscountType discount_type = 9;
+    google.protobuf.DoubleValue discount_value = 10;
+    google.protobuf.DoubleValue original_price = 11;
+    google.protobuf.Int32Value stock = 12;
 }

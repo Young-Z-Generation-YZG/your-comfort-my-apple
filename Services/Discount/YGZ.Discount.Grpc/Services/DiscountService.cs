@@ -10,6 +10,7 @@ using YGZ.Discount.Application.Coupons.Commands.DeleteCoupon;
 using YGZ.Discount.Application.Coupons.Commands.UpdateCoupon;
 using YGZ.Discount.Application.Coupons.Queries.GetAllPromotionCoupons;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
+using YGZ.Discount.Application.Events.Commands.AddEventProductSKUs;
 using YGZ.Discount.Application.Events.Commands.CreateEvent;
 using YGZ.Discount.Application.PromotionCoupons.Commands.CreatePromotionEvent;
 using YGZ.Discount.Application.Promotions.Commands.CreatePromotionCategory;
@@ -260,6 +261,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     public override async Task<BooleanResponse> CreateEventGrpc(CreateEventRequest request, ServerCallContext context)
     {
         var cmd = _mapper.Map<CreateEventCommand>(request);
+
+        var result = await _sender.Send(cmd);
+
+        var response = _mapper.Map<BooleanResponse>(result.Response);
+
+        return response;
+    }
+
+    public override async Task<BooleanResponse> AddEventProductSKUsGrpc(AddEventProductSKUsRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<AddEventProductSKUsCommand>(request);
 
         var result = await _sender.Send(cmd);
 

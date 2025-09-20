@@ -1,5 +1,6 @@
 ﻿
-using YGZ.Discount.Application.Abstractions;
+
+using YGZ.Discount.Domain.Abstractions;
 
 namespace YGZ.Discount.Infrastructure.Utils;
 public class UniqueCodeGenerator : IUniqueCodeGenerator

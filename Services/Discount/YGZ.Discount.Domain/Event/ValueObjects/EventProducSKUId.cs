@@ -2,22 +2,22 @@
 
 namespace YGZ.Discount.Domain.Event.ValueObjects;
 
-public class EventProducSKUId : ValueObject
+public class EventProductSKUId : ValueObject
 {
     public Guid? Value { get; set; }
-    private EventProducSKUId(Guid? guid)
+    private EventProductSKUId(Guid? guid)
     {
         Value = guid;
     }
 
-    public static EventProducSKUId Create()
+    public static EventProductSKUId Create()
     {
-        return new EventProducSKUId(Guid.NewGuid());
+        return new EventProductSKUId(Guid.NewGuid());
     }
 
-    public static EventProducSKUId Of(Guid? guid)
+    public static EventProductSKUId Of(Guid? guid)
     {
-        return new EventProducSKUId(guid);
+        return new EventProductSKUId(guid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

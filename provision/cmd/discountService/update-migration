@@ -1,4 +1,4 @@
 #! /bin/bash
 dotnet ef database update \
---startup-project ../../Services/Discount/YGZ.Discount.Grpc \
---project ../../Services/Discount/YGZ.Discount.Infrastructure
+--startup-project ../../../Services/Discount/YGZ.Discount.Grpc \
+--project ../../../Services/Discount/YGZ.Discount.Infrastructure

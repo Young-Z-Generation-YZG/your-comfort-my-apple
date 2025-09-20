@@ -3,7 +3,7 @@
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using YGZ.Discount.Application.Abstractions.Data;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
@@ -30,7 +30,7 @@ public class DiscountRepository : IDiscountRepository
             var result = await _context.Coupons
                 .FirstOrDefaultAsync(c => c.Code == Code.Of(code) && !c.IsDeleted);
 
-            if(result is null)
+            if (result is null)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, "Coupon not found"));
             }
