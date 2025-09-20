@@ -16,6 +16,8 @@ public class EventProductSKU : Entity<EventProducSKUId>, IAuditable, ISoftDelete
     public int AvailableQuantity { get; set; } = 0;
     public required EDiscountType DiscountType { get; set; }
     public required decimal DiscountValue { get; set; }
+    public required string ImageUrl { get; set; }
+    public required string Slug { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
@@ -30,7 +32,9 @@ public class EventProductSKU : Entity<EventProducSKUId>, IAuditable, ISoftDelete
                                          EProductType productType,
                                          int availableQuantity,
                                          EDiscountType discountType,
-                                         decimal discountValue)
+                                         decimal discountValue,
+                                         string imageUrl,
+                                         string slug)
     {
         return new EventProductSKU(id)
         {
@@ -39,7 +43,9 @@ public class EventProductSKU : Entity<EventProducSKUId>, IAuditable, ISoftDelete
             ProductType = productType,
             AvailableQuantity = availableQuantity,
             DiscountType = discountType,
-            DiscountValue = discountValue
+            DiscountValue = discountValue,
+            ImageUrl = imageUrl,
+            Slug = slug
         };
     }
 }
