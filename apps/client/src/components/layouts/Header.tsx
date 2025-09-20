@@ -100,57 +100,57 @@ const Header = () => {
       }
    }, [categoriesData]);
 
-   const renderHeaderCategories02 = () => {
-      if (!categories.length) {
-         return mainCategoriesDefault.map((category, index) => {
-            return (
-               <li
-                  key={index}
-                  className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] border-red-300"
-                  ref={(el) => {
-                     categoryRefs.current[category.category_id] = el;
-                  }}
-                  data-category_id={category}
-                  onMouseEnter={() => handleMouseEnter(category.category_name)}
-                  onClick={() => {
-                     router.push(`/shop`);
-                  }}
-               >
-                  <p className="antialiased opacity-[0.8] tracking-wide">
-                     {category.category_name}
-                  </p>
-               </li>
-            );
-         });
-      }
+   //  const renderHeaderCategories02 = () => {
+   //     if (!categories.length) {
+   //        return mainCategoriesDefault.map((category, index) => {
+   //           return (
+   //              <li
+   //                 key={index}
+   //                 className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] border-red-300"
+   //                 ref={(el) => {
+   //                    categoryRefs.current[category.category_id] = el;
+   //                 }}
+   //                 data-category_id={category}
+   //                 onMouseEnter={() => handleMouseEnter(category.category_name)}
+   //                 onClick={() => {
+   //                    router.push(`/shop`);
+   //                 }}
+   //              >
+   //                 <p className="antialiased opacity-[0.8] tracking-wide">
+   //                    {category.category_name}
+   //                 </p>
+   //              </li>
+   //           );
+   //        });
+   //     }
 
-      // const sortedCategories = categories
-      //    .filter((category) => category.category_parent_id === null)
-      //    .sort((a, b) => a.category_order - b.category_order);
+   //     // const sortedCategories = categories
+   //     //    .filter((category) => category.category_parent_id === null)
+   //     //    .sort((a, b) => a.category_order - b.category_order);
 
-      // return sortedCategories.map((category: CategoryResponseType) => {
-      //    return (
-      //       <li
-      //          key={category.category_id}
-      //          ref={(el) => {
-      //             categoryRefs.current[category.category_id] = el;
-      //          }}
-      //          data-category_id={category.category_id}
-      //          className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
-      //          onMouseEnter={() => {
-      //             handleMouseEnter(category.category_name);
-      //          }}
-      //          onClick={() => {
-      //             router.push(`/shop`);
-      //          }}
-      //       >
-      //          <p className="antialiased opacity-[0.8] tracking-wide">
-      //             {category.category_name}
-      //          </p>
-      //       </li>
-      //    );
-      // });
-   };
+   //     // return sortedCategories.map((category: CategoryResponseType) => {
+   //     //    return (
+   //     //       <li
+   //     //          key={category.category_id}
+   //     //          ref={(el) => {
+   //     //             categoryRefs.current[category.category_id] = el;
+   //     //          }}
+   //     //          data-category_id={category.category_id}
+   //     //          className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+   //     //          onMouseEnter={() => {
+   //     //             handleMouseEnter(category.category_name);
+   //     //          }}
+   //     //          onClick={() => {
+   //     //             router.push(`/shop`);
+   //     //          }}
+   //     //       >
+   //     //          <p className="antialiased opacity-[0.8] tracking-wide">
+   //     //             {category.category_name}
+   //     //          </p>
+   //     //       </li>
+   //     //    );
+   //     // });
+   //  };
 
    const renderHeaderCategories = () => {
       if (!categories.length) {
@@ -349,7 +349,7 @@ const Header = () => {
          onMouseLeave={handleMouseLeave}
       >
          <div className="flex flex-row items-center max-w-[1180px] h-auto px-[22px] mx-auto">
-            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full bg-red-500">
+            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -448,7 +448,7 @@ const Header = () => {
                </div>
             </ul>
 
-            <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
+            {/* <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -478,7 +478,6 @@ const Header = () => {
                   />
                </button>
             </div>
-            {/* Mobile dropdown */}
             <AnimatePresence>
                {menuOpen && (
                   <>
@@ -503,7 +502,7 @@ const Header = () => {
                      </motion.div>
                   </>
                )}
-            </AnimatePresence>
+            </AnimatePresence> */}
 
             <AnimatePresence>
                {activeCategory && subcategoryContent[activeCategory] && (
