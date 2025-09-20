@@ -1,21 +1,17 @@
-﻿using Keycloak.AuthServices.Common;
-
+﻿using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
-
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-
-using Keycloak.AuthServices.Authentication;
-using YGZ.Catalog.Api.Contracts.IPhone16Request;
-using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Api.Contracts;
-using YGZ.Catalog.Api.Contracts.modelRequest;
-using YGZ.Catalog.Api.Contracts.ReviewRequest;
-using YGZ.Catalog.Api.Contracts.PromotionRequest;
+using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
+using YGZ.Catalog.Api.Contracts.modelRequest;
+using YGZ.Catalog.Api.Contracts.PromotionRequest;
+using YGZ.Catalog.Api.Contracts.ReviewRequest;
 
 namespace YGZ.Catalog.Api.Extensions;
 
@@ -57,7 +53,6 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new GetReviewsByModelRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
-            settings.SchemaSettings.SchemaProcessors.Add(new CreateIPhone16DetailRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateReviewRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateReviewRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreatePromotionEventRequestExample());

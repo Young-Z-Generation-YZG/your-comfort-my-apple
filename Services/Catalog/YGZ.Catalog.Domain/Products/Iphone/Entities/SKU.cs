@@ -13,6 +13,9 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
 {
     public SKU(SKUId id) : base(id) { }
 
+    [BsonElement("model_id")]
+    public required ModelId ModelId { get; init; }
+
     [BsonElement("sku_code")]
     public required SKUCode SKUCode { get; init; }
 
@@ -56,6 +59,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     public string? DeletedBy => null;
 
     public static SKU Create(
+        ModelId modelId,
         SKUCode skuCode,
         EProductType productType,
         Model model,
@@ -66,6 +70,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     {
         var sku = new SKU(SKUId.Create())
         {
+            ModelId = modelId,
             SKUCode = skuCode,
             ProductType = productType.Name,
             Model = model,

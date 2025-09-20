@@ -12,17 +12,17 @@ public class CreateIphoneModelRequestExample : ISchemaProcessor
 
             schema.Example = new
             {
-                name = "iPhone 16",
+                name = "iPhone 15",
                 models = new List<object>()
                 {
                     new
                     {
-                        model_name = "IPHONE_16",
+                        model_name = "IPHONE_15",
                         order = 0,
                     },
                     new
                     {
-                        model_name = "IPHONE_16_PLUS",
+                        model_name = "IPHONE_15_PLUS",
                         order = 1,
                     },
                 },
@@ -30,11 +30,39 @@ public class CreateIphoneModelRequestExample : ISchemaProcessor
                 {
                     new
                     {
-                        color_name = "ULTRAMARINE",
-                        color_hex_code = "#3f51b5",
-                        showcase_image_id = "test-id",
+                        color_name = "BLUE",
+                        color_hex_code = "#D5DDDF",
+                        showcase_image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
                         order = 0
-                    }
+                    },
+                    new
+                    {
+                        color_name = "PINK",
+                        color_hex_code = "#EBD3D4",
+                        showcase_image_id = "iphone-15-finish-select-202309-6-1inch-pink_j6v96t",
+                        order = 1
+                    },
+                    new
+                    {
+                        color_name = "YELLOW",
+                        color_hex_code = "#EDE6C8",
+                        showcase_image_id = "iphone-15-finish-select-202309-6-1inch-yellow_pwviwe",
+                        order = 2
+                    },
+                    new
+                    {
+                        color_name = "GREEN",
+                        color_hex_code = "#D0D9CA",
+                        showcase_image_id = "iphone-15-finish-select-202309-6-1inch-green_yk0ln5",
+                        order = 3
+                    },
+                    new
+                    {
+                        color_name = "BLACK",
+                        color_hex_code = "#4B4F50",
+                        showcase_image_id = "iphone-15-finish-select-202309-6-1inch-black_hhhvfs",
+                        order = 4
+                    },
                 },
                 storages = new List<object>()
                 {
@@ -43,22 +71,84 @@ public class CreateIphoneModelRequestExample : ISchemaProcessor
                         storage_name = "256GB",
                         storage_value =  256,
                         order = 0
+                    },
+                    new
+                    {
+                        storage_name = "256GB",
+                        storage_value =  256,
+                        order = 1
+                    },
+new
+                    {
+                        storage_name = "512GB",
+                        storage_value =  512,
+                        order = 2
+                    },
+                    new
+                    {
+                        storage_name = "1TB",
+                        storage_value =  1024,
+                        order = 3
                     }
                 },
-                description = "iPhone 16 ultramarine description.",
+                description = "iPhone 15 model description.",
                 showcase_images = new List<object>()
                 {
                     new
                     {
-                        image_id = "image_id_1",
-                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744811359/iphone-16-finish-select-202409-6-1inch-ultramarine_g6af08.webp?wid=5120&hei=2880&fmt=webp&qlt=70&.v=UXp1U3VDY3IyR1hNdHZwdFdOLzg1V0tFK1lhSCtYSGRqMUdhR284NTN4L28rSU1jVGx4VGxCNEFSdVNXdG1RdzJrQmVLSXFrTCsvY1VvVmRlZkVnMzJKTG1lVWJJT2RXQWE0Mm9rU1V0V0E5L1ZBdzY3RU1aTVdUR3lMZHFNVzE0RzhwM3RLeUk1S0YzTkJVVmF2Ly9R&traceId=1",
-                        image_name = "iPhone 16",
+                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp",
+                        image_name = "iPhone 15 blue",
                         image_description = "",
                         image_width = 0,
                         image_height = 0,
                         image_bytes = 0,
                         order = 0,
-                    }
+                    },
+                    new
+                    {
+                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp",
+                        image_name = "iPhone 15 blue",
+                        image_description = "",
+                        image_width = 0,
+                        image_height = 0,
+                        image_bytes = 0,
+                        order = 1,
+                    },
+                    new
+                    {
+                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp",
+                        image_name = "iPhone 15 blue",
+                        image_description = "",
+                        image_width = 0,
+                        image_height = 0,
+                        image_bytes = 0,
+                        order = 2,
+                    },
+                    new
+                    {
+                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp",
+                        image_name = "iPhone 15 blue",
+                        image_description = "",
+                        image_width = 0,
+                        image_height = 0,
+                        image_bytes = 0,
+                        order = 3,
+                    },
+                    new
+                    {
+                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp",
+                        image_name = "iPhone 15 blue",
+                        image_description = "",
+                        image_width = 0,
+                        image_height = 0,
+                        image_bytes = 0,
+                        order = 4,
+                    },
                 },
                 category_id = "67346f7549189f7314e4ef0c"
             };

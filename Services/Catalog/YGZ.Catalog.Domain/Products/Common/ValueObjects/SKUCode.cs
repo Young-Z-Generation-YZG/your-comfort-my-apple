@@ -27,6 +27,17 @@ public class SKUCode : ValueObject
         return new SKUCode($"{productTypeEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
     }
 
+    public static SKUCode Of(string value)
+    {
+        var parts = value.Split('-');
+        if (parts.Length != 4)
+        {
+            throw new ArgumentException("Invalid SKU code format");
+        }
+
+        return Create(parts[0], parts[1], parts[2], parts[3]);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

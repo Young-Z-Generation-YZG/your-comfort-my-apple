@@ -29,6 +29,7 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
                 foreach (var storage in notification.IphoneModel.Storages)
                 {
                     var sku = SKU.Create(
+                        modelId: notification.IphoneModel.Id,
                         skuCode: SKUCode.Create(EProductType.IPHONE.Name, model.Name, storage.Name, color.Name),
                         productType: EProductType.IPHONE,
                         model: model,
