@@ -6,7 +6,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 
 namespace YGZ.Catalog.Application.IPhone.Queries.GetModels;
 
-public sealed record GetModelsQuery() : IQuery<PaginationResponse<IphoneModelWithPromotionResponse>> 
+public sealed record GetIphoneModelsQuery() : IQuery<PaginationResponse<IphoneModelWithPromotionResponse>>
 {
     public int? Page { get; set; }
     public int? Limit { get; set; }

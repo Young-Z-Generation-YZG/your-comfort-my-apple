@@ -6,7 +6,6 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Api.Contracts.IPhoneRequest;
-using YGZ.Catalog.Api.Contracts.modelRequest;
 using YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
 using YGZ.Catalog.Application.IPhone.Queries.GetModels;
 using YGZ.Catalog.Application.IPhone16.Queries.GetIPhone16Models;
@@ -43,9 +42,9 @@ public class IPhoneController : ApiController
     }
 
     [HttpGet("models")]
-    public async Task<IActionResult> GetModelsWithPromotion([FromQuery] GetModelsRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetModelsWithPromotion([FromQuery] GetIphoneModelsRequest request, CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<GetModelsQuery>(request);
+        var query = _mapper.Map<GetIphoneModelsQuery>(request);
 
         var result = await _sender.Send(query, cancellationToken);
 

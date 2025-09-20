@@ -1,6 +1,6 @@
-﻿namespace YGZ.Catalog.Api.Contracts.modelRequest;
+﻿namespace YGZ.Catalog.Api.Contracts.IphoneRequest;
 
-public sealed record GetModelsRequest
+public sealed record GetIphoneModelsRequest
 {
     public int? _page { get; set; } = 1;
     public int? _limit { get; set; } = 10;

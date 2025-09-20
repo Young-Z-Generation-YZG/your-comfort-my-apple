@@ -3,9 +3,9 @@ using NSwag.Generation.Processors;
 using NJsonSchema;
 using YGZ.Catalog.Api.Controllers;
 
-namespace YGZ.Catalog.Api.Contracts.modelRequest;
+namespace YGZ.Catalog.Api.Contracts.IphoneRequest;
 
-public class GetModelsRequestExample : IOperationProcessor
+public class GetIphoneModelsRequestExample : IOperationProcessor
 {
     public bool Process(OperationProcessorContext context)
     {
@@ -38,9 +38,9 @@ public class GetModelsRequestExample : IOperationProcessor
                    "ultramarine", "teal", "pink", "white", "black", "desert-titanium", "natural-titanium", "white-titanium", "black-titanium"
                };
 
-                colorParam.Schema = new NJsonSchema.JsonSchema
+                colorParam.Schema = new JsonSchema
                 {
-                    Type = NJsonSchema.JsonObjectType.String
+                    Type = JsonObjectType.String
                 };
                 foreach (var name in colorList)
                 {
@@ -56,9 +56,9 @@ public class GetModelsRequestExample : IOperationProcessor
 
                 List<string> storageList = new List<string> { "128GB", "256GB", "512GB", "1024GB" };
 
-                storageParam.Schema = new NJsonSchema.JsonSchema
+                storageParam.Schema = new JsonSchema
                 {
-                    Type = NJsonSchema.JsonObjectType.String
+                    Type = JsonObjectType.String
                 };
 
                 foreach (var name in storageList)
@@ -74,9 +74,9 @@ public class GetModelsRequestExample : IOperationProcessor
 
                 List<string> modelList = new List<string> { "iphone-15", "iphone-16", "iphone-16e", "iphone-16-pro" };
 
-                modelParam.Schema = new NJsonSchema.JsonSchema
+                modelParam.Schema = new JsonSchema
                 {
-                    Type = NJsonSchema.JsonObjectType.String
+                    Type = JsonObjectType.String
                 };
                 foreach (var name in modelList)
                 {
@@ -103,9 +103,9 @@ public class GetModelsRequestExample : IOperationProcessor
 
                 List<string> sortList = new List<string> { "asc", "desc" };
 
-                sortParam.Schema = new NJsonSchema.JsonSchema
+                sortParam.Schema = new JsonSchema
                 {
-                    Type = NJsonSchema.JsonObjectType.String
+                    Type = JsonObjectType.String
                 };
 
                 foreach (var name in sortList)
