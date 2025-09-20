@@ -16,6 +16,11 @@ public class EventId : ValueObject
         return new EventId(Guid.NewGuid());
     }
 
+    public static EventId Of(Guid? guid)
+    {
+        return new EventId(guid);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

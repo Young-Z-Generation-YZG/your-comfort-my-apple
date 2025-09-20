@@ -15,6 +15,11 @@ public class EventProducSKUId : ValueObject
         return new EventProducSKUId(Guid.NewGuid());
     }
 
+    public static EventProducSKUId Of(Guid? guid)
+    {
+        return new EventProducSKUId(guid);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

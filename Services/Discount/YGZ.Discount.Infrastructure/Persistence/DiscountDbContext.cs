@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using YGZ.Discount.Domain.Coupons;
+using YGZ.Discount.Domain.Event;
+using YGZ.Discount.Domain.Event.Entities;
 using YGZ.Discount.Domain.PromotionEvent;
 using YGZ.Discount.Domain.PromotionEvent.Entities;
 using YGZ.Discount.Domain.PromotionItem;
@@ -15,6 +17,9 @@ public class DiscountDbContext : DbContext
     public DbSet<PromotionGlobal> PromotionGlobals { get; set; }
     public DbSet<PromotionProduct> PromotionProducts { get; set; }
     public DbSet<PromotionCategory> PromotionCategories { get; set; }
+
+    public DbSet<Event> Events { get; set; }
+    public DbSet<EventProductSKU> EventProductSKUs { get; set; }
 
     public DiscountDbContext(DbContextOptions<DiscountDbContext> options) : base(options) { }
 
