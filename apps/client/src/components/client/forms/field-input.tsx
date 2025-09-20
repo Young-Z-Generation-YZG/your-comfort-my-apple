@@ -104,8 +104,8 @@ export function FieldInput<T extends FieldValues>({
                                  color: hasError
                                     ? '#ef4444'
                                     : isActive
-                                      ? '#666'
-                                      : '#999',
+                                      ? '#0066CC'
+                                      : '#666',
                               }}
                               className={cn(
                                  'absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-base font-light',
@@ -136,7 +136,7 @@ export function FieldInput<T extends FieldValues>({
                               type={showCurrentPassword ? 'text' : type}
                               disabled={disabled}
                               className={cn(
-                                 'w-full px-4 py-2 pt-5 focus:outline-none text-base h-[56px] border',
+                                 'w-full px-4 pb-2 pt-5 focus:outline-none text-base h-[56px] border',
                                  className,
                                  `${
                                     hasError && visibleError
@@ -158,15 +158,15 @@ export function FieldInput<T extends FieldValues>({
                            {type === 'password' && visibleEyeIcon && (
                               <button
                                  type="button"
-                                 className="absolute inset-y-0 right-2 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                 className="absolute inset-y-0 right-2 pr-3 flex justify-center items-center text-gray-400 hover:text-gray-600"
                                  onClick={() =>
                                     setShowCurrentPassword(!showCurrentPassword)
                                  }
                               >
                                  {showCurrentPassword ? (
-                                    <EyeOff className="h-5 w-5" />
+                                    <EyeOff className="lg:w-5 md:w-8 w-12 h-[90%]" />
                                  ) : (
-                                    <Eye className="h-5 w-5" />
+                                    <Eye className="lg:w-5 md:w-8 w-12 h-[90%]" />
                                  )}
                               </button>
                            )}
@@ -175,7 +175,9 @@ export function FieldInput<T extends FieldValues>({
                         {hasEnterArrowButton && (
                            <button
                               type="button"
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              className={
+                                 'absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
+                              }
                               onClick={() => {
                                  // You can add custom logic here if needed
                                  form.handleSubmit((data) =>
@@ -185,15 +187,15 @@ export function FieldInput<T extends FieldValues>({
                            >
                               <svg
                                  xmlns="http://www.w3.org/2000/svg"
-                                 width="20"
-                                 height="20"
+                                 // width="20"
+                                 // height="20"
                                  viewBox="0 0 24 24"
                                  fill="none"
                                  stroke="currentColor"
                                  strokeWidth="2"
                                  strokeLinecap="round"
                                  strokeLinejoin="round"
-                                 className="lucide lucide-arrow-right-circle"
+                                 className="lucide lucide-arrow-right-circle lg:h-5 lg:w-5 md:h-8 md:w-8 h-12 w-12"
                               >
                                  <circle cx="12" cy="12" r="10" />
                                  <path d="m8 12 4 4" />

@@ -94,7 +94,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
    const birthday = watch(name) as Birthday | undefined;
 
    // Get the error for this field if it exists
-   let errorMessage = errors[name] as
+   const errorMessage = errors[name] as
       | {
            day?: { message: string };
            month?: { message: string };
@@ -234,7 +234,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
 
    return (
       <div className={`space-y-2 ${className}`}>
-         <div className="flex items-center">
+         <div className="flex items-center ">
             <label className="text-gray-800 font-normal">
                {label} {required && <span className="text-red-500">*</span>}
             </label>
@@ -251,12 +251,12 @@ export function FormBirthdaySelector<T extends FieldValues>({
             </button>
          </div>
 
-         <div className="flex gap-3">
+         <div className="flex gap-3 ">
             {/* Month Selector */}
-            <div className="relative flex-1" ref={monthRef}>
+            <div className={`relative flex-1 h-[70%]`} ref={monthRef}>
                <div
                   className={cn(
-                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',
                      hasError
                         ? 'border-red-500 text-red-500'
                         : 'border-gray-300',
@@ -266,7 +266,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                >
                   <span
                      className={cn(
-                        'font-normal text-base',
+                        'font-normal',
                         birthday?.month ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
@@ -310,10 +310,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
             </div>
 
             {/* Day Selector */}
-            <div className="relative flex-1" ref={dayRef}>
+            <div className={`relative flex-1 h-[70%]`} ref={dayRef}>
                <div
                   className={cn(
-                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',
                      hasError
                         ? 'border-red-500 text-red-500'
                         : 'border-gray-300',
@@ -323,7 +323,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                >
                   <span
                      className={cn(
-                        'font-normal text-base',
+                        'font-normal',
                         birthday?.day ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
@@ -361,10 +361,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
             </div>
 
             {/* Year Selector */}
-            <div className="relative flex-1" ref={yearRef}>
+            <div className={`relative flex-1 h-[70%]`} ref={yearRef}>
                <div
                   className={cn(
-                     'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
+                     'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',
                      hasError
                         ? 'border-red-500 text-red-500'
                         : 'border-gray-300',
@@ -374,7 +374,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                >
                   <span
                      className={cn(
-                        'font-normal text-base',
+                        'font-normal',
                         birthday?.year ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >

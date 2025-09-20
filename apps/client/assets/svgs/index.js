@@ -13,6 +13,7 @@ const svgs = {
    momoLogo: require('./momo-logo.svg').default,
    truckIcon: require('./truck-icon.svg').default,
    ticketIcon: require('./ticket-percent-icon.svg').default,
+   menuIcon: require('./menu-icon.svg').default,
 };
 
 export default svgs;

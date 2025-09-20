@@ -85,13 +85,13 @@ const Header = () => {
    const [categories, setCategories] = useState<CategoryResponseType[]>([]);
    const categoryRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
    const router = useRouter();
-
    const { items } = useAppSelector((state) => state.cart.value);
+   const [menuOpen, setMenuOpen] = useState<boolean>(false);
 
    const {
       data: categoriesData,
-      error: categoriesError,
-      isLoading: categoriesLoading,
+      // error: categoriesError,
+      // isLoading: categoriesLoading,
    } = useGetCategoriesAsyncQuery();
 
    useEffect(() => {
@@ -99,6 +99,58 @@ const Header = () => {
          setCategories(categoriesData);
       }
    }, [categoriesData]);
+
+   const renderHeaderCategories02 = () => {
+      if (!categories.length) {
+         return mainCategoriesDefault.map((category, index) => {
+            return (
+               <li
+                  key={index}
+                  className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] border-red-300"
+                  ref={(el) => {
+                     categoryRefs.current[category.category_id] = el;
+                  }}
+                  data-category_id={category}
+                  onMouseEnter={() => handleMouseEnter(category.category_name)}
+                  onClick={() => {
+                     router.push(`/shop`);
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     {category.category_name}
+                  </p>
+               </li>
+            );
+         });
+      }
+
+      // const sortedCategories = categories
+      //    .filter((category) => category.category_parent_id === null)
+      //    .sort((a, b) => a.category_order - b.category_order);
+
+      // return sortedCategories.map((category: CategoryResponseType) => {
+      //    return (
+      //       <li
+      //          key={category.category_id}
+      //          ref={(el) => {
+      //             categoryRefs.current[category.category_id] = el;
+      //          }}
+      //          data-category_id={category.category_id}
+      //          className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+      //          onMouseEnter={() => {
+      //             handleMouseEnter(category.category_name);
+      //          }}
+      //          onClick={() => {
+      //             router.push(`/shop`);
+      //          }}
+      //       >
+      //          <p className="antialiased opacity-[0.8] tracking-wide">
+      //             {category.category_name}
+      //          </p>
+      //       </li>
+      //    );
+      // });
+   };
 
    const renderHeaderCategories = () => {
       if (!categories.length) {
@@ -124,7 +176,7 @@ const Header = () => {
          });
       }
 
-      var sortedCategories = categories
+      const sortedCategories = categories
          .filter((category) => category.category_parent_id === null)
          .sort((a, b) => a.category_order - b.category_order);
 
@@ -296,8 +348,8 @@ const Header = () => {
          className="relative w-full bg-[#fafafc]"
          onMouseLeave={handleMouseLeave}
       >
-         <div className="flex flex-row items-center w-[1180px] h-[44px] px-[22px] mx-auto">
-            <ul className="main-category flex flex-row justify-between items-center w-full">
+         <div className="flex flex-row items-center max-w-[1180px] h-auto px-[22px] mx-auto">
+            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full bg-red-500">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -395,6 +447,63 @@ const Header = () => {
                   <PiUserCircleFill className="size-5" aria-hidden="true" />
                </div>
             </ul>
+
+            <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
+               <div
+                  className="px-[8px] cursor-pointer"
+                  onClick={() => {
+                     router.push('/home');
+                  }}
+               >
+                  <Image
+                     src={svgs.appleIcon}
+                     alt="cover"
+                     width={1200}
+                     height={1000}
+                     quality={100}
+                     className="h-[100px] w-[50px]"
+                  />
+               </div>
+               <button
+                  className="md:hidden"
+                  onClick={() => setMenuOpen(!menuOpen)}
+               >
+                  <Image
+                     src={svgs.menuIcon}
+                     alt="cover"
+                     width={1200}
+                     height={1000}
+                     quality={100}
+                     className="h-[50px] w-[50px]"
+                  />
+               </button>
+            </div>
+            {/* Mobile dropdown */}
+            <AnimatePresence>
+               {menuOpen && (
+                  <>
+                     <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.5 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 bg-white z-40"
+                        onClick={() => setMenuOpen(false)}
+                     />
+                     <motion.div
+                        initial={{ x: '100%', opacity: 0 }}
+                        animate={{ x: '0%', opacity: 1 }}
+                        exit={{ x: '100%', opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className="fixed top-0 right-0 w-auto h-full bg-[#fafafc] border-l z-50 p-6"
+                     >
+                        <ul className="flex flex-col gap-0 text-lg">
+                           {renderHeaderCategories02()}
+                        </ul>
+                     </motion.div>
+                  </>
+               )}
+            </AnimatePresence>
 
             <AnimatePresence>
                {activeCategory && subcategoryContent[activeCategory] && (
