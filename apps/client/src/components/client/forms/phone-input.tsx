@@ -11,6 +11,7 @@ import {
    type FieldValues,
 } from 'react-hook-form';
 import { AlertCircle } from 'lucide-react';
+import { cn } from '~/infrastructure/lib/utils';
 
 interface FormPhoneInputProps<T extends FieldValues> {
    form: UseFormReturn<T>;
@@ -21,6 +22,8 @@ interface FormPhoneInputProps<T extends FieldValues> {
    disabled?: boolean;
    countryCode?: string;
    countryLabel?: string;
+   labelClassName?: string;
+   errorTextClassName?: string;
 }
 
 export function FormPhoneInput<T extends FieldValues>({
@@ -32,6 +35,8 @@ export function FormPhoneInput<T extends FieldValues>({
    disabled = false,
    countryCode = '84',
    countryLabel = '+84',
+   labelClassName = '',
+   errorTextClassName = '',
 }: FormPhoneInputProps<T>) {
    const [isFocused, setIsFocused] = useState(false);
 
@@ -72,7 +77,7 @@ export function FormPhoneInput<T extends FieldValues>({
    };
 
    return (
-      <div className={`space-y-1 ${className}`}>
+      <div className={`space-y-1`}>
          <Controller
             control={control}
             name={name}
@@ -108,7 +113,12 @@ export function FormPhoneInput<T extends FieldValues>({
                         } ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
                      >
                         <div className="flex items-center">
-                           <div className="pl-3 pr-2 text-gray-500 border-r border-gray-300 py-3 text-base font-light">
+                           <div
+                              className={cn(
+                                 'pl-3 pr-2 text-gray-500 border-r border-gray-300 py-3 text-base font-light',
+                                 labelClassName,
+                              )}
+                           >
                               {countryLabel}
                            </div>
 
@@ -116,7 +126,7 @@ export function FormPhoneInput<T extends FieldValues>({
                               <motion.label
                                  initial={{ y: 0, scale: 1 }}
                                  animate={{
-                                    y: isFocused || formattedValue ? -12 : 0,
+                                    y: isFocused || formattedValue ? -14 : 0,
                                     scale:
                                        isFocused || formattedValue ? 0.8 : 1,
                                     color: hasError
@@ -125,9 +135,12 @@ export function FormPhoneInput<T extends FieldValues>({
                                          ? '#0066CC'
                                          : '#666',
                                  }}
-                                 className="absolute left-3 pointer-events-none font-light text-base"
+                                 className={cn(
+                                    'absolute left-4 origin-left cursor-text pointer-events-none font-SFProText text-base font-light z-50',
+                                    labelClassName,
+                                 )}
                                  style={{
-                                    top: '35%',
+                                    top: '30%',
                                     transform: 'translateY(-50%)',
                                     transformOrigin: 'left top',
                                  }}
@@ -148,9 +161,14 @@ export function FormPhoneInput<T extends FieldValues>({
                                     field.onBlur();
                                  }}
                                  disabled={disabled}
-                                 className={`w-full px-3 pt-5 h-[56px] text-base pb-1 focus:outline-none ${
-                                    hasError ? 'text-red-500' : 'text-gray-900'
-                                 }`}
+                                 className={cn(
+                                    `w-full px-4 pb-2 pt-5 h-[56px] text-base focus:outline-none ${
+                                       hasError
+                                          ? 'text-red-500'
+                                          : 'text-gray-900'
+                                    }`,
+                                    className,
+                                 )}
                                  placeholder=""
                               />
                            </div>
@@ -158,7 +176,12 @@ export function FormPhoneInput<T extends FieldValues>({
                      </div>
 
                      {hasError && (
-                        <div className="flex items-center text-red-500 text-sm px-1">
+                        <div
+                           className={cn(
+                              'flex items-center text-red-500 text-sm px-1',
+                              errorTextClassName,
+                           )}
+                        >
                            <AlertCircle className="h-4 w-4 mr-1" />
                            <span>{errorMessage}</span>
                         </div>

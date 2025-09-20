@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Check, AlertCircle } from 'lucide-react';
 import { Controller, FieldValues, Path, UseFormReturn } from 'react-hook-form';
+import { cn } from '~/infrastructure/lib/utils';
 
 interface FormSelectorProps<T extends FieldValues> {
    form: UseFormReturn<T>;
@@ -12,6 +13,9 @@ interface FormSelectorProps<T extends FieldValues> {
    placeholder?: string;
    options?: string[];
    className?: string;
+   inputClassName?: string;
+   labelClassName?: string;
+   errorTextClassName?: string;
    disabled?: boolean;
    required?: boolean;
    onSelect?: (value: string) => void;
@@ -24,6 +28,9 @@ export function FormSelector<T extends FieldValues>({
    placeholder = 'Select...',
    options = [],
    className = '',
+   inputClassName = '',
+   labelClassName = '',
+   errorTextClassName = '',
    disabled = false,
    required = false,
    onSelect,
@@ -64,14 +71,19 @@ export function FormSelector<T extends FieldValues>({
                control={control}
                name={name}
                render={({ field }) => (
-                  <>
-                     <div className="text-sm text-gray-500 mb-1 absolute left-3 top-1 font-normal">
+                  <div className="md:h-[56px] h-[100px]">
+                     <div
+                        className={cn(
+                           'text-sm text-gray-500 mb-1 absolute left-3 lg:top-2 md:top-0 top-2 font-normal',
+                           labelClassName,
+                        )}
+                     >
                         {label}{' '}
                         {required && <span className="text-red-500">*</span>}
                      </div>
 
                      <div
-                        className={`flex items-end h-[56px] justify-between border rounded-lg px-3 py-2 cursor-pointer bg-white ${
+                        className={`h-[100%] flex items-end border rounded-lg px-3 py-2 cursor-pointer bg-white ${
                            hasError
                               ? 'border-red-500 focus:border-red-500'
                               : 'border-gray-300 focus:border-blue-500'
@@ -83,12 +95,15 @@ export function FormSelector<T extends FieldValues>({
                         }}
                      >
                         <span
-                           className={`text-base font-normal ${!field.value ? 'text-gray-400' : 'text-gray-900'}`}
+                           className={cn(
+                              `text-base font-normal ${!field.value ? 'text-gray-400' : 'text-gray-900'}`,
+                              inputClassName,
+                           )}
                         >
                            {field.value || placeholder}
                         </span>
                         <ChevronDown
-                           className={`h-5 w-5 text-gray-500 absolute right-5 top-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                           className={`lg:h-5 lg:w-5 md:h-7 md:w-7 h-8 w-8 text-gray-500 absolute right-5 top-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                         />
                      </div>
 
@@ -124,13 +139,18 @@ export function FormSelector<T extends FieldValues>({
                            </motion.div>
                         )}
                      </AnimatePresence>
-                  </>
+                  </div>
                )}
             />
          </div>
 
          {hasError && (
-            <div className="flex items-center text-red-500 text-sm px-1">
+            <div
+               className={cn(
+                  'flex items-center text-red-500 text-sm px-1',
+                  errorTextClassName,
+               )}
+            >
                <AlertCircle className="h-4 w-4 mr-1" />
                <span>{errorMessage}</span>
             </div>

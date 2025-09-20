@@ -91,29 +91,28 @@ const SignInPage = () => {
    }, [isFetching]);
 
    return (
-      <div className="w-[1180px] mx-auto px-10">
+      <div className="max-w-[1180px] mx-auto px-10">
          <section className="flex justify-between border-b h-[60px] items-center">
             <div>
                <h2 className="text-2xl font-medium">Account</h2>
             </div>
 
-            <div className="flex gap-3 font-SFProText text-slate-500 text-sm">
+            <div className="flex gap-3 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
                <Link href="/sign-in">Sign in</Link>
                <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
          </section>
 
-         <div className="h-full px-[200px] py-[200px]">
-            <div className="w-full  flex flex-col justify-center items-center">
-               <h3 className="text-4xl font-SFProDisplay font-medium">
+         <div className="h-full lg:px-[200px] md:px-[100px] px-0 py-[200px]">
+            <div className="w-full flex flex-col justify-center items-center">
+               <h3 className="font-SFProDisplay font-medium lg:text-3xl md:text-5xl text-7xl">
                   Account
                </h3>
-               <p className="text-base font-SFProText font-light pt-5">
+               <p className="font-SFProText font-light pt-5 lg:text-base md:text-xl text-2xl">
                   Manage Your Account
                </p>
-
-               <p className="text-base font-SFProText font-light py-1 flex gap-2">
+               <p className="font-SFProText font-light pt-5 flex gap-2 lg:text-base md:text-xl text-2xl lg:pb-2 md:pb-5 pb-10">
                   Not have account yet?{' '}
                   <Link
                      href="/sign-up"
@@ -124,7 +123,7 @@ const SignInPage = () => {
                   </Link>
                </p>
 
-               <div className="w-[480px]">
+               <div className="lg:w-[500px] md:w-[80%] w-full">
                   <LoadingOverlay
                      isLoading={isLoading || isFetching}
                      text="Signing in..."
@@ -143,10 +142,11 @@ const SignInPage = () => {
                               form={form}
                               name="email"
                               label="Email"
-                              className="rounded-xl rounded-b-none"
                               type="text"
                               disabled={isLoading || isFetching}
-                              errorTextClassName="pb-5"
+                              className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl rounded-b-none"
+                              labelClassName="lg:text-base md:text-xl text-3xl"
+                              errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                            />
 
                            <FieldInput
@@ -155,24 +155,26 @@ const SignInPage = () => {
                               label="Password"
                               type="password"
                               disabled={isLoading || isFetching}
-                              visibleEyeIcon={false}
-                              className="rounded-xl rounded-t-none"
                               fetchingFunc={onSubmit}
+                              visibleEyeIcon={false}
                               hasEnterArrowButton={true}
+                              className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl rounded-t-none"
+                              labelClassName="lg:text-base md:text-xl text-3xl"
+                              errorTextClassName="lg:text-sm md:text-lg text-2xl"
                            />
                         </form>
                      </div>
 
-                     <div className="mt-3  ml-auto w-fit">
-                        <div className="flex items-center space-x-2">
+                     <div className="mt-3 ml-auto w-fit">
+                        <div className="flex items-center justify-center space-x-2 lg:my-0 my-8">
                            <input
                               type="checkbox"
                               id="remember"
-                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                              className="lg:h-4 md:h-6 h-8 lg:w-4 md:w-6 w-8 rounded border-gray-300 text-blue-600 focus:ring-blue-500 "
                            />
                            <label
                               htmlFor="remember"
-                              className="text-gray-600 text-sm"
+                              className="text-gray-600 lg:text-base md:text-xl text-2xl"
                            >
                               Remember me
                            </label>
@@ -181,7 +183,7 @@ const SignInPage = () => {
                         <div className="mt-2 flex text-blue-500">
                            <Link
                               href="/forgot-password"
-                              className="text-sm font-normal text-end w-full block hover:underline"
+                              className="lg:text-base md:text-xl text-2xl font-normal text-end w-full block hover:underline"
                            >
                               Forgot password?
                            </Link>
@@ -190,19 +192,19 @@ const SignInPage = () => {
                      </div>
 
                      <div className="mt-5">
-                        <h3 className="text-lg font-SFProText font-medium text-center">
+                        <h3 className="lg:text-base md:text-xl text-2xl font-SFProText font-medium text-center">
                            Sign In with another method
                         </h3>
 
                         <div className="flex flex-col justify-center items-center gap-3 mt-3">
-                           <button className="w-fit px-3 py-2 rounded-full font-SFProText text-base font-medium min-w-[300px] bg-slate-100 flex items-center justify-between hover:bg-slate-200 active:bg-slate-100">
+                           <button className="w-fit px-3 py-2 rounded-full font-SFProText lg:text-base md:text-xl text-3xl font-medium min-w-[300px] bg-slate-100 flex items-center justify-between hover:bg-slate-200 active:bg-slate-100">
                               <Image
                                  src={googlePng}
                                  alt="cover"
                                  width={1000}
                                  height={1000}
                                  quality={100}
-                                 className="h-8 w-8"
+                                 className="lg:h-8 md:h-12 h-20 lg:w-8 md:w-12 w-20"
                               />
                               Sign in with Google
                               <Image

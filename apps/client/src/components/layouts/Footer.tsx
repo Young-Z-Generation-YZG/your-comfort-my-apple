@@ -89,7 +89,7 @@ const Footer = () => {
             </div>
          </div>
          <div className="w-full bg-[#FAFAFC]">
-            <div className="w-[980px] mx-auto py-[17px] flex flex-col gap-2 text-[11px] font-light font-SFProText text-[#6E6E73]">
+            <div className="max-w-[980px] mx-auto py-[17px] flex flex-col gap-2 text-[11px] font-light font-SFProText text-[#6E6E73]">
                <div className="w-full flex flex-col gap-2 text-[#0000008F]">
                   <p>
                      * Trade‑in values will vary based on the condition, year,
