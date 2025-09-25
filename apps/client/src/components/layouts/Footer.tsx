@@ -2,13 +2,13 @@
 
 const Footer = () => {
    return (
-      <footer className="w-full h-full">
-         <div className="max-w-[1680px] w-[87.5vw] mx-auto font-SFProText mb-5 py-16">
+      <footer className="w-full h-full m">
+         <div className="max-w-[1680px] w-[87.5vw] mx-auto font-SFProText mb-5 py-16 lg:text-left text-center">
             <h2 className="mb-[53px] text-[56px] font-[600] leading-[60px]">
                iPhone
             </h2>
-            <div className="flex flex-wrap lg:flex-row ">
-               <div className="w-full mb-14 lg:w-auto lg:mb-0 pr-[88px]">
+            <div className="flex flex-wrap lg:flex-row">
+               <div className="w-full mb-14 lg:w-auto lg:mb-0 lg:pr-[88px] pr-0">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Explore iPhone
                   </h3>
@@ -36,7 +36,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 pr-[44px] font-SFProDisplay">
+               <div className="w-full mb-14 md:w-auto md:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Shop iPhone
                   </h3>
@@ -55,7 +55,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 pr-[44px]">
+               <div className="w-full mb-14 md:w-auto md:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      More from iPhone
                   </h3>
@@ -89,9 +89,9 @@ const Footer = () => {
             </div>
          </div>
          <div className="w-full bg-[#FAFAFC]">
-            <div className="max-w-[980px] mx-auto py-[17px] flex flex-col gap-2 text-[11px] font-light font-SFProText text-[#6E6E73]">
+            <div className="max-w-[980px] w-[87.5vw] mx-auto py-[17px] flex flex-col gap-2 lg:text-[11px] md:text-[15px] text-[18px] font-light font-SFProText text-[#6E6E73]">
                <div className="w-full flex flex-col gap-2 text-[#0000008F]">
-                  <p>
+                  <p className="text-justify">
                      * Trade‑in values will vary based on the condition, year,
                      and configuration of your eligible trade‑in device. Not all
                      devices are eligible for credit. You must be at least the
@@ -112,7 +112,7 @@ const Footer = () => {
                      for trade‑in and recycling of eligible devices.
                      Restrictions and limitations may apply.
                   </p>
-                  <p>
+                  <p className="text-justify">
                      ** Pricing for iPhone 16 and iPhone 16 Plus includes a $30
                      connectivity discount that requires activation with AT&T,
                      Boost Mobile, T‑Mobile, or Verizon. Pricing shown for
@@ -141,7 +141,7 @@ const Footer = () => {
                   </p>
                </div>
                <div className="w-full border border-[#ccc]" />
-               <div className="w-full flex flex-row">
+               <div className="w-full flex md:flex-row flex-col columns-2">
                   <div className="flex-1 flex flex-col gap-5">
                      <div className="flex flex-col gap-1">
                         <p className="font-medium">Shop and Learn</p>

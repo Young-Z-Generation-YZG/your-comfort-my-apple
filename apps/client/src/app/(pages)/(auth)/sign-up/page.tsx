@@ -73,7 +73,7 @@ const SignUpPage = () => {
    };
 
    return (
-      <div className="w-[1180px] mx-auto px-10">
+      <div className="max-w-[1180px] mx-auto px-10">
          <section className="flex justify-between border-b h-[60px] items-center">
             <div>
                <h2 className="text-2xl font-medium">Account</h2>
