@@ -25,7 +25,7 @@ import {
    setSearchLinks,
    setSearchProducts,
 } from '~/infrastructure/redux/features/search.slice';
-import ExperienceItem from '@components/client/experience-item';
+import ExperienceItem from './_components/experience-item';
 
 const listLatestItem = [
    {
@@ -236,20 +236,25 @@ const HomePage = () => {
             'font-SFProDisplay w-full flex flex-col items-center justify-center bg-[#f5f5f7]',
          )}
       >
-         <div className="hero-container max-w-[1264px] h-screen px-8 mb-[100px] mx-auto flex flex-row">
-            {/* <div className='hero-gradient bg-gray-300 h-[100px] w-full absolute top-0 bottom-0 left-0 right-0 z-0'></div> */}
-            <div className="hero-content basis-1/2 h-full bg-transparent relative z-10 flex flex-col items-start gap-[30px]">
-               <div className="content-header max-w-[600px] mt-8 text-[94px] font-medium leading-[97px] tracking-[-3.76px] text-[#3a3a3a]">
-                  Financial infrastructure to grow your revenue
+         <div className="hero-container max-w-[1264px] h-screen px-6 md:px-8 mb-[100px] mx-auto flex flex-col md:flex-row">
+            {/* overlay gradient */}
+            {/* <div className="hero-gradient md:flex hidden bg-gray-300 h-[100px] w-full absolute top-0 bottom-0 left-0 right-0 z-0"></div> */}
+
+            {/* content */}
+            <div className="hero-content basis-1/2 h-full relative z-10 flex flex-col items-start gap-[20px] md:gap-[30px]">
+               <div className="content-header text-center md:text-left mt-8 text-[40px] sm:text-[54px] md:text-[72px] lg:text-[94px] font-medium leading-tight lg:leading-[97px] tracking-[-1px] lg:tracking-[-3.76px] text-[#3a3a3a]">
+                  The Latest Phones, Electronics & Tablets
                </div>
-               <div className="content-body max-w-[540px] pl-2 pr-12 text-[18px] font-normal leading-[28px] tracking-[0.2px] text-[#425466]">
-                  Join the millions of companies of all sizes that use Stripe to
-                  accept payments online and in person, embed financial
-                  services, power custom revenue models, and build a more
-                  profitable business.
+               <div className="content-body text-center md:text-left px-2 md:pl-2 md:pr-12 text-[16px] md:text-[18px] leading-[24px] md:leading-[28px] text-[#425466]">
+                  Discover top smartphones, tablets, and electronics from
+                  leading brands. Shop the newest devices, enjoy exclusive
+                  deals, and upgrade your tech with fast and secure online
+                  shopping.
                </div>
             </div>
-            <div className="hero-masonry basis-1/2 h-full bg-transparent relative z-10">
+
+            {/* masonry */}
+            <div className="hero-masonry basis-1/2 h-[400px] sm:h-[500px] md:h-[600px] lg:h-full relative z-10 mt-6 lg:mt-0">
                <div className="bg-transparent h-full w-full absolute z-10">
                   <div className="bg-[linear-gradient(0deg,rgba(1,0,2,0),#f5f5f7)] h-10 w-full absolute top-0"></div>
                   <div className="bg-[linear-gradient(180deg,rgba(1,0,2,0),#f5f5f7)] h-10 w-full absolute bottom-0"></div>
@@ -266,7 +271,7 @@ const HomePage = () => {
                      }}
                      className="preview-masonry bg-transparent max-w-[600px] mx-auto"
                   >
-                     <div className="grid grid-cols-[repeat(2,minmax(100px,285px))] grid-rows-[masonry] grid-flow-dense gap-[20px]">
+                     <div className="grid grid-cols-[repeat(2,minmax(100px,1fr))] gap-[12px] sm:gap-[20px]">
                         <div className="bg-[url('/images/hero-imgs/picture01-half.jpg')] bg-cover bg-no-repeat bg-bottom rounded-[0_0_20px_20px] h-[168px]"></div>
                         <div className="bg-[url('/images/hero-imgs/picture02.jpg')] bg-cover bg-no-repeat bg-bottom row-end-[span_2] rounded-[20px] h-[356px]"></div>
                         <div className="bg-[url('/images/hero-imgs/picture03.jpg')] bg-cover bg-no-repeat bg-center row-end-[span_2] rounded-[20px] h-[356px]"></div>
@@ -296,58 +301,59 @@ const HomePage = () => {
                </div>
             </div>
          </div>
+
          <div className="list-item-container w-full mb-[100px] flex flex-col justify-center items-center">
             <div className="lastest-item-container w-full max-w-screen mb-[50px]">
-               <div className="title-list pl-[140px] pb-[24px]">
-                  <span className="text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]">
+               <div className="title-list px-6 md:pl-[60px] lg:pl-[140px] pb-[16px] md:pb-[24px]">
+                  <span className="block text-[20px] md:text-[24px] lg:text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]">
                      The latest.{' '}
                   </span>
-                  <span className="text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]">
+                  <span className="block text-[20px] md:text-[24px] lg:text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]">
                      Take a look at what’s new, right now.
                   </span>
                </div>
-               <Carousel className="w-full max-w-screen relative flex justify-center items-center">
-                  <CarouselContent className="w-screen pl-[140px] mb-5">
-                     {listLatestItem.map((product, index) => {
-                        return (
-                           <CarouselItem
-                              key={index}
-                              className="lg:basis-[30%] mr-[0px]"
-                           >
-                              <LatestItem product={product} />
-                           </CarouselItem>
-                        );
-                     })}
+
+               <Carousel className="w-full relative flex justify-center items-center">
+                  <CarouselContent className="w-full px-6 md:pl-[60px] lg:pl-[140px] mb-5">
+                     {listLatestItem.map((product, index) => (
+                        <CarouselItem
+                           key={index}
+                           className="basis-[80%] sm:basis-[50%] md:basis-[30%] lg:basis-[36%] mr-0"
+                        >
+                           <LatestItem product={product} />
+                        </CarouselItem>
+                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className="absolute -top-[40px] -translate-y-1/2 left-[90%] border-black bg-[#ccc]" />
-                  <CarouselNext className="absolute -top-[40px] -translate-y-1/2 right-[5%] border-black bg-[#ccc]" />
+
+                  <CarouselPrevious className="absolute top-[-30px] md:top-[-40px] right-[60px] md:left-[85%] border-black bg-[#ccc]" />
+                  <CarouselNext className="absolute top-[-30px] md:top-[-40px] right-[10px] border-black bg-[#ccc]" />
                </Carousel>
             </div>
 
             <div className="experience-container w-full max-w-screen">
-               <div className="title-list pl-[140px] pb-[24px]">
-                  <span className="text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]">
+               <div className="title-list px-6 md:pl-[60px] lg:pl-[140px] pb-[16px] md:pb-[24px]">
+                  <span className="block text-[20px] md:text-[24px] lg:text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]">
                      The Apple experience.{' '}
                   </span>
-                  <span className="text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]">
+                  <span className="block text-[20px] md:text-[24px] lg:text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]">
                      Do even more with Apple products and services.
                   </span>
                </div>
-               <Carousel className="w-full max-w-screen relative flex justify-center items-center">
-                  <CarouselContent className="w-screen pl-[140px] mb-5">
-                     {listExperienceItem.map((item, index) => {
-                        return (
-                           <CarouselItem
-                              key={index}
-                              className="md:basis-[30%] lg:basis-[36%] mr-[0px]"
-                           >
-                              <ExperienceItem experience={item} />
-                           </CarouselItem>
-                        );
-                     })}
+
+               <Carousel className="w-full relative flex justify-center items-center">
+                  <CarouselContent className="w-full px-6 md:pl-[60px] lg:pl-[140px] mb-5">
+                     {listExperienceItem.map((item, index) => (
+                        <CarouselItem
+                           key={index}
+                           className="basis-[80%] sm:basis-[50%] md:basis-[30%] lg:basis-[36%] mr-0"
+                        >
+                           <ExperienceItem experience={item} />
+                        </CarouselItem>
+                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className="absolute -top-[40px] -translate-y-1/2 left-[90%] border-black bg-[#ccc]" />
-                  <CarouselNext className="absolute -top-[40px] -translate-y-1/2 right-[5%] border-black bg-[#ccc]" />
+
+                  <CarouselPrevious className="absolute top-[-30px] md:top-[-40px] right-[60px] md:left-[85%] border-black bg-[#ccc]" />
+                  <CarouselNext className="absolute top-[-30px] md:top-[-40px] right-[10px] border-black bg-[#ccc]" />
                </Carousel>
             </div>
          </div>
