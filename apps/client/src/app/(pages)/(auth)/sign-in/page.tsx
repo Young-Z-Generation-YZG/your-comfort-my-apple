@@ -77,7 +77,7 @@ const SignInPage = () => {
                <h2 className="text-2xl font-medium">Account</h2>
             </div>
 
-            <div className="flex gap-3 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
+            <div className="flex lg:gap-3 gap-7 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
                <Link href="/sign-in">Sign in</Link>
                <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
@@ -146,7 +146,7 @@ const SignInPage = () => {
                      </div>
 
                      <div className="mt-3 ml-auto w-fit">
-                        <div className="flex items-center justify-center space-x-2 lg:my-0 my-8">
+                        <div className="flex items-center justify-center space-x-2 lg:mt-0 mt-8 lg:mb-0 mb-4">
                            <input
                               type="checkbox"
                               id="remember"
@@ -171,7 +171,7 @@ const SignInPage = () => {
                         </div>
                      </div>
 
-                     <div className="mt-5">
+                     <div className="lg:mt-5 mt-10">
                         <h3 className="lg:text-base md:text-xl text-2xl font-SFProText font-medium text-center">
                            Sign In with another method
                         </h3>

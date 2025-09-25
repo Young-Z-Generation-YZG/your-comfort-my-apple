@@ -202,174 +202,178 @@ const CompareIPhoneSection = () => {
    const [showDetailCompare, setShowDetailCompare] = useState(false);
 
    return (
-      <div>
-         <div className="compare-container w-full mb-[100px] flex flex-col justify-center items-center">
-            <div className="compare-title bg-transparent w-[996px] mx-auto text-center pb-[70px]">
-               <div className="text-[20px] font-bold">Compare</div>
-               <div className="text-[40px] font-bold">
-                  Which iPhone is right for you?
+      <div className="compare-container w-full mb-[100px] flex flex-col justify-center items-center px-4 sm:px-6">
+         <div className="compare-title bg-transparent max-w-[996px] w-full mx-auto text-center pb-[40px] sm:pb-[70px]">
+            <div className="text-lg sm:text-[20px] font-bold">Compare</div>
+            <div className="text-2xl sm:text-[40px] font-bold">
+               Which iPhone is right for you?
+            </div>
+         </div>
+
+         <div className="compare-content bg-transparent max-w-[996px] w-full mx-auto flex flex-col">
+            {/* Select box */}
+            <div className="w-full flex flex-col md:flex-row gap-3 mb-6 sm:mb-10">
+               <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
+                  <Select
+                     value={selectedOption1}
+                     onValueChange={setSelectedOption1}
+                  >
+                     <SelectTrigger className="w-full text-base font-medium bg-white">
+                        <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent className="bg-white">
+                        {listProduct.map((product, index) => (
+                           <SelectItem value={product.id} key={index}>
+                              {product.name}
+                           </SelectItem>
+                        ))}
+                     </SelectContent>
+                  </Select>
+               </div>
+
+               <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
+                  <Select
+                     value={selectedOption2}
+                     onValueChange={setSelectedOption2}
+                  >
+                     <SelectTrigger className="w-full text-base font-medium bg-white">
+                        <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent className="bg-white">
+                        {listProduct.map((product, index) => (
+                           <SelectItem value={product.id} key={index}>
+                              {product.name}
+                           </SelectItem>
+                        ))}
+                     </SelectContent>
+                  </Select>
+               </div>
+
+               <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
+                  <Select
+                     value={selectedOption3}
+                     onValueChange={setSelectedOption3}
+                  >
+                     <SelectTrigger className="w-full text-base font-medium bg-white">
+                        <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent className="bg-white">
+                        {listProduct.map((product, index) => (
+                           <SelectItem value={product.id} key={index}>
+                              {product.name}
+                           </SelectItem>
+                        ))}
+                     </SelectContent>
+                  </Select>
                </div>
             </div>
-            <div className="compare-content bg-transparent w-[996px]  mx-auto flex flex-col">
-               <div className="w-full flex flex-row gap-3 mb-10">
-                  <div className="basis-1/3 bg-gray-300 flex flex-col items-center rounded-[10px]">
-                     <Select
-                        value={selectedOption1}
-                        onValueChange={(value) => setSelectedOption1(value)}
-                     >
-                        <SelectTrigger className="w-full text-base font-medium bg-white">
-                           <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                           {listProduct.map((product: any, index: number) => (
-                              <SelectItem value={product.id} key={index}>
-                                 {product.name}
-                              </SelectItem>
-                           ))}
-                        </SelectContent>
-                     </Select>
-                  </div>
-                  <div className="basis-1/3  bg-gray-300 flex flex-col items-center rounded-[10px]">
-                     <Select
-                        value={selectedOption2}
-                        onValueChange={(value) => setSelectedOption2(value)}
-                     >
-                        <SelectTrigger className="w-full text-base font-medium bg-white">
-                           <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                           {listProduct.map((product: any, index: number) => (
-                              <SelectItem value={product.id} key={index}>
-                                 {product.name}
-                              </SelectItem>
-                           ))}
-                        </SelectContent>
-                     </Select>
-                  </div>
-                  <div className="basis-1/3  bg-gray-300 flex flex-col items-center rounded-[10px]">
-                     <Select
-                        value={selectedOption3}
-                        onValueChange={(value) => setSelectedOption3(value)}
-                     >
-                        <SelectTrigger className="w-full text-base font-medium bg-white">
-                           <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                           {listProduct.map((product: any, index: number) => (
-                              <SelectItem value={product.id} key={index}>
-                                 {product.name}
-                              </SelectItem>
-                           ))}
-                        </SelectContent>
-                     </Select>
-                  </div>
-               </div>
-               <div
-                  className={cn(
-                     'w-full flex flex-row gap-3 ',
-                     showDetailCompare ? 'h-fit' : 'h-[1250px] overflow-hidden',
-                  )}
+
+            {/* Compare Item */}
+            <div
+               className={cn(
+                  'w-full flex flex-col md:flex-row gap-3 transition-all duration-500',
+                  showDetailCompare
+                     ? 'max-h-full'
+                     : 'max-h-[1250px] overflow-hidden',
+               )}
+            >
+               <CompareItem
+                  compare={
+                     listProduct.find(
+                        (product: CompareItemType) =>
+                           product.id === selectedOption1,
+                     ) || {
+                        id: '',
+                        checkNew: false,
+                        name: '',
+                        image: '',
+                        price: 0,
+                        colors: [],
+                        screen: [],
+                        checkDynamic: false,
+                        chip: [],
+                        battery: '',
+                        biometricAuthen: '',
+                        crashDetection: [],
+                        camera: [],
+                        material: [],
+                        description: '',
+                        checkCameraControl: false,
+                        checkAppIntell: false,
+                        typeConnect: [],
+                     }
+                  }
+               />
+               <CompareItem
+                  compare={
+                     listProduct.find(
+                        (product: CompareItemType) =>
+                           product.id === selectedOption2,
+                     ) || {
+                        id: '',
+                        checkNew: false,
+                        name: '',
+                        image: '',
+                        price: 0,
+                        colors: [],
+                        screen: [],
+                        checkDynamic: false,
+                        chip: [],
+                        battery: '',
+                        biometricAuthen: '',
+                        crashDetection: [],
+                        camera: [],
+                        material: [],
+                        description: '',
+                        checkCameraControl: false,
+                        checkAppIntell: false,
+                        typeConnect: [],
+                     }
+                  }
+               />
+               <CompareItem
+                  compare={
+                     listProduct.find(
+                        (product: CompareItemType) =>
+                           product.id === selectedOption3,
+                     ) || {
+                        id: '',
+                        checkNew: false,
+                        name: '',
+                        image: '',
+                        price: 0,
+                        colors: [],
+                        screen: [],
+                        checkDynamic: false,
+                        chip: [],
+                        battery: '',
+                        biometricAuthen: '',
+                        crashDetection: [],
+                        camera: [],
+                        material: [],
+                        description: '',
+                        checkCameraControl: false,
+                        checkAppIntell: false,
+                        typeConnect: [],
+                     }
+                  }
+               />
+            </div>
+
+            {/* Expand/Collapse */}
+            <div className="w-full flex items-center justify-center mt-6 sm:mt-10">
+               <Button
+                  onClick={() => setShowDetailCompare(!showDetailCompare)}
+                  className="font-thin text-lg sm:text-xl text-blue-500 bg-transparent hover:bg-transparent border-b border-b-blue-500 rounded-none hover:text-blue-600 py-0 h-fit"
+                  variant={'secondary'}
                >
-                  <CompareItem
-                     compare={
-                        listProduct.find(
-                           (product: CompareItemType) =>
-                              product.id === selectedOption1,
-                        ) || {
-                           id: '',
-                           checkNew: false,
-                           name: '',
-                           image: '',
-                           price: 0,
-                           colors: [],
-                           screen: [],
-                           checkDynamic: false,
-                           chip: [],
-                           battery: '',
-                           biometricAuthen: '',
-                           crashDetection: [],
-                           camera: [],
-                           material: [],
-                           description: '',
-                           checkCameraControl: false,
-                           checkAppIntell: false,
-                           typeConnect: [],
-                        }
-                     }
-                  />
-                  <CompareItem
-                     compare={
-                        listProduct.find(
-                           (product: CompareItemType) =>
-                              product.id === selectedOption2,
-                        ) || {
-                           id: '',
-                           checkNew: false,
-                           name: '',
-                           image: '',
-                           price: 0,
-                           colors: [],
-                           screen: [],
-                           checkDynamic: false,
-                           chip: [],
-                           battery: '',
-                           biometricAuthen: '',
-                           crashDetection: [],
-                           camera: [],
-                           material: [],
-                           description: '',
-                           checkCameraControl: false,
-                           checkAppIntell: false,
-                           typeConnect: [],
-                        }
-                     }
-                  />
-                  <CompareItem
-                     compare={
-                        listProduct.find(
-                           (product: CompareItemType) =>
-                              product.id === selectedOption3,
-                        ) || {
-                           id: '',
-                           checkNew: false,
-                           name: '',
-                           image: '',
-                           price: 0,
-                           colors: [],
-                           screen: [],
-                           checkDynamic: false,
-                           chip: [],
-                           battery: '',
-                           biometricAuthen: '',
-                           crashDetection: [],
-                           camera: [],
-                           material: [],
-                           description: '',
-                           checkCameraControl: false,
-                           checkAppIntell: false,
-                           typeConnect: [],
-                        }
-                     }
-                  />
-               </div>
-               <div
-                  className={cn(
-                     'w-full flex items-center justify-center mt-10',
+                  {showDetailCompare ? 'Collapse' : 'Expand'}
+                  {showDetailCompare ? (
+                     <MdArrowDropUp />
+                  ) : (
+                     <MdOutlineArrowDropDown />
                   )}
-               >
-                  <Button
-                     onClick={() => setShowDetailCompare(!showDetailCompare)}
-                     className="font-thin text-xl text-blue-500 bg-transparent hover:bg-transparent border-b border-b-blue-500 rounded-none hover:text-blue-600 py-0 h-fit"
-                     variant={'secondary'}
-                  >
-                     {showDetailCompare ? 'Collapse' : 'Expand'}
-                     {showDetailCompare ? (
-                        <MdArrowDropUp />
-                     ) : (
-                        <MdOutlineArrowDropDown />
-                     )}
-                  </Button>
-               </div>
+               </Button>
             </div>
          </div>
       </div>
