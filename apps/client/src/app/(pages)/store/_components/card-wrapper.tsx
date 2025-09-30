@@ -5,7 +5,7 @@ interface CardWrapperProps {
    children: React.ReactNode;
 }
 
-const CartWrapper = ({ children, className = '' }: CardWrapperProps) => {
+const CardWrapper = ({ children, className = '' }: CardWrapperProps) => {
    return (
       <div
          className={cn(
@@ -18,4 +18,4 @@ const CartWrapper = ({ children, className = '' }: CardWrapperProps) => {
    );
 };
 
-export default CartWrapper;
+export default CardWrapper;
