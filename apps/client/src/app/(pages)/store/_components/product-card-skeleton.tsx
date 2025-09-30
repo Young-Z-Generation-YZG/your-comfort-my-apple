@@ -1,4 +1,5 @@
 import { Skeleton } from '@components/ui/skeleton';
+import { cn } from '~/infrastructure/lib/utils';
 
 export function ProductCardSkeleton() {
    return (
@@ -33,9 +34,15 @@ export function ProductCardSkeleton() {
    );
 }
 
-export function ProductGridSkeleton({ count = 6 }: { count?: number }) {
+export function ProductGridSkeleton({
+   count = 6,
+   className = '',
+}: {
+   count?: number;
+   className?: string;
+}) {
    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className={cn('', className)}>
          {Array(count)
             .fill(0)
             .map((_, index) => (
