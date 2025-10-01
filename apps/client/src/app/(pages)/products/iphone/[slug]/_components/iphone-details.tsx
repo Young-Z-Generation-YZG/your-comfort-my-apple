@@ -1,12 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
    Carousel,
    CarouselContent,
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
+   type CarouselApi,
 } from '~/components/ui/carousel';
 import NextImage from 'next/image';
 import ModelItem from './model-item';
@@ -81,6 +82,23 @@ const IphoneDetails = () => {
    const [selectedStorage, setSelectedStorage] = useState<string>('128GB');
    const [hoveredColor, setHoveredColor] = useState<string | null>(null);
    const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
+   const [currentSlide, setCurrentSlide] = useState(0);
+   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+
+   useEffect(() => {
+      if (!carouselApi) return;
+
+      const onSelect = () => {
+         setCurrentSlide(carouselApi.selectedScrollSnap());
+      };
+
+      carouselApi.on('select', onSelect);
+      onSelect(); // Set initial slide
+
+      return () => {
+         carouselApi.off('select', onSelect);
+      };
+   }, [carouselApi]);
 
    return (
       <div>
@@ -117,7 +135,7 @@ const IphoneDetails = () => {
          <div className="w-full flex flex-row gap-4 relative h-[1000px]">
             {/* Left */}
             <div className="basis-[70%] sticky top-[100px] self-start">
-               <Carousel>
+               <Carousel setApi={setCarouselApi}>
                   <CarouselContent>
                      <CarouselItem>
                         <div className="w-full overflow-hidden relative h-[1000px]">
@@ -151,13 +169,12 @@ const IphoneDetails = () => {
                   <CarouselNext className="right-[1rem]" />
 
                   <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
-                     {/* Slide {current} of {count} */}
                      {Array.from({ length: 2 }).map((_, index) => (
                         <div
-                           className="w-[10px] h-[10px] rounded-full"
+                           className="w-[10px] h-[10px] rounded-full transition-colors duration-200"
                            style={{
                               backgroundColor:
-                                 1 === index + 1 ? '#6b7280' : '#d1d5db',
+                                 currentSlide === index ? '#6b7280' : '#d1d5db',
                            }}
                            key={index}
                         />
@@ -167,93 +184,100 @@ const IphoneDetails = () => {
             </div>
 
             {/* Right */}
-            <div className="basis-[30%] flex flex-col gap-24">
-               {/* Models */}
-               <div className="w-full">
-                  <div className="w-full text-center text-[24px] font-semibold leading-[28px] pb-[13px]">
-                     <span className="text-[#1D1D1F]">Model. </span>
-                     <span className="text-[#86868B]">
-                        Which is best for you?
-                     </span>
-                  </div>
+            <div className="basis-[30%]">
+               <div className="px-44 flex flex-col gap-24">
+                  {/* Models */}
+                  <div className="w-full">
+                     <div className="w-full text-center text-[24px] font-semibold leading-[28px] pb-10">
+                        <span className="text-[#1D1D1F]">Model. </span>
+                        <span className="text-[#86868B]">
+                           Which is best for you?
+                        </span>
+                     </div>
 
-                  <div className="w-full flex flex-col gap-2">
-                     {models.map((model) => (
-                        <ModelItem
-                           key={model.name}
-                           modelName={model.name}
-                           displaySize={model.displaySize}
-                           price={model.price}
-                           monthlyPrice={model.monthlyPrice}
-                           isSelected={selectedModel === model.name}
-                           onClick={() => setSelectedModel(model.name)}
+                     <div className="w-full flex flex-col gap-2">
+                        {models.map((model) => (
+                           <ModelItem
+                              key={model.name}
+                              modelName={model.name}
+                              displaySize={model.displaySize}
+                              price={model.price}
+                              monthlyPrice={model.monthlyPrice}
+                              isSelected={selectedModel === model.name}
+                              onClick={() => setSelectedModel(model.name)}
+                           />
+                        ))}
+                     </div>
+
+                     <div className="mt-[20px] mb-[6px]">
+                        <HelpItem
+                           title="Need help choosing a model?"
+                           subTitle="Explore the differences in screen size and battery life."
                         />
-                     ))}
+                     </div>
                   </div>
+                  {/* End Models */}
 
-                  <div className="mt-[20px] mb-[6px]">
-                     <HelpItem
-                        title="Need help choosing a model?"
-                        subTitle="Explore the differences in screen size and battery life."
-                     />
+                  {/* Color */}
+                  <div className="w-full">
+                     <div className="w-full text-center text-[24px] font-semibold leading-[28px]">
+                        <span className="text-[#1D1D1F]">Finish. </span>
+                        <span className="text-[#86868B]">
+                           Pick your favorite.
+                        </span>
+                     </div>
+
+                     <div className="pt-5 pb-[17px] text-[17px] font-semibold leading-[25px] tracking-[-0.02em] text-[#1D1D1F]">
+                        {hoveredColor ? `Color - ${hoveredColor}` : 'Color'}
+                     </div>
+
+                     <div className="flex flex-row gap-[12px] items-center">
+                        {colors.map((color) => (
+                           <ColorItem
+                              key={color.name}
+                              colorHex={color.hex}
+                              colorName={color.name}
+                              isSelected={selectedColor === color.name}
+                              onClick={() => setSelectedColor(color.name)}
+                              onMouseEnter={() => setHoveredColor(color.name)}
+                              onMouseLeave={() => setHoveredColor(null)}
+                           />
+                        ))}
+                     </div>
                   </div>
-               </div>
+                  {/* End Color */}
 
-               {/* Color */}
-               <div className="w-full">
-                  <div className="w-full text-center text-[24px] font-semibold leading-[28px] pb-[13px]">
-                     <span className="text-[#1D1D1F]">Finish. </span>
-                     <span className="text-[#86868B]">Pick your favorite.</span>
-                  </div>
+                  {/* Storage */}
+                  <div className="w-full">
+                     <div className="w-full text-start text-[24px] font-semibold leading-[28px] pb-10">
+                        <span className="text-[#1D1D1F]">Storage. </span>
+                        <span className="text-[#86868B]">
+                           How much space do you need?
+                        </span>
+                     </div>
 
-                  <div className="pt-5 pb-[17px] text-[17px] font-semibold leading-[25px] tracking-[-0.02em] text-[#1D1D1F]">
-                     {hoveredColor ? `Color - ${hoveredColor}` : 'Color'}
-                  </div>
+                     <div className="w-full flex flex-col gap-2">
+                        {storageOptions.map((storage) => (
+                           <StorageItem
+                              key={storage.name}
+                              storageName={storage.name}
+                              price={storage.price}
+                              monthlyPrice={storage.monthlyPrice}
+                              note={storage.note}
+                              isSelected={selectedStorage === storage.name}
+                              onClick={() => setSelectedStorage(storage.name)}
+                           />
+                        ))}
+                     </div>
 
-                  <div className="flex flex-row gap-[12px] items-center">
-                     {colors.map((color) => (
-                        <ColorItem
-                           key={color.name}
-                           colorHex={color.hex}
-                           colorName={color.name}
-                           isSelected={selectedColor === color.name}
-                           onClick={() => setSelectedColor(color.name)}
-                           onMouseEnter={() => setHoveredColor(color.name)}
-                           onMouseLeave={() => setHoveredColor(null)}
+                     <div className="mt-[20px] mb-[6px]">
+                        <HelpItem
+                           title="Not sure how much storage to get?"
+                           subTitle="Get a better understanding of how much space you’ll need."
                         />
-                     ))}
+                     </div>
                   </div>
-               </div>
-
-               {/* Storage */}
-               <div className="w-full">
-                  <div className="w-full text-center text-[24px] font-semibold leading-[28px] pb-[13px]">
-                     <span className="text-[#1D1D1F]">Storage. </span>
-                     <span className="text-[#86868B]">
-                        How much space do you need?
-                     </span>
-                  </div>
-
-                  <div className="w-full flex flex-col gap-2">
-                     {storageOptions.map((storage) => (
-                        <StorageItem
-                           key={storage.name}
-                           storageName={storage.name}
-                           price={storage.price}
-                           monthlyPrice={storage.monthlyPrice}
-                           note={storage.note}
-                           isSelected={selectedStorage === storage.name}
-                           onClick={() => setSelectedStorage(storage.name)}
-                        />
-                     ))}
-                  </div>
-
-                  <div className="mt-[20px] mb-[6px]">
-                     <HelpItem
-                        title="Not sure how much storage to get?"
-                        subTitle="Get a better understanding of how much space you’ll need."
-                     />
-                  </div>
+                  {/* End Storage */}
                </div>
             </div>
          </div>
@@ -261,7 +285,7 @@ const IphoneDetails = () => {
          {/* Coverage */}
          <div
             className={cn(
-               'w-full bg-transparent flex flex-col mt-[74px] h-fit',
+               'w-full bg-transparent flex flex-col mt-[200px] h-fit',
             )}
          >
             <div className="coverage-title flex flex-row">
