@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record PromotionCouponResponse
 {
     public string PromotionCouponId { get; init; }

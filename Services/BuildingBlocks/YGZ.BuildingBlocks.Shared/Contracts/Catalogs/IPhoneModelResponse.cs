@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record IPhoneModelResponse
 {
     required public string ModelId { get; set; }

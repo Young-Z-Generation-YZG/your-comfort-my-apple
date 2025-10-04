@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record IPhoneDetailsWithPromotionResponse
 {
     required public string ProductId { get; set; }

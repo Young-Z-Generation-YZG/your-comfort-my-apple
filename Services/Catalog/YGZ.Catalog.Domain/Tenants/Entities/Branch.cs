@@ -23,7 +23,7 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
     public required string Address { get; init; }
 
     [BsonElement("manager")]
-    public required BranchManager Manager { get; init; }
+    public BranchManager? Manager { get; init; }
 
     [BsonElement("created_at")]
     public DateTime CreatedAt => DateTime.Now;
@@ -43,7 +43,7 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
     [BsonElement("deleted_by")]
     public string? DeletedBy => null;
 
-    public static Branch Create(TenantId tenantId, string name, string address, BranchManager manager, string? description = null)
+    public static Branch Create(TenantId tenantId, string name, string address, BranchManager? manager, string? description = null)
     {
         return new Branch(BranchId.Create())
         {

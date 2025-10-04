@@ -39,6 +39,7 @@
   <ItemGroup>
     <Folder Include="Reviews\Events\IntegationEvents\" />
     <Folder Include="Inventory\Queries\" />
+    <Folder Include="Tenants\Queries\" />
   </ItemGroup>
 
 </Project>

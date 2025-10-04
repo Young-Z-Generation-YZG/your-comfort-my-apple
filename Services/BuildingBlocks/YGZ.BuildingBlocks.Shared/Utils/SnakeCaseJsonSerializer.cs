@@ -1,12 +1,11 @@
 ﻿
-
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace YGZ.BuildingBlocks.Shared.Utils;
 
-public class SnakeCaseSerializer : JsonConverter<object>
+public class SnakeCaseJsonSerializer : JsonConverter<object>
 {
     public override bool CanConvert(Type typeToConvert)
     {
@@ -16,7 +15,9 @@ public class SnakeCaseSerializer : JsonConverter<object>
     public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         var jsonObject = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+
         var newOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
         return JsonSerializer.Deserialize(jsonObject.GetRawText(), typeToConvert, newOptions)
             ?? throw new JsonException($"Failed to deserialize {typeToConvert.Name}");
     }

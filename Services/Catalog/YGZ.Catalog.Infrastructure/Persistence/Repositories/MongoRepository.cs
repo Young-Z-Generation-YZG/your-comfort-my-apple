@@ -93,16 +93,16 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return await _collection.Find(new BsonDocument()).ToListAsync();
     }
 
-    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken)
+    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
     {
-        return await _collection.Find(filter).ToListAsync(cancellationToken);
+        return await _collection.Find(filter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(int? _page,
                                                                                            int? _limit,
                                                                                            FilterDefinition<TEntity>? filter,
                                                                                            SortDefinition<TEntity>? sort,
-                                                                                           CancellationToken cancellationToken)
+                                                                                           CancellationToken? cancellationToken)
     {
         var page = _page ?? 1;
         var limit = _limit ?? 10000;
@@ -112,7 +112,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
             filter = Builders<TEntity>.Filter.Empty;
         }
 
-        var totalRecords = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+        var totalRecords = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken ?? CancellationToken.None);
 
         var totalPages = (int)Math.Ceiling((double)totalRecords / limit);
 
@@ -120,19 +120,19 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                                      .Sort(sort)
                                      .Skip((page - 1) * limit)
                                      .Limit(limit)
-                                     .ToListAsync(cancellationToken);
+                                     .ToListAsync(cancellationToken ?? CancellationToken.None);
 
         return (items, (int)totalRecords, totalPages);
     }
 
-    public async Task<TEntity> GetByIdAsync(string id, CancellationToken cancellationToken)
+    public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken)
     {
-        return await _collection.Find(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id))).FirstOrDefaultAsync(cancellationToken);
+        return await _collection.Find(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id))).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
-    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken cancellationToken)
+    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
     {
-        return _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        return _collection.Find(filter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public virtual async Task<Result<bool>> InsertOneAsync(TEntity document, IClientSessionHandle? session = null)
@@ -148,7 +148,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
         try
         {
-            if(_transactionContext.CurrentSession != null) {
+            if (_transactionContext.CurrentSession != null)
+            {
                 await _collection.InsertOneAsync(_transactionContext.CurrentSession, document);
             }
             else
@@ -183,7 +184,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                 await _dispatchDomainEventInterceptor.BeforeInsert(domainEvent);
             }
 
-            if(_transactionContext.CurrentSession != null) {
+            if (_transactionContext.CurrentSession != null)
+            {
                 await _collection.InsertManyAsync(_transactionContext.CurrentSession, documentsList);
             }
             else
@@ -237,12 +239,12 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken cancellationToken)
+    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken? cancellationToken)
     {
         var deletedCount = 0;
         try
         {
-            var result = await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), cancellationToken);
+            var result = await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), cancellationToken ?? CancellationToken.None);
             deletedCount = (int)result.DeletedCount;
 
             var domainEventEntities = document.DomainEvents.ToList();
