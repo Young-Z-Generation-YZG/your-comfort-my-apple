@@ -19,6 +19,8 @@ public static class DependencyInjection
         BsonSerializer.RegisterSerializer(typeof(SKUId), new SKUIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerialization());
         BsonSerializer.RegisterSerializer(typeof(SKUCode), new SKUCodeSerialization());
+        BsonSerializer.RegisterSerializer(typeof(TenantId), new TenantIdSerialization());
+        BsonSerializer.RegisterSerializer(typeof(BranchId), new BranchIdSerialization());
 
         return services;
     }

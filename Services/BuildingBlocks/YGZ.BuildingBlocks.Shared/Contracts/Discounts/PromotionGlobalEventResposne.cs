@@ -4,7 +4,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public class PromotionGlobalEventResponse
 {
     public PromotionEventResponse promotionEvent { get; set; }
@@ -12,7 +12,7 @@ public class PromotionGlobalEventResponse
     public List<PromotionCategoryResponse> PromotionCategories { get; set; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record PromotionEventResponse
 {
     required public string? PromotionEventId { get; set; }
@@ -24,7 +24,7 @@ public sealed record PromotionEventResponse
     public DateTime? PromotionEventValidTo { get; set; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record PromotionProductResponse
 {
     required public string ProductId { get; set; }
@@ -35,7 +35,7 @@ public sealed record PromotionProductResponse
     required public string PromotionGlobalId { get; set; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record PromotionCategoryResponse
 {
     required public string CategoryId { get; set; }

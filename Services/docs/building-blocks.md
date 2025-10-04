@@ -279,7 +279,7 @@ Standardized DTOs and response models used across services:
 ##### **Authentication Contracts**
 
 ```csharp
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record LoginResponse()
 {
     public required string UserEmail { get; init; }
@@ -292,7 +292,7 @@ public sealed record LoginResponse()
     public Dictionary<string, string>? Params { get; init; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record TokenResponse
 {
     public string AccessToken { get; init; }
@@ -307,7 +307,7 @@ public sealed record TokenResponse
 ##### **Pagination Contracts**
 
 ```csharp
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public class PaginationResponse<TData>
 {
     public int TotalRecords { get; set; }
@@ -325,7 +325,7 @@ public sealed record PaginationLinks(string? First, string? Prev, string? Next, 
 
 ```csharp
 // Product-related responses
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record ColorResponse
 {
     required public string ColorName { get; init; }
@@ -334,7 +334,7 @@ public sealed record ColorResponse
     public int? ColorOrder { get; init; }
 }
 
-[JsonConverter(typeof(SnakeCaseSerializer))]
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record ImageResponse
 {
     required public string ImageId { get; init; }
@@ -353,7 +353,7 @@ public sealed record ImageResponse
 ##### **Snake Case Serialization**
 
 ```csharp
-public class SnakeCaseSerializer : JsonConverter<object>
+public class SnakeCaseJsonSerializer : JsonConverter<object>
 {
     public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
     {

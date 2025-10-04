@@ -6,30 +6,45 @@ namespace YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 public class TenantId : ValueObject
 {
-    [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId? Id { get; set; } = null;
+    public ObjectId? Id { get; set; }
 
     public string? Value => Id?.ToString();
 
+    public TenantId() { }
+
+    private TenantId(ObjectId id)
+    {
+        Id = id;
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Id!;
+        yield return Id ?? ObjectId.Empty;
     }
 
     public static TenantId Create()
     {
-        return new TenantId { Id = ObjectId.GenerateNewId() };
+        return new TenantId(ObjectId.GenerateNewId());
     }
 
-    public static TenantId Of(string? id)
+    public static TenantId Of(string id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            throw new ArgumentException("Tenant ID cannot be null or empty", nameof(id));
+        }
 
-        ObjectId.TryParse(id, out var value);
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            throw new ArgumentException("Invalid ObjectId format", nameof(id));
+        }
 
-        ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
+        return new TenantId(objectId);
+    }
 
-        return new TenantId { Id = value };
+    public static TenantId Of(ObjectId objectId)
+    {
+        return new TenantId(objectId);
     }
 }
