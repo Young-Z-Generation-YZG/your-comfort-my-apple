@@ -3,9 +3,9 @@ using MediatR;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
-using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.Entities;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Application.Iphone.Events.DomainEvents;
 
@@ -30,6 +30,8 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
                 {
                     var sku = SKU.Create(
                         modelId: notification.IphoneModel.Id,
+                        tenantId: TenantId.Create(),
+                        branchId: BranchId.Create(),
                         skuCode: SKUCode.Create(EProductType.IPHONE.Name, model.Name, storage.Name, color.Name),
                         productType: EProductType.IPHONE,
                         model: model,

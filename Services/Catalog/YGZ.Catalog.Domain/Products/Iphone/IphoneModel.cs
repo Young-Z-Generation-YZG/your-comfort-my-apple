@@ -39,7 +39,6 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     [BsonElement("showcase_image")]
     public List<Image> ShowcaseImage { get; set; } = [];
 
-
     [BsonElement("description")]
     public string Description { get; set; } = default!;
 

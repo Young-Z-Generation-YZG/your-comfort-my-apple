@@ -1,15 +1,15 @@
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+namespace YGZ.Catalog.Domain.Tenants.ValueObjects;
 
-public class SKUId : ValueObject
+public class TenantId : ValueObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId? Id { get; set; } = null;
-    
+
     public string? Value => Id?.ToString();
 
     public override IEnumerable<object> GetEqualityComponents()
@@ -17,12 +17,12 @@ public class SKUId : ValueObject
         yield return Id!;
     }
 
-    public static SKUId Create()
+    public static TenantId Create()
     {
-        return new SKUId { Id = ObjectId.GenerateNewId() };
+        return new TenantId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static SKUId Of(string? id)
+    public static TenantId Of(string? id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
@@ -30,6 +30,6 @@ public class SKUId : ValueObject
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 
-        return new SKUId { Id = value };
+        return new TenantId { Id = value };
     }
 }

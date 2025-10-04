@@ -1,12 +1,11 @@
-﻿
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
-namespace YGZ.Catalog.Domain.Products.Iphone.Entities;
+namespace YGZ.Catalog.Domain.Tenants.Entities;
 
 [BsonCollection("SKUs")]
 public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
@@ -15,6 +14,12 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
 
     [BsonElement("model_id")]
     public required ModelId ModelId { get; init; }
+
+    [BsonElement("tenant_id")]
+    public required TenantId TenantId { get; init; }
+
+    [BsonElement("branch_id")]
+    public required BranchId BranchId { get; init; }
 
     [BsonElement("sku_code")]
     public required SKUCode SKUCode { get; init; }
@@ -60,6 +65,8 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
 
     public static SKU Create(
         ModelId modelId,
+        TenantId tenantId,
+        BranchId branchId,
         SKUCode skuCode,
         EProductType productType,
         Model model,
@@ -71,6 +78,8 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         var sku = new SKU(SKUId.Create())
         {
             ModelId = modelId,
+            TenantId = tenantId,
+            BranchId = branchId,
             SKUCode = skuCode,
             ProductType = productType.Name,
             Model = model,

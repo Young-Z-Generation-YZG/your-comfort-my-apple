@@ -5,6 +5,7 @@ using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone.Entities;
 
@@ -19,17 +20,8 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     [BsonElement("sku_id")]
     public SKUId SKUId { get; init; }
 
-    [BsonElement("order_id")]
-    public string OrderId { get; init; }
-
-    [BsonElement("order_item_id")]
-    public string OrderItemId { get; init; }
-
-    [BsonElement("customer_id")]
-    public string CustomerId { get; init; }
-
-    [BsonElement("customer_full_name")]
-    public string CustomerFullName { get; init; }
+    [BsonElement("customer_order")]
+    public required CustomerOrder CustomerOrder { get; init; }
 
     [BsonElement("content")]
     public string Content { get; private set; }
@@ -49,7 +41,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
 
     public string? ModifiedBy => null;
 
-    public static Review Create(ModelId modelId, SKUId skuId, string OrderId, string orderItemId, string customerId, string customerFullName, string content, int rating)
+    public static Review Create(ModelId modelId, SKUId skuId, CustomerOrder customerOrder, string content, int rating)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
         ArgumentOutOfRangeException.ThrowIfLessThan(rating, 1);
@@ -59,10 +51,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
         {
             ModelId = modelId,
             SKUId = skuId,
-            OrderId = OrderId,
-            OrderItemId = orderItemId,
-            CustomerId = customerId,
-            CustomerFullName = customerFullName,
+            CustomerOrder = customerOrder,
             Content = content,
             Rating = rating,
         };

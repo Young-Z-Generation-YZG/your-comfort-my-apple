@@ -9,8 +9,8 @@ using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Application.IPhone.Queries.GetModels;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
-using YGZ.Catalog.Domain.Products.Iphone.Entities;
-using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.Entities;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Catalog.Application.IPhone.Queries.GetIphoneModels;
