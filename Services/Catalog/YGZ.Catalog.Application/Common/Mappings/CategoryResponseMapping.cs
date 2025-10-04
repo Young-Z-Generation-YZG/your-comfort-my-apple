@@ -4,7 +4,7 @@ using Mapster;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.Catalog.Domain.Categories;
 
-namespace YGZ.Catalog.Application.Mappings;
+namespace YGZ.Catalog.Application.Common.Mappings;
 
 public class CategoryResponseMapping : IRegister
 {

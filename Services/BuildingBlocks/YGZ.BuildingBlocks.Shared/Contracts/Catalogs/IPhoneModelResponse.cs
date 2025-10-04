@@ -1,6 +1,7 @@
 ﻿
 using System.Text.Json.Serialization;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
@@ -10,7 +11,7 @@ public sealed record IPhoneModelResponse
 {
     required public string ModelId { get; set; }
     required public string ModelName { get; set; }
-    required public List<ModelItemResponse> ModelItems { get; set; }
+    required public List<ModelResponse> ModelItems { get; set; }
     required public List<ColorResponse> ColorItems { get; set; }
     required public List<StorageResponse> StorageItems { get; set; }
     required public string GeneralModel { get; set; }

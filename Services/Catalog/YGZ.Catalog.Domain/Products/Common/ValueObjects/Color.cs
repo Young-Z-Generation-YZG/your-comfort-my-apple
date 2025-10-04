@@ -1,5 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
@@ -10,6 +11,9 @@ public class Color : ValueObject
     [BsonElement("name")]
     public string Name { get; init; }
 
+    [BsonElement("normalized_name")]
+    public string NormalizedName { get; set; }
+
     [BsonElement("hex_code")]
     public string HexCode { get; init; }
 
@@ -19,9 +23,10 @@ public class Color : ValueObject
     [BsonElement("order")]
     public int Order { get; init; } = 0;
 
-    private Color(string name, string hexCode, string showcaseImageId, int order)
+    private Color(string name, string normalizedName, string hexCode, string showcaseImageId, int order)
     {
         Name = name;
+        NormalizedName = normalizedName;
         HexCode = hexCode;
         ShowcaseImageId = showcaseImageId;
         Order = order;
@@ -29,14 +34,16 @@ public class Color : ValueObject
 
     public static Color Create(string name, string hexCode, string showcaseImageId, int order)
     {
-        EColor.TryFromName(name, out var color);
+        var normalizedName = SnakeCaseSerializer.Serialize(name).ToUpper();
 
-        if (color is null)
+        EColor.TryFromName(normalizedName, out var colorEum);
+
+        if (colorEum is null)
         {
             throw new ArgumentException("Invalid color name", name);
         }
 
-        return new Color(name, hexCode, showcaseImageId, order);
+        return new Color(name, normalizedName, hexCode, showcaseImageId, order);
     }
 
     public override IEnumerable<object> GetEqualityComponents()

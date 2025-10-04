@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -52,6 +53,19 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
             Address = address,
             Manager = manager,
             Description = description
+        };
+    }
+
+    public BranchResponse ToResponse()
+    {
+        return new BranchResponse
+        {
+            Id = Id.Value!,
+            TenantId = TenantId.Value!,
+            Name = Name,
+            Address = Address,
+            Description = Description ?? null,
+            Manager = Manager?.ToResponse() ?? null
         };
     }
 }

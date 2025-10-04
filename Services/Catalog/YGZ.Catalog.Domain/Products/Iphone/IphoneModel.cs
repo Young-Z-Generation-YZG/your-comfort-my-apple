@@ -111,8 +111,6 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             CategoryId = categoryId,
         };
 
-        newModel.AddDomainEvent(new IphoneModelCreatedDomainEvent(newModel));
-
         return newModel;
     }
 

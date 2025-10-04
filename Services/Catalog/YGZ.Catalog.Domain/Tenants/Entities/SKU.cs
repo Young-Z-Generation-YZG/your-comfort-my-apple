@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -87,7 +88,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
             Storage = storage,
             UnitPrice = unitPrice,
             AvailableInStock = availableInStock,
-            State = EState.INACTIVE.Name,
+            State = EState.ACTIVE.Name,
             Slug = Slug.Create(skuCode.Value)
         };
 
@@ -102,5 +103,31 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     public void SetState(EState state)
     {
         State = state.Name;
+    }
+
+    public SkuResponse ToResponse()
+    {
+        return new SkuResponse
+        {
+            Id = Id.Value!,
+            SKUCode = SKUCode.Value,
+            ModelId = ModelId.Value!,
+            TenantId = TenantId.Value!,
+            BranchId = BranchId.Value!,
+            ProductType = ProductType,
+            Model = Model.Name,
+            Color = Color.Name,
+            Storage = Storage.Name,
+            UnitPrice = UnitPrice,
+            AvailableInStock = AvailableInStock,
+            TotalSold = TotalSold,
+            State = State,
+            Slug = Slug.Value,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy,
+            IsDeleted = IsDeleted
+        };
     }
 }

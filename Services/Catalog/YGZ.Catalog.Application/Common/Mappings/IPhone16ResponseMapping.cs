@@ -1,7 +1,7 @@
 ﻿
 using Mapster;
 
-namespace YGZ.Catalog.Application.Mappings;
+namespace YGZ.Catalog.Application.Common.Mappings;
 
 public class IPhone16ResponseMapping : IRegister
 {
