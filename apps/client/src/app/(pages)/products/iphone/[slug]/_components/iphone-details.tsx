@@ -85,6 +85,73 @@ const IphoneDetails = () => {
    const [currentSlide, setCurrentSlide] = useState(0);
    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
 
+   const renderCheckoutBottom = () => {
+      const isAllSelected = selectedModel && selectedColor && selectedStorage;
+
+      return (
+         <div className="fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+            <div className="max-w-[1240px] mx-auto px-6 py-4">
+               <div className="flex flex-row items-center justify-between gap-4">
+                  {/* Left: Product Summary */}
+                  <div className="flex flex-col gap-1">
+                     <div className="text-[14px] font-semibold text-[#1D1D1F]">
+                        {selectedModel && selectedStorage && selectedColor ? (
+                           <>
+                              {selectedModel} - {selectedStorage} -{' '}
+                              {selectedColor}
+                           </>
+                        ) : (
+                           'Configure your iPhone'
+                        )}
+                     </div>
+                     {isAllSelected && (
+                        <div className="text-[12px] text-[#86868B]">
+                           From $
+                           {storageOptions.find(
+                              (s) => s.name === selectedStorage,
+                           )?.price || 0}{' '}
+                           or $
+                           {storageOptions.find(
+                              (s) => s.name === selectedStorage,
+                           )?.monthlyPrice || 0}
+                           /mo. for 24 mo.
+                        </div>
+                     )}
+                  </div>
+
+                  {/* Right: Action Buttons */}
+                  <div className="flex flex-row items-center gap-3">
+                     {!isAllSelected && (
+                        <div className="text-[12px] text-[#86868B] mr-2">
+                           Please select all options
+                        </div>
+                     )}
+                     <Button
+                        disabled={!isAllSelected}
+                        className={cn(
+                           'px-6 py-3 h-auto text-[15px] font-normal rounded-full transition-all duration-200',
+                           isAllSelected
+                              ? 'bg-[#0071E3] hover:bg-[#0077ED] text-white'
+                              : 'bg-[#f5f5f7] text-[#86868B] cursor-not-allowed',
+                        )}
+                        onClick={() => {
+                           // Handle checkout
+                           console.log('Checkout:', {
+                              selectedModel,
+                              selectedColor,
+                              selectedStorage,
+                           });
+                        }}
+                     >
+                        Add to Bag
+                     </Button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      );
+   };
+
    useEffect(() => {
       if (!carouselApi) return;
 
@@ -132,8 +199,8 @@ const IphoneDetails = () => {
          </div>
 
          {/* Product Details */}
-         <div className="w-full flex flex-row gap-4 relative h-[1000px]">
-            {/* Left */}
+         <div className="w-full flex flex-row gap-14 relative h-[1000px]">
+            {/* left */}
             <div className="basis-[70%] sticky top-[100px] self-start">
                <Carousel setApi={setCarouselApi}>
                   <CarouselContent>
@@ -182,10 +249,11 @@ const IphoneDetails = () => {
                   </div>
                </Carousel>
             </div>
+            {/* end left */}
 
             {/* Right */}
-            <div className="basis-[30%]">
-               <div className="px-44 flex flex-col gap-24">
+            <div className="basis-[30%] max-w-[328px]">
+               <div className="flex flex-col gap-24">
                   {/* Models */}
                   <div className="w-full">
                      <div className="w-full text-center text-[24px] font-semibold leading-[28px] pb-10">
@@ -512,9 +580,12 @@ const IphoneDetails = () => {
          </div>
          {/* End Product info */}
 
-         <div className="mx-auto mt-20">
+         <div className="mx-auto mt-20 mb-24">
             <CompareIPhoneSection />
          </div>
+
+         {/* Checkout Bottom Bar */}
+         {renderCheckoutBottom()}
       </div>
    );
 };

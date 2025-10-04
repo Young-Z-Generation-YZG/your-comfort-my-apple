@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Configurations.Serializers;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Configurations;
