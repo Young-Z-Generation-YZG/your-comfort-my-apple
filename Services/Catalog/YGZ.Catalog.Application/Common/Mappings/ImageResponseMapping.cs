@@ -4,7 +4,7 @@ using Mapster;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
-namespace YGZ.Catalog.Application.Mappings;
+namespace YGZ.Catalog.Application.Common.Mappings;
 
 public class ImageResponseMapping : IRegister
 {

@@ -1,6 +1,7 @@
 ﻿
 using System.Text.Json.Serialization;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;
@@ -10,7 +11,7 @@ public sealed record IphoneModelWithPromotionResponse()
 {
     public string ModelId { get; set; } = default;
     public string ModelName { get; set; } = default;
-    public List<ModelItemResponse> ModelItems { get; set; } = default;
+    public List<ModelResponse> ModelItems { get; set; } = default;
     public List<ColorResponse> ColorItems { get; set; } = default;
     public List<StorageResponse> StorageItems { get; set; } = default;
     public string GeneralModel { get; set; } = default;

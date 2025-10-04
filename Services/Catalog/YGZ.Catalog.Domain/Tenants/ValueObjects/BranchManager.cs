@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -48,6 +49,18 @@ public class BranchManager : ValueObject
         }
 
         return new BranchManager(userId, name, email, phoneNumber);
+    }
+
+    public BranchManagerResponse ToResponse()
+
+    {
+        return new BranchManagerResponse
+        {
+            Id = UserId,
+            Name = Name,
+            Email = Email,
+            PhoneNumber = PhoneNumber
+        };
     }
 
     public override IEnumerable<object> GetEqualityComponents()

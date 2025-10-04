@@ -1,6 +1,7 @@
 ﻿
 using System.Text.Json.Serialization;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs.WithPromotion;

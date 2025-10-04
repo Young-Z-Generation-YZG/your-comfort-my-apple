@@ -1,4 +1,5 @@
-﻿using YGZ.Catalog.Domain.Core.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Utils;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -15,9 +16,9 @@ public class SKUCode : ValueObject
     public static SKUCode Create(string productType, string model, string storage, string color)
     {
         EProductType.TryFromName(productType, out var productTypeEnum);
-        EIphoneModel.TryFromName(model, out var modelEnum);
+        EIphoneModel.TryFromName(SnakeCaseSerializer.Serialize(model).ToUpper(), out var modelEnum);
         EStorage.TryFromName(storage, out var storageEnum);
-        EColor.TryFromName(color, out var colorEnum);
+        EColor.TryFromName(SnakeCaseSerializer.Serialize(color).ToUpper(), out var colorEnum);
 
         if (productTypeEnum is null || modelEnum is null || storageEnum is null || colorEnum is null)
         {
