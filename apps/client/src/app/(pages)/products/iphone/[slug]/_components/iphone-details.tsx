@@ -25,6 +25,7 @@ import AppleCareCard from './applecare-card';
 import ServiceCard from './service-card';
 import { appleCareOptions } from '../_constants/applecare-data';
 import { appleServices } from '../_constants/services-data';
+import { iphoneDetailsFakeData } from '../_data/_iphone-details';
 import { ApplePickupIcon, DeliveryTruckIcon } from '@components/icon';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
@@ -32,58 +33,115 @@ const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    return `w_${Math.round((height * widthRatio) / heightRatio)},h_${height}`;
 };
 
-const colors = [
-   { name: 'Ultramarine', hex: '#41679A' },
-   { name: 'Teal', hex: '#9DB4AA' },
-   { name: 'Pink', hex: '#F4C2D0' },
-   { name: 'White', hex: '#F5F5F0' },
-   { name: 'Black', hex: '#2C2C2E' },
-];
+const colors = iphoneDetailsFakeData.color_items.map((color) => ({
+   name: color.name,
+   normalized_name: color.normalized_name,
+   hex: color.hex_code,
+}));
 
-const models = [
-   {
-      name: 'iPhone 16',
-      displaySize: '6.1',
-      price: 699,
-      monthlyPrice: '29.12',
-   },
-   {
-      name: 'iPhone 16 Plus',
-      displaySize: '6.7',
-      price: 799,
-      monthlyPrice: '33.29',
-   },
-];
+const models = iphoneDetailsFakeData.model_items.map((model) => ({
+   name: model.name,
+   normalized_name: model.normalized_name,
+   displaySize: model.name.includes('Plus') ? '6.7' : '6.1', // Default display sizes
+   price: 699, // Default price - would need to be calculated from SKUs
+   monthlyPrice: '29.12', // Default monthly price - would need to be calculated
+}));
 
-const storageOptions = [
-   {
-      name: '128GB',
-      price: 799,
-      monthlyPrice: '33.29',
-      note: undefined,
-   },
-   {
-      name: '256GB',
-      price: 899,
-      monthlyPrice: '37.45',
-      note: 'Only available with iPhone 16 Plus',
-   },
-   {
-      name: '512GB',
-      price: 1099,
-      monthlyPrice: '45.79',
-      note: undefined,
-   },
-];
+const storages = iphoneDetailsFakeData.storage_items.map((storage) => ({
+   name: storage.name,
+   normalized_name: storage.normalized_name,
+   price: 799, // Default price - would need to be calculated from SKUs
+   monthlyPrice: '33.29', // Default monthly price - would need to be calculated
+   note: undefined,
+}));
 
 const IphoneDetails = () => {
-   const [selectedModel, setSelectedModel] = useState<string>('iPhone 16');
-   const [selectedColor, setSelectedColor] = useState<string>('Ultramarine');
-   const [selectedStorage, setSelectedStorage] = useState<string>('128GB');
+   const [selectedModel, setSelectedModel] = useState<{
+      name: string;
+      normalized_name: string;
+   } | null>(null);
+   const [selectedColor, setSelectedColor] = useState<{
+      name: string;
+      normalized_name: string;
+   } | null>(null);
+   const [selectedStorage, setSelectedStorage] = useState<{
+      name: string;
+      normalized_name: string;
+   } | null>(null);
+   const [hasCompletedInitialSelection, setHasCompletedInitialSelection] =
+      useState(false);
    const [hoveredColor, setHoveredColor] = useState<string | null>(null);
    const [isShowMoreInfo, setIsShowMoreInfo] = useState(false);
    const [currentSlide, setCurrentSlide] = useState(0);
    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+
+   // Progressive selection handlers
+   const handleModelSelection = (model: {
+      name: string;
+      normalized_name: string;
+   }) => {
+      setSelectedModel(model);
+      // Only reset dependent selections if not completed initial selection
+      if (!hasCompletedInitialSelection) {
+         setSelectedColor(null);
+         setSelectedStorage(null);
+      }
+   };
+
+   const handleColorSelection = (color: {
+      name: string;
+      normalized_name: string;
+   }) => {
+      setSelectedColor(color);
+      // Only reset storage selection if not completed initial selection
+      if (!hasCompletedInitialSelection) {
+         setSelectedStorage(null);
+      }
+   };
+
+   const handleStorageSelection = (storage: {
+      name: string;
+      normalized_name: string;
+   }) => {
+      setSelectedStorage(storage);
+      // Mark initial selection as completed when all three are selected
+      if (!hasCompletedInitialSelection && selectedModel && selectedColor) {
+         setHasCompletedInitialSelection(true);
+      }
+   };
+
+   // Check if options should be disabled (only during initial progressive selection)
+   const isColorDisabled = !hasCompletedInitialSelection && !selectedModel;
+   const isStorageDisabled =
+      !hasCompletedInitialSelection && (!selectedModel || !selectedColor);
+
+   // Filter branches and SKUs based on selections
+   const getFilteredBranches = () => {
+      if (!selectedModel || !selectedColor || !selectedStorage) {
+         return [];
+      }
+
+      return iphoneDetailsFakeData.branchs
+         .map((branchData) => {
+            // Find the matching SKU for this branch
+            const matchingSku = branchData.skus.find((sku) => {
+               return (
+                  sku.model.normalized_name === selectedModel.normalized_name &&
+                  sku.color.normalized_name === selectedColor.normalized_name &&
+                  sku.storage.normalized_name ===
+                     selectedStorage.normalized_name
+               );
+            });
+
+            return {
+               branch: branchData.branch,
+               sku: matchingSku,
+            };
+         })
+         .filter((branchData) => branchData.sku !== undefined);
+   };
+
+   const filteredBranches = getFilteredBranches();
 
    const renderCheckoutBottom = () => {
       const isAllSelected = selectedModel && selectedColor && selectedStorage;
@@ -91,62 +149,110 @@ const IphoneDetails = () => {
       return (
          <div className="fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
             <div className="max-w-[1240px] mx-auto px-6 py-4">
-               <div className="flex flex-row items-center justify-between gap-4">
-                  {/* Left: Product Summary */}
-                  <div className="flex flex-col gap-1">
-                     <div className="text-[14px] font-semibold text-[#1D1D1F]">
-                        {selectedModel && selectedStorage && selectedColor ? (
-                           <>
-                              {selectedModel} - {selectedStorage} -{' '}
-                              {selectedColor}
-                           </>
-                        ) : (
-                           'Configure your iPhone'
-                        )}
-                     </div>
-                     {isAllSelected && (
-                        <div className="text-[12px] text-[#86868B]">
-                           From $
-                           {storageOptions.find(
-                              (s) => s.name === selectedStorage,
-                           )?.price || 0}{' '}
-                           or $
-                           {storageOptions.find(
-                              (s) => s.name === selectedStorage,
-                           )?.monthlyPrice || 0}
-                           /mo. for 24 mo.
+               {!isAllSelected ? (
+                  <div className="flex flex-row items-center justify-between gap-4">
+                     {/* Left: Product Summary */}
+                     <div className="flex flex-col gap-1">
+                        <div className="text-[14px] font-semibold text-[#1D1D1F]">
+                           Configure your iPhone
                         </div>
-                     )}
-                  </div>
+                     </div>
 
-                  {/* Right: Action Buttons */}
-                  <div className="flex flex-row items-center gap-3">
-                     {!isAllSelected && (
+                     {/* Right: Action Buttons */}
+                     <div className="flex flex-row items-center gap-3">
                         <div className="text-[12px] text-[#86868B] mr-2">
                            Please select all options
                         </div>
-                     )}
-                     <Button
-                        disabled={!isAllSelected}
-                        className={cn(
-                           'px-6 py-3 h-auto text-[15px] font-normal rounded-full transition-all duration-200',
-                           isAllSelected
-                              ? 'bg-[#0071E3] hover:bg-[#0077ED] text-white'
-                              : 'bg-[#f5f5f7] text-[#86868B] cursor-not-allowed',
-                        )}
-                        onClick={() => {
-                           // Handle checkout
-                           console.log('Checkout:', {
-                              selectedModel,
-                              selectedColor,
-                              selectedStorage,
-                           });
-                        }}
-                     >
-                        Add to Bag
-                     </Button>
+                        <Button
+                           disabled={true}
+                           className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#f5f5f7] text-[#86868B] cursor-not-allowed"
+                        >
+                           Add to Bag
+                        </Button>
+                     </div>
                   </div>
-               </div>
+               ) : (
+                  <div className="flex flex-col gap-4">
+                     {/* Product Summary */}
+                     <div className="flex flex-row items-center justify-between">
+                        <div className="flex flex-col gap-1">
+                           <div className="text-[14px] font-semibold text-[#1D1D1F]">
+                              {selectedModel?.name} - {selectedStorage?.name} -{' '}
+                              {selectedColor?.name}
+                           </div>
+                           <div className="text-[12px] text-[#86868B]">
+                              Available in {filteredBranches.length} location
+                              {filteredBranches.length !== 1 ? 's' : ''}
+                           </div>
+                        </div>
+                     </div>
+
+                     {/* Available Branches */}
+                     {filteredBranches.length > 0 && (
+                        <div className="max-h-[200px] overflow-y-auto">
+                           <div className="text-[12px] font-semibold text-[#1D1D1F] mb-2">
+                              Available Locations:
+                           </div>
+                           <div className="space-y-2">
+                              {filteredBranches.map((branchData) => (
+                                 <div
+                                    key={branchData.branch.id}
+                                    className="flex flex-row items-center justify-between p-3 rounded-lg border border-[#D2D2D7] bg-white"
+                                 >
+                                    <div className="flex flex-col gap-1">
+                                       <div className="text-[13px] font-semibold text-[#1D1D1F]">
+                                          {branchData.branch.name}
+                                       </div>
+                                       <div className="text-[11px] text-[#86868B]">
+                                          {branchData.branch.address}
+                                       </div>
+                                       <div className="text-[11px] text-[#0071E3]">
+                                          In Stock:{' '}
+                                          {branchData.sku?.available_in_stock ||
+                                             0}{' '}
+                                          units
+                                       </div>
+                                    </div>
+                                    <div className="text-right">
+                                       <div className="text-[13px] font-semibold text-[#1D1D1F]">
+                                          ${branchData.sku?.unit_price || 0}
+                                       </div>
+                                       {branchData.sku?.unit_price && (
+                                          <div className="text-[11px] text-[#86868B]">
+                                             $
+                                             {Math.round(
+                                                (branchData.sku.unit_price /
+                                                   24) *
+                                                   100,
+                                             ) / 100}
+                                             /mo. for 24 mo.
+                                          </div>
+                                       )}
+                                    </div>
+                                 </div>
+                              ))}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* Action Button */}
+                     <div className="flex flex-row items-center justify-end">
+                        <Button
+                           className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white transition-all duration-200"
+                           onClick={() => {
+                              console.log('Add to Bag:', {
+                                 selectedModel,
+                                 selectedColor,
+                                 selectedStorage,
+                                 availableBranches: filteredBranches,
+                              });
+                           }}
+                        >
+                           Add to Bag
+                        </Button>
+                     </div>
+                  </div>
+               )}
             </div>
          </div>
       );
@@ -176,7 +282,7 @@ const IphoneDetails = () => {
                   New
                </span>
                <h1 className="text-[48px] font-semibold leading-[52px] pb-2 mb-[13px]">
-                  Iphone 16 Pro
+                  {iphoneDetailsFakeData.name}
                </h1>
                <div className="text-[15px] font-light leading-[20px]">
                   From $999 or $41.62/mo. for 24 mo.
@@ -271,8 +377,14 @@ const IphoneDetails = () => {
                               displaySize={model.displaySize}
                               price={model.price}
                               monthlyPrice={model.monthlyPrice}
-                              isSelected={selectedModel === model.name}
-                              onClick={() => setSelectedModel(model.name)}
+                              isSelected={selectedModel?.name === model.name}
+                              onClick={() =>
+                                 handleModelSelection({
+                                    name: model.name,
+                                    normalized_name: model.normalized_name,
+                                 })
+                              }
+                              isDisabled={false}
                            />
                         ))}
                      </div>
@@ -296,7 +408,13 @@ const IphoneDetails = () => {
                      </div>
 
                      <div className="pt-5 pb-[17px] text-[17px] font-semibold leading-[25px] tracking-[-0.02em] text-[#1D1D1F]">
-                        {hoveredColor ? `Color - ${hoveredColor}` : 'Color'}
+                        {isColorDisabled
+                           ? 'Color (Select a model first)'
+                           : hoveredColor
+                             ? `Color - ${hoveredColor}`
+                             : selectedColor
+                               ? `Color - ${selectedColor.name}`
+                               : 'Color'}
                      </div>
 
                      <div className="flex flex-row gap-[12px] items-center">
@@ -305,10 +423,19 @@ const IphoneDetails = () => {
                               key={color.name}
                               colorHex={color.hex}
                               colorName={color.name}
-                              isSelected={selectedColor === color.name}
-                              onClick={() => setSelectedColor(color.name)}
-                              onMouseEnter={() => setHoveredColor(color.name)}
+                              isSelected={selectedColor?.name === color.name}
+                              onClick={() =>
+                                 !isColorDisabled &&
+                                 handleColorSelection({
+                                    name: color.name,
+                                    normalized_name: color.normalized_name,
+                                 })
+                              }
+                              onMouseEnter={() =>
+                                 !isColorDisabled && setHoveredColor(color.name)
+                              }
                               onMouseLeave={() => setHoveredColor(null)}
+                              isDisabled={isColorDisabled}
                            />
                         ))}
                      </div>
@@ -320,20 +447,31 @@ const IphoneDetails = () => {
                      <div className="w-full text-start text-[24px] font-semibold leading-[28px] pb-10">
                         <span className="text-[#1D1D1F]">Storage. </span>
                         <span className="text-[#86868B]">
-                           How much space do you need?
+                           {isStorageDisabled
+                              ? 'Select model and color first'
+                              : 'How much space do you need?'}
                         </span>
                      </div>
 
                      <div className="w-full flex flex-col gap-2">
-                        {storageOptions.map((storage) => (
+                        {storages.map((storage) => (
                            <StorageItem
                               key={storage.name}
                               storageName={storage.name}
                               price={storage.price}
                               monthlyPrice={storage.monthlyPrice}
                               note={storage.note}
-                              isSelected={selectedStorage === storage.name}
-                              onClick={() => setSelectedStorage(storage.name)}
+                              isSelected={
+                                 selectedStorage?.name === storage.name
+                              }
+                              onClick={() =>
+                                 !isStorageDisabled &&
+                                 handleStorageSelection({
+                                    name: storage.name,
+                                    normalized_name: storage.normalized_name,
+                                 })
+                              }
+                              isDisabled={isStorageDisabled}
                            />
                         ))}
                      </div>
@@ -408,7 +546,7 @@ const IphoneDetails = () => {
                   <div className="pr-[10px] mr-[41px] flex flex-col items-start justify-start">
                      <span className="text-[#1D1D1F] tracking-[0.3px] w-full text-[38px] font-semibold leading-[46px]">
                         Your new <br />
-                        iPhone 16 Pro.
+                        {iphoneDetailsFakeData.name}.
                      </span>
                      <span className="text-[#86868B] tracking-[0.3px] w-full text-[38px] font-semibold leading-[46px]">
                         Just the way you <br />
@@ -428,7 +566,8 @@ const IphoneDetails = () => {
                   <div className="pr-[20px] mr-[41px] flex flex-col items-start justify-start">
                      <div className="product-info w-full pb-11 text-[17px] text-[#1D1D1F] leading-[25px] tracking-[0.3px]">
                         <div className="w-full pb-[7px] font-light">
-                           iPhone 16 Pro 512GB White Titanium
+                           {selectedModel?.name} {selectedStorage?.name}{' '}
+                           {selectedColor?.name}
                         </div>
                         <div className="w-full font-semibold">$1,299.00</div>
                         <div className="w-full pt-[35px] font-semibold">
@@ -539,7 +678,7 @@ const IphoneDetails = () => {
                      </div>
                      <div className="w-full flex flex-row gap-0 justify-center items-center">
                         <div className="basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]">
-                           iPhone 16 Pro
+                           {iphoneDetailsFakeData.name}
                         </div>
                         <div className="basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]">
                            USB-C Charge Cable
