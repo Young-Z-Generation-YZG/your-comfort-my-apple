@@ -1,5 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -40,5 +41,15 @@ public class Model : ValueObject
     {
         yield return Name;
         yield return Order;
+    }
+
+    public ModelResponse ToResponse()
+    {
+        return new ModelResponse
+        {
+            Name = Name,
+            NormalizedName = NormalizedName,
+            Order = Order
+        };
     }
 }
