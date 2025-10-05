@@ -68,8 +68,8 @@ public class CreateIphoneModelRequestExample : ISchemaProcessor
                 {
                     new
                     {
-                        storage_name = "256GB",
-                        storage_value =  256,
+                        storage_name = "128GB",
+                        storage_value =  128,
                         order = 0
                     },
                     new

@@ -1,5 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -52,5 +53,17 @@ public class Color : ValueObject
         yield return HexCode;
         yield return ShowcaseImageId;
         yield return Order;
+    }
+
+    public ColorResponse ToResponse()
+    {
+        return new ColorResponse
+        {
+            Name = Name,
+            NormalizedName = NormalizedName,
+            HexCode = HexCode,
+            ShowcaseImageId = ShowcaseImageId,
+            Order = Order
+        };
     }
 }

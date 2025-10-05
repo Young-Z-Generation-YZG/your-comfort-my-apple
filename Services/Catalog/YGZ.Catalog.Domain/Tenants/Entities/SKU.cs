@@ -110,14 +110,14 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         return new SkuResponse
         {
             Id = Id.Value!,
-            SKUCode = SKUCode.Value,
+            Code = SKUCode.Value,
             ModelId = ModelId.Value!,
             TenantId = TenantId.Value!,
             BranchId = BranchId.Value!,
             ProductType = ProductType,
-            Model = Model.Name,
-            Color = Color.Name,
-            Storage = Storage.Name,
+            Model = Model.ToResponse(),
+            Color = Color.ToResponse(),
+            Storage = Storage.ToResponse(),
             UnitPrice = UnitPrice,
             AvailableInStock = AvailableInStock,
             TotalSold = TotalSold,

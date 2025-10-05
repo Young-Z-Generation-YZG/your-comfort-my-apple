@@ -8,5 +8,6 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
 public sealed record StorageResponse
 {
     required public string Name { get; init; }
+    required public string NormalizedName { get; init; }
     required public int Order { get; init; }
 }
