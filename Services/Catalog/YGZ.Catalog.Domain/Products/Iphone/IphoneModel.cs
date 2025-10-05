@@ -6,7 +6,6 @@ using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
-using YGZ.Catalog.Domain.Products.Iphone.Events;
 
 namespace YGZ.Catalog.Domain.Products.Iphone;
 
@@ -37,7 +36,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     public List<Storage> Storages { get; set; } = [];
 
     [BsonElement("showcase_image")]
-    public List<Image> ShowcaseImage { get; set; } = [];
+    public List<Image> ShowcaseImages { get; set; } = [];
 
     [BsonElement("description")]
     public string Description { get; set; } = default!;
@@ -103,7 +102,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Models = models,
             Colors = colors,
             Storages = storages,
-            ShowcaseImage = showcaseImages,
+            ShowcaseImages = showcaseImages,
             Description = description,
             AverageRating = averageRating,
             OverallSold = (int)overallSold!,

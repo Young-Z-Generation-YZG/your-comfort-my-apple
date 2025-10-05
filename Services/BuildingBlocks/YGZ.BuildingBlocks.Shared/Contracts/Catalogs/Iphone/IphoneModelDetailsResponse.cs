@@ -15,6 +15,7 @@ public sealed record IphoneModelDetailsResponse
     required public List<ColorResponse> ColorItems { get; init; }
     required public List<StorageResponse> StorageItems { get; init; }
     public string? Description { get; init; }
+    public required List<ImageResponse> ShowcaseImages { get; init; }
     required public int OverallSold { get; init; }
     required public AverageRatingResponse AverageRating { get; init; }
     required public List<BranchWithSkusResponse> Branchs { get; init; }
