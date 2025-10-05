@@ -1,6 +1,7 @@
 ﻿
 
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -64,5 +65,20 @@ public class Image : ValueObject
         yield return ImageHeight;
         yield return ImageBytes;
         yield return ImageOrder;
+    }
+
+    public ImageResponse ToResponse()
+    {
+        return new ImageResponse
+        {
+            ImageId = ImageId,
+            ImageUrl = ImageUrl,
+            ImageName = ImageName,
+            ImageDescription = ImageDescription,
+            ImageWidth = ImageWidth,
+            ImageHeight = ImageHeight,
+            ImageBytes = ImageBytes,
+            ImageOrder = ImageOrder
+        };
     }
 }

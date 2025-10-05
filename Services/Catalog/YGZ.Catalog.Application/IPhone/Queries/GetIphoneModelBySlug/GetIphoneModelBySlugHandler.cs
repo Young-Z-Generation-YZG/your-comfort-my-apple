@@ -1,10 +1,7 @@
-﻿using MapsterMapper;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
-using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -19,14 +16,12 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
     private readonly IMongoRepository<SKU, SKUId> _skuRepository;
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
-    private readonly IMapper _mapper;
 
-    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SKUId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository, IMapper mapper)
+    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SKUId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
     {
         _skuRepository = skuRepository;
         _iphoneModelRepository = iphoneModelRepository;
         _branchRepository = branchRepository;
-        _mapper = mapper;
     }
 
     public async Task<Result<IphoneModelDetailsResponse>> Handle(GetIphoneModelBySlugQuery request, CancellationToken cancellationToken)
@@ -73,12 +68,13 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
         {
             Id = model.Id.Value!,
             Name = model.Name,
-            ModelItems = _mapper.Map<List<ModelResponse>>(model.Models),
-            ColorItems = _mapper.Map<List<ColorResponse>>(model.Colors),
-            StorageItems = _mapper.Map<List<StorageResponse>>(model.Storages),
+            ModelItems = model.Models.Select(x => x.ToResponse()).ToList(),
+            ColorItems = model.Colors.Select(x => x.ToResponse()).ToList(),
+            StorageItems = model.Storages.Select(x => x.ToResponse()).ToList(),
             Description = model.Description,
+            ShowcaseImages = model.ShowcaseImages.Select(x => x.ToResponse()).ToList(),
             OverallSold = model.OverallSold,
-            AverageRating = _mapper.Map<AverageRatingResponse>(model.AverageRating),
+            AverageRating = model.AverageRating.ToResponse(),
             CategoryId = model.CategoryId.Value!,
             Branchs = branchsResponse,
         };

@@ -1,7 +1,7 @@
 ﻿
 
 using Mapster;
-using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 namespace YGZ.Catalog.Application.Common.Mappings;

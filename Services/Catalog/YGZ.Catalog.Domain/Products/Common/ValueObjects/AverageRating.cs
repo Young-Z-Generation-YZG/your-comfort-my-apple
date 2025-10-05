@@ -1,6 +1,7 @@
 ﻿
 
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -43,5 +44,14 @@ public class AverageRating : ValueObject
     {
         yield return RatingAverageValue;
         yield return RatingCount;
+    }
+
+    public AverageRatingResponse ToResponse()
+    {
+        return new AverageRatingResponse
+        {
+            RatingAverageValue = RatingAverageValue,
+            RatingCount = RatingCount
+        };
     }
 }

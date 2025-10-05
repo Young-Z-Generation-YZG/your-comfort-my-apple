@@ -1,5 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
 'use client';
+
 import { useState, useEffect } from 'react';
 import {
    Carousel,
@@ -93,10 +93,38 @@ const IphoneDetails = () => {
       normalized_name: string;
    }) => {
       setSelectedColor(color);
+
+      // Navigate to the image corresponding to the selected color
+      const targetImageIndex = getImageIndexByColor(color.normalized_name);
+      setCurrentSlide(targetImageIndex);
+      if (carouselApi) {
+         carouselApi.scrollTo(targetImageIndex);
+      }
+
       // Only reset storage selection if not completed initial selection
       if (!hasCompletedInitialSelection) {
          setSelectedStorage(null);
       }
+   };
+
+   // Function to find the index of the image corresponding to the selected color
+   const getImageIndexByColor = (colorName: string) => {
+      // Find the selected color item from the original data
+      const selectedColorItem = iphoneDetailsFakeData.color_items.find(
+         (color) => color.normalized_name === colorName,
+      );
+
+      if (!selectedColorItem) {
+         return 0; // Default to first image if color not found
+      }
+
+      // Find the index of the showcase image that matches the selected color's showcase_image_id
+      const imageIndex = iphoneDetailsFakeData.showcase_images.findIndex(
+         (image) => image.image_id === selectedColorItem.showcase_image_id,
+      );
+
+      // Return the index, or 0 if not found
+      return imageIndex !== -1 ? imageIndex : 0;
    };
 
    const handleStorageSelection = (storage: {
@@ -308,41 +336,38 @@ const IphoneDetails = () => {
          <div className="w-full flex flex-row gap-14 relative h-[1000px]">
             {/* left */}
             <div className="basis-[70%] sticky top-[100px] self-start">
-               <Carousel setApi={setCarouselApi}>
+               <Carousel
+                  setApi={setCarouselApi}
+                  opts={{
+                     loop: true,
+                     align: 'center',
+                  }}
+               >
                   <CarouselContent>
-                     <CarouselItem>
-                        <div className="w-full overflow-hidden relative h-[1000px]">
-                           <NextImage
-                              src={`https://res.cloudinary.com/delkyrtji/image/upload/${resizeFromHeight(1000, '16:9')}/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp`}
-                              alt="promotion-iPhone"
-                              width={Math.round((1000 * 16) / 9)}
-                              height={1000}
-                              // width={500}
-                              // height={Math.round((500 * 9) / 16)}
-                              className="absolute top-0 left-0 w-full h-full object-cover rounded-[20px]"
-                           />
-                        </div>
-                     </CarouselItem>
-                     <CarouselItem>
-                        <div className="w-full overflow-hidden relative h-[1000px]">
-                           <NextImage
-                              src={`https://res.cloudinary.com/delkyrtji/image/upload/${resizeFromHeight(1000, '16:9')}/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp`}
-                              alt="promotion-iPhone"
-                              width={Math.round((1000 * 16) / 9)}
-                              height={1000}
-                              // width={500}
-                              // height={Math.round((500 * 9) / 16)}
-                              className="absolute top-0 left-0 w-full h-full object-cover rounded-[20px]"
-                           />
-                        </div>
-                     </CarouselItem>
+                     {iphoneDetailsFakeData.showcase_images.map((image) => (
+                        <CarouselItem key={image.image_id}>
+                           <div className="w-full overflow-hidden relative h-[1000px]">
+                              <NextImage
+                                 src={`https://res.cloudinary.com/delkyrtji/image/upload/${resizeFromHeight(1000, '16:9')}/${image.image_url.split('/').pop()}`}
+                                 alt={
+                                    image.image_name || 'iPhone showcase image'
+                                 }
+                                 width={Math.round((1000 * 16) / 9)}
+                                 height={1000}
+                                 className="absolute top-0 left-0 w-full h-full object-cover rounded-[20px]"
+                              />
+                           </div>
+                        </CarouselItem>
+                     ))}
                   </CarouselContent>
 
                   <CarouselPrevious className="left-[1rem]" />
                   <CarouselNext className="right-[1rem]" />
 
                   <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
-                     {Array.from({ length: 2 }).map((_, index) => (
+                     {Array.from({
+                        length: iphoneDetailsFakeData.showcase_images.length,
+                     }).map((_, index) => (
                         <div
                            className="w-[10px] h-[10px] rounded-full transition-colors duration-200"
                            style={{

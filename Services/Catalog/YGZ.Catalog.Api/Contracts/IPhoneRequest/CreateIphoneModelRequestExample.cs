@@ -107,9 +107,9 @@ new
                     },
                     new
                     {
-                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_id = "iphone-15-finish-select-202309-6-1inch-pink_j6v96t",
                         image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp",
-                        image_name = "iPhone 15 blue",
+                        image_name = "iPhone 15 pink",
                         image_description = "",
                         image_width = 0,
                         image_height = 0,
@@ -118,9 +118,9 @@ new
                     },
                     new
                     {
-                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_id = "iphone-15-finish-select-202309-6-1inch-yellow_pwviwe",
                         image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp",
-                        image_name = "iPhone 15 blue",
+                        image_name = "iPhone 15 yellow",
                         image_description = "",
                         image_width = 0,
                         image_height = 0,
@@ -129,9 +129,9 @@ new
                     },
                     new
                     {
-                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_id = "iphone-15-finish-select-202309-6-1inch-green_yk0ln5",
                         image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp",
-                        image_name = "iPhone 15 blue",
+                        image_name = "iPhone 15 green",
                         image_description = "",
                         image_width = 0,
                         image_height = 0,
@@ -140,9 +140,9 @@ new
                     },
                     new
                     {
-                        image_id = "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz",
+                        image_id = "iphone-15-finish-select-202309-6-1inch-black_hhhvfs",
                         image_url = "https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp",
-                        image_name = "iPhone 15 blue",
+                        image_name = "iPhone 15 black",
                         image_description = "",
                         image_width = 0,
                         image_height = 0,

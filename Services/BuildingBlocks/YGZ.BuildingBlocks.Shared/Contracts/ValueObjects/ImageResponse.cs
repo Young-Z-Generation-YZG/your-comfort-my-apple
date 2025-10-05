@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 using YGZ.BuildingBlocks.Shared.Utils;
 
-namespace YGZ.BuildingBlocks.Shared.Contracts.Common;
+namespace YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record ImageResponse
