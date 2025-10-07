@@ -437,58 +437,143 @@ const Header = () => {
                </div>
             </ul>
 
-            {/* <div className="md:hidden flex flex-row justify-between items-center w-full bg-blue-400">
+            {/* Header mobile version */}
+            <div className="md:hidden flex flex-row justify-between items-center w-full h-[44px] px-4 bg-[#fafafc] border-b border-[#ddd]">
+               {/* Logo */}
                <div
-                  className="px-[8px] cursor-pointer"
+                  className="cursor-pointer"
                   onClick={() => {
                      router.push('/home');
                   }}
                >
                   <Image
                      src={svgs.appleIcon}
-                     alt="cover"
+                     alt="Apple Logo"
                      width={1200}
                      height={1000}
                      quality={100}
-                     className="h-[100px] w-[50px]"
+                     className="w-[22px] h-[60px]"
                   />
                </div>
-               <button
-                  className="md:hidden"
-                  onClick={() => setMenuOpen(!menuOpen)}
-               >
+
+               {/* Right buttons */}
+               <div className="flex items-center gap-3">
                   <Image
-                     src={svgs.menuIcon}
-                     alt="cover"
-                     width={1200}
-                     height={1000}
+                     src={svgs.appleSearchIcon}
+                     alt="Search"
+                     width={20}
+                     height={20}
                      quality={100}
-                     className="h-[50px] w-[50px]"
+                     className="w-[40px] h-[40px] cursor-pointer"
+                     onClick={() => setActiveCategory('Search')}
                   />
-               </button>
+
+                  <div
+                     className="relative cursor-pointer"
+                     onClick={() => setActiveCategory('BagMenu')}
+                  >
+                     <Image
+                        src={svgs.appleBasketIcon}
+                        alt="Basket"
+                        width={20}
+                        height={20}
+                        quality={100}
+                        className="w-[40px] h-[40px]"
+                     />
+                     {items.length > 0 && (
+                        <span className="absolute -top-1 -right-1 text-[9px] w-4 h-4 rounded-full bg-black text-white font-semibold text-center leading-[16px]">
+                           {items.reduce((acc, item) => acc + item.quantity, 0)}
+                        </span>
+                     )}
+                  </div>
+
+                  <button
+                     className="p-1 cursor-pointer"
+                     onClick={() => setMenuOpen(!menuOpen)}
+                  >
+                     <Image
+                        src={svgs.menuIcon}
+                        alt="Menu"
+                        width={20}
+                        height={20}
+                        quality={100}
+                        className="w-[20px] h-[20px]"
+                     />
+                  </button>
+               </div>
             </div>
 
             {/* Mobile dropdown */}
             <AnimatePresence>
                {menuOpen && (
                   <>
+                     {/* Overlay */}
                      <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 0.5 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 bg-white z-40"
+                        className="fixed inset-0 bg-black z-40"
                         onClick={() => setMenuOpen(false)}
                      />
+                     {/* Slide menu */}
                      <motion.div
                         initial={{ x: '100%', opacity: 0 }}
                         animate={{ x: '0%', opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="fixed top-0 right-0 w-auto h-full bg-[#fafafc] border-l z-50 p-6"
+                        transition={{ duration: 0.4, ease: 'easeInOut' }}
+                        className="fixed top-0 right-0 w-[70%] h-full bg-[#fafafc] z-50 p-6 shadow-xl flex flex-col"
                      >
-                        <ul className="flex flex-col gap-0 text-lg">
-                           {renderHeaderCategories02()}
+                        <div className="flex justify-between items-center mb-6">
+                           <h2 className="text-lg font-semibold">Menu</h2>
+                           <button
+                              className="text-sm text-[#555]"
+                              onClick={() => setMenuOpen(false)}
+                           >
+                              ✕
+                           </button>
+                        </div>
+
+                        <ul className="flex flex-col gap-3 text-base font-normal">
+                           <li
+                              className="cursor-pointer"
+                              onClick={() => {
+                                 router.push('/store');
+                                 setMenuOpen(false);
+                              }}
+                           >
+                              Store
+                           </li>
+                           {mainCategoriesDefault.map((category) => (
+                              <li
+                                 key={category.category_id}
+                                 className="cursor-pointer"
+                                 onClick={() => {
+                                    router.push('/shop');
+                                    setMenuOpen(false);
+                                 }}
+                              >
+                                 {category.category_name}
+                              </li>
+                           ))}
+                           <li
+                              className="cursor-pointer"
+                              onClick={() => {
+                                 router.push('/support');
+                                 setMenuOpen(false);
+                              }}
+                           >
+                              Support
+                           </li>
+                           <li
+                              className="cursor-pointer"
+                              onClick={() => {
+                                 setActiveCategory('UserMenu');
+                                 setMenuOpen(false);
+                              }}
+                           >
+                              Account
+                           </li>
                         </ul>
                      </motion.div>
                   </>
