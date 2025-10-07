@@ -75,7 +75,7 @@ public class IdentityService : IIdentityService
 
             if (!await _roleManager.RoleExistsAsync("USER"))
             {
-               return Errors.User.CannotBeCreated;
+                return Errors.User.CannotBeCreated;
             }
 
             // Add role "USER" to user
@@ -83,7 +83,7 @@ public class IdentityService : IIdentityService
 
             if (!roleResult.Succeeded)
             {
-               return Errors.User.CannotBeCreated;
+                return Errors.User.CannotBeCreated;
             }
 
             if (!result.Succeeded)
@@ -104,8 +104,6 @@ public class IdentityService : IIdentityService
         try
         {
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
-
-            return Errors.User.DoesNotExist;
 
             if (existingUser is null)
             {

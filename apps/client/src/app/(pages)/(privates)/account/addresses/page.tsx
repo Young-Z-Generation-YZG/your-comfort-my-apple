@@ -26,7 +26,7 @@ import {
 } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { toast as sonnerToast } from 'sonner';
 
 const AddressesPage = () => {

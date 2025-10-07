@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Application.Categories.Commands;
 using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Application.Categories.Queries.GetCategories;
+using YGZ.Catalog.Application.Categories.Commands.CreateCategory;
 
 namespace YGZ.Catalog.Api.Controllers;
 

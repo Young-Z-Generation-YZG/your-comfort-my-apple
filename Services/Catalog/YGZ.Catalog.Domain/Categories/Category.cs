@@ -1,6 +1,7 @@
 ﻿
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -16,6 +17,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
 
     }
 
+    [BsonElement("parent_id")]
+    public CategoryId? ParentId { get; set; } = null;
+
     [BsonElement("name")]
     public string Name { get; set; } = default!;
 
@@ -28,8 +32,6 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("order")]
     public int Order { get; set; }
 
-    [BsonElement("parent_id")]
-    public CategoryId? ParentId { get; set; } = null;
 
     public DateTime CreatedAt => DateTime.Now;
 
@@ -54,6 +56,25 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
             Slug = Slug.Create(name),
             Order = order,
             ParentId = parentId
+        };
+    }
+
+    public CategoryResponse ToResponse()
+    {
+        return new CategoryResponse
+        {
+            Id = Id.Value!,
+            Name = Name,
+            Description = Description,
+            Order = Order,
+            Slug = Slug.Value,
+            ParentId = ParentId?.Value ?? null,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            ModifiedBy = ModifiedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
         };
     }
 }

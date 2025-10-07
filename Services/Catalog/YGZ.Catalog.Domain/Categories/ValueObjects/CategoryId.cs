@@ -10,7 +10,7 @@ public class CategoryId : ValueObject
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public ObjectId Id { get; init; }
+    public ObjectId? Id { get; init; }
     public string? Value => Id.ToString();
 
     public override IEnumerable<object> GetEqualityComponents()
@@ -25,12 +25,8 @@ public class CategoryId : ValueObject
 
     public static CategoryId Of(string? id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-
         var isSuccess = ObjectId.TryParse(id, out var objectId);
 
-        if (!isSuccess) throw new InvalidCastException($"Cannot convert id:{id} to CategoryId");
-
-        return new CategoryId { Id = objectId };
+        return new CategoryId { Id = isSuccess ? objectId : null };
     }
 }

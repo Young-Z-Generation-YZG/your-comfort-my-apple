@@ -11,25 +11,27 @@ public class CategoryIdSerialization : SerializerBase<CategoryId>
 {
     public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, CategoryId value)
     {
-        if (value is null)
+        if (value?.Id == null)
         {
             context.Writer.WriteNull();
-
-            return;
         }
-
-        context.Writer.WriteObjectId((MongoDB.Bson.ObjectId)value.Id!);
+        else
+        {
+            context.Writer.WriteObjectId(value.Id.Value);
+        }
     }
 
-    public override CategoryId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    public override CategoryId? Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
-        if (context.Reader.CurrentBsonType == BsonType.Null)
+        var bsonType = context.Reader.GetCurrentBsonType();
+
+        if (bsonType == BsonType.Null)
         {
-            throw new InvalidCastException("Cannot convert null to CategoryId");
+            context.Reader.ReadNull();
+            return null;
         }
 
         var objectId = context.Reader.ReadObjectId();
-
         return new CategoryId { Id = objectId };
     }
 }

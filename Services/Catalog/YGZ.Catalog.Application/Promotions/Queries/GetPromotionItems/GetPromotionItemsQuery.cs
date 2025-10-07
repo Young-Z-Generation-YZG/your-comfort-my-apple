@@ -1,11 +1,8 @@
 ﻿
 
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
-using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Promotions;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetPromotionItems;
 
-public sealed record GetPromotionItemsQuery : IQuery<PaginationResponse<PromotionItemResponse>>
-{
-}
+public sealed record GetPromotionItemsQuery : IQuery<PromotionIphoneItemEventResponse> { }

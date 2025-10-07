@@ -2,7 +2,7 @@
 using FluentValidation;
 using YGZ.Catalog.Application.Common.Validators;
 
-namespace YGZ.Catalog.Application.Categories.Commands;
+namespace YGZ.Catalog.Application.Categories.Commands.CreateCategory;
 
 public class CreateCategoryValidator : AbstractValidator<CreateCategoryCommand>
 {

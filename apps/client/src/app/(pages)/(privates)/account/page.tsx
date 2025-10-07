@@ -16,7 +16,7 @@ import ImageSkeleton from '@components/ui/image-skeleton';
 import { Skeleton } from '@components/ui/skeleton';
 import { IoChevronBack } from 'react-icons/io5';
 import ProfileForm from './_components/form/profile-form';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 import withAuth from '@components/HoCs/with-auth.hoc';
 

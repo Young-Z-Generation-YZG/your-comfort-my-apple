@@ -16,7 +16,7 @@ import {
    FiltersType,
    setAppFilters,
 } from '~/infrastructure/redux/features/app.slice';
-import { useDebounce } from '~/hooks/use-debouce';
+import { useDebounce } from '@components/hooks/use-debouce';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useSearchParams } from 'next/navigation';
 

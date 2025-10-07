@@ -10,7 +10,7 @@ import {
    DialogTrigger,
 } from '@components/ui/dialog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import {
    Plus,
    CreditCard,

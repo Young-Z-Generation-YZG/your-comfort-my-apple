@@ -1,7 +1,6 @@
-﻿
-using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 
-namespace YGZ.Catalog.Application.Categories.Commands;
+namespace YGZ.Catalog.Application.Categories.Commands.CreateCategory;
 
 public sealed record CreateCategoryCommand : ICommand<bool>
 {

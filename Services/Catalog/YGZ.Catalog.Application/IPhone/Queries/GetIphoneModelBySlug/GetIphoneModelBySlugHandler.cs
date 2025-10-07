@@ -67,6 +67,7 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
         return new IphoneModelDetailsResponse
         {
             Id = model.Id.Value!,
+            Category = model.Category.ToResponse(),
             Name = model.Name,
             ModelItems = model.Models.Select(x => x.ToResponse()).ToList(),
             ColorItems = model.Colors.Select(x => x.ToResponse()).ToList(),
@@ -74,8 +75,8 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
             Description = model.Description,
             ShowcaseImages = model.ShowcaseImages.Select(x => x.ToResponse()).ToList(),
             OverallSold = model.OverallSold,
+            RatingStars = model.RatingStars.Select(x => x.ToResponse()).ToList(),
             AverageRating = model.AverageRating.ToResponse(),
-            CategoryId = model.CategoryId.Value!,
             Branchs = branchsResponse,
         };
     }

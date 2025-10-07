@@ -8,17 +8,16 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record IphoneModelDetailsResponse
 {
-    required public string Id { get; init; }
-    required public string CategoryId { get; init; }
-    required public string Name { get; init; }
-    required public List<ModelResponse> ModelItems { get; init; }
-    required public List<ColorResponse> ColorItems { get; init; }
-    required public List<StorageResponse> StorageItems { get; init; }
+    public required string Id { get; init; }
+    public required CategoryResponse Category { get; init; }
+    public required string Name { get; init; }
+    public required List<ModelResponse> ModelItems { get; init; }
+    public required List<ColorResponse> ColorItems { get; init; }
+    public required List<StorageResponse> StorageItems { get; init; }
     public string? Description { get; init; }
     public required List<ImageResponse> ShowcaseImages { get; init; }
-    required public int OverallSold { get; init; }
-    required public AverageRatingResponse AverageRating { get; init; }
-    required public List<BranchWithSkusResponse> Branchs { get; init; }
-    // required public List<RatingStarResponse> RatingStars { get; set; }
-    // required public List<ImageResponse> ModelImages { get; set; }
+    public required int OverallSold { get; init; }
+    required public List<RatingStarResponse> RatingStars { get; init; }
+    public required AverageRatingResponse AverageRating { get; init; }
+    public required List<BranchWithSkusResponse> Branchs { get; init; }
 }

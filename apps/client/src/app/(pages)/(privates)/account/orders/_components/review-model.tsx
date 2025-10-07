@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { Textarea } from '@components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { Star, AlertCircle } from 'lucide-react';
 import {
    ReviewFormType,

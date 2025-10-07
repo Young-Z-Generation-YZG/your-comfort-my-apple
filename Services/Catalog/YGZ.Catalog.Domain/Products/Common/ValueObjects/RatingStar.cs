@@ -1,4 +1,5 @@
-﻿using YGZ.Catalog.Domain.Core.Primitives;
+﻿using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
@@ -16,5 +17,14 @@ public class RatingStar : ValueObject
     public static RatingStar Create(int star, int count)
     {
         return new RatingStar { Star = star, Count = count };
+    }
+
+    public RatingStarResponse ToResponse()
+    {
+        return new RatingStarResponse
+        {
+            Star = Star,
+            Count = Count
+        };
     }
 }

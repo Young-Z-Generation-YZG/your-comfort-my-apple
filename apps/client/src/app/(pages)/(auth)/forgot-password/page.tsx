@@ -6,7 +6,7 @@ import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import {
    sendEmailResetPasswordFormType,
@@ -31,14 +31,7 @@ const sendEmailResetPasswordPage = () => {
 
    const [
       sendEmailAsync,
-      {
-         isLoading: isFetching,
-         isSuccess,
-         data,
-         error,
-         isError,
-         reset,
-      },
+      { isLoading: isFetching, isSuccess, data, error, isError, reset },
    ] = useSendEmailResetPasswordAsyncMutation();
 
    const onSubmit = async (data: sendEmailResetPasswordFormType) => {

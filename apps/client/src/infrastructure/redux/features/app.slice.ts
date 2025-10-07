@@ -1,45 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type FiltersType = {
-   colors: {
-      name: string;
-      hex: string;
-   }[];
-   models: {
-      name: string;
-      value: string;
-   }[];
-   storages: {
-      name: string;
-      value: string;
-   }[];
-};
-
-const initialState = {
-   value: {
-      filters: {
-         colors: [],
-         models: [],
-         storages: [],
-      } as FiltersType,
-   },
-};
-
 const AppSlice = createSlice({
    name: 'app',
-   initialState: initialState,
-   reducers: {
-      setAppFilters: (state, action: PayloadAction<FiltersType>) => {
-         console.log('setAppFilters', action.payload);
-
-         state.value.filters = action.payload;
+   initialState: {
+      route: {
+         previousUnAuthenticatedPath: null as string | null,
       },
-      clearAppFilters: (state) => {
-         state.value.filters = initialState.value.filters;
+   },
+   reducers: {
+      setPreviousUnAuthenticatedPath: (
+         state,
+         action: PayloadAction<string | null>,
+      ) => {
+         state.route.previousUnAuthenticatedPath = action.payload;
       },
    },
 });
 
-export const { setAppFilters, clearAppFilters } = AppSlice.actions;
+export const { setPreviousUnAuthenticatedPath } = AppSlice.actions;
 
 export default AppSlice.reducer;

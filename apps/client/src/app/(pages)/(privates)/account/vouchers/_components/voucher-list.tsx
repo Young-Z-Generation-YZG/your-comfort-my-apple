@@ -13,7 +13,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs';
 import { Badge } from '@components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import {
    Ticket,
    Plus,

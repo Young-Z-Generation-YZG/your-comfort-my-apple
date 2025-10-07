@@ -4,7 +4,7 @@ import { Button } from '@components/ui/button';
 import { Separator } from '@components/ui/separator';
 import { Badge } from '@components/ui/badge';
 import { motion } from 'framer-motion';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import {
    Ticket,
    Copy,

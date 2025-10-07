@@ -15,7 +15,7 @@ import HelpItem from './help-item';
 import ColorItem from './color-item';
 import StorageItem from './storage-item';
 import { Button } from '@components/ui/button';
-import { iphoneDetailsFakeData } from '../_data/_iphone-details';
+import { iphoneDetailsFakeData } from '../_data/iphone-details';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);

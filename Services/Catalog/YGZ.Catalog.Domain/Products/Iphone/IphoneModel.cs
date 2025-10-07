@@ -1,6 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
-using YGZ.Catalog.Domain.Categories.ValueObjects;
+using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -17,8 +17,8 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         RatingStars = InitRatingStar();
     }
 
-    [BsonElement("category_id")]
-    public required CategoryId CategoryId { get; init; }
+    [BsonElement("category")]
+    public required Category Category { get; init; }
 
     [BsonElement("name")]
     public string Name { get; set; } = default!;
@@ -84,6 +84,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     }
 
     public static IphoneModel Create(ModelId iPhoneModelId,
+                                     Category category,
                                      string name,
                                      List<Model> models,
                                      List<Color> colors,
@@ -92,11 +93,11 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      string description,
                                      AverageRating averageRating,
                                      List<RatingStar> ratingStars,
-                                     CategoryId categoryId,
                                      int? overallSold = 0)
     {
         var newModel = new IphoneModel(iPhoneModelId)
         {
+            Category = category,
             Name = name,
             NormalizedModel = NormalizeString.Normalize(name),
             Models = models,
@@ -107,7 +108,6 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             AverageRating = averageRating,
             OverallSold = (int)overallSold!,
             Slug = Slug.Create(name),
-            CategoryId = categoryId,
         };
 
         return newModel;

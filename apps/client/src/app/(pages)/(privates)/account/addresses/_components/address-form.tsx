@@ -36,7 +36,7 @@ import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 import { toast as sonnerToast } from 'sonner';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
 
 const staggerDuration = 0.05;

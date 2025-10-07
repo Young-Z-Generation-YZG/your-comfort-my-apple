@@ -31,7 +31,7 @@ public class Model : ValueObject
 
         if (modelEnum is null)
         {
-            throw new ArgumentException("Invalid EStorage ${name}", name);
+            throw new ArgumentException("Invalid EIphoneModel ${name}", name);
         }
 
         return new Model(name, modelEnum, order);

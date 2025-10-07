@@ -8,87 +8,78 @@ import { LoginFormType, LoginResolver } from '~/domain/schemas/auth.schema';
 import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
-import { useLoginAsyncMutation } from '~/infrastructure/services/auth.service';
 import { useRouter } from 'next/navigation';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-
-const defaultValues: LoginFormType = {
-   email: '',
-   password: '',
-};
+import useAuth from '@components/hooks/use-auth';
+import { useAppSelector } from '~/infrastructure/redux/store';
 
 const SignInPage = () => {
    const [isLoading, setIsLoading] = useState(false);
-   const router = useRouter();
 
+   const { login, loginState } = useAuth();
    const { toast } = useToast();
+   const appStateRoute = useAppSelector((state) => state.app.route);
+   const router = useRouter();
 
    const form = useForm<LoginFormType>({
       resolver: LoginResolver,
-      defaultValues: defaultValues,
+      defaultValues: {
+         email: '',
+         password: '',
+      },
    });
 
-   const [
-      loginAsync,
-      {
-         isLoading: isFetching,
-         data: dataAsync,
-         isSuccess,
-         error: errorAsync,
-         isError,
-         reset,
-      },
-   ] = useLoginAsyncMutation();
-
    const onSubmit = async (data: LoginFormType) => {
-      await loginAsync(data).unwrap();
+      await login(data);
    };
 
+   //  useEffect(() => {
+   //     if (typeof signInData === 'object' && signInData !== null) {
+   //        if (
+   //           signInData.verification_type ===
+   //           VERIFICATION_TYPES.EMAIL_VERIFICATION
+   //        ) {
+   //           const queryParams = new URLSearchParams();
+
+   //           if (signInData.params) {
+   //              for (const [key, value] of Object.entries(signInData.params)) {
+   //                 queryParams.append(key, value as string);
+   //              }
+   //           }
+
+   //           router.replace(`/verify/otp?${queryParams}`);
+   //        } else {
+   //           router.replace('/account');
+   //        }
+   //     }
+   //  }, [isSignInSuccess, signInData]);
+
+   // handler login state
    useEffect(() => {
-      if (typeof dataAsync === 'object' && dataAsync !== null) {
-         if (
-            dataAsync.verification_type ===
-            VERIFICATION_TYPES.EMAIL_VERIFICATION
-         ) {
-            const queryParams = new URLSearchParams();
+      setIsLoading(loginState.isLoading);
 
-            if (dataAsync.params) {
-               for (const [key, value] of Object.entries(dataAsync.params)) {
-                  queryParams.append(key, value as string);
-               }
-            }
-
-            router.replace(`/verify/otp?${queryParams}`);
+      if (loginState.isSuccess) {
+         if (appStateRoute.previousUnAuthenticatedPath) {
+            router.push(appStateRoute.previousUnAuthenticatedPath);
          } else {
-            router.replace('/account');
+            router.push('/home');
          }
       }
-   }, [isSuccess, dataAsync]);
 
-   useEffect(() => {
-      if (isServerErrorResponse(errorAsync)) {
-         if (errorAsync?.data?.error?.message) {
+      if (loginState.isError) {
+         if (isServerErrorResponse(loginState.error)) {
             toast({
                variant: 'destructive',
-               title: `${errorAsync.data.error.message ?? 'Server busy, please try again later'}`,
-               description: `Wrong email or password`,
-            });
-         } else {
-            toast({
-               variant: 'destructive',
-               title: `Server busy, please try again later`,
+               title: loginState.error.data.title,
+               description: loginState.error.data.error.message,
             });
          }
       }
-   }, [isError]);
-
-   useEffect(() => {
-      setIsLoading(isFetching);
-   }, [isFetching]);
+   }, [loginState]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -126,7 +117,7 @@ const SignInPage = () => {
 
                <div className="w-[480px]">
                   <LoadingOverlay
-                     isLoading={isLoading || isFetching}
+                     isLoading={isLoading || loginState.isLoading}
                      text="Signing in..."
                   >
                      <div>
@@ -145,7 +136,7 @@ const SignInPage = () => {
                               label="Email"
                               className="rounded-xl rounded-b-none"
                               type="text"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading || loginState.isLoading}
                               errorTextClassName="pb-5"
                            />
 
@@ -154,7 +145,7 @@ const SignInPage = () => {
                               name="password"
                               label="Password"
                               type="password"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading || loginState.isLoading}
                               visibleEyeIcon={false}
                               className="rounded-xl rounded-t-none"
                               fetchingFunc={onSubmit}

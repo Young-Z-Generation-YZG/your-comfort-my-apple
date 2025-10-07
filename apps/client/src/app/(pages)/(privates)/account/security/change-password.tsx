@@ -9,7 +9,7 @@ import { Label } from '@components/ui/label';
 import { Progress } from '@components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import {
    changePasswordFormType,

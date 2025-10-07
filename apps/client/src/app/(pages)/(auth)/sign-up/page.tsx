@@ -20,7 +20,7 @@ import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface'
 import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';

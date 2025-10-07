@@ -34,7 +34,7 @@ import { Calendar } from '@components/ui/calendar';
 import { format } from 'date-fns';
 import { useUpdateProfileAsyncMutation } from '~/infrastructure/services/identity.service';
 import { useForm } from 'react-hook-form';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 import { toast as sonnerToast } from 'sonner';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';

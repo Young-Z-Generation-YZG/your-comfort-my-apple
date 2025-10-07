@@ -7,7 +7,7 @@ import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useResetPasswordAsyncMutation } from '~/infrastructure/services/auth.service';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import {
    resetPasswordFormType,

@@ -13,7 +13,7 @@ import {
 } from '@components/ui/select';
 import { Separator } from '@components/ui/separator';
 import { motion } from 'framer-motion';
-import { useToast } from '~/hooks/use-toast';
+import { useToast } from '@components/hooks/use-toast';
 import { Save, Globe, Bell, Volume2, Monitor } from 'lucide-react';
 
 type PreferencesData = {
