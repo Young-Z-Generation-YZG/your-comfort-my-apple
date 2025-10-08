@@ -43,9 +43,12 @@ PS W:\projects\your-comfort-my-apple\Services\Identity> dotnet ef migrations add
 
 dotnet ef database update -p YGZ.Identity.Infrastructure -s YGZ.Identity.Api
 
-### Docker 
+### Docker
+
 docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
 
-
 ### CP Docker to local
+
 docker cp ygz.keycloak.server:/tmp/export ./DockerVolumes/KeycloakConfiguration/production
+
+dotnet ef migrations add "InitialMigration" --startup-project ./Services/Discount/YGZ.Discount.Grpc --project ./Services/Discount/YGZ.Discount.Infrastructure --output-dir Persistence/Migrations

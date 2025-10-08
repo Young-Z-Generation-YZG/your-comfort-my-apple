@@ -94,7 +94,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.ToTable("Coupons", (string)null);
                 });
 
-            modelBuilder.Entity("YGZ.Discount.Domain.Event.Entities.EventProductSKU", b =>
+            modelBuilder.Entity("YGZ.Discount.Domain.Event.Entities.EventItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -105,27 +105,32 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnOrder(7);
 
+                    b.Property<string>("ColorName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(5);
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(15);
+                        .HasColumnOrder(17);
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(19);
+                        .HasColumnOrder(21);
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(20);
+                        .HasColumnOrder(22);
 
                     b.Property<string>("DiscountType")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("DiscountType")
-                        .HasColumnOrder(10);
+                        .HasColumnOrder(12);
 
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("numeric")
-                        .HasColumnOrder(11);
+                        .HasColumnOrder(13);
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uuid")
@@ -134,63 +139,68 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(9);
+                        .HasColumnOrder(11);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
-                        .HasColumnOrder(18);
-
-                    b.Property<string>("ModelId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(20);
 
                     b.Property<string>("ModelName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(5);
+                        .HasColumnOrder(3);
+
+                    b.Property<string>("NormalizedColor")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(6);
+
+                    b.Property<string>("NormalizedModel")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(4);
+
+                    b.Property<string>("NormalizedStorage")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(9);
 
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("numeric")
-                        .HasColumnOrder(12);
+                        .HasColumnOrder(14);
 
                     b.Property<string>("ProductType")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ProductType")
-                        .HasColumnOrder(8);
-
-                    b.Property<string>("SKUId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnOrder(3);
+                        .HasColumnOrder(10);
 
                     b.Property<int>("Sold")
                         .HasColumnType("integer")
-                        .HasColumnOrder(14);
+                        .HasColumnOrder(16);
 
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
-                        .HasColumnOrder(13);
+                        .HasColumnOrder(15);
 
                     b.Property<string>("StorageName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(6);
+                        .HasColumnOrder(8);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(16);
+                        .HasColumnOrder(18);
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(17);
+                        .HasColumnOrder(19);
 
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("EventProductSKUs", (string)null);
+                    b.ToTable("EventItems", (string)null);
                 });
 
             modelBuilder.Entity("YGZ.Discount.Domain.Event.Event", b =>
@@ -252,283 +262,18 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.ToTable("Events", (string)null);
                 });
 
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionCategory", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CategorySlug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("DiscountType");
-
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("numeric");
-
-                    b.Property<Guid>("PromotionGlobalId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PromotionGlobalId");
-
-                    b.ToTable("PromotionCategories", (string)null);
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionGlobal", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("PromotionEventId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("PromotionGlobalType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("PromotionGlobalType");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PromotionEventId");
-
-                    b.ToTable("PromotionGlobals", (string)null);
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionProduct", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("DiscountType");
-
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("ProductImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProductSlug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("PromotionGlobalId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PromotionGlobalId");
-
-                    b.ToTable("PromotionProducts", (string)null);
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.PromotionEvent", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DiscountState")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("DiscountState");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PromotionEventType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("PromotionEventType");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ValidTo")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PromotionEvents", (string)null);
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionItem.PromotionItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("AvailableQuantity")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DiscountState")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("DiscountState");
-
-                    b.Property<string>("DiscountType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("DiscountType");
-
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("EndDiscountType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("EndDiscountType");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProductImage")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProductNameTag")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("ProductNameTag");
-
-                    b.Property<string>("ProductSlug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PromotionEventType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("PromotionEventType");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ValidTo")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PromotionItems", (string)null);
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.Event.Entities.EventProductSKU", b =>
+            modelBuilder.Entity("YGZ.Discount.Domain.Event.Entities.EventItem", b =>
                 {
                     b.HasOne("YGZ.Discount.Domain.Event.Event", null)
-                        .WithMany("EventProductSKUs")
+                        .WithMany("EventItems")
                         .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionCategory", b =>
-                {
-                    b.HasOne("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionGlobal", null)
-                        .WithMany()
-                        .HasForeignKey("PromotionGlobalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionGlobal", b =>
-                {
-                    b.HasOne("YGZ.Discount.Domain.PromotionEvent.PromotionEvent", "PromotionEvent")
-                        .WithMany()
-                        .HasForeignKey("PromotionEventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PromotionEvent");
-                });
-
-            modelBuilder.Entity("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionProduct", b =>
-                {
-                    b.HasOne("YGZ.Discount.Domain.PromotionEvent.Entities.PromotionGlobal", null)
-                        .WithMany()
-                        .HasForeignKey("PromotionGlobalId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("YGZ.Discount.Domain.Event.Event", b =>
                 {
-                    b.Navigation("EventProductSKUs");
+                    b.Navigation("EventItems");
                 });
 #pragma warning restore 612, 618
         }

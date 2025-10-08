@@ -1,6 +1,5 @@
 ﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Discount.Application.Events.Extensions;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Event;
 using YGZ.Discount.Domain.Event.ValueObjects;
@@ -17,7 +16,11 @@ public class CreateEventHandler : ICommandHandler<CreateEventCommand, bool>
 
     public async Task<Result<bool>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
-        var entity = request.ToEntity();
+        var entity = Event.Create(id: EventId.Create(),
+                            title: request.Title,
+                            description: request.Description,
+                            startDate: request.StartDate,
+                            endDate: request.EndDate);
 
         var result = await _repository.AddAsync(entity, cancellationToken);
 

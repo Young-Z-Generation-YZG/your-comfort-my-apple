@@ -11,8 +11,8 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
     public Event(EventId id) : base(id) { }
 
     public required string Title { get; set; }
-    public string Description { get; set; }
-    public EState State { get; set; }
+    public required string Description { get; set; }
+    public required EState State { get; set; }
     public DateTime? StartDate { get; set; } = null;
     public DateTime? EndDate { get; set; } = null;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -21,10 +21,10 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
     public bool IsDeleted { get; set; } = false;
     public DateTime? DeletedAt { get; set; } = null;
     public string? DeletedBy { get; private set; } = null;
-    private readonly List<EventProductSKU> _eventProductSKUs = new();
-    
-    // Navigation property for EventProductSKUs
-    public IReadOnlyList<EventProductSKU> EventProductSKUs => _eventProductSKUs.AsReadOnly();
+    private readonly List<EventItem> _eventItems = new();
+
+    // Navigation property for EventItems
+    public IReadOnlyList<EventItem> EventItems => _eventItems.AsReadOnly();
 
     public static Event Create(EventId id,
                                string title,
@@ -42,31 +42,30 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
         };
     }
 
-    // methods to manage EventProductSKUs
-    public void AddEventProductSKU(EventProductSKU eventProductSKU)
+    // Methods to manage EventItems
+    public void AddEventItem(EventItem eventItem)
     {
-        if (eventProductSKU.EventId != Id)
+        if (eventItem.EventId != Id)
         {
-            throw new ArgumentException("EventProductSKU must belong to this Event");
+            throw new ArgumentException("EventItem must belong to this Event");
         }
 
-        var existingSKU = _eventProductSKUs.FirstOrDefault(ep => ep.SKUId == eventProductSKU.SKUId && !ep.IsDeleted);
+        var existingItem = _eventItems.FirstOrDefault(ep =>
+            ep.NormalizedModel == eventItem.NormalizedModel &&
+            ep.NormalizedColor == eventItem.NormalizedColor &&
+            ep.NormalizedStorage == eventItem.NormalizedStorage &&
+            !ep.IsDeleted);
 
-        if (existingSKU is not null)
+        if (existingItem is not null)
         {
-            throw new ArgumentException("EventProductSKU already exists for this event");
+            throw new ArgumentException("EventItem already exists for this event");
         }
 
-        _eventProductSKUs.Add(eventProductSKU);
+        _eventItems.Add(eventItem);
     }
 
-    public void RemoveEventProductSKU(EventProductSKU eventProductSKU)
+    public void RemoveEventItem(EventItem eventItem)
     {
-        _eventProductSKUs.Remove(eventProductSKU);
-    }
-
-    public EventProductSKU? GetEventProductSKUBySKUId(string skuId)
-    {
-        return _eventProductSKUs.FirstOrDefault(ep => ep.SKUId == skuId && !ep.IsDeleted);
+        _eventItems.Remove(eventItem);
     }
 }

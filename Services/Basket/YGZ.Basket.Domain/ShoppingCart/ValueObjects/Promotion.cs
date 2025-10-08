@@ -1,41 +1,30 @@
-﻿
+﻿using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 
 public class Promotion
 {
-    public required string PromotionIdOrCode { get; set; }
+    public required string PromotionType { get; init; }
+    public PromotionCoupon? PromotionCoupon { get; init; }
+    public PromotionEvent? PromotionEvent { get; init; }
 
-    public required string PromotionEventType { get; set; }
-
-    public string PromotionTitle { get; set; } = "UNKNOWN";
-
-    public required string PromotionDiscountType { get; set; }
-
-    public required decimal? PromotionDiscountValue { get; set; } = 0;
-    public required decimal? PromotionDiscountUnitPrice { get; set; } = 0;
-    public required int? PromotionAppliedProductCount { get; set; } = 0;
-    public required decimal? PromotionFinalPrice { get; set; } = 0;
-
-    public static Promotion Create(string promotionIdOrCode,
-                                   string promotionEventType,
-                                   string? promotionTitle,
-                                   string promotionDiscountType,
-                                   decimal? promotionDiscountValue,
-                                   decimal? promotionDiscountUnitPrice,
-                                   int? promotionAppliedProductCount,
-                                   decimal? promotionFinalPrice)
+    public static Promotion Create(string promotionType,
+                                   PromotionCoupon? PromotionCoupon,
+                                   PromotionEvent? PromotionEvent)
     {
+        EPromotionType.TryFromName(SnakeCaseSerializer.Serialize(promotionType).ToUpper(), out var promtoionTypeEnum);
+
+        if (promtoionTypeEnum is null)
+        {
+            throw new ArgumentException("Invalid promotion type", promotionType);
+        }
+
         return new Promotion
         {
-            PromotionIdOrCode = promotionIdOrCode,
-            PromotionTitle = promotionTitle!,
-            PromotionEventType = promotionEventType,
-            PromotionDiscountType = promotionDiscountType,
-            PromotionDiscountValue = promotionDiscountValue,
-            PromotionDiscountUnitPrice = promotionDiscountUnitPrice,
-            PromotionAppliedProductCount = promotionAppliedProductCount,
-            PromotionFinalPrice = promotionFinalPrice
+            PromotionType = promtoionTypeEnum.Name,
+            PromotionCoupon = PromotionCoupon,
+            PromotionEvent = PromotionEvent,
         };
     }
 }

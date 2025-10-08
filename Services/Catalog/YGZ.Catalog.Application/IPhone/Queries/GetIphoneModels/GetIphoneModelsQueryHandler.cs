@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MapsterMapper;
+﻿using MapsterMapper;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -39,7 +38,7 @@ public class GetModelsQueryHandler : IQueryHandler<GetIphoneModelsQuery, Paginat
     public async Task<Result<PaginationResponse<IphoneModelWithPromotionResponse>>> Handle(GetIphoneModelsQuery request, CancellationToken cancellationToken)
     {
 
-        var promotionEvent = await HandleCheckValidPromotionEvent();
+        //var promotionEvent = await HandleCheckValidPromotionEvent();
 
         //var promotionItems = await _discountProtoServiceClient.GetPromotionItemsAsync(new GetPromotionItemsRequest());
 
@@ -72,28 +71,28 @@ public class GetModelsQueryHandler : IQueryHandler<GetIphoneModelsQuery, Paginat
         return new PaginationResponse<IphoneModelWithPromotionResponse>();
     }
 
-    private async Task<ListPromtionEventResponse> HandleCheckValidPromotionEvent()
-    {
-        var result = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest { });
+    //private async Task<ListPromtionEventResponse> HandleCheckValidPromotionEvent()
+    //{
+    //    var result = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest { });
 
-        if (result is null || !result.PromotionEvents.Any())
-        {
-            return null;
-        }
-        var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
+    //    if (result is null || !result.PromotionEvents.Any())
+    //    {
+    //        return null;
+    //    }
+    //    var dateTimeNow = Timestamp.FromDateTime(DateTime.UtcNow);
 
-        var promotionEvent = result.PromotionEvents
-            .Where(x => x.PromotionEvent.PromotionEventState == DiscountStateEnum.Active)
-            .Where(x => x.PromotionEvent.PromotionEventValidFrom <= dateTimeNow && dateTimeNow <= x.PromotionEvent.PromotionEventValidTo)
-            .FirstOrDefault();
+    //    var promotionEvent = result.PromotionEvents
+    //        .Where(x => x.PromotionEvent.PromotionEventState == DiscountStateEnum.Active)
+    //        .Where(x => x.PromotionEvent.PromotionEventValidFrom <= dateTimeNow && dateTimeNow <= x.PromotionEvent.PromotionEventValidTo)
+    //        .FirstOrDefault();
 
-        if (promotionEvent is null)
-        {
-            return null;
-        }
+    //    if (promotionEvent is null)
+    //    {
+    //        return null;
+    //    }
 
-        return promotionEvent;
-    }
+    //    return promotionEvent;
+    //}
 
     //private PaginationResponse<IphoneModelWithPromotionResponse> MapToResponse(List<IPhone16Model> allModels, List<IPhone16Detail> allProducts, List<PromotionDataResponse> allPromotionProducts)
     //{

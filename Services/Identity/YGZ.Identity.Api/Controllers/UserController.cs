@@ -42,7 +42,7 @@ public class UserController : ApiController
     public async Task<IActionResult> GetMe(CancellationToken cancellationToken)
     {
         var query = new GetMeQuery();
-            
+
         var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);

@@ -6,22 +6,51 @@ public sealed record StoreBasketCommand(List<CartItemCommand> CartItems) : IComm
 
 public sealed record CartItemCommand
 {
-    required public string ProductId { get; set; }
-    required public string ModelId { get; set; }
-    required public string ProductName { get; set; }
-    required public string ProductColorName { get; set; }
-    required public decimal ProductUnitPrice { get; set; }
-    required public string ProductNameTag { get; set; }
-    required public string ProductImage { get; set; }
-    required public string ProductSlug { get; set; }
-    required public string CategoryId { get; set; }
-    required public int Quantity { get; set; }
-    public PromotionCommand? Promotion { get; set; } = null;
-    required public int OrderIndex { get; set; } = 0;
+    public required string ModelId { get; init; }
+    public required string ProductName { get; init; }
+    public required ModelCommand Model { get; init; }
+    public required ColorCommand Color { get; init; }
+    public required StorageCommand Storage { get; init; }
+    public required string DisplayImageUrl { get; init; }
+    public required decimal UnitPrice { get; init; }
+    public PromotionCommand? Promotion { get; init; }
+    public required int Quantity { get; init; }
+    public required string ModelSlug { get; init; }
+    public required bool IsSelected { get; init; }
+}
+
+public sealed record ModelCommand
+{
+    public required string Name { get; init; }
+    public required string NormalizedName { get; init; }
+}
+
+public sealed record ColorCommand
+{
+    public required string Name { get; init; }
+    public required string NormalizedName { get; init; }
+}
+
+public sealed record StorageCommand
+{
+    public required string Name { get; init; }
+    public required string NormalizedName { get; init; }
 }
 
 public sealed record PromotionCommand
 {
-    public required string PromotionIdOrCode { get; set; }
-    public required string PromotionEventType { get; set; }
+    public required string PromotionType { get; init; }
+    public PromotionCouponCommand? PromotionCoupon { get; init; }
+    public PromotionEventCommand? PromotionEvent { get; init; }
+}
+
+public sealed record PromotionCouponCommand
+{
+    public required string CouponId { get; init; }
+}
+
+public sealed record PromotionEventCommand
+{
+    public required string EventId { get; init; }
+    public required string EventItemId { get; init; }
 }

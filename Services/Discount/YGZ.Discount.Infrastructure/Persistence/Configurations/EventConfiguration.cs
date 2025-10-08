@@ -41,8 +41,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
                )
                .HasColumnName("State");
 
-        // Configure the relationship with EventProductSKUs using the navigation property
-        builder.HasMany(e => e.EventProductSKUs)
+        // Configure the relationship with EventItems using the navigation property
+        builder.HasMany(e => e.EventItems)
                .WithOne()
                .HasForeignKey(ep => ep.EventId)
                .OnDelete(DeleteBehavior.Cascade);

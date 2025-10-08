@@ -12,8 +12,4 @@
     <ProjectReference Include="..\YGZ.Discount.Infrastructure\YGZ.Discount.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Events\Queries\" />
-  </ItemGroup>
-
 </Project>

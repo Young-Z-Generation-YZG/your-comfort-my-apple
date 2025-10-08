@@ -1,7 +1,6 @@
 ﻿
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Discount.Application.Coupons.Extensions;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
@@ -19,15 +18,16 @@ public class CreatePromotionCouponCommandHandler : ICommandHandler<CreatePromoti
 
     public async Task<Result<bool>> Handle(CreatePromotionCouponCommand request, CancellationToken cancellationToken)
     {
-        var entity = request.ToEntity();
+        throw new NotImplementedException();
+        //var entity = request.ToEntity();
 
-        var result = await _repository.AddAsync(entity, cancellationToken);
+        //var result = await _repository.AddAsync(entity, cancellationToken);
 
-        if(result.IsFailure)
-        {
-            return false;
-        }
+        //if(result.IsFailure)
+        //{
+        //    return false;
+        //}
 
-        return true;
+        //return true;
     }
 }

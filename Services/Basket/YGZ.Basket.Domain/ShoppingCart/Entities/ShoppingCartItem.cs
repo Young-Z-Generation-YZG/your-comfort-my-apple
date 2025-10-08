@@ -6,49 +6,48 @@ namespace YGZ.Basket.Domain.ShoppingCart.Entities;
 
 public class ShoppingCartItem
 {
-    required public string ProductId { get; set; }
-    required public string ModelId { get; set; }
-    required public string ProductName { get; set; }
-    required public string ProductColorName { get; set; }
-    required public decimal ProductUnitPrice { get; set; }
-    required public string ProductNameTag { get; set; }
-    required public string ProductImage { get; set; }
-    required public string ProductSlug { get; set; }
-    required public string CategoryId { get; set; }
-    public int Quantity { get; set; } = 0;
-    public Promotion? Promotion { get; set; } = null;
-    public decimal? SubTotalAmount { get; set; } = 0;
-    required public int OrderIndex { get; set; }
+    public required string ModelId { get; init; }
+    public required string ProductName { get; init; }
+    public required Model Model { get; init; }
+    public required Color Color { get; init; }
+    public required Storage Storage { get; init; }
+    public required string DisplayImageUrl { get; init; }
+    public required decimal UnitPrice { get; init; }
+    public Promotion? Promotion { get; init; }
+    public required int Quantity { get; init; }
+    public required decimal SubTotalAmount { get; init; }
+    public required string ModelSlug { get; init; }
+    public required int Order { get; init; }
 
-    public static ShoppingCartItem Create(string productId,
-                                          string modelId,
-                                          string productName,
-                                          string productColorName,
-                                          decimal productUnitPrice,
-                                          string productNameTag,
-                                          string productImage,
-                                          string productSlug,
-                                          string categoryId,
-                                          int quantity,
-                                          Promotion? promotion,
-                                          decimal? subTotalAmount,
-                                          int orderIndex)
+    public static ShoppingCartItem Create(
+        string modelId,
+        string productName,
+        Model model,
+        Color color,
+        Storage storage,
+        string displayImageUrl,
+        decimal unitPrice,
+        Promotion? promotion,
+        int quantity,
+        decimal subTotalAmount,
+        string modelSlug,
+        int order
+    )
     {
         return new ShoppingCartItem
         {
-            ProductId = productId,
             ModelId = modelId,
             ProductName = productName,
-            ProductColorName = productColorName,
-            ProductUnitPrice = productUnitPrice,
-            ProductNameTag = productNameTag,
-            ProductImage = productImage,
-            ProductSlug = productSlug,
-            CategoryId = categoryId,
-            Quantity = quantity,
+            Model = model,
+            Color = color,
+            Storage = storage,
+            DisplayImageUrl = displayImageUrl,
+            UnitPrice = unitPrice,
             Promotion = promotion,
+            Quantity = quantity,
             SubTotalAmount = subTotalAmount,
-            OrderIndex = orderIndex
+            ModelSlug = modelSlug,
+            Order = order
         };
     }
 }

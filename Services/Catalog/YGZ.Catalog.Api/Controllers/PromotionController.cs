@@ -55,10 +55,10 @@ public class PromotionController : ApiController
     //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     //}
 
-    [HttpGet("items")]
-    public async Task<IActionResult> GetPromotionItems(CancellationToken cancellationToken)
+    [HttpGet("event/event-with-items")]
+    public async Task<IActionResult> GetEventWithItems(CancellationToken cancellationToken)
     {
-        var query = new GetPromotionItemsQuery();
+        var query = new GetEventWithItemsQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 

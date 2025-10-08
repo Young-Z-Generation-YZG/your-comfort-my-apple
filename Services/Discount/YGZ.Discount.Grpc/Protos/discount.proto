@@ -7,49 +7,6 @@ import "google/protobuf/timestamp.proto";
 
 package discount;
 
-enum DiscountTypeEnum {
-	DISCOUNT_TYPE_ENUM_UNKNOWN = 0;
-	PERCENTAGE = 1;
-	FIXED = 2;
-}
-
-enum PromotionGlobalTypeEnum {
-	PROMOTION_GLOBAL_TYPE_ENUM_UNKNOWN = 0; 
-	CATEGORIES = 1;
-	PRODUCTS = 2;
-}
-
-enum PromotionEventTypeEnum {
-	PROMOTION_EVENT_TYPE_ENUM_UNKNOWN = 0; 
-	PROMOTION_COUPON = 1;
-	PROMOTION_ITEM = 2;
-	PROMOTION_EVENT = 3;
-
-}
-
-enum DiscountStateEnum {
-	DISCOUNT_STATE_ENUM_UNKNOWN = 0; 
-	ACTIVE = 1; 
-	INACTIVE = 2;
-	EXPIRED = 3;
-}
-
-enum EndDiscountEnum {
-	END_DISCOUNT_ENUM_UNKNOWN = 0;
-	BY_END_DATE = 1;
-	BY_QUANTITY = 2;
-}
-
-enum ProductNameTagEnum {
-	NAME_TAG_ENUM_UNKNOWN = 0; 
-	MACBOOK = 1;
-	IPAD = 2;
-	IPHONE = 3;
-	WATCH = 4;
-	HEADPHONE = 5;
-	ACCESSORY = 6;
-}
-
 enum EProductType {
 	PRODUCT_TYPE_UNKNOWN = 0;
 	PRODUCT_TYPE_IPHONE = 1;
@@ -60,184 +17,69 @@ enum EProductType {
 	PRODUCT_TYPE_ACCESSORY = 6;
 }
 
+enum EDiscountState {
+	DISCOUNT_STATE_UNKNOWN = 0; 
+	DISCOUNT_STATE_ACTIVE = 1; 
+	DISCOUNT_STATE_INACTIVE = 2;
+	DISCOUNT_STATE_EXPIRED = 3;
+}
+
 enum EDiscountType {
     DISCOUNT_TYPE_UNKNOWN = 0;
     DISCOUNT_TYPE_PERCENTAGE = 1;
     DISCOUNT_TYPE_FIXED = 2;
 }
 
-
 service DiscountProtoService {
-	rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
-	rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
-	rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
-	rpc GetPromotionItems (GetPromotionItemsRequest) returns (PromotionItemsRepsonse);
-	rpc GetPromotionItemById (GetPromotionItemByIdRequest) returns (PromotionItemModel);
+	// rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
+	// rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
+	// rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
+	// rpc GetPromotionItems (GetPromotionItemsRequest) returns (PromotionItemsRepsonse);
+	// rpc GetPromotionItemById (GetPromotionItemByIdRequest) returns (PromotionItemModel);
 
-	rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
-	rpc DeleteDiscountCoupon (DeleteDiscountCouponRequest) returns (BooleanResponse);
+	// rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
+	// rpc DeleteDiscountCoupon (DeleteDiscountCouponRequest) returns (BooleanResponse);
 
-	rpc CreatePromotionItem (CreatePromotionItemModelRequest) returns (BooleanResponse);
+	// rpc CreatePromotionItem (CreatePromotionItemModelRequest) returns (BooleanResponse);
 
-	rpc CreatePromotionCoupon (CreatePromotionCouponModel) returns (BooleanResponse);
-	rpc CreatePromotionEvent (CreatePromotionEventModelRequest) returns (BooleanResponse);
-	rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
-	rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
-	rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
+	// rpc CreatePromotionCoupon (CreatePromotionCouponModel) returns (BooleanResponse);
+	// rpc CreatePromotionEvent (CreatePromotionEventModelRequest) returns (BooleanResponse);
+	// rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
+	// rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
+	// rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
 
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
-    rpc AddEventProductSKUsGrpc (AddEventProductSKUsRequest) returns (BooleanResponse);
+    rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);
+    rpc GetEventWithEventItemsGrpc (GetEventWithEventItemsRequest) returns (GetEventWithEventItemsResponse);   
 }
 
-// Coupon message definition
-message PromotionCouponModel {
-	google.protobuf.StringValue promotion_coupon_id = 1;
-	google.protobuf.StringValue promotion_coupon_title = 2;
-	google.protobuf.StringValue promotion_coupon_code = 3;
-	google.protobuf.StringValue promotion_coupon_description = 4;
-	ProductNameTagEnum			promotion_coupon_product_name_tag = 5; 
-	PromotionEventTypeEnum		promotion_coupon_promotion_event_type = 6;
-	DiscountStateEnum			promotion_coupon_discount_state = 7;
-	DiscountTypeEnum			promotion_coupon_discount_type = 8;
-	google.protobuf.DoubleValue promotion_coupon_discount_value = 9;
-	google.protobuf.DoubleValue promotion_coupon_max_discount_amount = 10;
-	google.protobuf.Timestamp	promotion_coupon_valid_from = 11;
-	google.protobuf.Timestamp	promotion_coupon_valid_to = 12;
-	google.protobuf.Int32Value	promotion_coupon_available_quantity = 13;
+// models
+
+message EventModel {
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue title = 2;
+    google.protobuf.StringValue description = 3;
+    google.protobuf.Timestamp start_date = 4;
+    google.protobuf.Timestamp end_date = 5;
 }
 
-message PromotionItemModel {
-	google.protobuf.StringValue promotion_item_id = 1;
-	google.protobuf.StringValue promotion_item_product_id = 2;
-	google.protobuf.StringValue promotion_item_title = 3;
-	google.protobuf.StringValue promotion_item_description = 4;
-	ProductNameTagEnum			promotion_item_name_tag = 5;
-	PromotionEventTypeEnum		promotion_item_promotion_event_type = 6;
-	DiscountStateEnum			promotion_item_discount_state = 7;
-	DiscountTypeEnum			promotion_item_discount_type = 8;
-	EndDiscountEnum				promotion_item_end_discount_type = 9;
-	google.protobuf.DoubleValue promotion_item_discount_value = 10;
-	google.protobuf.Timestamp	promotion_item_valid_from = 11;
-	google.protobuf.Timestamp	promotion_item_valid_to = 12;
-	google.protobuf.Int32Value	promotion_item_available_quantity = 13;
-	google.protobuf.StringValue promotion_item_product_image = 14;
-	google.protobuf.StringValue promotion_item_product_slug = 15;
+message EventItemModel {
+    google.protobuf.StringValue id = 1;
+    ModelValueObject model = 2;
+    ColorValueObject color = 3;
+    StorageValueObject storage = 4;
+    google.protobuf.StringValue display_image_url = 5;
+    EProductType product_type = 6;
+    EDiscountType discount_type = 7;
+    google.protobuf.DoubleValue discount_value = 8;
+    google.protobuf.DoubleValue original_price = 9;
+    google.protobuf.Int32Value stock = 10;
+    google.protobuf.Int32Value Sold = 11;
 }
 
-message PromotionEventModel {
-	google.protobuf.StringValue promotion_event_id = 1;
-	google.protobuf.StringValue promotion_event_title = 2;
-	google.protobuf.StringValue promotion_event_description = 3;
-	PromotionEventTypeEnum		promotion_event_promotion_event_type = 4;
-	DiscountStateEnum			promotion_event_state = 5;
-	google.protobuf.Timestamp	promotion_event_valid_from = 6;
-	google.protobuf.Timestamp	promotion_event_valid_to = 7;
-}
 
-message PromotionGlobalModel {
-	google.protobuf.StringValue promotion_global_id = 1;
-	google.protobuf.StringValue promotion_global_title = 2;
-	google.protobuf.StringValue promotion_global_description = 3;
-	PromotionGlobalTypeEnum		promotion_global_type = 4;
-	google.protobuf.StringValue promotion_global_event_id = 5;
-}
 
-message PromotionCategoryModel {
-	google.protobuf.StringValue promotion_category_id = 1;
-	google.protobuf.StringValue promotion_category_name = 2;
-	google.protobuf.StringValue promotion_category_slug = 3;
-	DiscountTypeEnum			promotion_category_discount_type = 4;
-	google.protobuf.DoubleValue promotion_category_discount_value = 5;
-	google.protobuf.StringValue promotion_category_promotion_global_id = 6;
-}
-
-message PromotionProductModel {
-	google.protobuf.StringValue promotion_product_id = 1;
-	google.protobuf.StringValue promotion_product_slug = 2;
-	google.protobuf.StringValue promotion_product_image = 3;
-	DiscountTypeEnum			promotion_product_discount_type = 4;
-	google.protobuf.DoubleValue promotion_product_discount_value = 5;
-	google.protobuf.StringValue promotion_product_promotion_global_id = 6;
-}
-
-message GetDiscountRequest {
-	google.protobuf.StringValue code = 1;
-}
-
-message GetPromotionEventRequest { }
-message GetPromotionItemsRequest { }
-
-message GetPromotionItemByIdRequest {
-	google.protobuf.StringValue promotion_id = 1;
-}
-
-message CouponResponse {
-	PromotionCouponModel promotion_coupon = 1;
-}
-
-message PromotionEventResponse {
-	repeated ListPromtionEventResponse promotion_events = 1;
-}
-
-message PromotionItemsRepsonse {
-	repeated PromotionItemModel promotion_items = 1;
-}
-
-message ListPromtionEventResponse {
-		PromotionEventModel promotion_event = 1;
-		repeated PromotionProductModel promotion_products = 2;
-		repeated PromotionCategoryModel promotion_categories = 3;
-}
-
-message CreatePromotionCouponModel {
-	PromotionCouponModel promotion_coupon_model = 1;
-}
-
-message CreatePromotionItemModelRequest {
-	PromotionItemModel promotion_item_model = 1; 
-}
-
-message CreatePromotionEventModelRequest {
-	PromotionEventModel promotion_event_model = 1; 
-}
-
-message PromotionGlobalModelRequest {
-	PromotionGlobalModel promotion_global_model = 1;
-}
-
-message PromotionCategoryModelRequest {
-	repeated PromotionCategoryModel promotion_category_model = 1; 
-}
-
-message PromotionProductModelRequest {
-	repeated PromotionProductModel promotion_product_model = 1; 
-}
-
-message UpdateDiscountCouponRequest {
-	PromotionCouponModel promotion_coupon_model = 1;
-}
-
-message DeleteDiscountCouponRequest {
-	string coupon_id = 1;
-}
-
-message BooleanResponse {
-	bool is_success = 1;
-}
-
-message GetAllPromotionCouponsRequest {
-	int32 _page = 1;
-	int32 _limit = 2;
-	DiscountStateEnum _state = 3;
-}
-
-message GetAllDiscountsResponse {
-	int32 total_records = 1;
-	int32 total_pages = 2;
-	int32 page_size = 3;
-	int32 current_page = 4;
-	repeated PromotionCouponModel promotion_coupons = 5;
-}
+// requests
 
 message CreateEventRequest {
     google.protobuf.StringValue title = 1;
@@ -246,21 +88,42 @@ message CreateEventRequest {
     google.protobuf.Timestamp end_date = 4;
 }
 
-message AddEventProductSKUsRequest {
-    repeated EventProductSKUModel event_product_skus = 1;
+message AddEventItemsRequest {
+    google.protobuf.StringValue event_id = 1;
+    repeated EventItemModel event_items = 2;
 }
 
-message EventProductSKUModel {
-    google.protobuf.StringValue event_id = 1;
-    google.protobuf.StringValue sku_id = 2;
-    google.protobuf.StringValue model_id = 3;
-    google.protobuf.StringValue model_name = 4;
-    google.protobuf.StringValue storage_name = 5;
-    google.protobuf.StringValue color_hex_code = 6;
-    google.protobuf.StringValue image_url = 7;
-    EProductType product_type = 8;
-    EDiscountType discount_type = 9;
-    google.protobuf.DoubleValue discount_value = 10;
-    google.protobuf.DoubleValue original_price = 11;
-    google.protobuf.Int32Value stock = 12;
+message GetEventWithEventItemsRequest {}
+
+
+
+// value objects
+
+message ModelValueObject {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue normalized_name = 2;
+}
+
+message ColorValueObject {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue normalized_name = 2;
+    google.protobuf.StringValue hex_code = 3;
+}
+
+message StorageValueObject {
+    google.protobuf.StringValue name = 1;
+    google.protobuf.StringValue normalized_name = 2;
+}
+
+
+
+// responses
+
+message GetEventWithEventItemsResponse {
+    EventModel event = 1;
+    repeated EventItemModel event_items = 2;
+}
+
+message BooleanResponse {
+	bool is_success = 1;
 }

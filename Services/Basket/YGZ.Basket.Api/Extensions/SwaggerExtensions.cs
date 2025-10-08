@@ -3,9 +3,9 @@ using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using NSwag;
 using YGZ.Basket.Api.Contracts;
 
 namespace YGZ.Basket.Api.Extensions;
@@ -45,6 +45,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
             settings.SchemaSettings.SchemaProcessors.Add(new StoreBasketRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new StoreEventItemRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CheckoutBasketRequestExample());
 
         });

@@ -18,39 +18,40 @@ public class GetActivePromotionEventQueryHandler : IQueryHandler<GetActivePromot
 
     public async Task<Result<ActivePromotionEventResponse>> Handle(GetActivePromotionEventQuery request, CancellationToken cancellationToken)
     {
-        var events = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest());
-        var activeEvent = events.PromotionEvents.Where(pe => pe.PromotionEvent.PromotionEventState == DiscountStateEnum.Active);
+        throw new NotImplementedException();
+        //var events = await _discountProtoServiceClient.GetPromotionEventAsync(new GetPromotionEventRequest());
+        //var activeEvent = events.PromotionEvents.Where(pe => pe.PromotionEvent.PromotionEventState == DiscountStateEnum.Active);
 
-        if (events is null)
-        {
-            return null!;
-        }
+        //if (events is null)
+        //{
+        //    return null!;
+        //}
 
-        if (activeEvent.ToList().Any() && activeEvent.Count() > 1)
-        {
-            return null!;
-        }
+        //if (activeEvent.ToList().Any() && activeEvent.Count() > 1)
+        //{
+        //    return null!;
+        //}
 
-        var activePromotionEvent = activeEvent.FirstOrDefault();
+        //var activePromotionEvent = activeEvent.FirstOrDefault();
 
-        ActivePromotionEventResponse response = MapToResponse(activePromotionEvent);
+        //ActivePromotionEventResponse response = MapToResponse(activePromotionEvent);
 
-        return response;
+        //return response;
     }
 
-    private ActivePromotionEventResponse MapToResponse(ListPromtionEventResponse? activePromotionEvent)
-    {
-        return new()
-        {
-            PromotionEvent = new ActivePromotionEvent
-            {
-                PromotionEventId = activePromotionEvent!.PromotionEvent.PromotionEventId,
-                PromotionEventTitle = activePromotionEvent.PromotionEvent.PromotionEventTitle,
-                PromotionEventDescription = activePromotionEvent.PromotionEvent.PromotionEventDescription,
-                PromotionEventState = activePromotionEvent.PromotionEvent.PromotionEventState.ToString().ToUpper(),
-                PromotionEventValidFrom = activePromotionEvent.PromotionEvent.PromotionEventValidFrom.ToDateTime(),
-                PromotionEventValidTo = activePromotionEvent.PromotionEvent.PromotionEventValidTo.ToDateTime()
-            }
-        };
-    }
+    //private ActivePromotionEventResponse MapToResponse(ListPromtionEventResponse? activePromotionEvent)
+    //{
+    //    return new()
+    //    {
+    //        PromotionEvent = new ActivePromotionEvent
+    //        {
+    //            PromotionEventId = activePromotionEvent!.PromotionEvent.PromotionEventId,
+    //            PromotionEventTitle = activePromotionEvent.PromotionEvent.PromotionEventTitle,
+    //            PromotionEventDescription = activePromotionEvent.PromotionEvent.PromotionEventDescription,
+    //            PromotionEventState = activePromotionEvent.PromotionEvent.PromotionEventState.ToString().ToUpper(),
+    //            PromotionEventValidFrom = activePromotionEvent.PromotionEvent.PromotionEventValidFrom.ToDateTime(),
+    //            PromotionEventValidTo = activePromotionEvent.PromotionEvent.PromotionEventValidTo.ToDateTime()
+    //        }
+    //    };
+    //}
 }
