@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
@@ -28,5 +29,15 @@ public class Model
         }
 
         return new Model(name, normalizedName);
+    }
+
+    public ModelResponse ToResponse()
+    {
+        return new ModelResponse
+        {
+            Name = Name,
+            NormalizedName = NormalizedName,    
+            Order = 0
+        };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
@@ -27,5 +28,15 @@ public class Storage
         }
 
         return new Storage(name, normalizedName);
+    }
+
+    public StorageResponse ToResponse()
+    {
+        return new StorageResponse
+        {
+            Name = Name,
+            NormalizedName = NormalizedName,
+            Order = 0
+        };
     }
 }

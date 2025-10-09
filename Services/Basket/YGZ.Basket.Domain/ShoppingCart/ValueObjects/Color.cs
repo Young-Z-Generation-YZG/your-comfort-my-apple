@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
@@ -28,5 +29,17 @@ public class Color
         }
 
         return new Color(name, normalizedName);
+    }
+
+    public ColorResponse ToResponse()
+    {
+        return new ColorResponse
+        {
+            Name = Name,
+            NormalizedName = NormalizedName,
+            HexCode = string.Empty,
+            ShowcaseImageId = string.Empty,
+            Order = 0
+        };
     }
 }

@@ -1,5 +1,7 @@
 ﻿
 using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
+using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
@@ -7,38 +9,35 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record GetBasketResponse()
 {
-    required public string UserEmail { get; set; } = default!;
-    required public List<CartItemResponse> CartItems { get; set; } = new List<CartItemResponse>();
-    required public decimal TotalAmount { get; set; } = 0;
+    public required string UserEmail { get; init; }
+    public required List<CartItemResponse> CartItems { get; init; }
+    public required decimal TotalAmount { get; init; }
 }
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record CartItemResponse()
 {
-    required public string ProductId { get; set; }
-    required public string ModelId { get; set; }
-    required public string ProductName { get; set; }
-    required public string ProductColorName { get; set; }
-    required public decimal ProductUnitPrice { get; set; }
-    required public string ProductNameTag { get; set; }
-    required public string ProductImage { get; set; }
-    required public string ProductSlug { get; set; }
-    required public string CategoryId { get; set; }
-    required public int Quantity { get; set; }
-    required public decimal SubTotalAmount { get; set; }
-    public PromotionResponse? Promotion { get; set; } = null;
-    required public int OrderIndex { get; set; } = 0;
+    public required string ModelId { get; init; }
+    public required string ProductName { get; init; }
+    public required ColorResponse Color { get; init; }
+    public required ModelResponse Model { get; init; }
+    public required StorageResponse Storage { get; init; }
+    public required string DisplayImageUrl { get; init; }
+    public required decimal UnitPrice { get; init; }
+    public required int Quantity { get; init; }
+    public required decimal SubTotalAmount { get; init; }
+    public PromotionResponse? Promotion { get; init; }
+    public required int Index { get; init; }
 }
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
-public sealed record class PromotionResponse()
+public sealed record PromotionResponse()
 {
-    public string PromotionIdOrCode { get; set; }
-    public string PromotionEventType { get; set; }
-    public string PromotionTitle { get; set; }
-    public string PromotionDiscountType { get; set; }
-    public decimal PromotionDiscountValue { get; set; }
-    public decimal PromotionDiscountUnitPrice { get; set; }
-    public int PromotionAppliedProductCount { get; set; }
-    public decimal PromotionFinalPrice { get; set; }
+    public required string PromotionType { get; init; }
+    public required string DiscountType { get; init; }
+    public required decimal DiscountValue { get; init; }
+    public required decimal DiscountAmount { get; init; }
+    public required decimal FinalPrice { get; init; }
 }
+
+

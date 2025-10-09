@@ -72,14 +72,11 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
             ShoppingCart shoppingCart = result.Response!;
 
-            // Check if event item already exists in cart
-            var existingItem = shoppingCart.CartItems.FirstOrDefault(ci => ci.Promotion?.PromotionEvent?.EventItemId == eventItem.Id);
-
-            if (existingItem != null)
+            var eventItems = shoppingCart.CartItems.Where(ci => ci.Promotion?.PromotionEvent != null).ToList();
+            
+            foreach (var item in eventItems)
             {
-                _logger.LogInformation("Event item {EventItemId} already exists in basket, skipping add", request.EventItemId);
-
-                return true;
+                shoppingCart.CartItems.Remove(item);
             }
 
             // Create and add new cart item
