@@ -1,39 +1,45 @@
 ﻿using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
+using YGZ.Basket.Domain.Cache.Entities;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 
 public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
 {
     private readonly IBasketRepository _basketRepository;
-    private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly ILogger<StoreBasketHandler> _logger;
     private readonly IUserRequestContext _userContext;
+    private readonly ISKUPriceCache _skuPriceCache;
+    private readonly IModelSlugCache _modelSlugCache;
+    private readonly IColorImageCache _colorImageCache;
+    private readonly ILogger<StoreBasketHandler> _logger;
 
     public StoreBasketHandler(IBasketRepository basketRepository,
                               ILogger<StoreBasketHandler> logger,
                               IUserRequestContext userContext,
-                              DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+                              IColorImageCache colorImageCache,
+                              IModelSlugCache modelSlugCache,
+                              ISKUPriceCache skuPriceCache)
     {
         _basketRepository = basketRepository;
         _userContext = userContext;
-        _discountProtoServiceClient = discountProtoServiceClient;
         _logger = logger;
+        _skuPriceCache = skuPriceCache;
+        _modelSlugCache = modelSlugCache;
+        _colorImageCache = colorImageCache;
     }
 
 
     public async Task<Result<bool>> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
     {
         string userEmail = _userContext.GetUserEmail();
-        
-        List<ShoppingCartItem> cartItems = ShoppingCartItemMapping(request.CartItems);
+
+        List<ShoppingCartItem> cartItems = await ShoppingCartItemMapping(request.CartItems);
         ShoppingCart shoppingCart = ShoppingCart.Create(userEmail, cartItems);
 
         var result = await _basketRepository.StoreBasketAsync(shoppingCart, cancellationToken);
@@ -46,7 +52,7 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
         return result.Response;
     }
 
-    private List<ShoppingCartItem> ShoppingCartItemMapping(List<CartItemCommand> cartItems)
+    private async Task<List<ShoppingCartItem>> ShoppingCartItemMapping(List<CartItemCommand> cartItems)
     {
         var shoppingCartItems = new List<ShoppingCartItem>();
         var order = 1;
@@ -56,47 +62,30 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             var model = Model.Create(item.Model.Name);
             var color = Color.Create(item.Color.Name);
             var storage = Storage.Create(item.Storage.Name);
+            var skuPriceCache = PriceCache.Of(model, color, storage);
+            var colorImageCache = ColorImageCache.Of(item.ModelId, color);
+            var modelSlugCache = ModelSlugCache.Of(item.ModelId);
 
-            Promotion? promotion = null;
-            if (item.Promotion != null)
-            {
-                PromotionCoupon? promotionCoupon = null;
-                PromotionEvent? promotionEvent = null;
+            var unitPrice = await _skuPriceCache.GetPriceAsync(skuPriceCache);
+            var displayImageUrl = await _colorImageCache.GetImageUrlAsync(colorImageCache);
+            var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
-                if (item.Promotion.PromotionCoupon != null)
-                {
-                    promotionCoupon = PromotionCoupon.Create(item.Promotion.PromotionCoupon.CouponId);
-                }
 
-                if (item.Promotion.PromotionEvent != null)
-                {
-                    promotionEvent = PromotionEvent.Create(
-                        item.Promotion.PromotionEvent.EventId,
-                        item.Promotion.PromotionEvent.EventItemId
-                    );
-                }
-
-                promotion = Promotion.Create(
-                    item.Promotion.PromotionType,
-                    promotionCoupon,
-                    promotionEvent
-                );
-            }
-
-            var subTotalAmount = item.UnitPrice * item.Quantity;
+            var subTotalAmount = unitPrice ?? 0 * item.Quantity;
 
             var shoppingCartItem = ShoppingCartItem.Create(
+                isSelected: false,
                 modelId: item.ModelId,
-                productName: item.ProductName,
+                productName: $"{model.Name} {storage.Name} {color.Name}",
                 model: model,
                 color: color,
                 storage: storage,
-                displayImageUrl: item.DisplayImageUrl,
-                unitPrice: item.UnitPrice,
-                promotion: promotion,
+                displayImageUrl: displayImageUrl ?? "",
+                unitPrice: unitPrice ?? 0,
+                promotion: null,
                 quantity: item.Quantity,
                 subTotalAmount: subTotalAmount,
-                modelSlug: item.ModelSlug,
+                modelSlug: modelSlug ?? "",
                 order: order++
             );
 

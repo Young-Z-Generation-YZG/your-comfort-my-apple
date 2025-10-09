@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Extensions;
 
-public static class SeedDataExtensions
+public static class SeedDataExtension
 {
     public static async Task ApplySeedDataAsync(this WebApplication app)
     {

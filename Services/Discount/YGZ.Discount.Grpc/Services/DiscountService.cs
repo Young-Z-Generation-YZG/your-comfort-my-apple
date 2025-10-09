@@ -3,6 +3,7 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MapsterMapper;
 using MediatR;
+using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
 using YGZ.Discount.Application.Events.Commands.AddEventItem;
 using YGZ.Discount.Application.Events.Commands.CreateEvent;
 using YGZ.Discount.Application.Events.Queries.GetEventWithEventItems;
@@ -133,6 +134,50 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     }
 
     // GET METHODS
+    public override async Task<EventItemModel> GetEventItemByIdGrpc(GetEventItemByIdRequest request, ServerCallContext context)
+    {
+        var query = new GetEventItemByIdQuery(request.EventItemId);
+
+        var result = await _sender.Send(query);
+
+        if (result.IsFailure)
+        {
+            return new EventItemModel();
+        }
+
+        var ei = result.Response!;
+
+        var eventItemModel = new EventItemModel
+        {
+            Id = ei.Id?.ToString() ?? string.Empty,
+            Model = new ModelValueObject
+            {
+                Name = ei.ModelName ?? string.Empty,
+                NormalizedName = ei.NormalizedModel ?? string.Empty
+            },
+            Color = new ColorValueObject
+            {
+                Name = ei.ColorName ?? string.Empty,
+                NormalizedName = ei.NormalizedColor ?? string.Empty,
+                HexCode = ei.ColorHexCode ?? string.Empty
+            },
+            Storage = new StorageValueObject
+            {
+                Name = ei.StorageName ?? string.Empty,
+                NormalizedName = ei.NormalizedStorage ?? string.Empty
+            },
+            DisplayImageUrl = ei.ImageUrl ?? string.Empty,
+            ProductType = ConvertToProductTypeEnum(ei.ProductType),
+            DiscountType = ConvertToDiscountTypeEnum(ei.DiscountType),
+            DiscountValue = (double)ei.DiscountValue,
+            OriginalPrice = (double)ei.OriginalPrice,
+            Stock = ei.Stock,
+            Sold = ei.Sold
+        };
+
+        return eventItemModel;
+    }
+
     public override async Task<GetEventWithEventItemsResponse> GetEventWithEventItemsGrpc(GetEventWithEventItemsRequest request, ServerCallContext context)
     {
         var query = new GetEventWithEventItemsQuery();
@@ -199,6 +244,9 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return response;
     }
 
+
+
+    // privates methods
     private static EProductType ConvertToProductTypeEnum(string productType)
     {
         return productType.ToUpper() switch

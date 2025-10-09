@@ -17,6 +17,7 @@ public sealed record EventWithItemsResponse
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record EventItemResponse
 {
+    public required string Id { get; init; }
     public required string ModelId { get; init; }
     public required CategoryResponse Category { get; init; }
     public required ModelResponse Model { get; init; }

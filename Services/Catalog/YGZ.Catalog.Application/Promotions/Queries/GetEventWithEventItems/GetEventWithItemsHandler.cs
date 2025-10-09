@@ -89,7 +89,7 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
                 discountAmount: discountAmount,
                 finalPrice: finalPrice,
                 stock: eventItem.Stock ?? 0,
-                Sold: eventItem.Sold ?? 0, // eventItem.Sold ?? 0, // Will be available after proto regeneration
+                Sold: eventItem.Sold ?? 0, // Will be available after proto regeneration
                 imageUrl: eventItem.DisplayImageUrl ?? string.Empty,
                 modelSlug: iphoneModel.Slug.Value ?? string.Empty
             );
@@ -163,6 +163,7 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
     {
         return new EventItemResponse
         {
+            Id = eventItemId,
             ModelId = iphoneModel.Id.Value!,
             Category = iphoneModel.Category.ToResponse(),
             Model = modelValueObject.ToResponse(),

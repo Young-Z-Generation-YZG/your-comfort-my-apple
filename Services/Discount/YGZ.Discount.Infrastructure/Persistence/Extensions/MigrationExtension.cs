@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Extensions;
 
-public static class MigrationExtensions
+public static class MigrationExtension
 {
     public static async Task ApplyMigrationAsync(this IApplicationBuilder app)
     {

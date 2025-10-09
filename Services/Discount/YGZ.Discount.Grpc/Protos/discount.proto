@@ -48,9 +48,13 @@ service DiscountProtoService {
 	// rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
 	// rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
 
+    // POST requests
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
     rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);
+
+    // GET requests
     rpc GetEventWithEventItemsGrpc (GetEventWithEventItemsRequest) returns (GetEventWithEventItemsResponse);   
+    rpc GetEventItemByIdGrpc (GetEventItemByIdRequest) returns (EventItemModel);
 }
 
 // models
@@ -79,7 +83,7 @@ message EventItemModel {
 
 
 
-// requests
+// POST requests
 
 message CreateEventRequest {
     google.protobuf.StringValue title = 1;
@@ -93,7 +97,11 @@ message AddEventItemsRequest {
     repeated EventItemModel event_items = 2;
 }
 
+// GET requests
 message GetEventWithEventItemsRequest {}
+message GetEventItemByIdRequest {
+    google.protobuf.StringValue event_item_id = 1;
+}
 
 
 

@@ -3,71 +3,65 @@ using System.Text.Json.Serialization;
 
 namespace YGZ.Basket.Api.Contracts;
 
-#pragma warning disable CS8618
-
 public sealed record StoreBasketRequest
 {
     [Required]
     [JsonPropertyName("cart_items")]
-    public List<CartItemRequest> CartItems { get; set; }
+    public required List<CartItemRequest> CartItems { get; init; }
 }
 
 public sealed record CartItemRequest()
 {
     [Required]
-    [JsonPropertyName("product_id")]
-    required public string ProductId { get; set; }
-
-    [Required]
     [JsonPropertyName("model_id")]
-    required public string ModelId { get; set; }
+    required public string ModelId { get; init; }
 
     [Required]
-    [JsonPropertyName("product_name")]
-    public string ProductName { get; set; }
+    [JsonPropertyName("model")]
+    public required ModelRequest Model { get; init; }
 
     [Required]
-    [JsonPropertyName("product_color_name")]
-    public string ProductColorName { get; set; }
+    [JsonPropertyName("color")]
+    public required ColorRequest Color { get; init; }
 
     [Required]
-    [JsonPropertyName("product_unit_price")]
-    public decimal ProductUnitPrice { get; set; }
-
-    [Required]
-    [JsonPropertyName("product_name_tag")]
-    public string ProductNameTag { get; set; }
-
-    [Required]
-    [JsonPropertyName("product_image")]
-    public string ProductImage { get; set; }
-
-    [Required]
-    [JsonPropertyName("product_slug")]
-    public string ProductSlug { get; set; }
-
-    [Required]
-    [JsonPropertyName("category_id")]
-    public string CategoryId { get; set; }
+    [JsonPropertyName("storage")]
+    public required StorageRequest Storage { get; init; }
 
     [Required]
     [JsonPropertyName("quantity")]
-    public int Quantity { get; set; }
-
-    [JsonPropertyName("promotion")]
-    public PromotionRequest? Promotion { get; set; }
-
-    [JsonPropertyName("order_index")]
-    public int OrderIndex { get; set; }
+    public required int Quantity { get; init; }
 }
 
-public sealed record PromotionRequest()
+public sealed record ColorRequest()
 {
     [Required]
-    [JsonPropertyName("promotion_id_or_code")]
-    public required string PromotionIdOrCode { get; set; }
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
 
     [Required]
-    [JsonPropertyName("promotion_event_type")]
-    public required string PromotionEventType { get; set; }
+    [JsonPropertyName("normalized_name")]
+    public required string NormalizedName { get; init; }
+}
+
+public sealed record ModelRequest()
+{
+    [Required]
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    [Required]
+    [JsonPropertyName("normalized_name")]
+    public required string NormalizedName { get; init; }
+}
+
+public sealed record StorageRequest()
+{
+    [Required]
+    [JsonPropertyName("name")]
+    public required string Name { get; init; }
+
+    [Required]
+    [JsonPropertyName("normalized_name")]
+    public required string NormalizedName { get; init; }
 }

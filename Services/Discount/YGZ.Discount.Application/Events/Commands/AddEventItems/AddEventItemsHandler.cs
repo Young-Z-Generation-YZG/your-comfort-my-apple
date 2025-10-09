@@ -4,8 +4,8 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Event;
-using YGZ.Discount.Domain.Event.Entities;
 using ValueObjects = YGZ.Discount.Domain.Event.ValueObjects;
+using EventItemEntity = YGZ.Discount.Domain.Event.Entities.EventItem;
 
 namespace YGZ.Discount.Application.Events.Commands.AddEventItem;
 
@@ -47,7 +47,7 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
             var productType = EProductType.FromName(itemCmd.ProductType, false);
             var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
 
-            var eventItem = EventItem.Create(
+            var eventItem = EventItemEntity.Create(
                 eventId: eventId,
                 modelName: itemCmd.Model.Name,
                 normalizedModel: itemCmd.Model.NormalizedName,

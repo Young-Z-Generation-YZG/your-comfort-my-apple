@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Enums;
+﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -8,6 +9,7 @@ public class Model
     public string Name { get; init; }
     public string NormalizedName { get; init; }
 
+    [JsonConstructor]
     private Model(string name, string normalizedName)
     {
         Name = name;

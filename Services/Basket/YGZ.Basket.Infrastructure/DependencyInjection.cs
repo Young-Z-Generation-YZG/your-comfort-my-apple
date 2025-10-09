@@ -3,15 +3,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Weasel.Core;
 using YGZ.Basket.Application.Abstractions.Data;
-using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Infrastructure.Settings;
-using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.BuildingBlocks.Messaging.Extensions;
-using YGZ.Basket.Infrastructure.Persistence.Repositories;
-using YGZ.Basket.Application.Abstractions.Providers.vnpay;
-using YGZ.Basket.Infrastructure.Payments.Vnpay;
-using YGZ.Basket.Infrastructure.Payments.Momo;
 using YGZ.Basket.Application.Abstractions.Providers.Momo;
+using YGZ.Basket.Application.Abstractions.Providers.vnpay;
+using YGZ.Basket.Domain.ShoppingCart;
+using YGZ.Basket.Infrastructure.Payments.Momo;
+using YGZ.Basket.Infrastructure.Payments.Vnpay;
+using YGZ.Basket.Infrastructure.Persistence.Repositories;
+using YGZ.Basket.Infrastructure.Settings;
+using YGZ.BuildingBlocks.Messaging.Extensions;
+using YGZ.BuildingBlocks.Shared.Extensions;
 
 namespace YGZ.Basket.Infrastructure;
 
@@ -33,12 +33,20 @@ public static class DependencyInjection
 
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.Decorate<IBasketRepository, CachedBasketRepository>();
+        services.AddScoped<ISKUPriceCache, SKUPriceCacheRepository>();
+        services.AddScoped<IColorImageCache, ColorImageCacheRepository>();
+        services.AddScoped<IModelSlugCache, ModelSlugCacheRepository>();
         services.AddSingleton<IVnpayProvider, VnpayProvider>();
         services.AddSingleton<IMomoProvider, MomoProvider>();
 
+        var redisConnectionString = configuration.GetConnectionString(ConnectionStrings.RedisDb)!;
+
+        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(sp =>
+            StackExchange.Redis.ConnectionMultiplexer.Connect(redisConnectionString));
+
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = configuration.GetConnectionString(ConnectionStrings.RedisDb);
+            options.Configuration = redisConnectionString;
         });
 
         return services;

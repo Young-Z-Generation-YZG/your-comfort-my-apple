@@ -6,6 +6,7 @@ namespace YGZ.Basket.Domain.ShoppingCart.Entities;
 
 public class ShoppingCartItem
 {
+    public required bool IsSelected { get; init; }
     public required string ModelId { get; init; }
     public required string ProductName { get; init; }
     public required Model Model { get; init; }
@@ -20,6 +21,7 @@ public class ShoppingCartItem
     public required int Order { get; init; }
 
     public static ShoppingCartItem Create(
+        bool isSelected,
         string modelId,
         string productName,
         Model model,
@@ -36,6 +38,7 @@ public class ShoppingCartItem
     {
         return new ShoppingCartItem
         {
+            IsSelected = isSelected,
             ModelId = modelId,
             ProductName = productName,
             Model = model,
