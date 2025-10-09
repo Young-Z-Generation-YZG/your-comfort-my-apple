@@ -3,7 +3,6 @@ using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
-using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
@@ -49,35 +48,33 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             .Where(ci => ci.Promotion?.PromotionEvent == null)
             .ToList();
 
-        var cartItemResponses = regularItems.Select(item => new CartItemResponse
+        var cartItemResponses = regularItems.Select(item =>
         {
-            ModelId = item.ModelId,
-            ProductName = item.ProductName,
-            Color = item.Color.ToResponse(),
-            Model = item.Model.ToResponse(),
-            Storage = item.Storage.ToResponse(),
-            DisplayImageUrl = item.DisplayImageUrl,
-            UnitPrice = item.UnitPrice,
-            Quantity = item.Quantity,
-            SubTotalAmount = item.SubTotalAmount,
-            Promotion = item.Promotion != null ? new PromotionResponse
+
+            return new CartItemResponse
             {
-                PromotionType = item.Promotion.PromotionType,
-                DiscountType = item.Promotion.PromotionCoupon?.CouponId ?? string.Empty,
-                DiscountValue = 0,
-                DiscountAmount = item.UnitPrice - item.SubTotalAmount,
-                FinalPrice = item.SubTotalAmount
-            } : null,
-            Index = item.Order
+                IsSelected = item.IsSelected,
+                ModelId = item.ModelId,
+                ProductName = item.ProductName,
+                Color = item.Color.ToResponse(),
+                Model = item.Model.ToResponse(),
+                Storage = item.Storage.ToResponse(),
+                DisplayImageUrl = item.DisplayImageUrl,
+                UnitPrice = item.UnitPrice,
+                Quantity = item.Quantity,
+                SubTotalAmount = item.SubTotalAmount,
+                Promotion = null,
+                Index = item.Order
+            };
         }).ToList();
 
-        var totalAmount = regularItems.Sum(item => item.SubTotalAmount);
+        var totalAmount = regularItems.Where(item => item.IsSelected).Sum(item => item.SubTotalAmount);
 
         return new GetBasketResponse()
         {
             UserEmail = shoppingCart.UserEmail,
             CartItems = cartItemResponses,
-            TotalAmount = totalAmount
+            TotalAmount = shoppingCart.TotalAmount
         };
     }
 }

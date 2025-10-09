@@ -6,6 +6,7 @@ public sealed record StoreBasketCommand(List<CartItemCommand> CartItems) : IComm
 
 public sealed record CartItemCommand
 {
+    public required bool IsSelected { get; init; }
     public required string ModelId { get; init; }
     public required ModelCommand Model { get; init; }
     public required ColorCommand Color { get; init; }

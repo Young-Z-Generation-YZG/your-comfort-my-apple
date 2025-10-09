@@ -71,10 +71,10 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
 
-            var subTotalAmount = unitPrice ?? 0 * item.Quantity;
+            var subTotalAmount = unitPrice * item.Quantity;
 
             var shoppingCartItem = ShoppingCartItem.Create(
-                isSelected: false,
+                isSelected: item.IsSelected,
                 modelId: item.ModelId,
                 productName: $"{model.Name} {storage.Name} {color.Name}",
                 model: model,
@@ -84,7 +84,7 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
                 unitPrice: unitPrice ?? 0,
                 promotion: null,
                 quantity: item.Quantity,
-                subTotalAmount: subTotalAmount,
+                subTotalAmount: subTotalAmount ?? 0,
                 modelSlug: modelSlug ?? "",
                 order: order++
             );

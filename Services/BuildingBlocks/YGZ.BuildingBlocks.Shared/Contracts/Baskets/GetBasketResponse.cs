@@ -17,6 +17,7 @@ public sealed record GetBasketResponse()
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record CartItemResponse()
 {
+    public required bool IsSelected { get; init; }
     public required string ModelId { get; init; }
     public required string ProductName { get; init; }
     public required ColorResponse Color { get; init; }

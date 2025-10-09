@@ -8,7 +8,7 @@ public class ShoppingCart
 {
     required public string UserEmail { get; set; }
     public List<ShoppingCartItem> CartItems { get; set; } = new();
-    public decimal TotalAmount => CartItems.Sum(x => x.SubTotalAmount);
+    public decimal TotalAmount => CartItems.Where(x => x.IsSelected).Sum(x => x.SubTotalAmount);
 
     public static ShoppingCart Create(string userEmail, List<ShoppingCartItem> cartItems)
     {

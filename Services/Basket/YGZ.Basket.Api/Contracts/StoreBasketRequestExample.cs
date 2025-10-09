@@ -16,6 +16,7 @@ public class StoreBasketRequestExample : ISchemaProcessor
                 {
                     new
                     {
+                        is_selected = false,
                         model_id = "68e403d5617b27ad030bf28f",
                         model = new
                         {

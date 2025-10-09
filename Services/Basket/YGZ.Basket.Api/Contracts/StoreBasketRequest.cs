@@ -13,8 +13,12 @@ public sealed record StoreBasketRequest
 public sealed record CartItemRequest()
 {
     [Required]
+    [JsonPropertyName("is_selected")]
+    public required bool IsSelected { get; init; }
+
+    [Required]
     [JsonPropertyName("model_id")]
-    required public string ModelId { get; init; }
+    public required string ModelId { get; init; }
 
     [Required]
     [JsonPropertyName("model")]
