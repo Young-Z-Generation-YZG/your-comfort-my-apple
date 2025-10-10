@@ -208,11 +208,11 @@ const IphoneModel = ({
                                  y2="28.189"
                                  gradientUnits="userSpaceOnUse"
                               >
-                                 <stop offset=".09" stop-color="#fd9700"></stop>
-                                 <stop offset=".28" stop-color="#f40"></stop>
-                                 <stop offset=".49" stop-color="#ff2469"></stop>
-                                 <stop offset=".78" stop-color="#c65cff"></stop>
-                                 <stop offset="1" stop-color="#0092ff"></stop>
+                                 <stop offset=".09" stopColor="#fd9700"></stop>
+                                 <stop offset=".28" stopColor="#f40"></stop>
+                                 <stop offset=".49" stopColor="#ff2469"></stop>
+                                 <stop offset=".78" stopColor="#c65cff"></stop>
+                                 <stop offset="1" stopColor="#0092ff"></stop>
                               </linearGradient>
                            </defs>
                            <path fill="none" d="M0 0H35V35H0z"></path>

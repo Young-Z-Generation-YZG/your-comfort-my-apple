@@ -11,11 +11,6 @@ import { Button } from '@components/ui/button';
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';
-import { useDispatch } from 'react-redux';
-import {
-   FiltersType,
-   setShopFilter,
-} from '~/infrastructure/redux/features/shop-filter.slice';
 import { useDebounce } from '@components/hooks/use-debounce';
 import { useSearchParams } from 'next/navigation';
 
@@ -113,7 +108,6 @@ const colors = [
 
 const FilterSection = () => {
    const searchParams = useSearchParams();
-   const dispatch = useDispatch();
 
    // Initialize state from URL params
    const [priceFilter, setPriceFilter] = useState<[number, number]>(() => {
@@ -137,13 +131,6 @@ const FilterSection = () => {
       return searchParams.getAll('_storages');
    });
 
-   const [filters, setFilters] = useState<FiltersType>({
-      colors: [],
-      models: [],
-      storages: [],
-   });
-
-   const debouncedFilters = useDebounce(filters, 500);
    const debouncedPriceFilter = useDebounce(priceFilter, 500);
 
    const toggleStorage = useCallback((normalizedName: string) => {
@@ -169,48 +156,6 @@ const FilterSection = () => {
             : [...prev, normalizedName],
       );
    }, []);
-
-   // Build filters object when selections change
-   useEffect(() => {
-      setFilters({
-         colors: selectedColors
-            .map((normalizedName) =>
-               colors.find((c) => c.normalizedName === normalizedName),
-            )
-            .filter(
-               (
-                  c,
-               ): c is { name: string; normalizedName: string; hex: string } =>
-                  c !== undefined,
-            ),
-         models: selectedModels
-            .map((normalizedName) =>
-               models.find((m) => m.normalizedName === normalizedName),
-            )
-            .filter(
-               (
-                  m,
-               ): m is {
-                  name: string;
-                  normalizedName: string;
-                  value: string;
-               } => m !== undefined,
-            ),
-         storages: selectedStorages
-            .map((normalizedName) =>
-               storageFilter.find((s) => s.normalizedName === normalizedName),
-            )
-            .filter(
-               (
-                  s,
-               ): s is {
-                  name: string;
-                  normalizedName: string;
-                  value: string;
-               } => s !== undefined,
-            ),
-      });
-   }, [selectedColors, selectedModels, selectedStorages]);
 
    // Update URL params when filters change
    useEffect(() => {
@@ -242,19 +187,6 @@ const FilterSection = () => {
 
       window.history.replaceState({}, '', newUrl);
    }, [selectedColors, selectedModels, selectedStorages, debouncedPriceFilter]);
-
-   // Dispatch debounced filters to Redux
-   useEffect(() => {
-      dispatch(
-         setShopFilter({
-            ...debouncedFilters,
-            priceRange: {
-               min: debouncedPriceFilter[0],
-               max: debouncedPriceFilter[1],
-            },
-         }),
-      );
-   }, [debouncedFilters, debouncedPriceFilter, dispatch]);
 
    return (
       <div className="w-[354px] min-h-screen relative">

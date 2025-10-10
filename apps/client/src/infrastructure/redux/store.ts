@@ -25,7 +25,6 @@ import { identityApi } from '~/infrastructure/services/identity.service';
 import { orderApi } from '~/infrastructure/services/order.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
-import shopFilterReducer from './features/shop-filter.slice';
 
 const storage = createPersistStorage();
 
@@ -43,7 +42,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       orderApi.reducerPath,
       identityApi.reducerPath,
    ], // Add the blacklist option
-   whitelist: ['auth', 'cart', 'search', 'shopFilter'],
+   whitelist: ['auth', 'cart', 'search'],
 };
 
 const reducers = combineReducers({
@@ -51,7 +50,6 @@ const reducers = combineReducers({
    auth: authReducer,
    cart: cartReducer,
    search: searchReducer,
-   shopFilter: shopFilterReducer,
    [CategoryApi.reducerPath]: CategoryApi.reducer,
    [AuthApi.reducerPath]: AuthApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
 import { useShopFilters } from './_hooks/useShopFilters';
+import { useApiErrorHandler } from './_hooks/useApiErrorHandler';
 
 const IphoneShopPage = () => {
    // Use custom hook instead of Redux
@@ -43,7 +44,15 @@ const IphoneShopPage = () => {
       isSuccess: modelsDataIsSuccess,
       isLoading: modelsDataIsLoading,
       isFetching: modelsDataIsFetching,
+      isError: modelsDataIsError,
+      error: modelsDataError,
    } = useGetModelsAsyncQuery(queryString);
+
+   // Handle API errors with custom hook
+   useApiErrorHandler(modelsDataIsError, modelsDataError, {
+      title: 'Failed to Load Products',
+      description: 'Unable to fetch iPhone models. Showing cached data.',
+   });
 
    // Use API data if available, otherwise fallback to fake data
    const displayData = useMemo(() => {
