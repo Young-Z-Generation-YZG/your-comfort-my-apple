@@ -1,6 +1,6 @@
-﻿using NSwag.Generation.Processors.Contexts;
+﻿using NJsonSchema;
 using NSwag.Generation.Processors;
-using NJsonSchema;
+using NSwag.Generation.Processors.Contexts;
 using YGZ.Catalog.Api.Controllers;
 
 namespace YGZ.Catalog.Api.Contracts.IphoneRequest;
@@ -28,14 +28,14 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
             }
 
             // Set example for _code parameter  
-            var colorParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productColors");
+            var colorParam = operation.Parameters.FirstOrDefault(p => p.Name == "_colors");
             if (colorParam != null)
             {
                 colorParam.Example = new[] { "ultramarine", "pink" };
 
                 List<string> colorList = new List<string>
                {
-                   "ultramarine", "teal", "pink", "white", "black", "desert-titanium", "natural-titanium", "white-titanium", "black-titanium"
+                   "ULTRAMARINE", "TEAL", "PINK", "WHITE", "BLACK", "DESERT-TITANIUM", "NATURAL-TITANIUM", "WHITE-TITANIUM", "BLACK-TITANIUM"
                };
 
                 colorParam.Schema = new JsonSchema
@@ -49,12 +49,12 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
             }
 
             // Set example for _status parameter  
-            var storageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productStorages");
+            var storageParam = operation.Parameters.FirstOrDefault(p => p.Name == "_storages");
             if (storageParam != null)
             {
                 storageParam.Example = new[] { "128GB", "256GB" };
 
-                List<string> storageList = new List<string> { "128GB", "256GB", "512GB", "1024GB" };
+                List<string> storageList = new List<string> { "128GB", "256GB", "512GB", "1TB" };
 
                 storageParam.Schema = new JsonSchema
                 {
@@ -67,7 +67,7 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
                 }
             }
 
-            var modelParam = operation.Parameters.FirstOrDefault(p => p.Name == "_productModels");
+            var modelParam = operation.Parameters.FirstOrDefault(p => p.Name == "_models");
             if (modelParam != null)
             {
                 modelParam.Example = new[] { "iphone-16", "iphone-16e" };
@@ -84,13 +84,13 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
                 }
             }
 
-            var priceFromParam = operation.Parameters.FirstOrDefault(p => p.Name == "_priceFrom");
+            var priceFromParam = operation.Parameters.FirstOrDefault(p => p.Name == "_minPrice");
             if (priceFromParam != null)
             {
                 priceFromParam.Example = "100";
             }
 
-            var priceToParam = operation.Parameters.FirstOrDefault(p => p.Name == "_priceTo");
+            var priceToParam = operation.Parameters.FirstOrDefault(p => p.Name == "_maxPrice");
             if (priceToParam != null)
             {
                 priceToParam.Example = "1000";
@@ -99,9 +99,9 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
             var sortParam = operation.Parameters.FirstOrDefault(p => p.Name == "_priceSort");
             if (sortParam != null)
             {
-                sortParam.Example = "asc";
+                sortParam.Example = "ASC";
 
-                List<string> sortList = new List<string> { "asc", "desc" };
+                List<string> sortList = new List<string> { "ASC", "DESC" };
 
                 sortParam.Schema = new JsonSchema
                 {

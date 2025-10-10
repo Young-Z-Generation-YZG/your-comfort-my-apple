@@ -311,7 +311,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
-            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0&directConnection=true
+            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081

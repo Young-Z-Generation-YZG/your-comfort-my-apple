@@ -72,6 +72,7 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
             ModelItems = model.Models.Select(x => x.ToResponse()).ToList(),
             ColorItems = model.Colors.Select(x => x.ToResponse()).ToList(),
             StorageItems = model.Storages.Select(x => x.ToResponse()).ToList(),
+            SkuPrices = model.Prices.Select(x => x.ToResponse()).ToList(),
             Description = model.Description,
             ShowcaseImages = model.ShowcaseImages.Select(x => x.ToResponse()).ToList(),
             OverallSold = model.OverallSold,

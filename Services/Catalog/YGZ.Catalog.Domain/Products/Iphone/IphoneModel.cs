@@ -1,11 +1,12 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Categories;
-using YGZ.Catalog.Domain.Common.ValueObjects;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone;
 
@@ -34,6 +35,9 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
 
     [BsonElement("storages")]
     public List<Storage> Storages { get; set; } = [];
+
+    [BsonElement("prices")]
+    public List<SKUPrice> Prices { get; set; } = [];
 
     [BsonElement("showcase_image")]
     public List<Image> ShowcaseImages { get; set; } = [];
@@ -89,6 +93,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      List<Model> models,
                                      List<Color> colors,
                                      List<Storage> storages,
+                                     List<SKUPrice> prices,
                                      List<Image> showcaseImages,
                                      string description,
                                      AverageRating averageRating,
@@ -99,10 +104,11 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         {
             Category = category,
             Name = name,
-            NormalizedModel = NormalizeString.Normalize(name),
+            NormalizedModel = SnakeCaseSerializer.Serialize(name).ToUpper(),
             Models = models,
             Colors = colors,
             Storages = storages,
+            Prices = prices,
             ShowcaseImages = showcaseImages,
             Description = description,
             AverageRating = averageRating,
@@ -111,6 +117,14 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         };
 
         return newModel;
+    }
+
+    public decimal? GetPrice(Model model, Color color, Storage storage)
+    {
+        return Prices.FirstOrDefault(p =>
+            p.NormalizedModel == model.NormalizedName &&
+            p.NormalizedColor == color.NormalizedName &&
+            p.NormalizedStorage == storage.NormalizedName)?.UnitPrice;
     }
 
     public void AddNewRating(Review review)

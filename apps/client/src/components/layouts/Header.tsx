@@ -113,7 +113,7 @@ const Header = () => {
                   data-category_id={category}
                   onMouseEnter={() => handleMouseEnter(category.category_name)}
                   onClick={() => {
-                     router.push(`/shop`);
+                     router.push(`/shop/iphone`);
                   }}
                >
                   <p className="antialiased opacity-[0.8] tracking-wide">
@@ -141,7 +141,7 @@ const Header = () => {
                   handleMouseEnter(category.category_name);
                }}
                onClick={() => {
-                  router.push(`/shop`);
+                  router.push(`/shop/iphone`);
                }}
             >
                <p className="antialiased opacity-[0.8] tracking-wide">

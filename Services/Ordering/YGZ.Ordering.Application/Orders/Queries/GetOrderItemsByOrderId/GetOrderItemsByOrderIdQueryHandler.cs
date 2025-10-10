@@ -1,13 +1,9 @@
 ﻿
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
-using YGZ.Ordering.Domain.Core.Errors;
-using YGZ.Ordering.Domain.Orders.ValueObjects;
-using static YGZ.Ordering.Domain.Core.Constants.AuthorizationConstants;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 
@@ -24,90 +20,93 @@ public class GetOrderItemsByOrderIdQueryHandler : IQueryHandler<GetOrderItemsByO
 
     public async Task<Result<OrderDetailsResponse>> Handle(GetOrderItemsByOrderIdQuery request, CancellationToken cancellationToken)
     {
-        OrderId orderId = OrderId.Of(request.OrderId);
+        throw new NotImplementedException();
 
-        var roles = _userContext.GetUserRoles();
+        //OrderId orderId = OrderId.Of(request.OrderId);
 
-        if (roles.Contains(ROLES.ADMIN))
-        {
-            var adminOrder = await _orderRepository.GetOrderByIdWithInclude(orderId, x => x.OrderItems, cancellationToken);
+        //var roles = _userContext.GetUserRoles();
 
-            if (adminOrder is null)
-            {
-                return Errors.Order.DoesNotExist;
-            }
+        //if (roles.Contains(ROLES.ADMIN))
+        //{
+        //    var adminOrder = await _orderRepository.GetOrderByIdWithInclude(orderId, x => x.OrderItems, cancellationToken);
 
-            return MapToResponse(adminOrder, adminOrder.ShippingAddress.ContactEmail);
-        }
+        //    if (adminOrder is null)
+        //    {
+        //        return Errors.Order.DoesNotExist;
+        //    }
 
-        var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
+        //    return MapToResponse(adminOrder, adminOrder.ShippingAddress.ContactEmail);
+        //}
 
-        var userEmail = _userContext.GetUserEmail();
+        //var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
 
-        var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
+        //var userEmail = _userContext.GetUserEmail();
 
-        var userOrder = orders.FirstOrDefault(x => x.Id == orderId);
+        //var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
 
-        if (userOrder is null)
-        {
-            return Errors.Order.DoesNotExist;
-        }
+        //var userOrder = orders.FirstOrDefault(x => x.Id == orderId);
 
-        return MapToResponse(userOrder, userEmail);
+        //if (userOrder is null)
+        //{
+        //    return Errors.Order.DoesNotExist;
+        //}
+
+
+        //return MapToResponse(userOrder, userEmail);
     }
 
-    private OrderDetailsResponse MapToResponse(Order order, string userEmail)
-    {
-        var res = new OrderDetailsResponse()
-        {
-            OrderId = order.Id.Value.ToString(),
-            OrderCode = order.Code.Value,
-            OrderCustomerEmail = userEmail,
-            OrderStatus = order.Status.Name,
-            OrderPaymentMethod = order.PaymentMethod.Name,
-            OrderShippingAddress = new ShippingAddressResponse()
-            {
-                ContactName = order.ShippingAddress.ContactName,
-                ContactEmail = order.ShippingAddress.ContactEmail,
-                ContactPhoneNumber = order.ShippingAddress.ContactPhoneNumber,
-                ContactAddressLine = order.ShippingAddress.AddressLine,
-                ContactDistrict = order.ShippingAddress.District,
-                ContactProvince = order.ShippingAddress.Province,
-                ContactCountry = order.ShippingAddress.Country,
-            },
-            OrderItems = order.OrderItems.Select(x => new OrderItemRepsonse()
-            {
-                OrderId = order.Id.Value.ToString(),
-                OrderItemId = x.Id.Value.ToString(),
-                ProductId = x.ProductId,
-                ModelId = x.ModelId,
-                ProductName = x.ProductName,
-                ProductImage = x.ProductImage,
-                ProductColorName = x.ProductColorName,
-                ProductUnitPrice = x.ProductUnitPrice,
-                Quantity = x.Quantity,
-                SubTotalAmount = x.ProductUnitPrice * x.Quantity,
-                IsReviewed = x.IsReviewed,
-                Promotion = x.Promotion is not null ? new PromotionResponse()
-                {
-                    PromotionIdOrCode = x.Promotion.PromotionIdOrCode,
-                    PromotionTitle = x.Promotion.PromotionTitle,
-                    PromotionEventType = x.Promotion.PromotionEventType,
-                    PromotionDiscountType = x.Promotion.PromotionDiscountType,
-                    PromotionDiscountValue = x.Promotion.PromotionDiscountValue,
-                    PromotionDiscountUnitPrice = x.Promotion.PromotionDiscountUnitPrice,
-                    PromotionAppliedProductCount = x.Promotion.PromotionAppliedProductCount,
-                    PromotionFinalPrice = x.Promotion.PromotionFinalPrice,
-                } : null
-            }).ToList(),
-            OrderSubTotalAmount = order.SubTotalAmount,
-            OrderDiscountAmount = order.DiscountAmount,
-            OrderTotalAmount = order.TotalAmount,
-            OrderCreatedAt = order.CreatedAt,
-            OrderUpdatedAt = order.UpdatedAt,
-            OrderLastModifiedBy = null
-        };
+    //private OrderDetailsResponse MapToResponse(Order order, string userEmail)
+    //{
+    //    var res = new OrderDetailsResponse()
+    //    {
+    //        OrderId = order.Id.Value.ToString(),
+    //        OrderCode = order.Code.Value,
+    //        OrderCustomerEmail = userEmail,
+    //        OrderStatus = order.Status.Name,
+    //        OrderPaymentMethod = order.PaymentMethod.Name,
+    //        OrderShippingAddress = new ShippingAddressResponse()
+    //        {
+    //            ContactName = order.ShippingAddress.ContactName,
+    //            ContactEmail = order.ShippingAddress.ContactEmail,
+    //            ContactPhoneNumber = order.ShippingAddress.ContactPhoneNumber,
+    //            ContactAddressLine = order.ShippingAddress.AddressLine,
+    //            ContactDistrict = order.ShippingAddress.District,
+    //            ContactProvince = order.ShippingAddress.Province,
+    //            ContactCountry = order.ShippingAddress.Country,
+    //        },
+    //        OrderItems = order.OrderItems.Select(x => new OrderItemRepsonse()
+    //        {
+    //            OrderId = order.Id.Value.ToString(),
+    //            OrderItemId = x.Id.Value.ToString(),
+    //            ProductId = x.ProductId,
+    //            ModelId = x.ModelId,
+    //            ProductName = x.ProductName,
+    //            ProductImage = x.ProductImage,
+    //            ProductColorName = x.ProductColorName,
+    //            ProductUnitPrice = x.ProductUnitPrice,
+    //            Quantity = x.Quantity,
+    //            SubTotalAmount = x.ProductUnitPrice * x.Quantity,
+    //            IsReviewed = x.IsReviewed,
+    //            Promotion = x.Promotion is not null ? new PromotionResponse()
+    //            {
+    //                PromotionIdOrCode = x.Promotion.PromotionIdOrCode,
+    //                PromotionTitle = x.Promotion.PromotionTitle,
+    //                PromotionEventType = x.Promotion.PromotionEventType,
+    //                PromotionDiscountType = x.Promotion.PromotionDiscountType,
+    //                PromotionDiscountValue = x.Promotion.PromotionDiscountValue,
+    //                PromotionDiscountUnitPrice = x.Promotion.PromotionDiscountUnitPrice,
+    //                PromotionAppliedProductCount = x.Promotion.PromotionAppliedProductCount,
+    //                PromotionFinalPrice = x.Promotion.PromotionFinalPrice,
+    //            } : null
+    //        }).ToList(),
+    //        OrderSubTotalAmount = order.SubTotalAmount,
+    //        OrderDiscountAmount = order.DiscountAmount,
+    //        OrderTotalAmount = order.TotalAmount,
+    //        OrderCreatedAt = order.CreatedAt,
+    //        OrderUpdatedAt = order.UpdatedAt,
+    //        OrderLastModifiedBy = null
+    //    };
 
-        return res;
-    }
+    //    return res;
+    //}
 }

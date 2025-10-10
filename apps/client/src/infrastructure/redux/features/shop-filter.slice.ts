@@ -13,6 +13,10 @@ export type FiltersType = {
       name: string;
       value: string;
    }[];
+   priceRange?: {
+      min: number;
+      max: number;
+   };
 };
 
 const initialState = {
@@ -21,6 +25,10 @@ const initialState = {
          colors: [],
          models: [],
          storages: [],
+         priceRange: {
+            min: 0,
+            max: 2000,
+         },
       } as FiltersType,
    },
 };

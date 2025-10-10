@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useDebounce } from '@components/hooks/use-debouce';
+import { useDebounce } from '@components/hooks/use-debounce';
 import { CldImage } from 'next-cloudinary';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '~/infrastructure/redux/store';

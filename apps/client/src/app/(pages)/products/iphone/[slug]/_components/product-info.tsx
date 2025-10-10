@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import ServiceCard from './service-card';
 import { appleServices } from '../_constants/services-data';
-import { iphoneDetailsFakeData } from '../_data/iphone-details';
+import { iphoneDetailsFakeData } from '../_data/fake-data';
 import { ApplePickupIcon, DeliveryTruckIcon } from '@components/icon';
 
 interface ProductInfoProps {

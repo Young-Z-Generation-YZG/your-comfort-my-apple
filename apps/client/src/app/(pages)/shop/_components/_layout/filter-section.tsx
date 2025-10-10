@@ -16,7 +16,7 @@ import {
    FiltersType,
    setAppFilters,
 } from '~/infrastructure/redux/features/app.slice';
-import { useDebounce } from '@components/hooks/use-debouce';
+import { useDebounce } from '@components/hooks/use-debounce';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useSearchParams } from 'next/navigation';
 
@@ -102,9 +102,9 @@ const FilterSection = () => {
    const [selectedStorages, setSelectedStorages] = useState<string[]>([]);
 
    const searchParams = useSearchParams();
-   const _productColors = searchParams.getAll('_productColors');
-   const _productModels = searchParams.getAll('_productModels');
-   const _productStorages = searchParams.getAll('_productStorages');
+   const _colors = searchParams.getAll('_colors');
+   const _models = searchParams.getAll('_models');
+   const _storages = searchParams.getAll('_storages');
 
    const [filters, setFilters] = useState<FiltersType>({
       colors: [],
@@ -159,10 +159,10 @@ const FilterSection = () => {
    }, [selectedColors, selectedModels, selectedStorages]);
 
    useEffect(() => {
-      setSelectedColors(_productColors);
-      setSelectedModels(_productModels);
-      setSelectedStorages(_productStorages);
-   }, [_productColors.length, _productModels.length, _productStorages.length]);
+      setSelectedColors(_colors);
+      setSelectedModels(_models);
+      setSelectedStorages(_storages);
+   }, [_colors.length, _models.length, _storages.length]);
 
    useEffect(() => {
       dispatch(setAppFilters(debouceFilter));

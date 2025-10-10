@@ -6,6 +6,7 @@ using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
 namespace YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
 
@@ -44,12 +45,87 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
             RatingStar.Create(5, 0),
         };
 
+        List<SKUPrice> prices = new List<SKUPrice>();
+        List<Model> modelsInPrices = new()
+            {
+                Model.Create("IPHONE_15", 0),
+                Model.Create("IPHONE_15_PLUS", 0)
+            };
+
+        List<Color> colorsInPrices = new()
+            {
+                Color.Create("BLUE", "#000000", "#000000", 0),
+                Color.Create("PINK", "#000000", "#000000", 0),
+                Color.Create("YELLOW", "#000000", "#000000", 0),
+                Color.Create("GREEN", "#000000", "#000000", 0),
+                Color.Create("BLACK", "#000000", "#000000", 0),
+            };
+
+        List<Storage> storagesInPrices = new()
+            {
+                Storage.Create("128GB", 128, 0),
+                Storage.Create("256GB", 256, 0),
+                Storage.Create("512GB", 512, 0),
+                Storage.Create("1TB", 1024, 0),
+            };
+        // init
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+
         var newModel = IphoneModel.Create(iPhoneModelId: ModelId.Create(),
                                           category: category,
                                           name: request.Name,
                                           models: models,
                                           colors: colors,
                                           storages: storages,
+                                          prices: prices,
                                           showcaseImages: showcaseImages,
                                           description: request.Description,
                                           averageRating: initAverageRating,

@@ -8,6 +8,7 @@ using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Application.Iphone.Queries.GetIphoneModelBySlug;
 using YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
+using YGZ.Catalog.Application.IPhone.Queries.GetIphoneModels;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -38,35 +39,15 @@ public class IphoneController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    //[HttpGet("promotions")]
-    //public async Task<IActionResult> GetIPhone16WithPromotion([FromQuery] GetIPhonePromotionRequest request, CancellationToken cancellationToken)
-    //{
-    //    var query = _mapper.Map<GetIPhonePromotionsQuery>(request);
+    [HttpGet("models")]
+    public async Task<IActionResult> GetModels([FromQuery] GetIphoneModelsRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetIphoneModelsQuery>(request);
 
-    //    var result = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-    //[HttpGet("models")]
-    //public async Task<IActionResult> GetModelsWithPromotion([FromQuery] GetIphoneModelsRequest request, CancellationToken cancellationToken)
-    //{
-    //    var query = _mapper.Map<GetIphoneModelsQuery>(request);
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-    //[HttpGet("{modelSlug}/models")]
-    //public async Task<IActionResult> GetModelBySlug([FromRoute] string modelSlug, CancellationToken cancellationToken)
-    //{
-    //    var query = new GetModelsBySlugQuery(modelSlug);
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 
     [HttpPost("iphone/models")]
     public async Task<IActionResult> CreateIphoneModel([FromBody] CreateIphoneModelRequest request, CancellationToken cancellationToken)
@@ -77,14 +58,4 @@ public class IphoneController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-
-    //[HttpGet("models/{modelSlug}/products")]
-    //public async Task<IActionResult> GetProductModelBySlug([FromRoute] string modelSlug, CancellationToken cancellationToken)
-    //{
-    //    var query = new GetIPhonesByModelSlugQuery(modelSlug);
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
 }

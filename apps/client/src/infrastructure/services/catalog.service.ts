@@ -11,6 +11,7 @@ import {
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
+import { IIphoneModel } from '~/domain/interfaces/catalogs/iphone/iPhone-model.interface';
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
@@ -40,10 +41,7 @@ export const catalogApi = createApi({
             return response as PaginationResponse<IIphonePromotionResponse>;
          },
       }),
-      getModelsAsync: builder.query<
-         PaginationResponse<IIphoneModelResponse>,
-         String
-      >({
+      getModelsAsync: builder.query<PaginationResponse<IIphoneModel>, string>({
          query: (params = '') => `/api/v1/products/iphone/models?${params}`,
          providesTags: ['Catalogs'],
       }),

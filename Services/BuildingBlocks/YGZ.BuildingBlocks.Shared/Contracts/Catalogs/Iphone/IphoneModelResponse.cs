@@ -6,7 +6,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
-public sealed record IphoneModelDetailsResponse
+public sealed record IphoneModelResponse
 {
     public required string Id { get; init; }
     public required CategoryResponse Category { get; init; }
@@ -20,5 +20,5 @@ public sealed record IphoneModelDetailsResponse
     public required int OverallSold { get; init; }
     required public List<RatingStarResponse> RatingStars { get; init; }
     public required AverageRatingResponse AverageRating { get; init; }
-    public required List<BranchWithSkusResponse> Branchs { get; init; }
+    public required string Slug { get; init; }
 }

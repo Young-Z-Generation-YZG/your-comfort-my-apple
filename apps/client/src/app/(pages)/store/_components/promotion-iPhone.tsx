@@ -3,7 +3,7 @@ import CardWrapper from './card-wrapper';
 import NextImage from 'next/image';
 import { Button } from '@components/ui/button';
 import { Badge } from '@components/ui/badge';
-import { listPromotionIphoneFakeData } from '../_data/list-promotion-iphone';
+import { listPromotionIphoneFakeData } from '../_data/fake-data';
 
 interface PromotionIPhoneProps {
    className?: string;
