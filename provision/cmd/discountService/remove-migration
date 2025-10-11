@@ -1,4 +1,0 @@
-#! /bin/bash
-dotnet ef migrations remove \
---startup-project ../../../Services/Discount/YGZ.Discount.Grpc \
---project ../../../Services/Discount/YGZ.Discount.Infrastructure

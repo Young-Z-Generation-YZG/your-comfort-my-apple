@@ -1,6 +1,0 @@
-@YGZ.Gateways.Yarp_HostAddress = http://localhost:5140
-
-GET {{YGZ.Gateways.Yarp_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

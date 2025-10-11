@@ -1,4 +1,0 @@
-#! /bin/bash
-dotnet ef database update \
---startup-project ../../Services/Ordering/YGZ.Ordering.Api \
---project ../../Services/Ordering/YGZ.Ordering.Infrastructure
