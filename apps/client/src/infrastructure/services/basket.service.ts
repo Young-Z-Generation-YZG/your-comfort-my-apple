@@ -1,16 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import {
-   IBasketItemPayload,
-   ICheckoutResponse,
-   IGetBasketQueries,
-   IGetBasketResponse,
-   IStoreBasketPayload,
-} from '~/domain/interfaces/baskets/basket.interface';
+
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '~/infrastructure/redux/store';
-import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
+import {
+   IBasket,
+   ICheckoutResponse,
+   IGetBasketQueries,
+   IStoreBasketPayload,
+} from '~/domain/interfaces/baskets/basket.interface';
 
 export const basketApi = createApi({
    reducerPath: 'basket-api',
@@ -49,7 +48,7 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      getBasketAsync: builder.query<IGetBasketResponse, IGetBasketQueries>({
+      getBasketAsync: builder.query<IBasket, IGetBasketQueries>({
          query: (queries: IGetBasketQueries) =>
             createQueryEncodedUrl('/api/v1/baskets', queries),
          providesTags: ['Baskets'],

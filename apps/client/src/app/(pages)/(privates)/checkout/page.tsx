@@ -3,7 +3,7 @@
 import '/globals.css';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import images from '@components/client/images';
 import { Button } from '@components/ui/button';
@@ -24,20 +24,13 @@ import { PaymentMethodSelector } from '@components/client/forms/payment-method-s
 import { motion } from 'framer-motion';
 import { ShippingAddressSelector } from '@components/client/forms/shipping-address-selector';
 import { FiEdit3 } from 'react-icons/fi';
-import {
-   useCheckoutBasketAsyncMutation,
-   useGetBasketAsyncQuery,
-} from '~/infrastructure/services/basket.service';
+import { useCheckoutBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
-import CartItem from './_components/cart-item';
 import { useSearchParams } from 'next/navigation';
-import { useGetAddressesAsyncQuery } from '~/infrastructure/services/identity.service';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import { useDispatch } from 'react-redux';
-import { deleteCart } from '~/infrastructure/redux/features/cart.slice';
+import { useCart } from '../cart/_hooks/useCart';
 
 const shippingAddresses = [
    {
@@ -54,18 +47,22 @@ const shippingAddresses = [
 
 const CheckoutPage = () => {
    const searchParams = useSearchParams();
-   const [isLoading, setIsLoading] = useState(false);
+   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
    const [editable, setEditable] = useState(false);
-   const [addressesList, setAddressesList] = useState<IAddressResponse[]>([]);
+   const [addressesList] = useState<IAddressResponse[]>([]);
    const [selectedAddress, setSelectedAddress] =
       useState<IAddressResponse | null>(null);
-   const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
-   const [totalDiscount, setTotalDiscount] = useState(0);
-   const [subtotal, setSubtotal] = useState(0);
-
-   const dispatch = useDispatch();
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
+
+   // Use the cart hook
+   const {
+      basketData,
+      cartCalculations,
+      isLoading: isBasketLoading,
+   } = useCart({
+      couponCode: appliedCouponFromQuery || '',
+   });
 
    const form = useForm<CheckoutFormType>({
       resolver: CheckoutResolver,
@@ -86,159 +83,107 @@ const CheckoutPage = () => {
       },
    });
 
-   const {
-      data: addressesDataAsync,
-      isLoading: isLoadingAddresses,
-      isFetching: isFetchingAddresses,
-      isSuccess: isSuccessAddresses,
-      error: errorAddresses,
-      refetch: refetchAddresses,
-   } = useGetAddressesAsyncQuery();
+   //  const {
+   //     data: addressesDataAsync,
+   //     isLoading: isLoadingAddresses,
+   //     isFetching: isFetchingAddresses,
+   //     isSuccess: isSuccessAddresses,
+   //     error: errorAddresses,
+   //     refetch: refetchAddresses,
+   //  } = useGetAddressesAsyncQuery();
 
-   const {
-      data: basketData,
-      isLoading: isBasketLoading,
-      isError: isErrorBasket,
-      error: errorBasket,
-      refetch: refetchBasket,
-   } = useGetBasketAsyncQuery({
-      _couponCode: appliedCouponFromQuery,
-   });
-
-   const [
-      checkoutBasket,
-      {
-         data: dataCheckoutBasket,
-         isSuccess: isSuccessCheckoutBasket,
-         isLoading: isLoadingCheckoutBasket,
-         isError: isErrorCheckoutBasket,
-         error: errorCheckoutBasket,
-      },
-   ] = useCheckoutBasketAsyncMutation();
+   const [checkoutBasket, { isLoading: isLoadingCheckoutBasket }] =
+      useCheckoutBasketAsyncMutation();
 
    const handleSubmit = async (data: CheckoutFormType) => {
       console.log('data', data);
 
-      setIsLoading(true);
+      setIsCheckoutLoading(true);
 
       await checkoutBasket(data).unwrap();
    };
 
-   useEffect(() => {
-      if (isSuccessCheckoutBasket && dataCheckoutBasket) {
-         setTimeout(() => {
-            setIsLoading(false);
-         }, 1000);
+   //  useEffect(() => {
+   //     if (isSuccessCheckoutBasket && dataCheckoutBasket) {
+   //        setTimeout(() => {
+   //           setIsLoading(false);
+   //        }, 1000);
 
-         dispatch(deleteCart());
+   //        dispatch(deleteCart());
 
-         if (
-            typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
-            dataCheckoutBasket.payment_redirect_url
-         ) {
-            window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
-         } else if (
-            typeof dataCheckoutBasket.order_details_redirect_url === 'string' &&
-            dataCheckoutBasket.order_details_redirect_url
-         ) {
-            window.location.href =
-               dataCheckoutBasket.order_details_redirect_url; // Redirect to the order details page
-         }
-      }
-   }, [isSuccessCheckoutBasket]);
+   //        if (
+   //           typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
+   //           dataCheckoutBasket.payment_redirect_url
+   //        ) {
+   //           window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
+   //        } else if (
+   //           typeof dataCheckoutBasket.order_details_redirect_url === 'string' &&
+   //           dataCheckoutBasket.order_details_redirect_url
+   //        ) {
+   //           window.location.href =
+   //              dataCheckoutBasket.order_details_redirect_url; // Redirect to the order details page
+   //        }
+   //     }
+   //  }, [isSuccessCheckoutBasket]);
 
-   useEffect(() => {
-      if (isSuccessAddresses) {
-         setAddressesList(addressesDataAsync);
+   //  useEffect(() => {
+   //     if (isSuccessAddresses) {
+   //        setAddressesList(addressesDataAsync);
 
-         console.log('addressesDataAsync', addressesDataAsync);
+   //        console.log('addressesDataAsync', addressesDataAsync);
 
-         var defaultValue = addressesDataAsync.find((addr) => addr.is_default);
+   //        var defaultValue = addressesDataAsync.find((addr) => addr.is_default);
 
-         if (defaultValue) {
-            setSelectedAddress(defaultValue);
+   //        if (defaultValue) {
+   //           setSelectedAddress(defaultValue);
 
-            form.setValue(
-               'shipping_address.contact_name',
-               defaultValue.contact_name,
-            );
-            form.setValue(
-               'shipping_address.contact_phone_number',
-               defaultValue.contact_phone_number,
-            );
-            form.setValue(
-               'shipping_address.address_line',
-               defaultValue.address_line,
-            );
-            form.setValue('shipping_address.district', defaultValue.district);
-            form.setValue('shipping_address.province', defaultValue.province);
-            form.setValue('shipping_address.country', defaultValue.country);
-         } else {
-            if (addressesList.length > 0) {
-               setSelectedAddress(addressesList[0]);
+   //           form.setValue(
+   //              'shipping_address.contact_name',
+   //              defaultValue.contact_name,
+   //           );
+   //           form.setValue(
+   //              'shipping_address.contact_phone_number',
+   //              defaultValue.contact_phone_number,
+   //           );
+   //           form.setValue(
+   //              'shipping_address.address_line',
+   //              defaultValue.address_line,
+   //           );
+   //           form.setValue('shipping_address.district', defaultValue.district);
+   //           form.setValue('shipping_address.province', defaultValue.province);
+   //           form.setValue('shipping_address.country', defaultValue.country);
+   //        } else {
+   //           if (addressesList.length > 0) {
+   //              setSelectedAddress(addressesList[0]);
 
-               form.setValue(
-                  'shipping_address.contact_name',
-                  addressesList[0].contact_name,
-               );
-               form.setValue(
-                  'shipping_address.contact_phone_number',
-                  addressesList[0].contact_phone_number,
-               );
-               form.setValue(
-                  'shipping_address.address_line',
-                  addressesList[0].address_line,
-               );
-               form.setValue(
-                  'shipping_address.district',
-                  addressesList[0].district,
-               );
-               form.setValue(
-                  'shipping_address.province',
-                  addressesList[0].province,
-               );
-               form.setValue(
-                  'shipping_address.country',
-                  addressesList[0].country,
-               );
-            }
-         }
-      }
-   }, [addressesDataAsync]);
-
-   useEffect(() => {
-      if (basketData) {
-         setCartItems(basketData.cart_items);
-
-         if (basketData.cart_items.length > 0) {
-            const subtotal = basketData.cart_items.reduce(
-               (acc, item) => acc + item.product_unit_price * item.quantity,
-               0,
-            );
-
-            let dcTotal = 0;
-
-            basketData.cart_items.forEach((item) => {
-               if (item.promotion) {
-                  dcTotal +=
-                     (item.product_unit_price -
-                        item.promotion.promotion_discount_unit_price) *
-                     item.quantity;
-               }
-            });
-
-            setSubtotal(subtotal);
-            setTotalDiscount(dcTotal);
-
-            form.setValue('sub_total_amount', Number(subtotal.toFixed(2)));
-            form.setValue('discount_amount', Number(dcTotal.toFixed(2)));
-            form.setValue(
-               'total_amount',
-               Number((subtotal - dcTotal).toFixed(2)),
-            );
-         }
-      }
-   }, [basketData]);
+   //              form.setValue(
+   //                 'shipping_address.contact_name',
+   //                 addressesList[0].contact_name,
+   //              );
+   //              form.setValue(
+   //                 'shipping_address.contact_phone_number',
+   //                 addressesList[0].contact_phone_number,
+   //              );
+   //              form.setValue(
+   //                 'shipping_address.address_line',
+   //                 addressesList[0].address_line,
+   //              );
+   //              form.setValue(
+   //                 'shipping_address.district',
+   //                 addressesList[0].district,
+   //              );
+   //              form.setValue(
+   //                 'shipping_address.province',
+   //                 addressesList[0].province,
+   //              );
+   //              form.setValue(
+   //                 'shipping_address.country',
+   //                 addressesList[0].country,
+   //              );
+   //           }
+   //        }
+   //     }
+   //  }, [addressesDataAsync]);
 
    return (
       <div
@@ -248,7 +193,7 @@ const CheckoutPage = () => {
          )}
       >
          <LoadingOverlay
-            isLoading={isLoadingCheckoutBasket || isLoading}
+            isLoading={isLoadingCheckoutBasket || isCheckoutLoading}
             fullScreen
          />
          <div className="max-w-[1156px] w-full grid grid-cols-12 mt-10">
@@ -324,7 +269,7 @@ const CheckoutPage = () => {
                                  label="Contact Name"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -336,7 +281,7 @@ const CheckoutPage = () => {
                                  label="Phone Number"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -377,7 +322,7 @@ const CheckoutPage = () => {
                                  label="Address Line"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -389,7 +334,7 @@ const CheckoutPage = () => {
                                  label="District"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -401,7 +346,7 @@ const CheckoutPage = () => {
                                  label="Province/City"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -413,7 +358,7 @@ const CheckoutPage = () => {
                                  label="Country"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isLoading}
+                                 disabled={!editable || isCheckoutLoading}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -450,14 +395,14 @@ const CheckoutPage = () => {
                         Order Summary
                      </div>
                      <div className="text-[16px] font-light tracking-[0.2px] font-SFProText">
-                        You have {cartItems.length} items in your cart
+                        You have {0} items in your cart
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
-                        {cartItems.map((item) => {
+                        {/* {cartItems.map((item) => {
                            return (
                               <CartItem key={item.product_id} item={item} />
                            );
-                        })}
+                        })} */}
                      </div>
                   </div>
                   <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
@@ -468,7 +413,7 @@ const CheckoutPage = () => {
                         <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                            <div className="font-light">Subtotal</div>
                            <div className="font-semibold">
-                              ${subtotal.toFixed(2)}
+                              ${(0.12).toFixed(2)}
                            </div>
                         </div>
                         <Accordion type="multiple" className="w-full h-full ">
@@ -485,7 +430,7 @@ const CheckoutPage = () => {
                                        Other Discount
                                     </div>
                                     <div className="font-semibold">
-                                       - ${totalDiscount.toFixed(2)}
+                                       - ${(0.12).toFixed(2)}
                                     </div>
                                  </div>
                               </AccordionContent>

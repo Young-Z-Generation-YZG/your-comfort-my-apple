@@ -1,17 +1,8 @@
-/* eslint-disable react/react-in-jsx-scope */
 'use client';
 import '/globals.css';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-
-import {
-   Carousel,
-   CarouselContent,
-   CarouselNext,
-   CarouselPrevious,
-} from '@components/ui/carousel';
 
 import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
@@ -23,233 +14,20 @@ import {
    AccordionTrigger,
    AccordionContent,
 } from '@components/ui/accordion';
-import { useAppSelector } from '~/infrastructure/redux/store';
-import CartItem from './_components/cart-item';
-import {
-   useDeleteBasketAsyncMutation,
-   useGetBasketAsyncQuery,
-   useStoreBasketAsyncMutation,
-} from '~/infrastructure/services/basket.service';
-import {
-   IBasketItemPayload,
-   ICartItemResponse,
-} from '~/domain/interfaces/baskets/basket.interface';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useDispatch } from 'react-redux';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { addRangeItems } from '~/infrastructure/redux/features/cart.slice';
-import { toast as sonnerToast } from 'sonner';
-import { setLogout } from '~/infrastructure/redux/features/auth.slice';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
+import { useCart } from './_hooks/useCart';
+import { shoppingCartData } from './_data/fake-data';
+import CartItem from './_components/cart-item';
+import { useApiErrorHandler } from '../../shop/iphone/_hooks/useApiErrorHandler';
+import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
+import { useRouter } from 'next/navigation';
 
 const CartPage = () => {
-   const searchParams = useSearchParams();
-   const router = useRouter();
-   const dispatch = useDispatch();
-   const [isLoading, setIsLoading] = useState(true);
-   const [coupon, setCoupon] = useState<string | null>(null);
-   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null); // Coupon applied to query
-   const [cartItems, setCartItems] = useState<ICartItemResponse[]>([]);
-
-   const [totalDiscount, setTotalDiscount] = useState(0);
-   const [subtotal, setSubtotal] = useState(0);
-
-   const cartSlice = useAppSelector((state) => state.cart.value);
-   const auth = useAppSelector((state) => state.auth.value);
-
-   const appliedCouponFromQuery = searchParams.get('_couponCode');
-
-   const hasFetchedBasket = useRef(false);
-
-   console.log('cartSlice', cartSlice);
-
-   const {
-      data: basketData,
-      isLoading: isLoadingBasket,
-      isSuccess: isSuccessGetBasket,
-      isError: isErrorGetBasket,
-      error: errorGetBasket,
-   } = useGetBasketAsyncQuery({
-      _couponCode: appliedCoupon || undefined,
+   const { isLoading, basketData, cartCalculations, isFallbackMode } = useCart({
+      fallbackData: shoppingCartData,
    });
 
-   const [storeBasket, { isLoading: isLoadingStoreBasket }] =
-      useStoreBasketAsyncMutation();
-
-   const [deleteBasket, { isLoading: isLoadingDeleteBasket }] =
-      useDeleteBasketAsyncMutation();
-
-   const handleDeleteBasket = async () => {
-      await deleteBasket({}).unwrap();
-   };
-
-   const handleApplyCoupon = async () => {
-      if (!coupon) return;
-      setAppliedCoupon(coupon);
-
-      window.location.replace(
-         `/cart?${new URLSearchParams({ _couponCode: coupon }).toString()}`,
-      );
-   };
-
-   const handleStoreBasket = async (items: IBasketItemPayload[]) => {
-      await storeBasket({
-         cart_items: items,
-      }).unwrap();
-   };
-
-   useEffect(() => {
-      if (appliedCouponFromQuery) {
-         setAppliedCoupon(appliedCouponFromQuery);
-         setCoupon(appliedCouponFromQuery); // Sync input field with query param
-      }
-   }, []);
-
-   useEffect(() => {
-      const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
-         (item) => {
-            return {
-               ...item,
-               sub_total_amount: 0,
-               order_index: item.order,
-               promotion: item.promotion
-                  ? {
-                       ...item.promotion,
-                       promotion_applied_product_count: 0, // Provide a default or calculated value
-                    }
-                  : null,
-            };
-         },
-      );
-
-      console.log('cartItemsFromRedux::', cartItemsFromRedux);
-
-      setCartItems(cartItemsFromRedux);
-   }, [cartSlice]);
-
-   // Calculate subtotal and total discount
-   useEffect(() => {
-      let dcTotal = 0;
-      let subtotal = 0;
-
-      cartItems.forEach((item) => {
-         if (item.promotion) {
-            dcTotal +=
-               item.product_unit_price * item.quantity -
-               item.promotion.promotion_discount_unit_price * item.quantity;
-         }
-      });
-
-      subtotal = cartItems.reduce(
-         (acc, item) => acc + item.product_unit_price * item.quantity,
-         0,
-      );
-
-      console.log('dcTotal::', dcTotal);
-      console.log('subtotal::', subtotal);
-
-      setTotalDiscount(dcTotal);
-      setSubtotal(subtotal);
-
-      if (auth.isAuthenticated) {
-         if (cartItems.length > 0) {
-            handleStoreBasket(cartSlice.items);
-         }
-
-         if (cartSlice.items.length === 0) {
-            handleDeleteBasket();
-         }
-      }
-   }, [cartItems, cartSlice]);
-
-   // Set loading state based on basket operations
-   useEffect(() => {
-      setIsLoading(
-         isLoadingBasket || isLoadingStoreBasket || isLoadingDeleteBasket,
-      );
-   }, [isLoadingBasket, isLoadingStoreBasket, isLoadingDeleteBasket]);
-
-   // Set init cart async
-   useEffect(() => {
-      if (auth.isAuthenticated) {
-         if (cartSlice.items.length === 0) {
-            setCartItems([]);
-            return;
-         }
-
-         if (isSuccessGetBasket && basketData) {
-            const cartItemToRedux: IBasketItemPayload[] =
-               basketData.cart_items.map((item) => {
-                  return {
-                     ...item,
-                     order: item.order_index ?? 0,
-                  };
-               });
-
-            if (!appliedCoupon) {
-               dispatch(addRangeItems(cartItemToRedux));
-            } else {
-               const cartItemToRedux: ICartItemResponse[] =
-                  basketData.cart_items.map((item) => {
-                     return {
-                        ...item,
-                        sub_total_amount: 0,
-                        order_index: item.order_index ?? 0,
-                        promotion: item.promotion
-                           ? {
-                                ...item.promotion,
-                                promotion_applied_product_count: 0, // Provide a default or calculated value
-                             }
-                           : null,
-                     };
-                  });
-
-               setCartItems(cartItemToRedux);
-            }
-         } else {
-            const cartItemsFromRedux: ICartItemResponse[] = cartSlice.items.map(
-               (item) => {
-                  return {
-                     ...item,
-                     sub_total_amount: 0,
-                     order_index: item.order ?? 0,
-                     promotion: item.promotion
-                        ? {
-                             ...item.promotion,
-                             promotion_applied_product_count: 0, // Provide a default or calculated value
-                          }
-                        : null,
-                  };
-               },
-            );
-            setCartItems(cartItemsFromRedux);
-         }
-      }
-   }, [isSuccessGetBasket]);
-
-   useEffect(() => {
-      if (isErrorGetBasket && appliedCoupon) {
-         setAppliedCoupon(null);
-         setCoupon(null);
-         router.push('/cart'); // Redirect to cart without coupon
-
-         if (isServerErrorResponse(errorGetBasket)) {
-            if (errorGetBasket.data.status === 401) {
-               sonnerToast.error(
-                  'Failed to apply coupon. Please sign-in or coupon expired.',
-                  {
-                     style: {
-                        backgroundColor: '#f44336', // Custom red background color
-                        color: '#FFFFFF', // White text color
-                     },
-                  },
-               );
-
-               dispatch(setLogout());
-            }
-         }
-      }
-   }, [appliedCoupon, isErrorGetBasket]);
+   const router = useRouter();
 
    return (
       <div
@@ -268,14 +46,16 @@ const CartPage = () => {
             <div className="col-span-8 ">
                <div className="w-full h-full pr-[64px] flex flex-col justify-start">
                   <div className="text-[16px] font-light tracking-[0.2px]">
-                     You have {cartItems.length} items in your cart
+                     You have {0} items in your cart
                   </div>
                   <LoadingOverlay isLoading={isLoading}>
-                     {cartItems.length > 0
-                        ? cartItems.map((item, index) => {
-                             return <CartItem item={item} key={index} />;
-                          })
-                        : null}
+                     {basketData?.cart_items.map(
+                        (item: ICartItem, index: number) => (
+                           <div key={index}>
+                              <CartItem item={item} />
+                           </div>
+                        ),
+                     )}
                   </LoadingOverlay>
                </div>
             </div>
@@ -289,31 +69,23 @@ const CartPage = () => {
                         className="w-[200px] h-fit p-0 border-[#999999] border-t-0 border-l-0 border-r-0 border-b-1 rounded-none 
                         focus-visible:ring-0 focus-visible:ring-offset-0 text-[18px] font-light tracking-[0.2px]"
                         placeholder="Enter promo code"
-                        value={coupon ?? ''}
-                        onChange={(e) => setCoupon(e.target.value)}
-                        disabled={
-                           isLoading ||
-                           !auth.accessToken ||
-                           cartItems.length === 0
-                        }
+                        value={''}
+                        onChange={() => {}}
+                        disabled={isLoading}
                      />
                      <Button
                         className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
-                        onClick={handleApplyCoupon}
-                        disabled={
-                           isLoading ||
-                           !auth.accessToken ||
-                           cartItems.length === 0
-                        }
+                        onClick={() => {}}
+                        disabled={isLoading}
                      >
                         Apply
                      </Button>
                   </div>
-                  {!auth.accessToken && (
+                  {
                      <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
                         Sign in to apply promo code
                      </p>
-                  )}
+                  }
                </div>
                <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
                   <div className="w-full pb-3 text-[22px] text-black font-bold tracking-[0.8px]">
@@ -323,7 +95,7 @@ const CartPage = () => {
                      <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                         <div className="font-light">Subtotal</div>
                         <div className="font-semibold">
-                           ${subtotal.toFixed(2)}
+                           ${(100.2).toFixed(2)}
                         </div>
                      </div>
                      <Accordion type="multiple" className="w-full h-full ">
@@ -337,7 +109,7 @@ const CartPage = () => {
                                     Other Discount
                                  </div>
                                  <div className="font-semibold">
-                                    - ${totalDiscount.toFixed(2)}
+                                    - ${(1.2).toFixed(2)}
                                  </div>
                               </div>
                            </AccordionContent>
@@ -348,20 +120,12 @@ const CartPage = () => {
                <div className="total w-full flex flex-col justify-start items-start pt-6">
                   <div className="w-full flex flex-row justify-between items-center text-[24px] font-semibold tracking-[0.2px]">
                      <div className="">Total</div>
-                     <div className="">
-                        ${(subtotal - totalDiscount).toFixed(2)}
-                     </div>
+                     <div className="">${(100.2 - 1.2).toFixed(2)}</div>
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                     disabled={cartItems.length === 0 || isLoading}
-                     onClick={() => {
-                        const searchParams = new URLSearchParams({
-                           _couponCode: coupon || '',
-                        }).toString();
-
-                        router.push(`/checkout?${coupon ? searchParams : ''}`);
-                     }}
+                     disabled={isLoading}
+                     onClick={() => router.push('/checkout')}
                   >
                      Checkout
                   </Button>
@@ -409,7 +173,7 @@ const CartPage = () => {
                   You may also like
                </div>
             </div>
-            <div className="w-full h-fit">
+            {/* <div className="w-full h-fit">
                <Carousel
                   opts={{
                      align: 'start',
@@ -417,7 +181,7 @@ const CartPage = () => {
                   className="w-full max-w-[1066px] mx-auto"
                >
                   <CarouselContent>
-                     {/* {Array.from({ length: 5 }).map((_, index) => (
+                     {Array.from({ length: 5 }).map((_, index) => (
                         <CarouselItem
                            key={index}
                            className="md:basis-1/2 lg:basis-1/3"
@@ -471,12 +235,12 @@ const CartPage = () => {
                               </Button>
                            </div>
                         </CarouselItem>
-                     ))} */}
+                     ))}
                   </CarouselContent>
                   <CarouselPrevious />
                   <CarouselNext />
                </Carousel>
-            </div>
+            </div> */}
          </div>
       </div>
    );

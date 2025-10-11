@@ -3,6 +3,8 @@ import {
    IPromotionPayload,
 } from './promotion.interface';
 
+import { IColor, IModel, IStorage } from '../common/value-objects.interface';
+
 export interface IBasketItemPayload {
    product_id: string;
    model_id: string;
@@ -51,4 +53,25 @@ export interface ICartItemResponse {
 export interface ICheckoutResponse {
    payment_redirect_url: string | null;
    order_details_redirect_url: string | null;
+}
+
+export interface IBasket {
+   user_email: string;
+   cart_items: ICartItem[];
+   total_amount: number;
+}
+
+export interface ICartItem {
+   is_selected: boolean;
+   model_id: string;
+   product_name: string;
+   color: IColor;
+   model: IModel;
+   storage: IStorage;
+   display_image_url: string;
+   unit_price: number;
+   quantity: number;
+   sub_total_amount: number;
+   promotion: null;
+   index: number;
 }
