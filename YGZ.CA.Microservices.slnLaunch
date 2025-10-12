@@ -7,10 +7,6 @@
         "Action": "Start"
       },
       {
-        "Path": "Services\\Catalog\\YGZ.Catalog.Api\\YGZ.Catalog.Api.csproj",
-        "Action": "Start"
-      },
-      {
         "Path": "Services\\Discount\\YGZ.Discount.Grpc\\YGZ.Discount.Grpc.csproj",
         "Action": "Start"
       },

@@ -35,6 +35,7 @@ public sealed record CartItemResponse()
 public sealed record PromotionResponse()
 {
     public required string PromotionType { get; init; }
+    public required decimal ProductUnitPrice { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
     public required decimal DiscountAmount { get; init; }

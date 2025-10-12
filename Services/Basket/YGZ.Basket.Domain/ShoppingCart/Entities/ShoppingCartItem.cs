@@ -1,6 +1,7 @@
 ﻿
 
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
 namespace YGZ.Basket.Domain.ShoppingCart.Entities;
 
@@ -51,6 +52,25 @@ public class ShoppingCartItem
             SubTotalAmount = subTotalAmount,
             ModelSlug = modelSlug,
             Order = order
+        };
+    }
+
+    public CartItemResponse ToResponse()
+    {
+        return new CartItemResponse
+        {
+            IsSelected = IsSelected,
+            ModelId = ModelId,
+            ProductName = ProductName,
+            Color = Color.ToResponse(),
+            Model = Model.ToResponse(),
+            Storage = Storage.ToResponse(),
+            DisplayImageUrl = DisplayImageUrl,
+            UnitPrice = UnitPrice,
+            Quantity = Quantity,
+            SubTotalAmount = SubTotalAmount,
+            Promotion = Promotion?.ToResponse(),
+            Index = Order
         };
     }
 }

@@ -31,23 +31,6 @@ enum EDiscountType {
 }
 
 service DiscountProtoService {
-	// rpc GetDiscountByCode (GetDiscountRequest) returns (CouponResponse);
-	// rpc GetAllPromotionCoupons (GetAllPromotionCouponsRequest) returns (GetAllDiscountsResponse);
-	// rpc GetPromotionEvent (GetPromotionEventRequest) returns (PromotionEventResponse);
-	// rpc GetPromotionItems (GetPromotionItemsRequest) returns (PromotionItemsRepsonse);
-	// rpc GetPromotionItemById (GetPromotionItemByIdRequest) returns (PromotionItemModel);
-
-	// rpc UpdateDiscountCoupon (UpdateDiscountCouponRequest) returns (BooleanResponse);
-	// rpc DeleteDiscountCoupon (DeleteDiscountCouponRequest) returns (BooleanResponse);
-
-	// rpc CreatePromotionItem (CreatePromotionItemModelRequest) returns (BooleanResponse);
-
-	// rpc CreatePromotionCoupon (CreatePromotionCouponModel) returns (BooleanResponse);
-	// rpc CreatePromotionEvent (CreatePromotionEventModelRequest) returns (BooleanResponse);
-	// rpc CreatePromotionGlobal (PromotionGlobalModelRequest) returns (BooleanResponse);
-	// rpc CreatePromotionCategory (PromotionCategoryModelRequest) returns (BooleanResponse);
-	// rpc CreatePromotionProduct (PromotionProductModelRequest) returns (BooleanResponse);
-
     // POST requests
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
     rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);

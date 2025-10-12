@@ -9,6 +9,7 @@ using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreEventItem;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
+using YGZ.Basket.Application.ShoppingCarts.Queries.GetCheckoutBasket;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
@@ -80,6 +81,15 @@ public class BasketController : ApiController
     public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("checkout-items")]
+    [Authorize(Policy = Policies.RoleStaff)]
+    public async Task<IActionResult> GetCheckoutBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _sender.Send(new GetCheckoutBasketQuery(request._couponCode), cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

@@ -8,6 +8,7 @@ using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.StoreEventItem;
@@ -73,7 +74,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
             ShoppingCart shoppingCart = result.Response!;
 
             var eventItems = shoppingCart.CartItems.Where(ci => ci.Promotion?.PromotionEvent != null).ToList();
-            
+
             foreach (var item in eventItems)
             {
                 shoppingCart.CartItems.Remove(item);
@@ -117,7 +118,13 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         var originalPrice = (decimal)(unitPrice ?? 0);
         var discountValue = (decimal)(eventItem.DiscountValue ?? 0);
 
-        PromotionEvent promotionEvent = PromotionEvent.Create(eventId: "", eventItemId: eventItem.Id);
+        BuildingBlocks.Shared.Enums.EDiscountType discountTypeEnum = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
+
+        PromotionEvent promotionEvent = PromotionEvent.Create(eventId: "",
+                                                              eventItemId: eventItem.Id,
+                                                              productUnitPrice: originalPrice,
+                                                              discountType: discountTypeEnum,
+                                                              discountValue: discountValue);
 
         Promotion promotion = Promotion.Create(
             promotionType: EPromotionType.EVENT.Name,
@@ -126,7 +133,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         );
 
         decimal finalPrice;
-        if (eventItem.DiscountType == EDiscountType.DiscountTypePercentage)
+        if (eventItem.DiscountType == Discount.Grpc.Protos.EDiscountType.DiscountTypePercentage)
         {
             finalPrice = originalPrice * (1 - discountValue);
         }

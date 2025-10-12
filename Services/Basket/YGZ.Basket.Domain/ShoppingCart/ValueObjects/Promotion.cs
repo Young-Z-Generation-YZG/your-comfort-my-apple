@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
 namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -13,18 +14,35 @@ public class Promotion
                                    PromotionCoupon? PromotionCoupon,
                                    PromotionEvent? PromotionEvent)
     {
-        EPromotionType.TryFromName(SnakeCaseSerializer.Serialize(promotionType).ToUpper(), out var promtoionTypeEnum);
+        EPromotionType.TryFromName(SnakeCaseSerializer.Serialize(promotionType).ToUpper(), out var promotionTypeEnum);
 
-        if (promtoionTypeEnum is null)
+        if (promotionTypeEnum is null)
         {
             throw new ArgumentException("Invalid promotion type", promotionType);
         }
 
         return new Promotion
         {
-            PromotionType = promtoionTypeEnum.Name,
+            PromotionType = promotionTypeEnum.Name,
             PromotionCoupon = PromotionCoupon,
             PromotionEvent = PromotionEvent,
         };
+    }
+
+    public PromotionResponse? ToResponse()
+    {
+        if(PromotionCoupon is not null && PromotionEvent is not null) {
+            throw new Exception("Promotion cannot be both coupon and event");
+        }
+
+        if(PromotionCoupon is not null) {
+            return PromotionCoupon.ToResponse();
+        }
+
+        if(PromotionEvent is not null) {
+            return PromotionEvent.ToResponse();
+        }
+
+        return null;
     }
 }
