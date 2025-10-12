@@ -1,0 +1,17 @@
+{
+  "name": "@kltn-monorepo/utils",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    "./cn": {
+      "require": "./dist/cn.js",
+      "types": "./dist/cn.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@kltn-monorepo/typescript-config": "workspace:*"
+  }
+}

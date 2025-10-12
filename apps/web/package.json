@@ -16,6 +16,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@kltn-monorepo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",

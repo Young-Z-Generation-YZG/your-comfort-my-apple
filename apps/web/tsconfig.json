@@ -1,11 +1,22 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@kltn-monorepo/typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "skipLibCheck": true,
+    "strict": false,
+    "incremental": true,
+    "esModuleInterop": true,
+    "isolatedModules": true
   },
   "include": [
     "**/*.ts",
