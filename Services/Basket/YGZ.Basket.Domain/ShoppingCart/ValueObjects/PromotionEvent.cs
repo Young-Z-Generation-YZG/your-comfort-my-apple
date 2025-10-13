@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+﻿using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -51,6 +52,19 @@ public class PromotionEvent
         {
             PromotionType = EPromotionType.EVENT.Name,
             ProductUnitPrice = ProductUnitPrice,
+            DiscountType = DiscountType,
+            DiscountValue = DiscountValue,
+            DiscountAmount = DiscountAmount,
+            FinalPrice = FinalPrice,
+        };
+    }
+
+    public PromotionIntegrationEvent? ToPromotionIntegrationEvent()
+    {
+        return new PromotionIntegrationEvent
+        {
+            PromotionIdOrCode = EventId,
+            PromotionType = EPromotionType.EVENT.Name,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
             DiscountAmount = DiscountAmount,

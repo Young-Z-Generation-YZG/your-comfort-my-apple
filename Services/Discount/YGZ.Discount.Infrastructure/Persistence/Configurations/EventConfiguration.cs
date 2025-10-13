@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YGZ.Discount.Domain.Core.Enums;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Event;
-using YGZ.Discount.Domain.Event.Entities;
 using YGZ.Discount.Domain.Event.ValueObjects;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Configurations;
@@ -37,7 +36,7 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(x => x.State) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
-                   x => EState.FromName(x, false)
+                   x => EEventState.FromName(x, false)
                )
                .HasColumnName("State");
 

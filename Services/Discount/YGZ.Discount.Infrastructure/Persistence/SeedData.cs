@@ -1,9 +1,4 @@
-﻿
-
-using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.Discount.Domain.Core.Enums;
-using YGZ.Discount.Domain.Coupons;
-using YGZ.Discount.Domain.Coupons.ValueObjects;
+﻿using YGZ.Discount.Domain.Coupons;
 
 namespace YGZ.Discount.Infrastructure.Persistence;
 
@@ -83,20 +78,20 @@ public static class SeedData
 
     public static IEnumerable<Coupon> Coupons => new List<Coupon>()
     {
-        Coupon.Create(
-                couponId: CouponId.Of("f55f322f-6406-4dfa-b2ea-2777f7813e70"),
-                code: Code.Of("APRIL2025"),
-                title: "April 2025",
-                description: "Discount for April 2025",
-                nameTag: ProductNameTag.IPHONE,
-                promotionEventType: Domain.Core.Enums.PromotionEventType.PROMOTION_COUPON,
-                discountState: DiscountState.ACTIVE,
-                discountType: DiscountType.PERCENTAGE,
-                discountValue: (decimal)0.05,
-                maxDiscountAmount: null,
-                validFrom: new DateTime(2025, 4, 1).ToUniversalTime(),
-                validTo: new DateTime(2025, 4, 30).ToUniversalTime(),
-                availableQuantity: 100
-            )
+        //Coupon.Create(
+        //        couponId: CouponId.Of("f55f322f-6406-4dfa-b2ea-2777f7813e70"),
+        //        code: Code.Of("APRIL2025"),
+        //        title: "April 2025",
+        //        description: "Discount for April 2025",
+        //        nameTag: ProductNameTag.IPHONE,
+        //        promotionEventType: Domain.Core.Enums.PromotionEventType.PROMOTION_COUPON,
+        //        discountState: DiscountState.ACTIVE,
+        //        discountType: DiscountType.PERCENTAGE,
+        //        discountValue: (decimal)0.05,
+        //        maxDiscountAmount: null,
+        //        validFrom: new DateTime(2025, 4, 1).ToUniversalTime(),
+        //        validTo: new DateTime(2025, 4, 30).ToUniversalTime(),
+        //        availableQuantity: 100
+        //    )
     };
 }

@@ -11,11 +11,11 @@ public sealed record EventItemResponse
     public required string ColorHexCode { get; init; }
     public required string StorageName { get; init; }
     public required string NormalizedStorage { get; init; }
-    public required string ProductType { get; init; }
+    public required string CategogyType { get; init; }
     public required string ImageUrl { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
     public required decimal OriginalPrice { get; init; }
     public required int Stock { get; init; }
-    public int Sold { get; init; }
+    public required int Sold { get; init; }
 }

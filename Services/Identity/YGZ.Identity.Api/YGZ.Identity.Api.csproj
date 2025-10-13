@@ -28,4 +28,8 @@
     <ProjectReference Include="..\YGZ.Identity.Infrastructure\YGZ.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>

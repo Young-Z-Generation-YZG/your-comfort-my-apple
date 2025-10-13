@@ -15,34 +15,31 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
     public string District { get; set; } = default!;
     public string Province { get; set; } = default!;
     public string Country { get; set; } = default!;
-    public decimal DiscountAmount { get; set; } = 0;
-    public decimal SubTotalAmount { get; set; } = 0;
-    public decimal TotalAmount { get; set; } = 0;
-    public List<OrderItemIntegrationEvent> OrderItems { get; set; } = new();
+    public List<CheckoutItemIntegrationEvent> OrderItems { get; set; } = new();
 }
 
-public record OrderItemIntegrationEvent()
+public record CheckoutItemIntegrationEvent
 {
-    public required string ProductId { get; set; }
-    public required string ModelId { get; set; }
-    public required string ProductName { get; set; }
-    public required string ProductColorName { get; set; }
-    public required decimal ProductUnitPrice { get; set; }
-    public required string ProductNameTag { get; set; }
-    public required string ProductImage { get; set; }
-    public required string ProductSlug { get; set; }
-    public required int Quantity { get; set; }
-    public PromotionIntergrationEvent? Promotion { get; set; }
+    public required string ModelId { get; init; }
+    public required string ProductName { get; init; }
+    public required string NormalizedModel { get; init; }
+    public required string NormalizedColor { get; init; }
+    public required string NormalizedStorage { get; init; }
+    public required decimal UnitPrice { get; init; }
+    public required string DisplayImageUrl { get; init; }
+    public required string ModelSlug { get; init; }
+    public required int Quantity { get; init; }
+    public required decimal SubTotalAmount { get; init; }
+    public PromotionIntegrationEvent? Promotion { get; init; }
 }
 
-public record PromotionIntergrationEvent()
+public record PromotionIntegrationEvent
 {
-    public required string PromotionIdOrCode { get; set; }
-    public required string PromotionEventType { get; set; }
-    public required string PromotionTitle { get; set; }
-    public required string PromotionDiscountType { get; set; }
-    public required decimal PromotionDiscountValue { get; set; }
-    public required decimal PromotionDiscountUnitPrice { get; set; }
-    public required int PromotionAppliedProductCount { get; set; }
-    public required decimal PromotionFinalPrice { get; set; }
+    public required string PromotionIdOrCode { get; init; }
+    public required string PromotionType { get; init; }
+    public required string DiscountType { get; init; }
+    public required decimal DiscountValue { get; init; }
+    public required decimal DiscountAmount { get; init; }
+    public required decimal FinalPrice { get; init; }
+
 }

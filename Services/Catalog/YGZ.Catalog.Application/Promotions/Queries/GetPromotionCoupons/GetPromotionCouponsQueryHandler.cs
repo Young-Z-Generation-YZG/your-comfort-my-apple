@@ -8,7 +8,7 @@ using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetPromotionCoupons;
 
-public class GetPromotionCouponsQueryHandler : IQueryHandler<GetPromotionCouponsQuery, PaginationResponse<PromotionCouponResponse>>
+public class GetPromotionCouponsQueryHandler : IQueryHandler<GetPromotionCouponsQuery, PaginationResponse<CouponResponse>>
 {
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
@@ -17,7 +17,7 @@ public class GetPromotionCouponsQueryHandler : IQueryHandler<GetPromotionCoupons
         _discountProtoServiceClient = discountProtoServiceClient;
     }
 
-    public async Task<Result<PaginationResponse<PromotionCouponResponse>>> Handle(GetPromotionCouponsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<CouponResponse>>> Handle(GetPromotionCouponsQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
         //var promotionCoupons = await _discountProtoServiceClient.GetAllPromotionCouponsAsync(new GetAllPromotionCouponsRequest());

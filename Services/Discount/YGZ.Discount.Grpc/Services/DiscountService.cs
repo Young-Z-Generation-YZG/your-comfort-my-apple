@@ -3,13 +3,15 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MapsterMapper;
 using MediatR;
+using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
+using YGZ.Discount.Application.Coupons.Commands.UseCoupon;
+using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
 using YGZ.Discount.Application.Events.Commands.AddEventItem;
 using YGZ.Discount.Application.Events.Commands.CreateEvent;
 using YGZ.Discount.Application.Events.Queries.GetEventWithEventItems;
 using YGZ.Discount.Grpc.Protos;
-using EDiscountType = YGZ.Discount.Grpc.Protos.EDiscountType;
-using EProductType = YGZ.Discount.Grpc.Protos.EProductType;
 
 namespace YGZ.Discount.Application.Services;
 
@@ -24,93 +26,69 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         _sender = sender;
     }
 
-    //public override async Task<CouponResponse> GetDiscountByCode(GetDiscountRequest request, ServerCallContext context)
-    //{
-    //    var query = new GetCouponByCodeQuery(request.Code);
+    // GET METHODS
+    public override async Task<CouponModel> GetCouponByCodeGrpc(GetCouponByCodeRequest request, ServerCallContext context)
+    {
+        var query = new GetCouponByCodeQuery(request.CouponCode);
 
-    //    var result = await _sender.Send(query);
+        var result = await _sender.Send(query);
 
-    //    if (result.IsFailure)
-    //    {
-    //        return new CouponResponse();
-    //    }
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
+        }
 
-    //    var response = _mapper.Map<CouponResponse>(result.Response!);
+        return new CouponModel
+        {
+            Id = result.Response!.Id,
+            Code = result.Response.Code,
+            Title = result.Response.Title,
+            Description = result.Response.Description,
+            CategoryType = ConvertToECategoryTypeGrpc(result.Response.CategoryType),
+            DiscountType = ConvertToEDiscountTypeGrpc(result.Response.DiscountType),
+            DiscountValue = (double)result.Response.DiscountValue,
+            MaxDiscountAmount = result.Response.MaxDiscountAmount != null ? (double)result.Response.MaxDiscountAmount : 0,
+            AvailableQuantity = result.Response.AvailableQuantity,
+            Stock = result.Response.Stock
+        };
+    }
 
-    //    return response;
-    //}
-
-    //public override async Task<GetAllDiscountsResponse> GetAllPromotionCoupons(GetAllPromotionCouponsRequest request, ServerCallContext context)
-    //{
-    //    var query = new GetAllPromotionCouponsQuery();
-
-    //    var result = await _sender.Send(query);
-
-    //    if (result.IsFailure)
-    //    {
-    //        return new GetAllDiscountsResponse();
-    //    }
-
-    //    var response = new GetAllDiscountsResponse();
-
-
-    //    response.PromotionCoupons.AddRange(result.Response!.Select(p => new PromotionCouponModel()
-    //    {
-    //        PromotionCouponId = p.PromotionCouponId,
-    //        PromotionCouponTitle = p.PromotionCouponTitle,
-    //        PromotionCouponCode = p.PromotionCouponCode,
-    //        PromotionCouponDescription = p.PromotionCouponDescription,
-    //        PromotionCouponProductNameTag = (ProductNameTagEnum)ProductNameTag.FromName(p.PromotionCouponProductNameTag, false).Value,
-    //        PromotionCouponPromotionEventType = (PromotionEventTypeEnum)PromotionEventType.FromName(p.PromotionCouponPromotionEventType, false).Value,
-    //        PromotionCouponDiscountState = (DiscountStateEnum)DiscountState.FromName(p.PromotionCouponDiscountState, false).Value,
-    //        PromotionCouponDiscountType = (DiscountTypeEnum)DiscountType.FromName(p.PromotionCouponDiscountType, false).Value,
-    //        PromotionCouponDiscountValue = (double)p.PromotionCouponDiscountValue,
-    //        PromotionCouponMaxDiscountAmount = p.PromotionCouponMaxDiscountAmount.HasValue ? (double)p.PromotionCouponMaxDiscountAmount.Value : 0,
-    //        PromotionCouponValidFrom = p.PromotionCouponValidFrom.HasValue ? p.PromotionCouponValidFrom.Value.ToTimestamp() : null,
-    //        PromotionCouponValidTo = p.PromotionCouponValidTo.HasValue ? p.PromotionCouponValidTo.Value.ToTimestamp() : null,
-    //        PromotionCouponAvailableQuantity = p.PromotionCouponAvailableQuantity
-    //    }));
-
-    //    return response;
-    //}
+    public override Task<GetCouponsResponse> GetCouponsGrpc(GetCouponsRequest request, ServerCallContext context)
+    {
+        return base.GetCouponsGrpc(request, context);
+    }
 
 
+    // POST METHODS
+    public override async Task<BooleanResponse> CreateCouponGrpc(CreateCouponRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<CreateCouponCommand>(request);
 
-    //public override async Task<BooleanResponse> CreatePromotionCoupon(CreatePromotionCouponModel request, ServerCallContext context)
-    //{
-    //    var cmd = _mapper.Map<CreatePromotionCouponCommand>(request);
+        var result = await _sender.Send(cmd);
 
-    //    var result = await _sender.Send(cmd);
+        var response = _mapper.Map<BooleanResponse>(result.Response);
 
-    //    var response = _mapper.Map<BooleanResponse>(result.Response);
+        return response;
+    }
 
-    //    return response;
-    //}
+    public override async Task<BooleanResponse> UseCouponGrpc(UseCouponRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<UseCouponCommand>(request);
 
-    //public override async Task<BooleanResponse> CreatePromotionItem(CreatePromotionItemModelRequest request, ServerCallContext context)
-    //{
-    //    var cmd = _mapper.Map<CreatePromotionItemCommand>(request);
+        var result = await _sender.Send(cmd);
 
-    //    var result = await _sender.Send(cmd);
+        var response = _mapper.Map<BooleanResponse>(result.Response);
 
-    //    var response = _mapper.Map<BooleanResponse>(result.Response);
+        return response;
+    }
 
-    //    return response;
-    //}
-
-
-    //public override async Task<BooleanResponse> DeleteDiscountCoupon(DeleteDiscountCouponRequest request, ServerCallContext context)
-    //{
-    //    var cmd = _mapper.Map<DeleteCouponCommand>(request);
-
-    //    var result = await _sender.Send(cmd);
-
-    //    var response = _mapper.Map<BooleanResponse>(result.Response);
-
-    //    return response;
-    //}
-
-    // OTHERS METHOD
     public override async Task<BooleanResponse> CreateEventGrpc(CreateEventRequest request, ServerCallContext context)
     {
         var cmd = _mapper.Map<CreateEventCommand>(request);
@@ -142,7 +120,14 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         if (result.IsFailure)
         {
-            return new EventItemModel();
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
         }
 
         var ei = result.Response!;
@@ -167,8 +152,8 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 NormalizedName = ei.NormalizedStorage ?? string.Empty
             },
             DisplayImageUrl = ei.ImageUrl ?? string.Empty,
-            ProductType = ConvertToProductTypeEnum(ei.ProductType),
-            DiscountType = ConvertToDiscountTypeEnum(ei.DiscountType),
+            CategoryType = ConvertToECategoryTypeGrpc(ei.CategogyType),
+            DiscountType = ConvertToEDiscountTypeGrpc(ei.DiscountType),
             DiscountValue = (double)ei.DiscountValue,
             OriginalPrice = (double)ei.OriginalPrice,
             Stock = ei.Stock,
@@ -186,7 +171,14 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         if (result.IsFailure)
         {
-            return new GetEventWithEventItemsResponse();
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
         }
 
         var eventData = result.Response!;
@@ -226,8 +218,8 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 NormalizedName = ei.NormalizedStorage ?? string.Empty
             },
             DisplayImageUrl = ei.ImageUrl ?? string.Empty,
-            ProductType = ConvertToProductTypeEnum(ei.ProductType),
-            DiscountType = ConvertToDiscountTypeEnum(ei.DiscountType),
+            CategoryType = ConvertToECategoryTypeGrpc(ei.CategogyType),
+            DiscountType = ConvertToEDiscountTypeGrpc(ei.DiscountType),
             DiscountValue = (double)ei.DiscountValue,
             OriginalPrice = (double)ei.OriginalPrice,
             Stock = ei.Stock,
@@ -247,27 +239,50 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
 
     // privates methods
-    private static EProductType ConvertToProductTypeEnum(string productType)
+    private static ECategoryTypeGrpc ConvertToECategoryTypeGrpc(string productType)
     {
         return productType.ToUpper() switch
         {
-            "IPHONE" => EProductType.ProductTypeIphone,
-            "IPAD" => EProductType.ProductTypeIpad,
-            "MACBOOK" => EProductType.ProductTypeMacbook,
-            "WATCH" => EProductType.ProductTypeWatch,
-            "HEADPHONE" => EProductType.ProductTypeHeadphone,
-            "ACCESSORY" => EProductType.ProductTypeAccessory,
-            _ => EProductType.ProductTypeUnknown
+            "IPHONE" => ECategoryTypeGrpc.CategoryTypeIphone,
+            "IPAD" => ECategoryTypeGrpc.CategoryTypeIpad,
+            "MACBOOK" => ECategoryTypeGrpc.CategoryTypeMacbook,
+            "WATCH" => ECategoryTypeGrpc.CategoryTypeWatch,
+            "HEADPHONE" => ECategoryTypeGrpc.CategoryTypeHeadphone,
+            "ACCESSORY" => ECategoryTypeGrpc.CategoryTypeAccessory,
+            _ => ECategoryTypeGrpc.CategoryTypeUnknown
         };
     }
 
-    private static EDiscountType ConvertToDiscountTypeEnum(string discountType)
+    private static EDiscountTypeGrpc ConvertToEDiscountTypeGrpc(string discountType)
     {
         return discountType.ToUpper() switch
         {
-            "PERCENTAGE" => EDiscountType.DiscountTypePercentage,
-            "FIXED" => EDiscountType.DiscountTypeFixed,
-            _ => EDiscountType.DiscountTypeUnknown
+            "PERCENTAGE" => EDiscountTypeGrpc.DiscountTypePercentage,
+            "FIXED" => EDiscountTypeGrpc.DiscountTypeFixed,
+            _ => EDiscountTypeGrpc.DiscountTypeUnknown
+        };
+    }
+
+    /// <summary>
+    /// Maps application domain errors to appropriate gRPC status codes
+    /// </summary>
+    private static StatusCode MapErrorToStatusCode(Error error)
+    {
+        return error.Code switch
+        {
+            // Not Found errors
+            "Discount.CouponNotFound" => StatusCode.NotFound,
+            "Discount.EventNotFound" => StatusCode.NotFound,
+            "Discount.EventItemNotFound" => StatusCode.NotFound,
+
+            // Validation/Business Logic errors
+            "Discount.CouponExpired" => StatusCode.FailedPrecondition,
+            "Discount.CouponInactive" => StatusCode.FailedPrecondition,
+            "Discount.InsufficientStock" => StatusCode.FailedPrecondition,
+            "Discount.InvalidCouponCode" => StatusCode.InvalidArgument,
+
+            // Default to Internal for unknown errors
+            _ => StatusCode.Internal
         };
     }
 }

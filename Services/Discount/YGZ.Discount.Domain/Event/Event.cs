@@ -1,5 +1,5 @@
-﻿using YGZ.Discount.Domain.Abstractions.Data;
-using YGZ.Discount.Domain.Core.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.Event.Entities;
 using YGZ.Discount.Domain.Event.ValueObjects;
@@ -12,7 +12,7 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
 
     public required string Title { get; set; }
     public required string Description { get; set; }
-    public required EState State { get; set; }
+    public required EEventState State { get; set; }
     public DateTime? StartDate { get; set; } = null;
     public DateTime? EndDate { get; set; } = null;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -36,7 +36,7 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
         {
             Title = title,
             Description = description ?? String.Empty,
-            State = EState.INACTIVE,
+            State = EEventState.INACTIVE,
             StartDate = startDate,
             EndDate = endDate
         };

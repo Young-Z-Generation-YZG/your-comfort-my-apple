@@ -54,17 +54,6 @@ public class BasketController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    //[HttpPost("process-checkout")]
-    //[Authorize(Policy = Policies.RoleStaff)]
-    //public async Task<IActionResult> ProcessCheckout([FromBody] ProcessCheckoutRequest request, CancellationToken cancellationToken)
-    //{
-    //    var cmd = _mapper.Map<ProcessCheckoutCommand>(request);
-
-    //    var result = await _sender.Send(cmd, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
     [HttpPost("checkout")]
     [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken)

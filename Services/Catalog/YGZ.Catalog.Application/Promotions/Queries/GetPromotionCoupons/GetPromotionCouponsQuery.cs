@@ -6,4 +6,4 @@ using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetPromotionCoupons;
 
-public sealed record GetPromotionCouponsQuery : IQuery<PaginationResponse<PromotionCouponResponse>> { }
+public sealed record GetPromotionCouponsQuery : IQuery<PaginationResponse<CouponResponse>> { }

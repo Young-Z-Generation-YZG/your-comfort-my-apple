@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Abstractions.Data;
-using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Event;
-using ValueObjects = YGZ.Discount.Domain.Event.ValueObjects;
 using EventItemEntity = YGZ.Discount.Domain.Event.Entities.EventItem;
+using ValueObjects = YGZ.Discount.Domain.Event.ValueObjects;
 
 namespace YGZ.Discount.Application.Events.Commands.AddEventItem;
 
@@ -44,7 +44,7 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
         // Create and add event itemsz
         foreach (var itemCmd in request.EventItems)
         {
-            var productType = EProductType.FromName(itemCmd.ProductType, false);
+            var categoryType = ECategoryType.FromName(itemCmd.CategoryType, false);
             var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
 
             var eventItem = EventItemEntity.Create(
@@ -56,7 +56,7 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
                 colorHaxCode: itemCmd.Color.HexCode,
                 storageName: itemCmd.Storage.Name,
                 normalizedStorage: itemCmd.Storage.NormalizedName,
-                productType: productType,
+                categoryType: categoryType,
                 discountType: discountType,
                 imageUrl: itemCmd.DisplayImageUrl,
                 discountValue: itemCmd.DiscountValue,

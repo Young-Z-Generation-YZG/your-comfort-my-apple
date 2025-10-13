@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+﻿using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -6,12 +7,14 @@ namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 public class PromotionCoupon
 {
     public required string CouponId { get; init; }
-        public required decimal ProductUnitPrice { get; init; }
+    public required decimal ProductUnitPrice { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
     public required decimal DiscountAmount { get; init; }
-     public decimal FinalPrice {
-        get {
+    public decimal FinalPrice
+    {
+        get
+        {
             if (DiscountType == EDiscountType.PERCENTAGE.Name)
             {
                 return ProductUnitPrice - (ProductUnitPrice * DiscountValue);
@@ -35,12 +38,25 @@ public class PromotionCoupon
         };
     }
 
-        public PromotionResponse ToResponse()
+    public PromotionResponse ToResponse()
     {
         return new PromotionResponse
         {
             PromotionType = EPromotionType.COUPON.Name,
             ProductUnitPrice = ProductUnitPrice,
+            DiscountType = DiscountType,
+            DiscountValue = DiscountValue,
+            DiscountAmount = DiscountAmount,
+            FinalPrice = FinalPrice,
+        };
+    }
+
+    public PromotionIntegrationEvent? ToPromotionIntegrationEvent()
+    {
+        return new PromotionIntegrationEvent
+        {
+            PromotionIdOrCode = CouponId,
+            PromotionType = EPromotionType.COUPON.Name,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
             DiscountAmount = DiscountAmount,

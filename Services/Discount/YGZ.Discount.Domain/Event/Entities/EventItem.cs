@@ -1,5 +1,5 @@
-﻿using YGZ.Discount.Domain.Abstractions.Data;
-using YGZ.Discount.Domain.Core.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.Event.ValueObjects;
 
@@ -17,7 +17,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     public required string ColorHaxCode { get; set; }
     public required string StorageName { get; set; }
     public required string NormalizedStorage { get; set; }
-    public required EProductType ProductType { get; set; }
+    public required ECategoryType CategoryType { get; set; }
     public required string ImageUrl { get; set; }
     public required EDiscountType DiscountType { get; set; }
     public required decimal DiscountValue { get; set; }
@@ -40,7 +40,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
                                    string colorHaxCode,
                                    string storageName,
                                    string normalizedStorage,
-                                   EProductType productType,
+                                   ECategoryType categoryType,
                                    EDiscountType discountType,
                                    string imageUrl,
                                    decimal discountValue,
@@ -58,7 +58,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
             ColorHaxCode = colorHaxCode,
             StorageName = storageName,
             NormalizedStorage = normalizedStorage,
-            ProductType = productType,
+            CategoryType = categoryType,
             DiscountType = discountType,
             ImageUrl = imageUrl,
             DiscountValue = discountValue,

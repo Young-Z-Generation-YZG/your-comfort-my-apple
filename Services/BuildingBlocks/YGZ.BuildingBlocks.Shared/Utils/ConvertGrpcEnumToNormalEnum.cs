@@ -10,11 +10,31 @@ public static class ConvertGrpcEnumToNormalEnum
         {
             case "DiscountTypePercentage":
                 return EDiscountType.PERCENTAGE;
-            case "DiscountTypeFixed":
-                return EDiscountType.FIXED;
+            case "DiscountTypeFixedAmount":
+                return EDiscountType.FIXED_AMOUNT;
             default:
-                throw new Exception("Invalid discount type");
+                return EDiscountType.UNKNOWN;
         }
+    }
 
+    public static ECategoryType ConvertToECategoryType(string ECategoryTypeGrpc)
+    {
+        switch (ECategoryTypeGrpc)
+        {
+            case "CategoryTypeIphone":
+                return ECategoryType.IPHONE;
+            case "CategoryTypeIpad":
+                return ECategoryType.IPAD;
+            case "CategoryTypeMacbook":
+                return ECategoryType.MACBOOK;
+            case "CategoryTypeWatch":
+                return ECategoryType.WATCH;
+            case "CategoryTypeHeadphone":
+                return ECategoryType.HEADPHONE;
+            case "CategoryTypeAccessory":
+                return ECategoryType.ACCESSORY;
+            default:
+                return ECategoryType.UNKNOWN;
+        }
     }
 }

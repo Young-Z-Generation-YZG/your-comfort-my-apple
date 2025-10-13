@@ -19,7 +19,7 @@ public class EventItemMapping : IRegister
 
         // Map from gRPC EventItem to EventItemCommand
         config.NewConfig<EventItemModel, EventItemCommand>()
-            .Map(dest => dest.ProductType, src => ConvertProductTypeEnum(src.ProductType))
+            .Map(dest => dest.CategoryType, src => ConvertProductTypeEnum(src.CategoryType))
             .Map(dest => dest.DiscountType, src => ConvertDiscountTypeEnum(src.DiscountType));
 
         // Map from gRPC AddEventItemsRequest to AddEventItemsCommand
@@ -28,28 +28,28 @@ public class EventItemMapping : IRegister
             .Map(dest => dest.EventItems, src => src.EventItems);
     }
 
-    private static string ConvertProductTypeEnum(EProductType productType)
+    private static string ConvertProductTypeEnum(ECategoryTypeGrpc productType)
     {
         return productType switch
         {
-            EProductType.ProductTypeUnknown => "UNKNOWN",
-            EProductType.ProductTypeIphone => "IPHONE",
-            EProductType.ProductTypeIpad => "IPAD",
-            EProductType.ProductTypeMacbook => "MACBOOK",
-            EProductType.ProductTypeWatch => "WATCH",
-            EProductType.ProductTypeHeadphone => "HEADPHONE",
-            EProductType.ProductTypeAccessory => "ACCESSORY",
+            ECategoryTypeGrpc.CategoryTypeUnknown => "UNKNOWN",
+            ECategoryTypeGrpc.CategoryTypeIphone => "IPHONE",
+            ECategoryTypeGrpc.CategoryTypeIpad => "IPAD",
+            ECategoryTypeGrpc.CategoryTypeMacbook => "MACBOOK",
+            ECategoryTypeGrpc.CategoryTypeWatch => "WATCH",
+            ECategoryTypeGrpc.CategoryTypeHeadphone => "HEADPHONE",
+            ECategoryTypeGrpc.CategoryTypeAccessory => "ACCESSORY",
             _ => "UNKNOWN"
         };
     }
 
-    private static string ConvertDiscountTypeEnum(EDiscountType discountType)
+    private static string ConvertDiscountTypeEnum(EDiscountTypeGrpc discountType)
     {
         return discountType switch
         {
-            EDiscountType.DiscountTypeUnknown => "UNKNOWN",
-            EDiscountType.DiscountTypePercentage => "PERCENTAGE",
-            EDiscountType.DiscountTypeFixed => "FIXED",
+            EDiscountTypeGrpc.DiscountTypeUnknown => "UNKNOWN",
+            EDiscountTypeGrpc.DiscountTypePercentage => "PERCENTAGE",
+            EDiscountTypeGrpc.DiscountTypeFixed => "FIXED",
             _ => "UNKNOWN"
         };
     }

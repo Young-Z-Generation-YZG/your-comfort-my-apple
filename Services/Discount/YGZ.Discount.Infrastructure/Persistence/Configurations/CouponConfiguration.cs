@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.Discount.Domain.Core.Enums;
 using YGZ.Discount.Domain.Coupons;
 using YGZ.Discount.Domain.Coupons.ValueObjects;
 
@@ -29,35 +28,33 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
                    x => Code.Of(x)
                );
 
-        //// Configure State property with conversion
-        builder.Property(x => x.DiscountState) // Updated from Status to State
+        // Configure SmartEnum properties with explicit conversion
+        builder.Property(x => x.DiscountState)
                .HasConversion(
                    x => x.Name,
-                   x => DiscountState.FromName(x, false)
+                   x => EDiscountState.FromName(x, false)
                )
                .HasColumnName("DiscountState");
 
-        //// Configure Type property with conversion
+        builder.Property(x => x.CategoryType)
+               .HasConversion(
+                   x => x.Name,
+                   x => ECategoryType.FromName(x, false)
+               )
+               .HasColumnName("CategoryType");
+
+        builder.Property(x => x.PromotionType)
+               .HasConversion(
+                   x => x.Name,
+                   x => EPromotionType.FromName(x, false)
+               )
+               .HasColumnName("PromotionType");
+
         builder.Property(x => x.DiscountType)
                .HasConversion(
                    x => x.Name,
-                   x => DiscountType.FromName(x, false)
+                   x => EDiscountType.FromName(x, false)
                )
                .HasColumnName("DiscountType");
-
-        //// Configure ProductNameTag property with conversion
-        builder.Property(x => x.ProductNameTag)
-               .HasConversion(
-                   x => x.Name,
-                   x => ProductNameTag.FromName(x, false)
-               )
-               .HasColumnName("ProductNameTag");
-
-        builder.Property(x => x.PromotionEventType)
-               .HasConversion(
-                   x => x.Name,
-                   x => PromotionEventType.FromName(x, false)
-               )
-               .HasColumnName("PromotionEventType");
     }
 }

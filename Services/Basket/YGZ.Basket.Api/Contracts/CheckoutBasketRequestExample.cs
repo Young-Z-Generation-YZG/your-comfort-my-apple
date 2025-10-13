@@ -23,9 +23,6 @@ public class CheckoutBasketRequestExample : ISchemaProcessor
                 },
                 payment_method = "VNPAY",
                 discount_code = "APRIL2025",
-                sub_total_amount = 1598,
-                discount_amount = 159.8,
-                total_amount = 1438.2
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YGZ.Discount.Domain.Core.Enums;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Event;
 using YGZ.Discount.Domain.Event.Entities;
 using YGZ.Discount.Domain.Event.ValueObjects;
@@ -30,7 +30,7 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
         builder.Property(x => x.ColorHaxCode).HasColumnOrder(7);
         builder.Property(x => x.StorageName).HasColumnOrder(8);
         builder.Property(x => x.NormalizedStorage).HasColumnOrder(9);
-        builder.Property(x => x.ProductType).HasColumnOrder(10);
+        builder.Property(x => x.CategoryType).HasColumnOrder(10);
         builder.Property(x => x.ImageUrl).HasColumnOrder(11);
         builder.Property(x => x.DiscountType).HasColumnOrder(12);
         builder.Property(x => x.DiscountValue).HasColumnOrder(13);
@@ -51,12 +51,12 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
                .IsRequired();
 
         // other property configurations
-        builder.Property(x => x.ProductType)
+        builder.Property(x => x.CategoryType)
                .HasConversion(
                    x => x.Name,
-                   x => EProductType.FromName(x, false)
+                   x => ECategoryType.FromName(x, false)
                )
-               .HasColumnName("ProductType");
+               .HasColumnName("CategoryType");
 
         builder.Property(x => x.DiscountType)
                 .HasConversion(

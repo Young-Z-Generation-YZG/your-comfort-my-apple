@@ -1,6 +1,7 @@
 ﻿
 
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
+using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
 namespace YGZ.Basket.Domain.ShoppingCart.Entities;
@@ -71,6 +72,24 @@ public class ShoppingCartItem
             SubTotalAmount = SubTotalAmount,
             Promotion = Promotion?.ToResponse(),
             Index = Order
+        };
+    }
+
+    public CheckoutItemIntegrationEvent ToCheckoutItemIntegrationEvent()
+    {
+        return new CheckoutItemIntegrationEvent
+        {
+            ModelId = ModelId,
+            ProductName = ProductName,
+            NormalizedModel = Model.NormalizedName,
+            NormalizedColor = Color.NormalizedName,
+            NormalizedStorage = Storage.NormalizedName,
+            UnitPrice = UnitPrice,
+            DisplayImageUrl = DisplayImageUrl,
+            ModelSlug = ModelSlug,
+            Quantity = Quantity,
+            SubTotalAmount = SubTotalAmount,
+            Promotion = Promotion?.ToPromotionIntegrationEvent(),
         };
     }
 }

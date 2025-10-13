@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+﻿using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 
@@ -31,16 +32,37 @@ public class Promotion
 
     public PromotionResponse? ToResponse()
     {
-        if(PromotionCoupon is not null && PromotionEvent is not null) {
+        if (PromotionCoupon is not null && PromotionEvent is not null)
+        {
             throw new Exception("Promotion cannot be both coupon and event");
         }
 
-        if(PromotionCoupon is not null) {
+        if (PromotionCoupon is not null)
+        {
             return PromotionCoupon.ToResponse();
         }
-
-        if(PromotionEvent is not null) {
+        else if (PromotionEvent is not null)
+        {
             return PromotionEvent.ToResponse();
+        }
+
+        return null;
+    }
+
+    public PromotionIntegrationEvent? ToPromotionIntegrationEvent()
+    {
+        if (PromotionCoupon is not null && PromotionEvent is not null)
+        {
+            throw new Exception("Promotion cannot be both coupon and event");
+        }
+
+        if (PromotionCoupon is not null)
+        {
+            return PromotionCoupon.ToPromotionIntegrationEvent();
+        }
+        else if (PromotionEvent is not null)
+        {
+            return PromotionEvent.ToPromotionIntegrationEvent();
         }
 
         return null;

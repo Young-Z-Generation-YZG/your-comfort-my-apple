@@ -14,7 +14,7 @@ public class EventItemCommand
     public required ColorCommand Color { get; init; }
     public required StorageCommand Storage { get; init; }
     public required string DisplayImageUrl { get; init; }
-    public required string ProductType { get; set; }
+    public required string CategoryType { get; set; }
     public required string DiscountType { get; set; }
     public required decimal DiscountValue { get; set; }
     public required decimal OriginalPrice { get; set; }

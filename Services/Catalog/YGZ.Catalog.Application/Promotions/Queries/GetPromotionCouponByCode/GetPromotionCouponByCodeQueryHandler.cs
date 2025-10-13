@@ -5,7 +5,7 @@ using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetPromotionCouponByCode;
 
-public class GetPromotionCouponByCodeQueryHandler : IQueryHandler<GetPromotionCouponByCodeQuery, PromotionCouponResponse>
+public class GetPromotionCouponByCodeQueryHandler : IQueryHandler<GetPromotionCouponByCodeQuery, CouponResponse>
 {
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
@@ -14,7 +14,7 @@ public class GetPromotionCouponByCodeQueryHandler : IQueryHandler<GetPromotionCo
         _discountProtoServiceClient = discountProtoServiceClient;
     }
 
-    public async Task<Result<PromotionCouponResponse>> Handle(GetPromotionCouponByCodeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<CouponResponse>> Handle(GetPromotionCouponByCodeQuery request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
 

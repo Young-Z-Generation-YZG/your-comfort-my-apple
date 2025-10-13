@@ -1,9 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using YGZ.BuildingBlocks.Shared.Utils;
+﻿namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 
-namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
-
-[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record EventResponse
 {
     public required string Id { get; init; }

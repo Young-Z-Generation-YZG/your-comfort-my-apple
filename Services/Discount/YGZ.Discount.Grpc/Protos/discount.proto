@@ -7,24 +7,24 @@ import "google/protobuf/timestamp.proto";
 
 package discount;
 
-enum EProductType {
-	PRODUCT_TYPE_UNKNOWN = 0;
-	PRODUCT_TYPE_IPHONE = 1;
-	PRODUCT_TYPE_IPAD = 2;
-	PRODUCT_TYPE_MACBOOK = 3;
-	PRODUCT_TYPE_WATCH = 4;
-	PRODUCT_TYPE_HEADPHONE = 5;
-	PRODUCT_TYPE_ACCESSORY = 6;
+enum ECategoryTypeGrpc {
+	CATEGORY_TYPE_UNKNOWN = 0;
+	CATEGORY_TYPE_IPHONE = 1;
+	CATEGORY_TYPE_IPAD = 2;
+	CATEGORY_TYPE_MACBOOK = 3;
+	CATEGORY_TYPE_WATCH = 4;
+	CATEGORY_TYPE_HEADPHONE = 5;
+	CATEGORY_TYPE_ACCESSORY = 6;
 }
 
-enum EDiscountState {
+enum EDiscountStateGrpc {
 	DISCOUNT_STATE_UNKNOWN = 0; 
 	DISCOUNT_STATE_ACTIVE = 1; 
 	DISCOUNT_STATE_INACTIVE = 2;
 	DISCOUNT_STATE_EXPIRED = 3;
 }
 
-enum EDiscountType {
+enum EDiscountTypeGrpc {
     DISCOUNT_TYPE_UNKNOWN = 0;
     DISCOUNT_TYPE_PERCENTAGE = 1;
     DISCOUNT_TYPE_FIXED = 2;
@@ -34,13 +34,31 @@ service DiscountProtoService {
     // POST requests
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
     rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);
+    rpc CreateCouponGrpc (CreateCouponRequest)  returns (BooleanResponse);
+    rpc UseCouponGrpc (UseCouponRequest) returns (BooleanResponse);
 
     // GET requests
+    rpc GetCouponByCodeGrpc (GetCouponByCodeRequest) returns (CouponModel);
+    rpc GetCouponsGrpc (GetCouponsRequest) returns (GetCouponsResponse);
+
     rpc GetEventWithEventItemsGrpc (GetEventWithEventItemsRequest) returns (GetEventWithEventItemsResponse);   
     rpc GetEventItemByIdGrpc (GetEventItemByIdRequest) returns (EventItemModel);
 }
 
 // models
+
+message CouponModel {
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue code = 2;
+    google.protobuf.StringValue title = 3;
+    google.protobuf.StringValue description = 4;
+    ECategoryTypeGrpc category_type = 5;
+    EDiscountTypeGrpc discount_type = 6;
+    google.protobuf.DoubleValue discount_value = 7;
+    google.protobuf.DoubleValue max_discount_amount = 8;
+    google.protobuf.Int32Value available_quantity = 9;
+    google.protobuf.Int32Value stock = 10;
+}
 
 message EventModel {
     google.protobuf.StringValue id = 1;
@@ -56,8 +74,8 @@ message EventItemModel {
     ColorValueObject color = 3;
     StorageValueObject storage = 4;
     google.protobuf.StringValue display_image_url = 5;
-    EProductType product_type = 6;
-    EDiscountType discount_type = 7;
+    ECategoryTypeGrpc category_type = 6;
+    EDiscountTypeGrpc discount_type = 7;
     google.protobuf.DoubleValue discount_value = 8;
     google.protobuf.DoubleValue original_price = 9;
     google.protobuf.Int32Value stock = 10;
@@ -67,6 +85,18 @@ message EventItemModel {
 
 
 // POST requests
+
+message CreateCouponRequest {
+    google.protobuf.StringValue unique_code = 1;
+    google.protobuf.StringValue title = 2;
+    google.protobuf.StringValue description = 3;
+    ECategoryTypeGrpc category_type = 4;
+    EDiscountTypeGrpc discount_type = 5;
+    google.protobuf.DoubleValue discount_value = 6;
+    google.protobuf.DoubleValue max_discount_amount = 7;
+    google.protobuf.Int32Value available_quantity = 8;
+    google.protobuf.Int32Value stock = 9;
+}
 
 message CreateEventRequest {
     google.protobuf.StringValue title = 1;
@@ -80,13 +110,22 @@ message AddEventItemsRequest {
     repeated EventItemModel event_items = 2;
 }
 
+message UseCouponRequest {
+    google.protobuf.StringValue coupon_code = 1;
+}
+
 // GET requests
 message GetEventWithEventItemsRequest {}
+
 message GetEventItemByIdRequest {
     google.protobuf.StringValue event_item_id = 1;
 }
 
+message GetCouponsRequest {}
 
+message GetCouponByCodeRequest {
+    google.protobuf.StringValue coupon_code = 1;
+}
 
 // value objects
 
@@ -117,4 +156,8 @@ message GetEventWithEventItemsResponse {
 
 message BooleanResponse {
 	bool is_success = 1;
+}
+
+message GetCouponsResponse {
+    repeated CouponModel coupons = 1;   
 }
