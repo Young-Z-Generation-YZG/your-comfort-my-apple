@@ -2,12 +2,13 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Promotions;
 using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
 using YGZ.Discount.Grpc.Protos;
-using EDiscountType = YGZ.Discount.Grpc.Protos.EDiscountType;
 using EventItemResponse = YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Promotions.EventItemResponse;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetPromotionItems;
@@ -72,7 +73,7 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
 
             var originalPrice = (decimal)(eventItem.OriginalPrice ?? 0);
             var discountValue = (decimal)(eventItem.DiscountValue ?? 0);
-            var discountType = ConvertDiscountTypeFromGrpc(eventItem.DiscountType);
+            var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
 
             var discountAmount = CalculateDiscountAmount(originalPrice, discountValue, discountType);
             var finalPrice = originalPrice - discountAmount;
@@ -84,7 +85,7 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
                 colorValueObject: colorValueObject,
                 storageValueObject: storageValueObject,
                 originalPrice: originalPrice,
-                discountType: discountType,
+                discountType: discountType.Name,
                 discountValue: discountValue,
                 discountAmount: discountAmount,
                 finalPrice: finalPrice,
@@ -120,23 +121,13 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
         };
     }
 
-    private static string ConvertDiscountTypeFromGrpc(EDiscountType discountType)
+    private decimal CalculateDiscountAmount(decimal originalPrice, decimal discountValue, EDiscountType discountType)
     {
-        return discountType switch
-        {
-            EDiscountType.DiscountTypePercentage => "PERCENTAGE",
-            EDiscountType.DiscountTypeFixed => "FIXED",
-            _ => "UNKNOWN"
-        };
-    }
-
-    private decimal CalculateDiscountAmount(decimal originalPrice, decimal discountValue, string discountType)
-    {
-        if (discountType == "PERCENTAGE")
+        if (discountType == EDiscountType.PERCENTAGE)
         {
             return originalPrice * discountValue;
         }
-        else if (discountType == "FIXED")
+        else if (discountType == EDiscountType.FIXED_AMOUNT)
         {
             return discountValue;
         }

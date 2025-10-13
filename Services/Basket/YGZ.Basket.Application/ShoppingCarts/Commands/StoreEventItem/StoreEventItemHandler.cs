@@ -133,7 +133,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         );
 
         decimal finalPrice;
-        if (eventItem.DiscountType == Discount.Grpc.Protos.EDiscountType.DiscountTypePercentage)
+        if (eventItem.DiscountType == EDiscountTypeGrpc.DiscountTypePercentage)
         {
             finalPrice = originalPrice * (1 - discountValue);
         }
@@ -143,7 +143,6 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         }
 
         var quantity = 1; // Default quantity for event items
-        var subTotalAmount = finalPrice * quantity;
 
         var shoppingCartItem = ShoppingCartItem.Create(
             isSelected: true,
@@ -156,7 +155,6 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
             unitPrice: originalPrice,
             promotion: promotion,
             quantity: quantity,
-            subTotalAmount: subTotalAmount,
             modelSlug: modelSlug ?? string.Empty,
             order: 1
         );

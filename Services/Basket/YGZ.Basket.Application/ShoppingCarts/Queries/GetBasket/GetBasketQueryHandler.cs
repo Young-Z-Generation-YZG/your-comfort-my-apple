@@ -1,9 +1,11 @@
 ﻿using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.ShoppingCart;
+using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
@@ -45,6 +47,34 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
         }
 
         ShoppingCart FilterOutEventItemsShoppingCart = shoppingCart.FilterOutEventItems();
+
+        // get coupon details if coupon code is provided
+        if (!string.IsNullOrEmpty(request.CouponCode))
+        {
+            var grpcRequest = new GetCouponByCodeRequest
+            {
+                CouponCode = request.CouponCode
+            };
+
+            var coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+
+            if (coupon != null)
+            {
+                var quantity = coupon.AvailableQuantity;
+
+                foreach(var item in FilterOutEventItemsShoppingCart.CartItems)
+                {
+                    if (item.IsSelected == true)
+                    {
+                        PromotionCoupon promotionCoupon = PromotionCoupon.Create(couponId: coupon.Id, productUnitPrice: item.UnitPrice, discountType: ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString()), discountValue: (decimal)coupon.DiscountValue, discountAmount: (decimal)coupon.DiscountValue);
+
+                        item.ApplyCoupon(promotionCoupon);
+
+                        quantity--;
+                    }
+                }
+            }
+        }
 
 
         return new GetBasketResponse()

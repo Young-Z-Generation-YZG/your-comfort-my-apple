@@ -84,7 +84,6 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
                 unitPrice: unitPrice ?? 0,
                 promotion: null,
                 quantity: item.Quantity,
-                subTotalAmount: subTotalAmount ?? 0,
                 modelSlug: modelSlug ?? "",
                 order: order++
             );

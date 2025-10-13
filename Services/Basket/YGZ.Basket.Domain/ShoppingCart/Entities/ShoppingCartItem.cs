@@ -3,6 +3,7 @@
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
+using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.Basket.Domain.ShoppingCart.Entities;
 
@@ -16,9 +17,28 @@ public class ShoppingCartItem
     public required Storage Storage { get; init; }
     public required string DisplayImageUrl { get; init; }
     public required decimal UnitPrice { get; init; }
-    public Promotion? Promotion { get; init; }
+    public Promotion? Promotion { get; private set; }
     public required int Quantity { get; init; }
-    public required decimal SubTotalAmount { get; init; }
+    public decimal SubTotalAmount
+    {
+        get
+        {
+            if (Promotion is not null)
+            {
+                if (Promotion.PromotionCoupon is not null)
+                {
+                    return Promotion.PromotionCoupon.FinalPrice;
+                }
+
+                if (Promotion.PromotionEvent is not null)
+                {
+                    return Promotion.PromotionEvent.FinalPrice;
+                }
+            }
+            
+            return UnitPrice * Quantity;
+        }
+    }
     public required string ModelSlug { get; init; }
     public required int Order { get; init; }
 
@@ -33,7 +53,6 @@ public class ShoppingCartItem
         decimal unitPrice,
         Promotion? promotion,
         int quantity,
-        decimal subTotalAmount,
         string modelSlug,
         int order
     )
@@ -50,7 +69,6 @@ public class ShoppingCartItem
             UnitPrice = unitPrice,
             Promotion = promotion,
             Quantity = quantity,
-            SubTotalAmount = subTotalAmount,
             ModelSlug = modelSlug,
             Order = order
         };
@@ -92,4 +110,14 @@ public class ShoppingCartItem
             Promotion = Promotion?.ToPromotionIntegrationEvent(),
         };
     }
+
+    public void ApplyCoupon(PromotionCoupon coupon)
+    {
+
+        Promotion newPromotion = Promotion.Create(promotionType: EPromotionType.COUPON.Name, PromotionCoupon: coupon, PromotionEvent: null);
+
+        this.Promotion = newPromotion;
+    }
+
+
 }

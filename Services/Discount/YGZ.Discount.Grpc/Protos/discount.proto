@@ -35,7 +35,6 @@ service DiscountProtoService {
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
     rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);
     rpc CreateCouponGrpc (CreateCouponRequest)  returns (BooleanResponse);
-    rpc UseCouponGrpc (UseCouponRequest) returns (BooleanResponse);
 
     // GET requests
     rpc GetCouponByCodeGrpc (GetCouponByCodeRequest) returns (CouponModel);
@@ -110,9 +109,6 @@ message AddEventItemsRequest {
     repeated EventItemModel event_items = 2;
 }
 
-message UseCouponRequest {
-    google.protobuf.StringValue coupon_code = 1;
-}
 
 // GET requests
 message GetEventWithEventItemsRequest {}
