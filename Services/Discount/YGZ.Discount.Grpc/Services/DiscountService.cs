@@ -6,6 +6,7 @@ using MediatR;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 using YGZ.Discount.Application.Coupons.Commands.UseCoupon;
+using YGZ.Discount.Application.Coupons.Queries.GetAllPromotionCoupons;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
 using YGZ.Discount.Application.Events.Commands.AddEventItem;
@@ -60,9 +61,44 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         };
     }
 
-    public override Task<GetCouponsResponse> GetCouponsGrpc(GetCouponsRequest request, ServerCallContext context)
+    public override async Task<GetCouponsResponse> GetCouponsGrpc(GetCouponsRequest request, ServerCallContext context)
     {
-        return base.GetCouponsGrpc(request, context);
+        var query = new GetCouponsQuery();
+
+        var result = await _sender.Send(query);
+
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
+        }
+
+        var response = new GetCouponsResponse();
+
+        // Map each CouponResponse to CouponModel
+        var couponModels = result.Response!.Select(c => new CouponModel
+        {
+            Id = c.Id,
+            Code = c.Code,
+            Title = c.Title,
+            Description = c.Description,
+            CategoryType = ConvertToECategoryTypeGrpc(c.CategoryType),
+            DiscountType = ConvertToEDiscountTypeGrpc(c.DiscountType),
+            DiscountValue = (double)c.DiscountValue,
+            MaxDiscountAmount = c.MaxDiscountAmount.HasValue ? (double)c.MaxDiscountAmount.Value : 0,
+            AvailableQuantity = c.AvailableQuantity,
+            Stock = c.Stock
+        });
+
+        response.Coupons.AddRange(couponModels);
+
+        return response;
     }
 
 
