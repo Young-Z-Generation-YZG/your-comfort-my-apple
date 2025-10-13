@@ -1,23 +1,23 @@
-import {
-   IBasketPromotionResponse,
-   IPromotionPayload,
-} from './promotion.interface';
+import { IBasketPromotionResponse } from './promotion.interface';
 
 import { IColor, IModel, IStorage } from '../common/value-objects.interface';
 
 export interface IBasketItemPayload {
-   product_id: string;
+   is_selected: boolean;
    model_id: string;
-   product_name: string;
-   product_color_name: string;
-   product_unit_price: number;
-   product_name_tag: string;
-   product_image: string;
-   product_slug: string;
-   category_id: string;
+   color: {
+      name: string;
+      normalized_name: string;
+   };
+   model: {
+      name: string;
+      normalized_name: string;
+   };
+   storage: {
+      name: string;
+      normalized_name: string;
+   };
    quantity: number;
-   promotion: IPromotionPayload | null;
-   order: number;
 }
 
 export interface IStoreBasketPayload {
