@@ -3,10 +3,7 @@ import '/globals.css';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import Image from 'next/image';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { FormProvider, useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
+import { FormProvider } from 'react-hook-form';
 
 import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
@@ -20,60 +17,32 @@ import {
 } from '@components/ui/accordion';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useCart } from './_hooks/useCart';
+import { useCartForm } from './_hooks/useCartForm';
+import { usePromoCode } from './_hooks/usePromoCode';
 import CartItem from './_components/cart-item';
 import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
+import { useToast } from '@components/hooks/use-toast';
 
-const cartItemSchema = z.object({
-   is_selected: z.boolean(),
-   model_id: z.string().min(1, { message: 'Model ID is required' }),
-   color: z.object({
-      name: z.string().min(1, { message: 'Color name is required' }),
-      normalized_name: z
-         .string()
-         .min(1, { message: 'Normalized name is required' }),
-   }),
-   model: z.object({
-      name: z.string().min(1, { message: 'Model name is required' }),
-      normalized_name: z
-         .string()
-         .min(1, { message: 'Normalized name is required' }),
-   }),
-   storage: z.object({
-      name: z.string().min(1, { message: 'Storage name is required' }),
-      normalized_name: z
-         .string()
-         .min(1, { message: 'Normalized name is required' }),
-   }),
-   quantity: z.number().min(0, { message: 'Quantity is required' }),
-} satisfies Record<
-   keyof Omit<
-      ICartItem,
-      | 'index'
-      | 'promotion'
-      | 'unit_price'
-      | 'sub_total_amount'
-      | 'display_image_url'
-      | 'product_name'
-   >,
-   any
->);
-
-const cartFormSchema = z.object({
-   cart_items: z.array(cartItemSchema),
-});
+// Constants
+const FALLBACK_SUBTOTAL = 100.2;
+const FALLBACK_DISCOUNT = 1.2;
 
 const CartPage = () => {
    const router = useRouter();
-   const searchParams = useSearchParams();
+   const { toast } = useToast();
 
-   // Get coupon code from URL params
-   const urlCouponCode = searchParams.get('_couponCode') || '';
+   // Promo code management
+   const {
+      promoCode,
+      urlCouponCode,
+      handleApplyPromoCode,
+      handlePromoCodeChange,
+      handleRemovePromoCode,
+   } = usePromoCode();
 
-   // State for promo code input
-   const [promoCode, setPromoCode] = useState(urlCouponCode);
-
+   // Cart data fetching
    const { isLoading, basketData, storeBasket } = useCart({
       couponCode: urlCouponCode,
       fallbackData: {
@@ -113,105 +82,25 @@ const CartPage = () => {
       },
    });
 
-   const form = useForm<z.infer<typeof cartFormSchema>>({
-      resolver: zodResolver(cartFormSchema),
-      defaultValues: {
-         cart_items:
-            basketData?.cart_items?.map((item) => ({
-               is_selected: item.is_selected,
-               model_id: item.model_id,
-               color: item.color,
-               model: item.model,
-               storage: item.storage,
-               quantity: item.quantity,
-            })) || [],
-      },
+   // Cart form management with auto-save
+   const { form, selectedItems, handleQuantityChange } = useCartForm({
+      basketData,
+      storeBasket,
    });
 
-   // Sync form values when basketData changes
-   useEffect(() => {
-      if (basketData?.cart_items) {
-         // Transform data to match schema (only include fields defined in schema)
-         const transformedItems = basketData.cart_items.map((item) => ({
-            is_selected: item.is_selected,
-            model_id: item.model_id,
-            color: item.color,
-            model: item.model,
-            storage: item.storage,
-            quantity: item.quantity,
-         }));
-         form.reset({ cart_items: transformedItems });
-      }
-   }, [basketData, form]);
-
-   // Sync promo code state with URL changes
-   useEffect(() => {
-      const currentCouponCode = searchParams.get('_couponCode') || '';
-      setPromoCode(currentCouponCode);
-   }, [searchParams]);
-
-   // Watch form values to calculate selected items
-   const cartItems = form.watch('cart_items');
-   const selectedItems = useMemo(() => {
-      return cartItems?.filter((item) => item.is_selected) || [];
-   }, [cartItems]);
-
-   // Get original basket items for selected items (for display purposes)
-   const selectedBasketItems = useMemo(() => {
-      if (!basketData?.cart_items) return [];
-      return basketData.cart_items.filter(
-         (_, index) => cartItems?.[index]?.is_selected,
-      );
-   }, [basketData?.cart_items, cartItems]);
-
-   // Handle promo code apply
-   const handleApplyPromoCode = () => {
-      if (!promoCode.trim()) return;
-
-      // Update URL with new coupon code
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('_couponCode', promoCode.trim());
-      router.push(`?${params.toString()}`, { scroll: false });
-   };
-
-   // Handle promo code input change
-   const handlePromoCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPromoCode(e.target.value);
-   };
-
-   // Handle Enter key press
-   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-         handleApplyPromoCode();
-      }
-   };
-
-   // Debounced API call to prevent multiple requests
-   useEffect(() => {
-      const handleStoreBasket = async () => {
-         await storeBasket({
-            cart_items: cartItems.map((item) => ({
-               is_selected: item.is_selected,
-               model_id: item.model_id,
-               color: item.color,
-               model: item.model,
-               storage: item.storage,
-               quantity: item.quantity,
-            })),
+   // Validate and apply promo code (only when items are selected)
+   const handleValidatedApplyPromoCode = () => {
+      if (selectedItems.length === 0) {
+         toast({
+            title: 'No items selected',
+            description:
+               'Please select at least one item to apply a promo code',
+            variant: 'destructive',
          });
-      };
-
-      const timeoutId = setTimeout(() => {
-         if (cartItems && cartItems.length > 0) {
-            console.log('Calling storeBasket with:', cartItems);
-            // handleStoreBasket();
-         }
-      }, 500); // 500ms debounce
-
-      return () => clearTimeout(timeoutId);
-   }, [cartItems, storeBasket]);
-
-   console.log('cartItems', cartItems);
+         return;
+      }
+      handleApplyPromoCode();
+   };
 
    return (
       <div
@@ -235,17 +124,19 @@ const CartPage = () => {
                            {basketData?.cart_items.map(
                               (item: ICartItem, index: number) => (
                                  <div
-                                    key={index}
+                                    key={`${item.model_id}-${index}`}
                                     className="w-full flex flex-row justify-start items-center gap-3"
                                  >
                                     <CheckboxField
-                                       name={
-                                          `cart_items.${index}.is_selected` as any
-                                       }
+                                       name={`cart_items.${index}.is_selected`}
                                        form={form}
                                        checkboxClassName="h-5 w-5"
                                     />
-                                    <CartItem key={index} item={item} />
+                                    <CartItem
+                                       item={item}
+                                       index={index}
+                                       onQuantityChange={handleQuantityChange}
+                                    />
                                  </div>
                               ),
                            )}
@@ -266,13 +157,16 @@ const CartPage = () => {
                         placeholder="Enter promo code"
                         value={promoCode}
                         onChange={handlePromoCodeChange}
-                        onKeyDown={handleKeyDown}
                         disabled={isLoading}
                      />
                      <Button
                         className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
-                        onClick={handleApplyPromoCode}
-                        disabled={isLoading || !promoCode.trim()}
+                        onClick={handleValidatedApplyPromoCode}
+                        disabled={
+                           isLoading ||
+                           !promoCode.trim() ||
+                           selectedItems.length === 0
+                        }
                      >
                         Apply
                      </Button>
@@ -286,22 +180,16 @@ const CartPage = () => {
                            variant="ghost"
                            size="sm"
                            className="h-6 px-2 text-xs text-red-500 hover:text-red-700"
-                           onClick={() => {
-                              const params = new URLSearchParams(
-                                 searchParams.toString(),
-                              );
-                              params.delete('_couponCode');
-                              router.push(`?${params.toString()}`, {
-                                 scroll: false,
-                              });
-                           }}
+                           onClick={handleRemovePromoCode}
                         >
                            Remove
                         </Button>
                      </div>
                   ) : (
                      <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
-                        Sign in to apply promo code
+                        {selectedItems.length === 0
+                           ? 'Please select items to apply a promo code'
+                           : ''}
                      </p>
                   )}
                </div>
@@ -313,7 +201,7 @@ const CartPage = () => {
                      <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                         <div className="font-light">Subtotal</div>
                         <div className="font-semibold">
-                           ${(100.2).toFixed(2)}
+                           ${FALLBACK_SUBTOTAL.toFixed(2)}
                         </div>
                      </div>
                      <Accordion type="multiple" className="w-full h-full ">
@@ -327,7 +215,7 @@ const CartPage = () => {
                                     Other Discount
                                  </div>
                                  <div className="font-semibold">
-                                    - ${(1.2).toFixed(2)}
+                                    - ${FALLBACK_DISCOUNT.toFixed(2)}
                                  </div>
                               </div>
                            </AccordionContent>
@@ -338,17 +226,14 @@ const CartPage = () => {
                <div className="total w-full flex flex-col justify-start items-start pt-6">
                   <div className="w-full flex flex-row justify-between items-center text-[24px] font-semibold tracking-[0.2px]">
                      <div className="">Total</div>
-                     <div className="">${(100.2 - 1.2).toFixed(2)}</div>
+                     <div className="">
+                        ${(FALLBACK_SUBTOTAL - FALLBACK_DISCOUNT).toFixed(2)}
+                     </div>
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
                      disabled={isLoading || selectedItems.length === 0}
                      onClick={() => {
-                        console.log('Selected form items:', selectedItems);
-                        console.log(
-                           'Selected basket items:',
-                           selectedBasketItems,
-                        );
                         router.push('/checkout');
                      }}
                   >

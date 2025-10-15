@@ -1,5 +1,7 @@
-﻿using YGZ.Basket.Application.Abstractions;
+﻿using Grpc.Core;
+using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
+using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
@@ -56,13 +58,33 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
                 CouponCode = request.CouponCode
             };
 
-            var coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+            CouponModel coupon = null;
+
+            try
+            {
+                coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+            }
+            catch (RpcException ex)
+            {
+                if (ex.StatusCode == StatusCode.NotFound)
+                {
+                    return Errors.Discount.PromotionCouponNotFound;
+                }
+
+                // return new GetBasketResponse()
+                // {
+                //     UserEmail = FilterOutEventItemsShoppingCart.UserEmail,
+                //     CartItems = FilterOutEventItemsShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+                //     TotalAmount = FilterOutEventItemsShoppingCart.TotalAmount
+                // };
+            }
+
 
             if (coupon != null)
             {
                 var quantity = coupon.AvailableQuantity;
 
-                foreach(var item in FilterOutEventItemsShoppingCart.CartItems)
+                foreach (var item in FilterOutEventItemsShoppingCart.CartItems)
                 {
                     if (item.IsSelected == true)
                     {

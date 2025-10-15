@@ -1,65 +1,72 @@
 ﻿
 
-using YGZ.Ordering.Application.Orders;
-using YGZ.Ordering.Domain.Core.Primitives;
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Domain.Orders.Entities;
 
-public class OrderItem : Entity<OrderItemId>
+public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
 {
-    // For EF Core migration only
-    private OrderItem() : base(null!) { }
+    private OrderItem(OrderItemId id) : base(id) { }
 
-    public required string ProductId { get; set; }
-    public required string ModelId { get; set; }
-    public required string ProductName { get; set; }
-    public required string ProductColorName { get; set; }
-    public required decimal ProductUnitPrice { get; set; }
-    public required string ProductImage { get; set; }
-    public required string ProductSlug { get; set; }
-    public required int Quantity { get; set; }
-    public Promotion? Promotion { get; set; } = null;
-    public bool IsReviewed { get; set; } = false;
-
-    // Add this foreign key property
-    public OrderId OrderId { get; set; }
-
-    // Navigation property back to Order
-    public Order Order { get; set; }
+    public required OrderId OrderId { get; init; }
+    public SkuId? SKUId { get; init; }
+    public required string ModelId { get; init; }
+    public required string ModelName { get; init; }
+    public required string ColorName { get; init; }
+    public required string StorageName { get; init; }
+    public required decimal UnitPrice { get; init; }
+    public required string DisplayImageUrl { get; init; }
+    public required string ModelSlug { get; init; }
+    public required int Quantity { get; init; }
+    public Promotion? Promotion { get; init; } = null;
+    public decimal SubTotalAmount { get; init; }
+    public bool IsReviewed { get; private set; } = false;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
+    public string? UpdatedBy { get; init; } = null;
+    public bool IsDeleted { get; init; } = false;
+    public DateTime? DeletedAt { get; init; } = null;
+    public string? DeletedBy { get; init; } = null;
 
     public static OrderItem Create(OrderItemId orderItemId,
                                    OrderId orderId,
-                                   string productId,
+                                   SkuId? skuId,
                                    string modelId,
-                                   string productName,
-                                   string productColorName,
-                                   decimal productUnitPrice,
-                                   string productImage,
-                                   string productSlug,
+                                   string modelName,
+                                   string colorName,
+                                   string storageName,
+                                   decimal unitPrice,
+                                   string displayImageUrl,
+                                   string modelSlug,
                                    int quantity,
-                                   Promotion? promotion)
+                                   Promotion? promotion,
+                                   decimal subTotalAmount,
+                                   bool isReviewed)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(productId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(productName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(productColorName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(productImage);
         ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
 
-
-        return new OrderItem
+        return new OrderItem(orderItemId)
         {
-            Id = orderItemId,
             OrderId = orderId,
-            ProductId = productId,
+            SKUId = skuId,
             ModelId = modelId,
-            ProductName = productName,
-            ProductColorName = productColorName,
-            ProductUnitPrice = productUnitPrice,
-            ProductImage = productImage,
-            ProductSlug = productSlug,
+            ModelName = modelName,
+            ColorName = colorName,
+            StorageName = storageName,
+            UnitPrice = unitPrice,
+            DisplayImageUrl = displayImageUrl,
+            ModelSlug = modelSlug,
             Quantity = quantity,
-            Promotion = promotion
+            Promotion = promotion,
+            SubTotalAmount = subTotalAmount,
+            IsReviewed = isReviewed
         };
+    }
+
+    public void CheckIsReviewed()
+    {
+        this.IsReviewed = true;
     }
 }

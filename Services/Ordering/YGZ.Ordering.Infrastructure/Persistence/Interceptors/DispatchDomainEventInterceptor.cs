@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using YGZ.Ordering.Domain.Core.Abstractions;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Abstractions;
 
 namespace YGZ.Ordering.Infrastructure.Persistence.Interceptors;
 

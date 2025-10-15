@@ -38,7 +38,7 @@ public class UpdateReviewCommandHandler : ICommandHandler<UpdateReviewCommand, B
 
             var orderItem = await _repository.GetByIdAsync(id, cancellationToken);
 
-            orderItem.IsReviewed = request.IsReviewed;
+            orderItem.CheckIsReviewed();
 
             var result = await _repository.UpdateAsync(orderItem, cancellationToken);
 

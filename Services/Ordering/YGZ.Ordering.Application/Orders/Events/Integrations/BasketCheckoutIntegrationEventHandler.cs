@@ -21,7 +21,7 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
 
     public async Task Consume(ConsumeContext<BasketCheckoutIntegrationEvent> context)
     {
-        _logger.LogInformation("Integration envent handled: {IntegrationEvent}", context.Message.GetType().Name);
+        _logger.LogInformation("Integration event handled: {IntegrationEvent}", context.Message.GetType().Name);
 
         CreateOrderCommand command = MapToCreateOrderCommand(context.Message);
 
@@ -30,53 +30,50 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
 
     private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent context)
     {
-        throw new NotImplementedException();
-        //var shippingAddress = new ShippingAddressCommand
-        //{
-        //    ContactName = context.ContactName,
-        //    ContactPhoneNumber = context.ContactPhoneNumber,
-        //    AddressLine = context.AddressLine,
-        //    District = context.District,
-        //    Province = context.Province,
-        //    Country = context.Country
-        //};
+        var shippingAddress = new ShippingAddressCommand
+        {
+            ContactName = context.ContactName,
+            ContactPhoneNumber = context.ContactPhoneNumber,
+            AddressLine = context.AddressLine,
+            District = context.District,
+            Province = context.Province,
+            Country = context.Country
+        };
 
-        //var orderItems = context.OrderItems.Select(x => new OrderItemCommand
-        //{
-        //    ProductId = x.ProductId,
-        //    ModelId = x.ModelId,
-        //    ProductName = x.ProductName,
-        //    ProductColorName = x.ProductColorName,
-        //    ProductUnitPrice = x.ProductUnitPrice,
-        //    ProductNameTag = x.ProductNameTag,
-        //    ProductImage = x.ProductImage,
-        //    ProductSlug = x.ProductSlug,
-        //    Quantity = x.Quantity,
-        //    Promotion = x.Promotion is not null
-        //        ? new PromotionCommand
-        //        {
-        //            PromotionIdOrCode = x.Promotion.PromotionIdOrCode,
-        //            PromotionEventType = x.Promotion.PromotionEventType,
-        //            PromotionTitle = x.Promotion.PromotionTitle,
-        //            PromotionDiscountType = x.Promotion.PromotionDiscountType,
-        //            PromotionDiscountValue = x.Promotion.PromotionDiscountValue,
-        //            PromotionDiscountUnitPrice = x.Promotion.PromotionDiscountUnitPrice,
-        //            PromotionAppliedProductCount = x.Promotion.PromotionAppliedProductCount,
-        //            PromotionFinalPrice = x.Promotion.PromotionFinalPrice
-        //        }
-        //        : null
-        //}).ToList();
+        var orderItems = context.Cart.OrderItems.Select(item => new OrderItemCommand
+        {
+            ModelId = item.ModelId,
+            ProductName = item.ProductName,
+            NormalizedModel = item.NormalizedModel,
+            NormalizedColor = item.NormalizedColor,
+            NormalizedStorage = item.NormalizedStorage,
+            UnitPrice = item.UnitPrice,
+            DisplayImageUrl = item.DisplayImageUrl,
+            ModelSlug = item.ModelSlug,
+            Quantity = item.Quantity,
+            SubTotalAmount = item.SubTotalAmount,
+            Promotion = item.Promotion != null ? new PromotionInItemCommand
+            {
+                PromotionIdOrCode = item.Promotion.PromotionIdOrCode,
+                PromotionType = item.Promotion.PromotionType,
+                DiscountType = item.Promotion.DiscountType,
+                DiscountValue = item.Promotion.DiscountValue,
+                DiscountAmount = item.Promotion.DiscountAmount,
+                FinalPrice = item.Promotion.FinalPrice
+            } : null
+        }).ToList();
 
-        //var command = new CreateOrderCommand(OrderId: context.OrderId,
-        //                                     CustomerEmail: context.CustomerEmail,
-        //                                     CustomerId: context.CustomerId,
-        //                                     OrderItems: orderItems,
-        //                                     ShippingAddress: shippingAddress,
-        //                                     PaymentMethod: context.PaymentMethod,
-        //                                     DiscountAmount: context.DiscountAmount,
-        //                                     SubTotalAmount: context.SubTotalAmount,
-        //                                     TotalAmount: context.TotalAmount);
+        var command = new CreateOrderCommand
+        {
+            OrderId = context.OrderId,
+            CustomerId = context.CustomerId,
+            CustomerEmail = context.CustomerEmail,
+            ShippingAddress = shippingAddress,
+            OrderItems = orderItems,
+            PaymentMethod = context.PaymentMethod,
+            TotalAmount = context.Cart.TotalAmount
+        };
 
-        //return command;
+        return command;
     }
 }

@@ -1,4 +1,5 @@
-﻿using YGZ.Basket.Application.Abstractions;
+﻿using Grpc.Core;
+using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
@@ -74,7 +75,19 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 CouponCode = request.CouponCode
             };
 
-            var coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+            CouponModel coupon = null;
+
+            try
+            {
+                coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+            }
+            catch (RpcException ex)
+            {
+                if (ex.StatusCode == StatusCode.NotFound)
+                {
+                    return Errors.Discount.PromotionCouponNotFound;
+                }
+            }
 
             if (coupon != null)
             {

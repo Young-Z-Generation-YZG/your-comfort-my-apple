@@ -1,7 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations.Schema;
-using YGZ.Ordering.Domain.Core.Primitives;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -21,7 +21,6 @@ public class Code : ValueObject
 
     public static Code GenerateCode()
     {
-        // Generate two random uppercase letters
         var random = new Random();
 
         // Generate 6 random digits

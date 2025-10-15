@@ -1,18 +1,15 @@
 ﻿
 
-using YGZ.Ordering.Domain.Core.Exceptions;
-using YGZ.Ordering.Domain.Core.Primitives;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class OrderItemId : ValueObject
 {
-    public Guid Value { get; }
-    private OrderItemId(Guid guid) => Value = guid;
-
-    public override IEnumerable<object> GetEqualityComponents()
+    public Guid Value { get; init; }
+    private OrderItemId(Guid guid)
     {
-        yield return Value;
+        Value = guid;
     }
 
     public static OrderItemId Create()
@@ -20,16 +17,27 @@ public class OrderItemId : ValueObject
         return new OrderItemId(Guid.NewGuid());
     }
 
-    public static OrderItemId Of(Guid guid)
+    public static OrderItemId Of(string guid)
     {
-        ArgumentNullException.ThrowIfNull(guid);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(guid);
 
-        if (guid == Guid.Empty)
+        Guid.TryParse(guid, out var parsedGuid);
+
+        if (parsedGuid == Guid.Empty)
         {
-            throw new DomainException("OrderItemId cannot be empty.");
+            throw new ArgumentException("Invalid GUID format", nameof(parsedGuid));
         }
 
+        return new OrderItemId(parsedGuid);
+    }
 
+    public static OrderItemId Of(Guid guid)
+    {
         return new OrderItemId(guid);
+    }
+
+    public override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

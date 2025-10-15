@@ -5,17 +5,23 @@ namespace YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 
 public record BasketCheckoutIntegrationEvent : IntegrationEvent
 {
-    public Guid OrderId { get; set; } = default!;
-    public string CustomerId { get; set; } = default!;
-    public string CustomerEmail { get; set; } = default!;
-    public string PaymentMethod { get; set; } = default!;
-    public string ContactName { get; set; } = default!;
-    public string ContactPhoneNumber { get; set; } = default!;
-    public string AddressLine { get; set; } = default!;
-    public string District { get; set; } = default!;
-    public string Province { get; set; } = default!;
-    public string Country { get; set; } = default!;
-    public List<CheckoutItemIntegrationEvent> OrderItems { get; set; } = new();
+    public required Guid OrderId { get; init; }
+    public required string CustomerId { get; init; }
+    public required string CustomerEmail { get; init; }
+    public required string ContactName { get; init; }
+    public required string ContactPhoneNumber { get; init; }
+    public required string AddressLine { get; init; }
+    public required string District { get; init; }
+    public required string Province { get; init; }
+    public required string Country { get; init; }
+    public required string PaymentMethod { get; init; }
+    public required CartCommand Cart { get; init; }
+}
+
+public record CartCommand {
+    public required List<CheckoutItemIntegrationEvent> OrderItems { get; init; }
+    public required decimal TotalAmount { get; init; }
+    
 }
 
 public record CheckoutItemIntegrationEvent

@@ -7,17 +7,21 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record OrderDetailsResponse()
 {
-    required public string OrderId { get; set; }
-    required public string OrderCode { get; set; }
-    required public string OrderCustomerEmail { get; set; }
-    required public string OrderStatus { get; set; }
-    required public string OrderPaymentMethod { get; set; }
-    required public ShippingAddressResponse OrderShippingAddress { get; set; }
-    required public List<OrderItemRepsonse> OrderItems { get; set; } = new List<OrderItemRepsonse>();
-    required public decimal OrderSubTotalAmount { get; set; }
-    required public decimal OrderDiscountAmount { get; set; }
-    required public decimal OrderTotalAmount { get; set; }
-    required public DateTime OrderCreatedAt { get; set; }
-    required public DateTime OrderUpdatedAt { get; set; }
-    required public string? OrderLastModifiedBy { get; set; }
+    public required string TenantId { get; init; }
+    public required string BranchId { get; init; }
+    public required string OrderId { get; init; }
+    public required string CustomerId { get; init; }
+    public required string CustomerEmail { get; init; }
+    public required string OrderCode { get; init; }
+    public required string Status { get; init; }
+    public required string PaymentMethod { get; init; }
+    public required ShippingAddressResponse ShippingAddress { get; init; }
+    public required List<OrderItemResponse> OrderItems { get; init; } = new List<OrderItemResponse>();
+    public required decimal TotalAmount { get; init; }
+    public required DateTime CreatedAt { get; init; }
+    public required DateTime UpdatedAt { get; init; }
+    public required string? UpdatedBy { get; init; }
+    public required bool IsDeleted { get; init; }
+    public required DateTime? DeletedAt { get; init; }
+    public required string? DeletedBy { get; init; }
 }

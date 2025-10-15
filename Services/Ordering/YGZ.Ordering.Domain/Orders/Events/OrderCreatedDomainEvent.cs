@@ -1,7 +1,7 @@
 ﻿
 
+using YGZ.BuildingBlocks.Shared.Domain.Core.Abstractions;
 using YGZ.Ordering.Application.Orders;
-using YGZ.Ordering.Domain.Core.Abstractions;
 
 namespace YGZ.Ordering.Domain.Orders.Events;
 

@@ -1,55 +1,88 @@
-﻿
-
-using YGZ.Ordering.Domain.Core.Primitives;
+﻿using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
+using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class Promotion : ValueObject
 {
-    public required string PromotionIdOrCode { get; set; }
+    public string PromotionIdOrCode { get; init; }
+    public string PromotionType { get; init; }
+    public decimal ProductUnitPrice { get; init; }
+    public string DiscountType { get; init; }
+    public decimal DiscountValue { get; init; }
+    public decimal DiscountAmount { get; init; }
 
-    public required string PromotionEventType { get; set; }
+    public decimal FinalPrice
+    {
+        get
+        {
+            if (DiscountType == EDiscountType.PERCENTAGE.Name)
+            {
+                return ProductUnitPrice - (ProductUnitPrice * DiscountValue);
+            }
+            else
+            {
+                return ProductUnitPrice - DiscountValue;
+            }
+        }
+    }
 
-    public string PromotionTitle { get; set; } = "UNKNOWN";
-
-    public required string PromotionDiscountType { get; set; }
-
-    public required decimal PromotionDiscountValue { get; set; }
-    public required decimal PromotionDiscountUnitPrice { get; set; }
-    public required int PromotionAppliedProductCount { get; set; }
-    public required decimal PromotionFinalPrice { get; set; }
+    private Promotion(string promotionIdOrCode,
+                      string promotionType,
+                      decimal productUnitPrice,
+                      string discountType,
+                      decimal discountValue,
+                      decimal discountAmount)
+    {
+        PromotionIdOrCode = promotionIdOrCode;
+        PromotionType = promotionType;
+        ProductUnitPrice = productUnitPrice;
+        DiscountType = discountType;
+        DiscountValue = discountValue;
+        DiscountAmount = discountAmount;
+    }
 
     public static Promotion Create(string promotionIdOrCode,
-                                    string promotionEventType,
-                                    string promotionTitle,
-                                    string promotionDiscountType,
-                                    decimal promotionDiscountValue,
-                                    decimal promotionDiscountUnitPrice,
-                                    int promotionAppliedProductCount,
-                                    decimal promotionFinalPrice)
+                                   string promotionType,
+                                   decimal productUnitPrice,
+                                   string discountType,
+                                   decimal discountValue,
+                                   decimal discountAmount)
     {
-        return new Promotion
-        {
-            PromotionIdOrCode = promotionIdOrCode,
-            PromotionTitle = promotionTitle!,
-            PromotionEventType = promotionEventType,
-            PromotionDiscountType = promotionDiscountType,
-            PromotionDiscountValue = promotionDiscountValue,
-            PromotionDiscountUnitPrice = promotionDiscountUnitPrice,
-            PromotionAppliedProductCount = promotionAppliedProductCount,
-            PromotionFinalPrice = promotionFinalPrice
-        };
+        return new Promotion(promotionIdOrCode,
+                             promotionType,
+                             productUnitPrice,
+                             discountType,
+                             discountValue,
+                             discountAmount);
+    }
+
+    public static Promotion Of(
+        string promotionIdOrCode,
+        string promotionType,
+        decimal productUnitPrice,
+        string discountType,
+        decimal discountValue,
+        decimal discountAmount)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(promotionIdOrCode);
+        ArgumentException.ThrowIfNullOrWhiteSpace(promotionType);
+        ArgumentException.ThrowIfNullOrWhiteSpace(discountType);
+
+        return new Promotion(promotionIdOrCode,
+                             promotionType,
+                             productUnitPrice,
+                             discountType,
+                             discountValue,
+                             discountAmount);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return PromotionIdOrCode;
-        yield return PromotionEventType;
-        yield return PromotionTitle;
-        yield return PromotionDiscountType;
-        yield return PromotionDiscountValue;
-        yield return PromotionDiscountUnitPrice;
-        yield return PromotionAppliedProductCount;
-        yield return PromotionFinalPrice;
+        yield return PromotionType;
+        yield return DiscountType;
+        yield return DiscountValue;
+        yield return DiscountAmount;
     }
 }

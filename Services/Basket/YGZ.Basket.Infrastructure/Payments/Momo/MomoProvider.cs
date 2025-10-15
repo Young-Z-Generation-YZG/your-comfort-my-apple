@@ -37,7 +37,6 @@ public class MomoProvider : IMomoProvider
             + $"&extraData=";
 
         var signature = ComputeHmacSha256(rawData, _momoSettings.SecrectKey);
-        var signature2 = ComputeHmacSha256(rawData, _momoSettings.SecrectKey);
 
         var client = new RestClient(_momoSettings.MomoUrl);
         var request = new RestRequest() { Method = Method.Post };

@@ -2,6 +2,7 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Orders;
 using YGZ.Ordering.Domain.Orders.ValueObjects;

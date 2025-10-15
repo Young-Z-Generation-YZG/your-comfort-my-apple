@@ -52,3 +52,4 @@ docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
 docker cp ygz.keycloak.server:/tmp/export ./DockerVolumes/KeycloakConfiguration/production
 
 dotnet ef migrations add "InitialMigration" --startup-project ./Services/Discount/YGZ.Discount.Grpc --project ./Services/Discount/YGZ.Discount.Infrastructure --output-dir Persistence/Migrations
+dotnet ef migrations add "InitialMigration" --startup-project ./Services/Ordering/YGZ.Ordering.Api --project ./Services/Ordering/YGZ.Ordering.Infrastructure --output-dir Persistence/Migrations

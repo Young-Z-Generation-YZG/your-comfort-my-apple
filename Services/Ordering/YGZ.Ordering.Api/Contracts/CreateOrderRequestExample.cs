@@ -1,5 +1,4 @@
 ﻿using NJsonSchema.Generation;
-using YGZ.Ordering.Domain.Core.Enums;
 
 namespace YGZ.Ordering.Api.Contracts;
 

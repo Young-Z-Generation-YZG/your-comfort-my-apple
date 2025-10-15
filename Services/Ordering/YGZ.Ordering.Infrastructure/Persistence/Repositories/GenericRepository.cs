@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.Ordering.Application.Abstractions.Data;
-using YGZ.Ordering.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Infrastructure.Persistence.Repositories;
 
@@ -50,7 +50,8 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
             if (_page.HasValue && _limit.HasValue)
             {
                 query = query.Skip((_page.Value - 1) * _limit.Value).Take(_limit.Value);
-            } else
+            }
+            else
             {
                 query = query.Skip((defaultPage - 1) * defaultLimit).Take(defaultLimit);
             }
