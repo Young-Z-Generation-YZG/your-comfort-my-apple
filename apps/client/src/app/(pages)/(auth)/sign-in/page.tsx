@@ -13,15 +13,13 @@ import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
 // import useAuth from '@components/hooks/use-auth';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import useAuth from '../_hooks/use-auth';
 
 const SignInPage = () => {
-   //  const [isLoading, setIsLoading] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
 
-   const { login, isLoading } = useAuth();
+   const { login, isLoading: isLoginLoading } = useAuth();
    //  const { toast } = useToast();
    //  const appStateRoute = useAppSelector((state) => state.app.route);
    //  const router = useRouter();
@@ -37,6 +35,18 @@ const SignInPage = () => {
    const onSubmit = async (data: LoginFormType) => {
       await login(data);
    };
+
+   useEffect(() => {
+      if (isLoginLoading) {
+         setIsLoading(true);
+      } else {
+         const timeoutId = setTimeout(() => {
+            setIsLoading(false);
+         }, 300);
+
+         return () => clearTimeout(timeoutId);
+      }
+   }, [isLoginLoading]);
 
    //  useEffect(() => {
    //     if (typeof signInData === 'object' && signInData !== null) {

@@ -1,6 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+   createApi,
+   fetchBaseQuery,
+   FetchBaseQueryError,
+   FetchBaseQueryMeta,
+   QueryReturnValue,
+} from '@reduxjs/toolkit/query/react';
 import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
-import { setLogin } from '../redux/features/auth.slice';
+import { setLogin, setLogout } from '../redux/features/auth.slice';
 import { HttpErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import {
@@ -15,8 +21,6 @@ import {
    sendEmailResetPasswordFormType,
 } from '~/domain/schemas/auth.schema';
 import { RootState } from '../redux/store';
-import { toast } from 'sonner';
-import { isFetchBaseQueryError } from '../utils/http/fetch-error-handler';
 
 export const AuthApi = createApi({
    reducerPath: 'auth-api',
@@ -62,10 +66,40 @@ export const AuthApi = createApi({
                   );
                }
             } catch (error: unknown) {
-               console.log(isFetchBaseQueryError(error));
-
                console.info(
                   '[AuthService]::login::try/catch',
+                  JSON.stringify(error, null, 2),
+               );
+            }
+         },
+      }),
+      logout: builder.mutation<void, void>({
+         queryFn: async (_, { getState }, __, baseQuery) => {
+            const refreshToken = (getState() as RootState).auth.refreshToken;
+
+            const result = await baseQuery({
+               url: '/api/v1/auth/logout',
+               method: 'POST',
+               headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+               },
+            });
+
+            return {
+               data: true,
+               error: null,
+            } as unknown as QueryReturnValue<
+               void,
+               FetchBaseQueryError,
+               FetchBaseQueryMeta
+            >;
+         },
+         onQueryStarted(arg, { dispatch }) {
+            try {
+               dispatch(setLogout());
+            } catch (error: unknown) {
+               console.info(
+                  '[AuthService]::logout::try/catch',
                   JSON.stringify(error, null, 2),
                );
             }
@@ -131,4 +165,5 @@ export const {
    useSendEmailResetPasswordMutation,
    useResetPasswordMutation,
    useChangePasswordMutation,
+   useLogoutMutation,
 } = AuthApi;

@@ -2,7 +2,7 @@
 
 import { useGetIphonePromotionsAsyncQuery } from '~/infrastructure/services/catalog.service';
 import { useGetActivePromotionEventAsyncQuery } from '~/infrastructure/services/promotion.service';
-import CategoriesCarousel from '@components/layouts/categories-carousel';
+import CategoriesCarousel from '@components/client/categories-carousel';
 import { useEffect, useState } from 'react';
 import PromotionBanner from './_components/promotion-banner';
 import {

@@ -6,9 +6,10 @@ import { MdOutlineManageAccounts } from 'react-icons/md';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '~/infrastructure/redux/store';
-import { setLogout } from '~/infrastructure/redux/features/auth.slice';
+// import { useAppSelector } from '~/infrastructure/redux/store';
+// import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { useRouter } from 'next/navigation';
+import useAuth from '~/app/(pages)/(auth)/_hooks/use-auth';
 
 // Staggered animation variants
 const containerVariants = {
@@ -22,16 +23,18 @@ const containerVariants = {
 };
 
 const UserMenu = () => {
-   const router = useRouter();
-   const dispatch = useDispatch();
+   //  const router = useRouter();
+   //  const dispatch = useDispatch();
 
-   const { isAuthenticated, userEmail } = useAppSelector(
-      (state) => state.auth.value,
-   );
+   //  const { isAuthenticated, userEmail } = useAppSelector(
+   //     (state) => state.auth.value,
+   //  );
+
+   const { isAuthenticated, logout } = useAuth();
 
    return (
       <motion.div
-         className="sub-category absolute top-[44px] left-0 w-full bg-[#fafafc] text-black z-50"
+         className="absolute top-[44px] left-0 w-full bg-[#fafafc] text-black z-50"
          initial={{ height: 0, opacity: 0 }}
          animate={{
             height: 'auto',
@@ -105,9 +108,8 @@ const UserMenu = () => {
                   ) : (
                      <li
                         className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600"
-                        onClick={() => {
-                           dispatch(setLogout());
-                           router.replace('/sign-in');
+                        onClick={async () => {
+                           await logout();
                         }}
                      >
                         <RiLogoutBoxRLine

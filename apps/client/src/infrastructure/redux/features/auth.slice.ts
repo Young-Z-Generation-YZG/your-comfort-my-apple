@@ -36,9 +36,19 @@ const authSlice = createSlice({
          state.accessTokenExpiredIn = action.payload.accessTokenExpiredIn;
          state.isAuthenticated = true;
       },
+
+      setLogout: (state) => {
+         state.userId = null;
+         state.userEmail = null;
+         state.username = null;
+         state.accessToken = null;
+         state.refreshToken = null;
+         state.accessTokenExpiredIn = null;
+         state.isAuthenticated = false;
+      },
    },
 });
 
-export const { setLogin } = authSlice.actions;
+export const { setLogin, setLogout } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,23 +1,39 @@
 import { useCallback, useMemo } from 'react';
 import { LoginFormType } from '~/domain/schemas/auth.schema';
-import { useLoginMutation } from '~/infrastructure/services/auth.service';
+import {
+   useChangePasswordMutation,
+   useLoginMutation,
+   useResetPasswordMutation,
+   useSendEmailResetPasswordMutation,
+   useVerifyOtpMutation,
+   useRegisterMutation,
+   useLogoutMutation,
+} from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
-// import {
-// } from '~/infrastructure/utils/http/rtk-query-error-handler';
-
-// import { useToast } from '@components/hooks/use-toast';
 import { toast } from 'sonner';
+import { useCheckApiError } from './use-check-error';
 
 const useAuth = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
+   const [registerMutation, registerMutationState] = useRegisterMutation();
+   const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
+   const [sendEmailResetPasswordMutation, sendEmailResetPasswordMutationState] =
+      useSendEmailResetPasswordMutation();
+   const [resetPasswordMutation, resetPasswordMutationState] =
+      useResetPasswordMutation();
+   const [changePasswordMutation, changePasswordMutationState] =
+      useChangePasswordMutation();
+   const [logoutMutation, logoutMutationState] = useLogoutMutation();
+
+   useCheckApiError([
+      { title: 'Login failed', error: loginMutationState.error },
+   ]);
 
    const authAppState = useAppSelector((state) => state.auth);
 
    const isAuthenticated = useMemo(() => {
       return Boolean(authAppState.accessToken && authAppState.isAuthenticated);
-   }, [authAppState.accessToken, authAppState.isAuthenticated]);
-
-   //  const { toast } = useToast();
+   }, [authAppState]);
 
    const login = useCallback(
       async (data: LoginFormType) => {
@@ -36,45 +52,19 @@ const useAuth = () => {
       [loginMutation],
    );
 
+   const logout = useCallback(async () => {
+      try {
+         await logoutMutation().unwrap();
+         return { isSuccess: true, isError: false, data: true, error: null };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [logoutMutation]);
+
    // centrally track the loading state
    const isLoading = useMemo(() => {
       return loginMutationState.isLoading;
    }, [loginMutationState.isLoading]);
-
-   // centrally track the error
-   useMemo(() => {
-      let title = null;
-      let description = null;
-      const style = {
-         backgroundColor: '#FEE2E2',
-         color: '#991B1B',
-         border: '1px solid #FCA5A5',
-      };
-      const cancel = {
-         label: 'Close',
-         onClick: () => {},
-         actionButtonStyle: {
-            backgroundColor: '#991B1B',
-            color: '#FFFFFF',
-         },
-      };
-
-      if (loginMutationState.isError) {
-         title = 'Login failed';
-         description = 'Wrong email or password';
-
-         toast.error(title, {
-            description: description,
-            style: style,
-            cancel: cancel,
-         });
-
-         console.error(
-            '[useAuth]::loginMutationState.isError',
-            loginMutationState.isError,
-         );
-      }
-   }, [loginMutationState]);
 
    // centrally track the success
    useMemo(() => {
@@ -97,8 +87,6 @@ const useAuth = () => {
       }
    }, [loginMutationState]);
 
-   // check type of error
-
    return {
       // States
       isLoading,
@@ -106,6 +94,7 @@ const useAuth = () => {
 
       // Actions
       login,
+      logout,
    };
 };
 
