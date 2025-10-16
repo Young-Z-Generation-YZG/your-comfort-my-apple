@@ -10,7 +10,7 @@ public sealed record OrderItemResponse()
 {
     public required string OrderId { get; init; }
     public required string OrderItemId { get; init; }
-    public required string SkuId { get; init; }
+    public string? SkuId { get; init; }
     public required string ModelId { get; init; }
     public required string ModelName { get; init; }
     public required string ColorName { get; init; }
@@ -20,7 +20,7 @@ public sealed record OrderItemResponse()
     public required string ModelSlug { get; init; }
     public required int Quantity { get; init; }
     public PromotionResponse? Promotion { get; init; } = null;
-    public bool IsReviewed { get; private set; } = false;
+    public bool IsReviewed { get; init; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
     public string? UpdatedBy { get; init; } = null;

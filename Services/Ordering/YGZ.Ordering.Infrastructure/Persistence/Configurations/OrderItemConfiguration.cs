@@ -22,7 +22,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .HasConversion(id => id.Value, value => OrderId.Of(value))
             .IsRequired();
 
-        builder.Property(oi => oi.SKUId)
+        builder.Property(oi => oi.SkuId)
             .HasConversion(id => id != null ? id.Value : null, value => value != null ? SkuId.Of(value) : null)
             .IsRequired(false);
 
@@ -67,7 +67,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.ComplexProperty(oi => oi.Promotion, promotion =>
         {
             promotion.IsRequired();
-            
+
             promotion.Property(p => p.PromotionIdOrCode)
                 .HasColumnName("Promotion_IdOrCode")
                 .HasMaxLength(100)

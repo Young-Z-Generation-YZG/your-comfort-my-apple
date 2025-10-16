@@ -1,5 +1,6 @@
 ﻿
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -7,20 +8,20 @@ using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Register;
-using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Application.Emails;
+using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Domain.Core.Enums;
-using Microsoft.Extensions.Configuration;
+using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Auths.Commands.ResetPassword;
 
-public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand, ResetPasswordVerificationResponse>
+public class ResetPasswordHandler : ICommandHandler<ResetPasswordCommand, ResetPasswordVerificationResponse>
 {
     private readonly IIdentityService _identityService;
     private readonly IEmailService _emailService;
     private readonly string _webClientUrl;
-    private readonly ILogger<RegisterCommandHandler> _logger;
-    public ResetPasswordCommandHandler(IIdentityService identityService, IEmailService emailService, ILogger<RegisterCommandHandler> logger, IConfiguration configuration)
+    private readonly ILogger<RegisterHandler> _logger;
+    public ResetPasswordHandler(IIdentityService identityService, IEmailService emailService, ILogger<RegisterHandler> logger, IConfiguration configuration)
     {
         _identityService = identityService;
         _emailService = emailService;
@@ -32,7 +33,7 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
     {
         var userAsync = await _identityService.FindUserAsync(request.Email).ConfigureAwait(false);
 
-        if(userAsync.IsFailure)
+        if (userAsync.IsFailure)
         {
             return userAsync.Error;
         }
@@ -56,7 +57,16 @@ public class ResetPasswordCommandHandler : ICommandHandler<ResetPasswordCommand,
                     Attachments: null
         );
 
-        await _emailService.SendEmailAsync(command);
+        try
+        {
+            await _emailService.SendEmailAsync(command);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Failed to send reset password email to {Email}. Error: {Error}", request.Email, ex.Message);
+
+            return Errors.Email.FailureToSendEmail;
+        }
 
         Dictionary<string, string> Params = new Dictionary<string, string>
         {

@@ -9,12 +9,12 @@ using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.UpdateAddress;
 
-public class UpdateAddressCommandHandler : ICommandHandler<UpdateAddressCommand, bool>
+public class UpdateAddressHandler : ICommandHandler<UpdateAddressCommand, bool>
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRequestContext _userContext;
 
-    public UpdateAddressCommandHandler(IAddressRepository addressRepository, IUserRequestContext userContext)
+    public UpdateAddressHandler(IAddressRepository addressRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userContext = userContext;

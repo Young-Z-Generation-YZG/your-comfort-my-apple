@@ -14,56 +14,55 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     protected readonly DbSet<TEntity> _dbSet;
     private readonly ILogger<GenericRepository<TEntity, TId>> _logger;
 
-    public GenericRepository(OrderDbContext orderDbContext)
+    public GenericRepository(OrderDbContext orderDbContext, ILogger<GenericRepository<TEntity, TId>> logger)
     {
         _orderDbContext = orderDbContext;
         _dbSet = orderDbContext.Set<TEntity>();
+        _logger = logger;
     }
 
-    public async Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
-                                                                                            int? _page,
-                                                                                            int? _limit,
-                                                                                            bool tracked,
-                                                                                            CancellationToken cancellationToken,
-                                                                                            params Expression<Func<TEntity, object>>[] includes)
+    public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
+                                                                                           int? page,
+                                                                                           int? limit,
+                                                                                           bool tracked,
+                                                                                           CancellationToken cancellationToken,
+                                                                                           params Expression<Func<TEntity, object>>[] includes)
     {
-        var defaultPage = 1;
-        var defaultLimit = 10;
+        const int defaultPage = 1;
+        const int defaultLimit = 10;
 
-        try
+        var currentPage = page ?? defaultPage;
+        var pageSize = limit ?? defaultLimit;
+
+        var query = _dbSet.AsQueryable();
+
+        // Apply eager loading
+        foreach (var include in includes)
         {
-            var query = _dbSet.AsQueryable();
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            if (filterExpression is not null)
-            {
-                query = query.Where(filterExpression);
-            }
-
-            var totalRecords = await query.CountAsync(cancellationToken);
-            var totalPages = (int)Math.Ceiling((double)totalRecords / _limit ?? defaultLimit);
-
-            if (_page.HasValue && _limit.HasValue)
-            {
-                query = query.Skip((_page.Value - 1) * _limit.Value).Take(_limit.Value);
-            }
-            else
-            {
-                query = query.Skip((defaultPage - 1) * defaultLimit).Take(defaultLimit);
-            }
-
-            var result = tracked ? await query.ToListAsync(cancellationToken) : await query.AsNoTracking().ToListAsync(cancellationToken);
-
-            return (result ?? new List<TEntity>(), totalRecords, totalPages);
+            query = query.Include(include);
         }
-        catch (Exception ex)
+
+        // Apply filters
+        if (filterExpression is not null)
         {
-            throw new Exception(ex.Message);
+            query = query.Where(filterExpression);
         }
+
+        // Get total count for pagination
+        var totalRecords = await query.CountAsync(cancellationToken);
+        var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+        // Apply pagination
+        query = query
+            .Skip((currentPage - 1) * pageSize)
+            .Take(pageSize);
+
+        // Execute query with or without tracking
+        var result = tracked
+            ? await query.ToListAsync(cancellationToken)
+            : await query.AsNoTracking().ToListAsync(cancellationToken);
+
+        return (result, totalRecords, totalPages);
     }
 
     virtual public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)

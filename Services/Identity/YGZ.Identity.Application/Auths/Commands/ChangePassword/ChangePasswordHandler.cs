@@ -7,12 +7,12 @@ using YGZ.Identity.Application.Abstractions.Services;
 
 namespace YGZ.Identity.Application.Auths.Commands.ChangePassword;
 
-public class ChangePasswordCommandHandler : ICommandHandler<ChangePasswordCommand, bool>
+public class ChangePasswordHandler : ICommandHandler<ChangePasswordCommand, bool>
 {
     private readonly IIdentityService _identityService;
     private readonly IUserRequestContext _userContext;
 
-    public ChangePasswordCommandHandler(IIdentityService identityService, IUserRequestContext userContext)
+    public ChangePasswordHandler(IIdentityService identityService, IUserRequestContext userContext)
     {
         _identityService = identityService;
         _userContext = userContext;

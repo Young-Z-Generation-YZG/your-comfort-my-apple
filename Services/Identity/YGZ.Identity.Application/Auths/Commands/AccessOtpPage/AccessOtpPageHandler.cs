@@ -6,11 +6,11 @@ using YGZ.Identity.Application.Abstractions.Services;
 
 namespace YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 
-public class AccessOtpPageCommandHandler : ICommandHandler<AccessOtpPageCommand, bool>
+public class AccessOtpPageHandler : ICommandHandler<AccessOtpPageCommand, bool>
 {
     private readonly IIdentityService _identityService;
 
-    public AccessOtpPageCommandHandler(IIdentityService identityService)
+    public AccessOtpPageHandler(IIdentityService identityService)
     {
         _identityService = identityService;
     }

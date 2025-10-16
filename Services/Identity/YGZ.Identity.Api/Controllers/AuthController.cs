@@ -9,18 +9,17 @@ using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 using YGZ.Identity.Application.Auths.Commands.Login;
-using YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/auth")]
 [ApiVersion(1)]
 [OpenApiTag("auth", Description = "Manage auths.")]
-[AllowAnonymous]
 public class AuthController : ApiController
 {
     private readonly ISender _sender;
@@ -33,6 +32,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<LoginCommand>(request);
@@ -43,6 +43,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<RegisterCommand>(request);
@@ -53,6 +54,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("change-password")]
+    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<ChangePasswordCommand>(request);
@@ -63,6 +65,7 @@ public class AuthController : ApiController
     }
 
     [HttpGet("private/page/otp")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetOtpPage([FromQuery] AccessOtpRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<AccessOtpPageCommand>(request);
@@ -73,6 +76,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("verification/email")]
+    [AllowAnonymous]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyEmailCommand>(request);
@@ -83,6 +87,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("reset-password")]
+    [AllowAnonymous]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<ResetPasswordCommand>(request);
@@ -93,6 +98,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("verification/reset-password")]
+    [AllowAnonymous]
     public async Task<IActionResult> ResetPassword([FromBody] VerifyResetPasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<VerifyResetPasswordCommand>(request);
@@ -102,13 +108,14 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshAccessTokenRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<RefreshAccessTokenCommand>(request);
+    //[HttpPost("refresh")]
+    //[Authorize(Policy = Policies.RoleStaff)]
+    //public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshAccessTokenRequest request, CancellationToken cancellationToken)
+    //{
+    //    var cmd = _mapper.Map<RefreshAccessTokenCommand>(request);
 
-        var result = await _sender.Send(cmd, cancellationToken);
+    //    var result = await _sender.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
+    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    //}
 }

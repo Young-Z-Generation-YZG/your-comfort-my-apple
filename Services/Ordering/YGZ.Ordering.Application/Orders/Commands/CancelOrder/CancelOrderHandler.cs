@@ -1,21 +1,27 @@
 ﻿
 
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Commands.CancelOrder;
 
 public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, bool>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserRequestContext _userContext;
+    private readonly ILogger<CancelOrderHandler> _logger;
 
-    public CancelOrderHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
+    public CancelOrderHandler(IGenericRepository<Order, OrderId> repository,
+                              IUserRequestContext userContext,
+                              ILogger<CancelOrderHandler> logger)
     {
-        _orderRepository = orderRepository;
+        _repository = repository;
         _userContext = userContext;
+        _logger = logger;
     }
 
     public async Task<Result<bool>> Handle(CancelOrderCommand request, CancellationToken cancellationToken)

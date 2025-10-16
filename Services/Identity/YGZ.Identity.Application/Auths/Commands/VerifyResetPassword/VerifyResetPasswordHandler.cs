@@ -7,10 +7,10 @@ using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 
-public class VerifyResetPasswordCommandHandler : ICommandHandler<VerifyResetPasswordCommand, bool>
+public class VerifyResetPasswordHandler : ICommandHandler<VerifyResetPasswordCommand, bool>
 {
     private readonly IIdentityService _identityService;
-    public VerifyResetPasswordCommandHandler(IIdentityService identityService)
+    public VerifyResetPasswordHandler(IIdentityService identityService)
     {
         _identityService = identityService;
     }

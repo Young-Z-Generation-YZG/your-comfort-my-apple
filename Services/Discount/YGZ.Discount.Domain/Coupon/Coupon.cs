@@ -31,19 +31,17 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
 
     public string? UpdatedBy => throw new NotImplementedException();
 
-    public static Coupon Create(
-        CouponId couponId,
-        Code code,
-        string title,
-        string description,
-        ECategoryType categoryType,
-        EDiscountState discountState,
-        EDiscountType discountType,
-        decimal discountValue,
-        decimal? maxDiscountAmount,
-        int availableQuantity,
-        int stock
-    )
+    public static Coupon Create(CouponId couponId,
+                                Code code,
+                                string title,
+                                string description,
+                                ECategoryType categoryType,
+                                EDiscountState discountState,
+                                EDiscountType discountType,
+                                decimal discountValue,
+                                decimal? maxDiscountAmount,
+                                int availableQuantity,
+                                int stock)
     {
         return new Coupon(couponId)
         {

@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
@@ -20,21 +19,18 @@ public class IdentityService : IIdentityService
     private readonly ILogger<IdentityService> _logger;
     private readonly IKeycloakService _keycloakService;
     RoleManager<IdentityRole> _roleManager;
-    private readonly IEmailService _emailService;
 
     public IdentityService(
         ILogger<IdentityService> logger,
         UserManager<User> userManager,
         IPasswordHasher<User> passwordHasher,
         IKeycloakService keycloakService,
-        IEmailService emailService,
         RoleManager<IdentityRole> roleManager)
     {
         _logger = logger;
         _userManager = userManager;
         _passwordHasher = passwordHasher;
         _keycloakService = keycloakService;
-        _emailService = emailService;
         _roleManager = roleManager;
     }
     public async Task<Result<User>> FindUserAsync(string email)

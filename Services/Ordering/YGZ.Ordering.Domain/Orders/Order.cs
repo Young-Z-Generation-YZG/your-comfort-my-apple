@@ -1,5 +1,6 @@
 ﻿
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
@@ -19,8 +20,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public required EPaymentMethod PaymentMethod { get; init; }
     public required EOrderStatus OrderStatus { get; init; }
     public required ShippingAddress ShippingAddress { get; init; }
-    private List<OrderItem> _orderItems { get; init; } = new();
-    public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
+    private readonly List<OrderItem> _orderItems = new();
+    public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
     public required decimal TotalAmount { get; init; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
@@ -119,4 +120,67 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     //        Status = OrderStatus.DELIVERED;
     //    }
     //}
+
+    public OrderDetailsResponse ToOrderDetailsResponse()
+    {
+        return new OrderDetailsResponse
+        {
+            TenantId = TenantId?.Value.ToString() ?? null,
+            BranchId = BranchId?.Value.ToString() ?? null,
+            OrderId = Id.Value.ToString(),
+            CustomerId = CustomerId.Value.ToString(),
+            CustomerEmail = ShippingAddress.ContactEmail,
+            OrderCode = Code.Value,
+            Status = OrderStatus.Name,
+            PaymentMethod = PaymentMethod.Name,
+            ShippingAddress = new ShippingAddressResponse
+            {
+                ContactName = ShippingAddress.ContactName,
+                ContactEmail = ShippingAddress.ContactEmail,
+                ContactPhoneNumber = ShippingAddress.ContactPhoneNumber,
+                ContactAddressLine = ShippingAddress.AddressLine,
+                ContactDistrict = ShippingAddress.District,
+                ContactProvince = ShippingAddress.Province,
+                ContactCountry = ShippingAddress.Country
+            },
+            OrderItems = OrderItems.Select(item => new OrderItemResponse
+            {
+                OrderId = Id.Value.ToString(),
+                OrderItemId = item.Id.Value.ToString(),
+                SkuId = item.SkuId?.Value.ToString() ?? null,
+                ModelId = item.ModelId,
+                ModelName = item.ModelName,
+                ColorName = item.ColorName,
+                StorageName = item.StorageName,
+                UnitPrice = item.UnitPrice,
+                DisplayImageUrl = item.DisplayImageUrl,
+                ModelSlug = item.ModelSlug,
+                Quantity = item.Quantity,
+                Promotion = item.Promotion is not null ? new PromotionResponse
+                {
+                    PromotionIdOrCode = item.Promotion.PromotionIdOrCode,
+                    PromotionType = item.Promotion.PromotionType,
+                    ProductUnitPrice = item.Promotion.ProductUnitPrice,
+                    DiscountType = item.Promotion.DiscountType,
+                    DiscountValue = item.Promotion.DiscountValue,
+                    DiscountAmount = item.Promotion.DiscountAmount,
+                    FinalPrice = item.Promotion.FinalPrice
+                } : null,
+                IsReviewed = item.IsReviewed,
+                CreatedAt = item.CreatedAt,
+                UpdatedAt = item.UpdatedAt,
+                UpdatedBy = item.UpdatedBy,
+                IsDeleted = item.IsDeleted,
+                DeletedAt = item.DeletedAt,
+                DeletedBy = item.DeletedBy
+            }).ToList(),
+            TotalAmount = TotalAmount,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
+    }
 }

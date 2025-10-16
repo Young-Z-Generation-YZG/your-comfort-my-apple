@@ -7,11 +7,11 @@ using YGZ.Identity.Application.Abstractions.Services;
 
 namespace YGZ.Identity.Application.Auths.Commands.RefreshAccessToken;
 
-public class RefreshAccessTokenCommandHandler : ICommandHandler<RefreshAccessTokenCommand, RefreshAccessTokenResponse>
+public class RefreshAccessTokenHandler : ICommandHandler<RefreshAccessTokenCommand, RefreshAccessTokenResponse>
 {
     private readonly IKeycloakService _keycloakService;
 
-    public RefreshAccessTokenCommandHandler(IKeycloakService keycloakService)
+    public RefreshAccessTokenHandler(IKeycloakService keycloakService)
     {
         _keycloakService = keycloakService;
     }

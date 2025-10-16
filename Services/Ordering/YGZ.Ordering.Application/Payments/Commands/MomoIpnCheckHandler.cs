@@ -5,19 +5,23 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Momo;
+using YGZ.Ordering.Application.Orders;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Payments.Commands;
 
 public class MomoIpnCheckHandler : ICommandHandler<MomoIpnCheckCommand, OrderDetailsResponse>
 {
     private readonly IMomoProvider _momoProvider;
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly ILogger<MomoIpnCheckHandler> _logger;
 
-    public MomoIpnCheckHandler(IMomoProvider momoProvider, IOrderRepository orderRepository, ILogger<MomoIpnCheckHandler> logger)
+    public MomoIpnCheckHandler(IMomoProvider momoProvider,
+                               IGenericRepository<Order, OrderId> repository,
+                               ILogger<MomoIpnCheckHandler> logger)
     {
         _momoProvider = momoProvider;
-        _orderRepository = orderRepository;
+        _repository = repository;
         _logger = logger;
     }
 

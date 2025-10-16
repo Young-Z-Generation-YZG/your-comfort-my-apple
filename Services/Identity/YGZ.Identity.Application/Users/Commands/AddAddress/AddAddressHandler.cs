@@ -8,12 +8,12 @@ using YGZ.Identity.Application.Users.Extensions;
 
 namespace YGZ.Identity.Application.Users.Commands.AddAddress;
 
-public class AddAddressCommandHandler : ICommandHandler<AddAddressCommand, bool>
+public class AddAddressHandler : ICommandHandler<AddAddressCommand, bool>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserRequestContext _userContext;
 
-    public AddAddressCommandHandler(IUserRepository userRepository, IUserRequestContext userContext)
+    public AddAddressHandler(IUserRepository userRepository, IUserRequestContext userContext)
     {
         _userRepository = userRepository;
         _userContext = userContext;

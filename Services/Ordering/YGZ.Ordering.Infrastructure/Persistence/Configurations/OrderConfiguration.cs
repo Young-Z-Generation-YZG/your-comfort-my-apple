@@ -90,6 +90,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                 .IsRequired();
         });
 
+        var navigation = builder.Metadata.FindNavigation(nameof(Order.OrderItems));
+        navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
+
         builder.HasMany(o => o.OrderItems)
             .WithOne()
             .HasForeignKey(oi => oi.OrderId)

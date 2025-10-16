@@ -9,13 +9,13 @@ using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 
-public class SetDefaultAddressCommandHandler : ICommandHandler<SetDefaultAddressCommand, bool>
+public class SetDefaultAddressHandler : ICommandHandler<SetDefaultAddressCommand, bool>
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserRequestContext _userContext;
 
-    public SetDefaultAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
+    public SetDefaultAddressHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userRepository = userRepository;

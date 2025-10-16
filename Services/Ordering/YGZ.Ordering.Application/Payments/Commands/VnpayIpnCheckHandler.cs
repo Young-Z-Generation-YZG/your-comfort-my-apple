@@ -5,20 +5,24 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Vnpay;
+using YGZ.Ordering.Application.Orders;
 using YGZ.Ordering.Domain.Core.Errors;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Payments.Commands;
 
 public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderDetailsResponse>
 {
     private readonly IVnpayProvider _vnpayProvider;
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly ILogger<VnpayIpnCheckHandler> _logger;
 
-    public VnpayIpnCheckHandler(IVnpayProvider vnpayProvider, IOrderRepository orderRepository, ILogger<VnpayIpnCheckHandler> logger)
+    public VnpayIpnCheckHandler(IVnpayProvider vnpayProvider,
+                                IGenericRepository<Order, OrderId> repository,
+                                ILogger<VnpayIpnCheckHandler> logger)
     {
         _vnpayProvider = vnpayProvider;
-        _orderRepository = orderRepository;
+        _repository = repository;
         _logger = logger;
     }
 

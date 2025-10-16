@@ -176,58 +176,58 @@ const listExperienceItem = [
 const HomePage = () => {
    const dispatch = useDispatch();
 
-   const { data: iphonePromotions, isSuccess: isSuccessIphonePromotions } =
-      useGetIphonePromotionsAsyncQuery();
+   //  const { data: iphonePromotions, isSuccess: isSuccessIphonePromotions } =
+   //     useGetIphonePromotionsAsyncQuery();
 
-   const {
-      data: modelsDataAsync,
-      isLoading: modelsDataIsLoading,
-      isSuccess: modelsDataIsSuccess,
-   } = useGetModelsAsyncQuery('');
+   //  const {
+   //     data: modelsDataAsync,
+   //     isLoading: modelsDataIsLoading,
+   //     isSuccess: modelsDataIsSuccess,
+   //  } = useGetModelsAsyncQuery('');
 
-   useEffect(() => {
-      if (isSuccessIphonePromotions && modelsDataIsSuccess) {
-         const links = modelsDataAsync.items.map((model) => {
-            return {
-               label: model.model_items.map((item) => {
-                  return item.model_name;
-               }),
-               slug: model.model_slug,
-            };
-         });
+   //  useEffect(() => {
+   //     if (isSuccessIphonePromotions && modelsDataIsSuccess) {
+   //        const links = modelsDataAsync.items.map((model) => {
+   //           return {
+   //              label: model.model_items.map((item) => {
+   //                 return item.model_name;
+   //              }),
+   //              slug: model.model_slug,
+   //           };
+   //        });
 
-         const products = iphonePromotions.items.map((item) => {
-            const model = modelsDataAsync.items.find(
-               (model) => model.model_id === item.product_model_id,
-            );
+   //        const products = iphonePromotions.items.map((item) => {
+   //           const model = modelsDataAsync.items.find(
+   //              (model) => model.model_id === item.product_model_id,
+   //           );
 
-            return {
-               name: item.promotion_product_name
-                  .replace(/p/g, 'P')
-                  .replace(/g/g, 'G')
-                  .replace(/b/g, 'B')
-                  .replace(/t/g, 'T'),
-               image: item.promotion_product_image,
-               unit_price: item.promotion_product_unit_price,
-               promotion_price: item.promotion_final_price,
-               promotion_rate: item.promotion_discount_value,
-               slug: model!.model_slug,
-            };
-         });
+   //           return {
+   //              name: item.promotion_product_name
+   //                 .replace(/p/g, 'P')
+   //                 .replace(/g/g, 'G')
+   //                 .replace(/b/g, 'B')
+   //                 .replace(/t/g, 'T'),
+   //              image: item.promotion_product_image,
+   //              unit_price: item.promotion_product_unit_price,
+   //              promotion_price: item.promotion_final_price,
+   //              promotion_rate: item.promotion_discount_value,
+   //              slug: model!.model_slug,
+   //           };
+   //        });
 
-         dispatch(
-            setSearchLinks(
-               links.map((item) => {
-                  return {
-                     label: item.label.join(' and '),
-                     slug: item.slug,
-                  };
-               }),
-            ),
-         );
-         dispatch(setSearchProducts(products));
-      }
-   }, [iphonePromotions, modelsDataAsync]);
+   //        dispatch(
+   //           setSearchLinks(
+   //              links.map((item) => {
+   //                 return {
+   //                    label: item.label.join(' and '),
+   //                    slug: item.slug,
+   //                 };
+   //              }),
+   //           ),
+   //        );
+   //        dispatch(setSearchProducts(products));
+   //     }
+   //  }, [iphonePromotions, modelsDataAsync]);
 
    return (
       <div

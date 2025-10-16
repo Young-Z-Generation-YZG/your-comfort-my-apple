@@ -7,13 +7,13 @@ using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 
-public class VerifyEmailCommandHandler : ICommandHandler<VerifyEmailCommand, bool>
+public class VerifyEmailHandler : ICommandHandler<VerifyEmailCommand, bool>
 {
     private readonly IIdentityService _identityService;
     private readonly IKeycloakService _keycloakService;
     private readonly ICachedRepository _cachedRepository;
 
-    public VerifyEmailCommandHandler(IIdentityService identityService, IKeycloakService keycloakService, ICachedRepository cachedRepository)
+    public VerifyEmailHandler(IIdentityService identityService, IKeycloakService keycloakService, ICachedRepository cachedRepository)
     {
         _identityService = identityService;
         _keycloakService = keycloakService;

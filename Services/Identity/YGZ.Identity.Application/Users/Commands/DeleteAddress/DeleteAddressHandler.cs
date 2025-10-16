@@ -8,12 +8,12 @@ using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.DeleteAddress;
 
-public class DeleteAddressCommandHandler : ICommandHandler<DeleteAddressCommand, bool>
+public class DeleteAddressHandler : ICommandHandler<DeleteAddressCommand, bool>
 {
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserRequestContext _userContext;
-    public DeleteAddressCommandHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
+    public DeleteAddressHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
     {
         _addressRepository = addressRepository;
         _userRepository = userRepository;
@@ -43,7 +43,7 @@ public class DeleteAddressCommandHandler : ICommandHandler<DeleteAddressCommand,
             return addressResult.Error;
         }
 
-        if(addressResult.Response!.UserId != userId)
+        if (addressResult.Response!.UserId != userId)
         {
             return Errors.Address.NotFound;
         }

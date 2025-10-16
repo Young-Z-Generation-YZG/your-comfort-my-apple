@@ -48,7 +48,7 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SKUId = table.Column<string>(type: "text", nullable: true),
+                    SkuId = table.Column<string>(type: "text", nullable: true),
                     ModelId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ModelName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     ColorName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -57,6 +57,7 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     DisplayImageUrl = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     ModelSlug = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
+                    SubTotalAmount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     IsReviewed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

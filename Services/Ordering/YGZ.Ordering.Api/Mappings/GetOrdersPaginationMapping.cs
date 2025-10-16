@@ -10,10 +10,10 @@ public class GetOrdersPaginationMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<GetOrdersPaginationRequest, GetOrdersQuery>()
+        config.NewConfig<GetOrdersPaginationRequest, GetOrdersByAdminQuery>()
             .Map(dest => dest.Page, src => src._page)
             .Map(dest => dest.Limit, src => src._limit)
-            .Map(dest => dest.OrderName, src => src._orderName)
+            .Map(dest => dest.CustomerName, src => src._customerName)
             .Map(dest => dest.OrderCode, src => src._orderCode)
             .Map(dest => dest.OrderStatus, src => src._orderStatus);
     }

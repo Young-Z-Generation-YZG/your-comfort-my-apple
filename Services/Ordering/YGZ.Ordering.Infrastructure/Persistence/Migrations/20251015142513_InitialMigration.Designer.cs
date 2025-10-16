@@ -13,7 +13,7 @@ using YGZ.Ordering.Infrastructure.Persistence;
 namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20251015032147_InitialMigration")]
+    [Migration("20251015142513_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -186,13 +186,17 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SKUId")
+                    b.Property<string>("SkuId")
                         .HasColumnType("text");
 
                     b.Property<string>("StorageName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<decimal>("SubTotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)

@@ -8,9 +8,9 @@ namespace YGZ.Ordering.Application.Abstractions.Data;
 public interface IGenericRepository<TEntity, TId> where TEntity : class
 {
     Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken);
-    Task<(List<TEntity> orders, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
-                                                                               int? _page,
-                                                                               int? _limit,
+    Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
+                                                                               int? page,
+                                                                               int? limit,
                                                                                bool tracked,
                                                                                CancellationToken cancellationToken,
                                                                                params Expression<Func<TEntity, object>>[] includes);

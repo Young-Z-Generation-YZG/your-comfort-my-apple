@@ -11,7 +11,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     private OrderItem(OrderItemId id) : base(id) { }
 
     public required OrderId OrderId { get; init; }
-    public SkuId? SKUId { get; init; }
+    public SkuId? SkuId { get; init; }
     public required string ModelId { get; init; }
     public required string ModelName { get; init; }
     public required string ColorName { get; init; }
@@ -50,7 +50,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
         return new OrderItem(orderItemId)
         {
             OrderId = orderId,
-            SKUId = skuId,
+            SkuId = skuId,
             ModelId = modelId,
             ModelName = modelName,
             ColorName = colorName,

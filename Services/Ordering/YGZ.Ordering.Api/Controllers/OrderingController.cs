@@ -35,7 +35,7 @@ public class OrderingController : ApiController
     [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<GetOrdersQuery>(request);
+        var query = _mapper.Map<GetOrdersByAdminQuery>(request);
 
         var result = await _sender.Send(query, cancellationToken);
 

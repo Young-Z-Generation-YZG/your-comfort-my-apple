@@ -1,21 +1,27 @@
 ﻿
 
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 
 public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand, bool>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserRequestContext _userContext;
+    private readonly ILogger<UpdateOrderStatusHandler> _logger;
 
-    public UpdateOrderStatusHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
+    public UpdateOrderStatusHandler(IGenericRepository<Order, OrderId> repository,
+                              IUserRequestContext userContext,
+                              ILogger<UpdateOrderStatusHandler> logger)
     {
-        _orderRepository = orderRepository;
+        _repository = repository;
         _userContext = userContext;
+        _logger = logger;
     }
 
     public async Task<Result<bool>> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)

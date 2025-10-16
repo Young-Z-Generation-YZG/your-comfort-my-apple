@@ -8,13 +8,13 @@ using YGZ.Identity.Domain.Users.ValueObjects;
 namespace YGZ.Identity.Application.Users.Commands.UpdateProfile;
 
 
-public class UpdateProfileCommandHandler : ICommandHandler<UpdateProfileCommand, bool>
+public class UpdateProfileHandler : ICommandHandler<UpdateProfileCommand, bool>
 {
     private readonly IProfileRepository _profileRepository;
     private readonly IUserRepository _userRepository;
     private readonly IUserRequestContext _userContext;
 
-    public UpdateProfileCommandHandler(IUserRequestContext userContext, IProfileRepository profileRepository, IUserRepository userRepository)
+    public UpdateProfileHandler(IUserRequestContext userContext, IProfileRepository profileRepository, IUserRepository userRepository)
     {
         _userContext = userContext;
         _profileRepository = profileRepository;

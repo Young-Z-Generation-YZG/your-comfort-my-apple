@@ -13,16 +13,16 @@ using YGZ.Identity.Domain.Core.Enums;
 
 namespace YGZ.Identity.Application.Auths.Commands.Login;
 
-public class LoginCommandHandler : ICommandHandler<LoginCommand, LoginResponse>
+public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
-    private readonly ILogger<LoginCommandHandler> _logger;
+    private readonly ILogger<LoginHandler> _logger;
     private readonly IIdentityService _identityService;
     private readonly IKeycloakService _keycloakService;
     private readonly ICachedRepository _cachedRepository;
     private readonly IOtpGenerator _otpGenerator;
     private readonly IEmailService _emailService;
 
-    public LoginCommandHandler(ILogger<LoginCommandHandler> logger,
+    public LoginHandler(ILogger<LoginHandler> logger,
                                IIdentityService identityService,
                                IKeycloakService keycloakService,
                                ICachedRepository cachedRepository,

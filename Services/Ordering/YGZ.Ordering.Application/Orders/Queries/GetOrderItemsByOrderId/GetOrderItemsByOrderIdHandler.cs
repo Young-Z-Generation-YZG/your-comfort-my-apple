@@ -1,21 +1,27 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 
 public class GetOrderItemsByOrderIdHandler : IQueryHandler<GetOrderItemsByOrderIdQuery, OrderDetailsResponse>
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserRequestContext _userContext;
+    private readonly ILogger<GetOrderItemsByOrderIdHandler> _logger;
 
-    public GetOrderItemsByOrderIdHandler(IOrderRepository orderRepository, IUserRequestContext userContext)
+    public GetOrderItemsByOrderIdHandler(IUserRequestContext userContext,
+                                         IGenericRepository<Order, OrderId> repository,
+                                         ILogger<GetOrderItemsByOrderIdHandler> logger)
     {
-        _orderRepository = orderRepository;
+        _repository = repository;
         _userContext = userContext;
+        _logger = logger;
     }
 
     public async Task<Result<OrderDetailsResponse>> Handle(GetOrderItemsByOrderIdQuery request, CancellationToken cancellationToken)

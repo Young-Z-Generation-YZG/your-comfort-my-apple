@@ -7,8 +7,8 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record OrderDetailsResponse()
 {
-    public required string TenantId { get; init; }
-    public required string BranchId { get; init; }
+    public string? TenantId { get; init; }
+    public string? BranchId { get; init; }
     public required string OrderId { get; init; }
     public required string CustomerId { get; init; }
     public required string CustomerEmail { get; init; }

@@ -12,7 +12,6 @@ import {
    DialogTitle,
    DialogTrigger,
 } from '@components/ui/dialog';
-import { AddressResolver } from '~/domain/schemas/address.schema';
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
