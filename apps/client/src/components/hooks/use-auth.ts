@@ -8,12 +8,12 @@ import {
    setTimerId,
 } from '~/infrastructure/redux/features/auth.slice';
 import {
-   useLoginAsyncMutation,
-   useRegisterAsyncMutation,
-   useVerifyOtpAsyncMutation,
-   useSendEmailResetPasswordAsyncMutation,
-   useResetPasswordAsyncMutation,
-   useChangePasswordAsyncMutation,
+   useLoginMutation,
+   useRegisterMutation,
+   useVerifyOtpMutation,
+   useSendEmailResetPasswordMutation,
+   useResetPasswordMutation,
+   useChangePasswordMutation,
 } from '~/infrastructure/services/auth.service';
 import { IRegisterPayload } from '~/domain/interfaces/auth/register.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
@@ -58,16 +58,14 @@ export const useAuth = () => {
    const authState = useAppSelector((state) => state.auth.value);
 
    // RTK Query mutations
-   const [loginMutation, loginMutationState] = useLoginAsyncMutation();
-   const [registerMutation, registerMutationState] = useRegisterAsyncMutation();
-   const [verifyOtpMutation, verifyOtpMutationState] =
-      useVerifyOtpAsyncMutation();
-   const [sendEmailResetPasswordMutation] =
-      useSendEmailResetPasswordAsyncMutation();
+   const [loginMutation, loginMutationState] = useLoginMutation();
+   const [registerMutation, registerMutationState] = useRegisterMutation();
+   const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
+   const [sendEmailResetPasswordMutation] = useSendEmailResetPasswordMutation();
    const [resetPasswordMutation, resetPasswordMutationState] =
-      useResetPasswordAsyncMutation();
+      useResetPasswordMutation();
    const [changePasswordMutation, changePasswordMutationState] =
-      useChangePasswordAsyncMutation();
+      useChangePasswordMutation();
 
    // Computed values
    const isAuthenticated = useMemo(() => {

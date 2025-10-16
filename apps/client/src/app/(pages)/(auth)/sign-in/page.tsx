@@ -14,16 +14,17 @@ import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
 import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import useAuth from '@components/hooks/use-auth';
+// import useAuth from '@components/hooks/use-auth';
 import { useAppSelector } from '~/infrastructure/redux/store';
+import useAuth from '../_hooks/use-auth';
 
 const SignInPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
+   //  const [isLoading, setIsLoading] = useState(false);
 
-   const { login, loginState } = useAuth();
-   const { toast } = useToast();
-   const appStateRoute = useAppSelector((state) => state.app.route);
-   const router = useRouter();
+   const { login, isLoading } = useAuth();
+   //  const { toast } = useToast();
+   //  const appStateRoute = useAppSelector((state) => state.app.route);
+   //  const router = useRouter();
 
    const form = useForm<LoginFormType>({
       resolver: LoginResolver,
@@ -59,27 +60,27 @@ const SignInPage = () => {
    //  }, [isSignInSuccess, signInData]);
 
    // handler login state
-   useEffect(() => {
-      setIsLoading(loginState.isLoading);
+   //  useEffect(() => {
+   //     setIsLoading(loginState.isLoading);
 
-      if (loginState.isSuccess) {
-         if (appStateRoute.previousUnAuthenticatedPath) {
-            router.push(appStateRoute.previousUnAuthenticatedPath);
-         } else {
-            router.push('/home');
-         }
-      }
+   //     if (loginState.isSuccess) {
+   //        if (appStateRoute.previousUnAuthenticatedPath) {
+   //           router.push(appStateRoute.previousUnAuthenticatedPath);
+   //        } else {
+   //           router.push('/home');
+   //        }
+   //     }
 
-      if (loginState.isError) {
-         if (isServerErrorResponse(loginState.error)) {
-            toast({
-               variant: 'destructive',
-               title: loginState.error.data.title,
-               description: loginState.error.data.error.message,
-            });
-         }
-      }
-   }, [loginState]);
+   //     if (loginState.isError) {
+   //        if (isServerErrorResponse(loginState.error)) {
+   //           toast({
+   //              variant: 'destructive',
+   //              title: loginState.error.data.title,
+   //              description: loginState.error.data.error.message,
+   //           });
+   //        }
+   //     }
+   //  }, [loginState]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -116,10 +117,7 @@ const SignInPage = () => {
                </p>
 
                <div className="w-[480px]">
-                  <LoadingOverlay
-                     isLoading={isLoading || loginState.isLoading}
-                     text="Signing in..."
-                  >
+                  <LoadingOverlay isLoading={isLoading} text="Signing in...">
                      <div>
                         <form
                            onSubmit={form.handleSubmit(onSubmit)}
@@ -136,7 +134,7 @@ const SignInPage = () => {
                               label="Email"
                               className="rounded-xl rounded-b-none"
                               type="text"
-                              disabled={isLoading || loginState.isLoading}
+                              disabled={isLoading}
                               errorTextClassName="pb-5"
                            />
 
@@ -145,7 +143,7 @@ const SignInPage = () => {
                               name="password"
                               label="Password"
                               type="password"
-                              disabled={isLoading || loginState.isLoading}
+                              disabled={isLoading}
                               visibleEyeIcon={false}
                               className="rounded-xl rounded-t-none"
                               fetchingFunc={onSubmit}
