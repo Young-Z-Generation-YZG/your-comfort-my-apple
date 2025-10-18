@@ -40,6 +40,17 @@ export const useCheckApiError = (
 
          const parsedError = parseFetchError(error);
 
+         console.log(
+            'isClientErrorResponse(parsedError)',
+            isClientErrorResponse(parsedError),
+         );
+         console.log(
+            'isServerErrorResponse(parsedError)',
+            isServerErrorResponse(parsedError),
+         );
+
+         console.log('parsedError', parsedError);
+
          if (parsedError) {
             shownErrorsRef.current.add(errorKey);
 

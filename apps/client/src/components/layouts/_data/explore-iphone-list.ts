@@ -1,22 +1,22 @@
 export const exploreIphoneList = [
    {
       name: 'Explore All iPhone',
-      navigate: '/iphone',
+      navigate: '/shop/iphone',
    },
    {
       name: 'iPhone 16 Pro',
-      navigate: '/iphone/16-pro',
+      navigate: '/products/iphone/iphone-15',
    },
    {
       name: 'iPhone 16',
-      navigate: '/iphone/16',
+      navigate: '/products/iphone/iphone-15',
    },
    {
       name: 'iPhone 16e',
-      navigate: '/iphone/16e',
+      navigate: '/products/iphone/iphone-15',
    },
    {
       name: 'iPhone 15',
-      navigate: '/iphone/15',
+      navigate: '/products/iphone/iphone-15',
    },
 ];

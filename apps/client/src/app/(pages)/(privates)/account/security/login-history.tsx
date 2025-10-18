@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Button } from '@components/ui/button';
 import {
    Table,
@@ -13,9 +12,11 @@ import {
 import { motion } from 'framer-motion';
 import { Laptop, Smartphone, AlertTriangle } from 'lucide-react';
 
+type DeviceType = 'desktop' | 'mobile' | 'tablet';
+
 type LoginEvent = {
    id: string;
-   device: 'desktop' | 'mobile' | 'tablet';
+   device: DeviceType;
    browser: string;
    location: string;
    ip: string;
@@ -72,33 +73,27 @@ const sampleLoginHistory: LoginEvent[] = [
    },
 ];
 
-export function LoginHistory() {
-   const [loginHistory, setLoginHistory] = useState<LoginEvent[]>([]);
-   const [isLoading, setIsLoading] = useState(true);
+const getDeviceIcon = (device: DeviceType): React.ReactNode => {
+   switch (device) {
+      case 'desktop':
+         return <Laptop className="h-4 w-4" />;
+      case 'mobile':
+      case 'tablet':
+         return <Smartphone className="h-4 w-4" />;
+      default:
+         return <Laptop className="h-4 w-4" />;
+   }
+};
 
-   // Simulate loading data
-   useEffect(() => {
-      const timer = setTimeout(() => {
-         setLoginHistory(sampleLoginHistory);
-         setIsLoading(false);
-      }, 800);
+type LoginHistoryProps = {
+   isLoading?: boolean;
+   loginHistory?: LoginEvent[];
+};
 
-      return () => clearTimeout(timer);
-   }, []);
-
-   // Get device icon
-   const getDeviceIcon = (device: LoginEvent['device']) => {
-      switch (device) {
-         case 'desktop':
-            return <Laptop className="h-4 w-4" />;
-         case 'mobile':
-         case 'tablet':
-            return <Smartphone className="h-4 w-4" />;
-         default:
-            return <Laptop className="h-4 w-4" />;
-      }
-   };
-
+export function LoginHistory({
+   isLoading = false,
+   loginHistory = sampleLoginHistory,
+}: LoginHistoryProps) {
    return (
       <motion.div
          className="bg-white rounded-lg border border-gray-200 overflow-hidden"

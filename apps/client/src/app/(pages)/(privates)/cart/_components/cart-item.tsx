@@ -50,7 +50,7 @@ const CartItem = ({ item, index, onQuantityChange }: CartItemProps) => {
          <div className="product-item w-full flex flex-row justify-start">
             <div className="flex items-center justify-center overflow-hidden rounded-lg w-[200px]">
                {/* image */}
-               <div className="w-full overflow-hidden relative h-[200px] rounded-lg">
+               <div className="w-[100px] overflow-hidden relative h-[200px] rounded-lg">
                   <NextImage
                      src={
                         'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp'

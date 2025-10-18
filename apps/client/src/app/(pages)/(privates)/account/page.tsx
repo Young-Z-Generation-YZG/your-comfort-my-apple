@@ -7,66 +7,26 @@ import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import Badge from './_components/badge';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ProfilePicture } from './_components/profile-picture';
-import { useGetMeAsyncQuery } from '~/infrastructure/services/identity.service';
-import { IMeResponse } from '~/domain/interfaces/identity/me';
 import TwoRowSkeleton from '@components/ui/two-row-skeleton';
 import ImageSkeleton from '@components/ui/image-skeleton';
 import { Skeleton } from '@components/ui/skeleton';
 import { IoChevronBack } from 'react-icons/io5';
 import ProfileForm from './_components/form/profile-form';
-import { useToast } from '@components/hooks/use-toast';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import withAuth from '@components/HoCs/with-auth.hoc';
+import { useGetMeQuery } from '~/infrastructure/services/identity.service';
 
 const AccountPage = () => {
-   const [loading, setLoading] = useState(true);
    const [editProfile, setEditProfile] = useState(false);
 
-   const [meInfo, setMeInfo] = useState<IMeResponse>({
-      email: '',
-      first_name: '',
-      last_name: '',
-      phone_number: '',
-      birth_date: '',
-      image_id: '',
-      image_url: '',
-      default_address_label: '',
-      default_contact_name: '',
-      default_contact_phone_number: '',
-      default_address_line: '',
-      default_address_district: '',
-      default_address_province: '',
-      default_address_country: '',
-   } as IMeResponse);
+   const { data: queryData, ...queryDataState } = useGetMeQuery();
 
-   const { toast } = useToast();
-
-   const {
-      data: meDataAsync,
-      isLoading,
-      isSuccess,
-      isError,
-      error,
-   } = useGetMeAsyncQuery();
-
-   useEffect(() => {
-      if (isSuccess && meDataAsync) {
-         setMeInfo(meDataAsync);
+   const displayMeInfo = useMemo(() => {
+      if (queryDataState.isSuccess && queryData) {
+         return queryData;
       }
-
-      if (isError && isServerErrorResponse(error)) {
-         toast({
-            variant: 'destructive',
-            title: `${error.data.error?.message || 'Something went wrong'}`,
-         });
-      }
-   }, [isSuccess, isError]);
-
-   useEffect(() => {
-      setLoading(isLoading);
-   }, [isLoading]);
+      return null;
+   }, [queryData, queryDataState.isSuccess]);
 
    const renderEditProfile = () => {
       return (
@@ -91,7 +51,7 @@ const AccountPage = () => {
                </div>
             </CardContext>
 
-            <CardContext className="mt-5">
+            {/* <CardContext className="mt-5">
                <ProfileForm
                   profile={{
                      email: meInfo.email,
@@ -103,7 +63,7 @@ const AccountPage = () => {
                      imageUrl: meInfo.image_url,
                   }}
                />
-            </CardContext>
+            </CardContext> */}
          </div>
       );
    };
@@ -133,7 +93,8 @@ const AccountPage = () => {
                      </div>
 
                      <div className="flex gap-4 items-center mt-5">
-                        {loading ? (
+                        {queryDataState.isLoading ||
+                        queryDataState.isFetching ? (
                            <ImageSkeleton className="w-16 h-16" />
                         ) : (
                            <Avatar className="w-16 h-16">
@@ -143,15 +104,17 @@ const AccountPage = () => {
                         )}
 
                         <div className="flex flex-col gap-1">
-                           {loading ? (
+                           {queryDataState.isLoading ||
+                           queryDataState.isFetching ? (
                               <TwoRowSkeleton className="h-[30px] w-[200px]" />
                            ) : (
                               <span className="flex flex-col gap-1">
                                  <span className="text-lg font-medium font-SFProText">
-                                    {meInfo?.first_name} {meInfo?.last_name}
+                                    {displayMeInfo?.first_name}{' '}
+                                    {displayMeInfo?.last_name}
                                  </span>
                                  <span className="text-sm font-light text-slate-500 font-SFProText">
-                                    {meInfo?.email}
+                                    {displayMeInfo?.email}
                                  </span>
                               </span>
                            )}
@@ -163,11 +126,12 @@ const AccountPage = () => {
                            <span className="text-sm text-slate-400 font-SFProText">
                               Phone
                            </span>
-                           {loading ? (
+                           {queryDataState.isLoading ||
+                           queryDataState.isFetching ? (
                               <Skeleton className="h-[24px] w-[200px]" />
                            ) : (
                               <span className="text-sm text-slate-500 font-SFProText">
-                                 +84 {meInfo?.phone_number}
+                                 +84 {displayMeInfo?.phone_number}
                               </span>
                            )}
                         </span>
@@ -176,13 +140,14 @@ const AccountPage = () => {
                            <span className="text-sm text-slate-400 font-SFProText">
                               Date of Birth
                            </span>
-                           {loading ? (
+                           {queryDataState.isLoading ||
+                           queryDataState.isFetching ? (
                               <Skeleton className="h-[24px] w-[200px]" />
                            ) : (
                               <span className="text-sm text-slate-500 font-SFProText w-[200px]">
-                                 {meInfo?.birth_date &&
+                                 {displayMeInfo?.birth_date &&
                                     new Date(
-                                       meInfo.birth_date,
+                                       displayMeInfo.birth_date,
                                     ).toLocaleDateString('en-US', {
                                        year: 'numeric',
                                        month: 'long',
@@ -212,7 +177,8 @@ const AccountPage = () => {
                      </div>
 
                      <DefaultActionContent>
-                        {loading ? (
+                        {queryDataState.isLoading ||
+                        queryDataState.isFetching ? (
                            <div className="flex flex-col gap-1 text-slate-400 font-SFProText text-sm font-light w-full">
                               <Skeleton className="h-[26px] w-full" />
                               <Skeleton className="h-[26px] w-full" />
@@ -222,16 +188,16 @@ const AccountPage = () => {
                         ) : (
                            <div className="flex flex-col gap-1 text-slate-400 font-SFProText text-sm font-light">
                               <h3 className="text-xl font-medium text-black/80 font-SFProDisplay">
-                                 {meInfo?.default_address_label}
+                                 {displayMeInfo?.default_address_label}
                               </h3>
                               <p>
-                                 {meInfo?.default_contact_name} -{' '}
-                                 {meInfo?.default_contact_phone_number}
+                                 {displayMeInfo?.default_contact_name} -{' '}
+                                 {displayMeInfo?.default_contact_phone_number}
                               </p>
-                              <p>{meInfo?.default_address_line}</p>
-                              <p>{meInfo?.default_address_district}</p>
-                              <p>{meInfo?.default_address_province}</p>
-                              <p>{meInfo?.default_address_country}</p>
+                              <p>{displayMeInfo?.default_address_line}</p>
+                              <p>{displayMeInfo?.default_address_district}</p>
+                              <p>{displayMeInfo?.default_address_province}</p>
+                              <p>{displayMeInfo?.default_address_country}</p>
                            </div>
                         )}
                      </DefaultActionContent>

@@ -114,19 +114,13 @@ export const AuthApi = createApi({
          transformResponse: (response: IRegisterResponse) => {
             return response;
          },
-         transformErrorResponse: (error: HttpErrorResponse) => {
-            return error.data;
-         },
       }),
       verifyOtp: builder.mutation({
          query: (payload: IOtpPayload) => ({
-            url: '/api/v1/auth/email/verification',
+            url: '/api/v1/auth/verification/email',
             method: 'POST',
             body: payload,
          }),
-         transformErrorResponse: (error: HttpErrorResponse) => {
-            return error.data;
-         },
          transformResponse: (response: boolean) => {
             return response;
          },
@@ -140,7 +134,7 @@ export const AuthApi = createApi({
       }),
       resetPassword: builder.mutation({
          query: (payload: resetPasswordFormType) => ({
-            url: '/api/v1/auth/reset-password/verification',
+            url: '/api/v1/auth/verification/reset-password',
             method: 'POST',
             body: payload,
          }),
@@ -151,9 +145,6 @@ export const AuthApi = createApi({
             method: 'POST',
             body: payload,
          }),
-         transformErrorResponse: (error: HttpErrorResponse) => {
-            return error.data;
-         },
       }),
    }),
 });

@@ -1,5 +1,4 @@
 import { cn } from '~/infrastructure/lib/utils';
-import Badge from './badge';
 
 interface CardContentProps {
    className?: string;

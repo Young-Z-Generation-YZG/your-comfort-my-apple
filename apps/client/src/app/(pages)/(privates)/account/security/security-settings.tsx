@@ -1,39 +1,47 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { LockKeyhole, ShieldCheck, Clock } from 'lucide-react';
+import { LockKeyhole, ShieldCheck, Clock, LucideIcon } from 'lucide-react';
+
+export type SecuritySection = 'password' | 'two-factor' | 'activity';
+
+type SecuritySectionConfig = {
+   id: SecuritySection;
+   title: string;
+   description: string;
+   icon: React.ReactNode;
+};
 
 type SecuritySettingsProps = {
-   activeSection: string;
-   setActiveSection: (section: string) => void;
+   activeSection: SecuritySection;
+   setActiveSection: (section: SecuritySection) => void;
 };
+
+const securitySections: SecuritySectionConfig[] = [
+   {
+      id: 'password',
+      title: 'Password',
+      description: "Change your password or reset it if you've forgotten it.",
+      icon: <LockKeyhole className="h-5 w-5" />,
+   },
+   {
+      id: 'two-factor',
+      title: 'Two-Factor Authentication',
+      description: 'Add an extra layer of security to your account.',
+      icon: <ShieldCheck className="h-5 w-5" />,
+   },
+   {
+      id: 'activity',
+      title: 'Login History',
+      description: 'View your recent account activity.',
+      icon: <Clock className="h-5 w-5" />,
+   },
+];
 
 export function SecuritySettings({
    activeSection,
    setActiveSection,
 }: SecuritySettingsProps) {
-   const sections = [
-      {
-         id: 'password',
-         title: 'Password',
-         description:
-            "Change your password or reset it if you've forgotten it.",
-         icon: <LockKeyhole className="h-5 w-5" />,
-      },
-      {
-         id: 'two-factor',
-         title: 'Two-Factor Authentication',
-         description: 'Add an extra layer of security to your account.',
-         icon: <ShieldCheck className="h-5 w-5" />,
-      },
-      {
-         id: 'activity',
-         title: 'Login History',
-         description: 'View your recent account activity.',
-         icon: <Clock className="h-5 w-5" />,
-      },
-   ];
-
    return (
       <motion.div
          className="bg-white rounded-lg border border-gray-200 overflow-hidden"
@@ -42,7 +50,7 @@ export function SecuritySettings({
          transition={{ duration: 0.3 }}
       >
          <div className="divide-y divide-gray-200">
-            {sections.map((section) => (
+            {securitySections.map((section) => (
                <motion.div
                   key={section.id}
                   className={`px-6 py-4 cursor-pointer hover:bg-gray-50 transition-colors duration-200 ${

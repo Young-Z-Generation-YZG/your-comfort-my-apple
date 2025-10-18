@@ -10,19 +10,17 @@ import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
-import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-// import useAuth from '@components/hooks/use-auth';
 import useAuth from '../_hooks/use-auth';
+import { useAppSelector } from '~/infrastructure/redux/store';
 
 const SignInPage = () => {
    const [isLoading, setIsLoading] = useState(false);
 
    const { login, isLoading: isLoginLoading } = useAuth();
-   //  const { toast } = useToast();
-   //  const appStateRoute = useAppSelector((state) => state.app.route);
-   //  const router = useRouter();
+   const appStateRoute = useAppSelector((state) => state.app.route);
+   const router = useRouter();
 
    const form = useForm<LoginFormType>({
       resolver: LoginResolver,
@@ -33,7 +31,31 @@ const SignInPage = () => {
    });
 
    const onSubmit = async (data: LoginFormType) => {
-      await login(data);
+      const result = await login(data);
+
+      if (result.isSuccess && result.data) {
+         if (
+            result.data.verification_type ===
+            VERIFICATION_TYPES.EMAIL_VERIFICATION
+         ) {
+            const params = result.data.params;
+            const queryParams = new URLSearchParams();
+
+            for (const key in params) {
+               if (params.hasOwnProperty(key)) {
+                  queryParams.set(key, String(params[key]));
+               }
+            }
+
+            router.push(`/verify/otp?${queryParams.toString()}`, {
+               scroll: false,
+            });
+         } else {
+            router.replace(
+               appStateRoute.previousUnAuthenticatedPath || '/shop/iphone',
+            );
+         }
+      }
    };
 
    useEffect(() => {
@@ -47,50 +69,6 @@ const SignInPage = () => {
          return () => clearTimeout(timeoutId);
       }
    }, [isLoginLoading]);
-
-   //  useEffect(() => {
-   //     if (typeof signInData === 'object' && signInData !== null) {
-   //        if (
-   //           signInData.verification_type ===
-   //           VERIFICATION_TYPES.EMAIL_VERIFICATION
-   //        ) {
-   //           const queryParams = new URLSearchParams();
-
-   //           if (signInData.params) {
-   //              for (const [key, value] of Object.entries(signInData.params)) {
-   //                 queryParams.append(key, value as string);
-   //              }
-   //           }
-
-   //           router.replace(`/verify/otp?${queryParams}`);
-   //        } else {
-   //           router.replace('/account');
-   //        }
-   //     }
-   //  }, [isSignInSuccess, signInData]);
-
-   // handler login state
-   //  useEffect(() => {
-   //     setIsLoading(loginState.isLoading);
-
-   //     if (loginState.isSuccess) {
-   //        if (appStateRoute.previousUnAuthenticatedPath) {
-   //           router.push(appStateRoute.previousUnAuthenticatedPath);
-   //        } else {
-   //           router.push('/home');
-   //        }
-   //     }
-
-   //     if (loginState.isError) {
-   //        if (isServerErrorResponse(loginState.error)) {
-   //           toast({
-   //              variant: 'destructive',
-   //              title: loginState.error.data.title,
-   //              description: loginState.error.data.error.message,
-   //           });
-   //        }
-   //     }
-   //  }, [loginState]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">

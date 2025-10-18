@@ -17,7 +17,7 @@ public class RegisterRequestExample : ISchemaProcessor
                 password = "password",
                 confirm_password = "password",
                 phone_number = "0123456789",
-                birthday = "2003-08-16",
+                birth_day = "2003-8-16",
                 country = "Vietnam"
             };
         }

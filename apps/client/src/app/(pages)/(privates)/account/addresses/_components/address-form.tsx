@@ -20,23 +20,15 @@ import {
    vietnamProvinces,
    type Province,
    type District,
-} from '../_lib/vietnam-provinces';
+} from '../_data/vietnam-provinces';
 import {
    AddressFormType,
    AddressResolver,
 } from '~/domain/schemas/address.schema';
 import FieldInputSecond from '@components/client/forms/field-input-second';
 import { Form, FormField, FormItem, FormMessage } from '@components/ui/form';
-import {
-   useAddAddressAsyncMutation,
-   useDeleteAddressAsyncMutation,
-   useUpdateAddressAsyncMutation,
-} from '~/infrastructure/services/identity.service';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import { toast as sonnerToast } from 'sonner';
-import { useToast } from '@components/hooks/use-toast';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
 
 const staggerDuration = 0.05;
@@ -47,8 +39,10 @@ type AddressFormProps = {
       payload: IAddressPayload;
    } | null;
    isEditing?: boolean;
-   onSubmit: () => void;
-   onDelete?: () => void;
+   onAdd: (data: AddressFormType) => Promise<void>;
+   onUpdate: (id: string, data: AddressFormType) => Promise<void>;
+   onDelete: (id: string) => Promise<void>;
+   onClose: () => void;
    isLoading?: boolean;
 };
 
@@ -68,17 +62,16 @@ const formFieldVariants = {
 export function AddressForm({
    initialAddress,
    isEditing = false,
-   onSubmit,
+   onAdd,
+   onUpdate,
    onDelete,
+   onClose,
    isLoading = false,
 }: AddressFormProps) {
-   const [loading, setLoading] = useState(false);
    const [selectedProvince, setSelectedProvince] = useState<Province | null>(
       null,
    );
    const [districts, setDistricts] = useState<District[]>([]);
-
-   const { toast } = useToast();
 
    const form = useForm<AddressFormType>({
       resolver: AddressResolver,
@@ -93,36 +86,6 @@ export function AddressForm({
          country: 'Vietnam',
       } as AddressFormType,
    });
-
-   const [
-      addAddressAsync,
-      {
-         isLoading: isAddAddressLoading,
-         isSuccess: isAddAddressSuccess,
-         isError: isAddAddressError,
-         error: addAddressError,
-      },
-   ] = useAddAddressAsyncMutation();
-
-   const [
-      updateAddressAsync,
-      {
-         isLoading: isUpdateAddressLoading,
-         isSuccess: isUpdateAddressSuccess,
-         isError: isUpdateAddressError,
-         error: updateAddressError,
-      },
-   ] = useUpdateAddressAsyncMutation();
-
-   const [
-      deleteAddressAsync,
-      {
-         isLoading: isDeleteAddressLoading,
-         isSuccess: isDeleteAddressSuccess,
-         isError: isDeleteAddressError,
-         error: deleteAddressError,
-      },
-   ] = useDeleteAddressAsyncMutation();
 
    useEffect(() => {
       if (form.getValues('province')) {
@@ -154,107 +117,30 @@ export function AddressForm({
    };
 
    const handleSubmit = async (data: AddressFormType) => {
-      console.log('Form submitted:', data);
-
-      if (isEditing) {
-         if (
-            (initialAddress?.payload.label !== data.label ||
-               initialAddress?.payload.contact_name !== data.contact_name ||
-               initialAddress?.payload.contact_phone_number !==
-                  data.contact_phone_number ||
-               initialAddress?.payload.address_line !== data.address_line ||
-               initialAddress?.payload.district !== data.district ||
-               initialAddress?.payload.province !== data.province) &&
-            initialAddress?.id
-         ) {
-            await updateAddressAsync({
-               id: initialAddress.id,
-               payload: data,
-            }).unwrap();
+      try {
+         if (isEditing && initialAddress?.id) {
+            await onUpdate(initialAddress.id, data);
+         } else {
+            await onAdd(data);
          }
-         onSubmit();
-
-         return;
+         onClose();
+      } catch (error) {
+         // Error handled by useAccount hook
+         console.error('Form submission error:', error);
       }
-
-      await addAddressAsync(data).unwrap();
-
-      onSubmit();
    };
 
    const handleDelete = async () => {
       if (initialAddress?.id) {
-         await deleteAddressAsync(initialAddress.id).unwrap();
-
-         onSubmit();
+         try {
+            await onDelete(initialAddress.id);
+            onClose();
+         } catch (error) {
+            // Error handled by useAccount hook
+            console.error('Delete error:', error);
+         }
       }
    };
-
-   useEffect(() => {
-      if (isAddAddressError && isServerErrorResponse(addAddressError)) {
-         toast({
-            variant: 'destructive',
-            title: `${addAddressError.data.error.message ?? 'Server busy, please try again later'}`,
-         });
-      }
-
-      if (isAddAddressSuccess) {
-         sonnerToast.success('Add Address Successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
-      }
-   }, [isAddAddressError, addAddressError, isAddAddressSuccess]);
-
-   useEffect(() => {
-      if (isUpdateAddressError && isServerErrorResponse(updateAddressError)) {
-         toast({
-            variant: 'destructive',
-            title: `${updateAddressError.data.error.message ?? 'Server busy, please try again later'}`,
-         });
-      }
-
-      if (isUpdateAddressSuccess) {
-         sonnerToast.success('Update Address Successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
-      }
-   }, [isUpdateAddressError, updateAddressError, isUpdateAddressSuccess]);
-
-   useEffect(() => {
-      if (isDeleteAddressError && isServerErrorResponse(deleteAddressError)) {
-         toast({
-            variant: 'destructive',
-            title: `${deleteAddressError.data.error.message ?? 'Server busy, please try again later'}`,
-         });
-      }
-
-      if (isDeleteAddressSuccess) {
-         sonnerToast.success('Delete Address Successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
-      }
-   }, [isDeleteAddressError, deleteAddressError, isDeleteAddressSuccess]);
-
-   isAddAddressSuccess;
-   isUpdateAddressSuccess;
-   isDeleteAddressSuccess;
-
-   useEffect(() => {
-      setLoading(
-         isAddAddressLoading ||
-            isUpdateAddressLoading ||
-            isDeleteAddressLoading,
-      );
-   }, [isAddAddressLoading, isUpdateAddressLoading, isDeleteAddressLoading]);
 
    return (
       <Form {...form}>
@@ -274,7 +160,7 @@ export function AddressForm({
                      form={form}
                      name="label"
                      label="Label"
-                     disabled={loading}
+                     disabled={isLoading}
                   />
                </motion.div>
 
@@ -289,7 +175,7 @@ export function AddressForm({
                      form={form}
                      name="contact_name"
                      label="Full Name"
-                     disabled={loading}
+                     disabled={isLoading}
                   />
                </motion.div>
 
@@ -305,7 +191,7 @@ export function AddressForm({
                      name="contact_phone_number"
                      label="Phone Number"
                      type="number"
-                     disabled={loading}
+                     disabled={isLoading}
                   />
                </motion.div>
 
@@ -320,7 +206,7 @@ export function AddressForm({
                      form={form}
                      name="address_line"
                      label="Address Street"
-                     disabled={loading}
+                     disabled={isLoading}
                   />
                </motion.div>
 
@@ -342,7 +228,7 @@ export function AddressForm({
                               onValueChange={(value) =>
                                  handleSelectChange('province', value)
                               }
-                              disabled={loading}
+                              disabled={isLoading}
                            >
                               <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                                  <SelectValue placeholder="Select a province" />
@@ -382,7 +268,7 @@ export function AddressForm({
                               onValueChange={(value) =>
                                  handleSelectChange('district', value)
                               }
-                              disabled={!selectedProvince || loading}
+                              disabled={!selectedProvince || isLoading}
                            >
                               <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                                  <SelectValue
@@ -428,17 +314,14 @@ export function AddressForm({
                               onValueChange={(value) =>
                                  handleSelectChange('country', value)
                               }
-                              disabled={loading}
+                              disabled={isLoading}
                            >
                               <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                                  <SelectValue placeholder="Select a country" />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value="Viet Nam">
-                                    Viet Nam
-                                 </SelectItem>
-                                 <SelectItem value="United States">
-                                    United States
+                                 <SelectItem value="Vietnam">
+                                    Việt Nam
                                  </SelectItem>
                               </SelectContent>
                            </Select>
@@ -490,14 +373,14 @@ export function AddressForm({
                   <motion.div
                      whileHover={{ scale: 1.05 }}
                      whileTap={{ scale: 0.95 }}
-                     animate={loading ? { scale: [1, 0.95, 1.05, 1] } : {}}
+                     animate={isLoading ? { scale: [1, 0.95, 1.05, 1] } : {}}
                      transition={{ duration: 0.4 }}
                   >
                      <Button
                         type="submit"
                         className="transition-colors duration-200 relative"
                         disabled={
-                           loading ||
+                           isLoading ||
                            !isDifferentValue(
                               {
                                  label: initialAddress?.payload.label,
@@ -515,7 +398,7 @@ export function AddressForm({
                            )
                         }
                      >
-                        {loading ? (
+                        {isLoading ? (
                            <span className="flex items-center">
                               <svg
                                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

@@ -3,8 +3,7 @@
 import { Button } from '@components/ui/button';
 import { CardContext, DefaultActionContent } from '../_components/card-content';
 import Badge from '../_components/badge';
-import { FiEdit3 } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
    Dialog,
    DialogContent,
@@ -15,99 +14,44 @@ import {
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import {
-   useGetAddressesAsyncQuery,
-   useSetDefaultAddressAsyncMutation,
-} from '~/infrastructure/services/identity.service';
-import {
-   IAddressPayload,
-   IAddressResponse,
-} from '~/domain/interfaces/identity/address';
+import { useGetAddressesQuery } from '~/infrastructure/services/identity.service';
+import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import { useToast } from '@components/hooks/use-toast';
-import { toast as sonnerToast } from 'sonner';
+import useAccount from '../_hooks/use-account';
+import { FiEdit3 } from 'react-icons/fi';
 
 const AddressesPage = () => {
-   const [isLoading, setIsLoading] = useState(true);
-   const [addressesList, setAddressesList] = useState<IAddressResponse[]>([]);
    const [open, setOpen] = useState(false);
    const [editingAddress, setEditingAddress] = useState<{
       id: string;
       payload: IAddressPayload;
    } | null>(null);
 
-   const { toast } = useToast();
-
    const {
-      data: addressesAsync,
-      isLoading: isLoadingAddresses,
-      isSuccess: isSuccessAddressesAsync,
-      refetch: refetchAddresses,
-   } = useGetAddressesAsyncQuery();
-
-   const [
       setDefaultAddressAsync,
-      {
-         isLoading: isLoadingSetDefaultAddress,
-         isSuccess: isSuccessSetDefaultAddress,
-         isError: isErrorSetDefaultAddress,
-         error: errorSetDefaultAddress,
-      },
-   ] = useSetDefaultAddressAsyncMutation();
-   const handleSetDefaultAddress = async (id: string) => {
-      await setDefaultAddressAsync(id).unwrap();
-   };
+      addAddressAsync,
+      updateAddressAsync,
+      deleteAddressAsync,
+      isLoading: isLoadingAccount,
+   } = useAccount();
 
-   const renderAddresses = () => {
-      const defaultAddress = addressesList.find((item) => item.is_default);
+   const { data: queryData, ...queryDataState } = useGetAddressesQuery();
 
-      if (!defaultAddress) return addressesList;
+   const displayAddresses = useMemo(() => {
+      if (queryDataState.isSuccess && queryData) {
+         const defaultAddress = queryData.find((item) => item.is_default);
+         const otherAddresses = queryData.filter((item) => !item.is_default);
 
-      const otherAddresses = addressesList.filter((item) => !item.is_default);
-
-      return [defaultAddress, ...otherAddresses] as IAddressResponse[];
-   };
-
-   useEffect(() => {
-      if (isSuccessAddressesAsync && addressesAsync) {
-         setAddressesList(addressesAsync);
+         return [defaultAddress, ...otherAddresses];
       }
-   }, [isSuccessAddressesAsync, addressesAsync]);
-
-   useEffect(() => {
-      if (isSuccessSetDefaultAddress) {
-         sonnerToast.success('Set Default Successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
-      }
-
-      if (isErrorSetDefaultAddress && errorSetDefaultAddress) {
-         if (isServerErrorResponse(errorSetDefaultAddress)) {
-            toast({
-               variant: 'destructive',
-               title: `${errorSetDefaultAddress.data.error.message ?? 'Server busy, please try again later'}`,
-            });
-         }
-      }
-   }, [
-      isSuccessSetDefaultAddress,
-      isErrorSetDefaultAddress,
-      errorSetDefaultAddress,
-   ]);
-
-   useEffect(() => {
-      setIsLoading(isLoadingAddresses || isLoadingSetDefaultAddress);
-   }, [isLoadingAddresses, isLoadingSetDefaultAddress]);
+      return null;
+   }, [queryData, queryDataState.isSuccess]);
 
    return (
       <CardContext>
          <div className="flex flex-col">
             <div className="flex justify-between">
-               <h3 className="text-xl font-medium">Personal Information</h3>
+               <h3 className="text-xl font-medium">Addresses Management</h3>
 
                {/* <Addresses /> */}
                <Dialog open={open} onOpenChange={setOpen}>
@@ -133,27 +77,34 @@ const AddressesPage = () => {
                         </DialogTitle>
                      </DialogHeader>
                      <AddressForm
-                        onSubmit={() => {
-                           setOpen(false);
-                           refetchAddresses();
+                        onAdd={async (data) => {
+                           await addAddressAsync(data);
                         }}
+                        onUpdate={async (id, data) => {
+                           await updateAddressAsync({ id, payload: data });
+                        }}
+                        onDelete={async (id) => {
+                           await deleteAddressAsync(id);
+                        }}
+                        onClose={() => {
+                           setOpen(false);
+                           setEditingAddress(null);
+                        }}
+                        isLoading={isLoadingAccount}
                         isEditing={!!editingAddress}
-                        initialAddress={
-                           editingAddress
-                              ? {
-                                   id: editingAddress.id,
-                                   payload: editingAddress.payload,
-                                }
-                              : null
-                        }
+                        initialAddress={editingAddress}
                      />
                   </DialogContent>
                </Dialog>
             </div>
 
-            {isLoading ? (
+            {isLoadingAccount || queryDataState.isLoading ? (
                <div>
-                  {Array(addressesList.length > 0 ? addressesList.length : 3)
+                  {Array(
+                     (displayAddresses?.length ?? 0 > 0)
+                        ? (displayAddresses?.length ?? 0)
+                        : 4,
+                  )
                      .fill(0)
                      .map((_, index) => (
                         <DefaultActionContent
@@ -167,59 +118,61 @@ const AddressesPage = () => {
                         </DefaultActionContent>
                      ))}
                </div>
-            ) : addressesList.length > 0 ? (
-               renderAddresses().map((item) => {
+            ) : (displayAddresses?.length ?? 0 > 0) ? (
+               displayAddresses?.map((item, index) => {
                   return (
                      <DefaultActionContent
                         className="w-full mt-2"
-                        key={item.id}
+                        key={item?.id ?? index}
                      >
                         <div className="flex w-full flex-col gap-1 text-slate-500 font-SFProText text-sm font-light">
                            <div className="flex justify-between items-center">
                               <div className="flex gap-2 items-center">
                                  <h3 className="text-xl font-medium text-black/80 font-SFProDisplay">
-                                    {item.label}
+                                    {item?.label ?? ''}
                                  </h3>
-                                 {item.is_default && (
+                                 {item?.is_default && (
                                     <Badge variants="default" />
                                  )}
                               </div>
 
                               <Button
                                  variant="outline"
-                                 className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium"
+                                 className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium gap-1"
                                  onClick={() => {
-                                    setEditingAddress({
-                                       id: item.id,
-                                       payload: item,
-                                    });
-                                    setOpen(true);
+                                    if (item) {
+                                       setEditingAddress({
+                                          id: item.id,
+                                          payload: item,
+                                       });
+                                       setOpen(true);
+                                    }
                                  }}
                               >
-                                 <span>edit</span>
-                                 <span>
-                                    <FiEdit3 />
-                                 </span>
+                                 <span>Edit</span>
+                                 <FiEdit3 className="h-3 w-3" />
                               </Button>
                            </div>
                            <p>
-                              {item.contact_name} | +84{' '}
-                              {item.contact_phone_number}
+                              {item?.contact_name ?? ''} | +84{' '}
+                              {item?.contact_phone_number ?? ''}
                            </p>
-                           <p>{item.address_line}</p>
+                           <p>{item?.address_line ?? ''}</p>
                            <p>
-                              {item.district}
-                              {!(item.district.length > 0) || ','}{' '}
-                              {item.province}
-                              {!(item.province.length > 0) || ','}{' '}
-                              {item.country}
+                              {item?.district ?? ''}
+                              {(item?.district?.length ?? 0) > 0 && ','}{' '}
+                              {item?.province ?? ''}
+                              {(item?.province?.length ?? 0) > 0 && ','}{' '}
+                              {item?.country ?? ''}
                            </p>
 
-                           {!item.is_default && (
+                           {!item?.is_default && (
                               <p
                                  className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline"
-                                 onClick={() => {
-                                    handleSetDefaultAddress(item.id);
+                                 onClick={async () => {
+                                    if (item?.id) {
+                                       await setDefaultAddressAsync(item.id);
+                                    }
                                  }}
                               >
                                  Set as Default

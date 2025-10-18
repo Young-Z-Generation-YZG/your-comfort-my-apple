@@ -1,21 +1,9 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import SideBar from './_components/layouts/side-bar';
 import withAuth from '@components/HoCs/with-auth.hoc';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
-   const router = useRouter();
-   const dispatch = useDispatch();
-
-   const { isAuthenticated, timerId, isLogoutTriggered } = useAppSelector(
-      (state) => state.auth.value,
-   );
-
-   const currentPath = window.location.pathname;
-
    return (
       <div className="w-full bg-[#f5f5f7] px-5 py-10">
          <div className="w-[1200px] mx-auto mt-10">

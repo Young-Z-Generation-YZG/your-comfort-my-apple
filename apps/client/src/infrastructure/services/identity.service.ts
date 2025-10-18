@@ -12,7 +12,7 @@ import { setLogout } from '../redux/features/auth.slice';
 const baseQueryWithAuth = fetchBaseQuery({
    baseUrl: envConfig.API_ENDPOINT + 'identity-services',
    prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.value.accessToken;
+      const accessToken = (getState() as RootState).auth.accessToken;
 
       if (accessToken) {
          headers.set('Authorization', `Bearer ${accessToken}`);
@@ -21,9 +21,6 @@ const baseQueryWithAuth = fetchBaseQuery({
       headers.set('ngrok-skip-browser-warning', 'true');
 
       return headers;
-   },
-   responseHandler: (response) => {
-      return response.json();
    },
 });
 
@@ -45,64 +42,64 @@ const baseQueryWithUnauthorizedHandler = async (
 
 export const identityApi = createApi({
    reducerPath: 'identity-api',
-   tagTypes: ['Identity'],
+   tagTypes: ['Profile', 'Addresses'],
    baseQuery: baseQueryWithUnauthorizedHandler,
    endpoints: (builder) => ({
-      getMeAsync: builder.query<IMeResponse, void>({
+      getMe: builder.query<IMeResponse, void>({
          query: () => '/api/v1/users/me',
-         providesTags: ['Identity'],
+         providesTags: ['Profile'],
       }),
-      updateProfileAsync: builder.mutation({
+      updateProfile: builder.mutation({
          query: (body: IProfilePayload) => ({
             url: `/api/v1/users/profiles`,
             method: 'PUT',
             body: body,
          }),
-         invalidatesTags: ['Identity'],
+         invalidatesTags: ['Profile'],
       }),
-      getAddressesAsync: builder.query<IAddressResponse[], void>({
+      getAddresses: builder.query<IAddressResponse[], void>({
          query: () => '/api/v1/users/addresses',
-         providesTags: ['Identity'],
+         providesTags: ['Addresses'],
       }),
-      addAddressAsync: builder.mutation({
+      addAddress: builder.mutation({
          query: (body: IAddressPayload) => ({
             url: '/api/v1/users/addresses',
             method: 'POST',
             body: body,
          }),
-         invalidatesTags: ['Identity'],
+         invalidatesTags: ['Addresses'],
       }),
-      updateAddressAsync: builder.mutation({
+      updateAddress: builder.mutation({
          query: (body: { id: string; payload: IAddressPayload }) => ({
             url: `/api/v1/users/addresses/${body.id}`,
             method: 'PUT',
             body: body.payload,
          }),
-         invalidatesTags: ['Identity'],
+         invalidatesTags: ['Addresses'],
       }),
-      setDefaultAddressAsync: builder.mutation({
+      setDefaultAddress: builder.mutation({
          query: (id: string) => ({
             url: `/api/v1/users/addresses/${id}/is-default`,
             method: 'PATCH',
          }),
-         invalidatesTags: ['Identity'],
+         invalidatesTags: ['Addresses'],
       }),
-      deleteAddressAsync: builder.mutation({
+      deleteAddress: builder.mutation({
          query: (id: string) => ({
             url: `/api/v1/users/addresses/${id}`,
             method: 'DELETE',
          }),
-         invalidatesTags: ['Identity'],
+         invalidatesTags: ['Addresses'],
       }),
    }),
 });
 
 export const {
-   useGetMeAsyncQuery,
-   useUpdateProfileAsyncMutation,
-   useGetAddressesAsyncQuery,
-   useAddAddressAsyncMutation,
-   useUpdateAddressAsyncMutation,
-   useSetDefaultAddressAsyncMutation,
-   useDeleteAddressAsyncMutation,
+   useGetMeQuery,
+   useUpdateProfileMutation,
+   useGetAddressesQuery,
+   useAddAddressMutation,
+   useUpdateAddressMutation,
+   useSetDefaultAddressMutation,
+   useDeleteAddressMutation,
 } = identityApi;

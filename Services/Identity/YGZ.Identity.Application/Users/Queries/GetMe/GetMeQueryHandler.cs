@@ -8,7 +8,6 @@ using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.HttpContext;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Application.Users.Queries.GetProfile;
 
@@ -19,7 +18,10 @@ public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAllInfoResposne>
     private readonly IUserRepository _userRepository;
     private readonly IProfileRepository _profileRepository;
 
-    public GetMeQueryHandler(IUserRequestContext userContext, ILogger<GetMeQueryHandler> logger, IUserRepository userRepository, IProfileRepository profileRepository)
+    public GetMeQueryHandler(IUserRequestContext userContext,
+                             ILogger<GetMeQueryHandler> logger,
+                             IUserRepository userRepository,
+                             IProfileRepository profileRepository)
     {
         _userContext = userContext;
         _logger = logger;

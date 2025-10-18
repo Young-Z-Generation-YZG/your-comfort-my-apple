@@ -2,22 +2,14 @@
 
 import type React from 'react';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import { Label } from '@components/ui/label';
 import { Progress } from '@components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { useToast } from '@components/hooks/use-toast';
-import { useForm } from 'react-hook-form';
-import {
-   changePasswordFormType,
-   changePasswordResolver,
-} from '~/domain/schemas/auth.schema';
-import { useChangePasswordAsyncMutation } from '~/infrastructure/services/auth.service';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import { toast as sonnerToast } from 'sonner';
+import useAccount from '../_hooks/use-account';
 
 // Password strength calculation
 const calculatePasswordStrength = (password: string): number => {
@@ -25,13 +17,13 @@ const calculatePasswordStrength = (password: string): number => {
 
    let strength = 0;
    // Length check
-   if (password.length >= 6) strength += 25;
+   if (password.length >= 6) strength += 50;
    // Contains lowercase
-   if (/[a-z]/.test(password)) strength += 25;
+   if (/[a-z]/.test(password)) strength += 50;
    // Contains uppercase
-   if (/[A-Z]/.test(password)) strength += 25;
+   //  if (/[A-Z]/.test(password)) strength += 25;
    // Contains number or special char
-   if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
+   //  if (/[0-9!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 25;
 
    return strength;
 };
@@ -53,38 +45,19 @@ const getPasswordStrengthColor = (strength: number): string => {
 };
 
 export function ChangePassword() {
-   const { toast } = useToast();
+   const { changePasswordAsync, isLoading } = useAccount();
+
    const [currentPassword, setCurrentPassword] = useState('');
    const [newPassword, setNewPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
    const [showNewPassword, setShowNewPassword] = useState(false);
    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-   const [isSubmitting, setIsSubmitting] = useState(false);
    const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
    const passwordStrength = calculatePasswordStrength(newPassword);
    const passwordStrengthLabel = getPasswordStrengthLabel(passwordStrength);
    const passwordStrengthColor = getPasswordStrengthColor(passwordStrength);
-
-   const form = useForm<changePasswordFormType>({
-      resolver: changePasswordResolver,
-      defaultValues: {
-         old_password: '',
-         new_password: '',
-      },
-   });
-
-   const [
-      changePasswordAsync,
-      {
-         isLoading: isUpdating,
-         error: changePasswordError,
-         isError: isChangePasswordError,
-         isSuccess: isChangePasswordSuccess,
-         reset,
-      },
-   ] = useChangePasswordAsyncMutation();
 
    // Password requirements
    const requirements = [
@@ -98,11 +71,11 @@ export function ChangePassword() {
          label: 'At least one lowercase letter',
          met: /[a-z]/.test(newPassword),
       },
-      {
-         id: 'uppercase',
-         label: 'At least one uppercase letter',
-         met: /[A-Z]/.test(newPassword),
-      },
+      // {
+      //    id: 'uppercase',
+      //    label: 'At least one uppercase letter',
+      //    met: /[A-Z]/.test(newPassword),
+      // },
       // {
       //    id: 'number-special',
       //    label: 'At least one number or special character',
@@ -140,43 +113,19 @@ export function ChangePassword() {
          return;
       }
 
-      form.setValue('old_password', currentPassword);
-      form.setValue('new_password', confirmPassword);
+      const result = await changePasswordAsync({
+         old_password: currentPassword,
+         new_password: confirmPassword,
+      });
 
-      form.trigger(); // Trigger validation
-      const validationErrors = form.formState.errors;
-
-      await changePasswordAsync(form.getValues()).unwrap();
-
-      // Reset form
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
+      if (result.isSuccess) {
+         // Reset form on success
+         setCurrentPassword('');
+         setNewPassword('');
+         setConfirmPassword('');
+         setFormErrors({});
+      }
    };
-
-   useEffect(() => {
-      if (isChangePasswordSuccess) {
-         sonnerToast.success('password updated successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
-      }
-
-      if (isChangePasswordError) {
-         if (isServerErrorResponse(changePasswordError)) {
-            toast({
-               variant: 'destructive',
-               title: `${changePasswordError.data.error?.message ?? 'Server busy, please try again later'}`,
-            });
-         }
-      }
-   }, [isChangePasswordSuccess, isChangePasswordError]);
-
-   useEffect(() => {
-      setIsSubmitting(isUpdating);
-   }, [isUpdating]);
 
    return (
       <motion.div
@@ -399,25 +348,22 @@ export function ChangePassword() {
                      setCurrentPassword('');
                      setNewPassword('');
                      setConfirmPassword('');
-                     reset(); // Reset form state
-                     setFormErrors({}); // Clear errors
+                     setFormErrors({});
                   }}
+                  disabled={isLoading}
                >
                   Cancel
                </Button>
                <Button
                   type="submit"
                   disabled={
-                     isSubmitting ||
+                     isLoading ||
                      !confirmPassword ||
-                     !(newPassword.trim() === confirmPassword.trim())
+                     newPassword.trim() !== confirmPassword.trim()
                   }
                   className="relative"
-                  onInput={() => {
-                     form.trigger(); // Trigger validation on input change
-                  }}
                >
-                  {isSubmitting ? (
+                  {isLoading ? (
                      <span className="flex items-center">
                         <svg
                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"

@@ -5,12 +5,13 @@ import CardWrapper from '~/app/(pages)/(privates)/checkout/_components/card-wrap
 import { ChangePassword } from './change-password';
 import { TwoFactorAuth } from './two-factor-auth';
 import { LoginHistory } from './login-history';
-import { SecuritySettings } from './security-settings';
+import { SecuritySettings, SecuritySection } from './security-settings';
 import { motion } from 'framer-motion';
 import withAuth from '@components/HoCs/with-auth.hoc';
 
 const SecurityPage = () => {
-   const [activeSection, setActiveSection] = useState<string>('password');
+   const [activeSection, setActiveSection] =
+      useState<SecuritySection>('password');
 
    return (
       <CardWrapper>

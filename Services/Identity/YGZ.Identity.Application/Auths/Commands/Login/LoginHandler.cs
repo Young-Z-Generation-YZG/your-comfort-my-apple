@@ -7,8 +7,8 @@ using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Abstractions.Utils;
-using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Application.Emails;
+using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Domain.Core.Enums;
 
 namespace YGZ.Identity.Application.Auths.Commands.Login;
@@ -65,7 +65,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
                         ViewName: "EmailVerification",
                         Model: new EmailVerificationModel
                         {
-                            FullName = $"{user.Response.Profile.FullName}",
+                            FullName = $"{user.Response.Email}",
                             VerifyOtp = otp,
                             VerificationLink = $"https://ygz.zone/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
                         },

@@ -16,7 +16,7 @@ import { setLogout } from '../redux/features/auth.slice';
 const baseQueryWithAuth = fetchBaseQuery({
    baseUrl: envConfig.API_ENDPOINT + 'ordering-services',
    prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.value.accessToken;
+      const accessToken = (getState() as RootState).auth.accessToken;
 
       if (accessToken) {
          headers.set('Authorization', `Bearer ${accessToken}`);
@@ -25,9 +25,6 @@ const baseQueryWithAuth = fetchBaseQuery({
       headers.set('ngrok-skip-browser-warning', 'true');
 
       return headers;
-   },
-   responseHandler: (response) => {
-      return response.json();
    },
 });
 
@@ -52,19 +49,19 @@ export const orderApi = createApi({
    tagTypes: ['Orders'],
    baseQuery: baseQueryWithUnauthorizedHandler,
    endpoints: (builder) => ({
-      getOrdersAsync: builder.query<PaginationResponse<OrderResponse>, void>({
+      getOrders: builder.query<PaginationResponse<OrderResponse>, void>({
          query: () => ({
             url: '/api/v1/orders/users',
             method: 'GET',
          }),
       }),
-      getOrderDetailsAsync: builder.query<OrderDetailsResponse, string>({
+      getOrderDetails: builder.query<OrderDetailsResponse, string>({
          query: (orderId) => ({
             url: `/api/v1/orders/${orderId}/details`,
             method: 'GET',
          }),
       }),
-      vnpayIpnCallbackAsync: builder.mutation({
+      vnpayIpnCallback: builder.mutation({
          query: (payload: IVnpayIpnCallbackPayload) => ({
             url: '/api/v1/orders/payment/vnpay-ipn-callback',
             method: 'PATCH',
@@ -78,7 +75,7 @@ export const orderApi = createApi({
             return error.data;
          },
       }),
-      momoIpnCallbackAsync: builder.mutation({
+      momoIpnCallback: builder.mutation({
          query: (payload: IMomoIpnCallbackPayload) => ({
             url: '/api/v1/orders/payment/momo-ipn-callback',
             method: 'PATCH',
@@ -92,13 +89,13 @@ export const orderApi = createApi({
             return error.data;
          },
       }),
-      confirmOrderAsync: builder.mutation({
+      confirmOrder: builder.mutation({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}/status/confirm`,
             method: 'PATCH',
          }),
       }),
-      cancelOrderAsync: builder.mutation({
+      cancelOrder: builder.mutation({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}/status/cancel`,
             method: 'PATCH',
@@ -108,10 +105,12 @@ export const orderApi = createApi({
 });
 
 export const {
-   useVnpayIpnCallbackAsyncMutation,
-   useMomoIpnCallbackAsyncMutation,
-   useGetOrdersAsyncQuery,
-   useGetOrderDetailsAsyncQuery,
-   useConfirmOrderAsyncMutation,
-   useCancelOrderAsyncMutation,
+   useVnpayIpnCallbackMutation,
+   useMomoIpnCallbackMutation,
+   useGetOrdersQuery,
+   useGetOrderDetailsQuery,
+   useConfirmOrderMutation,
+   useCancelOrderMutation,
+   useLazyGetOrdersQuery,
+   useLazyGetOrderDetailsQuery,
 } = orderApi;

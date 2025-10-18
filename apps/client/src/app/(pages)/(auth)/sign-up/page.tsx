@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
 
 import Image from 'next/image';
@@ -12,85 +11,17 @@ import {
    RegisterFormType,
    RegisterResolver,
 } from '~/domain/schemas/auth.schema';
-import { useRegisterAsyncMutation } from '~/infrastructure/services/auth.service';
 import { FormSelector } from '../_components/selector-input';
 import { FormBirthdaySelector } from '@components/client/forms/birthday-selector';
 import { FormPhoneInput } from '@components/client/forms/phone-input';
-import { ServerErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
-import { useToast } from '@components/hooks/use-toast';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-
-// List of countries - this would typically be more comprehensive
-const countries = [
-   'Afghanistan',
-   'Albania',
-   'Algeria',
-   'Andorra',
-   'Angola',
-   'Argentina',
-   'Armenia',
-   'Australia',
-   'Austria',
-   'Belgium',
-   'Brazil',
-   'Canada',
-   'China',
-   'Denmark',
-   'Egypt',
-   'Finland',
-   'France',
-   'Germany',
-   'Greece',
-   'India',
-   'Indonesia',
-   'Iran',
-   'Iraq',
-   'Ireland',
-   'Israel',
-   'Italy',
-   'Japan',
-   'Kenya',
-   'Korea, South',
-   'Mexico',
-   'Netherlands',
-   'New Zealand',
-   'Norway',
-   'Pakistan',
-   'Poland',
-   'Portugal',
-   'Russia',
-   'Saudi Arabia',
-   'Singapore',
-   'South Africa',
-   'Spain',
-   'Sweden',
-   'Switzerland',
-   'Taiwan',
-   'Tajikistan',
-   'Tanzania',
-   'Thailand',
-   'Timor-Leste',
-   'Togo',
-   'Tokelau',
-   'Tonga',
-   'Trinidad and Tobago',
-   'Tunisia',
-   'Türkiye',
-   'Turkmenistan',
-   'Turks and Caicos Islands',
-   'Tuvalu',
-   'Uganda',
-   'Ukraine',
-   'United Arab Emirates',
-   'United Kingdom',
-   'United States',
-   'Vietnam',
-];
+import useAuth from '../_hooks/use-auth';
+import { countries } from '~/domain/constants/countries';
 
 const defaultValues: RegisterFormType = {
    email: '',
@@ -104,9 +35,6 @@ const defaultValues: RegisterFormType = {
 };
 
 const SignUpPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
-   const { toast } = useToast();
-
    const router = useRouter();
 
    const form = useForm<RegisterFormType>({
@@ -114,43 +42,35 @@ const SignUpPage = () => {
       defaultValues: defaultValues,
    });
 
-   const [
-      registerAsync,
-      { isLoading: isFetching, error: registerError, isError, reset },
-   ] = useRegisterAsyncMutation();
+   const { register, isLoading } = useAuth();
 
    const handleSubmitRegister = async (data: RegisterFormType) => {
-      const result = await registerAsync({
+      const result = await register({
          ...data,
          birth_day: `${data.birth_day.year}-${data.birth_day.month}-${data.birth_day.day}`,
-      }).unwrap();
+      });
 
-      if (result.verification_type === VERIFICATION_TYPES.EMAIL_VERIFICATION) {
-         const params = result.params;
+      if (result.isSuccess && result.data) {
+         if (
+            result.data.verification_type ===
+            VERIFICATION_TYPES.EMAIL_VERIFICATION
+         ) {
+            const params = result.data.params;
 
-         const queryParams = new URLSearchParams();
+            const queryParams = new URLSearchParams();
 
-         for (const key in params) {
-            if (params.hasOwnProperty(key)) {
-               queryParams.append(key, String(params[key]));
+            for (const key in params) {
+               if (params.hasOwnProperty(key)) {
+                  queryParams.set(key, String(params[key]));
+               }
             }
-         }
 
-         router.replace(`/verify/otp?${queryParams}`);
+            router.push(`/verify/otp?${queryParams.toString()}`, {
+               scroll: false,
+            });
+         }
       }
    };
-
-   useEffect(() => {
-      if (isError) {
-         const serverError = registerError as ServerErrorResponse;
-         toast({
-            variant: 'destructive',
-            title: `${serverError?.error?.message || 'Server is busy, try again later'}`,
-            // description: `${serverError.error.code}`,
-         });
-         reset(); // Reset the mutation state to clear isError
-      }
-   }, [isError, registerError, reset]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -187,10 +107,7 @@ const SignUpPage = () => {
                </p>
 
                <div className="w-[500px]">
-                  <LoadingOverlay
-                     isLoading={isLoading || isFetching}
-                     text="Loading..."
-                  >
+                  <LoadingOverlay isLoading={isLoading} text="Loading...">
                      <div className="w-full mt-2">
                         <div className="flex gap-2">
                            <div className="w-full">
@@ -217,7 +134,7 @@ const SignUpPage = () => {
                                        label="First Name"
                                        className="rounded-xl w-full"
                                        type="text"
-                                       disabled={isLoading || isFetching}
+                                       disabled={isLoading}
                                        errorTextClassName="pb-1"
                                     />
 
@@ -227,7 +144,7 @@ const SignUpPage = () => {
                                        label="Last Name"
                                        className="rounded-xl w-full"
                                        type="text"
-                                       disabled={isLoading || isFetching}
+                                       disabled={isLoading}
                                        errorTextClassName="pb-1"
                                     />
                                  </div>
@@ -266,7 +183,7 @@ const SignUpPage = () => {
                                  label="Email"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={isLoading || isFetching}
+                                 disabled={isLoading}
                                  errorTextClassName="pb-5"
                               />
                               <p className="mt-2 text-sm font-light text-slate-500">
@@ -282,7 +199,7 @@ const SignUpPage = () => {
                               label="Password"
                               className="rounded-xl w-full mb-2"
                               type="password"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading}
                               errorTextClassName="pb-5"
                            />
                         </div>
@@ -293,7 +210,7 @@ const SignUpPage = () => {
                            label="Confirm Password"
                            className="rounded-xl w-full"
                            type="password"
-                           disabled={isLoading || isFetching}
+                           disabled={isLoading}
                            errorTextClassName="pb-5"
                         />
                      </div>
@@ -344,13 +261,10 @@ const SignUpPage = () => {
                         disabled={
                            form.formState.isSubmitting ||
                            isLoading ||
-                           isFetching ||
                            form.formState.isValidating
                         }
                      >
-                        {isLoading || isFetching
-                           ? 'Registering...'
-                           : 'Create Account'}
+                        {isLoading ? 'Registering...' : 'Create Account'}
                      </Button>
                   </div>
                </div>

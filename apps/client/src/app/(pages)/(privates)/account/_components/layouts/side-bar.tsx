@@ -5,6 +5,7 @@ import svgs from '@assets/svgs';
 import Image from 'next/image';
 import { useState } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const listSidebarItems = [
    {
@@ -45,7 +46,9 @@ const listSidebarItems = [
 ];
 
 const SideBar = () => {
-   const [active, setActive] = useState('/account');
+   const pathname = usePathname();
+
+   const [active, setActive] = useState(pathname);
 
    return (
       <ul className="w-full">

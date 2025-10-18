@@ -1,14 +1,13 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useEffect, useState } from 'react';
 import { OTPInput } from '@components/client/forms/otp-input';
-import { LoadingOverlay } from '@components/client/loading-overlay';
 import Button from '../../_components/Button';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
-import { useVerifyOtpAsyncMutation } from '~/infrastructure/services/auth.service';
 import { useForm } from 'react-hook-form';
+import useAuth from '../../_hooks/use-auth';
 
 const defaultValues: OtpFormType = {
    email: '',
@@ -17,83 +16,17 @@ const defaultValues: OtpFormType = {
 };
 
 const OtpPage = () => {
-   const [otp, setOtp] = useState('');
-   const [isVerifying, setIsVerifying] = useState(false);
-   const [isError, setIsError] = useState(false);
-   const [isSuccess, setIsSuccess] = useState(false);
-   const [timeLeft, setTimeLeft] = useState(30);
+   const [timeLeft, setTimeLeft] = useState(120);
 
    const router = useRouter();
    const searchParams = useSearchParams();
-   const _email = searchParams.get('_email');
-   const _token = searchParams.get('_token');
-   const _otp = searchParams.get('_otp');
-
-   const userEmail = useAppSelector((state) => state.auth.value.userEmail);
 
    const form = useForm<OtpFormType>({
       resolver: OtpResolver,
       defaultValues: defaultValues,
    });
 
-   const [
-      verifyOtpAsync,
-      {
-         isLoading: isFetching,
-         error: verifyOtpError,
-         isError: verifyOtpIsError,
-         isSuccess: verifyOtpIsSuccess,
-         reset,
-      },
-   ] = useVerifyOtpAsyncMutation();
-
-   const handleSubmit = async (data: OtpFormType) => {
-      await verifyOtpAsync(data).unwrap();
-   };
-
-   // Handle OTP change
-   const handleChange = (value: string) => {
-      setOtp(value);
-   };
-
-   // Handle OTP completion
-   const handleComplete = async (value: string) => {
-      form.setValue('otp', value);
-      handleSubmit(form.getValues());
-   };
-
-   useEffect(() => {
-      if (verifyOtpIsError) {
-         setIsError(true);
-         reset();
-      }
-   }, [verifyOtpIsError]);
-
-   useEffect(() => {
-      if (verifyOtpIsSuccess) {
-         setIsSuccess(true);
-         setIsVerifying(true);
-         setIsError(false);
-         reset();
-         setTimeout(() => {
-            window.location.replace('/sign-in');
-         }, 2000);
-      }
-   }, [verifyOtpIsSuccess]);
-
-   useEffect(() => {
-      setIsVerifying(isFetching);
-   }, [isFetching]);
-
-   // Reset timer
-   const handleResendCode = () => {
-      setTimeLeft(30);
-      setIsError(false);
-      setIsSuccess(false);
-      setOtp('');
-
-      alert('A new verification code has been sent!');
-   };
+   const { verifyOtp, isLoading, verifyOtpState } = useAuth();
 
    // Countdown timer for resend code
    useEffect(() => {
@@ -122,9 +55,19 @@ const OtpPage = () => {
          form.setValue('token', _token);
          form.setValue('otp', _otp);
 
+         const handleSubmit = async (data: OtpFormType) => {
+            await verifyOtp(data);
+         };
+
          form.handleSubmit(handleSubmit)();
       }
-   }, [searchParams, form]);
+   }, [searchParams, form, verifyOtp]);
+
+   useEffect(() => {
+      if (verifyOtpState.isSuccess) {
+         router.replace('/sign-in');
+      }
+   }, [verifyOtpState.isSuccess, router]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -145,21 +88,27 @@ const OtpPage = () => {
                         </h2>
                         <p className="text-gray-600 mt-2 font-SFProText">
                            We've sent a 6-digit code to your email:
-                           {userEmail}
+                           {form.getValues('email')}
                         </p>
                      </div>
 
                      <OTPInput
                         length={6}
-                        onComplete={handleComplete}
-                        onChange={handleChange}
-                        disabled={isVerifying || isSuccess}
-                        isError={isError}
+                        onComplete={async (value: string) => {
+                           form.setValue('otp', value);
+
+                           if (value.length === 6) {
+                              await verifyOtp(form.getValues());
+                           }
+                        }}
+                        onChange={() => {}}
+                        disabled={isLoading}
+                        isError={verifyOtpState.isError}
                         errorMessage="Invalid verification code. Please try again."
                         className="mb-6"
                      />
 
-                     {isVerifying && (
+                     {isLoading && (
                         <div className="text-center text-blue-600 my-4">
                            <svg
                               className="animate-spin h-5 w-5 mx-auto mb-2"
@@ -185,7 +134,7 @@ const OtpPage = () => {
                         </div>
                      )}
 
-                     {isSuccess && (
+                     {verifyOtpState.isSuccess && (
                         <div className="text-center text-green-600 my-4 flex items-center justify-center">
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +166,9 @@ const OtpPage = () => {
                            </p>
                         ) : (
                            <button
-                              onClick={handleResendCode}
+                              onClick={() => {
+                                 setTimeLeft(120);
+                              }}
                               className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                            >
                               Resend Code
@@ -228,16 +179,17 @@ const OtpPage = () => {
                      <div className="mt-8">
                         <Button
                            className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center"
-                           onClick={() => {
-                              if (otp.length === 6) handleComplete(otp);
+                           onClick={async () => {
+                              console.log(form.getValues());
+
+                              if (form.getValues('otp').length === 6)
+                                 await verifyOtp(form.getValues());
                            }}
                            disabled={
-                              otp.length !== 6 || isVerifying || isSuccess
+                              form.getValues('otp').length !== 6 || isLoading
                            }
                         >
-                           {isVerifying || isFetching
-                              ? 'Verifying...'
-                              : 'Verify Code'}
+                           {isLoading ? 'Verifying...' : 'Verify Code'}
                         </Button>
                      </div>
 

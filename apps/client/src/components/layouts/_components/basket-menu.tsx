@@ -1,18 +1,14 @@
 import { Button } from '@components/ui/button';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { useAppSelector } from '~/infrastructure/redux/store';
-import HeaderBagItem from './header-bag-item';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { LiaBoxSolid } from 'react-icons/lia';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import { MdOutlineManageAccounts } from 'react-icons/md';
 import Link from 'next/link';
-import { setLogout } from '~/infrastructure/redux/features/auth.slice';
-import { useDispatch } from 'react-redux';
+import useAuth from '~/app/(pages)/(auth)/_hooks/use-auth';
 
-// Staggered animation variants
 const containerVariants = {
    hidden: {},
    visible: {
@@ -25,13 +21,8 @@ const containerVariants = {
 
 const BasketMenu = () => {
    const router = useRouter();
-   const { items } = useAppSelector((state) => state.cart.value);
 
-   const dispatch = useDispatch();
-
-   const { isAuthenticated, userEmail } = useAppSelector(
-      (state) => state.auth.value,
-   );
+   const { isAuthenticated, logout } = useAuth();
 
    return (
       <motion.div
@@ -75,7 +66,7 @@ const BasketMenu = () => {
                </div>
 
                <div className="py-5 flex gap-5 flex-col">
-                  {items.length > 0 &&
+                  {/* {items.length > 0 &&
                      items
                         .filter((i) => i.order < 4)
                         .map((item) => {
@@ -90,7 +81,7 @@ const BasketMenu = () => {
                   <p className="text-sm text-slate-500 mt-2">
                      {items.filter((i) => i.order > 3).length} more items in
                      your bag
-                  </p>
+                  </p> */}
                </div>
 
                <h3 className="text-sm text-slate-500 font-SFProText">
@@ -124,9 +115,8 @@ const BasketMenu = () => {
                   ) : (
                      <li
                         className="flex items-center gap-2 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:text-blue-600"
-                        onClick={() => {
-                           dispatch(setLogout());
-                           router.replace('/sign-in');
+                        onClick={async () => {
+                           await logout();
                         }}
                      >
                         <RiLogoutBoxRLine

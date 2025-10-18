@@ -31,12 +31,12 @@ public class VerifyEmailHandler : ICommandHandler<VerifyEmailCommand, bool>
 
         if (otp != request.Otp)
         {
-            return Errors.Auth.InvalidToken;
+            return Errors.Auth.InvalidOtp;
         }
 
         var result = await _identityService.VerifyEmailTokenAsync(request.Email, request.Token);
 
-        if(result.IsFailure)
+        if (result.IsFailure)
         {
             return result.Error;
         }

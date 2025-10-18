@@ -69,13 +69,36 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     {
         try
         {
-            var result = await _dbSet.FirstOrDefaultAsync(e => e.Id.Equals(id));
+            var result = await _dbSet.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
 
             return result ?? null!;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting entity by id: {Id}", id);
+
+            throw new Exception(ex.Message, ex);
+        }
+    }
+
+    virtual public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includes)
+    {
+        try
+        {
+            var query = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            var result = await query.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting entity by id with includes: {Id}", id);
 
             throw new Exception(ex.Message, ex);
         }

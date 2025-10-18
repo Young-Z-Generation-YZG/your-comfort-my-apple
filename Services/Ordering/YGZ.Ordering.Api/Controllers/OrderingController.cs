@@ -57,7 +57,7 @@ public class OrderingController : ApiController
     [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
-        var query = new GetOrderItemsByOrderIdQuery(orderId);
+        var query = new GetOrderDetailsByIdQuery(orderId);
 
         var result = await _sender.Send(query, cancellationToken);
 

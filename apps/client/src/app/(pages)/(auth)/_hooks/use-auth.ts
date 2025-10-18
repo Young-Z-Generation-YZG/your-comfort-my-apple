@@ -12,6 +12,9 @@ import {
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
 import { useCheckApiError } from './use-check-error';
+import { IRegisterPayload } from '~/domain/interfaces/auth/register.interface';
+import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
+import { useRouter } from 'next/navigation';
 
 const useAuth = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
@@ -25,8 +28,25 @@ const useAuth = () => {
       useChangePasswordMutation();
    const [logoutMutation, logoutMutationState] = useLogoutMutation();
 
+   const router = useRouter();
+
    useCheckApiError([
       { title: 'Login failed', error: loginMutationState.error },
+      { title: 'Register failed', error: registerMutationState.error },
+      { title: 'Verify OTP failed', error: verifyOtpMutationState.error },
+      {
+         title: 'Send Email Reset Password failed',
+         error: sendEmailResetPasswordMutationState.error,
+      },
+      {
+         title: 'Reset Password failed',
+         error: resetPasswordMutationState.error,
+      },
+      {
+         title: 'Change Password failed',
+         error: changePasswordMutationState.error,
+      },
+      // { title: 'Logout failed', error: logoutMutationState.error },
    ]);
 
    const authAppState = useAppSelector((state) => state.auth);
@@ -55,16 +75,61 @@ const useAuth = () => {
    const logout = useCallback(async () => {
       try {
          await logoutMutation().unwrap();
+
+         router.push('/sign-in');
+
          return { isSuccess: true, isError: false, data: true, error: null };
       } catch (error) {
          return { isSuccess: false, isError: true, data: null, error };
       }
-   }, [logoutMutation]);
+   }, [logoutMutation, router]);
+
+   const register = useCallback(
+      async (data: IRegisterPayload) => {
+         try {
+            const result = await registerMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [registerMutation],
+   );
+
+   const verifyOtp = useCallback(
+      async (data: IOtpPayload) => {
+         try {
+            const result = await verifyOtpMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [verifyOtpMutation],
+   );
 
    // centrally track the loading state
    const isLoading = useMemo(() => {
-      return loginMutationState.isLoading;
-   }, [loginMutationState.isLoading]);
+      return (
+         loginMutationState.isLoading ||
+         registerMutationState.isLoading ||
+         verifyOtpMutationState.isLoading
+      );
+   }, [
+      loginMutationState.isLoading,
+      registerMutationState.isLoading,
+      verifyOtpMutationState.isLoading,
+   ]);
 
    // centrally track the success
    useMemo(() => {
@@ -84,8 +149,16 @@ const useAuth = () => {
                },
             },
          });
+      } else if (verifyOtpMutationState.isSuccess) {
+         toast.success('Verification successful!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+         });
       }
-   }, [loginMutationState]);
+   }, [loginMutationState, verifyOtpMutationState]);
 
    return {
       // States
@@ -95,6 +168,13 @@ const useAuth = () => {
       // Actions
       login,
       logout,
+      register,
+      verifyOtp,
+
+      // Mutation states
+      loginState: loginMutationState,
+      registerState: registerMutationState,
+      verifyOtpState: verifyOtpMutationState,
    };
 };
 
