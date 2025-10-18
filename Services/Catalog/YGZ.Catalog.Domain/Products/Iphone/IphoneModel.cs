@@ -37,7 +37,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     public List<Storage> Storages { get; set; } = [];
 
     [BsonElement("prices")]
-    public List<SKUPrice> Prices { get; set; } = [];
+    public List<IphoneSkuPriceList> Prices { get; set; } = [];
 
     [BsonElement("showcase_image")]
     public List<Image> ShowcaseImages { get; set; } = [];
@@ -57,23 +57,17 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     [BsonElement("slug")]
     public required Slug Slug { get; init; }
 
-    [BsonElement("created_at")]
-    public DateTime CreatedAt => DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("updated_at")]
-    public DateTime UpdatedAt => DateTime.Now;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("modified_by")]
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    [BsonElement("is_deleted")]
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    [BsonElement("deleted_at")]
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    [BsonElement("deleted_by")]
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
     protected List<RatingStar> InitRatingStar()
     {
@@ -93,7 +87,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      List<Model> models,
                                      List<Color> colors,
                                      List<Storage> storages,
-                                     List<SKUPrice> prices,
+                                     List<IphoneSkuPriceList> prices,
                                      List<Image> showcaseImages,
                                      string description,
                                      AverageRating averageRating,

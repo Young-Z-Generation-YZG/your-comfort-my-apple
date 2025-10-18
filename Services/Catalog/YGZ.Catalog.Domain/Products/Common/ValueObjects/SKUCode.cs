@@ -4,16 +4,16 @@ using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
-public class SKUCode : ValueObject
+public class SkuCode : ValueObject
 {
     public string Value { get; init; }
 
-    private SKUCode(string value)
+    private SkuCode(string value)
     {
         Value = value;
     }
 
-    public static SKUCode Create(string productType, string model, string storage, string color)
+    public static SkuCode Create(string productType, string model, string storage, string color)
     {
         EProductType.TryFromName(productType, out var productTypeEnum);
         EIphoneModel.TryFromName(SnakeCaseSerializer.Serialize(model).ToUpper(), out var modelEnum);
@@ -25,10 +25,10 @@ public class SKUCode : ValueObject
             throw new ArgumentException("Invalid product type, model, storage or color");
         }
 
-        return new SKUCode($"{productTypeEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
+        return new SkuCode($"{productTypeEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
     }
 
-    public static SKUCode Of(string value)
+    public static SkuCode Of(string value)
     {
         var parts = value.Split('-');
         if (parts.Length != 4)

@@ -7,13 +7,13 @@ namespace YGZ.Catalog.Domain.Core.Abstractions;
 
 public interface ISoftDelete
 {
-    [BsonElement("is_deleted")]
-    bool IsDeleted { get; }
+    [BsonElement("IsDeleted")]
+    bool IsDeleted { get; init; }
 
-    [BsonElement("deleted_at")]
-    DateTime? DeletedAt { get; }
+    [BsonElement("DeletedAt")]
+    DateTime? DeletedAt { get; init; }
 
     [BsonRepresentation(BsonType.ObjectId)]
-    [BsonElement("deleted_by")]
-    string? DeletedBy { get; }
+    [BsonElement("DeletedBy")]
+    string? DeletedBy { get; init; }
 }

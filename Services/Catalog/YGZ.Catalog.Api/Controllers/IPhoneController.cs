@@ -7,8 +7,8 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Application.Iphone.Queries.GetIphoneModelBySlug;
+using YGZ.Catalog.Application.Iphone.Queries.GetIphoneModels;
 using YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
-using YGZ.Catalog.Application.IPhone.Queries.GetIphoneModels;
 
 namespace YGZ.Catalog.Api.Controllers;
 

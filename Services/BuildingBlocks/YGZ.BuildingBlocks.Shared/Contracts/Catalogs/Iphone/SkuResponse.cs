@@ -20,6 +20,7 @@ public sealed record SkuResponse
     required public decimal UnitPrice { get; init; }
     required public int AvailableInStock { get; init; }
     required public int TotalSold { get; init; }
+    required public ReservedForEventResponse? ReservedForEvent { get; init; }
     required public string State { get; init; }
     required public string Slug { get; init; }
     required public DateTime CreatedAt { get; init; }

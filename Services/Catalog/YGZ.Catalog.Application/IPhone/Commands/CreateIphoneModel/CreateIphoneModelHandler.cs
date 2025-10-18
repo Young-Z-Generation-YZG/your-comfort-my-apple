@@ -45,7 +45,7 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
             RatingStar.Create(5, 0),
         };
 
-        List<SKUPrice> prices = new List<SKUPrice>();
+        List<IphoneSkuPriceList> prices = new List<IphoneSkuPriceList>();
         List<Model> modelsInPrices = new()
             {
                 Model.Create("IPHONE_15", 0),
@@ -69,55 +69,55 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
                 Storage.Create("1TB", 1024, 0),
             };
         // init
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(SKUPrice.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(IphoneSkuPriceList.Create(modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
         var newModel = IphoneModel.Create(iPhoneModelId: ModelId.Create(),
                                           category: category,

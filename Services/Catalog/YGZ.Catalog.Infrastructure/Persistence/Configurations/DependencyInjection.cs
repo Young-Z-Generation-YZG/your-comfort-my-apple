@@ -16,9 +16,10 @@ public static class DependencyInjection
         BsonSerializer.RegisterSerializer(typeof(CategoryId), new CategoryIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(ReviewId), new ReviewIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(ModelId), new ModelIdSerialization());
-        BsonSerializer.RegisterSerializer(typeof(SKUId), new SKUIdSerialization());
+        BsonSerializer.RegisterSerializer(typeof(SkuId), new SkuIdSerialization());
+        BsonSerializer.RegisterSerializer(typeof(SkuPriceId), new SkuPriceIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(Slug), new SlugSerialization());
-        BsonSerializer.RegisterSerializer(typeof(SKUCode), new SKUCodeSerialization());
+        BsonSerializer.RegisterSerializer(typeof(SkuCode), new SKUCodeSerialization());
         BsonSerializer.RegisterSerializer(typeof(TenantId), new TenantIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(BranchId), new BranchIdSerialization());
 

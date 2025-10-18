@@ -14,7 +14,7 @@ public sealed record IphoneModelDetailsResponse
     public required List<ModelResponse> ModelItems { get; init; }
     public required List<ColorResponse> ColorItems { get; init; }
     public required List<StorageResponse> StorageItems { get; init; }
-    public required List<SKUPriceResponse> SkuPrices { get; init; }
+    public required List<IphoneSkuPriceListResponse> SkuPrices { get; init; }
     public string? Description { get; init; }
     public required List<ImageResponse> ShowcaseImages { get; init; }
     public required int OverallSold { get; init; }

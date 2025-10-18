@@ -9,9 +9,9 @@ using YGZ.Catalog.Domain.Tenants.ValueObjects;
 namespace YGZ.Catalog.Domain.Tenants.Entities;
 
 [BsonCollection("SKUs")]
-public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
+public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
 {
-    public SKU(SKUId id) : base(id) { }
+    public SKU(SkuId id) : base(id) { }
 
     [BsonElement("model_id")]
     public required ModelId ModelId { get; init; }
@@ -23,25 +23,28 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     public required BranchId BranchId { get; init; }
 
     [BsonElement("sku_code")]
-    public required SKUCode SKUCode { get; init; }
+    public required SkuCode SkuCode { get; init; }
 
     [BsonElement("product_type")]
     public string ProductType { get; private set; }
 
     [BsonElement("model")]
-    public Model Model { get; set; } = default!;
+    public required Model Model { get; init; }
 
     [BsonElement("color")]
-    public Color Color { get; set; } = default!;
+    public required Color Color { get; init; }
 
     [BsonElement("storage")]
-    public Storage Storage { get; set; } = default!;
+    public required Storage Storage { get; init; }
 
     [BsonElement("unit_price")]
     public decimal UnitPrice { get; set; } = 0;
 
     [BsonElement("available_in_stock")]
     public int AvailableInStock { get; set; } = 0;
+
+    [BsonElement("reserved_for_event")]
+    public ReservedForEvent? ReservedForEvent { get; init; }
 
     [BsonElement("total_sold")]
     public int TotalSold { get; set; } = 0;
@@ -52,23 +55,23 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
     [BsonElement("slug")]
     public Slug Slug { get; set; } = default!;
 
-    public DateTime CreatedAt => DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt => DateTime.UtcNow;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
     public static SKU Create(
         ModelId modelId,
         TenantId tenantId,
         BranchId branchId,
-        SKUCode skuCode,
+        SkuCode skuCode,
         EProductType productType,
         Model model,
         Color color,
@@ -76,18 +79,19 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         decimal unitPrice,
         int availableInStock = 0)
     {
-        var sku = new SKU(SKUId.Create())
+        var sku = new SKU(SkuId.Create())
         {
             ModelId = modelId,
             TenantId = tenantId,
             BranchId = branchId,
-            SKUCode = skuCode,
+            SkuCode = skuCode,
             ProductType = productType.Name,
             Model = model,
             Color = color,
             Storage = storage,
             UnitPrice = unitPrice,
             AvailableInStock = availableInStock,
+            ReservedForEvent = null,
             State = EState.ACTIVE.Name,
             Slug = Slug.Create(skuCode.Value)
         };
@@ -110,7 +114,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
         return new SkuResponse
         {
             Id = Id.Value!,
-            Code = SKUCode.Value,
+            Code = SkuCode.Value,
             ModelId = ModelId.Value!,
             TenantId = TenantId.Value!,
             BranchId = BranchId.Value!,
@@ -121,6 +125,7 @@ public class SKU : Entity<SKUId>, IAuditable, ISoftDelete
             UnitPrice = UnitPrice,
             AvailableInStock = AvailableInStock,
             TotalSold = TotalSold,
+            ReservedForEvent = ReservedForEvent?.ToResponse(),
             State = State,
             Slug = Slug.Value,
             CreatedAt = CreatedAt,

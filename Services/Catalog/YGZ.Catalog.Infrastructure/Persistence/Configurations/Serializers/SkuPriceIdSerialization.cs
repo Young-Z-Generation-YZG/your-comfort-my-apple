@@ -1,14 +1,13 @@
-﻿
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Configurations.Serializers;
 
-public class SkuIdSerialization : SerializerBase<SkuId>
+public class SkuPriceIdSerialization : SerializerBase<SkuPriceId>
 {
-    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, SkuId value)
+    public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, SkuPriceId value)
     {
         if (value is null || value.Id is null)
         {
@@ -20,17 +19,17 @@ public class SkuIdSerialization : SerializerBase<SkuId>
         context.Writer.WriteObjectId((MongoDB.Bson.ObjectId)value.Id!);
     }
 
-    public override SkuId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+    public override SkuPriceId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {
         if (context.Reader.CurrentBsonType == BsonType.Null)
         {
             context.Reader.ReadNull(); // Consume the null value
 
-            return new SkuId { Id = null };
+            return new SkuPriceId { Id = null };
         }
 
         var objectId = context.Reader.ReadObjectId();
 
-        return new SkuId { Id = objectId };
+        return new SkuPriceId { Id = objectId };
     }
 }

@@ -7,13 +7,13 @@ namespace YGZ.Catalog.Domain.Core.Abstractions;
 
 public interface IAuditable
 {
-    [BsonElement("created_at")]
-    public DateTime CreatedAt { get; }
+    [BsonElement("CreatedAt")]
+    public DateTime CreatedAt { get; init; }
 
-    [BsonElement("updated_at")]
-    public DateTime UpdatedAt { get; }
+    [BsonElement("UpdatedAt")]
+    public DateTime UpdatedAt { get; init; }
 
-    [BsonElement("modified_by")]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? ModifiedBy { get; }
+    [BsonElement("UpdatedBy")]
+    public string? UpdatedBy { get; init; }
 }

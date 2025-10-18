@@ -4,9 +4,8 @@ using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Tenants.ValueObjects;
 
-public class SKUId : ValueObject
+public class SkuId : ValueObject
 {
-    [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public ObjectId? Id { get; set; } = null;
 
@@ -17,12 +16,12 @@ public class SKUId : ValueObject
         yield return Id!;
     }
 
-    public static SKUId Create()
+    public static SkuId Create()
     {
-        return new SKUId { Id = ObjectId.GenerateNewId() };
+        return new SkuId { Id = ObjectId.GenerateNewId() };
     }
 
-    public static SKUId Of(string? id)
+    public static SkuId Of(string? id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
@@ -30,6 +29,6 @@ public class SKUId : ValueObject
 
         ArgumentException.ThrowIfNullOrWhiteSpace(value.ToString());
 
-        return new SKUId { Id = value };
+        return new SkuId { Id = value };
     }
 }

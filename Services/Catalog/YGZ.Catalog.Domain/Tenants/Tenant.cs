@@ -26,23 +26,17 @@ public class Tenant : AggregateRoot<TenantId>, IAuditable, ISoftDelete
     [BsonElement("tenant_state")]
     public required string TenantState;
 
-    [BsonElement("created_at")]
-    public DateTime CreatedAt => DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("updated_at")]
-    public DateTime UpdatedAt => DateTime.Now;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("modified_by")]
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    [BsonElement("is_deleted")]
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    [BsonElement("deleted_at")]
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    [BsonElement("deleted_by")]
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
     public static Tenant Create(TenantId tenantId, string name, Branch branch, string? description = null)
     {

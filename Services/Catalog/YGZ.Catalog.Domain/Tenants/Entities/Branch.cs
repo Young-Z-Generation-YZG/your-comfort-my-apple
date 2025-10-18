@@ -26,23 +26,17 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
     [BsonElement("manager")]
     public BranchManager? Manager { get; init; }
 
-    [BsonElement("created_at")]
-    public DateTime CreatedAt => DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("updated_at")]
-    public DateTime UpdatedAt => DateTime.Now;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    [BsonElement("modified_by")]
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    [BsonElement("is_deleted")]
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    [BsonElement("deleted_at")]
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    [BsonElement("deleted_by")]
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
     public static Branch Create(TenantId tenantId, string name, string address, BranchManager? manager, string? description = null)
     {

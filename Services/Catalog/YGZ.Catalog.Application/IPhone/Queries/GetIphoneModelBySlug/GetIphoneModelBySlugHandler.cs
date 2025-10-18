@@ -13,11 +13,11 @@ namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModelBySlug;
 
 public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQuery, IphoneModelDetailsResponse>
 {
-    private readonly IMongoRepository<SKU, SKUId> _skuRepository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
 
-    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SKUId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
+    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
     {
         _skuRepository = skuRepository;
         _iphoneModelRepository = iphoneModelRepository;

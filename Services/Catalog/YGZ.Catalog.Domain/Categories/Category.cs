@@ -33,17 +33,17 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public int Order { get; set; }
 
 
-    public DateTime CreatedAt => DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt => DateTime.Now;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
 
     public static Category Create(CategoryId id, string name, string description, int order, CategoryId? parentId)
@@ -71,7 +71,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
             ParentId = ParentId?.Value ?? null,
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,
-            ModifiedBy = ModifiedBy,
+            UpdatedBy = UpdatedBy,
             IsDeleted = IsDeleted,
             DeletedAt = DeletedAt,
             DeletedBy = DeletedBy

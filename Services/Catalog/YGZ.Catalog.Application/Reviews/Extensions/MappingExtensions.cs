@@ -10,7 +10,7 @@ public static class MappingExtensions
     {
         throw new NotImplementedException();
         //var modelId = ModelId.Of(dto.ModelId);
-        //var skuId = SKUId.Of(dto.ProductId);
+        //var skuId = SkuId.Of(dto.ProductId);
 
         //return Review.Create(modelId: modelId,
         //                     skuId: skuId,

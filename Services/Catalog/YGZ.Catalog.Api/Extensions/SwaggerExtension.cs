@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using YGZ.Catalog.Api.Contracts;
 using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Api.Contracts.PromotionRequest;
@@ -48,7 +47,6 @@ public static class SwaggerExtension
 
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
-            settings.OperationProcessors.Add(new GetProductsRequestExample());
             settings.OperationProcessors.Add(new GetIphoneModelsRequestExample());
             settings.OperationProcessors.Add(new GetReviewsByModelRequestExample());
 

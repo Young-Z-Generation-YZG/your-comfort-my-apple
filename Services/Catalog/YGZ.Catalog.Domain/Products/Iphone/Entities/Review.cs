@@ -18,7 +18,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     public ModelId ModelId { get; init; }
 
     [BsonElement("sku_id")]
-    public SKUId SKUId { get; init; }
+    public SkuId SkuId { get; init; }
 
     [BsonElement("customer_order")]
     public required CustomerOrder CustomerOrder { get; init; }
@@ -29,19 +29,19 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     [BsonElement("rating")]
     public int Rating { get; private set; }
 
-    public DateTime CreatedAt => DateTime.Now;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt => DateTime.Now;
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
-    public bool IsDeleted => false;
+    public bool IsDeleted { get; init; } = false;
 
-    public DateTime? DeletedAt => null;
+    public DateTime? DeletedAt { get; init; } = null;
 
-    public string? DeletedBy => null;
+    public string? DeletedBy { get; init; } = null;
 
-    public string? ModifiedBy => null;
+    public string? UpdatedBy { get; init; } = null;
 
-    public static Review Create(ModelId modelId, SKUId skuId, CustomerOrder customerOrder, string content, int rating)
+    public static Review Create(ModelId modelId, SkuId skuId, CustomerOrder customerOrder, string content, int rating)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
         ArgumentOutOfRangeException.ThrowIfLessThan(rating, 1);
@@ -50,7 +50,7 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
         var review = new Review(ReviewId.Create())
         {
             ModelId = modelId,
-            SKUId = skuId,
+            SkuId = skuId,
             CustomerOrder = customerOrder,
             Content = content,
             Rating = rating,

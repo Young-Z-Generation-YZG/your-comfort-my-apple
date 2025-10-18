@@ -1,7 +1,6 @@
 ﻿using NJsonSchema;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
-using YGZ.Catalog.Api.Controllers;
 
 namespace YGZ.Catalog.Api.Contracts.IphoneRequest;
 
@@ -9,7 +8,7 @@ public class GetIphoneModelsRequestExample : IOperationProcessor
 {
     public bool Process(OperationProcessorContext context)
     {
-        if (context.ControllerType == typeof(ProductController))
+        if (context.ControllerType == typeof(GetIphoneModelsRequest))
         {
             var operation = context.OperationDescription.Operation;
 

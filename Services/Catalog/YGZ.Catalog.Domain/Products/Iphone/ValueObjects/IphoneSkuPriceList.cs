@@ -5,7 +5,7 @@ using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
-public class SKUPrice : ValueObject
+public class IphoneSkuPriceList : ValueObject
 {
     [BsonElement("normalized_model")]
     public required string NormalizedModel { get; init; }
@@ -19,13 +19,13 @@ public class SKUPrice : ValueObject
     [BsonElement("unit_price")]
     public required decimal UnitPrice { get; init; }
 
-    public static SKUPrice Create(string model, string color, string storage, decimal unitPrice)
+    public static IphoneSkuPriceList Create(string model, string color, string storage, decimal unitPrice)
     {
         EIphoneModel.TryFromName(model, out var modelEnum);
         EColor.TryFromName(color, out var colorEnum);
         EStorage.TryFromName(storage, out var storageEnum);
 
-        return new SKUPrice
+        return new IphoneSkuPriceList
         {
             NormalizedModel = modelEnum.Name,
             NormalizedColor = colorEnum.Name,
@@ -42,9 +42,9 @@ public class SKUPrice : ValueObject
         yield return UnitPrice;
     }
 
-    public SKUPriceResponse ToResponse()
+    public IphoneSkuPriceListResponse ToResponse()
     {
-        return new SKUPriceResponse
+        return new IphoneSkuPriceListResponse
         {
             NormalizedModel = NormalizedModel,
             NormalizedColor = NormalizedColor,

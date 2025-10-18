@@ -11,9 +11,9 @@ namespace YGZ.Catalog.Application.Iphone.Events.DomainEvents;
 
 public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneModelCreatedDomainEvent>
 {
-    private readonly IMongoRepository<SKU, SKUId> _skuRepository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
 
-    public IphoneModelCreatedDomainEventHandler(IMongoRepository<SKU, SKUId> mongoRepository)
+    public IphoneModelCreatedDomainEventHandler(IMongoRepository<SKU, SkuId> mongoRepository)
     {
         _skuRepository = mongoRepository;
     }
@@ -32,7 +32,7 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
                         modelId: notification.IphoneModel.Id,
                         tenantId: TenantId.Create(),
                         branchId: BranchId.Create(),
-                        skuCode: SKUCode.Create(EProductType.IPHONE.Name, model.Name, storage.Name, color.Name),
+                        skuCode: SkuCode.Create(EProductType.IPHONE.Name, model.Name, storage.Name, color.Name),
                         productType: EProductType.IPHONE,
                         model: model,
                         color: color,

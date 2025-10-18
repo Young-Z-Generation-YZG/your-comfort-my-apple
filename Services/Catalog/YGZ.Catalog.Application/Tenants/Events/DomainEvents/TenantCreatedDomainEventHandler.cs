@@ -11,11 +11,11 @@ namespace YGZ.Catalog.Application.Tenants.Events.DomainEvents;
 
 public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreatedDomainEvent>
 {
-    private readonly IMongoRepository<SKU, SKUId> _skuRepository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
 
-    public TenantCreatedDomainEventHandler(IMongoRepository<SKU, SKUId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
+    public TenantCreatedDomainEventHandler(IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
     {
         _skuRepository = skuRepository;
         _iphoneModelRepository = iphoneModelRepository;
@@ -43,7 +43,7 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                             modelId: model.Id,
                             tenantId: notification.Tenant.Id,
                             branchId: notification.Branch.Id,
-                            skuCode: SKUCode.Create(EProductType.IPHONE.Name, modelItem.Name, storageItem.Name, colorItem.Name),
+                            skuCode: SkuCode.Create(EProductType.IPHONE.Name, modelItem.Name, storageItem.Name, colorItem.Name),
                             productType: EProductType.IPHONE,
                             model: modelItem,
                             color: colorItem,
