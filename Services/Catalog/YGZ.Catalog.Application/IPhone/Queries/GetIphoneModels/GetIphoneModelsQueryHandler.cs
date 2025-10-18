@@ -8,7 +8,7 @@ using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
 
-namespace YGZ.Catalog.Application.IPhone.Queries.GetIphoneModels;
+namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModels;
 
 public class GetModelsQueryHandler : IQueryHandler<GetIphoneModelsQuery, PaginationResponse<IphoneModelResponse>>
 {

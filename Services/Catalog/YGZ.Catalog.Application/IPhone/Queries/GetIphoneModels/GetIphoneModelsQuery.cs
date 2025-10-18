@@ -4,7 +4,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 
-namespace YGZ.Catalog.Application.IPhone.Queries.GetIphoneModels;
+namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModels;
 
 public sealed record GetIphoneModelsQuery() : IQuery<PaginationResponse<IphoneModelResponse>>
 {

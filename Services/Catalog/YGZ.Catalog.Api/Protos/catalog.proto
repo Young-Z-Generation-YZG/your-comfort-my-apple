@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "YGZ.Catalog.Api.Protos";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+package catalog;
+
+
+service CatalogProtoService {
+    rpc CheckTenantExistGrpc (CheckTenantExistRequest) returns (BooleanResponse);
+}
+
+// POST requests
+message CheckTenantExistRequest {
+    google.protobuf.StringValue tenant_id = 1;
+}
+
+
+// responses
+message BooleanResponse {
+	bool is_success = 1;
+}

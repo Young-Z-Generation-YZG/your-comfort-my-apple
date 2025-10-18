@@ -215,14 +215,6 @@ export default function OrderDetails() {
    }, [orderDetailsState]);
 
    //  const {
-   //     data: orderDetailsData,
-   //     isLoading: isOrderDetailsLoading,
-   //     isError: isOrderDetailsError,
-   //     error: orderDetailsError,
-   //     isSuccess: isOrderDetailsDataSuccess,
-   //  } = useGetOrderDetailsAsyncQuery(params.id);
-
-   //  const {
    //     data: reviewsInOrderDataAsync,
    //     isLoading: isReviewsInOrderLoading,
    //     isError: isReviewsInOrderError,

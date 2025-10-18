@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Api.Extensions;
+using YGZ.Catalog.Api.GrpcServices;
 using YGZ.Catalog.Application;
 using YGZ.Catalog.Infrastructure;
 
@@ -46,7 +47,11 @@ services
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddGrpc();
+builder.Services.AddGrpcReflection();
+
 var app = builder.Build();
+
 
 app.UseHealthChecks("/health", new HealthCheckOptions
 {
@@ -78,5 +83,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGrpcService<CatalogRpcService>();
+app.MapGrpcReflectionService();
 
 app.Run();

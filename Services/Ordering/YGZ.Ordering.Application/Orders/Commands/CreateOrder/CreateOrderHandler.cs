@@ -5,6 +5,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Application.Orders.Jobs;
 using YGZ.Ordering.Domain.Orders.Entities;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -12,13 +13,15 @@ namespace YGZ.Ordering.Application.Orders.Commands.CreateOrder;
 
 public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
 {
-    private readonly IGenericRepository<Order, OrderId> _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly ISchedulerFactory _schedulerFactory;
     private readonly ILogger<CreateOrderHandler> _logger;
 
-    public CreateOrderHandler(IGenericRepository<Order, OrderId> orderRepository, ILogger<CreateOrderHandler> logger, ISchedulerFactory schedulerFactory)
+    public CreateOrderHandler(IGenericRepository<Order, OrderId> repository,
+                              ISchedulerFactory schedulerFactory,
+                              ILogger<CreateOrderHandler> logger)
     {
-        _orderRepository = orderRepository;
+        _repository = repository;
         _schedulerFactory = schedulerFactory;
         _logger = logger;
     }
@@ -34,11 +37,11 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                                      country: request.ShippingAddress.Country);
 
         var paymentMethod = EPaymentMethod.TryFromName(request.PaymentMethod, out var paymentMethodEnum);
-  
+
         var newOrder = Order.Create(orderId: OrderId.Of(request.OrderId),
                                     customerId: UserId.Of(request.CustomerId),
                                     code: Code.GenerateCode(),
-                                    orderStatus: EOrderStatus.PENDING_ASSIGNMENT,
+                                    orderStatus: EOrderStatus.PENDING,
                                     shippingAddress: shippingAddress,
                                     paymentMethod: paymentMethodEnum,
                                     totalAmount: request.TotalAmount);
@@ -51,7 +54,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                                                            orderItem.Promotion.DiscountType,
                                                                            orderItem.Promotion.DiscountValue,
                                                                            orderItem.Promotion.DiscountAmount) : null;
-            
+
             var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
                                                 orderId: newOrder.Id,
                                                 skuId: null,
@@ -71,32 +74,32 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
         }
 
 
-        var result = await _orderRepository.AddAsync(newOrder, cancellationToken);
+        var result = await _repository.AddAsync(newOrder, cancellationToken);
 
         if (result.IsFailure)
         {
-           return result.Error;
+            return result.Error;
         }
 
-        //IScheduler scheduler = await _schedulerFactory.GetScheduler();
+        IScheduler scheduler = await _schedulerFactory.GetScheduler();
 
-        //var jobData = new JobDataMap
-        //{
-        //    {"OrderId", order.Id.Value.ToString() },
-        //};
+        var jobData = new JobDataMap
+        {
+            {"OrderId", newOrder.Id.Value.ToString() },
+        };
 
-        //IJobDetail jobDetail = JobBuilder.Create<OrderAutoConfirmedJob>()
-        //    .UsingJobData(jobData)
-        //    .Build();
+        IJobDetail jobDetail = JobBuilder.Create<OrderAutoConfirmedJob>()
+            .UsingJobData(jobData)
+            .Build();
 
-        //ITrigger trigger = TriggerBuilder.Create()
-        //    .WithIdentity($"trigger-auto-confirmed-order-{order.Id.Value.ToString()}", "order-group")
-        //    .ForJob(jobDetail)
-        //    .StartAt(DateTimeOffset.UtcNow.AddMinutes(30)) // Start 30 minutes from now
-        //    .WithSimpleSchedule(x => x.WithRepeatCount(0))
-        //    .Build();
+        ITrigger trigger = TriggerBuilder.Create()
+            .WithIdentity($"trigger-auto-confirmed-order-{newOrder.Id.Value.ToString()}", "order-group")
+            .ForJob(jobDetail)
+            .StartAt(DateTimeOffset.UtcNow.AddMinutes(30)) // Start 30 minutes from now
+            .WithSimpleSchedule(x => x.WithRepeatCount(0))
+            .Build();
 
-        //await scheduler.ScheduleJob(jobDetail, trigger);
+        await scheduler.ScheduleJob(jobDetail, trigger);
 
         return true;
     }

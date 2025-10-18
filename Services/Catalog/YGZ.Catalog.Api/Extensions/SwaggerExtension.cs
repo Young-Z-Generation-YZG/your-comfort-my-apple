@@ -15,7 +15,7 @@ using YGZ.Catalog.Api.Contracts.TenantRequest;
 
 namespace YGZ.Catalog.Api.Extensions;
 
-public static class SwaggerExtensions
+public static class SwaggerExtension
 {
     public static IServiceCollection AddSwaggerExtension(this IServiceCollection services)
     {

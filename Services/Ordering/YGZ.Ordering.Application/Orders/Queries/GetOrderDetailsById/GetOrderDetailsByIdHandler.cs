@@ -17,8 +17,8 @@ public class GetOrderDetailsByIdHandler : IQueryHandler<GetOrderDetailsByIdQuery
     private readonly ILogger<GetOrderDetailsByIdHandler> _logger;
 
     public GetOrderDetailsByIdHandler(IUserRequestContext userContext,
-                                         IGenericRepository<Order, OrderId> repository,
-                                         ILogger<GetOrderDetailsByIdHandler> logger)
+                                      IGenericRepository<Order, OrderId> repository,
+                                      ILogger<GetOrderDetailsByIdHandler> logger)
     {
         _repository = repository;
         _userContext = userContext;

@@ -1,17 +1,19 @@
 ﻿using Microsoft.Extensions.Logging;
 using Quartz;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Jobs;
 
 public class OrderAutoConfirmedJob : IJob
 {
-    private readonly IOrderRepository _orderRepository;
+    private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly ILogger<OrderAutoConfirmedJob> _logger;
 
-    public OrderAutoConfirmedJob(IOrderRepository orderRepository, ILogger<OrderAutoConfirmedJob> logger)
+    public OrderAutoConfirmedJob(IGenericRepository<Order, OrderId> repository,
+                                 ILogger<OrderAutoConfirmedJob> logger)
     {
-        _orderRepository = orderRepository;
+        _repository = repository;
         _logger = logger;
     }
 

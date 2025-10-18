@@ -1,12 +1,12 @@
-using Keycloak.AuthServices.Authorization;
-using YGZ.Ordering.Api.Extensions;
-using YGZ.Ordering.Api;
-using YGZ.Ordering.Infrastructure;
-using YGZ.Ordering.Application;
-using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Ordering.Infrastructure.Persistence.Extensions;
 using HealthChecks.UI.Client;
+using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Ordering.Api;
+using YGZ.Ordering.Api.Extensions;
+using YGZ.Ordering.Application;
+using YGZ.Ordering.Infrastructure;
+using YGZ.Ordering.Infrastructure.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -52,7 +52,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
     await app.ApplyMigrationAsync();
-  await app.ApplySeedDataAsync();
+    await app.ApplySeedDataAsync();
 }
 
 app.UseHealthChecks("/health", new HealthCheckOptions

@@ -10,12 +10,12 @@ using YGZ.Catalog.Domain.Categories.ValueObjects;
 
 namespace YGZ.Catalog.Application.Categories.Queries.GetCategories;
 
-public class GetCategoriesQueryHandler : IQueryHandler<GetCategoriesQuery, List<CategoryResponse>>
+public class GetCategoriesHandler : IQueryHandler<GetCategoriesQuery, List<CategoryResponse>>
 {
     private readonly IMongoRepository<Category, CategoryId> _repository;
     private readonly IMapper _mapper;
 
-    public GetCategoriesQueryHandler(IMongoRepository<Category, CategoryId> repository, IMapper mapper)
+    public GetCategoriesHandler(IMongoRepository<Category, CategoryId> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
