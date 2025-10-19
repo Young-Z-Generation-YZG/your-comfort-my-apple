@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
-import { useCheckApiError } from '~/app/(pages)/(auth)/_hooks/use-check-error';
+import { useCheckApiError } from '@components/hooks/use-check-error';
 import {
    useCancelOrderMutation,
    useConfirmOrderMutation,
    useLazyGetOrderDetailsQuery,
    useLazyGetOrdersQuery,
-} from '~/infrastructure/services/order.service';
+} from '~/infrastructure/services/ordering.service';
 
-const useOrderApi = () => {
+const useOrderingService = () => {
    const [confirmOrderMutation, confirmOrderMutationState] =
       useConfirmOrderMutation();
    const [cancelOrderMutation, cancelOrderMutationState] =
@@ -139,4 +139,4 @@ const useOrderApi = () => {
    };
 };
 
-export default useOrderApi;
+export default useOrderingService;

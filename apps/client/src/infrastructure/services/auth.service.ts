@@ -7,13 +7,12 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
 import { setLogin, setLogout } from '../redux/features/auth.slice';
-import { HttpErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import {
    IRegisterPayload,
    IRegisterResponse,
 } from '~/domain/interfaces/auth/register.interface';
-import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import envConfig from '~/infrastructure/config/env.config';
 import {
    changePasswordFormType,
@@ -22,7 +21,7 @@ import {
 } from '~/domain/schemas/auth.schema';
 import { RootState } from '../redux/store';
 
-export const AuthApi = createApi({
+export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: fetchBaseQuery({
@@ -52,7 +51,7 @@ export const AuthApi = createApi({
 
                if (
                   data.verification_type !==
-                  VERIFICATION_TYPES.EMAIL_VERIFICATION
+                  EVerificationType.EMAIL_VERIFICATION
                ) {
                   dispatch(
                      setLogin({
@@ -157,4 +156,4 @@ export const {
    useResetPasswordMutation,
    useChangePasswordMutation,
    useLogoutMutation,
-} = AuthApi;
+} = authApi;

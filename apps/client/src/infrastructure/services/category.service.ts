@@ -3,13 +3,13 @@ import { CategoryResponseType } from '~/domain/types/category.type';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
 
-export const CategoryApi = createApi({
+export const categoryApi = createApi({
    reducerPath: 'category-api',
    tagTypes: ['Categories'],
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
       prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.value.accessToken;
+         const accessToken = (getState() as RootState).auth.accessToken;
 
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);
@@ -28,4 +28,4 @@ export const CategoryApi = createApi({
    }),
 });
 
-export const { useGetCategoriesAsyncQuery } = CategoryApi;
+export const { useGetCategoriesAsyncQuery } = categoryApi;

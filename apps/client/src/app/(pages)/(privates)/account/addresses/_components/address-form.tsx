@@ -125,7 +125,6 @@ export function AddressForm({
          }
          onClose();
       } catch (error) {
-         // Error handled by useAccount hook
          console.error('Form submission error:', error);
       }
    };
@@ -136,7 +135,6 @@ export function AddressForm({
             await onDelete(initialAddress.id);
             onClose();
          } catch (error) {
-            // Error handled by useAccount hook
             console.error('Delete error:', error);
          }
       }

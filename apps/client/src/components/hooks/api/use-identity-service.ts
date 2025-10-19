@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useCheckApiError } from '~/app/(pages)/(auth)/_hooks/use-check-error';
+import { useCheckApiError } from '@components/hooks/use-check-error';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { IProfilePayload } from '~/domain/interfaces/identity/profile';
 import {
@@ -12,12 +12,12 @@ import {
 import {
    useCancelOrderMutation,
    useConfirmOrderMutation,
-} from '~/infrastructure/services/order.service';
+} from '~/infrastructure/services/ordering.service';
 import { useChangePasswordMutation } from '~/infrastructure/services/auth.service';
 import { changePasswordFormType } from '~/domain/schemas/auth.schema';
 import { toast } from 'sonner';
 
-const useAccount = () => {
+const useIdentityService = () => {
    const [updateProfileMutation, updateProfileMutationState] =
       useUpdateProfileMutation();
    const [addAddressMutation, addAddressMutationState] =
@@ -304,4 +304,4 @@ const useAccount = () => {
    };
 };
 
-export default useAccount;
+export default useIdentityService;

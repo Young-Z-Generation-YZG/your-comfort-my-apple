@@ -8,7 +8,6 @@ import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { UseFormSetValue } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 
-// Animation variants
 const dropdownVariants = {
    hidden: {
       opacity: 0,

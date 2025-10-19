@@ -2,11 +2,9 @@
 
 import Image from 'next/image';
 import svgs from '@assets/svgs';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useGetCategoriesAsyncQuery } from '~/infrastructure/services/category.service';
-import { CategoryResponseType } from '~/domain/types/category.type';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import Search from './_components/search';
@@ -59,8 +57,6 @@ const columnVariants = {
 const Header = () => {
    const [activeCategory, setActiveCategory] = useState<string | null>(null);
    const router = useRouter();
-
-   const { items } = useAppSelector((state) => state.cart.value);
 
    return (
       <header
@@ -133,14 +129,6 @@ const Header = () => {
                      quality={100}
                      className="w-[22px] h-[44px]"
                   />
-
-                  {/* {items.length > 0 && (
-                     <span className="absolute top-5 text-[8px] w-4 rounded-full bg-black text-white font-semibold right-1 text-center leading-[16px]">
-                        {items.reduce((acc, item) => {
-                           return acc + item.quantity;
-                        }, 0)}
-                     </span>
-                  )} */}
                </div>
 
                <div

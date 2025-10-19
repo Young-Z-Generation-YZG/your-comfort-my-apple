@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { Button } from '@components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
@@ -17,7 +17,6 @@ import FilterSection from './_components/_layout/filter-section';
 import IphoneModel from './_components/iphone-model';
 import { Skeleton } from '@components/ui/skeleton';
 import { Separator } from '@components/ui/separator';
-import { useGetModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
 import {
    ChevronLeft,
    ChevronRight,
@@ -25,7 +24,8 @@ import {
    ChevronsRight,
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
-import { useShopFilters } from './_hooks/useShopFilters';
+import { useShopFilters } from '../_hooks/use-shop-filter';
+import useCatalogService from '@components/hooks/api/use-catalog-service';
 
 const fakeData = {
    total_records: 1,
@@ -473,29 +473,31 @@ const IphoneShopPage = () => {
       activeFiltersCount,
    } = useShopFilters();
 
-   const { data: queryData, ...queryDataState } =
-      useGetModelsAsyncQuery(queryString);
+   const { modelsState, getModelsAsync, isLoading } = useCatalogService();
 
-   // Use API data if available, otherwise fallback to fake data
+   useEffect(() => {
+      getModelsAsync(queryString);
+   }, [queryString, getModelsAsync]);
+
    const displayData = useMemo(() => {
-      if (queryDataState.isSuccess) {
-         return queryData?.items || [];
+      if (modelsState.isSuccess && modelsState.data) {
+         return modelsState.data.items || [];
       }
       return fakeData.items;
-   }, [queryData, queryDataState.isSuccess]);
+   }, [modelsState.isSuccess, modelsState.data]);
 
    // Pagination data
    const paginationData = useMemo(() => {
-      if (queryDataState.isSuccess && queryData) {
+      if (modelsState.isSuccess && modelsState.data) {
          return {
-            totalRecords: queryData.total_records,
-            totalPages: queryData.total_pages,
-            currentPage: queryData.current_page,
-            pageSize: queryData.page_size,
+            totalRecords: modelsState.data.total_records,
+            totalPages: modelsState.data.total_pages,
+            currentPage: modelsState.data.current_page,
+            pageSize: modelsState.data.page_size,
          };
       }
       return null;
-   }, [queryData, queryDataState.isSuccess]);
+   }, [modelsState.isSuccess, modelsState.data]);
 
    // Results count from actual data
    const resultsCount = useMemo(() => {
@@ -656,8 +658,7 @@ const IphoneShopPage = () => {
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {/* TODO: Map products here when API is integrated */}
                         <div className="col-span-full text-center py-12 text-gray-500">
-                           {queryDataState.isLoading ||
-                           queryDataState.isFetching
+                           {isLoading
                               ? Array(5)
                                    .fill(0)
                                    .map((_, index) => (

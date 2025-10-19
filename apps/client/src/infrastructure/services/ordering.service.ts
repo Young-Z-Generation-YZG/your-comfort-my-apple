@@ -44,7 +44,7 @@ const baseQueryWithUnauthorizedHandler = async (
    return result;
 };
 
-export const orderApi = createApi({
+export const orderingApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
    baseQuery: baseQueryWithUnauthorizedHandler,
@@ -107,10 +107,8 @@ export const orderApi = createApi({
 export const {
    useVnpayIpnCallbackMutation,
    useMomoIpnCallbackMutation,
-   useGetOrdersQuery,
-   useGetOrderDetailsQuery,
    useConfirmOrderMutation,
    useCancelOrderMutation,
    useLazyGetOrdersQuery,
    useLazyGetOrderDetailsQuery,
-} = orderApi;
+} = orderingApi;

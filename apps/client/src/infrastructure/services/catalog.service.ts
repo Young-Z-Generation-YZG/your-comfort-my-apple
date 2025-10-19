@@ -4,10 +4,6 @@ import {
    IIphonePromotionResponse,
    IIphoneResponse,
 } from '~/domain/interfaces/catalogs/iPhone.interface';
-import {
-   IReviewPayload,
-   IReviewResponse,
-} from '~/domain/interfaces/catalogs/review.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
@@ -56,9 +52,4 @@ export const catalogApi = createApi({
    }),
 });
 
-export const {
-   useGetIphonePromotionsAsyncQuery,
-   useGetModelBySlugAsyncQuery,
-   useGetIPhonesByModelAsyncQuery,
-   useGetModelsAsyncQuery,
-} = catalogApi;
+export const { useLazyGetModelsAsyncQuery } = catalogApi;

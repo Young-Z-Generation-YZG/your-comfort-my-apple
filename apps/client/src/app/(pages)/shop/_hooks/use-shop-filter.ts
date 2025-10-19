@@ -14,17 +14,10 @@ export type ShopFilters = {
    pageSize: number;
 };
 
-/**
- * Custom hook for managing shop filters via URL params
- * - Single source of truth: URL
- * - No Redux needed
- * - Automatic persistence and sharing
- */
 export const useShopFilters = () => {
    const router = useRouter();
    const searchParams = useSearchParams();
 
-   // Parse filters from URL
    const filters = useMemo((): ShopFilters => {
       const priceSortParam = searchParams.get('_priceSort');
       return {
@@ -41,24 +34,20 @@ export const useShopFilters = () => {
       };
    }, [searchParams]);
 
-   // Update filters
    const updateFilters = useCallback(
       (updates: Partial<ShopFilters>) => {
          const params = new URLSearchParams(searchParams);
 
-         // Handle colors
          if (updates.colors !== undefined) {
             params.delete('_colors');
             updates.colors.forEach((color) => params.append('_colors', color));
          }
 
-         // Handle models
          if (updates.models !== undefined) {
             params.delete('_models');
             updates.models.forEach((model) => params.append('_models', model));
          }
 
-         // Handle storages
          if (updates.storages !== undefined) {
             params.delete('_storages');
             updates.storages.forEach((storage) =>
@@ -66,7 +55,6 @@ export const useShopFilters = () => {
             );
          }
 
-         // Handle price range
          if (updates.priceRange) {
             if (updates.priceRange.min !== 0) {
                params.set('_minPrice', updates.priceRange.min.toString());
@@ -81,7 +69,6 @@ export const useShopFilters = () => {
             }
          }
 
-         // Handle price sort
          if (updates.priceSort !== undefined) {
             if (updates.priceSort) {
                params.set('_priceSort', updates.priceSort);
@@ -90,7 +77,6 @@ export const useShopFilters = () => {
             }
          }
 
-         // Handle pagination
          if (updates.page !== undefined) {
             params.set('_page', updates.page.toString());
          }
@@ -99,7 +85,6 @@ export const useShopFilters = () => {
             params.set('_limit', updates.pageSize.toString());
          }
 
-         // Update URL
          router.push(`${window.location.pathname}?${params.toString()}`, {
             scroll: false,
          });
@@ -107,7 +92,6 @@ export const useShopFilters = () => {
       [searchParams, router],
    );
 
-   // Clear all filters
    const clearFilters = useCallback(() => {
       const params = new URLSearchParams();
       params.set('_page', '1');
@@ -117,12 +101,10 @@ export const useShopFilters = () => {
       });
    }, [router, filters.pageSize]);
 
-   // Build API query string
    const queryString = useMemo(() => {
       return searchParams.toString();
    }, [searchParams]);
 
-   // Count active filters
    const activeFiltersCount = useMemo(() => {
       return (
          filters.colors.length + filters.models.length + filters.storages.length

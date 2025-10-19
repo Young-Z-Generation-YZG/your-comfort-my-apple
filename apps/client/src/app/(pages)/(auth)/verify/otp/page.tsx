@@ -3,11 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import { OTPInput } from '@components/client/forms/otp-input';
-import Button from '../../_components/Button';
+import Button from '../../_components/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
 import { useForm } from 'react-hook-form';
-import useAuth from '../../_hooks/use-auth';
+import useAuth from '../../../../../components/hooks/use-auth';
 
 const defaultValues: OtpFormType = {
    email: '',

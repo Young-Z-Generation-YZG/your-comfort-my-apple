@@ -16,12 +16,7 @@ import {
    X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGetOrderDetailsQuery } from '~/infrastructure/services/order.service';
 import { useParams, useRouter } from 'next/navigation';
-import {
-   OrderDetailsResponse,
-   OrderItemResponse,
-} from '~/domain/interfaces/orders/order.interface';
 import { cn } from '~/infrastructure/lib/utils';
 import {
    Dialog,
@@ -29,15 +24,11 @@ import {
    DialogHeader,
    DialogTitle,
 } from '@components/ui/dialog';
-
 import { ReviewModal } from '../_components/review-model';
-import { useGetReviewByOrderIdAsyncQuery } from '~/infrastructure/services/review.service';
-import { IReviewByOrderResponse } from '~/domain/interfaces/catalogs/review.interface';
-import { ORDER_STATUS_TYPE_ENUM } from '~/domain/enums/order-type.enum';
 import { Skeleton } from '@components/ui/skeleton';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
 import NextImage from 'next/image';
-import useOrderApi from '../_hooks/use-order-api';
+import useOrderingService from '~/components/hooks/api/use-ordering-service';
 
 const fakeOrderDetails = {
    tenant_id: null,
@@ -199,7 +190,7 @@ export default function OrderDetails() {
       cancelOrderAsync,
       orderDetailsState,
       isLoading,
-   } = useOrderApi();
+   } = useOrderingService();
 
    useEffect(() => {
       if (params.id) {
@@ -213,23 +204,6 @@ export default function OrderDetails() {
       }
       return null;
    }, [orderDetailsState]);
-
-   //  const {
-   //     data: reviewsInOrderDataAsync,
-   //     isLoading: isReviewsInOrderLoading,
-   //     isError: isReviewsInOrderError,
-   //     error: reviewsInOrderError,
-   //     isSuccess: isReviewsInOrderSuccess,
-   //  } = useGetReviewByOrderIdAsyncQuery(params.id);
-
-   //  const [
-   //     confirmOrder,
-   //     { isLoading: isConfirmingOrder, isSuccess: isSuccessConfirmOrder },
-   //  ] = useConfirmOrderAsyncMutation();
-   //  const [
-   //     cancelOrder,
-   //     { isLoading: isCancellingOrder, isSuccess: isSuccessCancelOrder },
-   //  ] = useCancelOrderAsyncMutation();
 
    const CountdownTimer = () => {
       useEffect(() => {
@@ -270,35 +244,6 @@ export default function OrderDetails() {
          await confirmOrderAsync(displayOrderDetailsData.order_id);
       }
    };
-
-   //  useEffect(() => {
-   //     if (isOrderDetailsDataSuccess && orderDetailsData) {
-   //        setOrder(orderDetailsData);
-
-   //        const orderCreatedAt = new Date(orderDetailsData.order_created_at);
-   //        const currentTime = new Date();
-   //        const timeDifference =
-   //           currentTime.getTime() - orderCreatedAt.getTime();
-   //        const minutesDifference = Math.floor(timeDifference / (1000 * 60));
-
-   //        setTimeLeft((30 - minutesDifference) * 60);
-   //     }
-
-   //     if (isReviewsInOrderSuccess && reviewsInOrderDataAsync) {
-   //        setReviewInOrder(reviewsInOrderDataAsync);
-   //     }
-
-   //     if (isOrderDetailsError && orderDetailsError) {
-   //     }
-
-   //     if (isReviewsInOrderError && reviewsInOrderError) {
-   //     }
-   //  }, [
-   //     isOrderDetailsDataSuccess,
-   //     isOrderDetailsError,
-   //     isReviewsInOrderSuccess,
-   //     isReviewsInOrderError,
-   //  ]);
 
    return (
       <motion.div
@@ -572,7 +517,7 @@ export default function OrderDetails() {
                                           </p>
                                        </div>
                                        {displayOrderDetailsData.status ===
-                                          ORDER_STATUS_TYPE_ENUM.DELIVERED &&
+                                          EOrderStatus.DELIVERED &&
                                           !item.is_reviewed && (
                                              <div className="mt-2 flex justify-end">
                                                 <Button

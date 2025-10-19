@@ -15,14 +15,14 @@ import authReducer from './features/auth.slice';
 import appReducer from './features/app.slice';
 import cartReducer from './features/cart.slice';
 import searchReducer from './features/search.slice';
-import { CategoryApi } from '~/infrastructure/services/category.service';
+import { categoryApi } from '~/infrastructure/services/category.service';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
-import { AuthApi } from '~/infrastructure/services/auth.service';
+import { authApi } from '~/infrastructure/services/auth.service';
 import { catalogApi } from '~/infrastructure/services/catalog.service';
 import { reviewApi } from '~/infrastructure/services/review.service';
 import { basketApi } from '~/infrastructure/services/basket.service';
 import { identityApi } from '~/infrastructure/services/identity.service';
-import { orderApi } from '~/infrastructure/services/order.service';
+import { orderingApi } from '~/infrastructure/services/ordering.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 
@@ -33,13 +33,13 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
    version: 1,
    storage: storage, // Add the storage option or any other required options
    blacklist: [
-      CategoryApi.reducerPath,
-      AuthApi.reducerPath,
+      categoryApi.reducerPath,
+      authApi.reducerPath,
       promotionApi.reducerPath,
       catalogApi.reducerPath,
       reviewApi.reducerPath,
       basketApi.reducerPath,
-      orderApi.reducerPath,
+      orderingApi.reducerPath,
       identityApi.reducerPath,
    ], // Add the blacklist option
    whitelist: ['auth', 'cart', 'search'],
@@ -50,13 +50,13 @@ const reducers = combineReducers({
    auth: authReducer,
    cart: cartReducer,
    search: searchReducer,
-   [CategoryApi.reducerPath]: CategoryApi.reducer,
-   [AuthApi.reducerPath]: AuthApi.reducer,
+   [categoryApi.reducerPath]: categoryApi.reducer,
+   [authApi.reducerPath]: authApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [catalogApi.reducerPath]: catalogApi.reducer,
    [reviewApi.reducerPath]: reviewApi.reducer,
    [basketApi.reducerPath]: basketApi.reducer,
-   [orderApi.reducerPath]: orderApi.reducer,
+   [orderingApi.reducerPath]: orderingApi.reducer,
    [identityApi.reducerPath]: identityApi.reducer,
 });
 
@@ -70,13 +70,13 @@ export const reduxStore = configureStore({
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
          },
       }).concat(
-         CategoryApi.middleware,
-         AuthApi.middleware,
+         categoryApi.middleware,
+         authApi.middleware,
          promotionApi.middleware,
          catalogApi.middleware,
          reviewApi.middleware,
          basketApi.middleware,
-         orderApi.middleware,
+         orderingApi.middleware,
          identityApi.middleware,
       ),
 });

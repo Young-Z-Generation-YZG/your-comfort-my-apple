@@ -1,6 +1,6 @@
+import useAuth from '@components/hooks/use-auth';
 import { usePathname, useRouter } from 'next/navigation';
 import { ComponentType, useEffect, useMemo } from 'react';
-import useAuth from '~/app/(pages)/(auth)/_hooks/use-auth';
 
 // Auth pages that should redirect to home when authenticated
 const AUTH_PAGES = ['/sign-in', '/sign-up', '/verify/otp', '/forgot-password'];

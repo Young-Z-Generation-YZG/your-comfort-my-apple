@@ -17,8 +17,8 @@ import { Plus } from 'lucide-react';
 import { useGetAddressesQuery } from '~/infrastructure/services/identity.service';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
-import useAccount from '../_hooks/use-account';
 import { FiEdit3 } from 'react-icons/fi';
+import useIdentityService from '@components/hooks/api/use-identity-service';
 
 const AddressesPage = () => {
    const [open, setOpen] = useState(false);
@@ -33,7 +33,7 @@ const AddressesPage = () => {
       updateAddressAsync,
       deleteAddressAsync,
       isLoading: isLoadingAccount,
-   } = useAccount();
+   } = useIdentityService();
 
    const { data: queryData, ...queryDataState } = useGetAddressesQuery();
 

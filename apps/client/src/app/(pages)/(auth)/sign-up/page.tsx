@@ -5,7 +5,7 @@ import { GoArrowUpRight } from 'react-icons/go';
 
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
-import Button from '../_components/Button';
+import Button from '../_components/button';
 import { FieldInput } from '@components/client/forms/field-input';
 import {
    RegisterFormType,
@@ -16,11 +16,11 @@ import { FormBirthdaySelector } from '@components/client/forms/birthday-selector
 import { FormPhoneInput } from '@components/client/forms/phone-input';
 import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '../_hooks/use-auth';
+import useAuth from '../../../../components/hooks/use-auth';
 import { countries } from '~/domain/constants/countries';
 
 const defaultValues: RegisterFormType = {
@@ -53,7 +53,7 @@ const SignUpPage = () => {
       if (result.isSuccess && result.data) {
          if (
             result.data.verification_type ===
-            VERIFICATION_TYPES.EMAIL_VERIFICATION
+            EVerificationType.EMAIL_VERIFICATION
          ) {
             const params = result.data.params;
 

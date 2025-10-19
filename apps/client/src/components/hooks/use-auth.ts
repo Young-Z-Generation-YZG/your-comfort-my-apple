@@ -1,77 +1,124 @@
 import { useCallback, useMemo } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '~/infrastructure/redux/store';
+import { LoginFormType } from '~/domain/schemas/auth.schema';
 import {
-   setAccessToken,
-   setLogout,
-   setTimerId,
-} from '~/infrastructure/redux/features/auth.slice';
-import {
-   useLoginMutation,
-   useRegisterMutation,
-   useVerifyOtpMutation,
-   useSendEmailResetPasswordMutation,
-   useResetPasswordMutation,
    useChangePasswordMutation,
+   useLoginMutation,
+   useResetPasswordMutation,
+   useSendEmailResetPasswordMutation,
+   useVerifyOtpMutation,
+   useRegisterMutation,
+   useLogoutMutation,
 } from '~/infrastructure/services/auth.service';
+import { useAppSelector } from '~/infrastructure/redux/store';
+import { toast } from 'sonner';
+import { useCheckApiError } from './use-check-error';
 import { IRegisterPayload } from '~/domain/interfaces/auth/register.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
-import {
-   IResetPasswordPayload,
-   IChangePasswordPayload,
-} from '~/domain/interfaces/auth/password.interface';
-import { LoginFormType } from '~/domain/schemas/auth.schema';
+import { useRouter } from 'next/navigation';
 
-/**
- * Custom hook for authentication management
- *
- * Provides:
- * - Current auth state (user, tokens, authentication status)
- * - Auth mutations (login, register, logout, password management)
- * - Helper methods (isAuthenticated, requireAuth, etc.)
- * - Navigation helpers for protected routes
- *
- * @example
- * ```tsx
- * const MyComponent = () => {
- *   const { user, isAuthenticated, login, logout } = useAuth();
- *
- *   return (
- *     <div>
- *       {isAuthenticated ? (
- *         <button onClick={logout}>Logout {user.username}</button>
- *       ) : (
- *         <button onClick={() => login(credentials)}>Login</button>
- *       )}
- *     </div>
- *   );
- * };
- * ```
- */
-export const useAuth = () => {
-   const dispatch = useDispatch();
-   const router = useRouter();
-   const pathname = usePathname();
-
-   // Get auth state from Redux
-   const authState = useAppSelector((state) => state.auth.value);
-
-   // RTK Query mutations
+const useAuth = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [registerMutation, registerMutationState] = useRegisterMutation();
    const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
-   const [sendEmailResetPasswordMutation] = useSendEmailResetPasswordMutation();
+   const [sendEmailResetPasswordMutation, sendEmailResetPasswordMutationState] =
+      useSendEmailResetPasswordMutation();
    const [resetPasswordMutation, resetPasswordMutationState] =
       useResetPasswordMutation();
    const [changePasswordMutation, changePasswordMutationState] =
       useChangePasswordMutation();
+   const [logoutMutation, logoutMutationState] = useLogoutMutation();
 
-   // Computed values
+   const router = useRouter();
+
+   useCheckApiError([
+      { title: 'Login failed', error: loginMutationState.error },
+      { title: 'Register failed', error: registerMutationState.error },
+      { title: 'Verify OTP failed', error: verifyOtpMutationState.error },
+      {
+         title: 'Send Email Reset Password failed',
+         error: sendEmailResetPasswordMutationState.error,
+      },
+      {
+         title: 'Reset Password failed',
+         error: resetPasswordMutationState.error,
+      },
+      {
+         title: 'Change Password failed',
+         error: changePasswordMutationState.error,
+      },
+      // { title: 'Logout failed', error: logoutMutationState.error },
+   ]);
+
+   const authAppState = useAppSelector((state) => state.auth);
+
    const isAuthenticated = useMemo(() => {
-      return Boolean(authState.accessToken && authState.isAuthenticated);
-   }, [authState.accessToken, authState.isAuthenticated]);
+      return Boolean(authAppState.accessToken && authAppState.isAuthenticated);
+   }, [authAppState]);
 
+   const login = useCallback(
+      async (data: LoginFormType) => {
+         try {
+            const result = await loginMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [loginMutation],
+   );
+
+   const logout = useCallback(async () => {
+      try {
+         await logoutMutation().unwrap();
+
+         router.push('/sign-in');
+
+         return { isSuccess: true, isError: false, data: true, error: null };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [logoutMutation, router]);
+
+   const register = useCallback(
+      async (data: IRegisterPayload) => {
+         try {
+            const result = await registerMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [registerMutation],
+   );
+
+   const verifyOtp = useCallback(
+      async (data: IOtpPayload) => {
+         try {
+            const result = await verifyOtpMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [verifyOtpMutation],
+   );
+
+   // centrally track the loading state
    const isLoading = useMemo(() => {
       return (
          loginMutationState.isLoading ||
@@ -84,197 +131,50 @@ export const useAuth = () => {
       verifyOtpMutationState.isLoading,
    ]);
 
-   const user = useMemo(() => {
-      if (!isAuthenticated) return null;
-
-      return {
-         email: authState.userEmail,
-         username: authState.username,
-      };
-   }, [authState.userEmail, authState.username, isAuthenticated]);
-
-   // Auth actions
-   const login = useCallback(
-      async (credentials: LoginFormType) => {
-         try {
-            const result = await loginMutation(credentials).unwrap();
-            return { isSuccess: true, isError: false, data: result };
-         } catch (error) {
-            console.error('Login failed:', error);
-            return { isSuccess: false, isError: true, error };
-         }
-      },
-      [loginMutation],
-   );
-
-   const register = useCallback(
-      async (userData: IRegisterPayload) => {
-         try {
-            const result = await registerMutation(userData).unwrap();
-            return { success: true, data: result };
-         } catch (error) {
-            console.error('Registration failed:', error);
-            return { success: false, error };
-         }
-      },
-      [registerMutation],
-   );
-
-   const logout = useCallback(() => {
-      // Clear auth state
-      dispatch(setLogout());
-
-      // Clear any timers
-      if (authState.timerId) {
-         clearTimeout(authState.timerId);
+   // centrally track the success
+   useMemo(() => {
+      if (loginMutationState.isSuccess) {
+         toast.success('Welcome!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+            cancel: {
+               label: 'Close',
+               onClick: () => {},
+               actionButtonStyle: {
+                  backgroundColor: '#16A34A',
+                  color: '#FFFFFF',
+               },
+            },
+         });
+      } else if (verifyOtpMutationState.isSuccess) {
+         toast.success('Verification successful!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+         });
       }
-
-      // Redirect to sign-in page
-      router.push('/sign-in');
-   }, [dispatch, router, authState.timerId]);
-
-   const verifyOtp = useCallback(
-      async (otpData: IOtpPayload) => {
-         try {
-            const result = await verifyOtpMutation(otpData).unwrap();
-            return { success: true, data: result };
-         } catch (error) {
-            console.error('OTP verification failed:', error);
-            return { success: false, error };
-         }
-      },
-      [verifyOtpMutation],
-   );
-
-   const sendResetPasswordEmail = useCallback(
-      async (email: string) => {
-         try {
-            const result = await sendEmailResetPasswordMutation({
-               email,
-            }).unwrap();
-            return { success: true, data: result };
-         } catch (error) {
-            console.error('Send reset password email failed:', error);
-            return { success: false, error };
-         }
-      },
-      [sendEmailResetPasswordMutation],
-   );
-
-   const resetPassword = useCallback(
-      async (resetData: IResetPasswordPayload) => {
-         try {
-            const result = await resetPasswordMutation(resetData).unwrap();
-            return { success: true, data: result };
-         } catch (error) {
-            console.error('Reset password failed:', error);
-            return { success: false, error };
-         }
-      },
-      [resetPasswordMutation],
-   );
-
-   const changePassword = useCallback(
-      async (passwordData: IChangePasswordPayload) => {
-         try {
-            const result = await changePasswordMutation(passwordData).unwrap();
-            return { success: true, data: result };
-         } catch (error) {
-            console.error('Change password failed:', error);
-            return { success: false, error };
-         }
-      },
-      [changePasswordMutation],
-   );
-
-   // Helper methods
-   const updateTokens = useCallback(
-      (tokens: {
-         user_email: string;
-         username: string;
-         access_token: string | null;
-         refresh_token: string | null;
-         access_token_expires_in: number | null;
-      }) => {
-         dispatch(setAccessToken(tokens));
-      },
-      [dispatch],
-   );
-
-   const setTimer = useCallback(
-      (timerId: string | null) => {
-         dispatch(setTimerId(timerId));
-      },
-      [dispatch],
-   );
-
-   /**
-    * Checks if user is authenticated and redirects to sign-in if not
-    */
-   const requireAuth = useCallback(() => {
-      if (!isAuthenticated) {
-         router.push('/sign-in');
-         return false;
-      }
-      return true;
-   }, [isAuthenticated, router]);
-
-   /**
-    * Redirects authenticated users away from auth pages
-    */
-   const redirectIfAuthenticated = useCallback(
-      (redirectTo: string = '/') => {
-         if (
-            isAuthenticated &&
-            (pathname === '/sign-in' || pathname === '/sign-up')
-         ) {
-            router.push(redirectTo);
-            return true;
-         }
-         return false;
-      },
-      [isAuthenticated, pathname, router],
-   );
-
-   /**
-    * Checks if current route is a public auth page
-    */
-   const isPublicAuthPage = useCallback(() => {
-      return pathname === '/sign-in' || pathname === '/sign-up';
-   }, [pathname]);
+   }, [loginMutationState, verifyOtpMutationState]);
 
    return {
-      // State
-      authState,
-      user,
-      isAuthenticated,
+      // States
       isLoading,
-      isLogoutTriggered: authState.isLogoutTriggered,
-      accessToken: authState.accessToken,
-      refreshToken: authState.refreshToken,
+      isAuthenticated,
 
       // Actions
       login,
       logout,
       register,
       verifyOtp,
-      sendResetPasswordEmail,
-      resetPassword,
-      changePassword,
-      updateTokens,
-      setTimer,
 
-      // Helpers
-      requireAuth,
-      redirectIfAuthenticated,
-      isPublicAuthPage,
-
-      // Mutation states (for handling loading/error states)
+      // Mutation states
       loginState: loginMutationState,
       registerState: registerMutationState,
       verifyOtpState: verifyOtpMutationState,
-      resetPasswordState: resetPasswordMutationState,
-      changePasswordState: changePasswordMutationState,
    };
 };
 

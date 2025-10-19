@@ -13,7 +13,7 @@ import {
    resetPasswordFormType,
    resetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
-import Button from '../../_components/Button';
+import Button from '../../_components/button';
 
 const ResetPasswordPage = () => {
    const [isLoading, setIsLoading] = useState(false);

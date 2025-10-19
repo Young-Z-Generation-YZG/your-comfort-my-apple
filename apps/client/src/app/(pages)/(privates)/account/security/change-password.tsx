@@ -9,7 +9,7 @@ import { Label } from '@components/ui/label';
 import { Progress } from '@components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import useAccount from '../_hooks/use-account';
+import useIdentityService from '../../../../../components/hooks/api/use-identity-service';
 
 // Password strength calculation
 const calculatePasswordStrength = (password: string): number => {
@@ -45,7 +45,7 @@ const getPasswordStrengthColor = (strength: number): string => {
 };
 
 export function ChangePassword() {
-   const { changePasswordAsync, isLoading } = useAccount();
+   const { changePasswordAsync, isLoading } = useIdentityService();
 
    const [currentPassword, setCurrentPassword] = useState('');
    const [newPassword, setNewPassword] = useState('');

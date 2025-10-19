@@ -9,11 +9,11 @@ import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '../_hooks/use-auth';
+import useAuth from '../../../../components/hooks/use-auth';
 import { useAppSelector } from '~/infrastructure/redux/store';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
 
 const SignInPage = () => {
    const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,7 @@ const SignInPage = () => {
       if (result.isSuccess && result.data) {
          if (
             result.data.verification_type ===
-            VERIFICATION_TYPES.EMAIL_VERIFICATION
+            EVerificationType.EMAIL_VERIFICATION
          ) {
             const params = result.data.params;
             const queryParams = new URLSearchParams();

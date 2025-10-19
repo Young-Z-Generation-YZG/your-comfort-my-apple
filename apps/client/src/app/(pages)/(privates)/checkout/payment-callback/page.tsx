@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import {
    useMomoIpnCallbackAsyncMutation,
    useVnpayIpnCallbackAsyncMutation,
-} from '~/infrastructure/services/order.service';
+} from '~/infrastructure/services/ordering.service';
 import {
    MomoIpnFormType,
    MomoIpnResolver,
