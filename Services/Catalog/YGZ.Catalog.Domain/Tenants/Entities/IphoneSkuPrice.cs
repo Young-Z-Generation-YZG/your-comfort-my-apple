@@ -1,24 +1,30 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
-using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Core.Abstractions;
+using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Tenants.Entities;
 
+
+[BsonCollection("IphoneSkuPrices")]
 public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
 {
     public IphoneSkuPrice(SkuPriceId id) : base(id) { }
 
-    
+
     [BsonElement("model_id")]
     public required ModelId ModelId { get; init; }
 
     [BsonElement("unique_query")]
-    public string UniqueQuery { get {
-        return $"{Model.NormalizedName}_{Storage.NormalizedName}_{Color.NormalizedName}";
-    } }
+    public string UniqueQuery
+    {
+        get
+        {
+            return $"{Model.NormalizedName}_{Storage.NormalizedName}_{Color.NormalizedName}";
+        }
+    }
 
     [BsonElement("model")]
     public required Model Model { get; init; }
