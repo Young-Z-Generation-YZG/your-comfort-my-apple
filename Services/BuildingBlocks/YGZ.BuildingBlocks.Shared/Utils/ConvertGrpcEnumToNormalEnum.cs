@@ -17,24 +17,24 @@ public static class ConvertGrpcEnumToNormalEnum
         }
     }
 
-    public static ECategoryType ConvertToECategoryType(string ECategoryTypeGrpc)
+    public static EProductClassification ConvertToECategoryType(string ECategoryTypeGrpc)
     {
         switch (ECategoryTypeGrpc)
         {
             case "CategoryTypeIphone":
-                return ECategoryType.IPHONE;
+                return EProductClassification.IPHONE;
             case "CategoryTypeIpad":
-                return ECategoryType.IPAD;
+                return EProductClassification.IPAD;
             case "CategoryTypeMacbook":
-                return ECategoryType.MACBOOK;
+                return EProductClassification.MACBOOK;
             case "CategoryTypeWatch":
-                return ECategoryType.WATCH;
+                return EProductClassification.WATCH;
             case "CategoryTypeHeadphone":
-                return ECategoryType.HEADPHONE;
+                return EProductClassification.HEADPHONE;
             case "CategoryTypeAccessory":
-                return ECategoryType.ACCESSORY;
+                return EProductClassification.ACCESSORY;
             default:
-                return ECategoryType.UNKNOWN;
+                return EProductClassification.UNKNOWN;
         }
     }
 }

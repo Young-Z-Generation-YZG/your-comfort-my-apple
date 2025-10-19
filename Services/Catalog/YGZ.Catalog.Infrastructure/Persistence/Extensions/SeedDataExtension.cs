@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone;
+using YGZ.Catalog.Domain.Tenants;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Seeds;
@@ -16,10 +19,18 @@ public static class SeedDataExtensions
         using var scope = app.Services.CreateScope();
 
         var categoryRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Category, CategoryId>>();
+        var iphoneModelRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<IphoneModel, ModelId>>();
         var iphoneSkuPriceRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<IphoneSkuPrice, SkuPriceId>>();
+        var tenantRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Tenant, TenantId>>();
+        var branchRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Branch, BranchId>>();
+        var skuRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<SKU, SkuId>>();
 
         await SeedCategoriesAsync(categoryRepository);
+        await SeedIphoneModelsAsync(iphoneModelRepository);
         await SeedIphoneSkuPricesAsync(iphoneSkuPriceRepository);
+        await SeedTenantsAsync(tenantRepository);
+        //await SeedBranchesAsync(branchRepository);
+        //await SeedSkusAsync(skuRepository);
     }
 
     private static async Task SeedCategoriesAsync(IMongoRepository<Category, CategoryId> categoryRepository)
@@ -31,6 +42,58 @@ public static class SeedDataExtensions
             foreach (var item in SeedCategoryData.Categories)
             {
                 await categoryRepository.InsertOneAsync(item);
+            }
+        }
+    }
+
+    private static async Task SeedTenantsAsync(IMongoRepository<Tenant, TenantId> tenantRepository)
+    {
+        var existingItems = await tenantRepository.GetAllAsync();
+
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedTenantData.Tenants)
+            {
+                await tenantRepository.InsertOneAsync(item);
+            }
+        }
+    }
+
+    //private static async Task SeedBranchesAsync(IMongoRepository<Branch, BranchId> branchRepository)
+    //{
+    //    var existingItems = await branchRepository.GetAllAsync();
+
+    //    if (existingItems.Count == 0)
+    //    {
+    //        foreach (var item in SeedTenantData.Branches)
+    //        {
+    //            await branchRepository.InsertOneAsync(item);
+    //        }
+    //    }
+    //}
+
+    private static async Task SeedSkusAsync(IMongoRepository<SKU, SkuId> skuRepository)
+    {
+        var existingItems = await skuRepository.GetAllAsync();
+
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedSkuData.InventorySkus)
+            {
+                await skuRepository.InsertOneAsync(item);
+            }
+        }
+    }
+
+    private static async Task SeedIphoneModelsAsync(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository)
+    {
+        var existingItems = await iphoneModelRepository.GetAllAsync();
+
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedIphoneModel.IphoneModels)
+            {
+                await iphoneModelRepository.InsertOneAsync(item);
             }
         }
     }

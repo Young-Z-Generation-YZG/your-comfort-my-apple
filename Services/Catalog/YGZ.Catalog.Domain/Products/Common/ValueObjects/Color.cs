@@ -1,8 +1,8 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
-using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;

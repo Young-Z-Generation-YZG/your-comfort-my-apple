@@ -13,7 +13,7 @@ public sealed record SkuResponse
     required public string ModelId { get; init; }
     required public string TenantId { get; init; }
     required public string BranchId { get; init; }
-    required public string ProductType { get; init; }
+    required public string ProductClassification { get; init; }
     required public ModelResponse Model { get; init; }
     required public ColorResponse Color { get; init; }
     required public StorageResponse Storage { get; init; }

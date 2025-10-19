@@ -264,9 +264,9 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
 
     // privates methods
-    private static ECategoryTypeGrpc ConvertToECategoryTypeGrpc(string productType)
+    private static ECategoryTypeGrpc ConvertToECategoryTypeGrpc(string productClassification)
     {
-        return productType.ToUpper() switch
+        return productClassification.ToUpper() switch
         {
             "IPHONE" => ECategoryTypeGrpc.CategoryTypeIphone,
             "IPAD" => ECategoryTypeGrpc.CategoryTypeIpad,

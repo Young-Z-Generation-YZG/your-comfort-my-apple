@@ -1,7 +1,7 @@
 ﻿
 using MediatR;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
 using YGZ.Catalog.Domain.Tenants.Entities;
@@ -32,8 +32,8 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
                         modelId: notification.IphoneModel.Id,
                         tenantId: TenantId.Create(),
                         branchId: BranchId.Create(),
-                        skuCode: SkuCode.Create(EProductType.IPHONE.Name, model.Name, storage.Name, color.Name),
-                        productType: EProductType.IPHONE,
+                        skuCode: SkuCode.Create(EProductClassification.IPHONE.Name, model.Name, storage.Name, color.Name),
+                        productClassification: EProductClassification.IPHONE,
                         model: model,
                         color: color,
                         storage: storage,

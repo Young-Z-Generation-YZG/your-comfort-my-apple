@@ -38,9 +38,9 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
 
     public string? DeletedBy { get; init; } = null;
 
-    public static Branch Create(TenantId tenantId, string name, string address, BranchManager? manager, string? description = null)
+    public static Branch Create(BranchId branchId, TenantId tenantId, string name, string address, BranchManager? manager, string? description = null)
     {
-        return new Branch(BranchId.Create())
+        return new Branch(branchId)
         {
             TenantId = tenantId,
             Name = name,

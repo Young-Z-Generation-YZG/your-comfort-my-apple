@@ -28,9 +28,9 @@ public class EventItemMapping : IRegister
             .Map(dest => dest.EventItems, src => src.EventItems);
     }
 
-    private static string ConvertProductTypeEnum(ECategoryTypeGrpc productType)
+    private static string ConvertProductTypeEnum(ECategoryTypeGrpc productClassification)
     {
-        return productType switch
+        return productClassification switch
         {
             ECategoryTypeGrpc.CategoryTypeUnknown => "UNKNOWN",
             ECategoryTypeGrpc.CategoryTypeIphone => "IPHONE",

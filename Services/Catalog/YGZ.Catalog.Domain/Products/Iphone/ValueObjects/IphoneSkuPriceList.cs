@@ -1,6 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
-using YGZ.Catalog.Domain.Core.Enums;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;

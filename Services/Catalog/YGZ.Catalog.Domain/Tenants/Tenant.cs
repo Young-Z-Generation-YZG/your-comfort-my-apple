@@ -15,16 +15,19 @@ public class Tenant : AggregateRoot<TenantId>, IAuditable, ISoftDelete
     public Tenant(TenantId id) : base(id) { }
 
     [BsonElement("code")]
-    public required string Code;
+    public required string Code { get; init; }
 
     [BsonElement("name")]
-    public required string Name;
+    public required string Name { get; init; }
 
     [BsonElement("description")]
-    public string? Description;
+    public string? Description { get; init; }
+
+    [BsonElement("tenant_type")]
+    public required string TenantType { get; init; }
 
     [BsonElement("tenant_state")]
-    public required string TenantState;
+    public required string TenantState { get; init; }
 
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
@@ -38,13 +41,14 @@ public class Tenant : AggregateRoot<TenantId>, IAuditable, ISoftDelete
 
     public string? DeletedBy { get; init; } = null;
 
-    public static Tenant Create(TenantId tenantId, string name, Branch branch, string? description = null)
+    public static Tenant Create(TenantId tenantId, string name, ETenantType tenantType, Branch branch, string? description = null)
     {
         var tenant = new Tenant(tenantId)
         {
             Code = SnakeCaseSerializer.Serialize(name).ToUpper(),
             Name = name,
             Description = description,
+            TenantType = tenantType.Name,
             TenantState = ETenantState.ACTIVE.Name
         };
 

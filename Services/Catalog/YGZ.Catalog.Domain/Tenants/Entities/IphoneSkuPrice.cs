@@ -29,14 +29,24 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
     [BsonElement("model")]
     public required Model Model { get; init; }
 
-    [BsonElement("color")]
-    public required Color Color { get; init; }
-
     [BsonElement("storage")]
     public required Storage Storage { get; init; }
 
+    [BsonElement("color")]
+    public required Color Color { get; init; }
+
+
     [BsonElement("unit_price")]
     public required decimal UnitPrice { get; init; }
+
+    [BsonElement("cached_key")]
+    public string CachedKey
+    {
+        get
+        {
+            return $"{Model.NormalizedName}_{Storage.NormalizedName}_{Color.NormalizedName}";
+        }
+    }
 
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
@@ -50,9 +60,9 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
 
     public string? DeletedBy { get; init; } = null;
 
-    public static IphoneSkuPrice Create(ModelId modelId, Model model, Color color, Storage storage, decimal unitPrice)
+    public static IphoneSkuPrice Create(SkuPriceId skuPriceId, ModelId modelId, Model model, Color color, Storage storage, decimal unitPrice)
     {
-        return new IphoneSkuPrice(SkuPriceId.Create())
+        return new IphoneSkuPrice(skuPriceId)
         {
             ModelId = modelId,
             Model = model,
@@ -75,4 +85,5 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
             UnitPrice = UnitPrice
         };
     }
+
 }

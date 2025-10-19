@@ -17,7 +17,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     public required string ColorHaxCode { get; set; }
     public required string StorageName { get; set; }
     public required string NormalizedStorage { get; set; }
-    public required ECategoryType CategoryType { get; set; }
+    public required EProductClassification CategoryType { get; set; }
     public required string ImageUrl { get; set; }
     public required EDiscountType DiscountType { get; set; }
     public required decimal DiscountValue { get; set; }
@@ -40,7 +40,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
                                    string colorHaxCode,
                                    string storageName,
                                    string normalizedStorage,
-                                   ECategoryType categoryType,
+                                   EProductClassification categoryType,
                                    EDiscountType discountType,
                                    string imageUrl,
                                    decimal discountValue,

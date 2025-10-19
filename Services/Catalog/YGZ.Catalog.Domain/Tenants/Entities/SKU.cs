@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
@@ -26,7 +27,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     public required SkuCode SkuCode { get; init; }
 
     [BsonElement("product_type")]
-    public string ProductType { get; private set; }
+    public string ProductClassification { get; private set; }
 
     [BsonElement("model")]
     public required Model Model { get; init; }
@@ -72,7 +73,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
         TenantId tenantId,
         BranchId branchId,
         SkuCode skuCode,
-        EProductType productType,
+        EProductClassification productClassification,
         Model model,
         Color color,
         Storage storage,
@@ -85,26 +86,26 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             TenantId = tenantId,
             BranchId = branchId,
             SkuCode = skuCode,
-            ProductType = productType.Name,
+            ProductClassification = productClassification.Name,
             Model = model,
             Color = color,
             Storage = storage,
             UnitPrice = unitPrice,
             AvailableInStock = availableInStock,
             ReservedForEvent = null,
-            State = EState.ACTIVE.Name,
+            State = EProductState.ACTIVE.Name,
             Slug = Slug.Create(skuCode.Value)
         };
 
         return sku;
     }
 
-    public void SetType(EProductType productType)
+    public void SetType(EProductClassification productClassification)
     {
-        ProductType = productType.Name;
+        ProductClassification = productClassification.Name;
     }
 
-    public void SetState(EState state)
+    public void SetState(EProductState state)
     {
         State = state.Name;
     }
@@ -118,7 +119,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             ModelId = ModelId.Value!,
             TenantId = TenantId.Value!,
             BranchId = BranchId.Value!,
-            ProductType = ProductType,
+            ProductClassification = ProductClassification,
             Model = Model.ToResponse(),
             Color = Color.ToResponse(),
             Storage = Storage.ToResponse(),

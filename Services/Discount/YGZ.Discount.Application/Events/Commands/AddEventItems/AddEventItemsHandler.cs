@@ -44,7 +44,7 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
         // Create and add event itemsz
         foreach (var itemCmd in request.EventItems)
         {
-            var categoryType = ECategoryType.FromName(itemCmd.CategoryType, false);
+            var categoryType = EProductClassification.FromName(itemCmd.CategoryType, false);
             var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
 
             var eventItem = EventItemEntity.Create(

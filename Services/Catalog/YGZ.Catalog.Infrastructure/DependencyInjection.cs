@@ -34,6 +34,13 @@ public static class DependencyInjection
 
         services.AddScoped<IDispatchDomainEventInterceptor, DispatchDomainEventInterceptor>();
 
+        var redisConnectionString = configuration.GetConnectionString(ConnectionStrings.RedisDb)!;
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnectionString;
+        });
+
         return services;
     }
 }

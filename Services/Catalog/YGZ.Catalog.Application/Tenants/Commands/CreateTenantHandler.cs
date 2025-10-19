@@ -1,6 +1,7 @@
 ﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Tenants;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -20,15 +21,27 @@ public class CreateTenantHandler : ICommandHandler<CreateTenantCommand, bool>
     {
         var tenantId = TenantId.Create();
 
-        var newBranch = Branch.Create(tenantId: tenantId,
+        var newBranch = Branch.Create(branchId: BranchId.Create(),
+                                      tenantId: tenantId,
                                       name: request.Name,
                                       description: request.BranchDescription,
                                       address: request.BranchAddress,
                                       manager: null);
 
+        ETenantType.TryFromName(request.TenantType, out var tenantTypeEnum);
+
+        if (tenantTypeEnum is null)
+        {
+            throw new ArgumentException(
+                $"Invalid tenant type: {request.TenantType}",
+                nameof(request.TenantType)
+            );
+        }
+
         var newTenant = Tenant.Create(tenantId: tenantId,
                                       name: request.Name,
                                       description: request.TenantDescription,
+                                      tenantType: tenantTypeEnum,
                                       branch: newBranch);
 
         try

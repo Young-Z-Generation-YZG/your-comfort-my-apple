@@ -54,7 +54,7 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
         builder.Property(x => x.CategoryType)
                .HasConversion(
                    x => x.Name,
-                   x => ECategoryType.FromName(x, false)
+                   x => EProductClassification.FromName(x, false)
                )
                .HasColumnName("CategoryType");
 
