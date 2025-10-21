@@ -6,7 +6,7 @@ public sealed record CouponResponse
     public required string Title { get; init; }
     public required string Code { get; init; }
     public required string Description { get; init; }
-    public required string CategoryType { get; init; }
+    public required string ProductClassification { get; init; }
     public required string PromotionType { get; init; }
     public required string DiscountState { get; init; }
     public required string DiscountType { get; init; }

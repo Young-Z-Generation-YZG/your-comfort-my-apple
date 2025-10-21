@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace YGZ.Catalog.Domain.Core.Enums;
+namespace YGZ.BuildingBlocks.Shared.Enums;
 
 public class ETenantState : SmartEnum<ETenantState>
 {
@@ -9,5 +9,5 @@ public class ETenantState : SmartEnum<ETenantState>
     public static readonly ETenantState UNKNOWN = new(nameof(UNKNOWN), 0);
     public static readonly ETenantState ACTIVE = new(nameof(ACTIVE), 0);
     public static readonly ETenantState INACTIVE = new(nameof(INACTIVE), 0);
-    public static readonly ETenantState MAINTANCE = new(nameof(MAINTANCE), 0);
+    public static readonly ETenantState MAINTENANCE = new(nameof(MAINTENANCE), 0);
 }

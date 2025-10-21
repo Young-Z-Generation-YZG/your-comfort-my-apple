@@ -1,6 +1,9 @@
 ﻿
+using System;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Application.Abstractions.Data.Context;
@@ -34,12 +37,28 @@ public static class DependencyInjection
 
         services.AddScoped<IDispatchDomainEventInterceptor, DispatchDomainEventInterceptor>();
 
+        services.AddQueuesFromApplicationLayer(configuration);
+
         var redisConnectionString = configuration.GetConnectionString(ConnectionStrings.RedisDb)!;
+
+        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(sp =>
+            StackExchange.Redis.ConnectionMultiplexer.Connect(redisConnectionString));
 
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = redisConnectionString;
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration)
+    {
+        var queuesFromAssembly = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Catalog.Application");
+
+        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
 
         return services;
     }

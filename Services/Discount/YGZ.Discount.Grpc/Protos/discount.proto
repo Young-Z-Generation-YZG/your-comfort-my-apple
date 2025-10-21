@@ -7,14 +7,14 @@ import "google/protobuf/timestamp.proto";
 
 package discount;
 
-enum ECategoryTypeGrpc {
-	CATEGORY_TYPE_UNKNOWN = 0;
-	CATEGORY_TYPE_IPHONE = 1;
-	CATEGORY_TYPE_IPAD = 2;
-	CATEGORY_TYPE_MACBOOK = 3;
-	CATEGORY_TYPE_WATCH = 4;
-	CATEGORY_TYPE_HEADPHONE = 5;
-	CATEGORY_TYPE_ACCESSORY = 6;
+enum EProductClassificationGrpc {
+	PRODUCT_CLASSIFICATION_UNKNOWN = 0;
+	PRODUCT_CLASSIFICATION_IPHONE = 1;
+	PRODUCT_CLASSIFICATION_IPAD = 2;
+	PRODUCT_CLASSIFICATION_MACBOOK = 3;
+	PRODUCT_CLASSIFICATION_WATCH = 4;
+	PRODUCT_CLASSIFICATION_HEADPHONE = 5;
+	PRODUCT_CLASSIFICATION_ACCESSORY = 6;
 }
 
 enum EDiscountStateGrpc {
@@ -51,7 +51,7 @@ message CouponModel {
     google.protobuf.StringValue code = 2;
     google.protobuf.StringValue title = 3;
     google.protobuf.StringValue description = 4;
-    ECategoryTypeGrpc category_type = 5;
+    EProductClassificationGrpc category_type = 5;
     EDiscountTypeGrpc discount_type = 6;
     google.protobuf.DoubleValue discount_value = 7;
     google.protobuf.DoubleValue max_discount_amount = 8;
@@ -69,16 +69,20 @@ message EventModel {
 
 message EventItemModel {
     google.protobuf.StringValue id = 1;
-    ModelValueObject model = 2;
-    ColorValueObject color = 3;
-    StorageValueObject storage = 4;
-    google.protobuf.StringValue display_image_url = 5;
-    ECategoryTypeGrpc category_type = 6;
-    EDiscountTypeGrpc discount_type = 7;
-    google.protobuf.DoubleValue discount_value = 8;
-    google.protobuf.DoubleValue original_price = 9;
-    google.protobuf.Int32Value stock = 10;
-    google.protobuf.Int32Value Sold = 11;
+    google.protobuf.StringValue event_id = 2;
+    google.protobuf.StringValue sku_id = 3;
+    google.protobuf.StringValue tenant_id = 4;
+    google.protobuf.StringValue branch_id = 5;
+    ModelValueObject model = 6;
+    ColorValueObject color = 7;
+    StorageValueObject storage = 8;
+    google.protobuf.StringValue display_image_url = 9;
+    EProductClassificationGrpc product_classification = 10;
+    EDiscountTypeGrpc discount_type = 11;
+    google.protobuf.DoubleValue discount_value = 12;
+    google.protobuf.DoubleValue original_price = 13;
+    google.protobuf.Int32Value stock = 14;
+    google.protobuf.Int32Value Sold = 15;
 }
 
 
@@ -89,7 +93,7 @@ message CreateCouponRequest {
     google.protobuf.StringValue unique_code = 1;
     google.protobuf.StringValue title = 2;
     google.protobuf.StringValue description = 3;
-    ECategoryTypeGrpc category_type = 4;
+    EProductClassificationGrpc category_type = 4;
     EDiscountTypeGrpc discount_type = 5;
     google.protobuf.DoubleValue discount_value = 6;
     google.protobuf.DoubleValue max_discount_amount = 7;

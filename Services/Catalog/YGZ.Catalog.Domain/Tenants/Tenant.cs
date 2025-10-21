@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Tenants;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Core.Abstractions;
-using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.Events;
@@ -56,5 +57,24 @@ public class Tenant : AggregateRoot<TenantId>, IAuditable, ISoftDelete
                                                            Branch: branch));
 
         return tenant;
+    }
+
+    public TenantResponse ToResponse()
+    {
+        return new TenantResponse
+        {
+            Id = Id?.Value?.ToString() ?? string.Empty,
+            Code = Code,
+            Name = Name,
+            Description = Description ?? string.Empty,
+            TenantType = TenantType,
+            TenantState = TenantState,
+            CreatedAt = CreatedAt.ToUniversalTime(),
+            UpdatedAt = UpdatedAt.ToUniversalTime(),
+            UpdatedBy = UpdatedBy ?? string.Empty,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt?.ToUniversalTime(),
+            DeletedBy = DeletedBy ?? string.Empty
+        };
     }
 }

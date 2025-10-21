@@ -19,7 +19,7 @@ public class EventItemMapping : IRegister
 
         // Map from gRPC EventItem to EventItemCommand
         config.NewConfig<EventItemModel, EventItemCommand>()
-            .Map(dest => dest.CategoryType, src => ConvertProductTypeEnum(src.CategoryType))
+            .Map(dest => dest.ProductClassification, src => ConvertProductTypeEnum(src.ProductClassification))
             .Map(dest => dest.DiscountType, src => ConvertDiscountTypeEnum(src.DiscountType));
 
         // Map from gRPC AddEventItemsRequest to AddEventItemsCommand
@@ -28,17 +28,17 @@ public class EventItemMapping : IRegister
             .Map(dest => dest.EventItems, src => src.EventItems);
     }
 
-    private static string ConvertProductTypeEnum(ECategoryTypeGrpc productClassification)
+    private static string ConvertProductTypeEnum(EProductClassificationGrpc productClassification)
     {
         return productClassification switch
         {
-            ECategoryTypeGrpc.CategoryTypeUnknown => "UNKNOWN",
-            ECategoryTypeGrpc.CategoryTypeIphone => "IPHONE",
-            ECategoryTypeGrpc.CategoryTypeIpad => "IPAD",
-            ECategoryTypeGrpc.CategoryTypeMacbook => "MACBOOK",
-            ECategoryTypeGrpc.CategoryTypeWatch => "WATCH",
-            ECategoryTypeGrpc.CategoryTypeHeadphone => "HEADPHONE",
-            ECategoryTypeGrpc.CategoryTypeAccessory => "ACCESSORY",
+            EProductClassificationGrpc.ProductClassificationUnknown => "UNKNOWN",
+            EProductClassificationGrpc.ProductClassificationIphone => "IPHONE",
+            EProductClassificationGrpc.ProductClassificationIpad => "IPAD",
+            EProductClassificationGrpc.ProductClassificationMacbook => "MACBOOK",
+            EProductClassificationGrpc.ProductClassificationWatch => "WATCH",
+            EProductClassificationGrpc.ProductClassificationHeadphone => "HEADPHONE",
+            EProductClassificationGrpc.ProductClassificationAccessory => "ACCESSORY",
             _ => "UNKNOWN"
         };
     }

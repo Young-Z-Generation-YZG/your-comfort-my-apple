@@ -19,11 +19,15 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 {
     private readonly IMapper _mapper;
     private readonly ISender _sender;
+    private readonly ILogger<DiscountService> _logger;
 
-    public DiscountService(IMapper mapper, ISender sender)
+    public DiscountService(IMapper mapper,
+                           ISender sender,
+                           ILogger<DiscountService> logger)
     {
         _mapper = mapper;
         _sender = sender;
+        _logger = logger;
     }
 
     // GET METHODS
@@ -51,7 +55,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             Code = result.Response.Code,
             Title = result.Response.Title,
             Description = result.Response.Description,
-            CategoryType = ConvertToECategoryTypeGrpc(result.Response.CategoryType),
+            CategoryType = ConvertToEProductClassificationGrpc(result.Response.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(result.Response.DiscountType),
             DiscountValue = (double)result.Response.DiscountValue,
             MaxDiscountAmount = result.Response.MaxDiscountAmount != null ? (double)result.Response.MaxDiscountAmount : 0,
@@ -87,7 +91,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             Code = c.Code,
             Title = c.Title,
             Description = c.Description,
-            CategoryType = ConvertToECategoryTypeGrpc(c.CategoryType),
+            CategoryType = ConvertToEProductClassificationGrpc(c.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(c.DiscountType),
             DiscountValue = (double)c.DiscountValue,
             MaxDiscountAmount = c.MaxDiscountAmount.HasValue ? (double)c.MaxDiscountAmount.Value : 0,
@@ -177,7 +181,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 NormalizedName = ei.NormalizedStorage ?? string.Empty
             },
             DisplayImageUrl = ei.ImageUrl ?? string.Empty,
-            CategoryType = ConvertToECategoryTypeGrpc(ei.CategogyType),
+            ProductClassification = ConvertToEProductClassificationGrpc(ei.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(ei.DiscountType),
             DiscountValue = (double)ei.DiscountValue,
             OriginalPrice = (double)ei.OriginalPrice,
@@ -243,7 +247,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
                 NormalizedName = ei.NormalizedStorage ?? string.Empty
             },
             DisplayImageUrl = ei.ImageUrl ?? string.Empty,
-            CategoryType = ConvertToECategoryTypeGrpc(ei.CategogyType),
+            ProductClassification = ConvertToEProductClassificationGrpc(ei.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(ei.DiscountType),
             DiscountValue = (double)ei.DiscountValue,
             OriginalPrice = (double)ei.OriginalPrice,
@@ -264,17 +268,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
 
     // privates methods
-    private static ECategoryTypeGrpc ConvertToECategoryTypeGrpc(string productClassification)
+    private static EProductClassificationGrpc ConvertToEProductClassificationGrpc(string productClassification)
     {
         return productClassification.ToUpper() switch
         {
-            "IPHONE" => ECategoryTypeGrpc.CategoryTypeIphone,
-            "IPAD" => ECategoryTypeGrpc.CategoryTypeIpad,
-            "MACBOOK" => ECategoryTypeGrpc.CategoryTypeMacbook,
-            "WATCH" => ECategoryTypeGrpc.CategoryTypeWatch,
-            "HEADPHONE" => ECategoryTypeGrpc.CategoryTypeHeadphone,
-            "ACCESSORY" => ECategoryTypeGrpc.CategoryTypeAccessory,
-            _ => ECategoryTypeGrpc.CategoryTypeUnknown
+            "IPHONE" => EProductClassificationGrpc.ProductClassificationIphone,
+            "IPAD" => EProductClassificationGrpc.ProductClassificationIpad,
+            "MACBOOK" => EProductClassificationGrpc.ProductClassificationMacbook,
+            "WATCH" => EProductClassificationGrpc.ProductClassificationWatch,
+            "HEADPHONE" => EProductClassificationGrpc.ProductClassificationHeadphone,
+            "ACCESSORY" => EProductClassificationGrpc.ProductClassificationAccessory,
+            _ => EProductClassificationGrpc.ProductClassificationUnknown
         };
     }
 
@@ -288,9 +292,6 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         };
     }
 
-    /// <summary>
-    /// Maps application domain errors to appropriate gRPC status codes
-    /// </summary>
     private static StatusCode MapErrorToStatusCode(Error error)
     {
         return error.Code switch

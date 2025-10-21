@@ -1,5 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -44,7 +46,11 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
     {
         get
         {
-            return $"{Model.NormalizedName}_{Storage.NormalizedName}_{Color.NormalizedName}";
+            var cachedKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelName: EIphoneModel.FromName(Model.NormalizedName),
+                                                                                        storageName: EStorage.FromName(Storage.NormalizedName),
+                                                                                        colorName: EColor.FromName(Color.NormalizedName));
+
+            return cachedKey;
         }
     }
 

@@ -1,9 +1,14 @@
-﻿namespace YGZ.Discount.Domain.Core.Primitives;
+﻿using YGZ.BuildingBlocks.Shared.Domain.Core.Abstractions;
 
-public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : ValueObject
+namespace YGZ.Discount.Domain.Core.Primitives;
+
+public abstract class Entity<TId> : IEquatable<Entity<TId>>, IAggregate where TId : ValueObject
 {
-
     public TId Id { get; protected set; }
+
+    private readonly List<IDomainEvent> _domainEvents = new();
+
+    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     protected Entity(TId id)
     {
@@ -33,5 +38,19 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>> where TId : ValueObj
     public static bool operator !=(Entity<TId> left, Entity<TId> right)
     {
         return !Equals(left, right);
+    }
+
+    public IDomainEvent[] ClearDomainEvents()
+    {
+        IDomainEvent[] dequeueEvents = _domainEvents.ToArray();
+
+        _domainEvents.Clear();
+
+        return dequeueEvents;
+    }
+
+    public void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
     }
 }

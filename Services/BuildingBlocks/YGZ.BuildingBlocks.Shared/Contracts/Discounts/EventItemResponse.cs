@@ -11,7 +11,7 @@ public sealed record EventItemResponse
     public required string ColorHexCode { get; init; }
     public required string StorageName { get; init; }
     public required string NormalizedStorage { get; init; }
-    public required string CategogyType { get; init; }
+    public required string ProductClassification { get; init; }
     public required string ImageUrl { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }

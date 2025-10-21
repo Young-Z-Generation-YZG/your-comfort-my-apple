@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Categories;
@@ -24,10 +25,19 @@ public static class SeedDataExtensions
         var tenantRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Tenant, TenantId>>();
         var branchRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Branch, BranchId>>();
         var skuRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<SKU, SkuId>>();
+        var distributedCache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
         await SeedCategoriesAsync(categoryRepository);
+
         await SeedIphoneModelsAsync(iphoneModelRepository);
         await SeedIphoneSkuPricesAsync(iphoneSkuPriceRepository);
+
+
+        // cache data
+        await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
+
+
+
         await SeedTenantsAsync(tenantRepository);
         //await SeedBranchesAsync(branchRepository);
         //await SeedSkusAsync(skuRepository);
@@ -72,18 +82,18 @@ public static class SeedDataExtensions
     //    }
     //}
 
-    private static async Task SeedSkusAsync(IMongoRepository<SKU, SkuId> skuRepository)
-    {
-        var existingItems = await skuRepository.GetAllAsync();
+    //private static async Task SeedSkusAsync(IMongoRepository<SKU, SkuId> skuRepository)
+    //{
+    //    var existingItems = await skuRepository.GetAllAsync();
 
-        if (existingItems.Count == 0)
-        {
-            foreach (var item in SeedSkuData.InventorySkus)
-            {
-                await skuRepository.InsertOneAsync(item);
-            }
-        }
-    }
+    //    if (existingItems.Count == 0)
+    //    {
+    //        foreach (var item in SeedSkuData.InventorySkus)
+    //        {
+    //            await skuRepository.InsertOneAsync(item);
+    //        }
+    //    }
+    //}
 
     private static async Task SeedIphoneModelsAsync(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository)
     {
@@ -108,6 +118,17 @@ public static class SeedDataExtensions
             {
                 await iphoneSkuPriceRepository.InsertOneAsync(item);
             }
+        }
+    }
+
+    // seed cache data
+    private static async Task SeedCacheIphoneSkuPrices(IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository, IDistributedCache distributedCache)
+    {
+        var iphoneSkuPrices = await iphoneSkuPriceRepository.GetAllAsync();
+
+        foreach (var iphoneSkuPrice in iphoneSkuPrices)
+        {
+            await distributedCache.SetStringAsync(iphoneSkuPrice.CachedKey, iphoneSkuPrice.UnitPrice.ToString());
         }
     }
 }

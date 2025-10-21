@@ -7,10 +7,83 @@ import "google/protobuf/timestamp.proto";
 
 package catalog;
 
+enum EProductClassificationGrpc
+{
+    PRODUCT_CLASSIFICATION_UNKNOWN = 0;
+    PRODUCT_CLASSIFICATION_WARE_HOUSE = 1;
+    PRODUCT_CLASSIFICATION_BRANCH = 2;
+}
+
+enum ESkuStateGrpc
+{
+    SKU_STATE_UNKNOWN = 0;
+    SKU_STATE_ACTIVE = 1;
+    SKU_STATE_INACTIVE = 2;
+}
+
+enum ETenantTypeGrpc
+{
+    TENANT_TYPE_UNKNOWN = 0;
+    TENANT_TYPE_WARE_HOUSE = 1;
+    TENANT_TYPE_BRANCH = 2;
+}
+
+enum ETenantStateGrpc
+{
+    TENANT_STATE_UNKNOWN = 0;
+    TENANT_STATE_ACTIVE = 1;
+    TENANT_STATE_INACTIVE = 2;
+    TENANT_STATE_MAINTENANCE = 3;
+}
 
 service CatalogProtoService {
     rpc CheckTenantExistGrpc (CheckTenantExistRequest) returns (BooleanResponse);
+
+    // GET requests
+    rpc GetTenantByIdGrpc (GetTenantByIdRequest) returns (TenantModel);
+    rpc GetSkuByIdGrpc (GetSkuByIdRequest) returns (SkuModel);
 }
+
+
+// models
+message TenantModel
+{
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue code = 2;
+    google.protobuf.StringValue name = 3;
+    google.protobuf.StringValue description = 4;
+    ETenantTypeGrpc tenant_type = 5;
+    ETenantStateGrpc tenant_state = 6;
+}
+
+message SkuModel
+{
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue model_id = 2;
+    google.protobuf.StringValue tenant_id = 3;
+    google.protobuf.StringValue branch_id = 4;
+    google.protobuf.StringValue sku_code = 5;
+    google.protobuf.StringValue product_classification = 6;
+    google.protobuf.StringValue normalized_model = 7;
+    google.protobuf.StringValue normalized_storage = 8;
+    google.protobuf.StringValue normalized_color = 9;
+    google.protobuf.DoubleValue unit_price = 10;
+    google.protobuf.Int32Value available_in_stock = 11;
+    google.protobuf.Int32Value total_sold = 12;
+    ESkuStateGrpc sku_state = 13;
+    google.protobuf.StringValue slug = 14;
+}
+
+
+// GET requests
+message GetTenantByIdRequest {
+    google.protobuf.StringValue tenant_id = 1;
+}
+
+message GetSkuByIdRequest {
+    google.protobuf.StringValue sku_id = 1;
+}
+
 
 // POST requests
 message CheckTenantExistRequest {

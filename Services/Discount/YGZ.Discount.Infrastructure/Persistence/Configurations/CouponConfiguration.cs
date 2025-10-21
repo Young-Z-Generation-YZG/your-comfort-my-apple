@@ -36,12 +36,12 @@ public class CouponConfiguration : IEntityTypeConfiguration<Coupon>
                )
                .HasColumnName("DiscountState");
 
-        builder.Property(x => x.CategoryType)
+        builder.Property(x => x.ProductClassification)
                .HasConversion(
                    x => x.Name,
                    x => EProductClassification.FromName(x, false)
                )
-               .HasColumnName("CategoryType");
+               .HasColumnName("ProductClassification");
 
         builder.Property(x => x.PromotionType)
                .HasConversion(

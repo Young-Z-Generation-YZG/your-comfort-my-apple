@@ -2,7 +2,6 @@
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Abstractions;
-using YGZ.Catalog.Domain.Core.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -26,7 +25,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     [BsonElement("sku_code")]
     public required SkuCode SkuCode { get; init; }
 
-    [BsonElement("product_type")]
+    [BsonElement("product_classification")]
     public string ProductClassification { get; private set; }
 
     [BsonElement("model")]
@@ -42,10 +41,10 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     public decimal UnitPrice { get; set; } = 0;
 
     [BsonElement("available_in_stock")]
-    public int AvailableInStock { get; set; } = 0;
+    public int AvailableInStock { get; private set; } = 0;
 
     [BsonElement("reserved_for_event")]
-    public ReservedForEvent? ReservedForEvent { get; init; }
+    public ReservedForEvent? ReservedForEvent { get; private set; }
 
     [BsonElement("total_sold")]
     public int TotalSold { get; set; } = 0;
@@ -108,6 +107,22 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     public void SetState(EProductState state)
     {
         State = state.Name;
+    }
+
+    public void SetReservedForEvent(string eventId, string eventItemId, string eventName, int reservedQuantity)
+    {
+        if (ReservedForEvent is not null && ReservedForEvent.EventItemId == eventItemId)
+        {
+            AvailableInStock -= reservedQuantity;
+
+            ReservedForEvent.ReservedQuantity += reservedQuantity;
+        }
+        else
+        {
+            AvailableInStock -= reservedQuantity;
+
+            ReservedForEvent = ReservedForEvent.Create(eventId, eventItemId, eventName, reservedQuantity);
+        }
     }
 
     public SkuResponse ToResponse()

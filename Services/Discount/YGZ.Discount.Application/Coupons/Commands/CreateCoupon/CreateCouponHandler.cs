@@ -24,13 +24,13 @@ public class CreateCouponHandler : ICommandHandler<CreateCouponCommand, bool>
     {
 
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(request.DiscountType);
-        var categoryType = ConvertGrpcEnumToNormalEnum.ConvertToECategoryType(request.CategoryType);
+        var productClassification = ConvertGrpcEnumToNormalEnum.ConvertToEProductClassification(request.ProductClassification);
 
         var coupon = Coupon.Create(couponId: CouponId.Create(),
                                    code: Code.Of(request.UniqueCode),
                                    title: request.Title,
                                    description: request.Description,
-                                   categoryType: categoryType,
+                                   productClassification: productClassification,
                                    discountState: EDiscountState.ACTIVE,
                                    discountType: discountType,
                                    discountValue: request.DiscountValue,

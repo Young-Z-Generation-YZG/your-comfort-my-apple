@@ -1,4 +1,4 @@
-﻿using YGZ.Catalog.Domain.Core.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Tenants;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;

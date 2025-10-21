@@ -16,7 +16,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public required string Title { get; init; }
     public required string Description { get; init; }
     public required EDiscountState DiscountState { get; init; } = EDiscountState.ACTIVE;
-    public required EProductClassification CategoryType { get; init; }
+    public required EProductClassification ProductClassification { get; init; }
     public EPromotionType PromotionType { get; init; } = EPromotionType.COUPON;
     public required EDiscountType DiscountType { get; init; } = EDiscountType.PERCENTAGE;
     public required decimal DiscountValue { get; init; }
@@ -35,7 +35,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
                                 Code code,
                                 string title,
                                 string description,
-                                EProductClassification categoryType,
+                                EProductClassification productClassification,
                                 EDiscountState discountState,
                                 EDiscountType discountType,
                                 decimal discountValue,
@@ -48,7 +48,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             Code = code,
             Title = title,
             Description = description,
-            CategoryType = categoryType,
+            ProductClassification = productClassification,
             DiscountState = discountState,
             DiscountType = discountType,
             DiscountValue = discountValue,
@@ -66,7 +66,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             Title = Title,
             Code = Code.Value,
             Description = Description,
-            CategoryType = CategoryType.Name,
+            ProductClassification = ProductClassification.Name,
             PromotionType = PromotionType.Name,
             DiscountState = DiscountState.Name,
             DiscountType = DiscountType.Name,

@@ -20,6 +20,18 @@ public class EventItemId : ValueObject
         return new EventItemId(guid);
     }
 
+    public static EventItemId Of(string guid)
+    {
+        Guid.TryParse(guid, out var parsedGuid);
+
+        if (parsedGuid == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid GUID format", nameof(guid));
+        }
+
+        return new EventItemId(parsedGuid);
+    }
+
     public override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;

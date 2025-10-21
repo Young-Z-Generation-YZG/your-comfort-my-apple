@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -54,8 +55,12 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                     {
                         decimal unitPrice = 0;
 
-                        var cachedKey = $"{model.NormalizedModel}_{storageItem.NormalizedName}_{colorItem.NormalizedName}";
-                        var cachedPrice = await _distributedCache.GetStringAsync(cachedKey);
+                        var cachedKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(
+                            modelName: EIphoneModel.FromName(modelItem.NormalizedName),
+                            storageName: EStorage.FromName(storageItem.NormalizedName),
+                            colorName: EColor.FromName(colorItem.NormalizedName)
+                        );
+                        var cachedPrice = await _distributedCache.GetStringAsync(cachedKey, cancellationToken);
 
                         unitPrice = cachedPrice is not null ? decimal.Parse(cachedPrice) : 0;
 
@@ -66,7 +71,6 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                             if (skuPrice is not null)
                             {
                                 unitPrice = skuPrice.UnitPrice;
-                                await _distributedCache.SetStringAsync(cachedKey, skuPrice.UnitPrice.ToString());
                             }
                         }
 
@@ -90,9 +94,5 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
         }
 
         await _skuRepository.InsertManyAsync(skus);
-
-
-        // TODO: Implement SKU initialization logic for the new tenant
-
     }
 }

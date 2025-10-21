@@ -21,7 +21,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     await app.ApplyMigrationAsync();
-    //await app.ApplySeedDataAsync();
+    await app.ApplySeedDataAsync();
 }
 
 app.MapGrpcReflectionService();

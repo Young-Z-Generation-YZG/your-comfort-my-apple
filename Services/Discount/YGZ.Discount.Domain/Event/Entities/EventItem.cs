@@ -1,6 +1,7 @@
 ﻿using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
+using YGZ.Discount.Domain.Event.Events;
 using YGZ.Discount.Domain.Event.ValueObjects;
 
 namespace YGZ.Discount.Domain.Event.Entities;
@@ -9,21 +10,24 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
 {
     public EventItem(EventItemId id) : base(id) { }
 
-    public required EventId EventId { get; set; }
-    public required string ModelName { get; set; }
-    public required string NormalizedModel { get; set; }
-    public required string ColorName { get; set; }
-    public required string NormalizedColor { get; set; }
-    public required string ColorHaxCode { get; set; }
-    public required string StorageName { get; set; }
-    public required string NormalizedStorage { get; set; }
-    public required EProductClassification CategoryType { get; set; }
-    public required string ImageUrl { get; set; }
-    public required EDiscountType DiscountType { get; set; }
-    public required decimal DiscountValue { get; set; }
-    public required decimal OriginalPrice { get; set; }
-    public required int Stock { get; set; }
-    public int Sold { get; set; } = 0;
+    public required EventId EventId { get; init; }
+    public required string SkuId { get; init; }
+    public required string TenantId { get; init; }
+    public required string BranchId { get; init; }
+    public required string ModelName { get; init; }
+    public required string NormalizedModel { get; init; }
+    public required string ColorName { get; init; }
+    public required string NormalizedColor { get; init; }
+    public required string ColorHaxCode { get; init; }
+    public required string StorageName { get; init; }
+    public required string NormalizedStorage { get; init; }
+    public required EProductClassification ProductClassification { get; init; }
+    public required string ImageUrl { get; init; }
+    public required EDiscountType DiscountType { get; init; }
+    public required decimal DiscountValue { get; init; }
+    public required decimal OriginalPrice { get; init; }
+    public required int Stock { get; init; }
+    public int Sold { get; init; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
@@ -32,7 +36,11 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; private set; } = null;
 
 
-    public static EventItem Create(EventId eventId,
+    public static EventItem Create(EventItemId eventItemId,
+                                   EventId eventId,
+                                   string skuId,
+                                   string tenantId,
+                                   string branchId,
                                    string modelName,
                                    string normalizedModel,
                                    string colorName,
@@ -40,17 +48,19 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
                                    string colorHaxCode,
                                    string storageName,
                                    string normalizedStorage,
-                                   EProductClassification categoryType,
+                                   EProductClassification productClassification,
                                    EDiscountType discountType,
                                    string imageUrl,
                                    decimal discountValue,
                                    decimal originalPrice,
                                    int stock)
     {
-
-        return new EventItem(EventItemId.Create())
+        var eventItem = new EventItem(eventItemId)
         {
             EventId = eventId,
+            SkuId = skuId,
+            TenantId = tenantId,
+            BranchId = branchId,
             ModelName = modelName,
             NormalizedModel = normalizedModel,
             ColorName = colorName,
@@ -58,12 +68,17 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
             ColorHaxCode = colorHaxCode,
             StorageName = storageName,
             NormalizedStorage = normalizedStorage,
-            CategoryType = categoryType,
+            ProductClassification = productClassification,
             DiscountType = discountType,
             ImageUrl = imageUrl,
             DiscountValue = discountValue,
             OriginalPrice = originalPrice,
             Stock = stock
         };
+
+        eventItem.AddDomainEvent(new EventItemCreatedDomainEvent(eventItem));
+
+
+        return eventItem;
     }
 }

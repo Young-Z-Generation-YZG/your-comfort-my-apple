@@ -1,9 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.Discount.Domain.Abstractions;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Infrastructure.Persistence;
+using YGZ.Discount.Infrastructure.Persistence.Interceptors;
 using YGZ.Discount.Infrastructure.Persistence.Repositories;
 using YGZ.Discount.Infrastructure.Settings;
 using YGZ.Discount.Infrastructure.Utils;
@@ -22,6 +27,8 @@ public static class DependencyInjection
 
         services.AddPostgresDatabase(configuration);
 
+        services.AddQueuesFromApplicationLayer(configuration);
+
         return services;
     }
 
@@ -29,10 +36,24 @@ public static class DependencyInjection
     {
         var connectionString = configuration.GetConnectionString(ConnectionStrings.DiscountDb);
 
-        services.AddDbContext<DiscountDbContext>(options =>
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventInterceptor>();
+
+        services.AddDbContext<DiscountDbContext>((sp, options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddQueuesFromApplicationLayer(this IServiceCollection services, IConfiguration configuration)
+    {
+        var queuesFromAssembly = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .FirstOrDefault(asm => asm.GetName().Name == "YGZ.Discount.Application");
+
+        services.AddMessageBrokerExtensions(configuration, queuesFromAssembly);
 
         return services;
     }

@@ -23,26 +23,29 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
         // Configure column order to match entity property order
         builder.Property(x => x.Id).HasColumnOrder(1);
         builder.Property(x => x.EventId).HasColumnOrder(2);
-        builder.Property(x => x.ModelName).HasColumnOrder(3);
-        builder.Property(x => x.NormalizedModel).HasColumnOrder(4);
-        builder.Property(x => x.ColorName).HasColumnOrder(5);
-        builder.Property(x => x.NormalizedColor).HasColumnOrder(6);
-        builder.Property(x => x.ColorHaxCode).HasColumnOrder(7);
-        builder.Property(x => x.StorageName).HasColumnOrder(8);
-        builder.Property(x => x.NormalizedStorage).HasColumnOrder(9);
-        builder.Property(x => x.CategoryType).HasColumnOrder(10);
-        builder.Property(x => x.ImageUrl).HasColumnOrder(11);
-        builder.Property(x => x.DiscountType).HasColumnOrder(12);
-        builder.Property(x => x.DiscountValue).HasColumnOrder(13);
-        builder.Property(x => x.OriginalPrice).HasColumnOrder(14);
-        builder.Property(x => x.Stock).HasColumnOrder(15);
-        builder.Property(x => x.Sold).HasColumnOrder(16);
-        builder.Property(x => x.CreatedAt).HasColumnOrder(17);
-        builder.Property(x => x.UpdatedAt).HasColumnOrder(18);
-        builder.Property(x => x.UpdatedBy).HasColumnOrder(19);
-        builder.Property(x => x.IsDeleted).HasColumnOrder(20);
-        builder.Property(x => x.DeletedAt).HasColumnOrder(21);
-        builder.Property(x => x.DeletedBy).HasColumnOrder(22);
+        builder.Property(x => x.SkuId).HasColumnOrder(3);
+        builder.Property(x => x.TenantId).HasColumnOrder(4);
+        builder.Property(x => x.BranchId).HasColumnOrder(5);
+        builder.Property(x => x.ModelName).HasColumnOrder(6);
+        builder.Property(x => x.NormalizedModel).HasColumnOrder(7);
+        builder.Property(x => x.ColorName).HasColumnOrder(8);
+        builder.Property(x => x.NormalizedColor).HasColumnOrder(9);
+        builder.Property(x => x.ColorHaxCode).HasColumnOrder(10);
+        builder.Property(x => x.StorageName).HasColumnOrder(11);
+        builder.Property(x => x.NormalizedStorage).HasColumnOrder(12);
+        builder.Property(x => x.ProductClassification).HasColumnOrder(13);
+        builder.Property(x => x.ImageUrl).HasColumnOrder(14);
+        builder.Property(x => x.DiscountType).HasColumnOrder(15);
+        builder.Property(x => x.DiscountValue).HasColumnOrder(16);
+        builder.Property(x => x.OriginalPrice).HasColumnOrder(17);
+        builder.Property(x => x.Stock).HasColumnOrder(18);
+        builder.Property(x => x.Sold).HasColumnOrder(19);
+        builder.Property(x => x.CreatedAt).HasColumnOrder(20);
+        builder.Property(x => x.UpdatedAt).HasColumnOrder(21);
+        builder.Property(x => x.UpdatedBy).HasColumnOrder(22);
+        builder.Property(x => x.IsDeleted).HasColumnOrder(23);
+        builder.Property(x => x.DeletedAt).HasColumnOrder(24);
+        builder.Property(x => x.DeletedBy).HasColumnOrder(25);
 
         // foreign key configuration - explicit relationship
         builder.HasOne<Event>()
@@ -51,12 +54,12 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
                .IsRequired();
 
         // other property configurations
-        builder.Property(x => x.CategoryType)
+        builder.Property(x => x.ProductClassification)
                .HasConversion(
                    x => x.Name,
                    x => EProductClassification.FromName(x, false)
                )
-               .HasColumnName("CategoryType");
+               .HasColumnName("ProductClassification");
 
         builder.Property(x => x.DiscountType)
                 .HasConversion(

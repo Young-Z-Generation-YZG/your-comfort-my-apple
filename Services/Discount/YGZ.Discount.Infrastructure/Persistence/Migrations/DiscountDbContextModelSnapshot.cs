@@ -30,11 +30,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<int>("AvailableQuantity")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CategoryType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("CategoryType");
-
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
@@ -71,6 +66,11 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("MaxDiscountAmount")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("ProductClassification")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ProductClassification");
+
                     b.Property<string>("PromotionType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -97,43 +97,42 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnOrder(1);
 
-                    b.Property<string>("CategoryType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("CategoryType")
-                        .HasColumnOrder(10);
-
-                    b.Property<string>("ColorHaxCode")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnOrder(7);
-
-                    b.Property<string>("ColorName")
+                    b.Property<string>("BranchId")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnOrder(5);
 
+                    b.Property<string>("ColorHaxCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(10);
+
+                    b.Property<string>("ColorName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(8);
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(17);
+                        .HasColumnOrder(20);
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(21);
+                        .HasColumnOrder(24);
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(22);
+                        .HasColumnOrder(25);
 
                     b.Property<string>("DiscountType")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("DiscountType")
-                        .HasColumnOrder(12);
+                        .HasColumnOrder(15);
 
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("numeric")
-                        .HasColumnOrder(13);
+                        .HasColumnOrder(16);
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uuid")
@@ -142,56 +141,72 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(11);
+                        .HasColumnOrder(14);
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
-                        .HasColumnOrder(20);
+                        .HasColumnOrder(23);
 
                     b.Property<string>("ModelName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(3);
+                        .HasColumnOrder(6);
 
                     b.Property<string>("NormalizedColor")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(6);
+                        .HasColumnOrder(9);
 
                     b.Property<string>("NormalizedModel")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(4);
+                        .HasColumnOrder(7);
 
                     b.Property<string>("NormalizedStorage")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(9);
+                        .HasColumnOrder(12);
 
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("numeric")
-                        .HasColumnOrder(14);
+                        .HasColumnOrder(17);
+
+                    b.Property<string>("ProductClassification")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ProductClassification")
+                        .HasColumnOrder(13);
+
+                    b.Property<string>("SkuId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(3);
 
                     b.Property<int>("Sold")
                         .HasColumnType("integer")
-                        .HasColumnOrder(16);
+                        .HasColumnOrder(19);
 
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
-                        .HasColumnOrder(15);
+                        .HasColumnOrder(18);
 
                     b.Property<string>("StorageName")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnOrder(8);
+                        .HasColumnOrder(11);
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnOrder(4);
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(18);
+                        .HasColumnOrder(21);
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(19);
+                        .HasColumnOrder(22);
 
                     b.HasKey("Id");
 

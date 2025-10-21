@@ -73,6 +73,15 @@ if (app.Environment.IsDevelopment())
     await app.ApplySeedDataAsync();
 }
 
+var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+lifetime.ApplicationStopping.Register(() =>
+{
+    using var scope = app.Services.CreateScope();
+    var redisConnection = scope.ServiceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
+    var server = redisConnection.GetServer(redisConnection.GetEndPoints().First());
+    server.FlushDatabase();
+});
+
 app.UseStatusCodePages();
 
 //app.UseHttpsRedirection();

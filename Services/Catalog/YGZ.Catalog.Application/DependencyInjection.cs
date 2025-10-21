@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Discount.Grpc.Protos;
 using YGZ.Ordering.Api.Protos;
@@ -22,6 +23,10 @@ public static class DependencyInjection
         services.AddFluentValidationExtension(assembly);
 
         services.AddSharedExtensions(Assembly.GetExecutingAssembly());
+
+
+        // Add Feature Management 
+        services.AddFeatureManagement();
 
 
         services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>

@@ -51,10 +51,10 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
         }
 
         var existingItem = _eventItems.FirstOrDefault(ep =>
-            ep.NormalizedModel == eventItem.NormalizedModel &&
-            ep.NormalizedColor == eventItem.NormalizedColor &&
-            ep.NormalizedStorage == eventItem.NormalizedStorage &&
-            !ep.IsDeleted);
+            ep.NormalizedModel == eventItem.NormalizedModel
+            && ep.NormalizedColor == eventItem.NormalizedColor
+            && ep.NormalizedStorage == eventItem.NormalizedStorage
+            && !ep.IsDeleted);
 
         if (existingItem is not null)
         {

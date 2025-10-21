@@ -4,37 +4,60 @@ namespace YGZ.BuildingBlocks.Shared.Utils;
 
 public static class ConvertGrpcEnumToNormalEnum
 {
-    public static EDiscountType ConvertToEDiscountType(string EDiscountTypeGrpc)
+    public static EDiscountType ConvertToEDiscountType(string? discountTypeGrpc)
     {
-        switch (EDiscountTypeGrpc)
+        if (string.IsNullOrWhiteSpace(discountTypeGrpc))
+            return EDiscountType.UNKNOWN;
+
+        return discountTypeGrpc switch
         {
-            case "DiscountTypePercentage":
-                return EDiscountType.PERCENTAGE;
-            case "DiscountTypeFixedAmount":
-                return EDiscountType.FIXED_AMOUNT;
-            default:
-                return EDiscountType.UNKNOWN;
-        }
+            "DiscountTypePercentage" => EDiscountType.PERCENTAGE,
+            "DiscountTypeFixedAmount" => EDiscountType.FIXED_AMOUNT,
+            _ => EDiscountType.UNKNOWN
+        };
     }
 
-    public static EProductClassification ConvertToECategoryType(string ECategoryTypeGrpc)
+    public static EProductClassification ConvertToEProductClassification(string? productClassificationGrpc)
     {
-        switch (ECategoryTypeGrpc)
+        if (string.IsNullOrWhiteSpace(productClassificationGrpc))
+            return EProductClassification.UNKNOWN;
+
+        return productClassificationGrpc switch
         {
-            case "CategoryTypeIphone":
-                return EProductClassification.IPHONE;
-            case "CategoryTypeIpad":
-                return EProductClassification.IPAD;
-            case "CategoryTypeMacbook":
-                return EProductClassification.MACBOOK;
-            case "CategoryTypeWatch":
-                return EProductClassification.WATCH;
-            case "CategoryTypeHeadphone":
-                return EProductClassification.HEADPHONE;
-            case "CategoryTypeAccessory":
-                return EProductClassification.ACCESSORY;
-            default:
-                return EProductClassification.UNKNOWN;
-        }
+            "ProductClassificationIphone" => EProductClassification.IPHONE,
+            "ProductClassificationIpad" => EProductClassification.IPAD,
+            "ProductClassificationMacbook" => EProductClassification.MACBOOK,
+            "ProductClassificationWatch" => EProductClassification.WATCH,
+            "ProductClassificationHeadphone" => EProductClassification.HEADPHONE,
+            "ProductClassificationAccessory" => EProductClassification.ACCESSORY,
+            _ => EProductClassification.UNKNOWN
+        };
+    }
+
+    public static ETenantType ConvertToETenantType(string? tenantTypeGrpc)
+    {
+        if (string.IsNullOrWhiteSpace(tenantTypeGrpc))
+            return ETenantType.UNKNOWN;
+
+        return tenantTypeGrpc switch
+        {
+            "TenantTypeWareHouse" => ETenantType.WARE_HOUSE,
+            "TenantTypeBranch" => ETenantType.BRANCH,
+            _ => ETenantType.UNKNOWN
+        };
+    }
+
+    public static ETenantState ConvertToETenantState(string? tenantStateGrpc)
+    {
+        if (string.IsNullOrWhiteSpace(tenantStateGrpc))
+            return ETenantState.UNKNOWN;
+
+        return tenantStateGrpc switch
+        {
+            "TenantStateActive" => ETenantState.ACTIVE,
+            "TenantStateInactive" => ETenantState.INACTIVE,
+            "TenantStateMaintenance" => ETenantState.MAINTENANCE,
+            _ => ETenantState.UNKNOWN
+        };
     }
 }

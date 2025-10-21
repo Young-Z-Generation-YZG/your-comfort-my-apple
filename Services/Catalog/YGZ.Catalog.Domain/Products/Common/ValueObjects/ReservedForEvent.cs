@@ -14,9 +14,9 @@ public class ReservedForEvent : ValueObject
 
     [BsonElement("event_name")]
     public string EventName { get; init; }
-    
+
     [BsonElement("reserved_quantity")]
-    public int ReservedQuantity { get; init; }
+    public int ReservedQuantity { get; set; }
 
 
     private ReservedForEvent(string eventId, string eventItemId, string eventName, int reservedQuantity)

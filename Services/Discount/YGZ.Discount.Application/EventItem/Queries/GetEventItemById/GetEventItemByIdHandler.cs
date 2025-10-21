@@ -38,7 +38,7 @@ public class GetEventItemByIdHandler : IQueryHandler<GetEventItemByIdQuery, Even
                    StorageName = ei.StorageName,
                    NormalizedStorage = ei.NormalizedStorage,
                    ImageUrl = ei.ImageUrl,
-                   CategogyType = ei.CategoryType.Name,
+                   ProductClassification = ei.ProductClassification.Name,
                    DiscountType = ei.DiscountType.Name,
                    DiscountValue = ei.DiscountValue,
                    OriginalPrice = ei.OriginalPrice,

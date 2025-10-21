@@ -1,5 +1,4 @@
-﻿
-using YGZ.BuildingBlocks.Shared.Errors;
+﻿using YGZ.BuildingBlocks.Shared.Errors;
 
 namespace YGZ.Catalog.Domain.Core.Errors;
 

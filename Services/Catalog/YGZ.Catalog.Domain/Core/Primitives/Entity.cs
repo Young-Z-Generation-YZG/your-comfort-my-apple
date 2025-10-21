@@ -10,7 +10,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
 
     public TId Id { get; protected set; }
 
-    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyList<IDomainEvent> DomainEvents => (_domainEvents ??= new List<IDomainEvent>()).AsReadOnly();
 
     protected Entity(TId id)
     {
@@ -41,7 +41,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
 
     public void ClearDomainEvents()
     {
-        _domainEvents.Clear();
+        _domainEvents?.Clear();
     }
 
     public static bool operator ==(Entity<TId> left, Entity<TId> right)

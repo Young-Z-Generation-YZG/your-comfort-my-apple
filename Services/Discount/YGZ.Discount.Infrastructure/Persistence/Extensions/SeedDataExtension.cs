@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.Discount.Infrastructure.Persistence.Seeds;
 
 namespace YGZ.Discount.Infrastructure.Persistence.Extensions;
 
@@ -18,65 +19,35 @@ public static class SeedDataExtension
 
     private static async Task SeedAsync(DiscountDbContext context)
     {
-        await SeedPromotionCouponsAsync(context);
-        //await SeedPromotionEventsAsync(context);
-        //await SeedPromotionGlobalsAsync(context);
-        //await SeedPromotionProductsAsync(context);
-        //await SeedPromotionCategoriesAsync(context);
-        //await SeedPromotionItemsAsync(context);
+        await SeedCouponsAsync(context);
+        await SeedEventsAsync(context);
+        await SeedEventItemsAsync(context);
     }
 
-    //private static async Task SeedPromotionItemsAsync(DiscountDbContext context)
-    //{
-    //    if (!await context.PromotionItems.AnyAsync())
-    //    {
-    //        await context.PromotionItems.AddRangeAsync(SeedData.PromotionItems);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
-
-    private static async Task SeedPromotionCouponsAsync(DiscountDbContext context)
+    private static async Task SeedCouponsAsync(DiscountDbContext context)
     {
         if (!await context.Coupons.AnyAsync())
         {
-            await context.Coupons.AddRangeAsync(SeedData.Coupons);
+            await context.Coupons.AddRangeAsync(SeedCouponData.Coupons);
             await context.SaveChangesAsync();
         }
     }
 
-    //private static async Task SeedPromotionCategoriesAsync(DiscountDbContext context)
-    //{
-    //    if (!await context.PromotionCategories.AnyAsync())
-    //    {
-    //        await context.PromotionCategories.AddRangeAsync(SeedData.promotionCategories);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
+    private static async Task SeedEventsAsync(DiscountDbContext context)
+    {
+        if (!await context.Events.AnyAsync())
+        {
+            await context.Events.AddRangeAsync(SeedEventData.Events);
+            await context.SaveChangesAsync();
+        }
+    }
 
-    //private static async Task SeedPromotionProductsAsync(DiscountDbContext context)
-    //{
-    //    if (!await context.PromotionProducts.AnyAsync())
-    //    {
-    //        await context.PromotionProducts.AddRangeAsync(SeedData.PromotionProducts);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
-
-    //private static async Task SeedPromotionEventsAsync(DiscountDbContext context)
-    //{
-    //    if (!await context.PromotionEvents.AnyAsync())
-    //    {
-    //        await context.PromotionEvents.AddRangeAsync(SeedData.PromotionEvents);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
-
-    //private static async Task SeedPromotionGlobalsAsync(DiscountDbContext context)
-    //{
-    //    if (!await context.PromotionGlobals.AnyAsync())
-    //    {
-    //        await context.PromotionGlobals.AddRangeAsync(SeedData.PromotionGlobals);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
+    private static async Task SeedEventItemsAsync(DiscountDbContext context)
+    {
+        if (!await context.EventItems.AnyAsync())
+        {
+            await context.EventItems.AddRangeAsync(SeedEventItemData.EventItems);
+            await context.SaveChangesAsync();
+        }
+    }
 }

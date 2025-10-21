@@ -64,7 +64,7 @@ public class GetEventWithEventItemsHandler : IQueryHandler<GetEventWithEventItem
                     ColorHexCode = ei.ColorHaxCode,
                     StorageName = ei.StorageName,
                     NormalizedStorage = ei.NormalizedStorage,
-                    CategogyType = ei.CategoryType.Name,
+                    ProductClassification = ei.ProductClassification.Name,
                     ImageUrl = ei.ImageUrl,
                     DiscountType = ei.DiscountType.Name,
                     DiscountValue = ei.DiscountValue,

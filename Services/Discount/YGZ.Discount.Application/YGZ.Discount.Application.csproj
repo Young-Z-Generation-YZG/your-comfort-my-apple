@@ -7,9 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.30.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.49.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Messaging\YGZ.BuildingBlocks.Messaging.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\YGZ.BuildingBlocks.Shared\YGZ.BuildingBlocks.Shared.csproj" />
     <ProjectReference Include="..\YGZ.Discount.Domain\YGZ.Discount.Domain.csproj" />
     <ProjectReference Include="..\YGZ.Discount.Infrastructure\YGZ.Discount.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\Catalog\YGZ.Catalog.Api\Protos\catalog.proto" GrpcServices="Client">
+      <Link>Protos\catalog.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>
