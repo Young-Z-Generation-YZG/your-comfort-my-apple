@@ -3,6 +3,7 @@
 public sealed record CouponResponse
 {
     public required string Id { get; init; }
+    public string? UserId { get; init; }
     public required string Title { get; init; }
     public required string Code { get; init; }
     public required string Description { get; init; }

@@ -48,15 +48,16 @@ service DiscountProtoService {
 
 message CouponModel {
     google.protobuf.StringValue id = 1;
-    google.protobuf.StringValue code = 2;
-    google.protobuf.StringValue title = 3;
-    google.protobuf.StringValue description = 4;
-    EProductClassificationGrpc category_type = 5;
-    EDiscountTypeGrpc discount_type = 6;
-    google.protobuf.DoubleValue discount_value = 7;
-    google.protobuf.DoubleValue max_discount_amount = 8;
-    google.protobuf.Int32Value available_quantity = 9;
-    google.protobuf.Int32Value stock = 10;
+    google.protobuf.StringValue user_id = 2;
+    google.protobuf.StringValue code = 3;
+    google.protobuf.StringValue title = 4;
+    google.protobuf.StringValue description = 5;
+    EProductClassificationGrpc category_type = 6;
+    EDiscountTypeGrpc discount_type = 7;
+    google.protobuf.DoubleValue discount_value = 8;
+    google.protobuf.DoubleValue max_discount_amount = 9;
+    google.protobuf.Int32Value available_quantity = 10;
+    google.protobuf.Int32Value stock = 11;
 }
 
 message EventModel {
@@ -90,15 +91,16 @@ message EventItemModel {
 // POST requests
 
 message CreateCouponRequest {
-    google.protobuf.StringValue unique_code = 1;
-    google.protobuf.StringValue title = 2;
-    google.protobuf.StringValue description = 3;
-    EProductClassificationGrpc category_type = 4;
-    EDiscountTypeGrpc discount_type = 5;
-    google.protobuf.DoubleValue discount_value = 6;
-    google.protobuf.DoubleValue max_discount_amount = 7;
-    google.protobuf.Int32Value available_quantity = 8;
-    google.protobuf.Int32Value stock = 9;
+    google.protobuf.StringValue user_id = 1;
+    google.protobuf.StringValue unique_code = 2;
+    google.protobuf.StringValue title = 3;
+    google.protobuf.StringValue description = 4;
+    EProductClassificationGrpc category_type = 5;
+    EDiscountTypeGrpc discount_type = 6;
+    google.protobuf.DoubleValue discount_value = 7;
+    google.protobuf.DoubleValue max_discount_amount = 8;
+    google.protobuf.Int32Value available_quantity = 9;
+    google.protobuf.Int32Value stock = 10;
 }
 
 message CreateEventRequest {

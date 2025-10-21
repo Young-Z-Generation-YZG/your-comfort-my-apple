@@ -12,7 +12,7 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    [Migration("20251021112402_InitialMigration")]
+    [Migration("20251021133050_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -88,6 +88,9 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

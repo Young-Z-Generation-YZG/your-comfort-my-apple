@@ -12,6 +12,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
 {
     public Coupon(CouponId id) : base(id) { }
 
+    public string? UserId { get; init; }
     public required Code Code { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }
@@ -32,6 +33,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public string? UpdatedBy => throw new NotImplementedException();
 
     public static Coupon Create(CouponId couponId,
+                                string? userId,
                                 Code code,
                                 string title,
                                 string description,
@@ -45,6 +47,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     {
         return new Coupon(couponId)
         {
+            UserId = userId,
             Code = code,
             Title = title,
             Description = description,
@@ -63,6 +66,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
         return new CouponResponse
         {
             Id = Id.Value.ToString()!,
+            UserId = UserId,
             Title = Title,
             Code = Code.Value,
             Description = Description,

@@ -52,6 +52,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return new CouponModel
         {
             Id = result.Response!.Id,
+            UserId = result.Response.UserId,
             Code = result.Response.Code,
             Title = result.Response.Title,
             Description = result.Response.Description,
@@ -88,6 +89,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         var couponModels = result.Response!.Select(c => new CouponModel
         {
             Id = c.Id,
+            UserId = c.UserId ?? string.Empty,
             Code = c.Code,
             Title = c.Title,
             Description = c.Description,

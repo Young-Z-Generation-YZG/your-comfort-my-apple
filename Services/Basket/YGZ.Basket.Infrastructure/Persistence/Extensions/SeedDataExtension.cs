@@ -17,7 +17,7 @@ public static class SeedDataExtension
     public static async Task SeedAsync(IServiceScope scope)
     {
         // seed cached SKU prices
-        await SeedCachedSKUPrice(scope);
+        //await SeedCachedSKUPrice(scope);
 
         // seed cached color images
         await SeedCachedColorImages(scope);
@@ -26,14 +26,14 @@ public static class SeedDataExtension
         //await SeedCachedModelSlugs(scope);
     }
 
-    public static async Task SeedCachedSKUPrice(IServiceScope scope)
-    {
-        var skuDistributedCache = scope.ServiceProvider.GetRequiredService<ISKUPriceCache>();
+    //public static async Task SeedCachedSKUPrice(IServiceScope scope)
+    //{
+    //    var skuDistributedCache = scope.ServiceProvider.GetRequiredService<ISKUPriceCache>();
 
-        var skuPrices = SeedData.SKUPrices;
+    //    var skuPrices = SeedData.SKUPrices;
 
-        await skuDistributedCache.SetPricesBatchAsync(skuPrices);
-    }
+    //    await skuDistributedCache.SetPricesBatchAsync(skuPrices);
+    //}
 
     public static async Task SeedCachedColorImages(IServiceScope scope)
     {

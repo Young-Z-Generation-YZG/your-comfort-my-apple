@@ -27,6 +27,7 @@ public class CreateCouponHandler : ICommandHandler<CreateCouponCommand, bool>
         var productClassification = ConvertGrpcEnumToNormalEnum.ConvertToEProductClassification(request.ProductClassification);
 
         var coupon = Coupon.Create(couponId: CouponId.Create(),
+                                   userId: request.UserId,
                                    code: Code.Of(request.UniqueCode),
                                    title: request.Title,
                                    description: request.Description,

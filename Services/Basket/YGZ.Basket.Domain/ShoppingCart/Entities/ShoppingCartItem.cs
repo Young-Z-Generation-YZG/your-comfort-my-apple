@@ -27,12 +27,14 @@ public class ShoppingCartItem
             {
                 if (Promotion.PromotionCoupon is not null)
                 {
-                    return Promotion.PromotionCoupon.FinalPrice;
+                    // FinalPrice is per unit, multiply by quantity for subtotal
+                    return Promotion.PromotionCoupon.FinalPrice * Quantity;
                 }
 
                 if (Promotion.PromotionEvent is not null)
                 {
-                    return Promotion.PromotionEvent.FinalPrice;
+                    // FinalPrice is per unit, multiply by quantity for subtotal
+                    return Promotion.PromotionEvent.FinalPrice * Quantity;
                 }
             }
             

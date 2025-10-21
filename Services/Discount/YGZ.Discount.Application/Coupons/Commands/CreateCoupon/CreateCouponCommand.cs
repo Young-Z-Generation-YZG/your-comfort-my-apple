@@ -4,6 +4,7 @@ namespace YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
 
 public sealed record CreateCouponCommand : ICommand<bool>
 {
+    public string? UserId { get; init; }
     public required string UniqueCode { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }

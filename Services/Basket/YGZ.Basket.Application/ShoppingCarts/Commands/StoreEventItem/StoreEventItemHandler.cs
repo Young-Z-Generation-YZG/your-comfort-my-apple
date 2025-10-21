@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Cache.Entities;
@@ -7,6 +8,7 @@ using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Discount.Grpc.Protos;
@@ -21,6 +23,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
     private readonly ISKUPriceCache _skuPriceCache;
     private readonly IColorImageCache _colorImageCache;
     private readonly IModelSlugCache _modelSlugCache;
+    private readonly IDistributedCache _distributedCache;
     private readonly ILogger<StoreEventItemHandler> _logger;
 
     public StoreEventItemHandler(
@@ -30,6 +33,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         ISKUPriceCache skuPriceCache,
         IColorImageCache colorImageCache,
         IModelSlugCache modelSlugCache,
+        IDistributedCache distributedCache,
         ILogger<StoreEventItemHandler> logger)
     {
         _basketRepository = basketRepository;
@@ -38,6 +42,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         _skuPriceCache = skuPriceCache;
         _colorImageCache = colorImageCache;
         _modelSlugCache = modelSlugCache;
+        _distributedCache = distributedCache;
         _logger = logger;
     }
 
@@ -107,16 +112,18 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         var color = Color.Create(eventItem.Color.NormalizedName);
         var storage = Storage.Create(eventItem.Storage.NormalizedName);
 
-        var skuPriceCache = PriceCache.Of(model, color, storage);
+        var skuPriceCacheKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(EIphoneModel.FromName(eventItem.Model.NormalizedName),
+                                                                                        EStorage.FromName(eventItem.Storage.NormalizedName),
+                                                                                        EColor.FromName(eventItem.Color.NormalizedName));
         var modelSlugCache = ModelSlugCache.Of("");
 
-        var unitPrice = await _skuPriceCache.GetPriceAsync(skuPriceCache);
+        var unitPrice = await _distributedCache.GetStringAsync(skuPriceCacheKey);
         var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
         var displayImageUrl = eventItem.DisplayImageUrl ?? string.Empty;
 
-        var originalPrice = (decimal)(unitPrice ?? 0);
-        var discountValue = (decimal)(eventItem.DiscountValue ?? 0);
+        decimal originalPrice = decimal.Parse(unitPrice ?? "0");
+        decimal discountValue = (decimal)(eventItem.DiscountValue ?? 0);
 
         BuildingBlocks.Shared.Enums.EDiscountType discountTypeEnum = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
 

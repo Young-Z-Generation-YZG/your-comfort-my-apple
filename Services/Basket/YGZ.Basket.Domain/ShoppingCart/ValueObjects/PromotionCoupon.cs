@@ -15,14 +15,9 @@ public class PromotionCoupon
     {
         get
         {
-            if (DiscountType == EDiscountType.PERCENTAGE.Name)
-            {
-                return ProductUnitPrice - (ProductUnitPrice * DiscountValue);
-            }
-            else
-            {
-                return ProductUnitPrice - DiscountValue;
-            }
+            // Use the pre-calculated DiscountAmount instead of recalculating
+            // This ensures we use the proportionally distributed discount
+            return ProductUnitPrice - DiscountAmount;
         }
     }
 

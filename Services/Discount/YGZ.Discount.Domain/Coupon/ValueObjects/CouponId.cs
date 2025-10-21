@@ -22,7 +22,14 @@ public class CouponId : ValueObject
 
     public static CouponId Of(string guid)
     {
-        return new CouponId(Guid.Parse(guid));
+        Guid.TryParse(guid, out var parsedGuid);
+
+        if (parsedGuid == Guid.Empty)
+        {
+            throw new ArgumentException("Invalid GUID format", nameof(guid));
+        }
+
+        return new CouponId(parsedGuid);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
