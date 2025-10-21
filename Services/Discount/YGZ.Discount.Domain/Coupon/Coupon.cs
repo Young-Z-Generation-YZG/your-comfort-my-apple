@@ -22,7 +22,7 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
     public required EDiscountType DiscountType { get; init; } = EDiscountType.PERCENTAGE;
     public required decimal DiscountValue { get; init; }
     public required decimal? MaxDiscountAmount { get; init; }
-    public required int AvailableQuantity { get; init; }
+    public int AvailableQuantity { get; private set; }
     public required int Stock { get; init; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -59,6 +59,16 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             AvailableQuantity = availableQuantity,
             Stock = stock
         };
+    }
+
+    public void UseCoupon()
+    {
+        if (AvailableQuantity <= 0)
+        {
+            throw new InvalidOperationException("Coupon out of stock");
+        }
+
+        AvailableQuantity--;
     }
 
     public CouponResponse ToResponse()

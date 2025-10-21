@@ -102,26 +102,63 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                     }
                 }
 
-                if (coupon is not null && coupon.DiscountValue > 0)
+                if (coupon is not null && coupon.DiscountValue > 0 && coupon.AvailableQuantity > 0)
                 {
-                    var quantity = coupon.AvailableQuantity;
-                    var discountValue = (decimal)coupon.DiscountValue.Value;
+                    // Get only selected items
+                    var selectedItems = checkoutShoppingCart.CartItems
+                        .Where(item => item.IsSelected == true)
+                        .ToList();
 
-                    foreach (var item in checkoutShoppingCart.CartItems)
+                    if (selectedItems.Any())
                     {
-                        if (item.IsSelected == true)
+                        // Step 1: Calculate total cart value for selected items
+                        decimal totalCartValue = selectedItems.Sum(item => item.UnitPrice * item.Quantity);
+
+                        // Step 2: Calculate discount amount
+                        var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
+                        decimal calculatedDiscount = 0;
+
+                        if (discountType == EDiscountType.PERCENTAGE)
                         {
+                            // For percentage: discount = totalCartValue * (discountValue)
+                            // Note: discountValue should already be in decimal form (e.g., 0.1 for 10%)
+                            calculatedDiscount = totalCartValue * (decimal)(coupon.DiscountValue ?? 0);
+                        }
+                        else if (discountType == EDiscountType.FIXED_AMOUNT)
+                        {
+                            calculatedDiscount = (decimal)(coupon.DiscountValue ?? 0);
+                        }
+
+                        // Step 3: Apply maximum discount cap
+                        decimal actualTotalDiscount = coupon.MaxDiscountAmount.HasValue && coupon.MaxDiscountAmount > 0
+                            ? Math.Min(calculatedDiscount, (decimal)coupon.MaxDiscountAmount)
+                            : calculatedDiscount;
+
+                        // Step 4: Distribute discount proportionally to each selected item
+                        foreach (var item in selectedItems)
+                        {
+                            decimal itemSubtotal = item.UnitPrice * item.Quantity;
+                            decimal itemProportion = totalCartValue > 0 ? itemSubtotal / totalCartValue : 0;
+                            decimal itemTotalDiscount = actualTotalDiscount * itemProportion;
+
+                            // Calculate discount per unit
+                            decimal discountPerUnit = item.Quantity > 0 ? itemTotalDiscount / item.Quantity : 0;
+
+                            // Calculate the effective discount value for this item
+                            // This represents what percentage or amount was actually applied per unit
+                            decimal effectiveDiscountValue = item.UnitPrice > 0
+                                ? discountPerUnit / item.UnitPrice
+                                : 0;
+
                             PromotionCoupon promotionCoupon = PromotionCoupon.Create(
-                                couponId: coupon.Id, 
-                                productUnitPrice: item.UnitPrice, 
-                                discountType: ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString()), 
-                                discountValue: discountValue, 
-                                discountAmount: discountValue
+                                couponId: coupon.Id,
+                                productUnitPrice: item.UnitPrice,
+                                discountType: discountType,
+                                discountValue: effectiveDiscountValue, // Effective discount rate per unit
+                                discountAmount: discountPerUnit // Actual discount amount per unit
                             );
 
                             item.ApplyCoupon(promotionCoupon);
-
-                            quantity--;
                         }
                     }
                 }

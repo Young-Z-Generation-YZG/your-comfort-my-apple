@@ -5,6 +5,7 @@ using MapsterMapper;
 using MediatR;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.Discount.Application.Coupons.Commands.CreateCoupon;
+using YGZ.Discount.Application.Coupons.Commands.UpdateCouponQuantity;
 using YGZ.Discount.Application.Coupons.Queries.GetAllPromotionCoupons;
 using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
@@ -111,6 +112,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     public override async Task<BooleanResponse> CreateCouponGrpc(CreateCouponRequest request, ServerCallContext context)
     {
         var cmd = _mapper.Map<CreateCouponCommand>(request);
+
+        var result = await _sender.Send(cmd);
+
+        var response = _mapper.Map<BooleanResponse>(result.Response);
+
+        return response;
+    }
+
+    public override async Task<BooleanResponse> UseCouponGrpc(UseCouponRequest request, ServerCallContext context)
+    {
+        var cmd = _mapper.Map<UseCouponCommand>(request);
 
         var result = await _sender.Send(cmd);
 
