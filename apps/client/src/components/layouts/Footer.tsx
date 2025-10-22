@@ -7,7 +7,7 @@ const Footer = () => {
             <h2 className="mb-[53px] text-[56px] font-[600] leading-[60px]">
                iPhone
             </h2>
-            <div className="flex flex-wrap lg:flex-row">
+            <div className="flex flex-col lg:flex-row">
                <div className="w-full mb-14 lg:w-auto lg:mb-0 lg:pr-[88px] pr-0">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Explore iPhone
@@ -36,7 +36,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
+               <div className="w-full mb-14 lg:w-auto lg:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Shop iPhone
                   </h3>
@@ -55,7 +55,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
+               <div className="w-full mb-14 lg:w-auto lg:mb-0 lg:pr-[44px] pr-0 font-SFProDisplay">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      More from iPhone
                   </h3>

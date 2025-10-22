@@ -79,32 +79,33 @@ const SignUpPage = () => {
                <h2 className="text-2xl font-medium">Account</h2>
             </div>
 
-            <div className="flex gap-3 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
+            <div className="flex gap-3 font-SFProText text-slate-500 lg:text-sm md:text-base text-lg">
                <Link href="/sign-in">Sign in</Link>
-               <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
          </section>
 
          <div className="h-full lg:px-[200px] md:px-[100px] px-0 py-[50px]">
             <div className="w-full flex flex-col justify-center items-center">
-               <h3 className="font-SFProDisplay font-medium lg:text-3xl md:text-5xl text-7xl">
+               <h3 className="font-SFProDisplay font-medium lg:text-2xl text-3xl text-center">
                   Create Your Account
                </h3>
-               <p className="font-SFProText font-light pt-5 lg:text-base md:text-xl text-2xl">
+               <p className="font-SFProText font-light pt-5 lg:text-base md:text-xl text-2xl hidden md:flex">
                   One Account is all you need to access all of our services
                </p>
 
-               <p className="font-SFProText font-light pt-5 flex gap-2 lg:text-base md:text-xl text-2xl lg:pb-2 md:pb-5 pb-10">
-                  Already have an account?{' '}
+               <div className="flex flex-col md:flex-row justify-center items-center gap-2 pt-5 lg:text-base md:text-lg text-xl lg:pb-2 md:pb-5 pb-10">
+                  <p className="font-SFProText font-light">
+                     Already have an account?{' '}
+                  </p>
                   <Link
                      href="/sign-in"
-                     className="text-blue-500 flex underline"
+                     className="text-blue-500 flex underline lg:text-base md:text-lg text-2xl"
                   >
                      Sign in
                      <GoArrowUpRight className="size-4" />
                   </Link>
-               </p>
+               </div>
 
                <div className="lg:w-[500px] md:w-[80%] w-full">
                   <LoadingOverlay isLoading={isLoading} text="Loading...">
@@ -133,8 +134,8 @@ const SignUpPage = () => {
                                        name="first_name"
                                        label="First Name"
                                        type="text"
-                                       disabled={isLoading}
-                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                       disabled={isLoading || isFetching}
+                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                        labelClassName="lg:text-base md:text-xl text-3xl"
                                        errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                                     />
@@ -144,8 +145,8 @@ const SignUpPage = () => {
                                        name="last_name"
                                        label="Last Name"
                                        type="text"
-                                       disabled={isLoading}
-                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                       disabled={isLoading || isFetching}
+                                       className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                        labelClassName="lg:text-base md:text-xl text-3xl"
                                        errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                                     />
@@ -176,7 +177,7 @@ const SignUpPage = () => {
                               form={form}
                               name="birth_day"
                               required
-                              className="lg:text-base md:text-xl text-3xl rounded-xl"
+                              className="lg:text-base md:text-xl text-3xl rounded-xl my-4"
                               // inputClassName="lg:text-base md:text-xl text-3xl rounded-xl"
                               // errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                            />
@@ -191,8 +192,8 @@ const SignUpPage = () => {
                                  name="email"
                                  label="Email"
                                  type="text"
-                                 disabled={isLoading}
-                                 className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                                 disabled={isLoading || isFetching}
+                                 className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                  labelClassName="lg:text-base md:text-xl text-3xl"
                                  errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                               />
@@ -208,8 +209,8 @@ const SignUpPage = () => {
                               name="password"
                               label="Password"
                               type="password"
-                              disabled={isLoading}
-                              className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                              disabled={isLoading || isFetching}
+                              className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                               labelClassName="lg:text-base md:text-xl text-3xl"
                               errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                            />
@@ -220,8 +221,8 @@ const SignUpPage = () => {
                            name="confirm_password"
                            label="Confirm Password"
                            type="password"
-                           disabled={isLoading}
-                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                           disabled={isLoading || isFetching}
+                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                            labelClassName="lg:text-base md:text-xl text-3xl"
                            errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                         />
@@ -235,7 +236,7 @@ const SignUpPage = () => {
                            name="phone_number"
                            label="Phone Number"
                            required
-                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl"
+                           className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                            labelClassName="lg:text-base md:text-xl text-3xl"
                            errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
                         />
@@ -254,7 +255,7 @@ const SignUpPage = () => {
                         className="h-8 w-8"
                      />
 
-                     <p className="text-xs font-light mt-3 text-justify text-slate-600">
+                     <p className="lg:text-xs text-base font-light mt-3 text-justify text-slate-600">
                         Your Apple Account information is used to allow you to
                         sign in securely and access your data. Apple records
                         certain data for security, support and reporting
@@ -269,7 +270,7 @@ const SignUpPage = () => {
                      </p>
 
                      <Button
-                        className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center"
+                        className="mt-5 bg-blue-500 hover:bg-blue-400 active:bg-blue-500 cursor-pointer w-full py-2 text-white rounded-lg text-center lg:text-base md:text-lg text-xl"
                         onClick={() => {
                            form.handleSubmit(handleSubmitRegister)();
                         }}

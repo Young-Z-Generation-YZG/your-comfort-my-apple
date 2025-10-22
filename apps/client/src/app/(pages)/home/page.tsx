@@ -15,10 +15,6 @@ import {
 import LatestItem from './_components/latest-item';
 
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
-import {
-   useGetIphonePromotionsAsyncQuery,
-   useGetModelsAsyncQuery,
-} from '~/infrastructure/services/catalog.service';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import {
@@ -176,9 +172,6 @@ const listExperienceItem = [
 const HomePage = () => {
    const dispatch = useDispatch();
 
-   //  const { data: iphonePromotions, isSuccess: isSuccessIphonePromotions } =
-   //     useGetIphonePromotionsAsyncQuery();
-
    //  const {
    //     data: modelsDataAsync,
    //     isLoading: modelsDataIsLoading,
@@ -236,7 +229,7 @@ const HomePage = () => {
             'font-SFProDisplay w-full flex flex-col items-center justify-center bg-[#f5f5f7]',
          )}
       >
-         <div className="hero-container max-w-[1264px] h-screen px-6 md:px-8 mb-[100px] mx-auto flex flex-col md:flex-row">
+         <div className="hero-container max-w-[1264px] h-[600px] sm:h-[700px] md:h-[800px] lg:h-screen px-6 md:px-8 mb-[100px] mx-auto flex flex-col md:flex-row">
             {/* overlay gradient */}
             {/* <div className="hero-gradient md:flex hidden bg-gray-300 h-[100px] w-full absolute top-0 bottom-0 left-0 right-0 z-0"></div> */}
 
@@ -318,7 +311,7 @@ const HomePage = () => {
                      {listLatestItem.map((product, index) => (
                         <CarouselItem
                            key={index}
-                           className="basis-[80%] sm:basis-[50%] md:basis-[30%] lg:basis-[36%] mr-0"
+                           className={`basis-[${(280 / window.innerWidth) * 100}%] sm:basis-[${(320 / window.innerWidth) * 100}%] md:basis-[${(360 / window.innerWidth) * 100}%] lg:basis-[${(400 / window.innerWidth) * 100}%] xl:basis-[${(450 / window.innerWidth) * 100}%]`}
                         >
                            <LatestItem product={product} />
                         </CarouselItem>
@@ -345,7 +338,7 @@ const HomePage = () => {
                      {listExperienceItem.map((item, index) => (
                         <CarouselItem
                            key={index}
-                           className="basis-[80%] sm:basis-[50%] md:basis-[30%] lg:basis-[36%] mr-0"
+                           className={`basis-[${(280 / window.innerWidth) * 100}%] sm:basis-[${(320 / window.innerWidth) * 100}%] md:basis-[${(360 / window.innerWidth) * 100}%] lg:basis-[${(400 / window.innerWidth) * 100}%] xl:basis-[${(450 / window.innerWidth) * 100}%]`}
                         >
                            <ExperienceItem experience={item} />
                         </CarouselItem>

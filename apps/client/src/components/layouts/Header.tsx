@@ -69,6 +69,7 @@ const containerVariants = {
    },
 };
 
+// Column animation variants
 const columnVariants = {
    hidden: {
       opacity: 0,
@@ -93,7 +94,6 @@ const columnVariants = {
       },
    }),
 };
-
 const subCategories = ['iPhone 16 Pro', 'iPhone 16', 'iPhone 16e', 'iPhone 15'];
 
 const Header = () => {
@@ -353,7 +353,7 @@ const Header = () => {
          onMouseLeave={handleMouseLeave}
       >
          <div className="flex flex-row items-center max-w-[1180px] h-auto px-[22px] mx-auto">
-            <ul className="md:flex hidden main-category flex-row justify-between items-center w-full">
+            <ul className="lg:flex hidden main-category flex-row justify-between items-center w-full">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -441,7 +441,6 @@ const Header = () => {
                      </span>
                   )}
                </div>
-
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -453,7 +452,7 @@ const Header = () => {
             </ul>
 
             {/* Header mobile version */}
-            <div className="md:hidden flex flex-row justify-between items-center w-full h-[44px] px-4 bg-[#fafafc] border-b border-[#ddd]">
+            <div className="lg:hidden flex flex-row justify-between items-center w-full h-auto bg-[#fafafc] border-b border-[#ddd]">
                {/* Logo */}
                <div
                   className="cursor-pointer"
@@ -467,24 +466,27 @@ const Header = () => {
                      width={1200}
                      height={1000}
                      quality={100}
-                     className="w-[22px] h-[60px]"
+                     className="w-auto h-[80px] -my-10"
                   />
                </div>
 
                {/* Right buttons */}
                <div className="flex items-center gap-3">
-                  <Image
-                     src={svgs.appleSearchIcon}
-                     alt="Search"
-                     width={20}
-                     height={20}
-                     quality={100}
-                     className="w-[40px] h-[40px] cursor-pointer"
+                  <button
+                     className="relative cursor-pointer px-2"
                      onClick={() => setActiveCategory('Search')}
-                  />
-
-                  <div
-                     className="relative cursor-pointer"
+                  >
+                     <Image
+                        src={svgs.appleSearchIcon}
+                        alt="Search"
+                        width={20}
+                        height={20}
+                        quality={100}
+                        className="w-auto h-[60px]"
+                     />
+                  </button>
+                  <button
+                     className="relative cursor-pointer px-2"
                      onClick={() => setActiveCategory('BagMenu')}
                   >
                      <Image
@@ -493,18 +495,31 @@ const Header = () => {
                         width={20}
                         height={20}
                         quality={100}
-                        className="w-[40px] h-[40px]"
+                        className="w-auto h-[60px]"
                      />
                      {items.length > 0 && (
                         <span className="absolute -top-1 -right-1 text-[9px] w-4 h-4 rounded-full bg-black text-white font-semibold text-center leading-[16px]">
                            {items.reduce((acc, item) => acc + item.quantity, 0)}
                         </span>
                      )}
-                  </div>
-
+                  </button>
                   <button
-                     className="p-1 cursor-pointer"
-                     onClick={() => setMenuOpen(!menuOpen)}
+                     className="relative cursor-pointer px-2"
+                     onClick={() => {
+                        setActiveCategory('UserMenu');
+                     }}
+                  >
+                     <PiUserCircleFill
+                        className="w-[30px] h-[60px]"
+                        aria-hidden="true"
+                     />
+                  </button>
+                  <button
+                     className="relative cursor-pointer px-2"
+                     onClick={() => {
+                        setActiveCategory(null);
+                        setMenuOpen(true);
+                     }}
                   >
                      <Image
                         src={svgs.menuIcon}
@@ -512,7 +527,7 @@ const Header = () => {
                         width={20}
                         height={20}
                         quality={100}
-                        className="w-[20px] h-[20px]"
+                        className="w-[30px] h-[60px]"
                      />
                   </button>
                </div>
@@ -522,7 +537,6 @@ const Header = () => {
             <AnimatePresence>
                {menuOpen && (
                   <>
-                     {/* Overlay */}
                      <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 0.5 }}
@@ -531,27 +545,26 @@ const Header = () => {
                         className="fixed inset-0 bg-black z-40"
                         onClick={() => setMenuOpen(false)}
                      />
-                     {/* Slide menu */}
                      <motion.div
                         initial={{ x: '100%', opacity: 0 }}
                         animate={{ x: '0%', opacity: 1 }}
                         exit={{ x: '100%', opacity: 0 }}
                         transition={{ duration: 0.4, ease: 'easeInOut' }}
-                        className="fixed top-0 right-0 w-[70%] h-full bg-[#fafafc] z-50 p-6 shadow-xl flex flex-col"
+                        className="fixed top-0 right-0 w-[calc((2/3)*100%)] md:w-[calc((1/3)*100%)] h-full bg-[#fafafc] z-50 p-6 shadow-xl flex flex-col"
                      >
                         <div className="flex justify-between items-center mb-6">
-                           <h2 className="text-lg font-semibold">Menu</h2>
+                           <h2 className="text-2xl font-semibold">Menu</h2>
                            <button
-                              className="text-sm text-[#555]"
+                              className="text-xl text-[#555] font-bold"
                               onClick={() => setMenuOpen(false)}
                            >
                               ✕
                            </button>
                         </div>
 
-                        <ul className="flex flex-col gap-3 text-base font-normal">
+                        <ul className="flex flex-col gap-0 text-base font-normal">
                            <li
-                              className="cursor-pointer"
+                              className="cursor-pointer text-xl border-t border-gray-200 py-3"
                               onClick={() => {
                                  router.push('/store');
                                  setMenuOpen(false);
@@ -562,7 +575,7 @@ const Header = () => {
                            {mainCategoriesDefault.map((category) => (
                               <li
                                  key={category.category_id}
-                                 className="cursor-pointer"
+                                 className="cursor-pointer text-xl border-t border-gray-200 py-3"
                                  onClick={() => {
                                     router.push('/shop');
                                     setMenuOpen(false);
@@ -572,22 +585,13 @@ const Header = () => {
                               </li>
                            ))}
                            <li
-                              className="cursor-pointer"
+                              className="cursor-pointer text-xl border-t border-gray-200 py-3"
                               onClick={() => {
                                  router.push('/support');
                                  setMenuOpen(false);
                               }}
                            >
                               Support
-                           </li>
-                           <li
-                              className="cursor-pointer"
-                              onClick={() => {
-                                 setActiveCategory('UserMenu');
-                                 setMenuOpen(false);
-                              }}
-                           >
-                              Account
                            </li>
                         </ul>
                      </motion.div>
@@ -627,6 +631,7 @@ const Header = () => {
                   <BasketMenu />
                )}
                {activeCategory && activeCategory === 'UserMenu' && <UserMenu />}
+               {activeCategory && activeCategory === 'Search' && <Search />}
             </AnimatePresence>
 
             {/* Blur overlay for the rest of the page */}

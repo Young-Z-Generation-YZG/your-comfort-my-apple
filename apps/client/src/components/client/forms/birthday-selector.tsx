@@ -251,9 +251,9 @@ export function FormBirthdaySelector<T extends FieldValues>({
             </button>
          </div>
 
-         <div className="flex gap-3 ">
+         <div className="flex gap-3 flex-col lg:flex-row ">
             {/* Month Selector */}
-            <div className={`relative flex-1 h-[70%]`} ref={monthRef}>
+            <div className={`relative basis-1/3 h-[70%]`} ref={monthRef}>
                <div
                   className={cn(
                      'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',
@@ -309,8 +309,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
                </AnimatePresence>
             </div>
 
+            {/* <div className={`relative basis-2/3 h-[70%] flex gap-3 flex-row`}>
+            </div> */}
             {/* Day Selector */}
-            <div className={`relative flex-1 h-[70%]`} ref={dayRef}>
+            <div className={`relative basis-1/3 h-[70%]`} ref={dayRef}>
                <div
                   className={cn(
                      'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',
@@ -359,9 +361,8 @@ export function FormBirthdaySelector<T extends FieldValues>({
                   )}
                </AnimatePresence>
             </div>
-
             {/* Year Selector */}
-            <div className={`relative flex-1 h-[70%]`} ref={yearRef}>
+            <div className={`relative basis-1/3 h-[70%]`} ref={yearRef}>
                <div
                   className={cn(
                      'flex items-center h-fit w-[100%] justify-between border rounded-md px-3 py-2 cursor-pointer',

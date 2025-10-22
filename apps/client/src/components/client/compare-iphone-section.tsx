@@ -212,7 +212,7 @@ const CompareIPhoneSection = () => {
 
          <div className="compare-content bg-transparent max-w-[996px] w-full mx-auto flex flex-col">
             {/* Select box */}
-            <div className="w-full flex flex-col md:flex-row gap-3 mb-6 sm:mb-10">
+            <div className="w-full flex flex-row gap-3 mb-6 sm:mb-10">
                <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
                   <Select
                      value={selectedOption1}
@@ -230,8 +230,7 @@ const CompareIPhoneSection = () => {
                      </SelectContent>
                   </Select>
                </div>
-
-               <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
+               <div className="flex-1 bg-gray-300 flex-col items-center rounded-[10px] hidden md:flex">
                   <Select
                      value={selectedOption2}
                      onValueChange={setSelectedOption2}
@@ -248,8 +247,7 @@ const CompareIPhoneSection = () => {
                      </SelectContent>
                   </Select>
                </div>
-
-               <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
+               <div className="flex-1 bg-gray-300 flex-col items-center rounded-[10px] hidden lg:flex">
                   <Select
                      value={selectedOption3}
                      onValueChange={setSelectedOption3}
@@ -271,7 +269,7 @@ const CompareIPhoneSection = () => {
             {/* Compare Item */}
             <div
                className={cn(
-                  'w-full flex flex-col md:flex-row gap-3 transition-all duration-500',
+                  'w-full flex flex-row gap-3 transition-all duration-500 justify-center',
                   showDetailCompare
                      ? 'max-h-full'
                      : 'max-h-[1250px] overflow-hidden',
@@ -303,6 +301,7 @@ const CompareIPhoneSection = () => {
                         typeConnect: [],
                      }
                   }
+                  className="basis-[100%] md:basis-1/2 lg:basis-1/3"
                />
                <CompareItem
                   compare={
@@ -330,6 +329,7 @@ const CompareIPhoneSection = () => {
                         typeConnect: [],
                      }
                   }
+                  className="basis-[100%] md:basis-1/2 lg:basis-1/3 hidden md:flex"
                />
                <CompareItem
                   compare={
@@ -357,6 +357,7 @@ const CompareIPhoneSection = () => {
                         typeConnect: [],
                      }
                   }
+                  className="basis-[100%] md:basis-1/2 lg:basis-1/3 hidden lg:flex"
                />
             </div>
 
