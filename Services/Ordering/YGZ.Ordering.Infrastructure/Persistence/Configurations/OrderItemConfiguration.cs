@@ -64,40 +64,25 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.Property(oi => oi.IsReviewed)
             .HasDefaultValue(false);
 
-        builder.ComplexProperty(oi => oi.Promotion, promotion =>
-        {
-            promotion.IsRequired();
+        builder.Property(oi => oi.PromotionId)
+            .HasMaxLength(100)
+            .IsRequired(false);
 
-            promotion.Property(p => p.PromotionIdOrCode)
-                .HasColumnName("Promotion_IdOrCode")
-                .HasMaxLength(100)
-                .HasDefaultValue(null);
+        builder.Property(oi => oi.PromotionType)
+            .HasMaxLength(50)
+            .IsRequired(false);
 
-            promotion.Property(p => p.PromotionType)
-                .HasColumnName("Promotion_Type")
-                .HasMaxLength(50)
-                .HasDefaultValue(null);
+        builder.Property(oi => oi.DiscountType)
+            .HasMaxLength(50)
+            .IsRequired(false);
 
-            promotion.Property(p => p.ProductUnitPrice)
-                .HasColumnName("Promotion_ProductUnitPrice")
-                .HasPrecision(18, 2)
-                .HasDefaultValue(null);
+        builder.Property(oi => oi.DiscountValue)
+            .HasPrecision(18, 2)
+            .IsRequired(false);
 
-            promotion.Property(p => p.DiscountType)
-                .HasColumnName("Promotion_DiscountType")
-                .HasMaxLength(50)
-                .HasDefaultValue(null);
-
-            promotion.Property(p => p.DiscountValue)
-                .HasColumnName("Promotion_DiscountValue")
-                .HasPrecision(18, 2)
-                .HasDefaultValue(null);
-
-            promotion.Property(p => p.DiscountAmount)
-                .HasColumnName("Promotion_DiscountAmount")
-                .HasPrecision(18, 2)
-                .HasDefaultValue(null);
-        });
+        builder.Property(oi => oi.DiscountAmount)
+            .HasPrecision(18, 2)
+            .IsRequired(false);
 
         builder.Property(oi => oi.UpdatedBy)
             .HasMaxLength(450);

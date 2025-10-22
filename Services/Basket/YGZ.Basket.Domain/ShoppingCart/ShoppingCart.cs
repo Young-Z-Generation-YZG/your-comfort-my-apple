@@ -51,21 +51,12 @@ public class ShoppingCart
         return CartItems.Any(ci => ci.Promotion?.PromotionEvent != null);
     }
 
-    //public void ApplyCoupon(CouponModel coupon)
-    //{
-    //    foreach (var item in CartItems)
-    //    {
-    //        if (item.Promotion == null)
-    //        {
-    //            item.Promotion = new ValueObjects.Promotion
-    //            {
-    //                Coupon = ValueObjects.Coupon.Create(coupon.Id, coupon.Code, coupon.DiscountType, coupon.DiscountValue)
-    //            };
-    //        }
-    //        else
-    //        {
-    //            item.Promotion.Coupon = ValueObjects.Coupon.Create(coupon.Id, coupon.Code, coupon.DiscountType, coupon.DiscountValue);
-    //        }
-    //    }
-    //}
+    public ShoppingCart RemoveEventItems()
+    {
+        return new ShoppingCart
+        {
+            UserEmail = UserEmail,
+            CartItems = CartItems.Where(ci => ci.Promotion?.PromotionEvent == null).ToList(),
+        };
+    }
 }

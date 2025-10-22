@@ -18,10 +18,16 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
     public required CartCommand Cart { get; init; }
 }
 
-public record CartCommand {
+public record CartCommand
+{
     public required List<CheckoutItemIntegrationEvent> OrderItems { get; init; }
+    public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
     public required decimal TotalAmount { get; init; }
-    
+
 }
 
 public record CheckoutItemIntegrationEvent
@@ -41,7 +47,7 @@ public record CheckoutItemIntegrationEvent
 
 public record PromotionIntegrationEvent
 {
-    public required string PromotionIdOrCode { get; init; }
+    public required string PromotionId { get; init; }
     public required string PromotionType { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }

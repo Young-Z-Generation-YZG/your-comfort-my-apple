@@ -6,6 +6,7 @@ using NSwag.Annotations;
 using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
+using YGZ.Basket.Application.ShoppingCarts.Commands.ProceedCheckout;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreEventItem;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
@@ -48,6 +49,17 @@ public class BasketController : ApiController
     public async Task<IActionResult> StoreEventItem([FromBody] StoreEventItemRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreEventItemCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("proceed-checkout")]
+    [Authorize(Policy = Policies.RoleStaff)]
+    public async Task<IActionResult> ProceedCheckout([FromBody] ProceedCheckoutRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = new ProceedCheckoutCommand();
 
         var result = await _sender.Send(cmd, cancellationToken);
 

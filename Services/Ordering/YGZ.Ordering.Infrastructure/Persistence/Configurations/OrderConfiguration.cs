@@ -90,6 +90,26 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
                 .IsRequired();
         });
 
+        builder.Property(o => o.PromotionId)
+            .HasMaxLength(450)
+            .IsRequired(false);
+
+        builder.Property(o => o.PromotionType)
+            .HasMaxLength(100)
+            .IsRequired(false);
+
+        builder.Property(o => o.DiscountType)
+            .HasMaxLength(100)
+            .IsRequired(false);
+
+        builder.Property(o => o.DiscountValue)
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
+        builder.Property(o => o.DiscountAmount)
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
         var navigation = builder.Metadata.FindNavigation(nameof(Order.OrderItems));
         navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);
 

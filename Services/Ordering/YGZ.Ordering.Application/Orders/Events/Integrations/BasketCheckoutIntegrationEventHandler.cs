@@ -54,7 +54,7 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             SubTotalAmount = item.SubTotalAmount,
             Promotion = item.Promotion != null ? new PromotionInItemCommand
             {
-                PromotionIdOrCode = item.Promotion.PromotionIdOrCode,
+                PromotionId = item.Promotion.PromotionId,
                 PromotionType = item.Promotion.PromotionType,
                 DiscountType = item.Promotion.DiscountType,
                 DiscountValue = item.Promotion.DiscountValue,
@@ -63,12 +63,22 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
             } : null
         }).ToList();
 
+        var orderPromotion = !string.IsNullOrEmpty(context.Cart.PromotionId) ? new PromotionInOrderCommand
+        {
+            PromotionId = context.Cart.PromotionId,
+            PromotionType = context.Cart.PromotionType ?? string.Empty,
+            DiscountType = context.Cart.DiscountType ?? string.Empty,
+            DiscountValue = context.Cart.DiscountValue ?? 0,
+            DiscountAmount = context.Cart.DiscountAmount ?? 0
+        } : null;
+
         var command = new CreateOrderCommand
         {
             OrderId = context.OrderId,
             CustomerId = context.CustomerId,
             CustomerEmail = context.CustomerEmail,
             ShippingAddress = shippingAddress,
+            Promotion = orderPromotion,
             OrderItems = orderItems,
             PaymentMethod = context.PaymentMethod,
             TotalAmount = context.Cart.TotalAmount

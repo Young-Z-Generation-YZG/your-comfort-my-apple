@@ -34,6 +34,7 @@ public sealed record CartItemResponse()
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record PromotionResponse()
 {
+    public required string PromotionId { get; init; }
     public required string PromotionType { get; init; }
     public required decimal ProductUnitPrice { get; init; }
     public required string DiscountType { get; init; }

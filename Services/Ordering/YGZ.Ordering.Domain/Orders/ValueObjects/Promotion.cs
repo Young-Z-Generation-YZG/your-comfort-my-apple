@@ -5,7 +5,7 @@ namespace YGZ.Ordering.Domain.Orders.ValueObjects;
 
 public class Promotion : ValueObject
 {
-    public string PromotionIdOrCode { get; init; }
+    public string PromotionId { get; init; }
     public string PromotionType { get; init; }
     public decimal ProductUnitPrice { get; init; }
     public string DiscountType { get; init; }
@@ -27,14 +27,14 @@ public class Promotion : ValueObject
         }
     }
 
-    private Promotion(string promotionIdOrCode,
+    private Promotion(string promotionId,
                       string promotionType,
                       decimal productUnitPrice,
                       string discountType,
                       decimal discountValue,
                       decimal discountAmount)
     {
-        PromotionIdOrCode = promotionIdOrCode;
+        PromotionId = promotionId;
         PromotionType = promotionType;
         ProductUnitPrice = productUnitPrice;
         DiscountType = discountType;
@@ -42,14 +42,14 @@ public class Promotion : ValueObject
         DiscountAmount = discountAmount;
     }
 
-    public static Promotion Create(string promotionIdOrCode,
+    public static Promotion Create(string promotionId,
                                    string promotionType,
                                    decimal productUnitPrice,
                                    string discountType,
                                    decimal discountValue,
                                    decimal discountAmount)
     {
-        return new Promotion(promotionIdOrCode,
+        return new Promotion(promotionId,
                              promotionType,
                              productUnitPrice,
                              discountType,
@@ -58,18 +58,18 @@ public class Promotion : ValueObject
     }
 
     public static Promotion Of(
-        string promotionIdOrCode,
+        string promotionId,
         string promotionType,
         decimal productUnitPrice,
         string discountType,
         decimal discountValue,
         decimal discountAmount)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(promotionIdOrCode);
+        ArgumentException.ThrowIfNullOrWhiteSpace(promotionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(promotionType);
         ArgumentException.ThrowIfNullOrWhiteSpace(discountType);
 
-        return new Promotion(promotionIdOrCode,
+        return new Promotion(promotionId,
                              promotionType,
                              productUnitPrice,
                              discountType,
@@ -79,7 +79,7 @@ public class Promotion : ValueObject
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return PromotionIdOrCode;
+        yield return PromotionId;
         yield return PromotionType;
         yield return DiscountType;
         yield return DiscountValue;

@@ -22,6 +22,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public required ShippingAddress ShippingAddress { get; init; }
     private readonly List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
+    public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
     public required decimal TotalAmount { get; init; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
@@ -36,6 +41,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                                EPaymentMethod paymentMethod,
                                EOrderStatus orderStatus,
                                ShippingAddress shippingAddress,
+                               string? promotionId,
+                               string? promotionType,
+                               string? discountType,
+                               decimal? discountValue,
+                               decimal? discountAmount,
                                decimal totalAmount,
                                TenantId? tenantId = null,
                                BranchId? branchId = null)
@@ -49,6 +59,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             PaymentMethod = paymentMethod,
             OrderStatus = orderStatus,
             ShippingAddress = shippingAddress,
+            PromotionId = promotionId,
+            PromotionType = promotionType,
+            DiscountType = discountType,
+            DiscountValue = discountValue,
+            DiscountAmount = discountAmount,
             TotalAmount = totalAmount
         };
 
@@ -59,7 +74,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
 
     public void AddOrderItem(OrderItem orderItem)
     {
-       _orderItems.Add(orderItem);
+        _orderItems.Add(orderItem);
     }
 
     //public void RemoveOrderItem(OrderItemId orderItemId)
@@ -156,15 +171,16 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                 DisplayImageUrl = item.DisplayImageUrl,
                 ModelSlug = item.ModelSlug,
                 Quantity = item.Quantity,
-                Promotion = item.Promotion is not null ? new PromotionResponse
+                Promotion = !string.IsNullOrEmpty(item.PromotionId) ? new PromotionResponse
                 {
-                    PromotionIdOrCode = item.Promotion.PromotionIdOrCode,
-                    PromotionType = item.Promotion.PromotionType,
-                    ProductUnitPrice = item.Promotion.ProductUnitPrice,
-                    DiscountType = item.Promotion.DiscountType,
-                    DiscountValue = item.Promotion.DiscountValue,
-                    DiscountAmount = item.Promotion.DiscountAmount,
-                    FinalPrice = item.Promotion.FinalPrice
+                    PromotionId = item.PromotionId,
+                    PromotionType = item.PromotionType ?? string.Empty,
+                    DiscountType = item.DiscountType ?? string.Empty,
+                    DiscountValue = item.DiscountValue ?? 0,
+                    DiscountAmount = item.DiscountAmount ?? 0,
+                    FinalPrice = item.DiscountAmount.HasValue 
+                        ? item.UnitPrice - item.DiscountAmount.Value 
+                        : item.UnitPrice
                 } : null,
                 IsReviewed = item.IsReviewed,
                 CreatedAt = item.CreatedAt,
@@ -174,6 +190,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                 DeletedAt = item.DeletedAt,
                 DeletedBy = item.DeletedBy
             }).ToList(),
+            PromotionId = PromotionId,
+            PromotionType = PromotionType,
+            DiscountType = DiscountType,
+            DiscountValue = DiscountValue,
+            DiscountAmount = DiscountAmount,
             TotalAmount = TotalAmount,
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,

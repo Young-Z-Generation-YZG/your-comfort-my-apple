@@ -17,7 +17,7 @@ public class ShoppingCartItem
     public required Storage Storage { get; init; }
     public required string DisplayImageUrl { get; init; }
     public required decimal UnitPrice { get; init; }
-    public Promotion? Promotion { get; private set; }
+    public Promotion? Promotion { get; set; }
     public required int Quantity { get; init; }
     public decimal SubTotalAmount
     {

@@ -2,6 +2,7 @@
 
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Domain.Orders.Entities;
@@ -20,8 +21,26 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public required string DisplayImageUrl { get; init; }
     public required string ModelSlug { get; init; }
     public required int Quantity { get; init; }
-    public Promotion? Promotion { get; init; } = null;
-    public decimal SubTotalAmount { get; init; }
+    public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
+    public decimal SubTotalAmount 
+    {
+        get 
+        {
+            if (DiscountType == EDiscountType.PERCENTAGE.Name)
+            {
+                return UnitPrice - (UnitPrice * (decimal)(DiscountValue ?? 0));
+            }
+            else
+            {
+                return UnitPrice - (decimal)(DiscountValue ?? 0);
+            }
+        }
+        set {}
+    }
     public bool IsReviewed { get; private set; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
@@ -41,8 +60,11 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
                                    string displayImageUrl,
                                    string modelSlug,
                                    int quantity,
-                                   Promotion? promotion,
-                                   decimal subTotalAmount,
+                                   string? promotionId,
+                                   string? promotionType,
+                                   string? discountType,
+                                   decimal? discountValue,
+                                   decimal? discountAmount,
                                    bool isReviewed)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
@@ -56,11 +78,14 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
             ColorName = colorName,
             StorageName = storageName,
             UnitPrice = unitPrice,
-            DisplayImageUrl = displayImageUrl,
+            DisplayImageUrl = displayImageUrl,  
             ModelSlug = modelSlug,
             Quantity = quantity,
-            Promotion = promotion,
-            SubTotalAmount = subTotalAmount,
+            PromotionId = promotionId,
+            PromotionType = promotionType,
+            DiscountType = discountType,
+            DiscountValue = discountValue,
+            DiscountAmount = discountAmount,
             IsReviewed = isReviewed
         };
     }

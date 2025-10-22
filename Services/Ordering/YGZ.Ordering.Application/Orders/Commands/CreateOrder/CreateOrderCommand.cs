@@ -9,6 +9,7 @@ public sealed record CreateOrderCommand : ICommand<bool>
     public required string CustomerId { get; init; }
     public required string CustomerEmail { get; init; }
     public required ShippingAddressCommand ShippingAddress { get; init; }
+    public PromotionInOrderCommand? Promotion { get; init; }
     public required List<OrderItemCommand> OrderItems { get; init; }
     public required string PaymentMethod { get; init; }
     public required decimal TotalAmount { get; init; }
@@ -34,7 +35,7 @@ public sealed record OrderItemCommand
     public required string NormalizedStorage { get; init; }
     public required decimal UnitPrice { get; init; }
     public required string DisplayImageUrl { get; init; }
-    public  PromotionInItemCommand? Promotion { get; init; }
+    public PromotionInItemCommand? Promotion { get; init; }
     public required int Quantity { get; init; }
     public required decimal SubTotalAmount { get; init; }
     public required string ModelSlug { get; init; }
@@ -42,10 +43,19 @@ public sealed record OrderItemCommand
 
 public sealed record PromotionInItemCommand
 {
-    public required string PromotionIdOrCode { get; init; }
+    public required string PromotionId { get; init; }
     public required string PromotionType { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
     public required decimal DiscountAmount { get; init; }
     public required decimal FinalPrice { get; init; }
+}
+
+public sealed record PromotionInOrderCommand
+{
+    public required string PromotionId { get; init; }
+    public required string PromotionType { get; init; }
+    public required string DiscountType { get; init; }
+    public required decimal DiscountValue { get; init; }
+    public required decimal DiscountAmount { get; init; }
 }

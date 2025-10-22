@@ -17,6 +17,10 @@
       {
         "Path": "Services\\Basket\\YGZ.Basket.Api\\YGZ.Basket.Api.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "Services\\Ordering\\YGZ.Ordering.Api\\YGZ.Ordering.Api.csproj",
+        "Action": "Start"
       }
     ]
   }

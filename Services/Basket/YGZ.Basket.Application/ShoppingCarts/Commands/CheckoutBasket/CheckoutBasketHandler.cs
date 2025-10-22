@@ -72,9 +72,22 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         ShoppingCart checkoutShoppingCart;
 
+        // Variables to store cart-level promotion data
+        string? cartPromotionId = null;
+        string? cartPromotionType = null;
+        string? cartDiscountType = null;
+        decimal? cartDiscountValue = null;
+        decimal? cartDiscountAmount = null;
+
         if (shoppingCart.CheckHasEventItems())
         {
             checkoutShoppingCart = shoppingCart.FilterEventItems();
+
+            cartPromotionId = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.EventItemId;
+            cartPromotionType = EPromotionType.EVENT.Name;
+            cartDiscountType = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountType;
+            cartDiscountValue = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountValue;
+            cartDiscountAmount = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountAmount;
         }
         else
         {
@@ -134,6 +147,13 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                             ? Math.Min(calculatedDiscount, (decimal)coupon.MaxDiscountAmount)
                             : calculatedDiscount;
 
+                        // Store cart-level promotion data for integration event
+                        cartPromotionId = coupon.Id;
+                        cartPromotionType = EPromotionType.COUPON.Name;
+                        cartDiscountType = discountType.Name;
+                        cartDiscountValue = (decimal)(coupon.DiscountValue ?? 0);
+                        cartDiscountAmount = actualTotalDiscount;
+
                         // Step 4: Distribute discount proportionally to each selected item
                         foreach (var item in selectedItems)
                         {
@@ -187,6 +207,11 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             Cart = new CartCommand
             {
                 OrderItems = orderItems,
+                PromotionId = cartPromotionId,
+                PromotionType = cartPromotionType,
+                DiscountType = cartDiscountType,
+                DiscountValue = cartDiscountValue,
+                DiscountAmount = cartDiscountAmount,
                 TotalAmount = checkoutShoppingCart.TotalAmount
             }
         };

@@ -17,6 +17,11 @@ public sealed record OrderDetailsResponse()
     public required string PaymentMethod { get; init; }
     public required ShippingAddressResponse ShippingAddress { get; init; }
     public required List<OrderItemResponse> OrderItems { get; init; } = new List<OrderItemResponse>();
+    public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
     public required decimal TotalAmount { get; init; }
     public required DateTime CreatedAt { get; init; }
     public required DateTime UpdatedAt { get; init; }

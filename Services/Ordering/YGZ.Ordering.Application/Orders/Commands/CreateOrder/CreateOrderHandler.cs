@@ -41,20 +41,18 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
         var newOrder = Order.Create(orderId: OrderId.Of(request.OrderId),
                                     customerId: UserId.Of(request.CustomerId),
                                     code: Code.GenerateCode(),
+                                    paymentMethod: paymentMethodEnum,
                                     orderStatus: EOrderStatus.PENDING,
                                     shippingAddress: shippingAddress,
-                                    paymentMethod: paymentMethodEnum,
+                                    promotionId: request.Promotion?.PromotionId,
+                                    promotionType: request.Promotion?.PromotionType,
+                                    discountType: request.Promotion?.DiscountType,
+                                    discountValue: request.Promotion?.DiscountValue,
+                                    discountAmount: request.Promotion?.DiscountAmount,
                                     totalAmount: request.TotalAmount);
 
         foreach (var orderItem in request.OrderItems)
         {
-            var promotion = orderItem.Promotion != null ? Promotion.Create(orderItem.Promotion.PromotionIdOrCode,
-                                                                           orderItem.Promotion.PromotionType,
-                                                                           orderItem.UnitPrice,
-                                                                           orderItem.Promotion.DiscountType,
-                                                                           orderItem.Promotion.DiscountValue,
-                                                                           orderItem.Promotion.DiscountAmount) : null;
-
             var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
                                                 orderId: newOrder.Id,
                                                 skuId: null,
@@ -66,8 +64,11 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                                 displayImageUrl: orderItem.DisplayImageUrl,
                                                 modelSlug: orderItem.ModelSlug,
                                                 quantity: orderItem.Quantity,
-                                                promotion: promotion,
-                                                subTotalAmount: orderItem.SubTotalAmount,
+                                                promotionId: orderItem.Promotion?.PromotionId,
+                                                promotionType: orderItem.Promotion?.PromotionType,
+                                                discountType: orderItem.Promotion?.DiscountType,
+                                                discountValue: orderItem.Promotion?.DiscountValue,
+                                                discountAmount: orderItem.Promotion?.DiscountAmount,
                                                 isReviewed: false);
 
             newOrder.AddOrderItem(newOrderItem);

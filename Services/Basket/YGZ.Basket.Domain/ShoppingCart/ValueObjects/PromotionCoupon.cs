@@ -37,6 +37,7 @@ public class PromotionCoupon
     {
         return new PromotionResponse
         {
+            PromotionId = CouponId,
             PromotionType = EPromotionType.COUPON.Name,
             ProductUnitPrice = ProductUnitPrice,
             DiscountType = DiscountType,
@@ -50,7 +51,7 @@ public class PromotionCoupon
     {
         return new PromotionIntegrationEvent
         {
-            PromotionIdOrCode = CouponId,
+            PromotionId = CouponId,
             PromotionType = EPromotionType.COUPON.Name,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
