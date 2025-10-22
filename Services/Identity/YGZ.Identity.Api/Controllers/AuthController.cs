@@ -13,7 +13,6 @@ using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
-using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -54,7 +53,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("change-password")]
-    [Authorize(Policy = Policies.RoleStaff)]
+    //[Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<ChangePasswordCommand>(request);

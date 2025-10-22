@@ -52,8 +52,10 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: true),
+                    BranchId = table.Column<Guid>(type: "uuid", nullable: true),
                     OrderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    SkuId = table.Column<string>(type: "text", nullable: true),
+                    SkuId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ModelId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ModelName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     ColorName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),

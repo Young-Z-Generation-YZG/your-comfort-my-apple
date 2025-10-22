@@ -162,7 +162,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             {
                 OrderId = Id.Value.ToString(),
                 OrderItemId = item.Id.Value.ToString(),
-                SkuId = item.SkuId?.Value.ToString() ?? null,
+                SkuId = item.SkuId,
                 ModelId = item.ModelId,
                 ModelName = item.ModelName,
                 ColorName = item.ColorName,
@@ -178,8 +178,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                     DiscountType = item.DiscountType ?? string.Empty,
                     DiscountValue = item.DiscountValue ?? 0,
                     DiscountAmount = item.DiscountAmount ?? 0,
-                    FinalPrice = item.DiscountAmount.HasValue 
-                        ? item.UnitPrice - item.DiscountAmount.Value 
+                    FinalPrice = item.DiscountAmount.HasValue
+                        ? item.UnitPrice - item.DiscountAmount.Value
                         : item.UnitPrice
                 } : null,
                 IsReviewed = item.IsReviewed,

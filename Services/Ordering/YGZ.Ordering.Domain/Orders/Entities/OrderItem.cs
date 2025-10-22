@@ -3,6 +3,7 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Domain.Orders.Entities;
@@ -11,8 +12,10 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
 {
     private OrderItem(OrderItemId id) : base(id) { }
 
+    public TenantId? TenantId { get; set; }
+    public BranchId? BranchId { get; set; }
     public required OrderId OrderId { get; init; }
-    public SkuId? SkuId { get; init; }
+    public string? SkuId { get; init; }
     public required string ModelId { get; init; }
     public required string ModelName { get; init; }
     public required string ColorName { get; init; }
@@ -26,9 +29,9 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public string? DiscountType { get; init; }
     public decimal? DiscountValue { get; init; }
     public decimal? DiscountAmount { get; init; }
-    public decimal SubTotalAmount 
+    public decimal SubTotalAmount
     {
-        get 
+        get
         {
             if (DiscountType == EDiscountType.PERCENTAGE.Name)
             {
@@ -39,7 +42,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
                 return UnitPrice - (decimal)(DiscountValue ?? 0);
             }
         }
-        set {}
+        set { }
     }
     public bool IsReviewed { get; private set; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -50,8 +53,10 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; init; } = null;
 
     public static OrderItem Create(OrderItemId orderItemId,
+                                   TenantId? tenantId,
+                                   BranchId? branchId,
                                    OrderId orderId,
-                                   SkuId? skuId,
+                                   string? skuId,
                                    string modelId,
                                    string modelName,
                                    string colorName,
@@ -71,6 +76,8 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
 
         return new OrderItem(orderItemId)
         {
+            TenantId = tenantId,
+            BranchId = branchId,
             OrderId = orderId,
             SkuId = skuId,
             ModelId = modelId,
@@ -78,7 +85,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
             ColorName = colorName,
             StorageName = storageName,
             UnitPrice = unitPrice,
-            DisplayImageUrl = displayImageUrl,  
+            DisplayImageUrl = displayImageUrl,
             ModelSlug = modelSlug,
             Quantity = quantity,
             PromotionId = promotionId,

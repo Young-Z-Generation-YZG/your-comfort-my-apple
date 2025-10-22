@@ -154,6 +154,9 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("BranchId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ColorName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -224,7 +227,8 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("SkuId")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("StorageName")
                         .IsRequired()
@@ -234,6 +238,9 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("SubTotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)

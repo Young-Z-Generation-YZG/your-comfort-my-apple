@@ -13,7 +13,7 @@ using YGZ.Ordering.Infrastructure.Persistence;
 namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20251022103111_InitialMigration")]
+    [Migration("20251022145410_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -157,6 +157,9 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("BranchId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("ColorName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -227,7 +230,8 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("SkuId")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("StorageName")
                         .IsRequired()
@@ -237,6 +241,9 @@ namespace YGZ.Ordering.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("SubTotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("UnitPrice")
                         .HasPrecision(18, 2)

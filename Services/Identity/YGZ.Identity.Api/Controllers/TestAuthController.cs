@@ -1,10 +1,8 @@
 ﻿
-using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
-using NSwag.Annotations;
-using Microsoft.AspNetCore.Authorization;
-using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 using Keycloak.AuthServices.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace YGZ.Identity.Api.Controllers;
 
@@ -16,7 +14,7 @@ public class TestAuthController : ApiController
     public TestAuthController() { }
 
     [HttpGet("role-based-access-control")]
-    [Authorize(Policy = Policies.RoleStaff)]
+    //[Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> TestRoleBasedAccessControl(CancellationToken cancellationToken)
     {
         return Ok();

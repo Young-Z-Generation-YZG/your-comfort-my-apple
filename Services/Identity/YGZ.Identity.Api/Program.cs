@@ -14,73 +14,66 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
-//try {
-    Log.Information("Starting YGZ.Identity.Api");
+Log.Information("Starting YGZ.Identity.Api");
 
-    var builder = WebApplication.CreateBuilder(args);
-    var services = builder.Services;
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-    // Add Layers
-    services
-        .AddPresentationLayer(builder)
-        .AddInfrastructureLayer(builder.Configuration)
-        .AddApplicationLayer(builder.Configuration);
+// Add Layers
+services
+    .AddPresentationLayer(builder)
+    .AddInfrastructureLayer(builder.Configuration)
+    .AddApplicationLayer(builder.Configuration);
 
 
-    services.AddProblemDetails();
-    services.AddHttpContextAccessor();
-    services.AddEndpointsApiExplorer();
-    services.AddControllers(options => options.AddProtectedResources())
-            .AddJsonOptions(options =>
-            {
-                // options.JsonSerializerOptions.WriteIndented = true; // Optional
-            });
-            
-    services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
+services.AddProblemDetails();
+services.AddHttpContextAccessor();
+services.AddEndpointsApiExplorer();
+services.AddControllers(options => options.AddProtectedResources())
+        .AddJsonOptions(options =>
+        {
+            // options.JsonSerializerOptions.WriteIndented = true; // Optional
+        });
 
-    var app = builder.Build();
+services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseOpenApi();
-        app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
+var app = builder.Build();
 
-        app.ApplyMigrations();
-        await app.ApplySeedDataAsync();
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseOpenApi();
+    app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
-    // Middleware configurations
-    app.UseMiddleware<RequestLogContextMiddleware>();
+    app.ApplyMigrations();
+    await app.ApplySeedDataAsync();
+}
 
-    app.UseSerilogRequestLogging(); // Logging middleware
+// Middleware configurations
+app.UseMiddleware<RequestLogContextMiddleware>();
+app.UseSerilogRequestLogging();
 
-    app.UseHealthChecks("/health", new HealthCheckOptions
-    {
-        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-    });
+// Health checks
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
-    app.UseCors(options =>
-    {
-        options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
-    });
+// Enable CORS
+app.UseCors(options =>
+{
+    options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+});
 
-    app.UseStatusCodePages();
-    app.UseExceptionHandler("/error");
+app.UseStatusCodePages();
 
-    app.UseAuthentication();
-    app.UseAuthorization();
+app.UseExceptionHandler("/error");
 
-    app.MapControllers();
-    app.MapRazorPages();
+app.UseAuthentication();
+app.UseAuthorization();
 
-    app.Run();
-//}
-//catch (Exception ex) {
-//    Log.Fatal(ex, "An error occurred while starting the application");
-//}
-//finally {
-//    Log.Information("Shutting down YGZ.Identity.Api");
+app.MapControllers();
 
-//    Log.CloseAndFlush();
-//}
+app.MapRazorPages();
+
+app.Run();

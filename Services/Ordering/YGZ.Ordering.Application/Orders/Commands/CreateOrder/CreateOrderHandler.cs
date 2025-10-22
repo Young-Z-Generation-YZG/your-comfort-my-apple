@@ -54,6 +54,8 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
         foreach (var orderItem in request.OrderItems)
         {
             var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
+                                                tenantId: null,
+                                                branchId: null,
                                                 orderId: newOrder.Id,
                                                 skuId: null,
                                                 modelId: orderItem.ModelId,

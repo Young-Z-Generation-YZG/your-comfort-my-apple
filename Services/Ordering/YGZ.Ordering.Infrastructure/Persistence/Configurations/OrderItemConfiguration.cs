@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Domain.Orders.Entities;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -13,17 +14,35 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
         builder.HasKey(oi => oi.Id);
 
+        builder.Property(oi => oi.TenantId)
+            .ValueGeneratedNever()
+            .HasConversion(
+                id => id!.Value,
+                value => TenantId.Of(value))
+            .IsRequired(false);
+
+        builder.Property(oi => oi.BranchId)
+        .ValueGeneratedNever()
+            .HasConversion(
+                id => id!.Value,
+                value => BranchId.Of(value))
+            .IsRequired(false);
+
         builder
             .Property(oi => oi.Id)
             .ValueGeneratedNever()
-            .HasConversion(id => id.Value, value => OrderItemId.Of(value));
+            .HasConversion(
+                id => id.Value,
+                value => OrderItemId.Of(value));
 
         builder.Property(oi => oi.OrderId)
-            .HasConversion(id => id.Value, value => OrderId.Of(value))
+            .HasConversion(
+                id => id.Value,
+                value => OrderId.Of(value))
             .IsRequired();
 
         builder.Property(oi => oi.SkuId)
-            .HasConversion(id => id != null ? id.Value : null, value => value != null ? SkuId.Of(value) : null)
+            .HasMaxLength(100)
             .IsRequired(false);
 
         builder.Property(oi => oi.ModelId)

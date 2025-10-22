@@ -27,9 +27,9 @@ public class BranchId : ValueObject
         return new BranchId(parsedGuid);
     }
 
-    public static BranchId Of(Guid guid)
+    public static BranchId? Of(Guid? guid)
     {
-        return new BranchId(guid);
+        return guid is not null ? new BranchId(guid.Value) : null;
     }
 
     public override IEnumerable<object> GetEqualityComponents()
