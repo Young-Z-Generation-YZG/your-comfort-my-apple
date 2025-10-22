@@ -77,8 +77,7 @@ const SignInPage = () => {
                <h2 className="text-2xl font-medium">Account</h2>
             </div>
 
-            <div className="flex lg:gap-3 gap-7 font-SFProText text-slate-500 lg:text-sm md:text-xl text-2xl">
-               <Link href="/sign-in">Sign in</Link>
+            <div className="flex lg:gap-3 gap-7 font-SFProText text-slate-500 lg:text-sm md:text-base text-lg">
                <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
@@ -86,22 +85,24 @@ const SignInPage = () => {
 
          <div className="h-full lg:px-[200px] md:px-[100px] px-0 py-[200px]">
             <div className="w-full flex flex-col justify-center items-center">
-               <h3 className="font-SFProDisplay font-medium lg:text-3xl md:text-5xl text-7xl">
+               <h3 className="font-SFProDisplay font-medium lg:text-2xl text-3xl text-center">
                   Account
                </h3>
-               <p className="font-SFProText font-light pt-5 lg:text-base md:text-xl text-2xl">
+               <p className="font-SFProText font-light pt-5 lg:text-base md:text-lg text-xl md:flex hidden">
                   Manage Your Account
                </p>
-               <p className="font-SFProText font-light pt-5 flex gap-2 lg:text-base md:text-xl text-2xl lg:pb-2 md:pb-5 pb-10">
-                  Not have account yet?{' '}
+               <div className="flex flex-col md:flex-row justify-center items-center gap-2 pt-5 lg:text-base md:text-lg text-xl lg:pb-2 md:pb-5 pb-10">
+                  <p className="font-SFProText font-light">
+                     Not have account yet?{' '}
+                  </p>
                   <Link
                      href="/sign-up"
-                     className="text-blue-500 flex underline"
+                     className="text-blue-500 flex underline lg:text-base md:text-lg text-2xl"
                   >
                      Create your account
                      <GoArrowUpRight className="size-4" />
                   </Link>
-               </p>
+               </div>
 
                <div className="lg:w-[500px] md:w-[80%] w-full">
                   <LoadingOverlay
@@ -177,14 +178,14 @@ const SignInPage = () => {
                         </h3>
 
                         <div className="flex flex-col justify-center items-center gap-3 mt-3">
-                           <button className="w-fit px-3 py-2 rounded-full font-SFProText lg:text-base md:text-xl text-3xl font-medium min-w-[300px] bg-slate-100 flex items-center justify-between hover:bg-slate-200 active:bg-slate-100">
+                           <button className="w-fit px-3 py-2 rounded-full font-SFProText lg:text-base md:text-lg text-xl font-medium min-w-[300px] bg-slate-100 flex items-center justify-between hover:bg-slate-200 active:bg-slate-100">
                               <Image
                                  src={googlePng}
                                  alt="cover"
                                  width={1000}
                                  height={1000}
                                  quality={100}
-                                 className="lg:h-8 md:h-12 h-20 lg:w-8 md:w-12 w-20"
+                                 className="lg:h-8 md:h-12 h-16 lg:w-8 md:w-12 w-16"
                               />
                               Sign in with Google
                               <Image

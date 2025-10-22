@@ -71,10 +71,10 @@ export function FormSelector<T extends FieldValues>({
                control={control}
                name={name}
                render={({ field }) => (
-                  <div className="md:h-[56px] h-[100px]">
+                  <div className="lg:h-[56px] md:h-[64px] h-[96px]">
                      <div
                         className={cn(
-                           'text-sm text-gray-500 mb-1 absolute left-3 lg:top-2 md:top-0 top-2 font-normal',
+                           'text-sm text-gray-500 mb-1 absolute left-3 lg:top-1 md:top-1 top-2 font-normal',
                            labelClassName,
                         )}
                      >
@@ -103,7 +103,7 @@ export function FormSelector<T extends FieldValues>({
                            {field.value || placeholder}
                         </span>
                         <ChevronDown
-                           className={`lg:h-5 lg:w-5 md:h-7 md:w-7 h-8 w-8 text-gray-500 absolute right-5 top-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                           className={`md:h-4 md:w-4 h-6 w-6 absolute right-5 top-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                         />
                      </div>
 

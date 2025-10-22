@@ -1,6 +1,5 @@
 /* eslint-disable react/react-in-jsx-scope */
 'use client';
-import { Fullscreen } from 'lucide-react';
 import Image from 'next/image';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
@@ -26,7 +25,13 @@ type CompareItemType = {
    typeConnect: Array<string>;
 };
 
-const CompareItem = ({ compare }: { compare: CompareItemType }) => {
+const CompareItem = ({
+   compare,
+   className,
+}: {
+   compare: CompareItemType;
+   className?: string;
+}) => {
    const {
       id,
       checkNew,
@@ -48,7 +53,9 @@ const CompareItem = ({ compare }: { compare: CompareItemType }) => {
       typeConnect,
    } = compare;
 
-   let imgBiometricAuthen =
+   console.log('Compare Item:', className);
+
+   const imgBiometricAuthen =
       biometricAuthen === 'Face ID'
          ? '/images/compare-imgs/icon-biometric-authen/icon-face-id.jpg'
          : '/images/compare-imgs/icon-biometric-authen/icon-touch-id.jpg';
@@ -105,8 +112,9 @@ const CompareItem = ({ compare }: { compare: CompareItemType }) => {
    return (
       <div
          className={cn(
+            className,
+            'flex-col items-center justify-center h-fit',
             SFDisplayFont.variable,
-            'basis-1/3 flex flex-col items-center justify-center h-fit ',
          )}
       >
          <div className="product-img w-full">

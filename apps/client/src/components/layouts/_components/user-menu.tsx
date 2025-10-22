@@ -53,9 +53,9 @@ const UserMenu = () => {
             },
          }}
       >
-         <div className="py-8">
+         <div className="py-8 px-8 lg:px-0">
             <motion.div
-               className="mx-auto w-[980px]"
+               className="mx-auto w-auto lg:w-[980px]"
                variants={containerVariants}
                initial="hidden"
                animate="visible"

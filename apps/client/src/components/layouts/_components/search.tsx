@@ -112,9 +112,9 @@ const Search = () => {
             },
          }}
       >
-         <div className="py-8">
+         <div className="py-8 px-8 lg:px-0">
             <motion.div
-               className="mx-auto w-[980px]"
+               className="mx-auto w-auto lg:w-[980px]"
                variants={containerVariants}
                initial="hidden"
                animate="visible"
@@ -193,7 +193,7 @@ const Search = () => {
                   {debouncedQuery.length >= 2 && searchProducts.length > 0 ? (
                      <div className="pb-5">
                         <h3 className="text-xs text-slate-500 font-SFProText">
-                           Suggest searches for "{debouncedQuery}"
+                           Suggest searches for &quot;{debouncedQuery}&quot;
                         </h3>
                         <ul className="py-2 flex flex-col gap-2 max-h-[200px] overflow-y-auto">
                            {searchProducts.map((product, index) => {
