@@ -1,20 +1,20 @@
 ﻿
+using System.Net;
+using System.Net.Http.Json;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
-using System.Text;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
-using YGZ.Identity.Infrastructure.Settings;
-using YGZ.Identity.Domain.Core.Errors;
-using System.Net;
-using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Application.Keycloak.Commands;
+using YGZ.Identity.Domain.Core.Errors;
+using YGZ.Identity.Domain.Users.Entities;
+using YGZ.Identity.Infrastructure.Settings;
 
 namespace YGZ.Identity.Infrastructure.Services;
 
@@ -109,7 +109,7 @@ public class KeycloakService : IKeycloakService
 
                 if (user != null)
                 {
-                  return user;
+                    return user;
                 }
             }
         }
@@ -223,7 +223,7 @@ public class KeycloakService : IKeycloakService
             if (response.StatusCode != HttpStatusCode.NoContent)
             {
                 return Errors.Keycloak.CannotAssignRole;
-            } 
+            }
         }
         catch (Exception ex)
         {
@@ -460,7 +460,7 @@ public class KeycloakService : IKeycloakService
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                
+
                 return Errors.Keycloak.SendEmailResetPasswordFailed;
             }
         }
@@ -537,7 +537,7 @@ public class KeycloakService : IKeycloakService
             else
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                
+
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }

@@ -3,12 +3,13 @@ using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using NSwag;
 using YGZ.Identity.Api.Contracts.Addresses;
-using YGZ.Identity.Api.Contracts.Profiles;
 using YGZ.Identity.Api.Contracts.Auth;
+using YGZ.Identity.Api.Contracts.Profiles;
+using YGZ.Identity.Api.Contracts.Tenants;
 
 namespace YGZ.Identity.Api.Extensions;
 
@@ -47,6 +48,12 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
+            // Add custom headers to all operations
+            settings.OperationProcessors.Add(new CustomHeaderOperationProcessor());
+
+            // Add processor for SwaggerHeader attributes
+            settings.OperationProcessors.Add(new SwaggerHeaderOperationProcessor());
+
             settings.OperationProcessors.Add(new AccessOtpRequestExample());
 
             // Add the custom schema processor for LoginRequest examples
@@ -56,6 +63,7 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateAddressRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateProfileRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new ChangePasswordRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateTenantUserRequestExample());
         });
 
         return services;
@@ -70,5 +78,9 @@ public static class SwaggerExtensions
             ClientId = keycloakOptions.Resource,
             ClientSecret = keycloakOptions?.Credentials?.Secret,
         };
+
+        // Configure additional Swagger UI settings for better header visibility
+        ui.DefaultModelsExpandDepth = 1;
+        ui.DefaultModelExpandDepth = 1;
     }
 }

@@ -9,6 +9,7 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Profiles;
+using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Users.Commands.AddAddress;
 using YGZ.Identity.Application.Users.Commands.DeleteAddress;
 using YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
@@ -36,6 +37,7 @@ public class UserController : ApiController
     }
 
     [HttpGet("me")]
+    [SwaggerHeader("X-User-Language", "User's preferred language", "en-US", false)]
     [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
     public async Task<IActionResult> GetMe(CancellationToken cancellationToken)
     {
