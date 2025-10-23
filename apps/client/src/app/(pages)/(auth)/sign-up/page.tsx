@@ -134,7 +134,7 @@ const SignUpPage = () => {
                                        name="first_name"
                                        label="First Name"
                                        type="text"
-                                       disabled={isLoading || isFetching}
+                                       disabled={isLoading}
                                        className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                        labelClassName="lg:text-base md:text-xl text-3xl"
                                        errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
@@ -145,7 +145,7 @@ const SignUpPage = () => {
                                        name="last_name"
                                        label="Last Name"
                                        type="text"
-                                       disabled={isLoading || isFetching}
+                                       disabled={isLoading}
                                        className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                        labelClassName="lg:text-base md:text-xl text-3xl"
                                        errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
@@ -192,7 +192,7 @@ const SignUpPage = () => {
                                  name="email"
                                  label="Email"
                                  type="text"
-                                 disabled={isLoading || isFetching}
+                                 disabled={isLoading}
                                  className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                                  labelClassName="lg:text-base md:text-xl text-3xl"
                                  errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
@@ -209,7 +209,7 @@ const SignUpPage = () => {
                               name="password"
                               label="Password"
                               type="password"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading}
                               className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                               labelClassName="lg:text-base md:text-xl text-3xl"
                               errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
@@ -221,7 +221,7 @@ const SignUpPage = () => {
                            name="confirm_password"
                            label="Confirm Password"
                            type="password"
-                           disabled={isLoading || isFetching}
+                           disabled={isLoading}
                            className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-lg"
                            labelClassName="lg:text-base md:text-xl text-3xl"
                            errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
