@@ -24,8 +24,20 @@ import {
    ChevronsRight,
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
-import { useShopFilters } from '../_hooks/use-shop-filter';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
+import useFilter from '../_hooks/use-filter';
+import usePagination from '@components/hooks/use-pagination';
+
+type IphoneModelsFilter = {
+   _colors: string[];
+   _storages: string[];
+   _models: string[];
+   _minPrice: number;
+   _maxPrice: number;
+   _priceSort: 'ASC' | 'DESC' | null;
+   _page: number;
+   _limit: number;
+};
 
 const fakeData = {
    total_records: 1,
@@ -465,47 +477,63 @@ const fakeData = {
 };
 
 const IphoneShopPage = () => {
-   const {
-      filters,
-      updateFilters,
-      clearFilters,
-      queryString,
-      activeFiltersCount,
-   } = useShopFilters();
+   const { filters, setFilters, clearFilters, activeFilterCount } =
+      useFilter<IphoneModelsFilter>();
 
-   const { modelsState, getModelsAsync, isLoading } = useCatalogService();
+   const { iphoneModelsState, getIphoneModelsAsync, isLoading } =
+      useCatalogService();
+
+   // Convert filters to query string for API call
+   const queryString = useMemo(() => {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+         if (value !== null && value !== undefined) {
+            if (Array.isArray(value)) {
+               if (value.length > 0) {
+                  // Append each value separately for proper multi-value support
+                  value.forEach((v) => {
+                     params.append(key, String(v));
+                  });
+               }
+            } else if (
+               typeof value === 'number' ||
+               typeof value === 'boolean'
+            ) {
+               params.set(key, String(value));
+            } else if (typeof value === 'string') {
+               if (value.length > 0) {
+                  params.set(key, value);
+               }
+            }
+         }
+      });
+      return params.toString();
+   }, [filters]);
 
    useEffect(() => {
-      getModelsAsync(queryString);
-   }, [queryString, getModelsAsync]);
+      getIphoneModelsAsync(queryString);
+   }, [queryString, getIphoneModelsAsync]);
 
-   const displayData = useMemo(() => {
-      if (modelsState.isSuccess && modelsState.data) {
-         return modelsState.data.items || [];
+   // Use pagination data from API or fallback to fake data
+   const paginationResponseData = useMemo(() => {
+      if (iphoneModelsState.isSuccess && iphoneModelsState.data) {
+         return iphoneModelsState.data;
       }
-      return fakeData.items;
-   }, [modelsState.isSuccess, modelsState.data]);
+      return fakeData;
+   }, [iphoneModelsState.isSuccess, iphoneModelsState.data]);
 
-   // Pagination data
-   const paginationData = useMemo(() => {
-      if (modelsState.isSuccess && modelsState.data) {
-         return {
-            totalRecords: modelsState.data.total_records,
-            totalPages: modelsState.data.total_pages,
-            currentPage: modelsState.data.current_page,
-            pageSize: modelsState.data.page_size,
-         };
-      }
-      return null;
-   }, [modelsState.isSuccess, modelsState.data]);
-
-   // Results count from actual data
-   const resultsCount = useMemo(() => {
-      if (paginationData) {
-         return paginationData.totalRecords;
-      }
-      return displayData.length;
-   }, [paginationData, displayData]);
+   const {
+      currentPage,
+      totalPages,
+      pageSize,
+      totalRecords,
+      isLastPage,
+      isFirstPage,
+      isNextPage,
+      isPrevPage,
+      paginationItems,
+      getPageNumbers,
+   } = usePagination(paginationResponseData);
 
    const handleSortChange = (value: string) => {
       // Map sort value to priceSort
@@ -517,50 +545,16 @@ const IphoneShopPage = () => {
          priceSort = 'DESC';
       }
 
-      updateFilters({ priceSort });
+      setFilters({ _priceSort: priceSort });
    };
 
    const handlePageChange = (page: number) => {
-      updateFilters({ page });
+      setFilters({ _page: page });
       window.scrollTo({ top: 0, behavior: 'smooth' });
    };
 
    const handlePageSizeChange = (size: string) => {
-      updateFilters({ pageSize: Number(size), page: 1 });
-   };
-
-   // Generate page numbers to display
-   const getPageNumbers = () => {
-      if (!paginationData) return [];
-
-      const { currentPage, totalPages } = paginationData;
-      const pages: (number | string)[] = [];
-      const maxPagesToShow = 7;
-
-      if (totalPages <= maxPagesToShow) {
-         for (let i = 1; i <= totalPages; i++) {
-            pages.push(i);
-         }
-      } else {
-         if (currentPage <= 4) {
-            for (let i = 1; i <= 5; i++) pages.push(i);
-            pages.push('...');
-            pages.push(totalPages);
-         } else if (currentPage >= totalPages - 3) {
-            pages.push(1);
-            pages.push('...');
-            for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
-         } else {
-            pages.push(1);
-            pages.push('...');
-            for (let i = currentPage - 1; i <= currentPage + 1; i++)
-               pages.push(i);
-            pages.push('...');
-            pages.push(totalPages);
-         }
-      }
-
-      return pages;
+      setFilters({ _limit: Number(size), _page: 1 });
    };
 
    return (
@@ -573,21 +567,21 @@ const IphoneShopPage = () => {
                      <FaFilter />
                      <div>
                         Filters
-                        {activeFiltersCount > 0 && (
-                           <span className="ml-1">({activeFiltersCount})</span>
+                        {activeFilterCount > 0 && (
+                           <span className="ml-1">({activeFilterCount})</span>
                         )}
                      </div>
                   </div>
                   <div className="mx-3 px-[18px] border-x-[1px] border-[#ccc] flex flex-row items-center">
                      <div>
-                        {resultsCount}{' '}
-                        {resultsCount === 1 ? 'Result' : 'Results'}
+                        {totalRecords}{' '}
+                        {totalRecords === 1 ? 'Result' : 'Results'}
                      </div>
                   </div>
-                  {activeFiltersCount > 0 && (
+                  {activeFilterCount > 0 && (
                      <div className="flex flex-row items-center">
                         <Button
-                           onClick={clearFilters}
+                           onClick={() => clearFilters()}
                            className="h-[22.5px] p-0 text-[15px] font-semibold border-b border-[#000] hover:text-blue-600 rounded-none bg-transparent text-black hover:bg-transparent hover:border-b-blue-500/50 transition-colors"
                         >
                            Clear Filters
@@ -602,9 +596,9 @@ const IphoneShopPage = () => {
                   </div>
                   <Select
                      value={
-                        filters.priceSort === 'ASC'
+                        filters._priceSort === 'ASC'
                            ? 'price-low-high'
-                           : filters.priceSort === 'DESC'
+                           : filters._priceSort === 'DESC'
                              ? 'price-high-low'
                              : 'recommended'
                      }
@@ -739,7 +733,7 @@ const IphoneShopPage = () => {
                                          </div>
                                       </div>
                                    ))
-                              : displayData.map((item) => (
+                              : paginationItems.map((item) => (
                                    <div key={item.id}>
                                       <IphoneModel
                                          models={item.model_items}
@@ -755,34 +749,31 @@ const IphoneShopPage = () => {
                      </div>
 
                      {/* Pagination */}
-                     {paginationData && paginationData.totalPages > 0 && (
+                     {totalPages > 0 && (
                         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
                            {/* Page Info & Size Selector */}
                            <div className="flex items-center gap-4">
                               <div className="text-sm text-gray-600">
                                  Showing{' '}
                                  <span className="font-semibold">
-                                    {(paginationData.currentPage - 1) *
-                                       paginationData.pageSize +
-                                       1}
+                                    {(currentPage - 1) * pageSize + 1}
                                  </span>{' '}
                                  to{' '}
                                  <span className="font-semibold">
                                     {Math.min(
-                                       paginationData.currentPage *
-                                          paginationData.pageSize,
-                                       paginationData.totalRecords,
+                                       currentPage * pageSize,
+                                       totalRecords,
                                     )}
                                  </span>{' '}
                                  of{' '}
                                  <span className="font-semibold">
-                                    {paginationData.totalRecords}
+                                    {totalRecords}
                                  </span>{' '}
                                  results
                               </div>
 
                               <Select
-                                 value={filters.pageSize.toString()}
+                                 value={filters._limit?.toString() || '10'}
                                  onValueChange={handlePageSizeChange}
                               >
                                  <SelectTrigger className="w-[100px] h-9">
@@ -809,7 +800,7 @@ const IphoneShopPage = () => {
                                  size="icon"
                                  className="h-9 w-9"
                                  onClick={() => handlePageChange(1)}
-                                 disabled={paginationData.currentPage === 1}
+                                 disabled={isFirstPage}
                               >
                                  <ChevronsLeft className="h-4 w-4" />
                               </Button>
@@ -820,11 +811,9 @@ const IphoneShopPage = () => {
                                  size="icon"
                                  className="h-9 w-9"
                                  onClick={() =>
-                                    handlePageChange(
-                                       paginationData.currentPage - 1,
-                                    )
+                                    handlePageChange(currentPage - 1)
                                  }
-                                 disabled={paginationData.currentPage === 1}
+                                 disabled={!isPrevPage}
                               >
                                  <ChevronLeft className="h-4 w-4" />
                               </Button>
@@ -832,7 +821,8 @@ const IphoneShopPage = () => {
                               {/* Page Numbers */}
                               <div className="flex items-center gap-1">
                                  {getPageNumbers().map((page, index) => {
-                                    if (page === '...') {
+                                    const pageNum = page as number | string;
+                                    if (pageNum === '...') {
                                        return (
                                           <span
                                              key={`ellipsis-${index}`}
@@ -845,24 +835,23 @@ const IphoneShopPage = () => {
 
                                     return (
                                        <Button
-                                          key={page}
+                                          key={`page-${pageNum}`}
                                           variant={
-                                             paginationData.currentPage === page
+                                             currentPage === pageNum
                                                 ? 'default'
                                                 : 'outline'
                                           }
                                           size="icon"
                                           className={cn(
                                              'h-9 w-9',
-                                             paginationData.currentPage ===
-                                                page &&
+                                             currentPage === pageNum &&
                                                 'bg-black text-white hover:bg-black/90',
                                           )}
                                           onClick={() =>
-                                             handlePageChange(page as number)
+                                             handlePageChange(pageNum as number)
                                           }
                                        >
-                                          {page}
+                                          {pageNum}
                                        </Button>
                                     );
                                  })}
@@ -874,14 +863,9 @@ const IphoneShopPage = () => {
                                  size="icon"
                                  className="h-9 w-9"
                                  onClick={() =>
-                                    handlePageChange(
-                                       paginationData.currentPage + 1,
-                                    )
+                                    handlePageChange(currentPage + 1)
                                  }
-                                 disabled={
-                                    paginationData.currentPage ===
-                                    paginationData.totalPages
-                                 }
+                                 disabled={!isNextPage}
                               >
                                  <ChevronRight className="h-4 w-4" />
                               </Button>
@@ -891,13 +875,8 @@ const IphoneShopPage = () => {
                                  variant="outline"
                                  size="icon"
                                  className="h-9 w-9"
-                                 onClick={() =>
-                                    handlePageChange(paginationData.totalPages)
-                                 }
-                                 disabled={
-                                    paginationData.currentPage ===
-                                    paginationData.totalPages
-                                 }
+                                 onClick={() => handlePageChange(totalPages)}
+                                 disabled={isLastPage}
                               >
                                  <ChevronsRight className="h-4 w-4" />
                               </Button>

@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from 'react';
-import { useLazyGetModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
+import { useLazyGetIphoneModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
 
 const useCatalogService = () => {
-   const [getModelsTrigger, modelsQueryState] = useLazyGetModelsAsyncQuery();
+   const [getIphoneModelsTrigger, iphoneModelsQueryState] =
+      useLazyGetIphoneModelsAsyncQuery();
 
-   const getModelsAsync = useCallback(
+   const getIphoneModelsAsync = useCallback(
       async (params: string) => {
          try {
-            const result = await getModelsTrigger(params).unwrap();
+            const result = await getIphoneModelsTrigger(params).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -23,16 +24,18 @@ const useCatalogService = () => {
             };
          }
       },
-      [getModelsTrigger],
+      [getIphoneModelsTrigger],
    );
 
    const isLoading = useMemo(() => {
-      return modelsQueryState.isLoading || modelsQueryState.isFetching;
-   }, [modelsQueryState.isLoading, modelsQueryState.isFetching]);
+      return (
+         iphoneModelsQueryState.isLoading || iphoneModelsQueryState.isFetching
+      );
+   }, [iphoneModelsQueryState.isLoading, iphoneModelsQueryState.isFetching]);
 
    return {
-      modelsState: modelsQueryState,
-      getModelsAsync,
+      iphoneModelsState: iphoneModelsQueryState,
+      getIphoneModelsAsync,
       isLoading,
    };
 };

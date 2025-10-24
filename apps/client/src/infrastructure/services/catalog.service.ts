@@ -37,7 +37,10 @@ export const catalogApi = createApi({
             return response as PaginationResponse<IIphonePromotionResponse>;
          },
       }),
-      getModelsAsync: builder.query<PaginationResponse<IIphoneModel>, string>({
+      getIphoneModelsAsync: builder.query<
+         PaginationResponse<IIphoneModel>,
+         string
+      >({
          query: (params = '') => `/api/v1/products/iphone/models?${params}`,
          providesTags: ['Catalogs'],
       }),
@@ -52,4 +55,4 @@ export const catalogApi = createApi({
    }),
 });
 
-export const { useLazyGetModelsAsyncQuery } = catalogApi;
+export const { useLazyGetIphoneModelsAsyncQuery } = catalogApi;

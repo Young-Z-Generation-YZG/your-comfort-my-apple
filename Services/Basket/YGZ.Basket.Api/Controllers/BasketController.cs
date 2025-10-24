@@ -1,4 +1,5 @@
-﻿using MapsterMapper;
+﻿using Keycloak.AuthServices.Authorization;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace YGZ.Basket.Api.Controllers;
 [OpenApiTag("baskets", Description = "Manage baskets.")]
 //[ProtectedResource("baskets")]
 //[AllowAnonymous]
+[Authorize(Policy = Policies.REQUIRE_AUTHENTICATION)]
 public class BasketController : ApiController
 {
     private readonly ILogger<BasketController> _logger;
@@ -35,7 +37,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost()]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> StoreBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreBasketCommand>(request);
@@ -56,7 +58,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost("proceed-checkout")]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> ProceedCheckout([FromBody] ProceedCheckoutRequest request, CancellationToken cancellationToken)
     {
         var cmd = new ProceedCheckoutCommand();
@@ -67,7 +69,7 @@ public class BasketController : ApiController
     }
 
     [HttpPost("checkout")]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> CheckoutBasket([FromBody] CheckoutBasketRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CheckoutBasketCommand>(request);
@@ -78,7 +80,7 @@ public class BasketController : ApiController
     }
 
     [HttpGet()]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
     public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
@@ -87,7 +89,7 @@ public class BasketController : ApiController
     }
 
     [HttpGet("checkout-items")]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
     public async Task<IActionResult> GetCheckoutBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new GetCheckoutBasketQuery(request._couponCode), cancellationToken);
@@ -96,7 +98,7 @@ public class BasketController : ApiController
     }
 
     [HttpDelete()]
-    [Authorize(Policy = Policies.RoleStaff)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.DELETE_OWN)]
     public async Task<IActionResult> DeleteBasket(CancellationToken cancellationToken)
     {
         var result = await _sender.Send(new DeleteBasketCommand(), cancellationToken);

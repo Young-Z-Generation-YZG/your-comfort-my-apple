@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Application.Reviews.Commands;
 using YGZ.Catalog.Api.Contracts.ReviewRequest;
-using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
+using YGZ.Catalog.Application.Reviews.Commands;
 using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByOrder;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Catalog.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/reviews")]
 [OpenApiTag("Review Controllers", Description = "Manage reviews.")]
+[Authorize(Policy = Policies.REQUIRE_AUTHENTICATION)]
 public class ReviewController : ApiController
 {
     private readonly ILogger<ReviewController> _logger;
@@ -44,7 +45,6 @@ public class ReviewController : ApiController
     }
 
     [HttpGet("orders/{orderId}")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetReviewsByOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetReviewsByOrderQuery(orderId);
@@ -55,7 +55,6 @@ public class ReviewController : ApiController
     }
 
     [HttpPost()]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CreateView([FromBody] CreateReviewRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CreateReviewCommand>(request);
@@ -66,7 +65,6 @@ public class ReviewController : ApiController
     }
 
     [HttpPut("{reviewId}")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> UpdateReview([FromRoute] string reviewId, [FromBody] UpdateReviewRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateReviewCommand>(request);
@@ -78,7 +76,6 @@ public class ReviewController : ApiController
     }
 
     [HttpDelete("{reviewId}")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> DeleteReview([FromRoute] string reviewId, CancellationToken cancellationToken)
     {
         var cmd = new DeleteReviewCommand(reviewId);

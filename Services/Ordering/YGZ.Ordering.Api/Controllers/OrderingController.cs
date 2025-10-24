@@ -3,14 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Ordering.Application.Orders.Queries.GetOrders;
-using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
-using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
+using YGZ.Ordering.Api.Contracts;
+using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
 using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
-using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
+using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
+using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
+using YGZ.Ordering.Application.Orders.Queries.GetOrders;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Ordering.Api.Controllers;
@@ -18,6 +18,7 @@ namespace YGZ.Ordering.Api.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/orders")]
 [OpenApiTag("orders", Description = "Manage orders.")]
+[Authorize(Policy = Policies.REQUIRE_AUTHENTICATION)]
 public class OrderingController : ApiController
 {
     private readonly ILogger<OrderingController> _logger;
@@ -32,7 +33,6 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByAdminQuery>(request);
@@ -43,7 +43,6 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("users")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByUserQuery>(request);
@@ -54,7 +53,6 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("{orderId}/details")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderDetailsByIdQuery(orderId);
@@ -65,7 +63,6 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/confirm")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new ConfirmOrderCommand(orderId);
@@ -76,7 +73,6 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("{orderId}/status/cancel")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var cmd = new CancelOrderCommand(orderId);
@@ -87,7 +83,6 @@ public class OrderingController : ApiController
     }
 
     [HttpPatch("admin/{orderId}/status")]
-    [Authorize(Policy = Policies.RoleStaff)]
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
         var cmd = new UpdateOrderStatusCommand
