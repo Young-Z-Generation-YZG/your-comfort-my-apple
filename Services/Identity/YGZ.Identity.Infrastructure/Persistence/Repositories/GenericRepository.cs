@@ -1,5 +1,6 @@
 ﻿
 
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -22,11 +23,21 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         _logger = logger;
     }
 
-    public async Task<Result<TEntity>> GetByIdAsync(TId id, CancellationToken cancellationToken)
+    public async Task<Result<TEntity>> GetByIdAsync(TId id, Expression<Func<TEntity, object>>[] expressions = null!, CancellationToken? cancellationToken = null)
     {
         try
         {
-            var result = await _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            var query = _dbSet.AsNoTracking();
+
+            if (expressions is not null)
+            {
+                foreach (var expression in expressions)
+                {
+                    query = query.Include(expression);
+                }
+            }
+
+            var result = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken ?? CancellationToken.None);
 
             if (result is null)
             {
@@ -35,35 +46,54 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    public async Task<Result<List<TEntity>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<Result<List<TEntity>>> GetAllAsync(CancellationToken? cancellationToken = null)
     {
         try
         {
-            await _dbSet.ToListAsync(cancellationToken);
+            var result = await _dbSet.ToListAsync(cancellationToken ?? CancellationToken.None);
 
-            var result = await _dbSet.ToListAsync(cancellationToken);
-          
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken cancellationToken)
+        virtual public async Task<Result<List<TEntity>>> GetAllByFilterAsync(Expression<Func<TEntity, bool>>? filterExpression = null, CancellationToken? cancellationToken = null)
     {
         try
         {
-            await _dbSet.AddAsync(entity, cancellationToken);
+            var query = _dbSet.AsNoTracking();
 
-            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+            if (filterExpression is not null)
+            {
+                query = query.Where(filterExpression);
+            }
+
+            var result = await query.ToListAsync(cancellationToken ?? CancellationToken.None);
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken? cancellationToken = null)
+    {
+        try
+        {
+            await _dbSet.AddAsync(entity, cancellationToken ?? CancellationToken.None);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
 
             if (result > 0)
             {
@@ -72,24 +102,40 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return Errors.Address.CanNotAdd;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    virtual public async Task<Result<bool>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _dbSet.AddRangeAsync(entities, cancellationToken ?? CancellationToken.None);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Address.CanNotAdd;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
-    virtual public async Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken? cancellationToken = null)
     {
         try
         {
             _dbSet.Update(entity);
 
-            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
 
             if (result > 0)
             {
@@ -98,19 +144,36 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return Errors.Address.CanNotUpdate;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    virtual public async Task<Result<bool>> RemoveAsync(TEntity entity, CancellationToken cancellationToken)
+    public async Task<Result<bool>> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken = null)
+    {
+        try
+        {
+            _dbSet.UpdateRange(entities);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            return result > 0 ? true : Errors.Address.CanNotUpdate;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+
+    virtual public async Task<Result<bool>> RemoveAsync(TEntity entity, CancellationToken? cancellationToken = null)
     {
         try
         {
             _dbSet.Remove(entity);
 
-            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
 
             if (result > 0)
             {
@@ -119,14 +182,30 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return Errors.Address.CanNotDelete;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    virtual public async Task<Result<bool>> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken = null)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _dbSet.RemoveRange(entities);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Address.CanNotDelete;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }

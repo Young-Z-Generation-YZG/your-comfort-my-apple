@@ -1,0 +1,46 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
+
+namespace YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
+
+public class UserHttpContext : IUserHttpContext
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<UserHttpContext> _logger;
+
+    public UserHttpContext(IHttpContextAccessor httpContextAccessor,
+                              ILogger<UserHttpContext> logger)
+    {
+        _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
+    }
+
+    public string GetUserEmail()
+    {
+        var email = _httpContextAccessor.HttpContext?.User.FindFirst("email")?.Value ??
+            _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+
+        if (string.IsNullOrEmpty(email))
+        {
+            _logger.LogWarning("No email found in user claims.");
+            throw new UnauthorizedAccessException("User email not found in token.");
+        }
+
+        return email;
+    }
+
+    public string GetUserId()
+    {
+        var userId = _httpContextAccessor.HttpContext?.User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value ??
+            _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            _logger.LogWarning("No user ID found in user claims.");
+            throw new UnauthorizedAccessException("User ID not found in token.");
+        }
+
+        return userId;
+    }
+}

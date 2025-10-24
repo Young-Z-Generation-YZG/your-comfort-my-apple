@@ -1,62 +1,74 @@
-﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
-using YGZ.Identity.Application.Abstractions.HttpContext;
-using YGZ.Identity.Domain.Core.Enums;
-using YGZ.Identity.Domain.Users.ValueObjects;
+using YGZ.Identity.Domain.Users;
+using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Application.Users.Commands.UpdateProfile;
 
 
 public class UpdateProfileHandler : ICommandHandler<UpdateProfileCommand, bool>
 {
-    private readonly IProfileRepository _profileRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userHttpContext;
+    private readonly ILogger<UpdateProfileHandler> _logger;
+    private readonly IIdentityDbContext _dbContext;
+    private readonly DbSet<User> _userDbSet;
+    private readonly DbSet<Profile> _profileDbSet;
 
-    public UpdateProfileHandler(IUserRequestContext userContext, IProfileRepository profileRepository, IUserRepository userRepository)
+    public UpdateProfileHandler(IUserHttpContext userHttpContext,
+                                ILogger<UpdateProfileHandler> logger,
+                                IIdentityDbContext dbContext)
     {
-        _userContext = userContext;
-        _profileRepository = profileRepository;
-        _userRepository = userRepository;
+        _userHttpContext = userHttpContext;
+        _logger = logger;
+        _dbContext = dbContext;
+        _userDbSet = dbContext.Users;
+        _profileDbSet = dbContext.Profiles;
     }
 
     public async Task<Result<bool>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
-        var userEmail = _userContext.GetUserEmail();
+        var userId = _userHttpContext.GetUserId();
 
-        var userResult = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
+        var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
 
-        if (userResult.IsFailure)
+        try
         {
-            return userResult.Error;
+            var user = await _userDbSet.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken) ?? throw new Exception("User not found");
+
+            user.PhoneNumber = request.PhoneNumber;
+
+            _userDbSet.Update(user);
+
+            var profile = await _profileDbSet.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken) ?? throw new Exception("Profile not found");
+
+            profile.FirstName = request.FirstName;
+            profile.LastName = request.LastName;
+            profile.BirthDay = DateTime.Parse(request.BirthDay).ToUniversalTime();
+            profile.SetGender(request.Gender);
+
+            _profileDbSet.Update(profile);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                await transaction.CommitAsync(cancellationToken);
+                return true;
+            }
+
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+
         }
-
-        userResult.Response!.PhoneNumber = request.PhoneNumber;
-
-        var updateUserResult = await _userRepository.UpdateUserAsync(userResult.Response, cancellationToken);
-
-        if (updateUserResult.IsFailure)
+        catch (Exception)
         {
-            return updateUserResult.Error;
+            await transaction.RollbackAsync(cancellationToken);
+
+            throw;
         }
-
-        var profileResult = await _profileRepository.GetProfileByUser(userResult.Response, cancellationToken);
-
-        if (profileResult.IsFailure)
-        {
-            return profileResult.Error;
-        }
-
-        profileResult.Response!.Update(firstName: request.FirstName, lastName: request.LastName, birthDay: DateTime.Parse(request.BirthDay).ToUniversalTime(), gender: Gender.FromName(request.Gender));
-
-        var updateResult = await _profileRepository.UpdateAsync(profileResult.Response, cancellationToken);
-
-        if (updateResult.IsFailure)
-        {
-            return updateResult.Error;
-        }
-
-        return true;
     }
 }

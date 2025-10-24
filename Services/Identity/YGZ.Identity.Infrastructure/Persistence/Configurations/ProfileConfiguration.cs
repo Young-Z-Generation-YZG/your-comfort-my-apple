@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YGZ.Identity.Domain.Core.Enums;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
@@ -31,7 +31,7 @@ public class ProfileConfiguration : IEntityTypeConfiguration<Profile>
         builder.Property(x => x.Gender) // Updated from Status to State
                .HasConversion(
                    x => x.Name,
-                   x => Gender.FromName(x, false)
+                   x => EGender.FromName(x, false)
                )
                .HasColumnName("Gender");
     }

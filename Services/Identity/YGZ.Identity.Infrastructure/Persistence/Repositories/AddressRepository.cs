@@ -31,7 +31,7 @@ public class AddressRepository : GenericRepository<ShippingAddress, ShippingAddr
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }

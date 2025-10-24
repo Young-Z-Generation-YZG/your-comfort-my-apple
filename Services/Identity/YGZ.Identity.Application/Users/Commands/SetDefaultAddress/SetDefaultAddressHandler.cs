@@ -1,63 +1,72 @@
 ﻿
 
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
-using YGZ.Identity.Application.Abstractions.HttpContext;
-using YGZ.Identity.Domain.Core.Errors;
+using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 
 public class SetDefaultAddressHandler : ICommandHandler<SetDefaultAddressCommand, bool>
 {
-    private readonly IAddressRepository _addressRepository;
+    private readonly IUserHttpContext _userHttpContext;
+    private readonly ILogger<SetDefaultAddressHandler> _logger;
     private readonly IUserRepository _userRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IGenericRepository<ShippingAddress, ShippingAddressId> _addressRepository;
 
-    public SetDefaultAddressHandler(IAddressRepository addressRepository, IUserRepository userRepository, IUserRequestContext userContext)
+    public SetDefaultAddressHandler(IUserHttpContext userHttpContext,
+                                ILogger<SetDefaultAddressHandler> logger,
+                                IUserRepository userRepository,
+                                IGenericRepository<ShippingAddress, ShippingAddressId> addressRepository)
     {
-        _addressRepository = addressRepository;
+        _userHttpContext = userHttpContext;
+        _logger = logger;
         _userRepository = userRepository;
-        _userContext = userContext;
+        _addressRepository = addressRepository;
     }
 
     public async Task<Result<bool>> Handle(SetDefaultAddressCommand request, CancellationToken cancellationToken)
     {
-        var userId = _userContext.GetUserId();
-        var userEmail = _userContext.GetUserEmail();
+        var userId = _userHttpContext.GetUserId();
 
-        var addressId = Guid.TryParse(request.AddressId, out var guid)
-            ? ShippingAddressId.Of(guid)
-            : ShippingAddressId.Of(Guid.Empty);
+        var addressId = ShippingAddressId.Of(request.AddressId);
 
+        var addressesResult = await _addressRepository.GetAllByFilterAsync(
+            filterExpression: x => x.UserId == userId,
+            cancellationToken: cancellationToken
+        );
 
-        var userResult = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
+        var addresses = addressesResult.Response!;
 
-        if (userResult.IsFailure)
-        {
-            return userResult.Error;
-        }
-
-        var addressResult = await _addressRepository.GetByIdAsync(addressId, cancellationToken);
+        var addressResult = await _addressRepository.GetByIdAsync(addressId, cancellationToken: cancellationToken);
 
         if (addressResult.IsFailure)
         {
             return addressResult.Error;
         }
 
-        if(addressResult.Response!.UserId != userId)
+        var address = addressResult.Response!;
+
+        foreach (var item in addresses)
         {
-            return Errors.Address.DoesNotExist;
+            item.IsDefault = false;
         }
 
-        var result = await _addressRepository.SetDefaultAddressAsync(userResult.Response!, addressResult.Response!, cancellationToken);
+        var targetAddress = addresses.FirstOrDefault(x => x.Id == address.Id);
 
-        if (result.IsFailure)
+
+        targetAddress!.IsDefault = true;
+
+        var updateResult = await _addressRepository.UpdateRangeAsync(addresses, cancellationToken);
+
+        if (updateResult.IsFailure)
         {
-            return result.Error;
+            return updateResult.Error;
         }
 
-        return true;
+        return updateResult.Response;
     }
 }

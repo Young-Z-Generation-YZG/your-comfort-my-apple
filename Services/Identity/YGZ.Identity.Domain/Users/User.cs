@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Domain.Core.Abstractions;
 using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Domain.Users.Events;
@@ -73,5 +74,26 @@ public class User : IdentityUser, IAggregate
     public void AddDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
+    }
+
+    public GetAccountResponse ToResponse()
+    {
+        return new GetAccountResponse
+        {
+            Email = Email!,
+            FirstName = Profile.FirstName,
+            LastName = Profile.LastName,
+            PhoneNumber = PhoneNumber!,
+            BirthDate = Profile.BirthDay.ToString("yyyy-MM-dd"),
+            ImageId = Profile.Image!.ImageId,
+            ImageUrl = Profile.Image.ImageUrl,  
+            DefaultAddressLabel = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.Label ?? "",
+            DefaultContactName = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.ContactName ?? "",
+            DefaultContactPhoneNumber = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.ContactPhoneNumber ?? "",
+            DefaultAddressLine = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.AddressDetail.AddressLine ?? "",
+            DefaultAddressDistrict = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.AddressDetail.AddressDistrict ?? "",
+            DefaultAddressProvince = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.AddressDetail.AddressProvince ?? "",
+            DefaultAddressCountry = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.AddressDetail.AddressCountry ?? "",
+        };
     }
 }

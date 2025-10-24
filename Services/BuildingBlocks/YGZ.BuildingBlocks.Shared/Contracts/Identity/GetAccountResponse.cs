@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Identity;
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
-public sealed record GetAllInfoResposne
+public sealed record GetAccountResponse
 {
     required public string Email { get; set; }
     required public string FirstName { get; set; }

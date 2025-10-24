@@ -62,14 +62,18 @@ public class UserController : ApiController
 
     [HttpPost("addresses")]
     [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    [SwaggerHeader("X-Address-Type", "Type of address being added (home, work, billing, shipping)", "home", false)]
     public async Task<IActionResult> AddAddress([FromBody] AddAddressRequest request, CancellationToken cancellationToken)
     {
+        // var addressType = Request.Headers["X-Address-Type"].FirstOrDefault() ?? "home";
+
         var cmd = _mapper.Map<AddAddressCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
+    
 
     [HttpPut("addresses/{addressId}")]
     [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]

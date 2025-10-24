@@ -1,62 +1,51 @@
 ﻿
+using System.Linq.Expressions;
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Application.Abstractions.Data;
-using YGZ.Identity.Application.Abstractions.HttpContext;
-using YGZ.Identity.Domain.Users.Entities;
+using YGZ.Identity.Domain.Users;
 
 namespace YGZ.Identity.Application.Users.Queries.GetAddresses;
 
 public class GetAddressesQueryHandler : IQueryHandler<GetAddressesQuery, List<AddressResponse>>
 {
+    private readonly IUserHttpContext _userHttpContext;
+    private readonly ILogger<GetAddressesQueryHandler> _logger;
     private readonly IUserRepository _userRepository;
-    private readonly IAddressRepository _addressRepository;
-    private readonly IUserRequestContext _userContext;
 
-    public GetAddressesQueryHandler(IUserRepository userRepository, IUserRequestContext userContext, IAddressRepository shippingAddressRepository)
+    public GetAddressesQueryHandler(IUserHttpContext userHttpContext,
+                                ILogger<GetAddressesQueryHandler> logger,
+                                IUserRepository userRepository)
     {
+        _userHttpContext = userHttpContext;
+        _logger = logger;
         _userRepository = userRepository;
-        _userContext = userContext;
-        _addressRepository = shippingAddressRepository;
     }
 
     public async Task<Result<List<AddressResponse>>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        var userEmail = _userContext.GetUserEmail();
+        var userId = _userHttpContext.GetUserId();
 
-        var userAsync = await _userRepository.GetUserByEmailAsync(userEmail, cancellationToken);
-
-        if (userAsync.IsFailure)
+        var expressions = new Expression<Func<User, object>>[]
         {
-            return userAsync.Error;
+                x => x.ShippingAddresses
+        };
+
+        var userResult = await _userRepository.GetByIdAsync(userId, expressions, cancellationToken);
+
+        if (userResult.IsFailure)
+        {
+            return userResult.Error;
         }
 
-        var result = await _addressRepository.GetAllByUser(userAsync.Response!);
+        var user = userResult.Response!;
 
-        if (result.IsFailure)
-        {
-            return result.Error;
-        }
+        var addresses = user.ShippingAddresses.ToList();
 
-        var response = MapToResponse(result.Response!);
+        return addresses.Select(x => x.ToResponse()).ToList();
 
-        return response;
-    }
-
-    private List<AddressResponse> MapToResponse(List<ShippingAddress> shippingAddresses)
-    {
-        return shippingAddresses.Select(x => new AddressResponse
-        {
-            Id = x.Id.Value.ToString(),
-            Label = x.Label,
-            ContactName = x.ContactName,
-            ContactPhoneNumber = x.ContactPhoneNumber,
-            AddressLine = x.AddressDetail.AddressLine,
-            District = x.AddressDetail.AddressDistrict,
-            Province = x.AddressDetail.AddressProvince,
-            Country = x.AddressDetail.AddressCountry,
-            IsDefault = x.IsDefault
-        }).ToList();
     }
 }

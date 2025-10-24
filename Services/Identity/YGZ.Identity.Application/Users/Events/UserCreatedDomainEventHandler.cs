@@ -1,46 +1,72 @@
 ﻿
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Identity.Application.Abstractions.Data;
-using YGZ.Identity.Application.Abstractions.Services;
-using YGZ.Identity.Application.Users.Extensions;
+using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Domain.Users.Events;
+using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Application.Users.Events;
 
 public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDomainEvent>
 {
-    private readonly IAddressRepository _shippingAddressRepository;
-    private readonly IProfileRepository _profileRepository;
-    private readonly IUserRepository _userRepository;
+    private readonly IIdentityDbContext _dbContext;
+    private readonly DbSet<Profile> _profileDbSet;
+    private readonly DbSet<ShippingAddress> _shippingAddressDbSet;
 
-    public UserCreatedDomainEventHandler(IAddressRepository shippingAddressRepository, IProfileRepository profileRepository, IUserRepository userRepository)
+    public UserCreatedDomainEventHandler(IIdentityDbContext dbContext)
     {
-        _shippingAddressRepository = shippingAddressRepository;
-        _profileRepository = profileRepository;
-        _userRepository = userRepository;
+        _dbContext = dbContext;
+        _profileDbSet = dbContext.Profiles;
+        _shippingAddressDbSet = dbContext.ShippingAddresses;
     }
 
-    public async Task Handle(UserCreatedDomainEvent data, CancellationToken cancellationToken)
+    public async Task Handle(UserCreatedDomainEvent request, CancellationToken cancellationToken)
     {
-        var profile = data.ToProfile();
-
-        var createProfileResult = await _profileRepository.AddAsync(profile, cancellationToken);
-
-        if (createProfileResult.IsFailure)
+        var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
+        try
         {
-            throw new Exception("Error creating profile");
+            var profile = Profile.Create(id: ProfileId.Create(),
+                                             firstName: request.FirstName,
+                                             lastName: request.LastName,
+                                             birthDay: request.BirthDay,
+                                             gender: EGender.FromName(request.Gender.Name, false),
+                                             image: request.Image,
+                                             userId: request.User.Id);
+
+            _profileDbSet.Add(profile);
+
+            var createProfileResult = await _profileDbSet.AddAsync(profile, cancellationToken);
+
+            var shippingAddress = ShippingAddress.Create(id: ShippingAddressId.Create(),
+                                                 label: "Default",
+                                                 contactName: request.User.Profile.FullName,
+                                                 contactPhoneNumber: request.User.PhoneNumber!,
+                                                 addressDetail: Address.Create(addressLine: "",
+                                                                               addressDistrict: "",
+                                                                               addressProvince: "",
+                                                                               addressCountry: ""),
+                                                 isDefault: true,
+                                                 userId: request.User.Id);
+
+            _shippingAddressDbSet.Add(shippingAddress);
+
+            var saveChangesResult = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (saveChangesResult > 0)
+            {
+                await transaction.CommitAsync(cancellationToken);
+                return;
+            }
+
+            await transaction.RollbackAsync(cancellationToken);
         }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync(cancellationToken);
 
-        var shippingAddress = data.ToShippingAddress();
-
-        var user = await _userRepository.GetDbSet().FindAsync(data.User.Id);
-
-        if(user == null) {
-            throw new Exception("User not found");
+            throw;
         }
-
-        user.ShippingAddresses.Add(shippingAddress);
-
-        await _userRepository.SaveChange();
     }
 }

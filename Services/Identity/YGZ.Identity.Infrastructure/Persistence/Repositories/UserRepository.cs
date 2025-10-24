@@ -1,12 +1,10 @@
-﻿
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Infrastructure.Persistence.Repositories;
 
@@ -23,38 +21,50 @@ public class UserRepository : IUserRepository
         _logger = logger;
     }
 
-    public async Task<Result<User>> GetUserByEmailAsync(string userEmail, CancellationToken cancellationToken)
+    public async Task<Result<User>> GetByIdAsync(string userId, Expression<Func<User, object>>[]? expressions = null, CancellationToken? cancellationToken = null)
     {
         try
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Email == userEmail, cancellationToken);
+            IQueryable<User> query = _dbSet.AsNoTracking();
 
-            if(result is null)
+            if (expressions is not null)
             {
+                foreach (var expression in expressions)
+                {
+                    query = query.Include(expression);
+                }
+            }
 
+            var result = await query.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken ?? CancellationToken.None);
+
+            if (result is null)
+            {
                 return Errors.User.DoesNotExist;
             }
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    public async Task<Result<User>> GetUserByEmailAsync(string userEmail, CancellationToken cancellationToken, params Expression<Func<User, object>>[] expressions)
+    public async Task<Result<User>> GetUserByEmailAsync(string userEmail, Expression<Func<User, object>>[]? expressions = null, CancellationToken? cancellationToken = null)
     {
         try
         {
-            IQueryable<User> query = _dbSet;
+            IQueryable<User> query = _dbSet.AsNoTracking();
 
-            foreach (var expression in expressions)
+            if (expressions is not null)
             {
-                query = query.Include(expression);
+                foreach (var expression in expressions)
+                {
+                    query = query.Include(expression);
+                }
             }
 
-            var result = await query.FirstOrDefaultAsync(x => x.Email == userEmail, cancellationToken);
+            var result = await query.FirstOrDefaultAsync(x => x.Email == userEmail, cancellationToken ?? CancellationToken.None);
 
             if (result is null)
             {
@@ -64,51 +74,35 @@ public class UserRepository : IUserRepository
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-    public async Task<Result<bool>> AddShippingAddressAsync(ShippingAddress shippingAddress, User user, CancellationToken cancellationToken)
+    public async Task<Result<bool>> UpdateUserAsync(User user, CancellationToken? cancellationToken = null)
     {
         try
         {
-            user.ShippingAddresses.Add(shippingAddress);
+            var result = _dbSet.Update(user);
 
-            var result = await _dbContext.SaveChangesAsync(cancellationToken);
-
-            if (result > 0)
+            if (result.State == EntityState.Modified)
             {
-                return true;
+                var saveChangesResult = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+                if (saveChangesResult > 0)
+                {
+                    return true;
+                }
+
+                return Errors.User.CannotBeUpdated;
             }
             else
             {
-                return Errors.Address.CanNotAdd;
+                return Errors.User.CannotBeUpdated;
             }
         }
-        catch (Exception ex)
-        {
-            throw;
-        }
-    }
-
-    public async Task<Result<bool>> UpdateUserAsync(User user, CancellationToken cancellationToken)
-    {
-        try
-        {
-            _dbSet.Update(user);
-
-            var result = await _dbContext.SaveChangesAsync(cancellationToken);
-
-            if (result > 0)
-            {
-                return true;
-            }
-
-            return Errors.User.CannotBeUpdated;
-        }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -124,5 +118,5 @@ public class UserRepository : IUserRepository
         await _dbContext.SaveChangesAsync();
     }
 
-   
+
 }

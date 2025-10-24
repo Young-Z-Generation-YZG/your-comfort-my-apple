@@ -1,4 +1,5 @@
 ﻿
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Identity.Domain.Core.Abstractions;
 using YGZ.Identity.Domain.Core.Enums;
 using YGZ.Identity.Domain.Core.Primitives;
@@ -18,7 +19,7 @@ public class Profile : Entity<ProfileId>, IAuditable
     required public string LastName { get; set; }
     public string FullName => $"{FirstName} {LastName}";
     required public DateTime BirthDay { get; set; }
-    required public Gender Gender { get; set; } = Gender.OTHER;
+    required public EGender Gender { get; set; } = EGender.OTHER;
     public Image? Image { get; set; } = null;
 
     required public string UserId { get; set; }
@@ -30,7 +31,7 @@ public class Profile : Entity<ProfileId>, IAuditable
                                   string firstName,
                                   string lastName,
                                   DateTime birthDay,
-                                  Gender gender,
+                                  EGender gender,
                                   Image? image,
                                   string userId)
     {
@@ -46,12 +47,24 @@ public class Profile : Entity<ProfileId>, IAuditable
         return profile;
     }
 
-    public void Update(string firstName, string lastName, DateTime birthDay, Gender gender)
+    public void Update(string firstName, string lastName, DateTime birthDay, EGender gender)
     {
         FirstName = firstName;
         LastName = lastName;
         BirthDay = birthDay;
         Gender = gender;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetGender(string gender)
+    {
+        EGender.TryFromName(gender, out var genderEnum);
+
+        if (genderEnum is null)
+        {
+            throw new ArgumentException($"Invalid gender: {gender}");
+        }
+
+        Gender = genderEnum;
     }
 }

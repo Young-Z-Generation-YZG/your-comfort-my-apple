@@ -15,10 +15,10 @@ public class Address : ValueObject
     {
         return new Address
         {
-            AddressLine = addressLine!,
-            AddressDistrict = addressDistrict!,
-            AddressProvince = addressProvince!,
-            AddressCountry = addressCountry!
+            AddressLine = addressLine ?? string.Empty,
+            AddressDistrict = addressDistrict ?? string.Empty,
+            AddressProvince = addressProvince ?? string.Empty,
+            AddressCountry = addressCountry ?? string.Empty
         };
     }
 

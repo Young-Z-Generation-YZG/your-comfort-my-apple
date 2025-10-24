@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System.Reflection;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Behaviors;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
 using YGZ.Identity.Api.Extensions;
-using YGZ.Identity.Api.HttpContext;
-using YGZ.Identity.Application.Abstractions.HttpContext;
 using YGZ.Identity.Infrastructure.Settings;
 
 namespace YGZ.Identity.Api;
@@ -32,7 +32,8 @@ public static class DependencyInjection
             options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml");
         });
 
-        services.AddScoped<IUserRequestContext, UserRequestContext>();
+        services.AddScoped<IUserHttpContext, UserHttpContext>();
+        services.AddScoped<ITenantHttpContext, TenantHttpContext>();
 
         return services;
     }
@@ -55,7 +56,7 @@ public static class DependencyInjection
                         .ConfigureResource(resource => resource.AddService("YGZ.Identity.Api.Test"))
                         .WithTracing(tracing =>
                         {
-                            tracing.AddHttpClientInstrumentation() 
+                            tracing.AddHttpClientInstrumentation()
                                    .AddAspNetCoreInstrumentation();
 
                             tracing.AddOtlpExporter(options =>

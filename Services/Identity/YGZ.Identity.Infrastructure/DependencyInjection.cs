@@ -10,6 +10,7 @@ using YGZ.Identity.Application.Abstractions.Utils;
 using YGZ.Identity.Infrastructure.Email;
 using YGZ.Identity.Infrastructure.Email.Templates;
 using YGZ.Identity.Infrastructure.Extensions;
+using YGZ.Identity.Infrastructure.Persistence;
 using YGZ.Identity.Infrastructure.Persistence.Interceptors;
 using YGZ.Identity.Infrastructure.Persistence.Repositories;
 using YGZ.Identity.Infrastructure.Services;
@@ -48,6 +49,8 @@ public static class DependencyInjection
             };
         });
         // Register services in DI container
+        services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
+        services.AddScoped<IIdentityDbContext, IdentityDbContextImpl>();
         services.AddHttpClient<IKeycloakService, KeycloakService>();
         services.AddTransient<IIdentityService, IdentityService>();
         services.AddTransient<ICachedRepository, CachedRepository>();

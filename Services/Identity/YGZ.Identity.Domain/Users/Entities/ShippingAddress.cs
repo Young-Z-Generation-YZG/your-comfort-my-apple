@@ -1,5 +1,6 @@
 ﻿
 
+using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.Identity.Domain.Core.Abstractions;
 using YGZ.Identity.Domain.Core.Primitives;
 using YGZ.Identity.Domain.Users.ValueObjects;
@@ -57,5 +58,21 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
         AddressDetail = addressDetail;
         IsDefault = isDefault;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public AddressResponse ToResponse()
+    {
+        return new AddressResponse
+        {
+            Id = Id.Value.ToString(),
+            Label = Label,
+            ContactName = ContactName,
+            ContactPhoneNumber = ContactPhoneNumber,
+            AddressLine = AddressDetail.AddressLine,
+            District = AddressDetail.AddressDistrict,
+            Province = AddressDetail.AddressProvince,
+            Country = AddressDetail.AddressCountry,
+            IsDefault = IsDefault
+        };
     }
 }
