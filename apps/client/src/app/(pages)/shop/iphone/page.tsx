@@ -610,17 +610,17 @@ const IphoneShopPage = () => {
                      </SelectTrigger>
                      <SelectContent className="bg-[#f7f7f7]">
                         <SelectGroup>
-                           <SelectItem value="recommended">
+                           {/* <SelectItem value="recommended">
                               Recommended
                            </SelectItem>
-                           <SelectItem value="newest">Newest</SelectItem>
+                           <SelectItem value="newest">Newest</SelectItem> */}
                            <SelectItem value="price-low-high">
                               Price: Low to High
                            </SelectItem>
                            <SelectItem value="price-high-low">
                               Price: High to Low
                            </SelectItem>
-                           <SelectItem value="most-clicked">
+                           {/* <SelectItem value="most-clicked">
                               Most Clicked
                            </SelectItem>
                            <SelectItem value="highest-rated">
@@ -631,7 +631,7 @@ const IphoneShopPage = () => {
                            </SelectItem>
                            <SelectItem value="online-availability">
                               Online Availability
-                           </SelectItem>
+                           </SelectItem> */}
                         </SelectGroup>
                      </SelectContent>
                   </Select>

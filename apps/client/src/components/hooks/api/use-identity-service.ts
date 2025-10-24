@@ -8,6 +8,8 @@ import {
    useUpdateAddressMutation,
    useSetDefaultAddressMutation,
    useDeleteAddressMutation,
+   useLazyGetMeQuery,
+   useLazyGetAddressesQuery,
 } from '~/infrastructure/services/identity.service';
 import {
    useCancelOrderMutation,
@@ -18,6 +20,10 @@ import { changePasswordFormType } from '~/domain/schemas/auth.schema';
 import { toast } from 'sonner';
 
 const useIdentityService = () => {
+   const [getMeTrigger, getMeQueryState] = useLazyGetMeQuery();
+   const [getAddressesTrigger, getAddressesQueryState] =
+      useLazyGetAddressesQuery();
+
    const [updateProfileMutation, updateProfileMutationState] =
       useUpdateProfileMutation();
    const [addAddressMutation, addAddressMutationState] =
@@ -206,8 +212,43 @@ const useIdentityService = () => {
       [confirmOrderMutation],
    );
 
+   const getMeAsync = useCallback(async () => {
+      try {
+         const result = await getMeTrigger().unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return {
+            isSuccess: false,
+            isError: true,
+            data: null,
+            error,
+         };
+      }
+   }, [getMeTrigger]);
+
+   const getAddressesAsync = useCallback(async () => {
+      try {
+         const result = await getAddressesTrigger().unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [getAddressesTrigger]);
+
    const isLoading = useMemo(() => {
       return (
+         getMeQueryState.isLoading ||
+         getAddressesQueryState.isLoading ||
          updateProfileMutationState.isLoading ||
          addAddressMutationState.isLoading ||
          updateAddressMutationState.isLoading ||
@@ -218,6 +259,8 @@ const useIdentityService = () => {
          confirmOrderMutationState.isLoading
       );
    }, [
+      getMeQueryState.isLoading,
+      getAddressesQueryState.isLoading,
       updateProfileMutationState.isLoading,
       addAddressMutationState.isLoading,
       updateAddressMutationState.isLoading,
@@ -283,6 +326,8 @@ const useIdentityService = () => {
    return {
       // states
       isLoading,
+      getMeState: getMeQueryState,
+      getAddressesState: getAddressesQueryState,
       updateProfileState: updateProfileMutationState,
       addAddressState: addAddressMutationState,
       updateAddressState: updateAddressMutationState,
@@ -301,6 +346,8 @@ const useIdentityService = () => {
       changePasswordAsync,
       cancelOrderAsync,
       confirmOrderAsync,
+      getMeAsync,
+      getAddressesAsync,
    };
 };
 

@@ -1,33 +1,32 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
-import envConfig from '~/infrastructure/config/env.config';
-import { RootState } from '~/infrastructure/redux/store';
 import {
    IBasket,
    ICheckoutResponse,
    IGetBasketQueries,
    IStoreBasketPayload,
 } from '~/domain/interfaces/baskets/basket.interface';
+import { setLogout } from '../redux/features/auth.slice';
+import { baseQuery } from './base-query';
+
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('basket-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
 
 export const basketApi = createApi({
    reducerPath: 'basket-api',
    tagTypes: ['Baskets'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'basket-services',
-      prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.accessToken;
-
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
-         }
-
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       storeBasketAsync: builder.mutation({
          query: (payload: IStoreBasketPayload) => ({

@@ -2,16 +2,16 @@
 
 import Image from 'next/image';
 import svgs from '@assets/svgs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PiUserCircleFill } from 'react-icons/pi';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import Search from './_components/search';
 import UserMenu from './_components/user-menu';
 import BasketMenu from './_components/basket-menu';
 import { categoryList } from './_data/category-list';
 import { exploreIphoneList } from './_data/explore-iphone-list';
+import useIdentityService from '@components/hooks/api/use-identity-service';
 
 const containerVariants = {
    hidden: {},
@@ -57,6 +57,21 @@ const columnVariants = {
 const Header = () => {
    const [activeCategory, setActiveCategory] = useState<string | null>(null);
    const router = useRouter();
+
+   const { getMeAsync } = useIdentityService();
+
+   useEffect(() => {
+      const fetchMe = async () => {
+         const result = await getMeAsync();
+         if (result.isSuccess) {
+            console.log(result.data);
+         } else {
+            console.log(result.error);
+         }
+      };
+
+      fetchMe();
+   }, [getMeAsync]);
 
    return (
       <header

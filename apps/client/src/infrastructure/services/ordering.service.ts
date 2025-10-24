@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import { HttpErrorResponse } from '~/domain/interfaces/errors/error.interface';
 import {
@@ -9,31 +9,11 @@ import {
    OrderDetailsResponse,
    OrderResponse,
 } from '~/domain/interfaces/orders/order.interface';
-import envConfig from '~/infrastructure/config/env.config';
-import { RootState } from '../redux/store';
 import { setLogout } from '../redux/features/auth.slice';
+import { baseQuery } from './base-query';
 
-const baseQueryWithAuth = fetchBaseQuery({
-   baseUrl: envConfig.API_ENDPOINT + 'ordering-services',
-   prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.accessToken;
-
-      if (accessToken) {
-         headers.set('Authorization', `Bearer ${accessToken}`);
-      }
-
-      headers.set('ngrok-skip-browser-warning', 'true');
-
-      return headers;
-   },
-});
-
-const baseQueryWithUnauthorizedHandler = async (
-   args: any,
-   api: any,
-   extraOptions: any,
-) => {
-   const result = await baseQueryWithAuth(args, api, extraOptions);
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('ordering-services')(args, api, extraOptions);
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -47,7 +27,7 @@ const baseQueryWithUnauthorizedHandler = async (
 export const orderingApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
-   baseQuery: baseQueryWithUnauthorizedHandler,
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getOrders: builder.query<PaginationResponse<OrderResponse>, void>({
          query: () => ({

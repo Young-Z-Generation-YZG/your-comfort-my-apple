@@ -1,31 +1,30 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
 import {
    IIphonePromotionResponse,
    IIphoneResponse,
 } from '~/domain/interfaces/catalogs/iPhone.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import envConfig from '~/infrastructure/config/env.config';
-import { RootState } from '../redux/store';
 import { IIphoneModel } from '~/domain/interfaces/catalogs/iphone/iPhone-model.interface';
+import { setLogout } from '../redux/features/auth.slice';
+import { baseQuery } from './base-query';
+
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('catalog-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',
    tagTypes: ['Catalogs'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
-      prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.accessToken;
-
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
-         }
-
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getIphonePromotionsAsync: builder.query<
          PaginationResponse<IIphonePromotionResponse>,

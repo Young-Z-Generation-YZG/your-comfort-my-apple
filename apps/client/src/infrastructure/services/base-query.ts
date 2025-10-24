@@ -2,17 +2,18 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import envConfig from '~/infrastructure/config/env.config';
 import { RootState } from '../redux/store';
 
-export const baseQuery = fetchBaseQuery({
-   baseUrl: envConfig.API_ENDPOINT,
-   prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.accessToken;
+export const baseQuery = (service: string) =>
+   fetchBaseQuery({
+      baseUrl: envConfig.API_ENDPOINT + service,
+      prepareHeaders: (headers, { getState }) => {
+         const accessToken = (getState() as RootState).auth.accessToken;
 
-      if (accessToken) {
-         headers.set('Authorization', `Bearer ${accessToken}`);
-      }
+         if (accessToken) {
+            headers.set('Authorization', `Bearer ${accessToken}`);
+         }
 
-      headers.set('ngrok-skip-browser-warning', 'true');
+         headers.set('ngrok-skip-browser-warning', 'true');
 
-      return headers;
-   },
-});
+         return headers;
+      },
+   });

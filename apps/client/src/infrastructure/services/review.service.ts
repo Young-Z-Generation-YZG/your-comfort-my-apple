@@ -1,7 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import envConfig from '~/infrastructure/config/env.config';
-import { RootState } from '../redux/store';
 import { setLogout } from '../redux/features/auth.slice';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import {
@@ -10,33 +8,14 @@ import {
    IReviewResponse,
    IUpdateReviewPayload,
 } from '~/domain/interfaces/catalogs/review.interface';
+import { baseQuery } from './base-query';
 
-const baseQueryWithAuth = fetchBaseQuery({
-   baseUrl: envConfig.API_ENDPOINT + 'catalog-services',
-   prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.accessToken;
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('catalog-services')(args, api, extraOptions);
 
-      if (accessToken) {
-         headers.set('Authorization', `Bearer ${accessToken}`);
-      }
-
-      headers.set('ngrok-skip-browser-warning', 'true');
-
-      return headers;
-   },
-   responseHandler: (response) => {
-      return response.json();
-   },
-});
-
-const baseQueryWithUnauthorizedHandler = async (
-   args: any,
-   api: any,
-   extraOptions: any,
-) => {
-   const result = await baseQueryWithAuth(args, api, extraOptions);
-
+   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 
@@ -46,7 +25,7 @@ const baseQueryWithUnauthorizedHandler = async (
 export const reviewApi = createApi({
    reducerPath: 'review-api',
    tagTypes: ['Reviews'],
-   baseQuery: baseQueryWithUnauthorizedHandler,
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getReviewByModelIdAsync: builder.query<
          PaginationResponse<IReviewResponse>,

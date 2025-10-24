@@ -1,35 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import {
    IAddressPayload,
    IAddressResponse,
 } from '~/domain/interfaces/identity/address';
 import { IMeResponse } from '~/domain/interfaces/identity/me';
 import { IProfilePayload } from '~/domain/interfaces/identity/profile';
-import envConfig from '~/infrastructure/config/env.config';
-import { RootState } from '../redux/store';
 import { setLogout } from '../redux/features/auth.slice';
+import { baseQuery } from './base-query';
 
-const baseQueryWithAuth = fetchBaseQuery({
-   baseUrl: envConfig.API_ENDPOINT + 'identity-services',
-   prepareHeaders: (headers, { getState }) => {
-      const accessToken = (getState() as RootState).auth.accessToken;
-
-      if (accessToken) {
-         headers.set('Authorization', `Bearer ${accessToken}`);
-      }
-
-      headers.set('ngrok-skip-browser-warning', 'true');
-
-      return headers;
-   },
-});
-
-const baseQueryWithUnauthorizedHandler = async (
-   args: any,
-   api: any,
-   extraOptions: any,
-) => {
-   const result = await baseQueryWithAuth(args, api, extraOptions);
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('identity-services')(args, api, extraOptions);
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -43,7 +23,7 @@ const baseQueryWithUnauthorizedHandler = async (
 export const identityApi = createApi({
    reducerPath: 'identity-api',
    tagTypes: ['Profile', 'Addresses'],
-   baseQuery: baseQueryWithUnauthorizedHandler,
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getMe: builder.query<IMeResponse, void>({
          query: () => '/api/v1/users/me',
@@ -95,9 +75,9 @@ export const identityApi = createApi({
 });
 
 export const {
-   useGetMeQuery,
+   useLazyGetMeQuery,
+   useLazyGetAddressesQuery,
    useUpdateProfileMutation,
-   useGetAddressesQuery,
    useAddAddressMutation,
    useUpdateAddressMutation,
    useSetDefaultAddressMutation,
