@@ -121,8 +121,8 @@ const useOrderingService = () => {
 
    return {
       // Order details
-      ordersState: ordersQueryState,
-      orderDetailsState: orderDetailsQueryState,
+      getOrdersState: ordersQueryState,
+      getOrderDetailsState: orderDetailsQueryState,
 
       // States
       confirmOrderState: confirmOrderMutationState,

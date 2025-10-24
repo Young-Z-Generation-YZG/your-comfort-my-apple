@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 // import { useAppSelector } from '~/infrastructure/redux/store';
 // import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { useRouter } from 'next/navigation';
-import useAuth from '@components/hooks/use-auth';
+import useAuth from '@components/hooks/api/use-auth-service';
 
 // Staggered animation variants
 const containerVariants = {

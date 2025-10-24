@@ -20,7 +20,7 @@ import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '../../../../components/hooks/use-auth';
+import useAuth from '../../../../components/hooks/api/use-auth-service';
 import { countries } from '~/domain/constants/countries';
 
 const defaultValues: RegisterFormType = {

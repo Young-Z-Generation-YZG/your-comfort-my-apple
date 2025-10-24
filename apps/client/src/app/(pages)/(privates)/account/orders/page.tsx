@@ -37,10 +37,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@components/ui/button';
 import { useRouter } from 'next/navigation';
-import { useOrders } from './_hooks/us';
 import { cn } from '~/infrastructure/lib/utils';
 import usePagination from '@components/hooks/use-pagination';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
+import useOrderingService from '@components/hooks/api/use-ordering-service';
+import { useEffect } from 'react';
 
 const fakeOrders = {
    total_records: 1,
@@ -162,21 +163,17 @@ const getStatusColor = (status: string) => {
 const OrderPage = () => {
    const router = useRouter();
 
-   const {
-      orders,
-      totalOrders,
-      // currentPage,
-      // totalPages,
-      searchQuery,
-      statusFilter,
-      sortBy,
-      isLoading,
-      handleSearch,
-      handleStatusFilter,
-      handleSort,
-      handlePageChange,
-      clearFilters,
-   } = useOrders();
+   const { getOrdersAsync, getOrdersState, isLoading } = useOrderingService();
+
+   useEffect(() => {
+      const fetchOrders = async () => {
+         const result = await getOrdersAsync();
+         if (result.isSuccess) {
+            console.log(result.data);
+         }
+      };
+      fetchOrders();
+   }, [getOrdersAsync]);
 
    const {
       currentPage,
@@ -189,7 +186,11 @@ const OrderPage = () => {
       isPrevPage,
       paginationItems,
       getPageNumbers,
-   } = usePagination(fakeOrders);
+   } = usePagination(
+      getOrdersState.data && getOrdersState.data.items.length > 0
+         ? getOrdersState.data
+         : fakeOrders,
+   );
 
    return (
       <CardContext className="px-0 py-0">
@@ -208,9 +209,9 @@ const OrderPage = () => {
                         Manage your orders and track their status in one place.
                      </p>
                   </div>
-                  {totalOrders > 0 && (
+                  {totalRecords > 0 && (
                      <div className="text-sm text-gray-500">
-                        {totalOrders} {totalOrders === 1 ? 'order' : 'orders'}{' '}
+                        {totalRecords} {totalRecords === 1 ? 'order' : 'orders'}{' '}
                         found
                      </div>
                   )}
@@ -231,16 +232,13 @@ const OrderPage = () => {
                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                      <Input
                         placeholder="Search by order number..."
-                        value={searchQuery}
-                        onChange={(e) => handleSearch(e.target.value)}
+                        // value={searchQuery}
+                        // onChange={(e) => handleSearch(e.target.value)}
                         className="pl-9 h-9"
                      />
                   </div>
                   <div className="flex gap-3">
-                     <Select
-                        value={statusFilter}
-                        onValueChange={handleStatusFilter}
-                     >
+                     <Select value={''} onValueChange={() => {}}>
                         <SelectTrigger className="w-[180px] h-9">
                            <SelectValue placeholder="Filter by status" />
                         </SelectTrigger>
@@ -257,7 +255,7 @@ const OrderPage = () => {
                            <SelectItem value="CANCELED">Canceled</SelectItem>
                         </SelectContent>
                      </Select>
-                     <Select value={sortBy} onValueChange={handleSort}>
+                     <Select value={''} onValueChange={() => {}}>
                         <SelectTrigger className="w-[140px] h-9">
                            <SelectValue placeholder="Sort by" />
                         </SelectTrigger>
@@ -286,7 +284,7 @@ const OrderPage = () => {
                         Loading your orders...
                      </p>
                   </div>
-               ) : orders.length > 0 ? (
+               ) : paginationItems.length > 0 ? (
                   <div className="overflow-x-auto">
                      <Table>
                         <TableHeader>
@@ -392,7 +390,7 @@ const OrderPage = () => {
                      <p className="text-sm text-gray-500">
                         No orders found matching your criteria.
                      </p>
-                     {(searchQuery || statusFilter !== 'all') && (
+                     {/* {(searchQuery || statusFilter !== 'all') && (
                         <Button
                            variant="link"
                            className="mt-2 text-sm font-medium text-blue-600"
@@ -400,7 +398,7 @@ const OrderPage = () => {
                         >
                            Clear filters
                         </Button>
-                     )}
+                     )} */}
                   </motion.div>
                )}
 

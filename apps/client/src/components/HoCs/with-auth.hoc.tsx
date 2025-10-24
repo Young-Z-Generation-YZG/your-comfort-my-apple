@@ -1,4 +1,4 @@
-import useAuth from '@components/hooks/use-auth';
+import useAuth from '@components/hooks/api/use-auth-service';
 import { usePathname, useRouter } from 'next/navigation';
 import { ComponentType, useEffect, useMemo } from 'react';
 

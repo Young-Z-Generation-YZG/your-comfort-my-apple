@@ -7,7 +7,7 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import { MdOutlineManageAccounts } from 'react-icons/md';
 import Link from 'next/link';
-import useAuth from '@components/hooks/use-auth';
+import useAuth from '@components/hooks/api/use-auth-service';
 
 const containerVariants = {
    hidden: {},

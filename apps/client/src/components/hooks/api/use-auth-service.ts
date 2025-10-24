@@ -11,12 +11,12 @@ import {
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
-import { useCheckApiError } from './use-check-error';
+import { useCheckApiError } from '../use-check-error';
 import { IRegisterPayload } from '~/domain/interfaces/auth/register.interface';
 import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
 import { useRouter } from 'next/navigation';
 
-const useAuth = () => {
+const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [registerMutation, registerMutationState] = useRegisterMutation();
    const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
@@ -178,4 +178,4 @@ const useAuth = () => {
    };
 };
 
-export default useAuth;
+export default useAuthService;

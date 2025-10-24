@@ -7,7 +7,7 @@ import Button from '../../_components/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
 import { useForm } from 'react-hook-form';
-import useAuth from '../../../../../components/hooks/use-auth';
+import useAuth from '../../../../../components/hooks/api/use-auth-service';
 
 const defaultValues: OtpFormType = {
    email: '',

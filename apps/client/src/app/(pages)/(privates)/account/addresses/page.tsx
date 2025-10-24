@@ -3,7 +3,7 @@
 import { Button } from '@components/ui/button';
 import { CardContext, DefaultActionContent } from '../_components/card-content';
 import Badge from '../_components/badge';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
    Dialog,
    DialogContent,
@@ -14,7 +14,6 @@ import {
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { useGetAddressesQuery } from '~/infrastructure/services/identity.service';
 import { IAddressPayload } from '~/domain/interfaces/identity/address';
 import { Skeleton } from '@components/ui/skeleton';
 import { FiEdit3 } from 'react-icons/fi';
@@ -32,20 +31,34 @@ const AddressesPage = () => {
       addAddressAsync,
       updateAddressAsync,
       deleteAddressAsync,
-      isLoading: isLoadingAccount,
+      getAddressesAsync,
+      getAddressesState,
+      isLoading,
    } = useIdentityService();
 
-   const { data: queryData, ...queryDataState } = useGetAddressesQuery();
-
    const displayAddresses = useMemo(() => {
-      if (queryDataState.isSuccess && queryData) {
-         const defaultAddress = queryData.find((item) => item.is_default);
-         const otherAddresses = queryData.filter((item) => !item.is_default);
+      if (getAddressesState.isSuccess && getAddressesState.data) {
+         const defaultAddress = getAddressesState.data.find(
+            (item) => item.is_default,
+         );
+         const otherAddresses = getAddressesState.data.filter(
+            (item) => !item.is_default,
+         );
 
          return [defaultAddress, ...otherAddresses];
       }
       return null;
-   }, [queryData, queryDataState.isSuccess]);
+   }, [getAddressesState.isSuccess, getAddressesState.data]);
+
+   useEffect(() => {
+      const fetchAddresses = async () => {
+         const result = await getAddressesAsync();
+         if (result.isSuccess) {
+            console.log(result.data);
+         }
+      };
+      fetchAddresses();
+   }, [getAddressesAsync]);
 
    return (
       <CardContext>
@@ -90,7 +103,7 @@ const AddressesPage = () => {
                            setOpen(false);
                            setEditingAddress(null);
                         }}
-                        isLoading={isLoadingAccount}
+                        isLoading={isLoading}
                         isEditing={!!editingAddress}
                         initialAddress={editingAddress}
                      />
@@ -98,7 +111,7 @@ const AddressesPage = () => {
                </Dialog>
             </div>
 
-            {isLoadingAccount || queryDataState.isLoading ? (
+            {isLoading ? (
                <div>
                   {Array(
                      (displayAddresses?.length ?? 0 > 0)

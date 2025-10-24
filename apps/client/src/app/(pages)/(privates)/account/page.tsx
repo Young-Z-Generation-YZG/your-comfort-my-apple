@@ -7,26 +7,37 @@ import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import Badge from './_components/badge';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProfilePicture } from './_components/profile-picture';
 import TwoRowSkeleton from '@components/ui/two-row-skeleton';
 import ImageSkeleton from '@components/ui/image-skeleton';
 import { Skeleton } from '@components/ui/skeleton';
 import { IoChevronBack } from 'react-icons/io5';
 import ProfileForm from './_components/form/profile-form';
-import { useGetMeQuery } from '~/infrastructure/services/identity.service';
+import useIdentityService from '@components/hooks/api/use-identity-service';
 
 const AccountPage = () => {
    const [editProfile, setEditProfile] = useState(false);
 
-   const { data: queryData, ...queryDataState } = useGetMeQuery();
+   //  const { data: queryData, ...queryDataState } = useGetMeQuery();
+   const { getMeAsync, getMeState, isLoading } = useIdentityService();
+
+   useEffect(() => {
+      const fetchMe = async () => {
+         const result = await getMeAsync();
+         if (result.isSuccess) {
+            console.log(result.data);
+         }
+      };
+      fetchMe();
+   }, [getMeAsync]);
 
    const displayMeInfo = useMemo(() => {
-      if (queryDataState.isSuccess && queryData) {
-         return queryData;
+      if (getMeState.isSuccess && getMeState.data) {
+         return getMeState.data;
       }
       return null;
-   }, [queryData, queryDataState.isSuccess]);
+   }, [getMeState.isSuccess, getMeState.data]);
 
    const renderEditProfile = () => {
       return (
@@ -93,8 +104,7 @@ const AccountPage = () => {
                      </div>
 
                      <div className="flex gap-4 items-center mt-5">
-                        {queryDataState.isLoading ||
-                        queryDataState.isFetching ? (
+                        {getMeState.isLoading || getMeState.isFetching ? (
                            <ImageSkeleton className="w-16 h-16" />
                         ) : (
                            <Avatar className="w-16 h-16">
@@ -104,8 +114,7 @@ const AccountPage = () => {
                         )}
 
                         <div className="flex flex-col gap-1">
-                           {queryDataState.isLoading ||
-                           queryDataState.isFetching ? (
+                           {getMeState.isLoading || getMeState.isFetching ? (
                               <TwoRowSkeleton className="h-[30px] w-[200px]" />
                            ) : (
                               <span className="flex flex-col gap-1">
@@ -126,8 +135,7 @@ const AccountPage = () => {
                            <span className="text-sm text-slate-400 font-SFProText">
                               Phone
                            </span>
-                           {queryDataState.isLoading ||
-                           queryDataState.isFetching ? (
+                           {isLoading ? (
                               <Skeleton className="h-[24px] w-[200px]" />
                            ) : (
                               <span className="text-sm text-slate-500 font-SFProText">
@@ -140,8 +148,7 @@ const AccountPage = () => {
                            <span className="text-sm text-slate-400 font-SFProText">
                               Date of Birth
                            </span>
-                           {queryDataState.isLoading ||
-                           queryDataState.isFetching ? (
+                           {isLoading ? (
                               <Skeleton className="h-[24px] w-[200px]" />
                            ) : (
                               <span className="text-sm text-slate-500 font-SFProText w-[200px]">
@@ -177,8 +184,7 @@ const AccountPage = () => {
                      </div>
 
                      <DefaultActionContent>
-                        {queryDataState.isLoading ||
-                        queryDataState.isFetching ? (
+                        {isLoading ? (
                            <div className="flex flex-col gap-1 text-slate-400 font-SFProText text-sm font-light w-full">
                               <Skeleton className="h-[26px] w-full" />
                               <Skeleton className="h-[26px] w-full" />

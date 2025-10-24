@@ -7,20 +7,19 @@ import Link from 'next/link';
 import { LoginFormType, LoginResolver } from '~/domain/schemas/auth.schema';
 import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '../../../../components/hooks/use-auth';
+import useAuthService from '~/components/hooks/api/use-auth-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { EVerificationType } from '~/domain/enums/verification-type.enum';
 
 const SignInPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
+   const { login, isLoading } = useAuthService();
 
-   const { login, isLoading: isLoginLoading } = useAuth();
-   const appStateRoute = useAppSelector((state) => state.app.route);
    const router = useRouter();
+
+   const appStateRoute = useAppSelector((state) => state.app.route);
 
    const form = useForm<LoginFormType>({
       resolver: LoginResolver,
@@ -57,18 +56,6 @@ const SignInPage = () => {
          }
       }
    };
-
-   useEffect(() => {
-      if (isLoginLoading) {
-         setIsLoading(true);
-      } else {
-         const timeoutId = setTimeout(() => {
-            setIsLoading(false);
-         }, 300);
-
-         return () => clearTimeout(timeoutId);
-      }
-   }, [isLoginLoading]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -172,7 +159,7 @@ const SignInPage = () => {
                         </h3>
 
                         <div className="flex flex-col justify-center items-center gap-3 mt-3">
-                           <button className="w-fit px-3 py-2 rounded-full font-SFProText text-base font-medium min-w-[300px] bg-slate-100 flex items-center justify-between hover:bg-slate-200 active:bg-slate-100">
+                           <button className="w-fit px-3 py-2 rounded-full font-SFProText text-base font-medium min-w-[300px] bg-slate-200 flex items-center justify-between hover:bg-slate-300 active:bg-slate-200">
                               <Image
                                  src={googlePng}
                                  alt="cover"

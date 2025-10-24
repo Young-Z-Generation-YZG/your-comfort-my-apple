@@ -188,7 +188,7 @@ export default function OrderDetails() {
       getOrderDetailsAsync,
       confirmOrderAsync,
       cancelOrderAsync,
-      orderDetailsState,
+      getOrderDetailsState,
       isLoading,
    } = useOrderingService();
 
@@ -199,11 +199,11 @@ export default function OrderDetails() {
    }, [params.id, getOrderDetailsAsync]);
 
    const displayOrderDetailsData = useMemo(() => {
-      if (orderDetailsState.isSuccess && orderDetailsState.data) {
-         return orderDetailsState.data as unknown as TOrderDetailsResponse;
+      if (getOrderDetailsState.isSuccess && getOrderDetailsState.data) {
+         return getOrderDetailsState.data as unknown as TOrderDetailsResponse;
       }
-      return null;
-   }, [orderDetailsState]);
+      return fakeOrderDetails;
+   }, [getOrderDetailsState.isSuccess, getOrderDetailsState.data]);
 
    const CountdownTimer = () => {
       useEffect(() => {
