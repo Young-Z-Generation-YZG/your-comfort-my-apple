@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  admin:
+    build:
+      context: ..
+      dockerfile: provisions/Dockerfile.admin
+    container_name: kltn-admin
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - kltn-network
+    restart: unless-stopped
+
+  # client:
+  #   build:
+  #     context: ..
+  #     dockerfile: provisions/Dockerfile.client
+  #   container_name: kltn-client
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #   networks:
+  #     - kltn-network
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - utils
+  #     - ui-shadcn
+
+networks:
+  kltn-network:
+    driver: bridge

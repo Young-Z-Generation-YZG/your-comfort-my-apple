@@ -1,0 +1,44 @@
+# Multi-stage build for admin app
+FROM node:18-alpine AS base
+
+# Install pnpm
+RUN npm install -g pnpm@9
+
+FROM base AS deps
+WORKDIR /app
+
+# Copy package management files
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json turbo.json .npmrc ./
+
+# Copy package directories (for workspace resolution)
+COPY packages ./packages
+COPY apps ./apps
+
+# Install all dependencies
+RUN pnpm install --frozen-lockfile
+
+
+FROM deps AS builder
+WORKDIR /app
+
+# Build the admin app and its dependencies
+RUN pnpm turbo build --filter admin --force
+
+
+FROM base AS runner
+
+WORKDIR /app
+
+# Copy the built admin app standalone files
+# Next.js standalone mode outputs everything in .next/standalone/
+COPY --from=builder /app/apps/admin/.next/standalone ./
+COPY --from=builder /app/apps/admin/.next/static ./apps/admin/.next/static
+COPY --from=builder /app/apps/admin/public ./apps/admin/public
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+WORKDIR /app/apps/admin
+
+CMD ["node", "server.js"]

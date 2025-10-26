@@ -1,0 +1,60 @@
+# Multi-stage build for admin app
+FROM node:18-alpine AS base
+
+# Install pnpm
+RUN npm install -g pnpm@9
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY apps/admin/package.json ./apps/admin/
+COPY packages/ui-shadcn-ui/package.json ./packages/ui-shadcn-ui/
+COPY packages/utils/package.json ./packages/utils/
+COPY packages/typescript-config/package.json ./packages/typescript-config/
+
+# Install all dependencies
+RUN pnpm install --frozen-lockfile --filter admin
+
+# Copy source files
+COPY apps/admin ./apps/admin
+COPY packages/ui-shadcn-ui ./packages/ui-shadcn-ui
+COPY packages/utils ./packages/utils
+COPY packages/typescript-config ./packages/typescript-config
+COPY turbo.json ./
+
+# Build dependencies first
+RUN pnpm turbo build --filter @kltn-monorepo/utils --filter @kltn-monorepo/ui-shadcn
+
+# Build admin app
+RUN pnpm turbo build --filter admin --force
+
+# Production stage
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy built admin app
+COPY --from=base /app/apps/admin/.next ./apps/admin/.next
+COPY --from=base /app/apps/admin/public ./apps/admin/public
+COPY --from=base /app/apps/admin/package.json ./apps/admin/
+COPY --from=base /app/apps/admin/next.config.ts ./apps/admin/
+
+# Copy built packages
+COPY --from=base /app/packages/ui-shadcn-ui/dist ./packages/ui-shadcn-ui/dist
+COPY --from=base /app/packages/ui-shadcn-ui/package.json ./packages/ui-shadcn-ui/
+COPY --from=base /app/packages/utils/dist ./packages/utils/dist
+COPY --from=base /app/packages/utils/package.json ./packages/utils/
+COPY --from=base /app/packages/typescript-config ./packages/typescript-config
+
+# Install only production dependencies
+RUN pnpm install --prod --filter admin --frozen-lockfile
+
+WORKDIR /app/apps/admin
+
+EXPOSE 3000
+
+CMD ["pnpm", "start"]
+

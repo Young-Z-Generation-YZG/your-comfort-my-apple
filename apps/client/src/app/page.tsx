@@ -1,4 +1,4 @@
-import { Button } from "@kltn-monorepo/ui-shadcn/components/button";
+import { Button } from "@kltn-monorepo/ui-shadcn/components/Button";
 
 export default function Home() {
   return (
