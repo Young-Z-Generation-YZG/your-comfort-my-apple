@@ -1,5 +1,5 @@
 {
-  "name": "TLCN_ADMIN",
+  "name": "KLTN_MONOREPO",
   "private": true,
   "scripts": {
     "build": "turbo run build",
