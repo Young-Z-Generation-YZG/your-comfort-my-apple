@@ -1,2 +1,4 @@
 @import "tailwindcss";
+
+/* apply tailwindcss to shadcn-ui */
 @import "@kltn-monorepo/ui-shadcn/styles.css";

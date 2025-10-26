@@ -1,8 +1,9 @@
 {
   "extends": "@kltn-monorepo/typescript-config/react-library.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": false,
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": "src"

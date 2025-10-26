@@ -6,19 +6,21 @@
     "build": "tsc && npx @tailwindcss/cli -i ./src/styles.css -o ./dist/styles.css",
     "dev": "tsc --watch & npx @tailwindcss/cli -i ./src/styles.css -o ./dist/styles.css --watch"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./components/button": {
-      "import": "./dist/components/button.js",
-      "require": "./dist/components/button.js",
-      "types": "./dist/components/button.d.ts"
+    "./components/Button": {
+      "import": "./dist/components/Button.js",
+      "require": "./dist/components/Button.js",
+      "types": "./dist/components/Button.d.ts"
+    },
+    "./components/*": {
+      "import": "./dist/components/*.js",
+      "require": "./dist/components/*.js",
+      "types": "./dist/components/*.d.ts"
     },
     "./theme.css": "./src/theme.css",
     "./styles.css": "./dist/styles.css"
