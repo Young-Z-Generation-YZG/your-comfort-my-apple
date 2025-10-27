@@ -31,6 +31,9 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    TenantId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    BranchId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    TenantCode = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -250,6 +253,16 @@ namespace YGZ.Identity.Infrastructure.Persistence.Migrations
                 name: "EmailIndex",
                 table: "Users",
                 column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_BranchId",
+                table: "Users",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_TenantId",
+                table: "Users",
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

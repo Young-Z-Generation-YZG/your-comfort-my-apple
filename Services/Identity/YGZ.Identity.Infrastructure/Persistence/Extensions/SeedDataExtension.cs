@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace YGZ.Identity.Infrastructure.Persistence.Extensions;
 
-public static class SeedDataExtensions
+public static class SeedDataExtension
 {
     public static async Task ApplySeedDataAsync(this WebApplication app)
     {

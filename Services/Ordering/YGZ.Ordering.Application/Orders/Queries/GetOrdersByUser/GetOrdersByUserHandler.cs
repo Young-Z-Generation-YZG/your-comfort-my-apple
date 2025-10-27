@@ -15,13 +15,13 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 
 public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, PaginationResponse<OrderDetailsResponse>>
 {
+    private readonly ILogger<GetOrdersByUserHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserRequestContext _userContext;
-    private readonly ILogger<GetOrdersByUserHandler> _logger;
 
-    public GetOrdersByUserHandler(IGenericRepository<Order, OrderId> repository,
-                                  IUserRequestContext userContext,
-                                  ILogger<GetOrdersByUserHandler> logger)
+    public GetOrdersByUserHandler(ILogger<GetOrdersByUserHandler> logger,
+                                  IGenericRepository<Order, OrderId> repository,
+                                  IUserRequestContext userContext)
     {
         _repository = repository;
         _userContext = userContext;
@@ -32,14 +32,18 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
     {
         var userId = _userContext.GetUserId();
 
-        var expression = BuildExpression(request, UserId.Of(userId));
+        var filterExpression = BuildExpression(request, UserId.Of(userId));
 
-        var result = await _repository.GetAllAsync(filterExpression: expression,
-                                                       page: request.Page,
-                                                       limit: request.Limit,
-                                                       tracked: false,
-                                                       cancellationToken: cancellationToken,
-                                                       includes: x => x.OrderItems);
+        var includeExpressions = new Expression<Func<Order, object>>[]
+        {
+            x => x.OrderItems
+        };
+
+        var result = await _repository.GetAllAsync(filterExpression: filterExpression,
+                                                   includeExpressions: includeExpressions,
+                                                   page: request.Page,
+                                                   limit: request.Limit,
+                                                   cancellationToken: cancellationToken);
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
 
@@ -48,47 +52,47 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
 
     private static Expression<Func<Order, bool>> BuildExpression(GetOrdersByUserQuery request, UserId userId)
     {
-       var filterExpression = ExpressionBuilder.New<Order>();
+        var filterExpression = ExpressionBuilder.New<Order>();
 
-       filterExpression = filterExpression.And(order => order.CustomerId == userId);
+        filterExpression = filterExpression.And(order => order.CustomerId == userId);
 
 
-       if (!string.IsNullOrWhiteSpace(request.OrderCode))
-       {
-           filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request.OrderCode)));
-       }
+        if (!string.IsNullOrWhiteSpace(request.OrderCode))
+        {
+            filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request.OrderCode)));
+        }
 
-       EOrderStatus.TryFromName(request.OrderStatus, out var orderStatus);
+        EOrderStatus.TryFromName(request.OrderStatus, out var orderStatus);
 
-       if (!string.IsNullOrWhiteSpace(request.OrderStatus) && orderStatus is not null)
-       {
-           filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
-       }
+        if (!string.IsNullOrWhiteSpace(request.OrderStatus) && orderStatus is not null)
+        {
+            filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
+        }
 
-       return filterExpression;
+        return filterExpression;
     }
 
     private PaginationResponse<OrderDetailsResponse> MapToResponse(List<Order> orders, int totalRecords, int totalPages, GetOrdersByUserQuery request)
     {
-       var queryParams = QueryParamBuilder.Build(request);
+        var queryParams = QueryParamBuilder.Build(request);
 
-       var links = PaginationLinksBuilder.Build(basePath: "",
-                                                queryParams: queryParams,
-                                                currentPage: request.Page ?? 1,
-                                                totalPages: totalPages);
+        var links = PaginationLinksBuilder.Build(basePath: "",
+                                                 queryParams: queryParams,
+                                                 currentPage: request.Page ?? 1,
+                                                 totalPages: totalPages);
 
-       var items = orders.Select(order => order.ToOrderDetailsResponse());
+        var items = orders.Select(order => order.ToResponse());
 
-       var response = new PaginationResponse<OrderDetailsResponse>
-       {
-           TotalRecords = totalRecords,
-           TotalPages = totalPages,
-           PageSize = request.Limit ?? 10,
-           CurrentPage = request.Page ?? 1,
-           Items = items,
-           Links = links
-       };
+        var response = new PaginationResponse<OrderDetailsResponse>
+        {
+            TotalRecords = totalRecords,
+            TotalPages = totalPages,
+            PageSize = request.Limit ?? 10,
+            CurrentPage = request.Page ?? 1,
+            Items = items,
+            Links = links
+        };
 
-       return response;
+        return response;
     }
 }

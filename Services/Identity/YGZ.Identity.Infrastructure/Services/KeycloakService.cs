@@ -7,12 +7,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Newtonsoft.Json;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
-using YGZ.Identity.Application.Auths.Commands.Register;
+using YGZ.Identity.Application.BuilderClasses;
 using YGZ.Identity.Application.Keycloak.Commands;
 using YGZ.Identity.Domain.Core.Errors;
+using YGZ.Identity.Domain.Core.Keycloak.Entities;
 using YGZ.Identity.Domain.Users.Entities;
 using YGZ.Identity.Infrastructure.Settings;
 
@@ -20,6 +22,7 @@ namespace YGZ.Identity.Infrastructure.Services;
 
 public class KeycloakService : IKeycloakService
 {
+    private readonly ILogger<KeycloakService> _logger;
     private readonly KeycloakSettings _keycloakSettings;
     private readonly HttpClient _httpClient;
 
@@ -32,9 +35,11 @@ public class KeycloakService : IKeycloakService
 
     private readonly string _tokenEndpoint;
     private readonly string _adminEndpoint;
+    private readonly string _roleManagementEndpoint;
 
     public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger)
     {
+        _logger = logger;
         _keycloakSettings = options.Value;
         _httpClient = httpClient;
 
@@ -47,6 +52,7 @@ public class KeycloakService : IKeycloakService
 
         _tokenEndpoint = $"{_keycloakSettings.AuthServerUrl}realms/{_keycloakSettings.Realm}/protocol/openid-connect/token";
         _adminEndpoint = $"{_keycloakSettings.AuthServerUrl}admin/realms/{_keycloakSettings.Realm}/users";
+        _roleManagementEndpoint = $"{_keycloakSettings.AuthServerUrl}admin/realms/{_keycloakSettings.Realm}/clients/{_nextjsClientUUID}/roles";
     }
 
     public async Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId)
@@ -75,7 +81,7 @@ public class KeycloakService : IKeycloakService
                 return user!;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -113,7 +119,7 @@ public class KeycloakService : IKeycloakService
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -121,26 +127,11 @@ public class KeycloakService : IKeycloakService
         return Errors.Keycloak.UserNotFound;
     }
 
-    public async Task<Result<string>> CreateKeycloakUserAsync(RegisterCommand request)
+    public async Task<Result<string>> CreateKeycloakUserAsync(UserRepresentation userRepresentation)
     {
-        var keycloakUser = new
-        {
-            username = request.Email,
-            email = request.Email,
-            enabled = true,
-            firstName = request.FirstName,
-            lastName = request.LastName,
-            emailVerified = false,
-            credentials = new[]
-           {
-               new
-               {
-                   type = "password",
-                   value = request.Password,
-                   temporary = false
-               }
-           }
-        };
+        var keycloakUser = userRepresentation;
+
+        var jsonContent = new StringContent(JsonConvert.SerializeObject(keycloakUser), Encoding.UTF8, "application/json");
 
         string? userId = null;
 
@@ -148,12 +139,11 @@ public class KeycloakService : IKeycloakService
 
         try
         {
-
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(_adminEndpoint),
-                Content = new StringContent(JsonConvert.SerializeObject(keycloakUser), Encoding.UTF8, "application/json"),
+                Content = jsonContent,
                 Headers =
                 {
                     { "Authorization", $"Bearer {adminToken}" }
@@ -189,29 +179,24 @@ public class KeycloakService : IKeycloakService
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
 
         try
         {
-            var initRole = new[]
-            {
-                new
-                {
-                    id = "11118cf4-b9d1-430d-96c1-4e5272d6d112",
-                    name = "USER",
-                    description = "",
-                    composite = false
-                }
-            };
+            var keycloakRole = await GetKeycloakRoleByNameAsync(AuthorizationConstants.Roles.USER);
+
+            List<KeycloakRole> roles = new List<KeycloakRole> { keycloakRole.Response! };
+
+            var roleJson = JsonConvert.SerializeObject(roles);
 
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri($"{_adminEndpoint}/{userId}/role-mappings/clients/{_nextjsClientUUID}"),
-                Content = new StringContent(JsonConvert.SerializeObject(initRole), Encoding.UTF8, "application/json"),
+                Content = new StringContent(roleJson, Encoding.UTF8, "application/json"),
                 Headers =
                 {
                     { "Authorization", $"Bearer {adminToken}" }
@@ -222,10 +207,13 @@ public class KeycloakService : IKeycloakService
 
             if (response.StatusCode != HttpStatusCode.NoContent)
             {
+                await DeleteKeycloakUserAsync(userId!);
+
+                _logger.LogError("Failed to assign role to user {UserId}", userId);
                 return Errors.Keycloak.CannotAssignRole;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -261,7 +249,7 @@ public class KeycloakService : IKeycloakService
 
             return deserializedResp;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -409,7 +397,7 @@ public class KeycloakService : IKeycloakService
             }
             return tokenResponse;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -464,7 +452,7 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.SendEmailResetPasswordFailed;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.Keycloak.SendEmailResetPasswordFailed;
         }
@@ -541,7 +529,7 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.Keycloak.ChangePasswordFailed;
         }
@@ -599,7 +587,7 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.Keycloak.ResetPasswordFailed;
         }
@@ -635,9 +623,122 @@ public class KeycloakService : IKeycloakService
                 return null;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
+        }
+    }
+
+    public async Task<Result<bool>> DeleteKeycloakUserAsync(string keycloakUserId)
+    {
+        try
+        {
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri($"{_adminEndpoint}/{keycloakUserId}"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" }
+                }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            // According to Keycloak API docs, successful deletion returns 204 No Content
+            if (response.StatusCode == HttpStatusCode.NoContent)
+            {
+                _logger.LogInformation("Successfully deleted Keycloak user with ID: {UserId}", keycloakUserId);
+                return true;
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogWarning("Keycloak user not found with ID: {UserId}", keycloakUserId);
+                return Errors.Keycloak.UserNotFound;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to delete Keycloak user. Status: {StatusCode}, Error: {Error}",
+                response.StatusCode, errorContent);
+
+            return Errors.Keycloak.CannotBeDeleted;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "HTTP request exception while deleting Keycloak user with ID: {UserId}", keycloakUserId);
+            return Errors.Keycloak.CannotBeDeleted;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error while deleting Keycloak user with ID: {UserId}", keycloakUserId);
+            throw;
+        }
+    }
+
+    public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName)
+    {
+        try
+        {
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            // Keycloak API endpoint: GET /admin/realms/{realm}/clients/{id}/roles/{role-name}
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{_roleManagementEndpoint}/{roleName}"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" },
+                    { "Accept", "application/json" }
+                }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var role = JsonConvert.DeserializeObject<KeycloakRole>(content);
+
+                if (role == null)
+                {
+                    _logger.LogWarning("Failed to deserialize Keycloak role: {RoleName}", roleName);
+                    return Errors.Keycloak.RoleNotFound;
+                }
+
+                _logger.LogInformation("Successfully retrieved Keycloak role: {RoleName} with ID: {RoleId}", roleName, role.Id);
+                return role;
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogWarning("Keycloak role not found: {RoleName}", roleName);
+                return Errors.Keycloak.RoleNotFound;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to get Keycloak role. Status: {StatusCode}, Error: {Error}",
+                response.StatusCode, errorContent);
+
+            return Errors.Keycloak.RoleRetrievalFailed;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "HTTP request exception while retrieving Keycloak role: {RoleName}", roleName);
+            return Errors.Keycloak.RoleRetrievalFailed;
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "JSON deserialization exception while retrieving Keycloak role: {RoleName}", roleName);
+            return Errors.Keycloak.RoleRetrievalFailed;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error while retrieving Keycloak role: {RoleName}", roleName);
+            throw;
         }
     }
 }

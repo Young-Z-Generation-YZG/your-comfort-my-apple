@@ -1,8 +1,11 @@
 ﻿
+using System.Linq.Expressions;
+using System.Web;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Vnpay;
 using YGZ.Ordering.Application.Orders;
@@ -13,9 +16,9 @@ namespace YGZ.Ordering.Application.Payments.Commands;
 
 public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderDetailsResponse>
 {
+    private readonly ILogger<VnpayIpnCheckHandler> _logger;
     private readonly IVnpayProvider _vnpayProvider;
     private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly ILogger<VnpayIpnCheckHandler> _logger;
 
     public VnpayIpnCheckHandler(IVnpayProvider vnpayProvider,
                                 IGenericRepository<Order, OrderId> repository,
@@ -46,9 +49,10 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
 
         var result = _vnpayProvider.IpnCheck(responseParams);
 
-        if (result && request.ResponseCode == "00")
+        if (request.ResponseCode == "00")
         {
-            var orderId = request.OrderInfo.Split("ORDER_ID=")[1];
+            var decodedOrderInfo = HttpUtility.UrlDecode(request.OrderInfo);
+            var orderId = decodedOrderInfo.Split("ORDER_ID=")[1];
 
             if (orderId is null)
             {
@@ -57,24 +61,39 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
                 return Errors.Order.DoesNotExist;
             }
 
-            //var order = await _orderRepository.GetOrderByIdWithInclude(OrderId.Of(orderId), (o => o.OrderItems), cancellationToken);
+            var expressions = new Expression<Func<Order, object>>[]
+            {
+                x => x.OrderItems
+            };
 
-            //if (order is not null && OrderStatus.Equals(order.Status, OrderStatus.PENDING))
-            //{
-            //    order.Status = OrderStatus.PAID;
+            var order = await _repository.GetByIdAsync(OrderId.Of(orderId), expressions, cancellationToken);
 
-            //    var updatedResult = await _orderRepository.UpdateAsync(order, cancellationToken);
+            if (order is null)
+            {
+                return Errors.Order.DoesNotExist;
+            }
 
-            //    OrderDetailsResponse response = MapToResponse(order);
+            if (order is not null && EOrderStatus.Equals(order.OrderStatus, EOrderStatus.PENDING))
+            {
+                order.SetPaid();
 
-            //    return response;
-            //}
-            //else if (order is not null && OrderStatus.Equals(order.Status, OrderStatus.PAID))
-            //{
-            //    OrderDetailsResponse response = MapToResponse(order);
+                var updateResult = await _repository.UpdateAsync(order, cancellationToken);
 
-            //    return response;
-            //}
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Error;
+                }
+
+                OrderDetailsResponse response = order.ToResponse();
+
+                return response;
+            }
+            else if (order is not null && EOrderStatus.Equals(order.OrderStatus, EOrderStatus.PAID))
+            {
+                OrderDetailsResponse response = order.ToResponse();
+
+                return response;
+            }
         }
 
         return Errors.Payment.PaymentFailure;

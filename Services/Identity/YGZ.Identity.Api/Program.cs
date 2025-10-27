@@ -25,15 +25,10 @@ services
     .AddInfrastructureLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration);
 
-
 services.AddProblemDetails();
 services.AddHttpContextAccessor();
 services.AddEndpointsApiExplorer();
-services.AddControllers(options => options.AddProtectedResources())
-        .AddJsonOptions(options =>
-        {
-            // options.JsonSerializerOptions.WriteIndented = true; // Optional
-        });
+services.AddControllers(options => options.AddProtectedResources());
 
 services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 

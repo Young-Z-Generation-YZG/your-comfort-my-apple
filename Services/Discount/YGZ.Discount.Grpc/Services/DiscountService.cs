@@ -311,7 +311,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return error.Code switch
         {
             // Not Found errors
-            "Discount.CouponNotFound" => StatusCode.NotFound,
+            "Coupon.NotFound" => StatusCode.NotFound,
             "Discount.EventNotFound" => StatusCode.NotFound,
             "Discount.EventItemNotFound" => StatusCode.NotFound,
 

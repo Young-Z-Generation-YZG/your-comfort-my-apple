@@ -3,10 +3,10 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
-using YGZ.Identity.Application.Auths.Extensions;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
 
@@ -46,7 +46,7 @@ public class IdentityService : IIdentityService
 
             return existingUser;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -63,19 +63,33 @@ public class IdentityService : IIdentityService
                 return Errors.User.AlreadyExists;
             }
 
-            var newUser = request.ToEntity(userId);
+            var newUser = User.Create(
+                guid: userId,
+                email: request.Email,
+                phoneNumber: request.PhoneNumber,
+                passwordHash: "",
+                firstName: request.FirstName,
+                lastName: request.LastName,
+                birthDay: DateTime.Parse(request.BirthDay).ToUniversalTime().AddHours(7),
+                image: null,
+                country: request.Country,
+                emailConfirmed: false,
+                tenantId: null,
+                branchId: null,
+                tenantCode: null
+            );
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 
             var result = await _userManager.CreateAsync(newUser);
 
-            if (!await _roleManager.RoleExistsAsync("USER"))
+            if (!await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER))
             {
                 return Errors.User.CannotBeCreated;
             }
 
             // Add role "USER" to user
-            var roleResult = await _userManager.AddToRoleAsync(newUser, "USER");
+            var roleResult = await _userManager.AddToRoleAsync(newUser, AuthorizationConstants.Roles.USER);
 
             if (!roleResult.Succeeded)
             {
@@ -89,7 +103,7 @@ public class IdentityService : IIdentityService
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }

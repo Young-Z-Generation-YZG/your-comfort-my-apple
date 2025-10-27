@@ -86,7 +86,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
             {
                 if (ex.StatusCode == StatusCode.NotFound)
                 {
-                    return Errors.Discount.PromotionCouponNotFound;
+                    return Errors.Discount.CouponNotFound;
                 }
             }
 

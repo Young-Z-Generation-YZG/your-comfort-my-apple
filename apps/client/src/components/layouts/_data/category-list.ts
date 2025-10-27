@@ -3,7 +3,7 @@ export const categoryList = [
       id: '1',
       name: 'Store',
       description: 'Store description',
-      navigate: '/shop/iphone',
+      navigate: '/store',
       order: 0,
       parent_id: null,
    },

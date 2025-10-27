@@ -23,40 +23,41 @@ public class UpdateReviewCommandHandler : ICommandHandler<UpdateReviewCommand, B
 
     public async Task<Result<BooleanRpcResponse>> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            if (!Guid.TryParse(request.OrderItemId, out var orderItemGuid))
-            {
-                return new BooleanRpcResponse
-                {
-                    IsSuccess = false,
-                    ErrorMessage = "Invalid OrderItemId format."
-                };
-            }
+        throw new NotImplementedException();
+        //try
+        //{
+        //    if (!Guid.TryParse(request.OrderItemId, out var orderItemGuid))
+        //    {
+        //        return new BooleanRpcResponse
+        //        {
+        //            IsSuccess = false,
+        //            ErrorMessage = "Invalid OrderItemId format."
+        //        };
+        //    }
 
-            var id = OrderItemId.Of(orderItemGuid);
+        //    var id = OrderItemId.Of(orderItemGuid);
 
-            var orderItem = await _repository.GetByIdAsync(id, cancellationToken);
+        //    var orderItem = await _repository.GetByIdAsync(id, cancellationToken);
 
-            orderItem.CheckIsReviewed();
+        //    orderItem.CheckIsReviewed();
 
-            var result = await _repository.UpdateAsync(orderItem, cancellationToken);
+        //    var result = await _repository.UpdateAsync(orderItem, cancellationToken);
 
-            return new BooleanRpcResponse
-            {
-                IsSuccess = result,
-                ErrorMessage = null
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating review for OrderItemId: {OrderItemId}", request.OrderItemId);
+        //    return new BooleanRpcResponse
+        //    {
+        //        IsSuccess = result,
+        //        ErrorMessage = null
+        //    };
+        //}
+        //catch (Exception ex)
+        //{
+        //    _logger.LogError(ex, "Error updating review for OrderItemId: {OrderItemId}", request.OrderItemId);
 
-            return new BooleanRpcResponse
-            {
-                IsSuccess = false,
-                ErrorMessage = ex.Message
-            };
-        }
+        //    return new BooleanRpcResponse
+        //    {
+        //        IsSuccess = false,
+        //        ErrorMessage = ex.Message
+        //    };
+        //}
     }
 }

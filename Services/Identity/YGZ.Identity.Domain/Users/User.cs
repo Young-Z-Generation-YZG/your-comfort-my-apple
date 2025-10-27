@@ -9,9 +9,12 @@ namespace YGZ.Identity.Domain.Users;
 
 public class User : IdentityUser, IAggregate
 {
+    public string? TenantId { get; set; }
+    public string? BranchId { get; set; }
+    public string? TenantCode { get; set; }
     public Profile Profile { get; set; } = null!; // One-to-one relationship
-    public ProfileId? ProfileId { get; set; }
     public ICollection<ShippingAddress> ShippingAddresses { get; set; } = new List<ShippingAddress>(); // One-to-many relationship
+
 
     private readonly List<IDomainEvent> _domainEvents = new();
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -25,8 +28,10 @@ public class User : IdentityUser, IAggregate
                               DateTime birthDay,
                               Image? image,
                               string country,
-                              bool? emailConfirmed
-        )
+                              bool? emailConfirmed,
+                              string? tenantId,
+                              string? branchId,
+                              string? tenantCode)
     {
 
         var user = new User
@@ -40,6 +45,9 @@ public class User : IdentityUser, IAggregate
             PhoneNumber = phoneNumber,
             PhoneNumberConfirmed = false,
             EmailConfirmed = emailConfirmed ?? false,
+            TenantId = tenantId,
+            BranchId = branchId,
+            TenantCode = tenantCode,
         };
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user)
@@ -54,7 +62,7 @@ public class User : IdentityUser, IAggregate
         return user;
     }
 
-    public void Update( User user)
+    public void Update(User user)
     {
         if (user == null)
             throw new ArgumentNullException(nameof(user));
@@ -86,7 +94,7 @@ public class User : IdentityUser, IAggregate
             PhoneNumber = PhoneNumber!,
             BirthDate = Profile.BirthDay.ToString("yyyy-MM-dd"),
             ImageId = Profile.Image!.ImageId,
-            ImageUrl = Profile.Image.ImageUrl,  
+            ImageUrl = Profile.Image.ImageUrl,
             DefaultAddressLabel = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.Label ?? "",
             DefaultContactName = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.ContactName ?? "",
             DefaultContactPhoneNumber = ShippingAddresses.FirstOrDefault(x => x.IsDefault)?.ContactPhoneNumber ?? "",

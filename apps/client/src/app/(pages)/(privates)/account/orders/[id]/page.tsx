@@ -33,15 +33,15 @@ import useOrderingService from '~/components/hooks/api/use-ordering-service';
 const fakeOrderDetails = {
    tenant_id: null,
    branch_id: null,
-   order_id: 'f7dbe073-accb-4b87-9ba7-868bde5adf5d',
-   customer_id: 'e79d0b6f-af5a-4162-a6fd-8194d5a5f616',
-   customer_email: 'staff@gmail.com',
-   order_code: '#441259',
-   status: 'PENDING_ASSIGNMENT',
+   order_id: '5b7404da-3b34-48f8-ab46-fc858b0698d7',
+   customer_id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
+   customer_email: 'user@gmail.com',
+   order_code: '#268356',
+   status: 'PAID',
    payment_method: 'VNPAY',
    shipping_address: {
       contact_name: 'Foo Bar',
-      contact_email: 'staff@gmail.com',
+      contact_email: 'user@gmail.com',
       contact_phone_number: '0333284890',
       contact_address_line: '123 Street',
       contact_district: 'Thu Duc',
@@ -50,8 +50,8 @@ const fakeOrderDetails = {
    },
    order_items: [
       {
-         order_id: 'f7dbe073-accb-4b87-9ba7-868bde5adf5d',
-         order_item_id: '2ac7d0dd-f874-4e44-9fd2-98a643cdf786',
+         order_id: '5b7404da-3b34-48f8-ab46-fc858b0698d7',
+         order_item_id: '77cd2f63-5890-4fc5-8f85-ea86b0f4aef1',
          sku_id: null,
          model_id: '68e403d5617b27ad030bf28f',
          model_name: 'IPHONE_15',
@@ -61,28 +61,32 @@ const fakeOrderDetails = {
          display_image_url:
             'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
          model_slug: 'iphone-15',
-         quantity: 7,
+         quantity: 1,
          promotion: {
-            promotion_id_or_code: '175a2367-04c0-4eb5-a3dd-5a509e4bedc8',
+            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
             promotion_type: 'COUPON',
-            product_unit_price: 1000,
             discount_type: 'PERCENTAGE',
             discount_value: 0.1,
-            discount_amount: 0.1,
+            discount_amount: 100,
             final_price: 900,
          },
          is_reviewed: false,
-         created_at: '2025-10-15T14:27:01.065529Z',
-         updated_at: '2025-10-15T14:27:01.065529Z',
+         created_at: '2025-10-27T18:01:42.770772Z',
+         updated_at: '2025-10-27T18:01:42.770772Z',
          updated_by: null,
          is_deleted: false,
          deleted_at: null,
          deleted_by: null,
       },
    ],
+   promotion_id: '550e8400-e29b-41d4-a716-446655440000',
+   promotion_type: 'COUPON',
+   discount_type: 'PERCENTAGE',
+   discount_value: 0.1,
+   discount_amount: 100,
    total_amount: 900,
-   created_at: '2025-10-15T14:27:01.063217Z',
-   updated_at: '2025-10-15T14:27:01.063217Z',
+   created_at: '2025-10-27T18:01:42.769227Z',
+   updated_at: '2025-10-27T18:01:42.769227Z',
    updated_by: null,
    is_deleted: false,
    deleted_at: null,
@@ -466,7 +470,7 @@ export default function OrderDetails() {
                      <div className="divide-y divide-gray-200">
                         <AnimatePresence>
                            {displayOrderDetailsData.order_items.map(
-                              (item, index) => (
+                              (item: TOrderItemResponse, index: number) => (
                                  <motion.div
                                     key={index}
                                     className="p-4 flex items-center"
@@ -511,7 +515,7 @@ export default function OrderDetails() {
                                           </p>
                                           <p className="text-sm font-medium text-gray-900">
                                              $
-                                             {item.promotion?.final_price.toFixed(
+                                             {item.promotion?.discount_amount.toFixed(
                                                 2,
                                              ) || item.unit_price.toFixed(2)}
                                           </p>

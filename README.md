@@ -53,3 +53,5 @@ docker cp ygz.keycloak.server:/tmp/export ./DockerVolumes/KeycloakConfiguration/
 
 dotnet ef migrations add "InitialMigration" --startup-project ./Services/Discount/YGZ.Discount.Grpc --project ./Services/Discount/YGZ.Discount.Infrastructure --output-dir Persistence/Migrations
 dotnet ef migrations add "InitialMigration" --startup-project ./Services/Ordering/YGZ.Ordering.Api --project ./Services/Ordering/YGZ.Ordering.Infrastructure --output-dir Persistence/Migrations
+
+dotnet ef migrations add "InitialMigration" --startup-project ./Services/Identity/YGZ.Identity.Api --project ./Services/Identity/YGZ.Identity.Infrastructure --output-dir Persistence/Migrations

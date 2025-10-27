@@ -2,11 +2,11 @@
 
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Catalog.Application.Abstractions;
-using YGZ.Catalog.Application.Reviews.Extensions;
-using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Ordering.Api.Protos;
 using YGZ.BuildingBlocks.Shared.Errors.Common;
+using YGZ.Catalog.Application.Abstractions;
+using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Application.Reviews.Extensions;
+using YGZ.Ordering.Api.Protos;
 
 namespace YGZ.Catalog.Application.Reviews.Commands;
 
@@ -31,7 +31,7 @@ public class CreateReviewCommandHandler : ICommandHandler<CreateReviewCommand, b
 
         var result = await _reviewRepository.InsertOneAsync(review);
 
-        if(result.IsFailure)
+        if (result.IsFailure)
         {
             return result.Error;
         }
@@ -46,7 +46,7 @@ public class CreateReviewCommandHandler : ICommandHandler<CreateReviewCommand, b
             IsReviewed = true,
         });
 
-        if(rpcResult.IsFailure)
+        if (rpcResult.IsFailure)
         {
             return Errors.OrderingGrpc.CannotUpdateReviewOrderItem;
         }

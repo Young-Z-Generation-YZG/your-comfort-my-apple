@@ -66,7 +66,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
     }
 
-        virtual public async Task<Result<List<TEntity>>> GetAllByFilterAsync(Expression<Func<TEntity, bool>>? filterExpression = null, CancellationToken? cancellationToken = null)
+    virtual public async Task<Result<List<TEntity>>> GetAllByFilterAsync(Expression<Func<TEntity, bool>>? filterExpression = null, CancellationToken? cancellationToken = null)
     {
         try
         {

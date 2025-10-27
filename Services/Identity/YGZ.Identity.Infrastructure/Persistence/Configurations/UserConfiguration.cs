@@ -11,6 +11,21 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.HasIndex(u => u.TenantId).IsUnique(false);
+        builder.HasIndex(u => u.BranchId).IsUnique(false);
+
+        builder.Property(u => u.TenantId)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(u => u.BranchId)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(u => u.TenantCode)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
         builder.HasOne(u => u.Profile)
             .WithOne(p => p.User)
             .HasForeignKey<Profile>(p => p.UserId)
@@ -20,7 +35,5 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .WithOne(s => s.User)
             .HasForeignKey(s => s.UserId)
             .IsRequired();
-
-        builder.Ignore(u => u.ProfileId);
     }
 }

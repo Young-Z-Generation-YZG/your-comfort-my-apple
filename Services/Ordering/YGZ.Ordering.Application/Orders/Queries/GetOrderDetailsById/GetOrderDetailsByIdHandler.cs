@@ -1,4 +1,5 @@
 ﻿
+using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -29,13 +30,18 @@ public class GetOrderDetailsByIdHandler : IQueryHandler<GetOrderDetailsByIdQuery
     {
         OrderId orderId = OrderId.Of(request.OrderId);
 
-        var orderResult = await _repository.GetByIdAsync(orderId, cancellationToken, x => x.OrderItems);
+        var expressions = new Expression<Func<Order, object>>[]
+        {
+            x => x.OrderItems
+        };
 
-        if (orderResult is null)
+        var result = await _repository.GetByIdAsync(orderId, expressions, cancellationToken);
+
+        if (result is null)
         {
             return Errors.Order.DoesNotExist;
         }
 
-        return orderResult.ToOrderDetailsResponse();
+        return result.ToResponse();
     }
 }

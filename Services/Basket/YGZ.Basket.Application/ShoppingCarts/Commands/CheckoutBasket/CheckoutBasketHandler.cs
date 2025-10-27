@@ -111,7 +111,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 {
                     if (ex.StatusCode == StatusCode.NotFound)
                     {
-                        return Errors.Discount.PromotionCouponNotFound;
+                        return Errors.Discount.CouponNotFound;
                     }
                 }
 

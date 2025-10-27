@@ -29,13 +29,17 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
 
     public async Task<Result<PaginationResponse<OrderDetailsResponse>>> Handle(GetOrdersByAdminQuery request, CancellationToken cancellationToken)
     {
-        var expression = BuildExpression(request);
+        var filterExpression = BuildExpression(request);
 
-        var result = await _repository.GetAllAsync(filterExpression: expression,
+        var includeExpressions = new Expression<Func<Order, object>>[]
+        {
+            x => x.OrderItems
+        };
+
+        var result = await _repository.GetAllAsync(filterExpression: filterExpression,
                                                    page: request.Page,
                                                    limit: request.Limit,
-                                                   tracked: false,
-                                                   includes: x => x.OrderItems,
+                                                   includeExpressions: includeExpressions,
                                                    cancellationToken: cancellationToken);
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
@@ -76,7 +80,7 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
                                                  currentPage: request.Page ?? 1,
                                                  totalPages: totalPages);
 
-        var items = orders.Select(order => order.ToOrderDetailsResponse());
+        var items = orders.Select(order => order.ToResponse());
 
         var response = new PaginationResponse<OrderDetailsResponse>
         {

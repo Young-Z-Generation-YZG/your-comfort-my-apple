@@ -8,6 +8,6 @@ public static partial class Errors
 {
     public static class Discount
     {
-        public static Error PromotionCouponNotFound = Error.BadRequest(code: "BasketDiscountRpc.CouponNotFound", message: "Promotion Coupon not found", serviceName: "BasketDiscountRpc");
+        public static Error CouponNotFound = Error.BadRequest(code: "Coupon.NotFound", message: "Coupon not found", serviceName: "DiscountService");
     }
 }

@@ -7,10 +7,10 @@ namespace YGZ.Identity.Domain.Users.Events;
 
 public record class UserCreatedDomainEvent(User User) : IDomainEvent
 {
-    required public string FirstName { get; set; }
-    required public string LastName { get; set; }
-    required public DateTime BirthDay { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required DateTime BirthDay { get; set; }
     public Gender Gender { get; set; } = Gender.OTHER;
-    required public Image? Image { get; set; }
-    required public string Country { get; set; }
+    public required Image? Image { get; set; }
+    public required string Country { get; set; }
 }

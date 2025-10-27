@@ -7,6 +7,7 @@ using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.Emails;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Abstractions.Utils;
+using YGZ.Identity.Application.BuilderClasses;
 using YGZ.Identity.Application.Emails;
 using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Domain.Core.Enums;
@@ -16,12 +17,12 @@ namespace YGZ.Identity.Application.Auths.Commands.Register;
 
 public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificationResponse>
 {
+    private readonly ILogger<RegisterHandler> _logger;
     private readonly IIdentityService _identityService;
     private readonly IKeycloakService _keycloakService;
     private readonly ICachedRepository _cachedRepository;
     private readonly IOtpGenerator _otpGenerator;
     private readonly IEmailService _emailService;
-    private readonly ILogger<RegisterHandler> _logger;
     private readonly string _webClientUrl;
 
     public RegisterHandler(IIdentityService identityService,
@@ -50,10 +51,28 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
             return Errors.User.AlreadyExists;
         }
 
-        var keycloakResult = await _keycloakService.CreateKeycloakUserAsync(request);
+        var userRepresentation = UserRepresentation.CreateBuilder()
+            .WithUsername(request.Email)
+            .WithEmail(request.Email)
+            .WithEnabled(true)
+            .WithFirstName(request.FirstName)
+            .WithLastName(request.LastName)
+            .WithEmailVerified(false)
+            .WithPassword(request.Password)
+            .WithTenantAttributes(
+                tenantId: null,
+                tenantCode: null,
+                tenantType: null,
+                branchId: null
+            )
+            .Build();
+
+        var keycloakResult = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
 
         if (keycloakResult.IsFailure)
         {
+            await _keycloakService.DeleteKeycloakUserAsync(keycloakResult.Response!);
+
             return keycloakResult.Error;
         }
 
@@ -61,6 +80,7 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
         if (userResult.IsFailure)
         {
+            await _keycloakService.DeleteKeycloakUserAsync(keycloakResult.Response!);
             return userResult.Error;
         }
 

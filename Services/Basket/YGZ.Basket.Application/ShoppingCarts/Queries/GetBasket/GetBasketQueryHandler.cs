@@ -69,7 +69,7 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
             {
                 if (ex.StatusCode == StatusCode.NotFound)
                 {
-                    return Errors.Discount.PromotionCouponNotFound;
+                    return Errors.Discount.CouponNotFound;
                 }
             }
 

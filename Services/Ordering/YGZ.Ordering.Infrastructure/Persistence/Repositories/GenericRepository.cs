@@ -5,166 +5,127 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Core.Errors;
 
 namespace YGZ.Ordering.Infrastructure.Persistence.Repositories;
 
 public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> where TEntity : Entity<TId> where TId : ValueObject
 {
-    private readonly OrderDbContext _orderDbContext;
+    private readonly OrderDbContext _dbContext;
     protected readonly DbSet<TEntity> _dbSet;
     private readonly ILogger<GenericRepository<TEntity, TId>> _logger;
 
-    public GenericRepository(OrderDbContext orderDbContext, ILogger<GenericRepository<TEntity, TId>> logger)
+    public GenericRepository(OrderDbContext dbContext, ILogger<GenericRepository<TEntity, TId>> logger)
     {
-        _orderDbContext = orderDbContext;
-        _dbSet = orderDbContext.Set<TEntity>();
+        _dbContext = dbContext;
+        _dbSet = dbContext.Set<TEntity>();
         _logger = logger;
     }
 
-    public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
-                                                                                           int? page,
-                                                                                           int? limit,
-                                                                                           bool tracked,
-                                                                                           CancellationToken cancellationToken,
-                                                                                           params Expression<Func<TEntity, object>>[] includes)
+    virtual public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression = null,
+                                                                                           Expression<Func<TEntity, object>>[]? includeExpressions = null,
+                                                                                           int? page = null,
+                                                                                           int? limit = null,
+                                                                                           CancellationToken? cancellationToken = null)
     {
-        const int defaultPage = 1;
-        const int defaultLimit = 10;
 
-        var currentPage = page ?? defaultPage;
-        var pageSize = limit ?? defaultLimit;
+        var currentPage = page ?? 1;
+        var pageSize = limit ?? 10;
 
-        var query = _dbSet.AsQueryable();
+        var query = _dbSet.AsNoTracking();
 
-        // Apply eager loading
-        foreach (var include in includes)
+        if (includeExpressions is not null)
         {
-            query = query.Include(include);
+            foreach (var include in includeExpressions)
+            {
+                query = query.Include(include);
+            }
         }
 
-        // Apply filters
         if (filterExpression is not null)
         {
             query = query.Where(filterExpression);
         }
 
-        // Get total count for pagination
-        var totalRecords = await query.CountAsync(cancellationToken);
+        var totalRecords = await query.CountAsync(cancellationToken ?? CancellationToken.None);
         var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 
-        // Apply pagination
         query = query
             .Skip((currentPage - 1) * pageSize)
             .Take(pageSize);
 
-        // Execute query with or without tracking
-        var result = tracked
-            ? await query.ToListAsync(cancellationToken)
-            : await query.AsNoTracking().ToListAsync(cancellationToken);
+        var result = await query.ToListAsync(cancellationToken ?? CancellationToken.None);
 
         return (result, totalRecords, totalPages);
     }
 
-    virtual public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+    virtual public async Task<TEntity?> GetByIdAsync(TId id,
+                                                     Expression<Func<TEntity, object>>[]? expressions = null,
+                                                     CancellationToken? cancellationToken = null)
     {
-        try
+        var query = _dbSet.AsNoTracking();
+
+        if (expressions is not null)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
-
-            return result ?? null!;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting entity by id: {Id}", id);
-
-            throw new Exception(ex.Message, ex);
-        }
-    }
-
-    virtual public async Task<TEntity?> GetByIdAsync(TId id, CancellationToken cancellationToken, params Expression<Func<TEntity, object>>[] includes)
-    {
-        try
-        {
-            var query = _dbSet.AsQueryable();
-
-            foreach (var include in includes)
+            foreach (var expression in expressions)
             {
-                query = query.Include(include);
+                query = query.Include(expression);
             }
+        }
 
-            var result = await query.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+        try
+        {
+            var result = await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken ?? CancellationToken.None);
 
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError(ex, "Error getting entity by id with includes: {Id}", id);
-
-            throw new Exception(ex.Message, ex);
+            throw;
         }
     }
 
-    virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> AddAsync(TEntity entity, CancellationToken? cancellationToken = null)
     {
         try
         {
-            await _dbSet.AddAsync(entity);
-            await SaveChangesAsync();
+            await _dbSet.AddAsync(entity, cancellationToken ?? CancellationToken.None);
 
-            return true;
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Common.AddFailure;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            throw new Exception(ex.Message, ex);
+            throw;
         }
     }
 
-    virtual public async Task<bool> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await _dbSet.AddRangeAsync(entities);
-            await SaveChangesAsync();
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error adding entities: {Entities}", entities);
-
-            return false;
-        }
-    }
-
-    virtual public Task<bool> RemoveAsync(TEntity entity, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    virtual public Task<bool> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    virtual public async Task<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    virtual public async Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken? cancellationToken)
     {
         try
         {
             _dbSet.Update(entity);
-            await SaveChangesAsync();
 
-            return true;
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Common.UpdateFailure;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError(ex, "Error updating entity: {Entity}", entity);
-
-            return false;
+            throw;
         }
     }
 
-    virtual public async Task SaveChangesAsync()
-    {
-        await _orderDbContext.SaveChangesAsync();
-    }
+
 }

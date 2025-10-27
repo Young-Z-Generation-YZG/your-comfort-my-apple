@@ -18,7 +18,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public required UserId CustomerId { get; init; }
     public required Code Code { get; init; }
     public required EPaymentMethod PaymentMethod { get; init; }
-    public required EOrderStatus OrderStatus { get; init; }
+    public EOrderStatus OrderStatus { get; private set; }
     public required ShippingAddress ShippingAddress { get; init; }
     private readonly List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
@@ -75,6 +75,16 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public void AddOrderItem(OrderItem orderItem)
     {
         _orderItems.Add(orderItem);
+    }
+
+    public void SetPaid()
+    {
+        if (OrderStatus != EOrderStatus.PENDING)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
+        }
+
+        OrderStatus = EOrderStatus.PAID;
     }
 
     //public void RemoveOrderItem(OrderItemId orderItemId)
@@ -136,7 +146,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     //    }
     //}
 
-    public OrderDetailsResponse ToOrderDetailsResponse()
+    public OrderDetailsResponse ToResponse()
     {
         return new OrderDetailsResponse
         {
