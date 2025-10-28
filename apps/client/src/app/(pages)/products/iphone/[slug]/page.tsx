@@ -1,12 +1,25 @@
+'use client';
+
 import Carrier from './_components/carrier';
 import IphoneDetails from './_components/iphone-details';
 import Coverage from './_components/coverage';
 import ProductInfo from './_components/product-info';
 import CompareIPhoneSection from '~/components/client/compare-iphone-section';
+import useCatalogService from '@components/hooks/api/use-catalog-service';
+import { LoadingOverlay } from '@components/client/loading-overlay';
+import useBasketService from '@components/hooks/api/use-basket-service';
 
 const IphoneDetailPage = () => {
+   const { isLoading } = useCatalogService();
+   const { isLoading: isBasketLoading } = useBasketService();
+
    return (
       <div>
+         <LoadingOverlay
+            isLoading={isLoading || isBasketLoading}
+            fullScreen
+         ></LoadingOverlay>
+
          {/* CARRIER */}
          <Carrier />
 

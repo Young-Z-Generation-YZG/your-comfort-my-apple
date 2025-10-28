@@ -480,7 +480,7 @@ const IphoneShopPage = () => {
    const { filters, setFilters, clearFilters, activeFilterCount } =
       useFilter<IphoneModelsFilter>();
 
-   const { iphoneModelsState, getIphoneModelsAsync, isLoading } =
+   const { getModelBySlugState, getIphoneModelsAsync, isLoading } =
       useCatalogService();
 
    // Convert filters to query string for API call
@@ -516,11 +516,11 @@ const IphoneShopPage = () => {
 
    // Use pagination data from API or fallback to fake data
    const paginationResponseData = useMemo(() => {
-      if (iphoneModelsState.isSuccess && iphoneModelsState.data) {
-         return iphoneModelsState.data;
+      if (getModelBySlugState.isSuccess && getModelBySlugState.data) {
+         return getModelBySlugState.data;
       }
       return fakeData;
-   }, [iphoneModelsState.isSuccess, iphoneModelsState.data]);
+   }, [getModelBySlugState.isSuccess, getModelBySlugState.data]);
 
    const {
       currentPage,

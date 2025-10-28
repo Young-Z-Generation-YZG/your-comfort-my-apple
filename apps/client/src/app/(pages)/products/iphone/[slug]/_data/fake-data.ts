@@ -1596,3 +1596,8 @@ export const iphoneDetailsFakeData = {
       },
    ],
 };
+
+export type TIphoneModelDetails = typeof iphoneDetailsFakeData;
+export type TModelItem = (typeof iphoneDetailsFakeData.model_items)[number];
+export type TColorItem = (typeof iphoneDetailsFakeData.color_items)[number];
+export type TStorageItem = (typeof iphoneDetailsFakeData.storage_items)[number];

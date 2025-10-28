@@ -16,22 +16,63 @@ import {
    AccordionContent,
 } from '@components/ui/accordion';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useCart } from './_hooks/useCart';
 import { useCartForm } from './_hooks/useCartForm';
 import { usePromoCode } from './_hooks/usePromoCode';
-import CartItem from './_components/cart-item';
+import CartItem, { TCartItem } from './_components/cart-item';
 import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
 import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
-import { useToast } from '@components/hooks/use-toast';
+import useBasketService from '@components/hooks/api/use-basket-service';
+import { useEffect } from 'react';
 
-// Constants
-const FALLBACK_SUBTOTAL = 100.2;
-const FALLBACK_DISCOUNT = 1.2;
+const fakeData = {
+   user_email: 'staff@gmail.com',
+   cart_items: [
+      {
+         is_selected: false,
+         model_id: '68e403d5617b27ad030bf28f',
+         product_name: 'iPhone 15 128GB Blue',
+         color: {
+            name: 'Blue',
+            normalized_name: 'BLUE',
+            hex_code: '',
+            showcase_image_id: '',
+            order: 0,
+         },
+         model: {
+            name: 'iPhone 15',
+            normalized_name: 'IPHONE_15',
+            order: 0,
+         },
+         storage: {
+            name: '128GB',
+            normalized_name: '128GB',
+            order: 0,
+         },
+         display_image_url:
+            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
+         unit_price: 1000,
+         quantity: 2,
+         sub_total_amount: 2000,
+         promotion: null,
+         index: 1,
+      },
+   ],
+   total_amount: 0,
+};
 
 const CartPage = () => {
    const router = useRouter();
-   const { toast } = useToast();
+
+   const {
+      getBasketAsync,
+      getBasketState,
+      storeBasketAsync,
+      deleteBasketAsync,
+      proceedToCheckoutAsync,
+      proceedToCheckoutState,
+      isLoading,
+   } = useBasketService();
 
    // Promo code management
    const {
@@ -42,61 +83,29 @@ const CartPage = () => {
       handleRemovePromoCode,
    } = usePromoCode();
 
-   // Cart data fetching
-   const { isLoading, basketData, storeBasket } = useCart({
-      couponCode: urlCouponCode,
-      fallbackData: {
-         user_email: 'staff@gmail.com',
-         cart_items: [
-            {
-               is_selected: false,
-               model_id: '68e403d5617b27ad030bf28f',
-               product_name: 'iPhone 15 128GB Blue',
-               color: {
-                  name: 'Blue',
-                  normalized_name: 'BLUE',
-                  hex_code: '',
-                  showcase_image_id: '',
-                  order: 0,
-               },
-               model: {
-                  name: 'iPhone 15',
-                  normalized_name: 'IPHONE_15',
-                  order: 0,
-               },
-               storage: {
-                  name: '128GB',
-                  normalized_name: '128GB',
-                  order: 0,
-               },
-               display_image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-               unit_price: 1000,
-               quantity: 2,
-               sub_total_amount: 2000,
-               promotion: null,
-               index: 1,
-            },
-         ],
-         total_amount: 0,
-      },
-   });
+   useEffect(() => {
+      const fetchBasket = async () => {
+         const result = await getBasketAsync({
+            _couponCode: urlCouponCode,
+         });
+         if (result.isSuccess) {
+            console.log(result.data);
+         }
+      };
+      fetchBasket();
+   }, [getBasketAsync, urlCouponCode]);
 
    // Cart form management with auto-save
-   const { form, selectedItems, handleQuantityChange } = useCartForm({
-      basketData,
-      storeBasket,
-   });
+   const { form, selectedItems, handleQuantityChange, handleRemoveItem } =
+      useCartForm({
+         basketData: getBasketState.data,
+         storeBasket: storeBasketAsync,
+         deleteBasket: deleteBasketAsync,
+      });
 
    // Validate and apply promo code (only when items are selected)
    const handleValidatedApplyPromoCode = () => {
       if (selectedItems.length === 0) {
-         toast({
-            title: 'No items selected',
-            description:
-               'Please select at least one item to apply a promo code',
-            variant: 'destructive',
-         });
          return;
       }
       handleApplyPromoCode();
@@ -121,7 +130,7 @@ const CartPage = () => {
                   <LoadingOverlay isLoading={isLoading}>
                      <FormProvider {...form}>
                         <form>
-                           {basketData?.cart_items.map(
+                           {getBasketState.data?.cart_items.map(
                               (item: ICartItem, index: number) => (
                                  <div
                                     key={`${item.model_id}-${index}`}
@@ -133,9 +142,10 @@ const CartPage = () => {
                                        checkboxClassName="h-5 w-5"
                                     />
                                     <CartItem
-                                       item={item}
+                                       item={item as unknown as TCartItem}
                                        index={index}
                                        onQuantityChange={handleQuantityChange}
+                                       onRemoveItem={handleRemoveItem}
                                     />
                                  </div>
                               ),
@@ -201,7 +211,10 @@ const CartPage = () => {
                      <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                         <div className="font-light">Subtotal</div>
                         <div className="font-semibold">
-                           ${FALLBACK_SUBTOTAL.toFixed(2)}
+                           $
+                           {getBasketState.data
+                              ? getBasketState.data.total_amount.toFixed(2)
+                              : '0.00'}
                         </div>
                      </div>
                      <Accordion type="multiple" className="w-full h-full ">
@@ -215,7 +228,19 @@ const CartPage = () => {
                                     Other Discount
                                  </div>
                                  <div className="font-semibold">
-                                    - ${FALLBACK_DISCOUNT.toFixed(2)}
+                                    - $
+                                    {getBasketState.data?.cart_items
+                                       .reduce(
+                                          (acc, item) =>
+                                             acc +
+                                             ((item as unknown as TCartItem)
+                                                .promotion?.discount_amount ??
+                                                0) *
+                                                (item as unknown as TCartItem)
+                                                   .quantity,
+                                          0,
+                                       )
+                                       .toFixed(2)}
                                  </div>
                               </div>
                            </AccordionContent>
@@ -227,14 +252,24 @@ const CartPage = () => {
                   <div className="w-full flex flex-row justify-between items-center text-[24px] font-semibold tracking-[0.2px]">
                      <div className="">Total</div>
                      <div className="">
-                        ${(FALLBACK_SUBTOTAL - FALLBACK_DISCOUNT).toFixed(2)}
+                        $
+                        {getBasketState.data
+                           ? getBasketState.data.total_amount.toFixed(2)
+                           : '0.00'}
                      </div>
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
                      disabled={isLoading || selectedItems.length === 0}
-                     onClick={() => {
-                        router.push('/checkout');
+                     onClick={async () => {
+                        const result = await proceedToCheckoutAsync();
+
+                        if (result.data === true) {
+                           const checkoutUrl = urlCouponCode
+                              ? `/checkout?_couponCode=${urlCouponCode}`
+                              : '/checkout';
+                           router.push(checkoutUrl);
+                        }
                      }}
                   >
                      Checkout{' '}

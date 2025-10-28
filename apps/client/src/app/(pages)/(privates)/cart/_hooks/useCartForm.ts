@@ -37,14 +37,19 @@ const cartFormSchema = z.object({
 
 export type CartFormData = z.infer<typeof cartFormSchema>;
 
-const DEBOUNCE_DELAY = 500;
+const DEBOUNCE_DELAY = 100;
 
 interface UseCartFormProps {
    basketData: IBasket | undefined;
    storeBasket: (data: { cart_items: any[] }) => Promise<any>;
+   deleteBasket: () => Promise<any>;
 }
 
-export const useCartForm = ({ basketData, storeBasket }: UseCartFormProps) => {
+export const useCartForm = ({
+   basketData,
+   storeBasket,
+   deleteBasket,
+}: UseCartFormProps) => {
    const form = useForm<CartFormData>({
       resolver: zodResolver(cartFormSchema),
    });
@@ -93,28 +98,35 @@ export const useCartForm = ({ basketData, storeBasket }: UseCartFormProps) => {
          return;
       }
 
-      if (!cartItems || cartItems.length === 0) return;
+      // Skip if we don't have basket data yet (initial load)
+      if (!basketData || !cartItems) return;
 
-      const handleStoreBasket = async () => {
+      const handleBasketUpdate = async () => {
          try {
-            await storeBasket({
-               cart_items: cartItems.map((item) => ({
-                  is_selected: item.is_selected,
-                  model_id: item.model_id,
-                  color: item.color,
-                  model: item.model,
-                  storage: item.storage,
-                  quantity: item.quantity,
-               })),
-            });
+            if (cartItems.length === 0) {
+               // Delete basket when empty
+               await deleteBasket();
+            } else {
+               // Store basket with items
+               await storeBasket({
+                  cart_items: cartItems.map((item) => ({
+                     is_selected: item.is_selected,
+                     model_id: item.model_id,
+                     color: item.color,
+                     model: item.model,
+                     storage: item.storage,
+                     quantity: item.quantity,
+                  })),
+               });
+            }
          } catch (error) {
-            console.error('Failed to store basket:', error);
+            console.error('Failed to update basket:', error);
          }
       };
 
-      const timeoutId = setTimeout(handleStoreBasket, DEBOUNCE_DELAY);
+      const timeoutId = setTimeout(handleBasketUpdate, DEBOUNCE_DELAY);
       return () => clearTimeout(timeoutId);
-   }, [cartItems, storeBasket]);
+   }, [cartItems, storeBasket, deleteBasket, basketData]);
 
    // Handle quantity change
    const handleQuantityChange = useCallback(
@@ -132,10 +144,32 @@ export const useCartForm = ({ basketData, storeBasket }: UseCartFormProps) => {
       [form],
    );
 
+   // Handle remove item
+   const handleRemoveItem = useCallback(
+      (index: number) => {
+         console.log('index', index);
+         const currentCartItems = form.getValues('cart_items');
+         if (currentCartItems && currentCartItems[index]) {
+            const updatedItems = [...currentCartItems];
+            updatedItems.splice(index, 1);
+
+            console.log('updatedItems', updatedItems);
+
+            form.setValue('cart_items', updatedItems);
+            console.log(
+               'form.getValues("cart_items")',
+               form.getValues('cart_items'),
+            );
+         }
+      },
+      [form],
+   );
+
    return {
       form,
       cartItems,
       selectedItems,
       handleQuantityChange,
+      handleRemoveItem,
    };
 };

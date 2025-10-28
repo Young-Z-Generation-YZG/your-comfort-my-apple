@@ -26,7 +26,7 @@ export const catalogApi = createApi({
    tagTypes: ['Catalogs'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getIphonePromotionsAsync: builder.query<
+      getIphonePromotions: builder.query<
          PaginationResponse<IIphonePromotionResponse>,
          void
       >({
@@ -36,22 +36,20 @@ export const catalogApi = createApi({
             return response as PaginationResponse<IIphonePromotionResponse>;
          },
       }),
-      getIphoneModelsAsync: builder.query<
-         PaginationResponse<IIphoneModel>,
-         string
-      >({
+      getIphoneModels: builder.query<PaginationResponse<IIphoneModel>, string>({
          query: (params = '') => `/api/v1/products/iphone/models?${params}`,
          providesTags: ['Catalogs'],
       }),
-      getModelBySlugAsync: builder.query<IIphoneModelResponse, string>({
-         query: (slug) => `/api/v1/products/iphone/${slug}/models`,
+      getModelBySlug: builder.query<any, string>({
+         query: (slug) => `/api/v1/products/iphone/${slug}/products`,
          providesTags: ['Catalogs'],
       }),
-      getIPhonesByModelAsync: builder.query<IIphoneResponse[], string>({
+      getIPhonesByModel: builder.query<IIphoneResponse[], string>({
          query: (slug) => `/api/v1/products/iphone/models/${slug}/products`,
          providesTags: ['Catalogs'],
       }),
    }),
 });
 
-export const { useLazyGetIphoneModelsAsyncQuery } = catalogApi;
+export const { useLazyGetIphoneModelsQuery, useLazyGetModelBySlugQuery } =
+   catalogApi;

@@ -1,9 +1,14 @@
 import { useCallback, useMemo } from 'react';
-import { useLazyGetIphoneModelsAsyncQuery } from '~/infrastructure/services/catalog.service';
+import {
+   useLazyGetIphoneModelsQuery,
+   useLazyGetModelBySlugQuery,
+} from '~/infrastructure/services/catalog.service';
 
 const useCatalogService = () => {
-   const [getIphoneModelsTrigger, iphoneModelsQueryState] =
-      useLazyGetIphoneModelsAsyncQuery();
+   const [getIphoneModelsTrigger, getIphoneModelsState] =
+      useLazyGetIphoneModelsQuery();
+   const [getModelBySlugTrigger, getModelBySlugState] =
+      useLazyGetModelBySlugQuery();
 
    const getIphoneModelsAsync = useCallback(
       async (params: string) => {
@@ -27,16 +32,50 @@ const useCatalogService = () => {
       [getIphoneModelsTrigger],
    );
 
+   const getModelBySlugAsync = useCallback(
+      async (slug: string) => {
+         try {
+            const result = await getModelBySlugTrigger(slug).unwrap();
+
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getModelBySlugTrigger],
+   );
+
    const isLoading = useMemo(() => {
       return (
-         iphoneModelsQueryState.isLoading || iphoneModelsQueryState.isFetching
+         getIphoneModelsState.isLoading ||
+         getIphoneModelsState.isFetching ||
+         getModelBySlugState.isLoading ||
+         getModelBySlugState.isFetching
       );
-   }, [iphoneModelsQueryState.isLoading, iphoneModelsQueryState.isFetching]);
+   }, [
+      getIphoneModelsState.isLoading,
+      getIphoneModelsState.isFetching,
+      getModelBySlugState.isLoading,
+      getModelBySlugState.isFetching,
+   ]);
 
    return {
-      iphoneModelsState: iphoneModelsQueryState,
-      getIphoneModelsAsync,
       isLoading,
+      getIphoneModelsState: getIphoneModelsState,
+      getModelBySlugState: getModelBySlugState,
+
+      getIphoneModelsAsync,
+      getModelBySlugAsync,
    };
 };
 

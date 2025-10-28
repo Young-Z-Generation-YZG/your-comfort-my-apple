@@ -28,7 +28,7 @@ export const basketApi = createApi({
    tagTypes: ['Baskets'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      storeBasketAsync: builder.mutation({
+      storeBasket: builder.mutation({
          query: (payload: IStoreBasketPayload) => ({
             url: `/api/v1/baskets`,
             method: 'POST',
@@ -36,10 +36,27 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      checkoutBasketAsync: builder.mutation<
-         ICheckoutResponse,
-         ICheckoutPayload
-      >({
+      getBasket: builder.query<IBasket, IGetBasketQueries>({
+         query: (queries: IGetBasketQueries) =>
+            createQueryEncodedUrl('/api/v1/baskets', queries),
+         providesTags: ['Baskets'],
+      }),
+      deleteBasket: builder.mutation({
+         query: () => ({
+            url: `/api/v1/baskets`,
+            method: 'DELETE',
+         }),
+         invalidatesTags: ['Baskets'],
+      }),
+      proceedToCheckout: builder.mutation<boolean, void>({
+         query: () => ({
+            url: `/api/v1/baskets/proceed-checkout`,
+            method: 'POST',
+            body: {},
+         }),
+         invalidatesTags: ['Baskets'],
+      }),
+      checkoutBasket: builder.mutation<ICheckoutResponse, ICheckoutPayload>({
          query: (payload: ICheckoutPayload) => ({
             url: `/api/v1/baskets/checkout`,
             method: 'POST',
@@ -47,25 +64,14 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      getBasketAsync: builder.query<IBasket, IGetBasketQueries>({
-         query: (queries: IGetBasketQueries) =>
-            createQueryEncodedUrl('/api/v1/baskets', queries),
-         providesTags: ['Baskets'],
-      }),
-      deleteBasketAsync: builder.mutation({
-         query: () => ({
-            url: `/api/v1/baskets`,
-            method: 'DELETE',
-         }),
-         invalidatesTags: ['Baskets'],
-      }),
    }),
 });
 
 export const {
-   useStoreBasketAsyncMutation,
-   useGetBasketAsyncQuery,
-   useLazyGetBasketAsyncQuery,
-   useDeleteBasketAsyncMutation,
-   useCheckoutBasketAsyncMutation,
+   useStoreBasketMutation,
+   useGetBasketQuery,
+   useLazyGetBasketQuery,
+   useDeleteBasketMutation,
+   useProceedToCheckoutMutation,
+   useCheckoutBasketMutation,
 } = basketApi;

@@ -8,17 +8,62 @@ import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
 import Link from 'next/link';
 import NextImage from 'next/image';
 
+const fakeData = {
+   is_selected: true,
+   model_id: '664351e90087aa09993f5ae7',
+   product_name: 'iPhone 15 128GB BLUE',
+   color: {
+      name: 'BLUE',
+      normalized_name: 'BLUE',
+      hex_code: '',
+      showcase_image_id: '',
+      order: 0,
+   },
+   model: {
+      name: 'iPhone 15',
+      normalized_name: 'IPHONE_15',
+      order: 0,
+   },
+   storage: {
+      name: '128GB',
+      normalized_name: '128GB',
+      order: 0,
+   },
+   display_image_url: '',
+   unit_price: 1000,
+   quantity: 1,
+   sub_total_amount: 900.0,
+   promotion: {
+      promotion_id: '550e8400-e29b-41d4-a716-446655440000',
+      promotion_type: 'COUPON',
+      product_unit_price: 1000,
+      discount_type: 'PERCENTAGE',
+      discount_value: 0.1,
+      discount_amount: 100.0,
+      final_price: 900.0,
+   },
+   index: 1,
+};
+
+export type TCartItem = typeof fakeData;
+
 // Constants
 const MIN_QUANTITY = 1;
 const MAX_QUANTITY = 99;
 
 interface CartItemProps {
-   item: ICartItem;
+   item: TCartItem;
    index: number;
    onQuantityChange: (index: number, newQuantity: number) => void;
+   onRemoveItem: (index: number) => void;
 }
 
-const CartItem = ({ item, index, onQuantityChange }: CartItemProps) => {
+const CartItem = ({
+   item,
+   index,
+   onQuantityChange,
+   onRemoveItem,
+}: CartItemProps) => {
    const handleIncrement = () => {
       if (item.quantity < MAX_QUANTITY) {
          onQuantityChange(index, item.quantity + 1);
@@ -65,12 +110,14 @@ const CartItem = ({ item, index, onQuantityChange }: CartItemProps) => {
             <div className="flex-1 flex flex-col justify-start items-start pl-[16px]">
                <div className="w-full h-[60px] flex flex-row">
                   <div className="flex-1 h-full text-[22px] font-medium font-SFProText">
-                     <Link href={`#`}>{item.product_name}</Link>
+                     <Link href={`#`}>
+                        {item.model.name} {item.storage.name} {item.color.name}
+                     </Link>
                   </div>
                   {item.promotion && (
                      <div className="h-full flex flex-col text-[16px] font-normal text-end">
                         <div className="w-full font-medium text-red-500">
-                           ${(0.12).toFixed(2)}
+                           ${item.sub_total_amount.toFixed(2)}
                         </div>
                         <div className="w-full line-through text-[14px] font-light ">
                            ${(item.unit_price * item.quantity).toFixed(2)}
@@ -106,7 +153,12 @@ const CartItem = ({ item, index, onQuantityChange }: CartItemProps) => {
                         </span>
                      </div>
                   </div>
-                  <span className="hover:text-sky-500 cursor-pointer p-2 transition-all duration-200 ease-in-out">
+                  <span
+                     onClick={() => {
+                        onRemoveItem(index);
+                     }}
+                     className="hover:text-sky-500 cursor-pointer p-2 transition-all duration-200 ease-in-out"
+                  >
                      <FaRegTrashAlt className="w-4 h-4 mt-3" />
                   </span>
                </div>

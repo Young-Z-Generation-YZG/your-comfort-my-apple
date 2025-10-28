@@ -237,7 +237,26 @@ const fakeOrders = {
    },
 };
 
-type OrderItem = (typeof fakeOrders.items)[number];
+type TOrderItem = (typeof fakeOrders.items)[number];
+
+const getHoverStatusColor = (status: string) => {
+   switch (status) {
+      case 'PENDING':
+         return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900';
+      case 'PENDING_ASSIGNMENT':
+         return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900';
+      case 'CONFIRMED':
+         return 'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900';
+      case 'PAID':
+         return 'bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900';
+      case 'DELIVERED':
+         return 'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900';
+      case 'CANCELLED':
+         return 'bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900';
+      default:
+         return 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:text-gray-900';
+   }
+};
 
 const containerVariants = {
    hidden: { opacity: 0 },
@@ -265,19 +284,20 @@ const itemVariants = {
 // Helper function for status badge color with hover
 const getStatusColor = (status: string) => {
    switch (status) {
-      case 'PROCESSING':
-         return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200 hover:text-yellow-900 transition-colors';
-      case 'SHIPPED':
-         return 'bg-blue-100 text-blue-800 hover:bg-blue-200 hover:text-blue-900 transition-colors';
-      case 'DELIVERED':
-         return 'bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900 transition-colors';
-      case 'CANCELED':
-         return 'bg-red-100 text-red-800 hover:bg-red-200 hover:text-red-900 transition-colors';
-      case 'PENDING_ASSIGNMENT':
       case 'PENDING':
-         return 'bg-orange-100 text-orange-800 hover:bg-orange-200 hover:text-orange-900 transition-colors';
+         return 'bg-yellow-100 text-yellow-800';
+      case 'PENDING_ASSIGNMENT':
+         return 'bg-yellow-100 text-yellow-800';
+      case 'CONFIRMED':
+         return 'bg-green-100 text-green-600';
+      case 'PAID':
+         return 'bg-blue-100 text-blue-800';
+      case 'DELIVERED':
+         return 'bg-green-100 text-green-800';
+      case 'CANCELLED':
+         return 'bg-red-100 text-red-800';
       default:
-         return 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:text-gray-900 transition-colors';
+         return 'bg-gray-100 text-gray-800';
    }
 };
 
@@ -429,7 +449,7 @@ const OrderPage = () => {
                         <TableBody>
                            <AnimatePresence>
                               {paginationItems.map(
-                                 (order: OrderItem, index: number) => {
+                                 (order: TOrderItem, index: number) => {
                                     const status =
                                        order.status ==
                                        EOrderStatus.PENDING_ASSIGNMENT
@@ -437,6 +457,8 @@ const OrderPage = () => {
                                           : order.status;
 
                                     const statusStyle = getStatusColor(status);
+                                    const hoverStatusStyle =
+                                       getHoverStatusColor(status);
 
                                     return (
                                        <motion.tr
@@ -465,6 +487,7 @@ const OrderPage = () => {
                                                 className={cn(
                                                    'select-none',
                                                    statusStyle,
+                                                   hoverStatusStyle,
                                                 )}
                                              >
                                                 {status.replace('_', ' ')}
