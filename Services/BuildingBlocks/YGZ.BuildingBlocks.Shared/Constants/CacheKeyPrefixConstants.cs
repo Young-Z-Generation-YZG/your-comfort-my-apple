@@ -10,5 +10,10 @@ public static class CacheKeyPrefixConstants
         {
             return $"IPHONE_SKU_PRICE_{modelName.Name}_{storageName.Name}_{colorName.Name}";
         }
+
+        public static string GetDisplayImageUrlKey(string modelId, EColor colorName)
+        {
+            return $"DISPLAY_IMAGE_{modelId}_{colorName.Name}";
+        }
     }
 }

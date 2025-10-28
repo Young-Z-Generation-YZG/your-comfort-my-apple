@@ -77,15 +77,6 @@ const checkoutSchema = z.object({
       errorMap: () => ({ message: 'Payment method is required' }),
    }),
    discount_code: z.string().nullable().default(null),
-   sub_total_amount: z.number().min(0, {
-      message: 'Sub total amount is required',
-   }),
-   discount_amount: z.number().min(0, {
-      message: 'Discount amount is required',
-   }),
-   total_amount: z.number().min(0, {
-      message: 'Total amount is required',
-   }),
 } satisfies Record<keyof ICheckoutPayload, any>);
 
 export type CheckoutFormType = z.infer<typeof checkoutSchema>;

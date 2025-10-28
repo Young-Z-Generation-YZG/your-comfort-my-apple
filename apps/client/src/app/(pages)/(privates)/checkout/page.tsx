@@ -1,9 +1,8 @@
 /* eslint-disable react/react-in-jsx-scope */
 'use client';
-import '/globals.css';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import images from '@components/client/images';
 import { Button } from '@components/ui/button';
@@ -22,85 +21,196 @@ import CardWrapper from './_components/card-wrapper';
 import { Separator } from '@components/ui/separator';
 import { PaymentMethodSelector } from '@components/client/forms/payment-method-selector';
 import { motion } from 'framer-motion';
-import { ShippingAddressSelector } from '@components/client/forms/shipping-address-selector';
+import { ShippingAddressSelector } from '~/app/(pages)/(privates)/cart/_components/shipping-address-selector';
 import { FiEdit3 } from 'react-icons/fi';
-import { useCheckoutBasketAsyncMutation } from '~/infrastructure/services/basket.service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useSearchParams } from 'next/navigation';
-import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import { useCart } from '../cart/_hooks/useCart';
+import useIdentityService from '@components/hooks/api/use-identity-service';
+import useBasketService from '@components/hooks/api/use-basket-service';
+import CheckoutItem from './_components/checkout-item';
+import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
 
-const shippingAddresses = [
+const fakeData = [
    {
-      id: '1',
-      isDefault: true,
-      contactName: 'Foo Bar',
-      contactPhoneNumber: '+84 123456789',
-      addressLine: '106* Kha Van Can',
-      district: 'Thu Duc',
-      province: 'Ho Chi Minh City',
-      country: 'Vietnam',
+      id: 'e0511627-9287-40a9-95bb-c6e67e5e64ce',
+      label: 'Default',
+      contact_name: 'USER USER',
+      contact_phone_number: '0333284890',
+      address_line: '',
+      district: '',
+      province: '',
+      country: '',
+      is_default: true,
    },
 ];
 
+const fakeCheckoutCart = {
+   user_email: 'user@gmail.com',
+   cart_items: [
+      {
+         is_selected: true,
+         model_id: '664351e90087aa09993f5ae7',
+         product_name: 'iPhone 15 128GB BLUE',
+         color: {
+            name: 'BLUE',
+            normalized_name: 'BLUE',
+            hex_code: '',
+            showcase_image_id: '',
+            order: 0,
+         },
+         model: {
+            name: 'iPhone 15',
+            normalized_name: 'IPHONE_15',
+            order: 0,
+         },
+         storage: {
+            name: '128GB',
+            normalized_name: '128GB',
+            order: 0,
+         },
+         display_image_url:
+            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
+         unit_price: 1000,
+         quantity: 2,
+         sub_total_amount: 1800.0,
+         promotion: {
+            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
+            promotion_type: 'COUPON',
+            product_unit_price: 1000,
+            discount_type: 'PERCENTAGE',
+            discount_value: 0.1,
+            discount_amount: 100.0,
+            final_price: 900.0,
+         },
+         index: 1,
+      },
+   ],
+   total_amount: 1800.0,
+};
+
+const fakeCheckoutResponse = {
+   payment_redirect_url:
+      'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=2500000000&vnp_Command=pay&vnp_CreateDate=20251028225140&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=ORDER_ID%3De824f6fa-92e4-4911-8b9e-98bd2ea4b82d&vnp_OrderType=VNPAY_CHECKOUT&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A3000%2Fcheckout%2Fpayment-callback&vnp_TmnCode=SB1TO3BK&vnp_TxnRef=638972887005197901&vnp_Version=2.1.0&vnp_SecureHash=695ee3da6712e246efa37fa73e51b7e3fd7a227940341b5f792a29b36d5e7bce457ebcf953cb810aacd501b251a5c5e4bdac62914c9da24e53f7a7556dc3fa7f',
+   order_details_redirect_url: null,
+};
+
+export type TCheckoutResponse = typeof fakeCheckoutResponse;
+
+export type TAddressItem = (typeof fakeData)[number];
+export type TCheckoutCart = typeof fakeCheckoutCart;
+export type TCheckoutItem = (typeof fakeCheckoutCart.cart_items)[number];
+
 const CheckoutPage = () => {
    const searchParams = useSearchParams();
-   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+   //  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
    const [editable, setEditable] = useState(false);
-   const [addressesList] = useState<IAddressResponse[]>([]);
-   const [selectedAddress, setSelectedAddress] =
-      useState<IAddressResponse | null>(null);
+   const [selectedAddress, setSelectedAddress] = useState<TAddressItem | null>(
+      null,
+   );
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
 
-   // Use the cart hook
    const {
-      basketData,
-      cartCalculations,
-      isLoading: isBasketLoading,
-   } = useCart({
-      couponCode: appliedCouponFromQuery || '',
-   });
+      getAddressesAsync,
+      getAddressesState,
+      isLoading: isLoadingAddresses,
+   } = useIdentityService();
+
+   const {
+      getCheckoutItemsAsync,
+      checkoutBasketAsync,
+      getCheckoutItemsState,
+      isLoading: isLoadingBasket,
+   } = useBasketService();
+
+   useEffect(() => {
+      const getAddresses = async () => {
+         await getAddressesAsync();
+      };
+
+      getAddresses();
+   }, [getAddressesAsync]);
+
+   useEffect(() => {
+      const getCheckoutItems = async () => {
+         await getCheckoutItemsAsync({ _couponCode: appliedCouponFromQuery });
+      };
+
+      getCheckoutItems();
+   }, [getCheckoutItemsAsync, appliedCouponFromQuery]);
+
+   const defaultAddress = useMemo(() => {
+      if (getAddressesState.data) {
+         const getDefaultAddress = (
+            getAddressesState.data as unknown as TAddressItem[]
+         ).find((address) => address.is_default);
+
+         if (getDefaultAddress) {
+            return getDefaultAddress;
+         }
+      }
+
+      return null;
+   }, [getAddressesState]);
+
+   const addressesList = useMemo(() => {
+      if (getAddressesState.data) {
+         return getAddressesState.data as unknown as TAddressItem[];
+      }
+
+      return [];
+   }, [getAddressesState]);
 
    const form = useForm<CheckoutFormType>({
       resolver: CheckoutResolver,
       defaultValues: {
          shipping_address: {
-            contact_name: selectedAddress?.contact_name,
-            contact_phone_number: selectedAddress?.contact_phone_number,
-            address_line: selectedAddress?.address_line || '',
-            district: selectedAddress?.district || '',
-            province: selectedAddress?.province || '',
-            country: selectedAddress?.country || '',
+            contact_name: defaultAddress?.contact_name || '',
+            contact_phone_number: defaultAddress?.contact_phone_number || '',
+            address_line: defaultAddress?.address_line || '',
+            district: defaultAddress?.district || '',
+            province: defaultAddress?.province || '',
+            country: defaultAddress?.country || '',
          },
          payment_method: 'VNPAY',
          discount_code: null,
-         sub_total_amount: 0,
-         discount_amount: 0,
-         total_amount: 0,
       },
    });
 
-   //  const {
-   //     data: addressesDataAsync,
-   //     isLoading: isLoadingAddresses,
-   //     isFetching: isFetchingAddresses,
-   //     isSuccess: isSuccessAddresses,
-   //     error: errorAddresses,
-   //     refetch: refetchAddresses,
-   //  } = useGetAddressesAsyncQuery();
+   const handleSelectAddress = (address: TAddressItem) => {
+      form.setValue('shipping_address.contact_name', address.contact_name);
+      form.setValue(
+         'shipping_address.contact_phone_number',
+         address.contact_phone_number,
+      );
+      form.setValue('shipping_address.address_line', address.address_line);
+      form.setValue('shipping_address.district', address.district);
+      form.setValue('shipping_address.province', address.province);
+      form.setValue('shipping_address.country', address.country);
 
-   const [checkoutBasket, { isLoading: isLoadingCheckoutBasket }] =
-      useCheckoutBasketAsyncMutation();
+      setSelectedAddress(address);
+   };
+
+   useEffect(() => {
+      if (defaultAddress) {
+         setSelectedAddress(defaultAddress);
+      }
+   }, [defaultAddress]);
 
    const handleSubmit = async (data: CheckoutFormType) => {
       console.log('data', data);
 
-      setIsCheckoutLoading(true);
+      const result = await checkoutBasketAsync(data);
 
-      await checkoutBasket(data).unwrap();
+      console.log('result', result);
+
+      if (result.isSuccess) {
+         window.location.href = (
+            result.data as unknown as TCheckoutResponse
+         ).payment_redirect_url;
+      }
    };
 
    //  useEffect(() => {
@@ -126,65 +236,6 @@ const CheckoutPage = () => {
    //     }
    //  }, [isSuccessCheckoutBasket]);
 
-   //  useEffect(() => {
-   //     if (isSuccessAddresses) {
-   //        setAddressesList(addressesDataAsync);
-
-   //        console.log('addressesDataAsync', addressesDataAsync);
-
-   //        var defaultValue = addressesDataAsync.find((addr) => addr.is_default);
-
-   //        if (defaultValue) {
-   //           setSelectedAddress(defaultValue);
-
-   //           form.setValue(
-   //              'shipping_address.contact_name',
-   //              defaultValue.contact_name,
-   //           );
-   //           form.setValue(
-   //              'shipping_address.contact_phone_number',
-   //              defaultValue.contact_phone_number,
-   //           );
-   //           form.setValue(
-   //              'shipping_address.address_line',
-   //              defaultValue.address_line,
-   //           );
-   //           form.setValue('shipping_address.district', defaultValue.district);
-   //           form.setValue('shipping_address.province', defaultValue.province);
-   //           form.setValue('shipping_address.country', defaultValue.country);
-   //        } else {
-   //           if (addressesList.length > 0) {
-   //              setSelectedAddress(addressesList[0]);
-
-   //              form.setValue(
-   //                 'shipping_address.contact_name',
-   //                 addressesList[0].contact_name,
-   //              );
-   //              form.setValue(
-   //                 'shipping_address.contact_phone_number',
-   //                 addressesList[0].contact_phone_number,
-   //              );
-   //              form.setValue(
-   //                 'shipping_address.address_line',
-   //                 addressesList[0].address_line,
-   //              );
-   //              form.setValue(
-   //                 'shipping_address.district',
-   //                 addressesList[0].district,
-   //              );
-   //              form.setValue(
-   //                 'shipping_address.province',
-   //                 addressesList[0].province,
-   //              );
-   //              form.setValue(
-   //                 'shipping_address.country',
-   //                 addressesList[0].country,
-   //              );
-   //           }
-   //        }
-   //     }
-   //  }, [addressesDataAsync]);
-
    return (
       <div
          className={cn(
@@ -192,10 +243,7 @@ const CheckoutPage = () => {
             'font-SFProDisplay w-full flex flex-col items-center justify-start bg-white',
          )}
       >
-         <LoadingOverlay
-            isLoading={isLoadingCheckoutBasket || isCheckoutLoading}
-            fullScreen
-         />
+         <LoadingOverlay isLoading={false} fullScreen />
          <div className="max-w-[1156px] w-full grid grid-cols-12 mt-10">
             <div className="col-span-8 pr-[64px]">
                <div className="">
@@ -216,13 +264,8 @@ const CheckoutPage = () => {
                            >
                               <ShippingAddressSelector
                                  addresses={addressesList}
-                                 selectedAddress={
-                                    selectedAddress ||
-                                    addressesList[0] ||
-                                    shippingAddresses[0]
-                                 }
-                                 setSelectedAddress={setSelectedAddress}
-                                 setValue={form.setValue}
+                                 selectedAddress={selectedAddress}
+                                 onSelectAddress={handleSelectAddress}
                               />
                            </motion.div>
                         </div>
@@ -249,9 +292,9 @@ const CheckoutPage = () => {
                                  className={cn(
                                     'flex flex-row items-center gap-2 font-SFProText text-sm font-medium cursor-pointer bg-slate-200/50 transition-all duration-200 ease-in-out active:bg-slate-200/50 select-none rounded-full px-2 py-1',
                                     {
-                                       'bg-slate-200/50 hover:bg-slate-200':
+                                       'bg-slate-200/50 hover:bg-blue-500 hover:text-white':
                                           !editable,
-                                       'bg-blue-500 hover:bg-blue-500/50 text-white':
+                                       'bg-blue-500 hover:bg-blue-500/80 text-white':
                                           editable,
                                     },
                                  )}
@@ -269,7 +312,7 @@ const CheckoutPage = () => {
                                  label="Contact Name"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -281,7 +324,7 @@ const CheckoutPage = () => {
                                  label="Phone Number"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -302,9 +345,9 @@ const CheckoutPage = () => {
                                  className={cn(
                                     'flex flex-row items-center gap-2 font-SFProText text-sm font-medium cursor-pointer bg-slate-200/50 transition-all duration-200 ease-in-out active:bg-slate-200/50 select-none rounded-full px-2 py-1',
                                     {
-                                       'bg-slate-200/50 hover:bg-slate-200':
+                                       'bg-slate-200/50 hover:bg-blue-500 hover:text-white':
                                           !editable,
-                                       'bg-blue-500 hover:bg-blue-500/50 text-white':
+                                       'bg-blue-500 hover:bg-blue-500/80 text-white':
                                           editable,
                                     },
                                  )}
@@ -322,7 +365,7 @@ const CheckoutPage = () => {
                                  label="Address Line"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -334,7 +377,7 @@ const CheckoutPage = () => {
                                  label="District"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -346,7 +389,7 @@ const CheckoutPage = () => {
                                  label="Province/City"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -358,7 +401,7 @@ const CheckoutPage = () => {
                                  label="Country"
                                  className="rounded-xl w-full"
                                  type="text"
-                                 disabled={!editable || isCheckoutLoading}
+                                 disabled={!editable}
                                  errorTextClassName="pb-1"
                               />
                            </div>
@@ -398,11 +441,18 @@ const CheckoutPage = () => {
                         You have {0} items in your cart
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
-                        {/* {cartItems.map((item) => {
-                           return (
-                              <CartItem key={item.product_id} item={item} />
-                           );
-                        })} */}
+                        {getCheckoutItemsState.data &&
+                           getCheckoutItemsState.data.cart_items.length > 0 &&
+                           getCheckoutItemsState.data.cart_items.map(
+                              (item: ICartItem, index) => {
+                                 return (
+                                    <CheckoutItem
+                                       key={index}
+                                       item={item as unknown as TCheckoutItem}
+                                    />
+                                 );
+                              },
+                           )}
                      </div>
                   </div>
                   <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
@@ -413,7 +463,17 @@ const CheckoutPage = () => {
                         <div className="w-full flex flex-row justify-between items-center text-[14px] tracking-[0.2px]">
                            <div className="font-light">Subtotal</div>
                            <div className="font-semibold">
-                              ${(0.12).toFixed(2)}
+                              $
+                              {getCheckoutItemsState.data &&
+                                 getCheckoutItemsState.data.cart_items.length >
+                                    0 &&
+                                 getCheckoutItemsState.data.cart_items
+                                    .reduce(
+                                       (acc, item) =>
+                                          acc + item.unit_price * item.quantity,
+                                       0,
+                                    )
+                                    .toFixed(2)}
                            </div>
                         </div>
                         <Accordion type="multiple" className="w-full h-full ">
@@ -430,7 +490,24 @@ const CheckoutPage = () => {
                                        Other Discount
                                     </div>
                                     <div className="font-semibold">
-                                       - ${(0.12).toFixed(2)}
+                                       - $
+                                       {getCheckoutItemsState.data &&
+                                          getCheckoutItemsState.data.cart_items
+                                             .length > 0 &&
+                                          getCheckoutItemsState.data.cart_items
+                                             .reduce(
+                                                (acc, item) =>
+                                                   acc +
+                                                   ((
+                                                      item as unknown as TCheckoutItem
+                                                   ).promotion
+                                                      ?.discount_amount ?? 0) *
+                                                      (
+                                                         item as unknown as TCheckoutItem
+                                                      ).quantity,
+                                                0,
+                                             )
+                                             .toFixed(2)}
                                     </div>
                                  </div>
                               </AccordionContent>
@@ -442,7 +519,14 @@ const CheckoutPage = () => {
                      <div className="w-full flex flex-row justify-between items-center text-[24px] font-semibold tracking-[0.2px]">
                         <div className="">Total</div>
                         <div className="">
-                           ${basketData?.total_amount.toFixed(2) ?? '0.00'}
+                           $
+                           {(getCheckoutItemsState.data &&
+                              getCheckoutItemsState.data.cart_items.length >
+                                 0 &&
+                              getCheckoutItemsState.data.total_amount.toFixed(
+                                 2,
+                              )) ??
+                              '0.00'}
                         </div>
                      </div>
                      <Button

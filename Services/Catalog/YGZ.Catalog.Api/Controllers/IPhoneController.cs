@@ -29,7 +29,7 @@ public class IphoneController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet("{modelSlug}/products")]
+    [HttpGet("{modelSlug}")]
     public async Task<IActionResult> GetIphoneModel([FromRoute] string modelSlug, CancellationToken cancellationToken)
     {
         var query = new GetIphoneModelBySlugQuery(modelSlug);

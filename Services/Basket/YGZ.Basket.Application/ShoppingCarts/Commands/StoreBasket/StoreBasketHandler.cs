@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Cache.Entities;
@@ -7,23 +8,25 @@ using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
+using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
 
 public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
 {
+    private readonly ILogger<StoreBasketHandler> _logger;
     private readonly IBasketRepository _basketRepository;
     private readonly IUserRequestContext _userContext;
     private readonly ISKUPriceCache _skuPriceCache;
     private readonly IModelSlugCache _modelSlugCache;
-    private readonly IColorImageCache _colorImageCache;
-    private readonly ILogger<StoreBasketHandler> _logger;
+    private readonly IDistributedCache _distributedCache;
 
     public StoreBasketHandler(IBasketRepository basketRepository,
                               ILogger<StoreBasketHandler> logger,
                               IUserRequestContext userContext,
-                              IColorImageCache colorImageCache,
                               IModelSlugCache modelSlugCache,
+                              IDistributedCache distributedCache,
                               ISKUPriceCache skuPriceCache)
     {
         _basketRepository = basketRepository;
@@ -31,7 +34,7 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
         _logger = logger;
         _skuPriceCache = skuPriceCache;
         _modelSlugCache = modelSlugCache;
-        _colorImageCache = colorImageCache;
+        _distributedCache = distributedCache;
     }
 
 
@@ -66,8 +69,10 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             var colorImageCache = ColorImageCache.Of(item.ModelId, color);
             var modelSlugCache = ModelSlugCache.Of(item.ModelId);
 
+            EColor.TryFromName(color.NormalizedName, out var colorEnum);
+
             var unitPrice = await _skuPriceCache.GetPriceAsync(skuPriceCache);
-            var displayImageUrl = await _colorImageCache.GetImageUrlAsync(colorImageCache);
+            var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(item.ModelId, colorEnum));
             var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
 

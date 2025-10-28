@@ -18,11 +18,11 @@ public static class SeedSkuData
             Model IPHONE_15 = Model.Create("IPHONE_15", 0);
             Model IPHONE_15_PLUS = Model.Create("IPHONE_15_PLUS", 1);
 
-            Color BLUE = Color.Create("BLUE", "#D5DDDF", "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz", 0);
-            Color PINK = Color.Create("PINK", "#EBD3D4", "iphone-15-finish-select-202309-6-1inch-pink_j6v96t", 1);
-            Color YELLOW = Color.Create("YELLOW", "#EDE6C8", "iphone-15-finish-select-202309-6-1inch-yellow_pwviwe", 2);
-            Color GREEN = Color.Create("GREEN", "#D0D9CA", "iphone-15-finish-select-202309-6-1inch-green_yk0ln5", 3);
-            Color BLACK = Color.Create("BLACK", "#4B4F50", "iphone-15-finish-select-202309-6-1inch-black_hhhvfs", 4);
+            Color BLUE = Color.Create("Blue", "#D5DDDF", "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz", 0);
+            Color PINK = Color.Create("Pink", "#EBD3D4", "iphone-15-finish-select-202309-6-1inch-pink_j6v96t", 1);
+            Color YELLOW = Color.Create("Yellow", "#EDE6C8", "iphone-15-finish-select-202309-6-1inch-yellow_pwviwe", 2);
+            Color GREEN = Color.Create("Green", "#D0D9CA", "iphone-15-finish-select-202309-6-1inch-green_yk0ln5", 3);
+            Color BLACK = Color.Create("Black", "#4B4F50", "iphone-15-finish-select-202309-6-1inch-black_hhhvfs", 4);
 
             Storage STORAGE_128 = Storage.Create("128GB", 128, 0);
             Storage STORAGE_256 = Storage.Create("256GB", 256, 1);

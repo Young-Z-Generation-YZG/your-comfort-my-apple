@@ -1,16 +1,14 @@
 'use client';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import Image from 'next/image';
+import { TCheckoutItem } from '../page';
+import NextImage from 'next/image';
 
-import { ICartItemResponse } from '~/domain/interfaces/baskets/basket.interface';
-import { CldImage } from 'next-cloudinary';
-
-interface CartItemProps {
-   item: ICartItemResponse;
+interface CheckoutItemProps {
+   item: TCheckoutItem;
 }
 
-const CartItem = ({ item }: CartItemProps) => {
+const CheckoutItem = ({ item }: CheckoutItemProps) => {
    return (
       <div
          className={cn(
@@ -19,35 +17,36 @@ const CartItem = ({ item }: CartItemProps) => {
          )}
       >
          <div className="w-full flex flex-row">
-            <div className="w-[60px] h-[35px]">
-               <CldImage
-                  src={`${item.product_image}`}
+            {/* image */}
+            <div className="w-[60px] overflow-hidden relative h-[60px] rounded-lg">
+               <NextImage
+                  src={item.display_image_url}
                   alt={item.product_name}
-                  width={500}
-                  height={500}
-                  className="h-[180%] w-full object-cover"
+                  width={Math.round((1000 * 16) / 9)}
+                  height={1000}
+                  className="absolute top-0 left-0 w-full h-full object-cover"
                />
             </div>
             <div className="flex-1 flex flex-col justify-start items-start ml-2 text-[13px] tracking-[0.03px]">
                <div className="font-semibold ">{item.product_name}</div>
                <div className="font-light">
-                  <span>{item.product_color_name}</span>
+                  <span>{item.color.name}</span>
                </div>
 
                {!item.promotion && (
                   <div className="font-semibold mt-1">
-                     ${item.product_unit_price.toFixed(2)} x {item.quantity}
+                     ${item.unit_price.toFixed(2)} x {item.quantity}
                   </div>
                )}
 
                {item.promotion && (
                   <div className="">
                      <span className="font-semibold mt-1 text-sm inline-block text-red-500">
-                        ${item.promotion.promotion_final_price.toFixed(2)} x{' '}
+                        ${item.promotion?.final_price.toFixed(2)} x{' '}
                         {item.quantity}
                      </span>
                      <span className="font-semibold mt-1 text-xs inline-block text-[#A0A0A0] line-through ml-2">
-                        ${item.product_unit_price.toFixed(2)}
+                        ${item.unit_price.toFixed(2)}
                      </span>
                   </div>
                )}
@@ -56,4 +55,4 @@ const CartItem = ({ item }: CartItemProps) => {
       </div>
    );
 };
-export default CartItem;
+export default CheckoutItem;

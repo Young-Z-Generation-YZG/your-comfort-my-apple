@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.BuildingBlocks.Shared.Constants;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
@@ -13,7 +15,7 @@ using YGZ.Catalog.Infrastructure.Persistence.Seeds;
 
 namespace YGZ.Catalog.Infrastructure.Persistence.Extensions;
 
-public static class SeedDataExtensions
+public static class SeedDataExtension
 {
     public static async Task ApplySeedDataAsync(this WebApplication app)
     {
@@ -35,6 +37,7 @@ public static class SeedDataExtensions
 
         // cache data
         await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
+        await SeedCacheColorImages(iphoneModelRepository, distributedCache);
 
 
 
@@ -129,6 +132,27 @@ public static class SeedDataExtensions
         foreach (var iphoneSkuPrice in iphoneSkuPrices)
         {
             await distributedCache.SetStringAsync(iphoneSkuPrice.CachedKey, iphoneSkuPrice.UnitPrice.ToString());
+        }
+    }
+
+    private static async Task SeedCacheColorImages(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IDistributedCache distributedCache)
+    {
+        var iphoneModels = await iphoneModelRepository.GetAllAsync();
+
+        foreach (var iphoneModel in iphoneModels)
+        {
+            var colors = iphoneModel.Colors;
+            var displayImages = iphoneModel.ShowcaseImages;
+
+            foreach (var color in colors)
+            {
+                var matchedDisplayImageUrl = displayImages.FirstOrDefault(di => di.ImageId == color.ShowcaseImageId);
+
+                EColor.TryFromName(color.NormalizedName, out var colorEnum);
+
+                await distributedCache.SetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(iphoneModel.Id.Value!, colorEnum), matchedDisplayImageUrl!.ImageUrl);
+            }
+
         }
     }
 }

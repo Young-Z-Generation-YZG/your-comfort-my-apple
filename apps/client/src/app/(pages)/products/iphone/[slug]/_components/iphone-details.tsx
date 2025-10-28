@@ -32,28 +32,6 @@ const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    return `w_${Math.round((height * widthRatio) / heightRatio)},h_${height}`;
 };
 
-// const colors = iphoneDetailsFakeData.color_items.map((color) => ({
-//    name: color.name,
-//    normalized_name: color.normalized_name,
-//    hex: color.hex_code,
-// }));
-
-// const models = iphoneDetailsFakeData.model_items.map((model: TModelItem) => ({
-//    name: model.name,
-//    normalized_name: model.normalized_name,
-//    displaySize: model.name.includes('Plus') ? '6.7' : '6.1', // Default display sizes
-//    price: 699, // Default price - would need to be calculated from SKUs
-//    monthlyPrice: '29.12', // Default monthly price - would need to be calculated
-// }));
-
-// const storages = iphoneDetailsFakeData.storage_items.map((storage) => ({
-//    name: storage.name,
-//    normalized_name: storage.normalized_name,
-//    price: 799, // Default price - would need to be calculated from SKUs
-//    monthlyPrice: '33.29', // Default monthly price - would need to be calculated
-//    note: undefined,
-// }));
-
 const IphoneDetails = () => {
    const [selectedModel, setSelectedModel] = useState<{
       name: string;
@@ -542,13 +520,16 @@ const IphoneDetails = () => {
                                     selectedColor?.normalized_name ===
                                     color.normalized_name
                                  }
-                                 onClick={() =>
-                                    !isColorDisabled &&
-                                    handleColorSelection({
-                                       name: color.name,
-                                       normalized_name: color.normalized_name,
-                                    })
-                                 }
+                                 onClick={() => {
+                                    return (
+                                       !isColorDisabled &&
+                                       handleColorSelection({
+                                          name: color.name,
+                                          normalized_name:
+                                             color.normalized_name,
+                                       })
+                                    );
+                                 }}
                                  onMouseEnter={() =>
                                     !isColorDisabled &&
                                     setHoveredColor(color.name)

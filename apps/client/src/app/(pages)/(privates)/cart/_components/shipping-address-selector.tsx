@@ -7,6 +7,7 @@ import { CheckoutFormType } from '~/domain/schemas/basket.schema';
 import { IAddressResponse } from '~/domain/interfaces/identity/address';
 import { UseFormSetValue } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { TAddressItem } from '../../checkout/page';
 
 const dropdownVariants = {
    hidden: {
@@ -43,38 +44,18 @@ const checkVariants = {
 };
 
 interface ShippingAddressSelectorProps {
-   addresses: IAddressResponse[];
-   selectedAddress: IAddressResponse;
-   setSelectedAddress: (address: IAddressResponse) => void;
-   setValue: UseFormSetValue<CheckoutFormType>;
+   addresses: TAddressItem[];
+   selectedAddress?: TAddressItem | null;
+   onSelectAddress: (address: TAddressItem) => void;
 }
 
 export function ShippingAddressSelector({
    addresses,
    selectedAddress,
-   setSelectedAddress,
-   setValue,
+   onSelectAddress,
 }: ShippingAddressSelectorProps) {
    const router = useRouter();
    const [showAddressSelector, setShowAddressSelector] = useState(false);
-
-   // Handle address selection
-   const handleSelectAddress = (address: IAddressResponse) => {
-      setSelectedAddress(address);
-
-      // Update form values
-      setValue('shipping_address.contact_name', address.contact_name);
-      setValue(
-         'shipping_address.contact_phone_number',
-         address.contact_phone_number,
-      );
-      setValue('shipping_address.address_line', address.address_line);
-      setValue('shipping_address.district', address.district);
-      setValue('shipping_address.province', address.province);
-      setValue('shipping_address.country', address.country);
-
-      setShowAddressSelector(false);
-   };
 
    return (
       <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -107,18 +88,18 @@ export function ShippingAddressSelector({
          >
             <div className="flex-1">
                <p className="font-medium">
-                  {selectedAddress.contact_name} |{' '}
-                  {selectedAddress.contact_phone_number}
+                  {selectedAddress?.contact_name} |{' '}
+                  {selectedAddress?.contact_phone_number}
                </p>
                <p className="text-sm text-gray-500">
-                  {selectedAddress.address_line}
+                  {selectedAddress?.address_line}
                </p>
                <p className="text-sm text-gray-500">
-                  {selectedAddress.district}, {selectedAddress.province},{' '}
-                  {selectedAddress.country}
+                  {selectedAddress?.district}, {selectedAddress?.province},{' '}
+                  {selectedAddress?.country}
                </p>
             </div>
-            {selectedAddress.is_default && (
+            {selectedAddress?.is_default && (
                <motion.span
                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -140,13 +121,15 @@ export function ShippingAddressSelector({
                   animate="visible"
                   exit="hidden"
                >
-                  {addresses.map((address) => (
+                  {addresses.map((address: TAddressItem) => (
                      <motion.div
                         key={address.id}
                         className={`p-4 flex items-start hover:bg-gray-50 cursor-pointer ${
-                           selectedAddress.id === address.id ? 'bg-gray-50' : ''
+                           selectedAddress?.id === address.id
+                              ? 'bg-gray-50'
+                              : ''
                         }`}
-                        onClick={() => handleSelectAddress(address)}
+                        onClick={() => onSelectAddress(address)}
                         variants={itemVariants}
                         whileHover={{
                            backgroundColor: 'rgba(243, 244, 246, 1)',
@@ -177,7 +160,7 @@ export function ShippingAddressSelector({
                               {address.country}
                            </p>
                         </div>
-                        {selectedAddress.id === address.id && (
+                        {selectedAddress?.id === address.id && (
                            <motion.div
                               variants={checkVariants}
                               initial="hidden"

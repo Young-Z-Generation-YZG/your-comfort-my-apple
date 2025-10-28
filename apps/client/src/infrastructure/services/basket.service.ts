@@ -41,6 +41,11 @@ export const basketApi = createApi({
             createQueryEncodedUrl('/api/v1/baskets', queries),
          providesTags: ['Baskets'],
       }),
+      getCheckoutItems: builder.query<IBasket, IGetBasketQueries>({
+         query: (queries: IGetBasketQueries) =>
+            createQueryEncodedUrl('/api/v1/baskets/checkout-items', queries),
+         providesTags: ['Baskets'],
+      }),
       deleteBasket: builder.mutation({
          query: () => ({
             url: `/api/v1/baskets`,
@@ -71,6 +76,7 @@ export const {
    useStoreBasketMutation,
    useGetBasketQuery,
    useLazyGetBasketQuery,
+   useLazyGetCheckoutItemsQuery,
    useDeleteBasketMutation,
    useProceedToCheckoutMutation,
    useCheckoutBasketMutation,

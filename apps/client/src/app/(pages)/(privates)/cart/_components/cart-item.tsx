@@ -4,7 +4,6 @@ import { SFDisplayFont } from '@assets/fonts/font.config';
 import { Button } from '@components/ui/button';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Input } from '@components/ui/input';
-import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
 import Link from 'next/link';
 import NextImage from 'next/image';
 
@@ -29,7 +28,8 @@ const fakeData = {
       normalized_name: '128GB',
       order: 0,
    },
-   display_image_url: '',
+   display_image_url:
+      'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
    unit_price: 1000,
    quantity: 1,
    sub_total_amount: 900.0,
@@ -97,9 +97,7 @@ const CartItem = ({
                {/* image */}
                <div className="w-[100px] overflow-hidden relative h-[200px] rounded-lg">
                   <NextImage
-                     src={
-                        'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp'
-                     }
+                     src={item.display_image_url}
                      alt={`test`}
                      width={Math.round((1000 * 16) / 9)}
                      height={1000}

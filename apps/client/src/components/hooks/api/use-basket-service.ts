@@ -8,11 +8,16 @@ import {
    useLazyGetBasketQuery,
    useProceedToCheckoutMutation,
    useStoreBasketMutation,
+   useLazyGetCheckoutItemsQuery,
+   useCheckoutBasketMutation,
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
+import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 
 const useBasketService = () => {
    const [getBasketQueryTrigger, getBasketQueryState] = useLazyGetBasketQuery();
+   const [getCheckoutItemsQueryTrigger, getCheckoutItemsQueryState] =
+      useLazyGetCheckoutItemsQuery();
 
    const [storeBasketMutation, storeBasketMutationState] =
       useStoreBasketMutation();
@@ -20,12 +25,18 @@ const useBasketService = () => {
       useDeleteBasketMutation();
    const [proceedToCheckoutMutation, proceedToCheckoutMutationState] =
       useProceedToCheckoutMutation();
+   const [checkoutBasketMutation, checkoutBasketMutationState] =
+      useCheckoutBasketMutation();
 
    useCheckApiError([
       { title: 'Get Basket failed', error: getBasketQueryState.error },
       {
          title: 'Proceed To Checkout failed',
          error: proceedToCheckoutMutationState.error,
+      },
+      {
+         title: 'Get Checkout Items failed',
+         error: getCheckoutItemsQueryState.error,
       },
       // { title: 'Store Basket failed', error: storeBasketMutationState.error },
       // { title: 'Delete Basket failed', error: deleteBasketMutationState.error },
@@ -46,6 +57,23 @@ const useBasketService = () => {
          }
       },
       [getBasketQueryTrigger],
+   );
+
+   const getCheckoutItemsAsync = useCallback(
+      async (queries: IGetBasketQueries) => {
+         try {
+            const result = await getCheckoutItemsQueryTrigger(queries).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [getCheckoutItemsQueryTrigger],
    );
 
    const storeBasketAsync = useCallback(
@@ -88,13 +116,33 @@ const useBasketService = () => {
       }
    }, [proceedToCheckoutMutation]);
 
+   const checkoutBasketAsync = useCallback(
+      async (payload: ICheckoutPayload) => {
+         try {
+            const result = await checkoutBasketMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [checkoutBasketMutation],
+   );
+
    const isLoading = useMemo(() => {
       return (
          getBasketQueryState.isLoading ||
          getBasketQueryState.isFetching ||
          storeBasketMutationState.isLoading ||
          deleteBasketMutationState.isLoading ||
-         proceedToCheckoutMutationState.isLoading
+         proceedToCheckoutMutationState.isLoading ||
+         getCheckoutItemsQueryState.isLoading ||
+         getCheckoutItemsQueryState.isFetching ||
+         checkoutBasketMutationState.isLoading
       );
    }, [
       getBasketQueryState.isLoading,
@@ -102,6 +150,9 @@ const useBasketService = () => {
       storeBasketMutationState.isLoading,
       deleteBasketMutationState.isLoading,
       proceedToCheckoutMutationState.isLoading,
+      getCheckoutItemsQueryState.isLoading,
+      getCheckoutItemsQueryState.isFetching,
+      checkoutBasketMutationState.isLoading,
    ]);
 
    return {
@@ -110,11 +161,15 @@ const useBasketService = () => {
       storeBasketState: storeBasketMutationState,
       deleteBasketState: deleteBasketMutationState,
       proceedToCheckoutState: proceedToCheckoutMutationState,
+      getCheckoutItemsState: getCheckoutItemsQueryState,
+      checkoutBasketState: checkoutBasketMutationState,
 
       getBasketAsync,
+      getCheckoutItemsAsync,
       storeBasketAsync,
       deleteBasketAsync,
       proceedToCheckoutAsync,
+      checkoutBasketAsync,
    };
 };
 

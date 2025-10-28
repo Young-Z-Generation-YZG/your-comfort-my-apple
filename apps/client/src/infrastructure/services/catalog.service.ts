@@ -41,7 +41,7 @@ export const catalogApi = createApi({
          providesTags: ['Catalogs'],
       }),
       getModelBySlug: builder.query<any, string>({
-         query: (slug) => `/api/v1/products/iphone/${slug}/products`,
+         query: (slug) => `/api/v1/products/iphone/${slug}`,
          providesTags: ['Catalogs'],
       }),
       getIPhonesByModel: builder.query<IIphoneResponse[], string>({

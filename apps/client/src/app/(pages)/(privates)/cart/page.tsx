@@ -26,14 +26,14 @@ import useBasketService from '@components/hooks/api/use-basket-service';
 import { useEffect } from 'react';
 
 const fakeData = {
-   user_email: 'staff@gmail.com',
+   user_email: 'user@gmail.com',
    cart_items: [
       {
-         is_selected: false,
-         model_id: '68e403d5617b27ad030bf28f',
-         product_name: 'iPhone 15 128GB Blue',
+         is_selected: true,
+         model_id: '664351e90087aa09993f5ae7',
+         product_name: 'iPhone 15 128GB BLUE',
          color: {
-            name: 'Blue',
+            name: 'BLUE',
             normalized_name: 'BLUE',
             hex_code: '',
             showcase_image_id: '',
@@ -53,12 +53,20 @@ const fakeData = {
             'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
          unit_price: 1000,
          quantity: 2,
-         sub_total_amount: 2000,
-         promotion: null,
+         sub_total_amount: 1800.0,
+         promotion: {
+            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
+            promotion_type: 'COUPON',
+            product_unit_price: 1000,
+            discount_type: 'PERCENTAGE',
+            discount_value: 0.1,
+            discount_amount: 100.0,
+            final_price: 900.0,
+         },
          index: 1,
       },
    ],
-   total_amount: 0,
+   total_amount: 1800.0,
 };
 
 const CartPage = () => {
@@ -70,7 +78,6 @@ const CartPage = () => {
       storeBasketAsync,
       deleteBasketAsync,
       proceedToCheckoutAsync,
-      proceedToCheckoutState,
       isLoading,
    } = useBasketService();
 

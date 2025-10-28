@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using YGZ.Basket.Application.Abstractions.Data;
 
 namespace YGZ.Basket.Infrastructure.Persistence.Extensions;
 
@@ -20,7 +19,7 @@ public static class SeedDataExtension
         //await SeedCachedSKUPrice(scope);
 
         // seed cached color images
-        await SeedCachedColorImages(scope);
+        //await SeedCachedColorImages(scope);
 
         // seed cached model slugs
         //await SeedCachedModelSlugs(scope);
@@ -35,14 +34,14 @@ public static class SeedDataExtension
     //    await skuDistributedCache.SetPricesBatchAsync(skuPrices);
     //}
 
-    public static async Task SeedCachedColorImages(IServiceScope scope)
-    {
-        var colorImageCache = scope.ServiceProvider.GetRequiredService<IColorImageCache>();
+    //public static async Task SeedCachedColorImages(IServiceScope scope)
+    //{
+    //    var colorImageCache = scope.ServiceProvider.GetRequiredService<IColorImageCache>();
 
-        var colorImages = SeedData.ColorImagesCache;
+    //    var colorImages = SeedData.ColorImagesCache;
 
-        await colorImageCache.SetImageUrlsBatchAsync(colorImages);
-    }
+    //    await colorImageCache.SetImageUrlsBatchAsync(colorImages);
+    //}
 
     //public static async Task SeedCachedModelSlugs(IServiceScope scope)
     //{
