@@ -100,17 +100,18 @@ export function PaymentMethodSelector({
             </div>
 
             {/* MOMO Payment Option */}
-            <div className="relative">
+            <div className="relative opacity-50">
                <input
                   type="radio"
                   id="payment-momo"
                   value="MOMO"
+                  disabled={true}
                   {...register('payment_method')}
                   className="peer sr-only"
                />
                <label
                   htmlFor="payment-momo"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 cursor-pointer hover:border-gray-300 peer-checked:border-gray-900 peer-checked:bg-gray-50 duration-200 ease-in-out"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 cursor-not-allowed hover:border-gray-300 peer-checked:border-gray-900 peer-checked:bg-gray-50 duration-200 ease-in-out"
                >
                   <div className="mb-2 rounded-full bg-gray-100 p-2">
                      <Image

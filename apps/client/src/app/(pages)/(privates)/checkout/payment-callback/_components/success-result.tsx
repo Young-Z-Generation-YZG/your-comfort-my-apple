@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 import { CheckCircle, ChevronRight, Package, ShoppingBag } from 'lucide-react';
 import { RedirectCountdown } from '@components/client/countdown-redirect';
 import { useState } from 'react';
-import { OrderDetailsResponse } from '~/domain/interfaces/orders/order.interface';
 import { useRouter } from 'next/navigation';
+import { TOrder } from '../page';
 
 // Animation variants
 const containerVariants = {
@@ -96,7 +96,7 @@ const imageVariants = {
    },
 };
 
-const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
+const SuccessResult = ({ order }: { order: TOrder | null }) => {
    const router = useRouter();
 
    const [showRedirect, setShowRedirect] = useState(false);
@@ -223,7 +223,7 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                      <div className="border-b border-gray-200 pb-4 mb-4">
                         {order.order_items.map((item, index) => (
                            <motion.div
-                              key={item.product_id}
+                              key={item.order_id}
                               className="flex items-start mb-4"
                               initial={{ opacity: 0, x: -20 }}
                               animate={{
@@ -243,10 +243,8 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                                  whileHover="hover"
                               >
                                  <Image
-                                    src={
-                                       item.product_image || '/placeholder.svg'
-                                    }
-                                    alt={item.product_name}
+                                    src={item.display_image_url}
+                                    alt={`${item.model_name} ${item.storage_name} ${item.color_name}`}
                                     width={64}
                                     height={64}
                                     className="h-full w-full object-contain object-center"
@@ -254,27 +252,25 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                               </motion.div>
                               <div className="ml-4 flex-1">
                                  <h3 className="text-sm font-medium">
-                                    {item.product_name} x {item.quantity}
+                                    {`${item.model_name} ${item.storage_name} ${item.color_name}`}{' '}
+                                    x {item.quantity}
                                  </h3>
                                  <p className="mt-1 text-xs text-gray-500">
-                                    {item.product_color_name}
+                                    {item.color_name}
                                  </p>
                               </div>
                               {item?.promotion ? (
                                  <div className="flex gap-2 items-end">
                                     <p className="text-xs font-medium line-through mr-2">
-                                       ${item.product_unit_price.toFixed(2)}
+                                       ${item.unit_price.toFixed(2)}
                                     </p>
                                     <p className="text-sm font-medium text-red-500 mr-2">
-                                       $
-                                       {item.promotion.promotion_final_price.toFixed(
-                                          2,
-                                       )}
+                                       ${item.promotion.final_price.toFixed(2)}
                                     </p>
                                  </div>
                               ) : (
                                  <p className="text-sm font-medium">
-                                    ${item.product_unit_price.toFixed(2)}
+                                    ${item.unit_price.toFixed(2)}
                                  </p>
                               )}
                            </motion.div>
@@ -293,7 +289,7 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                         <div className="flex justify-between">
                            <p className="text-gray-500">Subtotal</p>
                            <p className="font-medium">
-                              ${order?.order_sub_total_amount.toFixed(2)}
+                              ${order?.total_amount.toFixed(2)}
                            </p>
                         </div>
                         <div className="flex justify-between">
@@ -303,7 +299,10 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                         <div className="flex justify-between">
                            <p className="text-gray-500">Discount</p>
                            <p className="font-medium">
-                              ${order?.order_discount_amount.toFixed(2)}
+                              $
+                              {order?.discount_amount
+                                 ? order.discount_amount.toFixed(2)
+                                 : '0.00'}
                            </p>
                         </div>
                         <div className="border-t border-gray-200 pt-2 mt-2">
@@ -322,7 +321,7 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                               }}
                            >
                               <p>Total</p>
-                              <p>${order?.order_total_amount.toFixed(2)}</p>
+                              <p>${order?.total_amount.toFixed(2)}</p>
                            </motion.div>
                         </div>
                      </motion.div>
@@ -369,11 +368,8 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                            </h2>
                            <p className="mb-1 text-lg font-SFProText">
                               {/* {order.order_shipping_address.contact_name} | {order.order_shipping_address.contact_phone_number} */}
-                              {order.order_shipping_address.contact_name} |{' '}
-                              {
-                                 order.order_shipping_address
-                                    .contact_phone_number
-                              }
+                              {order.shipping_address.contact_name} |{' '}
+                              {order.shipping_address.contact_phone_number}
                            </p>
                            <motion.p
                               className="text-base font-SFProText text-gray-700"
@@ -383,13 +379,10 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                                  transition: { delay: 2.2, duration: 0.5 },
                               }}
                            >
-                              {
-                                 order.order_shipping_address
-                                    .contact_address_line
-                              }
-                              , {order.order_shipping_address.contact_district},{' '}
-                              {order.order_shipping_address.contact_province},{' '}
-                              {order.order_shipping_address.contact_country}
+                              {order.shipping_address.contact_address_line},{' '}
+                              {order.shipping_address.contact_district},{' '}
+                              {order.shipping_address.contact_province},{' '}
+                              {order.shipping_address.contact_country}
                               <br />
                               <span className="mt-3 flex">
                                  Delivered in{' '}
@@ -449,10 +442,10 @@ const SuccessResult = ({ order }: { order: OrderDetailsResponse | null }) => {
                      transition={{ delay: 2.4 }}
                   >
                      <Link
-                        href="/store"
+                        href="/"
                         className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                      >
-                        Continue Shopping
+                        Home
                         <motion.div
                            animate={{
                               rotate: [0, 10, -10, 0],

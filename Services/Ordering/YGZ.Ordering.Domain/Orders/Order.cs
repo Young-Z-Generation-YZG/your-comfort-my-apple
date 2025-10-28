@@ -77,6 +77,17 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         _orderItems.Add(orderItem);
     }
 
+        //public void RemoveOrderItem(OrderItemId orderItemId)
+    //{
+    //    var item = _orderItems.FirstOrDefault(x => x.Id == orderItemId);
+
+    //    if (item is not null)
+    //    {
+    //        _orderItems.Remove(item);
+    //    }
+    //}
+
+
     public void SetPaid()
     {
         if (OrderStatus != EOrderStatus.PENDING)
@@ -87,64 +98,51 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         OrderStatus = EOrderStatus.PAID;
     }
 
-    //public void RemoveOrderItem(OrderItemId orderItemId)
+    public void SetConfirmed()
+    {
+        if (OrderStatus != EOrderStatus.PENDING)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
+        }
+
+        OrderStatus = EOrderStatus.CONFIRMED;
+    }
+
+    public void SetCancelled()
+    {
+       if (OrderStatus != EOrderStatus.PENDING)
+       {
+           throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
+       }
+
+       OrderStatus = EOrderStatus.CANCELLED;
+    }
+
+    public void SetPreparing()
+    {
+        if (OrderStatus != EOrderStatus.CONFIRMED)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.CONFIRMED.Name}");
+        }
+
+        OrderStatus = EOrderStatus.PREPARING;
+    }
     //{
-    //    var item = _orderItems.FirstOrDefault(x => x.Id == orderItemId);
+    public void SetDelivering()
+    {
+        if (OrderStatus != EOrderStatus.PREPARING)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.PREPARING.Name}");
+        }
+    }
 
-    //    if (item is not null)
-    //    {
-    //        _orderItems.Remove(item);
-    //    }
-    //}
-
-    //public void Confirm()
-    //{
-    //    if (Status == OrderStatus.PENDING)
-    //    {
-    //        Status = OrderStatus.CONFIRMED;
-    //    }
-    //}
-
-    //public void Cancel()
-    //{
-    //    if (Status == OrderStatus.PENDING)
-    //    {
-    //        Status = OrderStatus.CANCELLED;
-    //    }
-    //    else if (Status == OrderStatus.PREPARING)
-    //    {
-    //        Status = OrderStatus.CANCELLED;
-    //    }
-    //    else if (Status == OrderStatus.CONFIRMED)
-    //    {
-    //        Status = OrderStatus.CANCELLED;
-    //    }
-
-    //}
-
-    //public void Prepare()
-    //{
-    //    if (Status == OrderStatus.CONFIRMED || Status == OrderStatus.PAID)
-    //    {
-    //        Status = OrderStatus.PREPARING;
-    //    }
-    //}
-
-    //public void Deliver()
-    //{
-    //    if (Status == OrderStatus.PREPARING)
-    //    {
-    //        Status = OrderStatus.DELIVERING;
-    //    }
-    //}
-
-    //public void Delivered()
-    //{
-    //    if (Status == OrderStatus.DELIVERING)
-    //    {
-    //        Status = OrderStatus.DELIVERED;
-    //    }
-    //}
+    public void SetDelivered()
+    {
+        if (OrderStatus != EOrderStatus.DELIVERING)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.DELIVERING.Name}");
+        }
+    }
 
     public OrderDetailsResponse ToResponse()
     {

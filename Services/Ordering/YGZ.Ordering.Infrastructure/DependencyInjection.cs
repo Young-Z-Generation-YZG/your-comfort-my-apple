@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Messaging.Extensions;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Momo;
 using YGZ.Ordering.Application.Abstractions.PaymentProviders.Vnpay;
@@ -36,6 +38,8 @@ public static class DependencyInjection
         //services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddSingleton<IVnpayProvider, VnpayProvider>();
         services.AddSingleton<IMomoProvider, MomoProvider>();
+        services.AddScoped<IUserHttpContext, UserHttpContext>();
+        services.AddScoped<ITenantHttpContext, TenantHttpContext>();
 
         return services;
     }

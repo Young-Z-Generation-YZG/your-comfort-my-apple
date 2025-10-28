@@ -5,13 +5,23 @@ import {
    useConfirmOrderMutation,
    useLazyGetOrderDetailsQuery,
    useLazyGetOrdersQuery,
+   useMomoIpnCallbackMutation,
+   useVnpayIpnCallbackMutation,
 } from '~/infrastructure/services/ordering.service';
+import {
+   MomoIpnFormType,
+   VnpayIpnFormType,
+} from '~/domain/schemas/order.schema';
 
 const useOrderingService = () => {
    const [confirmOrderMutation, confirmOrderMutationState] =
       useConfirmOrderMutation();
    const [cancelOrderMutation, cancelOrderMutationState] =
       useCancelOrderMutation();
+   const [vnpayIpnCallbackMutation, vnpayIpnCallbackMutationState] =
+      useVnpayIpnCallbackMutation();
+   const [momoIpnCallbackMutation, momoIpnCallbackMutationState] =
+      useMomoIpnCallbackMutation();
 
    const [getOrdersTrigger, ordersQueryState] = useLazyGetOrdersQuery();
    const [getOrderDetailsTrigger, orderDetailsQueryState] =
@@ -21,6 +31,14 @@ const useOrderingService = () => {
       { title: 'Confirm Order failed', error: confirmOrderMutationState.error },
       { title: 'Cancel Order failed', error: cancelOrderMutationState.error },
       { title: 'Can not find this order', error: orderDetailsQueryState.error },
+      {
+         title: 'Vnpay IPN Callback failed',
+         error: vnpayIpnCallbackMutationState.error,
+      },
+      {
+         title: 'Momo IPN Callback failed',
+         error: momoIpnCallbackMutationState.error,
+      },
    ]);
 
    const getOrderDetailsAsync = useCallback(
@@ -103,6 +121,51 @@ const useOrderingService = () => {
       [cancelOrderMutation],
    );
 
+   const vnpayIpnCallbackAsync = useCallback(
+      async (payload: VnpayIpnFormType) => {
+         try {
+            const result = await vnpayIpnCallbackMutation(payload).unwrap();
+
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [vnpayIpnCallbackMutation],
+   );
+
+   const momoIpnCallbackAsync = useCallback(
+      async (payload: MomoIpnFormType) => {
+         try {
+            const result = await momoIpnCallbackMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [momoIpnCallbackMutation],
+   );
+
    const isLoading = useMemo(() => {
       return (
          orderDetailsQueryState.isLoading ||
@@ -127,12 +190,16 @@ const useOrderingService = () => {
       // States
       confirmOrderState: confirmOrderMutationState,
       cancelOrderState: cancelOrderMutationState,
+      vnpayIpnCallbackState: vnpayIpnCallbackMutationState,
+      momoIpnCallbackState: momoIpnCallbackMutationState,
 
       // Actions
       getOrderDetailsAsync,
       getOrdersAsync,
       confirmOrderAsync,
       cancelOrderAsync,
+      vnpayIpnCallbackAsync,
+      momoIpnCallbackAsync,
 
       // Loading
       isLoading,

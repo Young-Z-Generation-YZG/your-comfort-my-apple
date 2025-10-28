@@ -29,6 +29,7 @@ import { Skeleton } from '@components/ui/skeleton';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
 import NextImage from 'next/image';
 import useOrderingService from '~/components/hooks/api/use-ordering-service';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 
 const fakeOrderDetails = {
    tenant_id: null,
@@ -184,7 +185,8 @@ export default function OrderDetails() {
    //  >([]);
    //  const [reviewItem, setReviewItem] = useState<OrderItemResponse | null>(null);
    //  const [reviewModalOpen, setReviewModalOpen] = useState(false);
-   const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 minutes in seconds
+   const [loadingScreen, setLoadingScreen] = useState(false);
+   const [timeLeft, setTimeLeft] = useState(0);
    const router = useRouter();
    const params = useParams<{ id: string }>();
 
@@ -209,16 +211,37 @@ export default function OrderDetails() {
       return fakeOrderDetails;
    }, [getOrderDetailsState.isSuccess, getOrderDetailsState.data]);
 
+   // Calculate initial time left based on created_at
+   useEffect(() => {
+      if (displayOrderDetailsData?.created_at) {
+         const AUTO_CONFIRM_DURATION = 30 * 60; // 30 minutes in seconds
+         const createdAt = new Date(displayOrderDetailsData.created_at);
+         const now = new Date();
+         const elapsedSeconds = Math.floor(
+            (now.getTime() - createdAt.getTime()) / 1000,
+         );
+         const remainingSeconds = Math.max(
+            0,
+            AUTO_CONFIRM_DURATION - elapsedSeconds,
+         );
+         setTimeLeft(remainingSeconds);
+      }
+   }, [displayOrderDetailsData?.created_at]);
+
    const CountdownTimer = () => {
       useEffect(() => {
-         if (timeLeft <= 0) {
-            window.location.reload();
-
-            return;
-         }
-
          const intervalId = setInterval(() => {
-            setTimeLeft((prevTime) => prevTime - 1);
+            setTimeLeft((prevTime) => {
+               const newTime = Math.max(0, prevTime - 1);
+               if (
+                  newTime === 0 &&
+                  displayOrderDetailsData?.status === EOrderStatus.PENDING
+               ) {
+                  confirmOrderAsync(displayOrderDetailsData.order_id);
+                  window.location.reload();
+               }
+               return newTime;
+            });
          }, 1000);
 
          return () => clearInterval(intervalId);
@@ -240,12 +263,24 @@ export default function OrderDetails() {
    const handleCancelOrder = async () => {
       if (displayOrderDetailsData?.order_id) {
          await cancelOrderAsync(displayOrderDetailsData.order_id);
+
+         setLoadingScreen(true);
+
+         setTimeout(() => {
+            window.location.reload();
+         }, 300);
       }
    };
 
    const handleConfirmOrder = async () => {
       if (displayOrderDetailsData?.order_id) {
          await confirmOrderAsync(displayOrderDetailsData.order_id);
+
+         setLoadingScreen(true);
+
+         setTimeout(() => {
+            window.location.reload();
+         }, 300);
       }
    };
 
@@ -256,6 +291,7 @@ export default function OrderDetails() {
          initial="hidden"
          animate="visible"
       >
+         <LoadingOverlay isLoading={loadingScreen} fullScreen={true} />
          <div className="flex items-center px-6 py-4 border-b border-gray-200">
             <motion.button
                onClick={() => {

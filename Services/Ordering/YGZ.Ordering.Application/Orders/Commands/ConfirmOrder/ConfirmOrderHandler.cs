@@ -1,51 +1,57 @@
 ﻿
 
+using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Ordering.Application.Abstractions;
+using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
+using YGZ.Ordering.Domain.Core.Errors;
 
 namespace YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 
 public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 {
-    private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly IUserRequestContext _userContext;
     private readonly ILogger<ConfirmOrderHandler> _logger;
+    private readonly IGenericRepository<Order, OrderId> _repository;
+    private readonly IUserHttpContext _userHttpContext;
 
     public ConfirmOrderHandler(IGenericRepository<Order, OrderId> repository,
-                              IUserRequestContext userContext,
+                              IUserHttpContext userHttpContext,
                               ILogger<ConfirmOrderHandler> logger)
     {
-        _repository = repository;
-        _userContext = userContext;
         _logger = logger;
+        _repository = repository;
+        _userHttpContext = userHttpContext;
     }
 
     public async Task<Result<bool>> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        //var orderId = OrderId.Of(request.OrderId);
-        //var userId = UserId.Of(Guid.Parse(_userContext.GetUserId()));
+        var orderId = OrderId.Of(request.OrderId);
+        var userId = UserId.Of(_userHttpContext.GetUserId());
 
-        //var orders = await _orderRepository.GetUserOrdersWithItemAsync(userId, cancellationToken);
+        var expressions = new Expression<Func<Order, object>>[]
+        {
+            x => x.OrderItems
+        };
+        
+        var order = await _repository.GetByIdAsync(orderId, includes: expressions, cancellationToken: cancellationToken);
 
-        //var order = orders.FirstOrDefault(x => x.Id == orderId);
+        if (order is null)
+        {
+            return Errors.Order.DoesNotExist;
+        }
 
-        //if (order is null)
-        //{
-        //    return Errors.Order.DoesNotExist;
-        //}
+        if (order.OrderStatus != EOrderStatus.PENDING)
+        {
+           return Errors.Order.CannotConfirmOrder;
+        }
 
-        //if (order.Status != OrderStatus.PENDING)
-        //{
-        //    return Errors.Order.CannotConfirmOrder;
-        //}
+        order.SetConfirmed();
 
-        //order.Confirm();
-
-        //return await _orderRepository.UpdateAsync(order, cancellationToken);
+        return await _repository.UpdateAsync(order, cancellationToken);
     }
 }

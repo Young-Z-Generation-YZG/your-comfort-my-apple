@@ -24,7 +24,7 @@ import { motion } from 'framer-motion';
 import { ShippingAddressSelector } from '~/app/(pages)/(privates)/cart/_components/shipping-address-selector';
 import { FiEdit3 } from 'react-icons/fi';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
 import useIdentityService from '@components/hooks/api/use-identity-service';
@@ -93,7 +93,7 @@ const fakeCheckoutCart = {
 const fakeCheckoutResponse = {
    payment_redirect_url:
       'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=2500000000&vnp_Command=pay&vnp_CreateDate=20251028225140&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=ORDER_ID%3De824f6fa-92e4-4911-8b9e-98bd2ea4b82d&vnp_OrderType=VNPAY_CHECKOUT&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A3000%2Fcheckout%2Fpayment-callback&vnp_TmnCode=SB1TO3BK&vnp_TxnRef=638972887005197901&vnp_Version=2.1.0&vnp_SecureHash=695ee3da6712e246efa37fa73e51b7e3fd7a227940341b5f792a29b36d5e7bce457ebcf953cb810aacd501b251a5c5e4bdac62914c9da24e53f7a7556dc3fa7f',
-   order_details_redirect_url: null,
+   order_details_redirect_url: 'string',
 };
 
 export type TCheckoutResponse = typeof fakeCheckoutResponse;
@@ -103,6 +103,7 @@ export type TCheckoutCart = typeof fakeCheckoutCart;
 export type TCheckoutItem = (typeof fakeCheckoutCart.cart_items)[number];
 
 const CheckoutPage = () => {
+   const router = useRouter();
    const searchParams = useSearchParams();
    //  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
    const [editable, setEditable] = useState(false);
@@ -207,34 +208,23 @@ const CheckoutPage = () => {
       console.log('result', result);
 
       if (result.isSuccess) {
-         window.location.href = (
-            result.data as unknown as TCheckoutResponse
-         ).payment_redirect_url;
+         if (
+            (result.data as unknown as TCheckoutResponse).payment_redirect_url
+         ) {
+            window.location.href = (
+               result.data as unknown as TCheckoutResponse
+            ).payment_redirect_url;
+         } else if (
+            (result.data as unknown as TCheckoutResponse)
+               .order_details_redirect_url
+         ) {
+            router.replace(
+               (result.data as unknown as TCheckoutResponse)
+                  .order_details_redirect_url,
+            );
+         }
       }
    };
-
-   //  useEffect(() => {
-   //     if (isSuccessCheckoutBasket && dataCheckoutBasket) {
-   //        setTimeout(() => {
-   //           setIsLoading(false);
-   //        }, 1000);
-
-   //        dispatch(deleteCart());
-
-   //        if (
-   //           typeof dataCheckoutBasket.payment_redirect_url === 'string' &&
-   //           dataCheckoutBasket.payment_redirect_url
-   //        ) {
-   //           window.location.href = dataCheckoutBasket.payment_redirect_url; // Redirect to the VNPAY payment URL
-   //        } else if (
-   //           typeof dataCheckoutBasket.order_details_redirect_url === 'string' &&
-   //           dataCheckoutBasket.order_details_redirect_url
-   //        ) {
-   //           window.location.href =
-   //              dataCheckoutBasket.order_details_redirect_url; // Redirect to the order details page
-   //        }
-   //     }
-   //  }, [isSuccessCheckoutBasket]);
 
    return (
       <div
@@ -310,7 +300,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.contact_name"
                                  label="Contact Name"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
@@ -322,7 +315,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.contact_phone_number"
                                  label="Phone Number"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
@@ -363,7 +359,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.address_line"
                                  label="Address Line"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
@@ -375,7 +374,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.district"
                                  label="District"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
@@ -387,7 +389,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.province"
                                  label="Province/City"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
@@ -399,7 +404,10 @@ const CheckoutPage = () => {
                                  form={form}
                                  name="shipping_address.country"
                                  label="Country"
-                                 className="rounded-xl w-full"
+                                 className={cn('rounded-xl w-full', {
+                                    'border-gray-500 bg-gray-300/50 text-gray-500':
+                                       !editable,
+                                 })}
                                  type="text"
                                  disabled={!editable}
                                  errorTextClassName="pb-1"
