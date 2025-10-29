@@ -25,36 +25,6 @@ public class PromotionController : ApiController
         _mapper = mapper;
     }
 
-    //[HttpGet("events")]
-    //public async Task<IActionResult> GetPromotionEvents(CancellationToken cancellationToken)
-    //{
-    //    var query = new GetPromotionEventsQuery();
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-    //[HttpPost("events")]
-    //public async Task<IActionResult> CreatePromotionEvent([FromBody] CreatePromotionEventRequest request, CancellationToken cancellationToken)
-    //{
-    //    var command = _mapper.Map<CreatePromotionEventCommand>(request);
-
-    //    var result = await _sender.Send(command, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-    //[HttpPost("global-events")]
-    //public async Task<IActionResult> CreatePromotionEventGlobal([FromBody] CreatePromotionGlobalRequest request, CancellationToken cancellationToken)
-    //{
-    //    var command = _mapper.Map<CreatePromotionGlobalCommand>(request);
-
-    //    var result = await _sender.Send(command, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
     [HttpGet("event/event-with-items")]
     public async Task<IActionResult> GetEventWithItems(CancellationToken cancellationToken)
     {
@@ -64,47 +34,4 @@ public class PromotionController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-
-
-    //[HttpGet("coupons")]
-    //public async Task<IActionResult> GetPromotionCoupons(CancellationToken cancellationToken)
-    //{
-    //    var query = new GetPromotionCouponsQuery();
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-    //[HttpGet("coupons/{couponCode}")]
-    //public async Task<IActionResult> GetPromotionCouponByCode([FromRoute] string couponCode, CancellationToken cancellationToken)
-    //{
-    //    var query = new GetPromotionCouponByCodeQuery(couponCode);
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-
-    //[HttpGet("events/active")]
-    //public async Task<IActionResult> GetActivePromotionEvent(CancellationToken cancellationToken)
-    //{
-    //    var query = new GetActivePromotionEventQuery();
-
-    //    var result = await _sender.Send(query, cancellationToken);
-
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
-
-
-
-    //[HttpPatch("events/{eventId}/state")]
-    //public async Task<IActionResult> UpdatePromotionEventState([FromRoute] Guid eventId, [FromBody] UpdatePromotionEventRequest request, CancellationToken cancellationToken)
-    //{
-    //    var command = _mapper.Map<UpdatePromotionEventCommand>(request);
-    //    command.EventId = eventId;
-    //    var result = await _sender.Send(command, cancellationToken);
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
 }

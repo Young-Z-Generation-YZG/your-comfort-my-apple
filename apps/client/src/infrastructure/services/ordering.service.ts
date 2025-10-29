@@ -1,14 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import { HttpErrorResponse } from '~/domain/interfaces/errors/error.interface';
-import {
-   IMomoIpnCallbackPayload,
-   IVnpayIpnCallbackPayload,
-} from '~/domain/interfaces/orders/ipn-callback.interface';
-import {
-   OrderDetailsResponse,
-   OrderResponse,
-} from '~/domain/interfaces/orders/order.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 
@@ -29,43 +20,43 @@ export const orderingApi = createApi({
    tagTypes: ['Orders'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getOrders: builder.query<PaginationResponse<OrderResponse>, void>({
+      getOrders: builder.query<PaginationResponse<any>, void>({
          query: () => ({
             url: '/api/v1/orders/users',
             method: 'GET',
          }),
       }),
-      getOrderDetails: builder.query<OrderDetailsResponse, string>({
+      getOrderDetails: builder.query<any, string>({
          query: (orderId) => ({
             url: `/api/v1/orders/${orderId}/details`,
             method: 'GET',
          }),
       }),
       vnpayIpnCallback: builder.mutation({
-         query: (payload: IVnpayIpnCallbackPayload) => ({
+         query: (payload: any) => ({
             url: '/api/v1/orders/payment/vnpay-ipn-callback',
             method: 'PATCH',
             body: payload,
             providesTags: ['Orders'],
          }),
-         transformResponse: (response: OrderDetailsResponse) => {
+         transformResponse: (response: any) => {
             return response;
          },
-         transformErrorResponse: (error: HttpErrorResponse) => {
+         transformErrorResponse: (error: any) => {
             return error.data;
          },
       }),
       momoIpnCallback: builder.mutation({
-         query: (payload: IMomoIpnCallbackPayload) => ({
+         query: (payload: any) => ({
             url: '/api/v1/orders/payment/momo-ipn-callback',
             method: 'PATCH',
             body: payload,
             providesTags: ['Orders'],
          }),
-         transformResponse: (response: OrderDetailsResponse) => {
+         transformResponse: (response: any) => {
             return response;
          },
-         transformErrorResponse: (error: HttpErrorResponse) => {
+         transformErrorResponse: (error: any) => {
             return error.data;
          },
       }),

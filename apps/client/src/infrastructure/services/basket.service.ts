@@ -1,13 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
-import {
-   IBasket,
-   ICheckoutResponse,
-   IGetBasketQueries,
-   IStoreBasketPayload,
-} from '~/domain/interfaces/baskets/basket.interface';
+import { IStoreBasketPayload } from '~/domain/interfaces/baskets/basket.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 
@@ -18,6 +12,11 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    if (result.error && result.error.status === 401) {
       // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
+
+      // Redirect to sign-in page
+      if (typeof window !== 'undefined') {
+         window.location.href = '/sign-in';
+      }
    }
 
    return result;
@@ -36,13 +35,21 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      getBasket: builder.query<IBasket, IGetBasketQueries>({
-         query: (queries: IGetBasketQueries) =>
+      storeEventItem: builder.mutation<any, any>({
+         query: (payload: any) => ({
+            url: `/api/v1/baskets/event-item`,
+            method: 'POST',
+            body: payload,
+         }),
+         invalidatesTags: ['Baskets'],
+      }),
+      getBasket: builder.query<any, any>({
+         query: (queries: any) =>
             createQueryEncodedUrl('/api/v1/baskets', queries),
          providesTags: ['Baskets'],
       }),
-      getCheckoutItems: builder.query<IBasket, IGetBasketQueries>({
-         query: (queries: IGetBasketQueries) =>
+      getCheckoutItems: builder.query<any, any>({
+         query: (queries: any) =>
             createQueryEncodedUrl('/api/v1/baskets/checkout-items', queries),
          providesTags: ['Baskets'],
       }),
@@ -61,8 +68,8 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      checkoutBasket: builder.mutation<ICheckoutResponse, ICheckoutPayload>({
-         query: (payload: ICheckoutPayload) => ({
+      checkoutBasket: builder.mutation<any, any>({
+         query: (payload: any) => ({
             url: `/api/v1/baskets/checkout`,
             method: 'POST',
             body: payload,
@@ -74,6 +81,7 @@ export const basketApi = createApi({
 
 export const {
    useStoreBasketMutation,
+   useStoreEventItemMutation,
    useGetBasketQuery,
    useLazyGetBasketQuery,
    useLazyGetCheckoutItemsQuery,

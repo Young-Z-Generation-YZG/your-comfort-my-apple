@@ -10,6 +10,7 @@ import {
    useStoreBasketMutation,
    useLazyGetCheckoutItemsQuery,
    useCheckoutBasketMutation,
+   useStoreEventItemMutation,
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
@@ -21,6 +22,8 @@ const useBasketService = () => {
 
    const [storeBasketMutation, storeBasketMutationState] =
       useStoreBasketMutation();
+   const [storeEventItemMutation, storeEventItemMutationState] =
+      useStoreEventItemMutation();
    const [deleteBasketMutation, deleteBasketMutationState] =
       useDeleteBasketMutation();
    const [proceedToCheckoutMutation, proceedToCheckoutMutationState] =
@@ -37,6 +40,10 @@ const useBasketService = () => {
       {
          title: 'Get Checkout Items failed',
          error: getCheckoutItemsQueryState.error,
+      },
+      {
+         title: 'Store Event Item failed',
+         error: storeEventItemMutationState.error,
       },
       // { title: 'Store Basket failed', error: storeBasketMutationState.error },
       // { title: 'Delete Basket failed', error: deleteBasketMutationState.error },
@@ -93,6 +100,23 @@ const useBasketService = () => {
       [storeBasketMutation],
    );
 
+   const storeEventItemAsync = useCallback(
+      async (payload: any) => {
+         try {
+            const result = await storeEventItemMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [storeEventItemMutation],
+   );
+
    const deleteBasketAsync = useCallback(async () => {
       try {
          const result = await deleteBasketMutation({}).unwrap();
@@ -142,7 +166,8 @@ const useBasketService = () => {
          proceedToCheckoutMutationState.isLoading ||
          getCheckoutItemsQueryState.isLoading ||
          getCheckoutItemsQueryState.isFetching ||
-         checkoutBasketMutationState.isLoading
+         checkoutBasketMutationState.isLoading ||
+         storeEventItemMutationState.isLoading
       );
    }, [
       getBasketQueryState.isLoading,
@@ -153,6 +178,7 @@ const useBasketService = () => {
       getCheckoutItemsQueryState.isLoading,
       getCheckoutItemsQueryState.isFetching,
       checkoutBasketMutationState.isLoading,
+      storeEventItemMutationState.isLoading,
    ]);
 
    return {
@@ -163,13 +189,14 @@ const useBasketService = () => {
       proceedToCheckoutState: proceedToCheckoutMutationState,
       getCheckoutItemsState: getCheckoutItemsQueryState,
       checkoutBasketState: checkoutBasketMutationState,
-
+      storeEventItemState: storeEventItemMutationState,
       getBasketAsync,
       getCheckoutItemsAsync,
       storeBasketAsync,
       deleteBasketAsync,
       proceedToCheckoutAsync,
       checkoutBasketAsync,
+      storeEventItemAsync,
    };
 };
 

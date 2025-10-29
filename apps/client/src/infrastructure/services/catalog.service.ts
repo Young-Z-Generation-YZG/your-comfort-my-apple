@@ -1,11 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { IIphoneModelResponse } from '~/domain/interfaces/catalogs/iPhone-model.interface';
-import {
-   IIphonePromotionResponse,
-   IIphoneResponse,
-} from '~/domain/interfaces/catalogs/iPhone.interface';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import { IIphoneModel } from '~/domain/interfaces/catalogs/iphone/iPhone-model.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 
@@ -26,17 +20,14 @@ export const catalogApi = createApi({
    tagTypes: ['Catalogs'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getIphonePromotions: builder.query<
-         PaginationResponse<IIphonePromotionResponse>,
-         void
-      >({
+      getIphonePromotions: builder.query<PaginationResponse<any>, void>({
          query: () => '/api/v1/products/iphone/promotions',
          providesTags: ['Catalogs'],
          transformResponse: (response) => {
-            return response as PaginationResponse<IIphonePromotionResponse>;
+            return response as PaginationResponse<any>;
          },
       }),
-      getIphoneModels: builder.query<PaginationResponse<IIphoneModel>, string>({
+      getIphoneModels: builder.query<PaginationResponse<any>, string>({
          query: (params = '') => `/api/v1/products/iphone/models?${params}`,
          providesTags: ['Catalogs'],
       }),
@@ -44,7 +35,7 @@ export const catalogApi = createApi({
          query: (slug) => `/api/v1/products/iphone/${slug}`,
          providesTags: ['Catalogs'],
       }),
-      getIPhonesByModel: builder.query<IIphoneResponse[], string>({
+      getIPhonesByModel: builder.query<any[], string>({
          query: (slug) => `/api/v1/products/iphone/models/${slug}/products`,
          providesTags: ['Catalogs'],
       }),

@@ -3,6 +3,7 @@ import CardWrapper from './card-wrapper';
 import NextImage from 'next/image';
 import { Button } from '@components/ui/button';
 import { Badge } from '@components/ui/badge';
+import { TEventItem } from '../page';
 
 const fakeData = [
    {
@@ -54,27 +55,26 @@ const fakeData = [
 ];
 
 interface PromotionIPhoneProps {
+   item: TEventItem;
+   onBuy: () => void;
    className?: string;
 }
 
-const PromotionIPhone = ({ className }: PromotionIPhoneProps) => {
-   // Get the first promotion item from fake data
-   const promotionItem = fakeData[0];
-
+const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
    // Calculate discount percentage
-   const discountPercentage = Math.round(promotionItem.discount_value * 100);
+   const discountPercentage = Math.round(item.discount_value * 100);
 
    // Calculate progress bar values
-   const totalAvailable = promotionItem.stock + promotionItem.sold;
-   const soldPercentage = (promotionItem.sold / totalAvailable) * 100;
+   const totalAvailable = item.stock + item.sold;
+   const soldPercentage = (item.sold / totalAvailable) * 100;
 
    return (
       <div className={cn('', className)}>
          <CardWrapper className="w-full">
             <div className="w-full overflow-hidden relative h-[300px]">
                <NextImage
-                  src={promotionItem.image_url}
-                  alt={`${promotionItem.model.name} ${promotionItem.color.name}`}
+                  src={item.image_url}
+                  alt={`${item.model.name} ${item.color.name}`}
                   width={Math.round((1000 * 16) / 9)}
                   height={1000}
                   className="absolute top-0 left-0 w-full h-full object-cover"
@@ -94,24 +94,23 @@ const PromotionIPhone = ({ className }: PromotionIPhoneProps) => {
                   className={cn(
                      'h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector ring-offset-white',
                   )}
-                  style={{ backgroundColor: promotionItem.color.hex_code }}
+                  style={{ backgroundColor: item.color.hex_code }}
                ></span>
             </div>
 
             <div className="p-6">
                <h3 className="mb-4 text-2xl font-semibold">
-                  {promotionItem.model.name} {promotionItem.color.name}{' '}
-                  {promotionItem.storage.name}
+                  {item.model.name} {item.color.name} {item.storage.name}
                </h3>
 
                <div className="flex items-end gap-2">
                   {/* discount price */}
                   <span className="text-2xl font-medium text-red-600 font-SFProText">
-                     ${promotionItem.final_price}
+                     ${item.final_price}
                   </span>
                   {/* original price */}
                   <span className="text-lg text-gray-500 line-through font-SFProText">
-                     ${promotionItem.original_price}
+                     ${item.original_price}
                   </span>
                </div>
 
@@ -127,13 +126,13 @@ const PromotionIPhone = ({ className }: PromotionIPhoneProps) => {
                            Sold:
                         </span>
                         <span className="inline-flex items-center justify-center min-w-[32px] px-2 py-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white text-sm font-bold font-SFProText rounded-md shadow-md">
-                           {promotionItem.sold}
+                           {item.sold}
                         </span>
                      </div>
                      <span className="text-sm text-gray-600 font-SFProText">
                         Stock:{' '}
                         <strong className="text-emerald-600">
-                           {promotionItem.stock}
+                           {item.stock}
                         </strong>
                      </span>
                   </div>
@@ -154,7 +153,7 @@ const PromotionIPhone = ({ className }: PromotionIPhoneProps) => {
 
                <Button
                   className="w-full mt-5 cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700"
-                  onClick={() => {}}
+                  onClick={onBuy}
                >
                   Buy now
                </Button>
