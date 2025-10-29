@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('ordering-services')(args, api, extraOptions);
@@ -20,20 +20,21 @@ export const orderingApi = createApi({
    tagTypes: ['Orders'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getOrders: builder.query<PaginationResponse<any>, void>({
-         query: () => ({
-            url: '/api/v1/orders/users',
+      getOrdersByAdmin: builder.query<PaginationResponse<any>, string>({
+         query: (params: any) => ({
+            url: '/api/v1/orders/admin',
             method: 'GET',
+            params: params,
          }),
       }),
       getOrderDetails: builder.query<any, string>({
-         query: (orderId) => ({
-            url: `/api/v1/orders/${orderId}/details`,
+         query: (orderId: string) => ({
+            url: `/api/v1/orders/${orderId}`,
             method: 'GET',
          }),
       }),
    }),
 });
 
-export const { useLazyGetOrdersQuery, useLazyGetOrderDetailsQuery } =
+export const { useLazyGetOrderDetailsQuery, useLazyGetOrdersByAdminQuery } =
    orderingApi;

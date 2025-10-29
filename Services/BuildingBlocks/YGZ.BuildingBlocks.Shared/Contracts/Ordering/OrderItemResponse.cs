@@ -8,8 +8,10 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record OrderItemResponse()
 {
-    public required string OrderId { get; init; }
     public required string OrderItemId { get; init; }
+    public required string OrderId { get; init; }
+    public string? TenantId { get; init; }
+    public string? BranchId { get; init; }
     public string? SkuId { get; init; }
     public required string ModelId { get; init; }
     public required string ModelName { get; init; }
@@ -19,8 +21,13 @@ public sealed record OrderItemResponse()
     public required string DisplayImageUrl { get; init; }
     public required string ModelSlug { get; init; }
     public required int Quantity { get; init; }
-    public PromotionResponse? Promotion { get; init; } = null;
     public bool IsReviewed { get; init; } = false;
+        public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
+    public decimal SubTotalAmount {get; init;}
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
     public string? UpdatedBy { get; init; } = null;

@@ -1,4 +1,5 @@
-﻿using MapsterMapper;
+﻿using Keycloak.AuthServices.Authorization;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,6 +34,8 @@ public class OrderingController : ApiController
     }
 
     [HttpGet("admin")]
+    [Authorize(Policy = Policies.R__ADMIN_SUPER___RS__ALL)]
+    [ProtectedResource(Resources.RESOURCE_ORDERS, Scopes.ALL)]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByAdminQuery>(request);
@@ -42,7 +45,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("users")]
+    [HttpGet()]
     public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByUserQuery>(request);
@@ -52,7 +55,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("{orderId}/details")]
+    [HttpGet("{orderId}")]
     public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderDetailsByIdQuery(orderId);

@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations.Schema;
+using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 
 namespace YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -78,5 +79,19 @@ public class ShippingAddress : ValueObject
         yield return District;
         yield return Province;
         yield return Country;
+    }
+
+    public ShippingAddressResponse ToResponse()
+    {
+        return new ShippingAddressResponse
+        {
+            ContactName = ContactName,
+            ContactEmail = ContactEmail,
+            ContactPhoneNumber = ContactPhoneNumber,
+            ContactAddressLine = AddressLine,
+            ContactDistrict = District,
+            ContactProvince = Province,
+            ContactCountry = Country
+        };
     }
 }

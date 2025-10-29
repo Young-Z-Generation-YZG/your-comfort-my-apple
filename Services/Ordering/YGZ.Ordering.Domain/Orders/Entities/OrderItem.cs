@@ -1,6 +1,7 @@
 ﻿
 
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
@@ -100,5 +101,36 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public void CheckIsReviewed()
     {
         this.IsReviewed = true;
+    }
+
+    public OrderItemResponse ToResponse()
+    {
+        return new OrderItemResponse
+        {
+            OrderItemId = Id.Value.ToString(),
+            OrderId = OrderId.Value.ToString(),
+            SkuId = SkuId,
+            ModelId = ModelId,
+            ModelName = ModelName,
+            ColorName = ColorName,
+            StorageName = StorageName,
+            UnitPrice = UnitPrice,
+            DisplayImageUrl = DisplayImageUrl,
+            ModelSlug = ModelSlug,
+            Quantity = Quantity,
+            IsReviewed = IsReviewed,
+            PromotionId = PromotionId,
+            PromotionType = PromotionType,
+            DiscountType = DiscountType,
+            DiscountValue = DiscountValue,
+            DiscountAmount = DiscountAmount,
+            SubTotalAmount = SubTotalAmount,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
     }
 }

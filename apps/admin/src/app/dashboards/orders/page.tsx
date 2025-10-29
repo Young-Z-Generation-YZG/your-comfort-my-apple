@@ -27,6 +27,8 @@ import { ORDER_STATUS } from '~/src/domain/constants/order-status.constant';
 import { urlSerializer } from '~/src/infrastructure/utils/url-serializer';
 import { PaginationLinks } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { parseQueryParams } from '~/src/infrastructure/utils/parse-query-params';
+import useOrderingService from '~/src/hooks/api/use-ordering-service';
+import usePagination from '~/src/hooks/use-pagination';
 
 // Status badge colors and icons
 const statusConfig = {
@@ -61,105 +63,48 @@ const statusConfig = {
 };
 
 const OrdersList = () => {
-   const [isLoading, setIsLoading] = useState(true);
-   const [currentPage, setCurrentPage] = useState(1);
-   const [pageSize, setPageSize] = useState(10); // Number of items per page
-
-   const [orders, setOrders] = useState<OrderResponse[]>([]);
-   const [totalOrder, setTotalOrder] = useState(0);
-   const [links, setLinks] = useState<PaginationLinks>({
-      first: null,
-      last: null,
-      prev: null,
-      next: null,
-   });
-
    const router = useRouter();
    const params = useSearchParams();
 
    const searchParams = Object.fromEntries(params.entries());
 
-   const handleQueryParams = (params: any) => {
-      let cleanParams = {};
-
-      const page = params._page ? Number(params._page) : 1;
-      const limit = params._limit ? Number(params._limit) : pageSize;
-      const orderStatus = ORDER_STATUS.includes(params._orderStatus);
-
-      if (params._page || page) {
-         cleanParams = {
-            ...cleanParams,
-            _page: page,
-         };
-      }
-
-      if (params._limit || limit) {
-         cleanParams = {
-            ...cleanParams,
-            _limit: limit,
-         };
-      }
-
-      if (params._orderStatus && orderStatus) {
-         cleanParams = {
-            ...cleanParams,
-            _orderStatus: params._orderStatus,
-         };
-      }
-
-      return cleanParams;
-   };
-
-   const cleanParams = handleQueryParams(searchParams);
-
-   console.log('Clean Params', cleanParams);
+   const { getOrdersAsync, getOrdersState, isLoading } = useOrderingService();
 
    const {
-      data: orderData,
-      isLoading: isLoadingOrders,
-      isError: isFetchingError,
-      error: orderError,
-      isSuccess: isFetchingSuccess,
-   } = useGetOrdersAsyncQuery({
-      ...cleanParams,
-   });
-
-   // Calculate pagination
-   const totalPages = Math.ceil(totalOrder / pageSize);
-
-   // Handle page change
-   const handlePageChange = (page: number) => {
-      if (page >= 1 && page <= totalPages) {
-         router.push(
-            urlSerializer(`/dashboards/orders`, {
-               ...cleanParams,
-               _page: page,
-            }),
-         );
-
-         window.scrollTo(0, 0); // Scroll to top on page change
-      }
-   };
-
-   useEffect(() => {
-      if (isFetchingSuccess && orderData) {
-         setOrders(orderData.items);
-         setTotalOrder(orderData.total_records);
-         setLinks(orderData.links);
-         setCurrentPage(orderData.current_page);
-         setPageSize(orderData.page_size);
-
-         return;
-      }
-
-      if (isFetchingError && orderError) {
-         return;
-      }
-   }, [isFetchingSuccess, orderData, isFetchingError, orderError]);
+      currentPage,
+      totalPages,
+      pageSize,
+      totalRecords,
+      isLastPage,
+      isFirstPage,
+      isNextPage,
+      isPrevPage,
+      paginationItems,
+      getPageNumbers,
+   } = usePagination(
+      getOrdersState.data && getOrdersState.data.items.length > 0
+         ? getOrdersState.data
+         : {
+              total_records: 0,
+              total_pages: 0,
+              page_size: 0,
+              current_page: 0,
+              items: [],
+              links: {
+                 first: null,
+                 last: null,
+                 prev: null,
+                 next: null,
+              },
+           },
+   );
 
    useEffect(() => {
-      setIsLoading(isLoadingOrders);
-   }, [isLoadingOrders]);
+      const fetchOrders = async () => {
+         await getOrdersAsync(searchParams);
+      };
+      fetchOrders();
+   }, [searchParams, getOrdersAsync]);
 
    return (
       <Fragment>

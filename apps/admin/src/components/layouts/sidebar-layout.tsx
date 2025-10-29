@@ -41,6 +41,19 @@ const data = {
    },
    navMain: [
       {
+         title: 'Online Shop',
+         url: '/dashboards/online/orders',
+         icon: ScrollText,
+         isActive: true,
+         items: [
+            {
+               title: 'Orders List',
+               url: '/dashboards/online/orders',
+               icon: ScrollText,
+            },
+         ],
+      },
+      {
          title: 'Tenant Management',
          url: '/dashboards/tenants',
          icon: Building2,
@@ -103,11 +116,6 @@ const data = {
          icon: ScrollText,
          isActive: true,
          items: [
-            {
-               title: 'Tenant Assignment',
-               url: '/dashboards/orders/tenant-assignment',
-               icon: ScrollText,
-            },
             {
                title: 'Orders List',
                url: '#',

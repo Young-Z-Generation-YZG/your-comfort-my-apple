@@ -22,7 +22,7 @@ export const orderingApi = createApi({
    endpoints: (builder) => ({
       getOrders: builder.query<PaginationResponse<any>, void>({
          query: () => ({
-            url: '/api/v1/orders/users',
+            url: '/api/v1/orders',
             method: 'GET',
          }),
       }),

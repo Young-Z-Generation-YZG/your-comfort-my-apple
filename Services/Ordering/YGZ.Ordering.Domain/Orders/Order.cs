@@ -156,48 +156,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             OrderCode = Code.Value,
             Status = OrderStatus.Name,
             PaymentMethod = PaymentMethod.Name,
-            ShippingAddress = new ShippingAddressResponse
-            {
-                ContactName = ShippingAddress.ContactName,
-                ContactEmail = ShippingAddress.ContactEmail,
-                ContactPhoneNumber = ShippingAddress.ContactPhoneNumber,
-                ContactAddressLine = ShippingAddress.AddressLine,
-                ContactDistrict = ShippingAddress.District,
-                ContactProvince = ShippingAddress.Province,
-                ContactCountry = ShippingAddress.Country
-            },
-            OrderItems = OrderItems.Select(item => new OrderItemResponse
-            {
-                OrderId = Id.Value.ToString(),
-                OrderItemId = item.Id.Value.ToString(),
-                SkuId = item.SkuId,
-                ModelId = item.ModelId,
-                ModelName = item.ModelName,
-                ColorName = item.ColorName,
-                StorageName = item.StorageName,
-                UnitPrice = item.UnitPrice,
-                DisplayImageUrl = item.DisplayImageUrl,
-                ModelSlug = item.ModelSlug,
-                Quantity = item.Quantity,
-                Promotion = !string.IsNullOrEmpty(item.PromotionId) ? new PromotionResponse
-                {
-                    PromotionId = item.PromotionId,
-                    PromotionType = item.PromotionType ?? string.Empty,
-                    DiscountType = item.DiscountType ?? string.Empty,
-                    DiscountValue = item.DiscountValue ?? 0,
-                    DiscountAmount = item.DiscountAmount ?? 0,
-                    FinalPrice = item.DiscountAmount.HasValue
-                        ? item.UnitPrice - item.DiscountAmount.Value
-                        : item.UnitPrice
-                } : null,
-                IsReviewed = item.IsReviewed,
-                CreatedAt = item.CreatedAt,
-                UpdatedAt = item.UpdatedAt,
-                UpdatedBy = item.UpdatedBy,
-                IsDeleted = item.IsDeleted,
-                DeletedAt = item.DeletedAt,
-                DeletedBy = item.DeletedBy
-            }).ToList(),
+            ShippingAddress = ShippingAddress.ToResponse(),
+            OrderItems = OrderItems.Select(item => item.ToResponse()).ToList(),
             PromotionId = PromotionId,
             PromotionType = PromotionType,
             DiscountType = DiscountType,
