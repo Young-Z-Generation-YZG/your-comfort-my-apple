@@ -1,13 +1,24 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { ICloudinaryImage } from '~/src/domain/interfaces/common/ICloudinaryImage';
-import { baseQueryHandler } from '~/src/infrastructure/services/base-query';
+import { baseQuery } from './base-query';
+import { setLogout } from '../redux/features/auth.slice';
+
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('ordering-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
 
 export const uploadImageApi = createApi({
    reducerPath: 'upload-image-api',
    tagTypes: ['Upload'],
-   baseQuery: (args, api, extraOptions) => {
-      return baseQueryHandler(args, api, extraOptions, 'catalog-services');
-   },
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getImagesAsync: builder.query<ICloudinaryImage[], void>({
          query: () => '/api/v1/upload/images',

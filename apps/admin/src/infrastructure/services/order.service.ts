@@ -1,49 +1,39 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { setLogout } from '../redux/features/auth.slice';
+import { baseQuery } from './base-query';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
-import {
-   IGetOrdersParams,
-   OrderDetailsResponse,
-   OrderResponse,
-} from '~/src/domain/interfaces/orders/order.interface';
-import { UpdateOrderStatusFormType } from '~/src/domain/schemas/order.schema';
-import { baseQueryHandler } from '~/src/infrastructure/services/base-query';
 
-export const orderApi = createApi({
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('ordering-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
+
+export const orderingApi = createApi({
    reducerPath: 'order-api',
    tagTypes: ['Orders'],
-   baseQuery: (args, api, extraOptions) => {
-      return baseQueryHandler(args, api, extraOptions, 'ordering-services');
-   },
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getOrdersAsync: builder.query<
-         PaginationResponse<OrderResponse>,
-         IGetOrdersParams
-      >({
-         query: (params: IGetOrdersParams) => ({
-            url: '/api/v1/orders/admin',
+      getOrders: builder.query<PaginationResponse<any>, void>({
+         query: () => ({
+            url: '/api/v1/orders/users',
             method: 'GET',
-            params: {
-               ...params,
-            },
          }),
       }),
-      getOrderDetailsAsync: builder.query<OrderDetailsResponse, string>({
+      getOrderDetails: builder.query<any, string>({
          query: (orderId) => ({
             url: `/api/v1/orders/${orderId}/details`,
             method: 'GET',
          }),
       }),
-      updateOrderAsync: builder.mutation({
-         query: (body: UpdateOrderStatusFormType) => ({
-            url: `/api/v1/orders/admin/${body.order_id}/status?_updateStatus=${body.update_status}`,
-            method: 'PATCH',
-         }),
-      }),
    }),
 });
 
-export const {
-   useGetOrdersAsyncQuery,
-   useUpdateOrderAsyncMutation,
-   useGetOrderDetailsAsyncQuery,
-} = orderApi;
+export const { useLazyGetOrdersQuery, useLazyGetOrderDetailsQuery } =
+   orderingApi;

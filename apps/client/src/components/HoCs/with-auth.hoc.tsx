@@ -1,4 +1,4 @@
-import useAuth from '@components/hooks/api/use-auth-service';
+import useAuthService from '@components/hooks/api/use-auth-service';
 import { usePathname, useRouter } from 'next/navigation';
 import { ComponentType, useEffect, useMemo } from 'react';
 
@@ -18,7 +18,7 @@ const withAuth = <P extends object>(
    options?: WithAuthOptions,
 ) => {
    const WithAuth = (props: P) => {
-      const { isAuthenticated } = useAuth();
+      const { isAuthenticated } = useAuthService();
       const pathname = usePathname();
       const router = useRouter();
 

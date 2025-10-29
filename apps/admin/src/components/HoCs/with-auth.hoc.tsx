@@ -1,62 +1,66 @@
-import { useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setLogout } from '~/src/infrastructure/redux/features/auth.slice';
-import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { usePathname, useRouter } from 'next/navigation';
+import { ComponentType, useEffect, useMemo } from 'react';
+import useAuthService from '~/src/hooks/api/use-auth-service';
 
-const withAuth = (WrappedComponent: any) => {
-   const WithAuth = (props: any) => {
-      const auth = useAppSelector((state) => state.auth.value);
-      const router = useRouter();
+// Auth pages that should redirect to home when authenticated
+const AUTH_PAGES = ['/auth/sign-in'];
+
+const DEFAULT_AUTH_REDIRECT = '/auth/sign-in';
+const DEFAULT_HOME_REDIRECT = '/dashboards';
+
+type WithAuthOptions = {
+   authRedirect?: string;
+   homeRedirect?: string;
+};
+
+const withAuth = <P extends object>(
+   WrappedComponent: ComponentType<P>,
+   options?: WithAuthOptions,
+) => {
+   const WithAuth = (props: P) => {
+      const { isAuthenticated } = useAuthService();
       const pathname = usePathname();
+      const router = useRouter();
 
-      const dispatch = useDispatch();
+      const authRedirect = options?.authRedirect || DEFAULT_AUTH_REDIRECT;
+      const homeRedirect = options?.homeRedirect || DEFAULT_HOME_REDIRECT;
 
+      // Check if current page is an auth page
+      const isAuthPage = useMemo(
+         () => AUTH_PAGES.includes(pathname),
+         [pathname],
+      );
+
+      // Handle redirects
       useEffect(() => {
-         console.log('withAuth::', auth);
-
-         if (auth.accessToken) {
-            if (pathname === '/auth/sign-in' || pathname === '/auth/sign-up') {
-               router.back();
-            }
+         // Authenticated users on auth pages → redirect to home
+         if (isAuthenticated && isAuthPage) {
+            router.replace(homeRedirect);
+            return;
          }
 
-         if (!auth.accessToken) {
-            // Redirect to sign-in page if not authenticated
-
-            dispatch(setLogout());
-
-            if (pathname !== '/auth/sign-in' && pathname !== '/auth/sign-up') {
-               router.push('/auth/sign-in');
-            }
+         // Unauthenticated users on protected pages → redirect to auth
+         if (!isAuthenticated && !isAuthPage) {
+            router.replace(authRedirect);
          }
-      }, [auth.accessToken, router]); // Dependencies for useEffect
+      }, [isAuthenticated, isAuthPage, router, authRedirect, homeRedirect]);
 
-      if (auth.accessToken) {
-         if (pathname === '/auth/sign-in' || pathname === '/auth/sign-up') {
-            return null; // Render nothing while redirecting
-         }
-      }
+      // Don't render while redirecting
+      const shouldRender = useMemo(() => {
+         return (
+            (isAuthenticated && !isAuthPage) || (!isAuthenticated && isAuthPage)
+         );
+      }, [isAuthenticated, isAuthPage]);
 
-      if (
-         !auth.accessToken &&
-         pathname !== '/auth/sign-in' &&
-         pathname !== '/auth/sign-up'
-      ) {
-         return null; // Render nothing while redirecting
+      if (!shouldRender) {
+         return null;
       }
 
       return <WrappedComponent {...props} />;
    };
 
-   WithAuth.getInitialProps = async (ctx: any) => {
-      const wrappedComponentInitialProps = WrappedComponent.getInitialProps
-         ? await WrappedComponent.getInitialProps(ctx)
-         : {};
-
-      return { ...wrappedComponentInitialProps };
-   };
+   // Preserve component name for debugging
+   WithAuth.displayName = `WithAuth(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
 
    return WithAuth;
 };

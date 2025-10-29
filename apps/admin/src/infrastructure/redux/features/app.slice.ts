@@ -1,35 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type InitialState = {
-   value: AppState;
-};
-
-type AppState = {
-   router: RouterState;
-};
-
-type RouterState = {
-   previousPath: string | null;
-};
-
-const initialState = {
-   value: {
-      router: {
-         previousPath: null,
-      },
-   } as AppState,
-} as InitialState;
-
 const AppSlice = createSlice({
    name: 'app',
-   initialState: initialState,
+   initialState: {
+      route: {
+         previousUnAuthenticatedPath: null as string | null,
+      },
+   },
    reducers: {
-      setRouter: (state, action: PayloadAction<RouterState>) => {
-         state.value.router = action.payload;
+      setPreviousUnAuthenticatedPath: (
+         state,
+         action: PayloadAction<string | null>,
+      ) => {
+         state.route.previousUnAuthenticatedPath = action.payload;
       },
    },
 });
 
-export const { setRouter } = AppSlice.actions;
+export const { setPreviousUnAuthenticatedPath } = AppSlice.actions;
 
 export default AppSlice.reducer;

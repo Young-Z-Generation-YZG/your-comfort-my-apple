@@ -14,6 +14,7 @@ import {
    FileUser,
    IdCard,
    UserPen,
+   Building2,
 } from 'lucide-react';
 
 import {
@@ -40,70 +41,67 @@ const data = {
    },
    navMain: [
       {
-         title: 'iPhone Management',
-         url: '#',
-         icon: TabletSmartphone,
+         title: 'Tenant Management',
+         url: '/dashboards/tenants',
+         icon: Building2,
          isActive: true,
-         items: [
-            // {
-            //    title: 'Analytics',
-            //    url: '/dashboards/products/analytics',
-            // },
-            {
-               title: 'Model Management',
-               url: '/dashboards/iphone/models',
-               items: [
-                  {
-                     title: 'iPhone 15',
-                     url: '/dashboards/iphone/models/iphone-14-pro',
-                  },
-                  {
-                     title: 'iPhone 16e',
-                     url: '/dashboards/iphone/models/iphone-14-pro-max',
-                  },
-               ],
-            },
-         ],
+         items: [],
       },
+      //   {
+      //      title: 'iPhone Management',
+      //      url: '#',
+      //      icon: TabletSmartphone,
+      //      isActive: true,
+      //      items: [
+      //         // {
+      //         //    title: 'Analytics',
+      //         //    url: '/dashboards/products/analytics',
+      //         // },
+      //         {
+      //            title: 'Model Management',
+      //            url: '/dashboards/iphone/models',
+      //            items: [
+      //               {
+      //                  title: 'iPhone 15',
+      //                  url: '/dashboards/iphone/models/iphone-14-pro',
+      //               },
+      //               {
+      //                  title: 'iPhone 16e',
+      //                  url: '/dashboards/iphone/models/iphone-14-pro-max',
+      //               },
+      //            ],
+      //         },
+      //      ],
+      //   },
+      //   {
+      //      title: 'Promotions Management',
+      //      url: '#',
+      //      icon: Tag,
+      //      isActive: true,
+      //      items: [
+      //         // {
+      //         //    title: 'Analytics',
+      //         //    url: '#',
+      //         // },
+      //         {
+      //            title: 'Promotion Events',
+      //            url: '/dashboards/promotions/events',
+      //         },
+      //         {
+      //            title: 'Promotion iPhone',
+      //            url: '/dashboards/promotions/items',
+      //         },
+      //         {
+      //            title: 'Promotion Coupon',
+      //            url: '/dashboards/promotions/coupons',
+      //         },
+      //      ],
+      //   },
       {
-         title: 'Promotions Management',
-         url: '#',
-         icon: Tag,
-         isActive: true,
-         items: [
-            // {
-            //    title: 'Analytics',
-            //    url: '#',
-            // },
-            {
-               title: 'Promotion Events',
-               url: '/dashboards/promotions/events',
-            },
-            {
-               title: 'Promotion iPhone',
-               url: '/dashboards/promotions/items',
-            },
-            {
-               title: 'Promotion Coupon',
-               url: '/dashboards/promotions/coupons',
-            },
-         ],
-      },
-      {
-         title: 'Orders Management',
+         title: 'Order Management',
          url: '#',
          icon: ScrollText,
          isActive: true,
-         items: [
-            // {
-            //    title: 'Analytics',
-            //    url: '#',
-            // },
-            {
-               title: 'Orders',
-               url: '/dashboards/orders',
-            },
-         ],
       },
    ],
    navSecondary: [

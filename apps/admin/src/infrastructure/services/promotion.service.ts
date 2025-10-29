@@ -1,33 +1,29 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
-import { IPromotionEventResponse } from '~/src/domain/interfaces/discounts/IPromotionEventResponse';
-import { PromotionEventSchemaType } from '~/src/domain/schemas/discount.schema';
-import { baseQueryHandler } from '~/src/infrastructure/services/base-query';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './base-query';
+import { setLogout } from '../redux/features/auth.slice';
+
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('catalog-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
 
 export const promotionApi = createApi({
    reducerPath: 'promotion-api',
    tagTypes: ['Promotions'],
-   baseQuery: (args, api, extraOptions) => {
-      return baseQueryHandler(args, api, extraOptions, 'discount-services');
-   },
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getPromotionEvents: builder.query<
-         PaginationResponse<IPromotionEventResponse>,
-         string
-      >({
-         query: () => '/api/v1/promotions/events',
+      getEventWithItems: builder.query<any, void>({
+         query: () => '/api/v1/promotions/event/event-with-items',
          providesTags: ['Promotions'],
-      }),
-      createPromotionEvent: builder.mutation({
-         query: (data: PromotionEventSchemaType) => ({
-            url: '/api/v1/promotions/events',
-            method: 'POST',
-            body: data,
-         }),
-         invalidatesTags: ['Promotions'],
       }),
    }),
 });
 
-export const { useGetPromotionEventsQuery, useCreatePromotionEventMutation } =
-   promotionApi;
+export const { useLazyGetEventWithItemsQuery } = promotionApi;

@@ -11,5 +11,5 @@ export interface ILoginResponse {
    refresh_token: string | null;
    access_token_expires_in: number | null;
    verification_type: VERIFICATION_TYPES;
-   params: Object | null;
+   params: object | null;
 }

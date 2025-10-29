@@ -10,7 +10,7 @@ const LoginSchema = z.object({
    password: z.string().min(1, {
       message: 'Password is required',
    }),
-} satisfies Record<keyof ILoginPayload, any>);
+} satisfies Record<keyof any, any>);
 
 export type TLoginForm = z.infer<typeof LoginSchema>;
 export const loginResolver = zodResolver(LoginSchema);

@@ -1,29 +1,23 @@
 'use client';
 
-import { InputField } from '@components/input-field';
 import { LoadingOverlay } from '@components/loading-overlay';
 import { Button } from '@components/ui/button';
 import { Form } from '@components/ui/form';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { loginResolver, TLoginForm } from '~/src/domain/schemas/auth.schema';
-import { redirectToIdentityProvider } from '~/src/infrastructure/identity-server/keycloak';
 import svgs from '@assets/svgs';
-import { useLoginMutation } from '~/src/infrastructure/services/auth.service';
-import isServerErrorResponse from '~/src/infrastructure/utils/is-server-error';
-import { useToast } from '~/src/hooks/use-toast';
-import { toast as sonnerToast } from 'sonner';
 import withAuth from '@components/HoCs/with-auth.hoc';
+import useAuthService from '~/src/hooks/api/use-auth-service';
+import Input from '@components/customs/input-field';
+import PasswordInputField from '@components/customs/password-input-field';
+import FieldMessageError from '@components/customs/field-message-error';
+import Label from '@components/customs/Label';
 
-let loginWindow: Window | null = null;
+// let loginWindow: Window | null = null;
 
 const SignInPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
-   const router = useRouter();
-
-   const { toast } = useToast();
+   const { isLoading, loginAsync } = useAuthService();
 
    const form = useForm({
       resolver: loginResolver,
@@ -33,111 +27,74 @@ const SignInPage = () => {
       },
    });
 
-   const [
-      login,
-      { isSuccess, isError, error, data, isLoading: isLoginLoading },
-   ] = useLoginMutation();
+   //    const handleAuthorizationCode = () => {
+   //       const identityUrl = redirectToIdentityProvider();
 
-   const handleLogin = async (data: TLoginForm) => {
-      console.log('data', data);
+   //       setIsLoading(true);
 
-      await login(data).unwrap();
-   };
+   //       loginWindow = window.open(
+   //          identityUrl,
+   //          '_blank',
+   //          'width=800,height=600,top=100,left=100',
+   //       );
 
-   const handleAuthorizationCode = () => {
-      const identityUrl = redirectToIdentityProvider();
+   //       // Fallback for when the popup is closed manually
+   //       const interval = setInterval(() => {
+   //          if (loginWindow && loginWindow.closed) {
+   //             clearInterval(interval);
+   //             setIsLoading(false);
+   //          }
+   //       }, 500);
+   //    };
 
-      setIsLoading(true);
+   //    useEffect(() => {
+   //       setIsLoading(isLoginLoading);
+   //    }, [isLoginLoading]);
 
-      loginWindow = window.open(
-         identityUrl,
-         '_blank',
-         'width=800,height=600,top=100,left=100',
-      );
+   //    // Setup message event listener
+   //    useEffect(() => {
+   //       const handleAuthMessages = (event: MessageEvent) => {
+   //          // Verify the origin of the message for security
+   //          if (event.origin !== window.location.origin) return;
 
-      // Fallback for when the popup is closed manually
-      const interval = setInterval(() => {
-         if (loginWindow && loginWindow.closed) {
-            clearInterval(interval);
-            setIsLoading(false);
-         }
-      }, 500);
-   };
+   //          // Handle different message types
+   //          if (typeof event.data === 'object' && event.data !== null) {
+   //             const { status, error } = event.data;
 
-   useEffect(() => {
-      if (isSuccess) {
-         sonnerToast.success('Welcome back!', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
-         });
+   //             if (status === 'AUTH_SUCCESS') {
+   //                setIsLoading(false);
 
-         window.location.href = '/dashboards';
-      } else if (isError && isServerErrorResponse(error)) {
-         if (error?.data?.error?.message) {
-            toast({
-               variant: 'destructive',
-               title: `${error.data.error.message ?? 'Server busy, please try again later'}`,
-               description: `Wrong email or password`,
-            });
-         } else {
-            toast({
-               variant: 'destructive',
-               title: `Server busy, please try again later`,
-            });
-         }
-      }
-   }, [isSuccess, isError, error]);
+   //                sonnerToast.success('Welcome back!', {
+   //                   style: {
+   //                      backgroundColor: '#4CAF50', // Custom green background color
+   //                      color: '#FFFFFF', // White text color
+   //                   },
+   //                });
 
-   useEffect(() => {
-      setIsLoading(isLoginLoading);
-   }, [isLoginLoading]);
+   //                setTimeout(() => {
+   //                   window.location.href = '/dashboards';
+   //                }, 1000);
+   //             } else if (status === 'AUTH_FAILED') {
+   //                setTimeout(() => {
+   //                   setIsLoading(false);
 
-   // Setup message event listener
-   useEffect(() => {
-      const handleAuthMessages = (event: MessageEvent) => {
-         // Verify the origin of the message for security
-         if (event.origin !== window.location.origin) return;
+   //                   toast({
+   //                      variant: 'destructive',
+   //                      title: `Authentication failed`,
+   //                   });
+   //                }, 500);
+   //             }
+   //          }
+   //       };
 
-         // Handle different message types
-         if (typeof event.data === 'object' && event.data !== null) {
-            const { status, error } = event.data;
+   //       // Add the event listener
+   //       window.addEventListener('message', handleAuthMessages);
 
-            if (status === 'AUTH_SUCCESS') {
-               setIsLoading(false);
-
-               sonnerToast.success('Welcome back!', {
-                  style: {
-                     backgroundColor: '#4CAF50', // Custom green background color
-                     color: '#FFFFFF', // White text color
-                  },
-               });
-
-               setTimeout(() => {
-                  window.location.href = '/dashboards';
-               }, 1000);
-            } else if (status === 'AUTH_FAILED') {
-               setTimeout(() => {
-                  setIsLoading(false);
-
-                  toast({
-                     variant: 'destructive',
-                     title: `Authentication failed`,
-                  });
-               }, 500);
-            }
-         }
-      };
-
-      // Add the event listener
-      window.addEventListener('message', handleAuthMessages);
-
-      // Clean up the event listener when component unmounts
-      return () => {
-         window.removeEventListener('message', handleAuthMessages);
-      };
-   }, [router]);
+   //       // Clean up the event listener when component unmounts
+   //       return () => {
+   //          window.removeEventListener('message', handleAuthMessages);
+   //       };
+   //    }, [router]);
 
    return (
       <div className="bg-white flex">
@@ -208,17 +165,24 @@ const SignInPage = () => {
                   <div className="">
                      <Form {...form}>
                         <form
-                           onSubmit={form.handleSubmit(handleLogin)}
-                           className="flex flex-col"
+                           onSubmit={form.handleSubmit(
+                              async (data: TLoginForm) => {
+                                 await loginAsync(data);
+                              },
+                           )}
+                           className="flex flex-col gap-5"
                         >
-                           <InputField form={form} name="email" label="Email" />
+                           <div className="flex flex-col gap-2">
+                              <Label htmlFor="email">Email</Label>
+                              <Input form={form} name="email" />
+                              <FieldMessageError form={form} name="email" />
+                           </div>
 
-                           <InputField
-                              form={form}
-                              name="password"
-                              label="Password"
-                              type="password"
-                           />
+                           <div className="flex flex-col gap-2">
+                              <Label htmlFor="password">Password</Label>
+                              <PasswordInputField form={form} name="password" />
+                              <FieldMessageError form={form} name="password" />
+                           </div>
 
                            <Button
                               className="bg-primary font-sans font-bold"
@@ -239,7 +203,7 @@ const SignInPage = () => {
                      className="w-full font-semibold"
                      variant="outline"
                      onClick={() => {
-                        handleAuthorizationCode();
+                        // handleAuthorizationCode();
                      }}
                      disabled={isLoading}
                   >

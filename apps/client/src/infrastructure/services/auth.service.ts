@@ -5,13 +5,7 @@ import {
    FetchBaseQueryMeta,
    QueryReturnValue,
 } from '@reduxjs/toolkit/query/react';
-import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
 import { setLogin, setLogout } from '../redux/features/auth.slice';
-import { IOtpPayload } from '~/domain/interfaces/auth/otp.interface';
-import {
-   IRegisterPayload,
-   IRegisterResponse,
-} from '~/domain/interfaces/auth/register.interface';
 import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import envConfig from '~/infrastructure/config/env.config';
 import {
@@ -40,7 +34,7 @@ export const authApi = createApi({
    }),
    endpoints: (builder) => ({
       login: builder.mutation({
-         query: (payload: ILoginPayload) => ({
+         query: (payload: any) => ({
             url: '/api/v1/auth/login',
             method: 'POST',
             body: payload,
@@ -76,7 +70,7 @@ export const authApi = createApi({
          queryFn: async (_, { getState }, __, baseQuery) => {
             const refreshToken = (getState() as RootState).auth.refreshToken;
 
-            const result = await baseQuery({
+            await baseQuery({
                url: '/api/v1/auth/logout',
                method: 'POST',
                headers: {
@@ -105,17 +99,17 @@ export const authApi = createApi({
          },
       }),
       register: builder.mutation({
-         query: (payload: IRegisterPayload) => ({
+         query: (payload: any) => ({
             url: '/api/v1/auth/register',
             method: 'POST',
             body: payload,
          }),
-         transformResponse: (response: IRegisterResponse) => {
+         transformResponse: (response: any) => {
             return response;
          },
       }),
       verifyOtp: builder.mutation({
-         query: (payload: IOtpPayload) => ({
+         query: (payload: any) => ({
             url: '/api/v1/auth/verification/email',
             method: 'POST',
             body: payload,
