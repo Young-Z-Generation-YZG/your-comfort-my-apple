@@ -99,9 +99,21 @@ const data = {
       //   },
       {
          title: 'Order Management',
-         url: '#',
+         url: '/dashboards/orders',
          icon: ScrollText,
          isActive: true,
+         items: [
+            {
+               title: 'Tenant Assignment',
+               url: '/dashboards/orders/tenant-assignment',
+               icon: ScrollText,
+            },
+            {
+               title: 'Orders List',
+               url: '#',
+               icon: ScrollText,
+            },
+         ],
       },
    ],
    navSecondary: [

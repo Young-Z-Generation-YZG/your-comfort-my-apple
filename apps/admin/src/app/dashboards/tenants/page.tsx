@@ -26,6 +26,7 @@ import {
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import { cn } from '~/src/infrastructure/lib/utils';
+import TenantCard from './_components/tenant-card';
 
 // Mock data for tenants
 const mockTenants = [
@@ -80,6 +81,8 @@ const mockTenants = [
       updated_at: '2024-10-28T16:00:00Z',
    },
 ];
+
+export type TTenant = (typeof mockTenants)[number];
 
 // Status badge colors and icons
 const statusConfig = {
@@ -214,133 +217,10 @@ const TenantsPage = () => {
                      {/* Cards Grid */}
                      {paginatedTenants.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                           {paginatedTenants.map((tenant) => (
-                              <Card
-                                 key={tenant.tenant_id}
-                                 className="hover:shadow-lg transition-all duration-300 border-slate-200 dark:border-slate-700 overflow-hidden"
-                              >
-                                 <CardHeader className="pb-3 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-900 border-b border-slate-100 dark:border-slate-700">
-                                    <div className="flex items-start justify-between">
-                                       <div className="flex items-center gap-3">
-                                          <div
-                                             className={cn(
-                                                'p-3 rounded-lg',
-                                                tenant.tenant_type ===
-                                                   'WARE_HOUSE'
-                                                   ? 'bg-purple-100 dark:bg-purple-900/30'
-                                                   : 'bg-blue-100 dark:bg-blue-900/30',
-                                             )}
-                                          >
-                                             {tenant.tenant_type ===
-                                             'WARE_HOUSE' ? (
-                                                <Building2 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                                             ) : (
-                                                <MapPin className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                                             )}
-                                          </div>
-                                          <div className="flex flex-col">
-                                             <h3 className="font-semibold text-lg leading-none mb-1">
-                                                {tenant.name}
-                                             </h3>
-                                             <span className="text-xs font-mono text-muted-foreground bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded w-fit">
-                                                {tenant.code}
-                                             </span>
-                                          </div>
-                                       </div>
-                                       <DropdownMenu>
-                                          <DropdownMenuTrigger asChild>
-                                             <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-8 w-8 p-0"
-                                             >
-                                                <MoreVertical className="h-4 w-4" />
-                                             </Button>
-                                          </DropdownMenuTrigger>
-                                          <DropdownMenuContent align="end">
-                                             <DropdownMenuItem>
-                                                <Edit className="mr-2 h-4 w-4" />
-                                                Edit
-                                             </DropdownMenuItem>
-                                             <DropdownMenuItem className="text-red-600">
-                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                Delete
-                                             </DropdownMenuItem>
-                                          </DropdownMenuContent>
-                                       </DropdownMenu>
-                                    </div>
-                                 </CardHeader>
-                                 <CardContent className="pt-4">
-                                    <div className="space-y-4">
-                                       <div>
-                                          <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
-                                             {tenant.description ||
-                                                'No description available'}
-                                          </p>
-                                       </div>
-
-                                       <div className="flex items-center gap-2">
-                                          <Badge
-                                             className={cn(
-                                                'select-none flex items-center gap-1.5 font-medium py-1 px-2.5 rounded-lg border',
-                                                typeConfig[
-                                                   tenant.tenant_type as keyof typeof typeConfig
-                                                ]?.color,
-                                             )}
-                                          >
-                                             {
-                                                typeConfig[
-                                                   tenant.tenant_type as keyof typeof typeConfig
-                                                ].icon
-                                             }
-                                             {tenant.tenant_type.replace(
-                                                '_',
-                                                ' ',
-                                             )}
-                                          </Badge>
-                                          <Badge
-                                             className={cn(
-                                                'border select-none text-xs font-medium flex items-center gap-1.5 py-1 px-2.5 rounded-lg',
-                                                statusConfig[
-                                                   tenant.tenant_state as keyof typeof statusConfig
-                                                ]?.color,
-                                             )}
-                                          >
-                                             {
-                                                statusConfig[
-                                                   tenant.tenant_state as keyof typeof statusConfig
-                                                ].icon
-                                             }
-                                             {tenant.tenant_state}
-                                          </Badge>
-                                       </div>
-
-                                       <div className="flex items-center text-xs text-muted-foreground pt-2 border-t border-slate-100 dark:border-slate-800">
-                                          <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                                          Created{' '}
-                                          {new Date(
-                                             tenant.created_at,
-                                          ).toLocaleDateString('en-US', {
-                                             year: 'numeric',
-                                             month: 'short',
-                                             day: 'numeric',
-                                          })}
-                                       </div>
-
-                                       <Link
-                                          href={`/dashboards/tenants/${tenant.tenant_id}`}
-                                          className="block"
-                                       >
-                                          <Button
-                                             variant="outline"
-                                             className="w-full"
-                                          >
-                                             View Details
-                                          </Button>
-                                       </Link>
-                                    </div>
-                                 </CardContent>
-                              </Card>
+                           {paginatedTenants.map((tenant, key) => (
+                              <div key={key}>
+                                 <TenantCard key={key} tenant={tenant} />
+                              </div>
                            ))}
                         </div>
                      ) : (
