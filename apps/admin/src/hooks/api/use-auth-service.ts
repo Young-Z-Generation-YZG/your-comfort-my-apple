@@ -46,7 +46,7 @@ const useAuthService = () => {
       try {
          await logoutMutation().unwrap();
 
-         router.push('/sign-in');
+         router.replace('/auth/sign-in');
 
          return { isSuccess: true, isError: false, data: true, error: null };
       } catch (error) {

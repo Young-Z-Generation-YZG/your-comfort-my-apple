@@ -8,23 +8,15 @@ const usePagination = (paginationData: PaginationResponse<any>) => {
    const isPrevPage = paginationData.current_page > 1;
 
    const getPageNumbers = () => {
-      const pageNumbers = new Set();
-      for (let i = 1; i <= paginationData.total_pages; i++) {
-         if (i === paginationData.current_page) {
-            pageNumbers.add(i);
-         } else {
-            pageNumbers.add('...');
-         }
+      const totalPages = paginationData.total_pages;
 
-         if (i === paginationData.current_page + 1) {
-            pageNumbers.add(i);
-         }
-
-         if (i === paginationData.current_page - 1) {
-            pageNumbers.add(i);
-         }
+      if (totalPages <= 3) {
+         // Show all pages: 1 2 3
+         return Array.from({ length: totalPages }, (_, i) => i + 1);
+      } else {
+         // Show: 1 2 ... lastPage
+         return [1, 2, '...', totalPages];
       }
-      return Array.from(pageNumbers);
    };
 
    return {

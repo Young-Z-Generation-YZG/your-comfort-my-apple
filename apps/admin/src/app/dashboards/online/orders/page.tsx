@@ -2,8 +2,64 @@
 
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import usePagination from '~/src/hooks/use-pagination';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+   ColumnDef,
+   ColumnFiltersState,
+   flexRender,
+   getCoreRowModel,
+   getFilteredRowModel,
+   getPaginationRowModel,
+   getSortedRowModel,
+   SortingState,
+   useReactTable,
+   VisibilityState,
+} from '@tanstack/react-table';
+import {
+   Table,
+   TableBody,
+   TableCell,
+   TableHead,
+   TableHeader,
+   TableRow,
+} from '@components/ui/table';
+import { Checkbox } from '@components/ui/checkbox';
+import { Button } from '@components/ui/button';
+import { Badge } from '@components/ui/badge';
+import { Input } from '@components/ui/input';
+import {
+   ArrowUpDown,
+   MoreHorizontal,
+   ChevronLeft,
+   ChevronRight,
+   ChevronsLeft,
+   ChevronsRight,
+   Ellipsis,
+   ChevronDown,
+   Search,
+} from 'lucide-react';
+import {
+   DropdownMenu,
+   DropdownMenuCheckboxItem,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuLabel,
+   DropdownMenuSeparator,
+   DropdownMenuTrigger,
+} from '@components/ui/dropdown-menu';
+import { EPaymentMethod } from '~/src/domain/enums/payment-method.enum';
+import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
+import { EPromotionType } from '~/src/domain/enums/promotion-type.enum';
+import { cn } from '~/src/infrastructure/lib/utils';
+import useFilter from '~/src/hooks/use-filter';
+import {
+   SelectGroup,
+   SelectContent,
+   Select,
+   SelectTrigger,
+   SelectValue,
+   SelectItem,
+} from '@components/ui/select';
 
 const fakeData = {
    total_records: 7,
@@ -333,17 +389,380 @@ const fakeData = {
 export type TOrder = typeof fakeData;
 export type TOrderItem = (typeof fakeData.items)[number];
 
+const getStatusStyle = (status: string) => {
+   switch (status) {
+      case EOrderStatus.PENDING:
+         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+      case EOrderStatus.CONFIRMED:
+         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case EOrderStatus.PREPARING:
+         return 'bg-purple-100 text-purple-800 border-purple-300';
+      case EOrderStatus.DELIVERING:
+         return 'bg-indigo-100 text-indigo-800 border-indigo-300';
+      case EOrderStatus.DELIVERED:
+         return 'bg-green-100 text-green-800 border-green-300';
+      case EOrderStatus.CANCELLED:
+         return 'bg-red-100 text-red-800 border-red-300';
+      case EOrderStatus.PAID:
+         return 'bg-green-100 text-green-800 border-green-300';
+      default:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+   }
+};
+
+const getPaymentMethodStyle = (method: string) => {
+   switch (method) {
+      case EPaymentMethod.VNPAY:
+         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case EPaymentMethod.MOMO:
+         return 'bg-pink-100 text-pink-800 border-pink-300';
+      case EPaymentMethod.COD:
+         return 'bg-green-100 text-green-800 border-green-300';
+      case EPaymentMethod.BLOCKCHAIN:
+         return 'bg-purple-100 text-purple-800 border-purple-300';
+      case EPaymentMethod.UNKNOWN:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+      default:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+   }
+};
+
+const columns: ColumnDef<TOrderItem>[] = [
+   {
+      id: 'select',
+      header: ({ table }) => (
+         <Checkbox
+            checked={
+               table.getIsAllPageRowsSelected() ||
+               (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) =>
+               table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+         />
+      ),
+      cell: ({ row }) => (
+         <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+         />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+   },
+   {
+      accessorKey: 'order_code',
+      header: ({ column, table: tableInstance }) => {
+         // Access the parent component's state through table meta
+         const showSearch = (tableInstance.options.meta as any)
+            ?.showOrderCodeSearch;
+         const setShowSearch = (tableInstance.options.meta as any)
+            ?.setShowOrderCodeSearch;
+
+         return (
+            <div className="relative">
+               <div className="flex items-center justify-between">
+                  <span className="font-medium">Order Code</span>
+                  <Button
+                     variant="ghost"
+                     size="icon"
+                     onClick={() => setShowSearch?.(!showSearch)}
+                     className="h-8 w-8"
+                  >
+                     <Search className="h-4 w-4" />
+                  </Button>
+               </div>
+               {showSearch && (
+                  <div className="absolute top-full left-0 z-50 mt-2 w-72 rounded-md border bg-white p-3 shadow-lg">
+                     <div className="relative">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                           placeholder="Search order code..."
+                           value={(column.getFilterValue() as string) ?? ''}
+                           onChange={(event) =>
+                              column.setFilterValue(event.target.value)
+                           }
+                           className="h-9 w-full pl-8"
+                        />
+                     </div>
+                  </div>
+               )}
+            </div>
+         );
+      },
+      cell: ({ row }) => (
+         <div className="font-medium">{row.getValue('order_code')}</div>
+      ),
+   },
+   {
+      accessorKey: 'customer_email',
+      header: ({ column, table: tableInstance }) => {
+         // Access the parent component's state through table meta
+         const showSearch = (tableInstance.options.meta as any)
+            ?.showCustomerEmailSearch;
+         const setShowSearch = (tableInstance.options.meta as any)
+            ?.setShowCustomerEmailSearch;
+
+         return (
+            <div className="relative">
+               <div className="flex items-center justify-between">
+                  <span className="font-medium">Customer Email</span>
+                  <Button
+                     variant="ghost"
+                     size="icon"
+                     onClick={() => setShowSearch?.(!showSearch)}
+                     className="h-8 w-8"
+                  >
+                     <Search className="h-4 w-4" />
+                  </Button>
+               </div>
+               {showSearch && (
+                  <div className="absolute top-full left-0 z-50 mt-2 w-72 rounded-md border bg-white p-3 shadow-lg">
+                     <div className="relative">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                           placeholder="Search customer email..."
+                           value={(column.getFilterValue() as string) ?? ''}
+                           onChange={(event) =>
+                              column.setFilterValue(event.target.value)
+                           }
+                           className="h-9 w-full pl-8"
+                        />
+                     </div>
+                  </div>
+               )}
+            </div>
+         );
+      },
+      cell: ({ row }) => (
+         <div className="lowercase">{row.getValue('customer_email')}</div>
+      ),
+   },
+   {
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ row }) => {
+         const status = row.getValue('status') as string;
+
+         return (
+            <Badge variant="outline" className={getStatusStyle(status)}>
+               {status}
+            </Badge>
+         );
+      },
+   },
+   {
+      accessorKey: 'payment_method',
+      header: 'Payment Method',
+      cell: ({ row }) => {
+         const method = row.getValue('payment_method') as string;
+
+         return (
+            <Badge variant="outline" className={getPaymentMethodStyle(method)}>
+               {method}
+            </Badge>
+         );
+      },
+   },
+   {
+      accessorKey: 'total_amount',
+      header: ({ column }) => {
+         return (
+            <Button
+               variant="ghost"
+               onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === 'asc')
+               }
+            >
+               Total Amount
+               <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+         );
+      },
+      cell: ({ row }) => {
+         const amount = parseFloat(row.getValue('total_amount'));
+         const formatted = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+         }).format(amount);
+         return <div className="font-medium">{formatted}</div>;
+      },
+   },
+   {
+      id: 'items_count',
+      header: 'Items',
+      cell: ({ row }) => {
+         const itemsCount = row.original.order_items.length;
+         return <div className="text-center">{itemsCount}</div>;
+      },
+   },
+   {
+      id: 'discount_info',
+      header: 'Discount',
+      cell: ({ row }) => {
+         const discountAmount = row.original.discount_amount;
+         const promotionType = row.original.promotion_type;
+
+         if (!discountAmount || !promotionType) {
+            return <div className="text-muted-foreground">-</div>;
+         }
+
+         const getPromotionTypeStyle = (type: string) => {
+            switch (type) {
+               case EPromotionType.COUPON:
+                  return 'bg-orange-100 text-orange-800 border-orange-300';
+               case EPromotionType.EVENT:
+                  return 'bg-cyan-100 text-cyan-800 border-cyan-300';
+               case EPromotionType.EVENT_ITEM:
+                  return 'bg-teal-100 text-teal-800 border-teal-300';
+               case EPromotionType.UNKNOWN:
+                  return 'bg-gray-100 text-gray-800 border-gray-300';
+               default:
+                  return 'bg-gray-100 text-gray-800 border-gray-300';
+            }
+         };
+
+         const formatted = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+         }).format(discountAmount);
+
+         return (
+            <div>
+               <div className="font-medium">{formatted}</div>
+               <Badge
+                  variant="outline"
+                  className={cn(
+                     'text-xs',
+                     getPromotionTypeStyle(promotionType),
+                  )}
+               >
+                  {promotionType}
+               </Badge>
+            </div>
+         );
+      },
+   },
+   {
+      id: 'shipping_address',
+      header: 'Shipping Address',
+      cell: ({ row }) => {
+         const address = row.original.shipping_address;
+         return (
+            <div className="max-w-[200px]">
+               <div className="font-medium">{address.contact_name}</div>
+               <div className="text-sm text-muted-foreground">
+                  {address.contact_phone_number}
+               </div>
+               <div className="text-xs text-muted-foreground truncate">
+                  {address.contact_address_line}, {address.contact_district},{' '}
+                  {address.contact_province}
+               </div>
+            </div>
+         );
+      },
+   },
+   {
+      accessorKey: 'created_at',
+      header: ({ column }) => {
+         return (
+            <Button
+               variant="ghost"
+               onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === 'asc')
+               }
+            >
+               Created At
+               <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+         );
+      },
+      cell: ({ row }) => {
+         const date = new Date(row.getValue('created_at'));
+         return (
+            <div className="text-sm">
+               {date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+               })}
+               <div className="text-xs text-muted-foreground">
+                  {date.toLocaleTimeString('en-US', {
+                     hour: '2-digit',
+                     minute: '2-digit',
+                  })}
+               </div>
+            </div>
+         );
+      },
+   },
+   {
+      id: 'actions',
+      enableHiding: false,
+      cell: ({ row }) => {
+         const order = row.original;
+
+         return (
+            <DropdownMenu>
+               <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0">
+                     <span className="sr-only">Open menu</span>
+                     <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuItem
+                     onClick={() =>
+                        navigator.clipboard.writeText(order.order_id)
+                     }
+                  >
+                     Copy order ID
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>View details</DropdownMenuItem>
+                  <DropdownMenuItem>View customer</DropdownMenuItem>
+                  <DropdownMenuItem>Update status</DropdownMenuItem>
+               </DropdownMenuContent>
+            </DropdownMenu>
+         );
+      },
+   },
+];
+
+type IOrderFilter = {
+   _page?: number | null;
+   _limit?: number | null;
+   customer_email?: string | null;
+};
+
 const OnlineOrdersPage = () => {
-   const params = useSearchParams();
-
-   console.log('params', params);
-
-   const searchParams = Object.fromEntries(params.entries());
-
-   console.log('searchParams', searchParams);
+   const [sorting, setSorting] = useState<SortingState>([]);
+   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+      {},
+   );
+   const [rowSelection, setRowSelection] = useState({});
+   const [showOrderCodeSearch, setShowOrderCodeSearch] = useState(false);
+   const [showCustomerEmailSearch, setShowCustomerEmailSearch] =
+      useState(false);
+   const [selectedStatuses, setSelectedStatuses] = useState<EOrderStatus[]>([]);
 
    const { getOrdersByAdminAsync, getOrdersByAdminState, isLoading } =
       useOrderingService();
+
+   const { filters, setFilters, clearFilters, activeFilterCount } =
+      useFilter<IOrderFilter>();
+
+   // Convert filters to query params object
+   const queryParams = useMemo(() => {
+      return {
+         _page: filters._page || 1,
+         _limit: filters._limit || 10,
+      };
+   }, [filters]);
 
    const {
       currentPage,
@@ -374,16 +793,504 @@ const OnlineOrdersPage = () => {
            },
    );
 
+   const table = useReactTable({
+      data: paginationItems,
+      columns: columns,
+      onSortingChange: setSorting,
+      onColumnFiltersChange: setColumnFilters,
+      getCoreRowModel: getCoreRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      getFilteredRowModel: getFilteredRowModel(),
+      onColumnVisibilityChange: setColumnVisibility,
+      onRowSelectionChange: setRowSelection,
+      // Prevent auto resets that can trigger nested state updates during render
+      autoResetPageIndex: false,
+      autoResetExpanded: false,
+      state: {
+         sorting: sorting,
+         columnFilters: columnFilters,
+         columnVisibility: columnVisibility,
+         rowSelection: rowSelection,
+      },
+      meta: {
+         showOrderCodeSearch,
+         setShowOrderCodeSearch,
+         showCustomerEmailSearch,
+         setShowCustomerEmailSearch,
+      },
+   });
+
    useEffect(() => {
       const fetchOrders = async () => {
-         await getOrdersByAdminAsync(searchParams);
+         await getOrdersByAdminAsync(queryParams);
       };
       fetchOrders();
-   }, [getOrdersByAdminAsync]);
+   }, [queryParams, getOrdersByAdminAsync]);
 
    return (
-      <div>
-         <h1>Online Orders</h1>
+      <div className="p-5">
+         <div className="flex items-center py-4">
+            <div className="flex items-center gap-2">
+               <Input
+                  placeholder="Filter emails..."
+                  value={
+                     (table
+                        .getColumn('customer_email')
+                        ?.getFilterValue() as string) ?? ''
+                  }
+                  onChange={(event) => {
+                     setFilters({ customer_email: event.target.value });
+
+                     // return table
+                     // .getColumn('customer_email')
+                     // ?.setFilterValue(event.target.value)
+                  }}
+                  className="max-w-sm"
+               />
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button variant="outline" className="ml-auto">
+                        Status Filter
+                        <div className="flex items-center gap-2">
+                           {selectedStatuses.length > 2 ? (
+                              <>
+                                 {selectedStatuses.slice(0, 2).map((status) => {
+                                    return (
+                                       <Badge
+                                          key={status}
+                                          variant="outline"
+                                          className={cn(getStatusStyle(status))}
+                                       >
+                                          {status}
+                                       </Badge>
+                                    );
+                                 })}
+                                 <Badge
+                                    variant="outline"
+                                    className="bg-gray-100 text-gray-800 border-gray-300"
+                                 >
+                                    +{selectedStatuses.length - 2}
+                                 </Badge>
+                              </>
+                           ) : (
+                              selectedStatuses.map((status) => (
+                                 <Badge
+                                    key={status}
+                                    variant="outline"
+                                    className={cn(getStatusStyle(status))}
+                                 >
+                                    {status}
+                                 </Badge>
+                              ))
+                           )}
+                           <ChevronDown />
+                        </div>
+                     </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                     align="start"
+                     side="bottom"
+                     sideOffset={4}
+                     className="w-56"
+                  >
+                     <DropdownMenuLabel>Order Status</DropdownMenuLabel>
+                     <DropdownMenuSeparator />
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.PENDING,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.PENDING)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.PENDING,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.PENDING];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-yellow-100 text-yellow-800 border-yellow-300"
+                           >
+                              {EOrderStatus.PENDING}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.CONFIRMED,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.CONFIRMED)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.CONFIRMED,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.CONFIRMED];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-blue-100 text-blue-800 border-blue-300"
+                           >
+                              {EOrderStatus.CONFIRMED}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(EOrderStatus.PAID)}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.PAID)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.PAID,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.PAID];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-green-100 text-green-800 border-green-300"
+                           >
+                              PAID
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.PREPARING,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.PREPARING)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.PREPARING,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.PREPARING];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-purple-100 text-purple-800 border-purple-300"
+                           >
+                              {EOrderStatus.PREPARING}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.DELIVERING,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.DELIVERING)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.DELIVERING,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.DELIVERING];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-indigo-100 text-indigo-800 border-indigo-300"
+                           >
+                              {EOrderStatus.DELIVERING}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.DELIVERED,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.DELIVERED)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.DELIVERED,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.DELIVERED];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-green-100 text-green-800 border-green-300"
+                           >
+                              {EOrderStatus.DELIVERED}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        onSelect={(e) => e.preventDefault()}
+                        checked={selectedStatuses.includes(
+                           EOrderStatus.CANCELLED,
+                        )}
+                        onCheckedChange={() => {
+                           setSelectedStatuses((prev) => {
+                              if (prev.includes(EOrderStatus.CANCELLED)) {
+                                 return prev.filter(
+                                    (s) => s !== EOrderStatus.CANCELLED,
+                                 );
+                              } else {
+                                 return [...prev, EOrderStatus.CANCELLED];
+                              }
+                           });
+                        }}
+                     >
+                        <div className="flex items-center gap-2">
+                           <Badge
+                              variant="outline"
+                              className="bg-red-100 text-red-800 border-red-300"
+                           >
+                              {EOrderStatus.CANCELLED}
+                           </Badge>
+                        </div>
+                     </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            </div>
+            <DropdownMenu>
+               <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="ml-auto">
+                     Columns <ChevronDown />
+                  </Button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent align="end">
+                  {table
+                     .getAllColumns()
+                     .filter((column) => column.getCanHide())
+                     .map((column) => {
+                        return (
+                           <DropdownMenuCheckboxItem
+                              key={column.id}
+                              className="capitalize"
+                              checked={column.getIsVisible()}
+                              onCheckedChange={(value) =>
+                                 column.toggleVisibility(!!value)
+                              }
+                           >
+                              {column.id}
+                           </DropdownMenuCheckboxItem>
+                        );
+                     })}
+               </DropdownMenuContent>
+            </DropdownMenu>
+         </div>
+
+         <div className="overflow-hidden rounded-md border">
+            <Table className="">
+               <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                     <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
+                           return (
+                              <TableHead key={header.id}>
+                                 {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                         header.column.columnDef.header,
+                                         header.getContext(),
+                                      )}
+                              </TableHead>
+                           );
+                        })}
+                     </TableRow>
+                  ))}
+               </TableHeader>
+               <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                     table.getRowModel().rows.map((row, index) => (
+                        <TableRow
+                           key={row.id}
+                           data-state={row.getIsSelected() && 'selected'}
+                           className={`cursor-pointer transition-colors ${
+                              row.getIsSelected()
+                                 ? '!bg-blue-400/20 hover:bg-blue-200'
+                                 : `hover:bg-slate-300/50 ${
+                                      index % 2 === 0
+                                         ? 'bg-white'
+                                         : 'bg-slate-300/30'
+                                   }`
+                           }`}
+                           onClick={() => row.toggleSelected()}
+                        >
+                           {row.getVisibleCells().map((cell) => (
+                              <TableCell key={cell.id}>
+                                 {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext(),
+                                 )}
+                              </TableCell>
+                           ))}
+                        </TableRow>
+                     ))
+                  ) : (
+                     <TableRow>
+                        <TableCell
+                           colSpan={columns.length}
+                           className="h-24 text-center"
+                        >
+                           No results.
+                        </TableCell>
+                     </TableRow>
+                  )}
+               </TableBody>
+            </Table>
+         </div>
+
+         {/* Pagination Controls */}
+         {totalPages >= 1 && (
+            <div className="flex items-center justify-between">
+               <div className="flex items-center gap-2">
+                  <Select
+                     value={filters._limit?.toString() || '10'}
+                     onValueChange={(value) => {
+                        setFilters({ _limit: Number(value) });
+                     }}
+                  >
+                     <SelectTrigger className="w-auto h-9">
+                        <SelectValue />
+                     </SelectTrigger>
+                     <SelectContent>
+                        <SelectGroup>
+                           <SelectItem value="10">10 / page</SelectItem>
+                           <SelectItem value="20">20 / page</SelectItem>
+                           <SelectItem value="50">30 / page</SelectItem>
+                        </SelectGroup>
+                     </SelectContent>
+                  </Select>
+
+                  <div className="text-muted-foreground flex-1 text-sm">
+                     {table.getFilteredSelectedRowModel().rows.length} of{' '}
+                     {table.getFilteredRowModel().rows.length} row(s) selected.
+                  </div>
+               </div>
+
+               <div className="flex items-center gap-2 justify-end mr-5 py-5">
+                  {/* First Page */}
+                  <Button
+                     variant="outline"
+                     size="icon"
+                     className="h-9 w-9"
+                     onClick={() => {
+                        setFilters({ _page: 1 });
+                     }}
+                     disabled={isFirstPage}
+                  >
+                     <ChevronsLeft className="h-4 w-4" />
+                  </Button>
+
+                  {/* Previous Page */}
+                  <Button
+                     variant="outline"
+                     size="icon"
+                     className="h-9 w-9"
+                     onClick={() => {
+                        if (currentPage > 1) {
+                           setFilters({ _page: currentPage - 1 });
+                        }
+                     }}
+                     disabled={!isPrevPage}
+                  >
+                     <ChevronLeft className="h-4 w-4" />
+                  </Button>
+
+                  {/* Page Numbers */}
+                  <div className="flex items-center gap-1">
+                     {getPageNumbers().map((page, index) => {
+                        if (page === '...') {
+                           return (
+                              <span
+                                 key={`ellipsis-${index}`}
+                                 className="px-2 text-gray-400"
+                              >
+                                 <Ellipsis className="h-4 w-4" />
+                              </span>
+                           );
+                        }
+
+                        return (
+                           <Button
+                              key={index}
+                              variant={
+                                 currentPage === page ? 'default' : 'outline'
+                              }
+                              size="icon"
+                              className={cn(
+                                 'h-9 w-9',
+                                 currentPage === page &&
+                                    'bg-black text-white hover:bg-black/90',
+                              )}
+                              onClick={() => {
+                                 setFilters({ _page: page as number });
+                              }}
+                           >
+                              {page as number}
+                           </Button>
+                        );
+                     })}
+                  </div>
+
+                  {/* Next Page */}
+                  <Button
+                     variant="outline"
+                     size="icon"
+                     className="h-9 w-9"
+                     onClick={() => {
+                        if (currentPage < totalPages) {
+                           setFilters({ _page: currentPage + 1 });
+                        }
+                     }}
+                     disabled={!isNextPage}
+                  >
+                     <ChevronRight className="h-4 w-4" />
+                  </Button>
+
+                  {/* Last Page */}
+                  <Button
+                     variant="outline"
+                     size="icon"
+                     className="h-9 w-9"
+                     onClick={() => {
+                        setFilters({ _page: totalPages });
+                     }}
+                     disabled={isLastPage}
+                  >
+                     <ChevronsRight className="h-4 w-4" />
+                  </Button>
+               </div>
+            </div>
+         )}
       </div>
    );
 };

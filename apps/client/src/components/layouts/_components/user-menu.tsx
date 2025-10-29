@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 // import { useAppSelector } from '~/infrastructure/redux/store';
 // import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { useRouter } from 'next/navigation';
-import useAuth from '@components/hooks/api/use-auth-service';
+import useAuthService from '@components/hooks/api/use-auth-service';
 
 // Staggered animation variants
 const containerVariants = {
@@ -30,7 +30,7 @@ const UserMenu = () => {
    //     (state) => state.auth.value,
    //  );
 
-   const { isAuthenticated, logout } = useAuth();
+   const { isAuthenticated, logout } = useAuthService();
 
    return (
       <motion.div

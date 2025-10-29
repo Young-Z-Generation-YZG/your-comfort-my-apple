@@ -30,7 +30,8 @@ import { DashboardNav } from './sidebar-navigation/dashboard-nav';
 import { MainNav } from './sidebar-navigation/main-nav';
 
 // import { NavSecondary } from '@components/ui/nav-secondary';
-// import { NavUser } from '@components/ui/nav-user';
+import { NavUser } from '@components/ui/nav-user';
+import { useAppSelector } from '~/src/infrastructure/redux/store';
 // import { NavEmployees } from './nav-employees';
 
 const data = {
@@ -142,16 +143,16 @@ const data = {
          url: '/dashboards/revenue-analytics',
          icon: ChartNoAxesCombined,
       },
-      {
-         name: 'User Reports',
-         url: '/dashboards/user-reports',
-         icon: UsersRound,
-      },
-      {
-         name: "User'agent Reports",
-         url: '/dashboards/user-agent-reports',
-         icon: MonitorSmartphone,
-      },
+      //   {
+      //      name: 'User Reports',
+      //      url: '/dashboards/user-reports',
+      //      icon: UsersRound,
+      //   },
+      //   {
+      //      name: "User'agent Reports",
+      //      url: '/dashboards/user-agent-reports',
+      //      icon: MonitorSmartphone,
+      //   },
    ],
    employees: [
       {
@@ -175,6 +176,8 @@ const data = {
 export function SidebarLayout({
    ...props
 }: React.ComponentProps<typeof Sidebar>) {
+   const { userEmail } = useAppSelector((state) => state.auth);
+
    return (
       <Sidebar variant="inset" {...props}>
          <SidebarHeader>
@@ -202,7 +205,11 @@ export function SidebarLayout({
             {/* <NavEmployees employees={data.employees} /> */}
             {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
          </SidebarContent>
-         <SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
+         <SidebarFooter>
+            <NavUser
+               user={{ name: 'Admin', email: userEmail || '', avatar: '' }}
+            />
+         </SidebarFooter>
       </Sidebar>
    );
 }
