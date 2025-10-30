@@ -1,8 +1,8 @@
 export type CategoryResponseType = {
-   category_id: string;
-   category_name: string;
-   category_description: string;
-   category_order: number;
-   category_slug: string;
-   category_parent_id: string | null;
+   id: string;
+   name: string;
+   description: string;
+   order: number;
+   slug: string;
+   parent_id: string | null;
 };

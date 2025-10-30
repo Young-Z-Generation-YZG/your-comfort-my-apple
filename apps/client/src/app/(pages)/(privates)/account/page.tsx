@@ -91,7 +91,6 @@ const AccountPage = () => {
                         <h3 className="text-xl font-medium">
                            Personal Information
                         </h3>
-
                         <span
                            onClick={() => {
                               setEditProfile(!editProfile);
@@ -102,7 +101,6 @@ const AccountPage = () => {
                            <MdKeyboardArrowRight className="size-5 text-blue-500" />
                         </span>
                      </div>
-
                      <div className="flex gap-4 items-center mt-5">
                         {getMeState.isLoading || getMeState.isFetching ? (
                            <ImageSkeleton className="w-16 h-16" />
@@ -129,8 +127,7 @@ const AccountPage = () => {
                            )}
                         </div>
                      </div>
-
-                     <div className="mt-3 flex justify-between items-center w-[65%]">
+                     <div className="mt-3 flex justify-between md:justify-start items-center w-[100%] gap-10">
                         <span className="flex flex-col gap-1">
                            <span className="text-sm text-slate-400 font-SFProText">
                               Phone
@@ -143,7 +140,6 @@ const AccountPage = () => {
                               </span>
                            )}
                         </span>
-
                         <span className="flex flex-col gap-1">
                            <span className="text-sm text-slate-400 font-SFProText">
                               Date of Birth

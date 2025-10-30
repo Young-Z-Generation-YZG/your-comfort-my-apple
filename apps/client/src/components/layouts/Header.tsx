@@ -17,39 +17,39 @@ import { CategoryResponseType } from '~/domain/types/category.type';
 
 const mainCategoriesDefault = [
    {
-      category_id: 'Mac',
-      category_name: 'Mac',
-      category_parent_id: null,
-      category_slug: 'mac',
-      category_order: 1,
+      id: 'Mac',
+      name: 'Mac',
+      parent_id: null,
+      slug: 'mac',
+      order: 1,
    },
    {
-      category_id: 'iPad',
-      category_name: 'iPad',
-      category_parent_id: null,
-      category_slug: 'ipad',
-      category_order: 2,
+      id: 'iPad',
+      name: 'iPad',
+      parent_id: null,
+      slug: 'ipad',
+      order: 2,
    },
    {
-      category_id: 'iPhone',
-      category_name: 'iPhone',
-      category_parent_id: null,
-      category_slug: 'iphone',
-      category_order: 3,
+      id: 'iPhone',
+      name: 'iPhone',
+      parent_id: null,
+      slug: 'iphone',
+      order: 3,
    },
    {
-      category_id: 'Watch',
-      category_name: 'Watch',
-      category_parent_id: null,
-      category_slug: 'watch',
-      category_order: 3,
+      id: 'Watch',
+      name: 'Watch',
+      parent_id: null,
+      slug: 'watch',
+      order: 4,
    },
    {
-      category_id: 'HeadPhones',
-      category_name: 'HeadPhones',
-      category_parent_id: null,
-      category_slug: 'headphones',
-      category_order: 3,
+      id: 'HeadPhones',
+      name: 'HeadPhones',
+      parent_id: null,
+      slug: 'headphones',
+      order: 5,
    },
 ];
 
@@ -116,46 +116,6 @@ const Header = () => {
       }
    }, [categoriesData]);
 
-   const renderHeaderCategories02 = () => {
-      if (!categories.length) {
-         return mainCategoriesDefault.map((category, index) => {
-            const { getMeAsync } = useIdentityService();
-
-            useEffect(() => {
-               const fetchMe = async () => {
-                  const result = await getMeAsync();
-                  if (result.isSuccess) {
-                     console.log(result.data);
-                  } else {
-                     console.log(result.error);
-                  }
-               };
-
-               fetchMe();
-            }, [getMeAsync]);
-
-            return (
-               <li
-                  key={index}
-                  className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] border-red-300"
-                  ref={(el) => {
-                     categoryRefs.current[category.category_id] = el;
-                  }}
-                  data-category_id={category}
-                  onMouseEnter={() => handleMouseEnter(category.category_name)}
-                  onClick={() => {
-                     router.push(`/shop`);
-                  }}
-               >
-                  <p className="antialiased opacity-[0.8] tracking-wide">
-                     {category.category_name}
-                  </p>
-               </li>
-            );
-         });
-      }
-   };
-
    const renderHeaderCategories = () => {
       if (!categories.length) {
          return mainCategoriesDefault.map((category, index) => {
@@ -164,16 +124,16 @@ const Header = () => {
                   key={index}
                   className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
                   ref={(el) => {
-                     categoryRefs.current[category.category_id] = el;
+                     categoryRefs.current[category.id] = el;
                   }}
-                  data-category_id={category}
-                  onMouseEnter={() => handleMouseEnter(category.category_name)}
+                  data-id={category}
+                  onMouseEnter={() => handleMouseEnter(category.name)}
                   onClick={() => {
                      router.push('/home');
                   }}
                >
                   <p className="antialiased opacity-[0.8] tracking-wide">
-                     {category.category_name}
+                     {category.name}
                   </p>
                </li>
             );
@@ -181,27 +141,27 @@ const Header = () => {
       }
 
       const sortedCategories = categories
-         .filter((category) => category.category_parent_id === null)
-         .sort((a, b) => a.category_order - b.category_order);
+         .filter((category) => category.parent_id === null)
+         .sort((a, b) => a.order - b.order);
 
       return sortedCategories.map((category: CategoryResponseType) => {
          return (
             <li
-               key={category.category_id}
+               key={category.id}
                ref={(el) => {
-                  categoryRefs.current[category.category_id] = el;
+                  categoryRefs.current[category.id] = el;
                }}
-               data-category_id={category.category_id}
+               data-id={category.id}
                className="category-item cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
                onMouseEnter={() => {
-                  handleMouseEnter(category.category_name);
+                  handleMouseEnter(category.name);
                }}
                onClick={() => {
                   router.push(`/shop`);
                }}
             >
                <p className="antialiased opacity-[0.8] tracking-wide">
-                  {category.category_name}
+                  {category.name}
                </p>
             </li>
          );
@@ -217,7 +177,7 @@ const Header = () => {
                   ref={(el) => {
                      categoryRefs.current[category] = el;
                   }}
-                  data-category_id={category}
+                  data-id={category}
                   className="text-2xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors cursor-pointer"
                >
                   {category}
@@ -227,11 +187,11 @@ const Header = () => {
       }
 
       const parent = categories.find(
-         (category) => category.category_name === parentName,
+         (category) => category.name === parentName,
       );
 
       const child = categories.filter(
-         (category) => category.category_parent_id === parent?.category_id,
+         (category) => category.parent_id === parent?.id,
       );
 
       return child.map((category) => {
@@ -239,12 +199,12 @@ const Header = () => {
             <li
                className="text-2xl font-semibold text-[#1d1d1f] hover:text-[#0066cc] transition-colors cursor-pointer"
                ref={(el) => {
-                  categoryRefs.current[category.category_id] = el;
+                  categoryRefs.current[category.id] = el;
                }}
-               data-category_id={category.category_id}
-               key={category.category_id}
+               data-id={category.id}
+               key={category.id}
             >
-               {category.category_name}
+               {category.name}
             </li>
          );
       });
@@ -574,14 +534,14 @@ const Header = () => {
                            </li>
                            {mainCategoriesDefault.map((category) => (
                               <li
-                                 key={category.category_id}
+                                 key={category.id}
                                  className="cursor-pointer text-xl border-t border-gray-200 py-3"
                                  onClick={() => {
                                     router.push('/shop');
                                     setMenuOpen(false);
                                  }}
                               >
-                                 {category.category_name}
+                                 {category.name}
                               </li>
                            ))}
                            <li

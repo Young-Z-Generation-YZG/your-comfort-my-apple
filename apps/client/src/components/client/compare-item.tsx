@@ -53,8 +53,6 @@ const CompareItem = ({
       typeConnect,
    } = compare;
 
-   console.log('Compare Item:', className);
-
    const imgBiometricAuthen =
       biometricAuthen === 'Face ID'
          ? '/images/compare-imgs/icon-biometric-authen/icon-face-id.jpg'
