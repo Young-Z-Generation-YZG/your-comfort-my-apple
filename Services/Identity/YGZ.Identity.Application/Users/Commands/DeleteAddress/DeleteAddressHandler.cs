@@ -11,10 +11,10 @@ namespace YGZ.Identity.Application.Users.Commands.DeleteAddress;
 
 public class DeleteAddressHandler : ICommandHandler<DeleteAddressCommand, bool>
 {
-    private readonly ILogger<GetMeQueryHandler> _logger;
+    private readonly ILogger<GetMeHandler> _logger;
     private readonly IGenericRepository<ShippingAddress, ShippingAddressId> _addressRepository;
 
-    public DeleteAddressHandler(ILogger<GetMeQueryHandler> logger,
+    public DeleteAddressHandler(ILogger<GetMeHandler> logger,
                                 IGenericRepository<ShippingAddress, ShippingAddressId> addressRepository)
     {
         _logger = logger;

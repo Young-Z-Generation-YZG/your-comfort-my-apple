@@ -10,14 +10,14 @@ using YGZ.Identity.Domain.Users;
 
 namespace YGZ.Identity.Application.Users.Queries.GetAddresses;
 
-public class GetAddressesQueryHandler : IQueryHandler<GetAddressesQuery, List<AddressResponse>>
+public class GetAddressesHandler : IQueryHandler<GetAddressesQuery, List<AddressResponse>>
 {
     private readonly IUserHttpContext _userHttpContext;
-    private readonly ILogger<GetAddressesQueryHandler> _logger;
+    private readonly ILogger<GetAddressesHandler> _logger;
     private readonly IUserRepository _userRepository;
 
-    public GetAddressesQueryHandler(IUserHttpContext userHttpContext,
-                                ILogger<GetAddressesQueryHandler> logger,
+    public GetAddressesHandler(IUserHttpContext userHttpContext,
+                                ILogger<GetAddressesHandler> logger,
                                 IUserRepository userRepository)
     {
         _userHttpContext = userHttpContext;

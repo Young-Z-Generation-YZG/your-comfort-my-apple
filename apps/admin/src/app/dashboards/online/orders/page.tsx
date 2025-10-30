@@ -60,6 +60,7 @@ import {
    SelectValue,
    SelectItem,
 } from '@components/ui/select';
+import { LoadingOverlay } from '@components/loading-overlay';
 
 const fakeData = {
    total_records: 7,
@@ -386,7 +387,7 @@ const fakeData = {
    },
 };
 
-export type TOrder = typeof fakeData;
+// export type TOrder = typeof fakeData;
 export type TOrderItem = (typeof fakeData.items)[number];
 
 const getStatusStyle = (status: string) => {
@@ -421,6 +422,21 @@ const getPaymentMethodStyle = (method: string) => {
       case EPaymentMethod.BLOCKCHAIN:
          return 'bg-purple-100 text-purple-800 border-purple-300';
       case EPaymentMethod.UNKNOWN:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+      default:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+   }
+};
+
+const getPromotionTypeStyle = (type: string) => {
+   switch (type) {
+      case EPromotionType.COUPON:
+         return 'bg-orange-100 text-orange-800 border-orange-300';
+      case EPromotionType.EVENT:
+         return 'bg-cyan-100 text-cyan-800 border-cyan-300';
+      case EPromotionType.EVENT_ITEM:
+         return 'bg-teal-100 text-teal-800 border-teal-300';
+      case EPromotionType.UNKNOWN:
          return 'bg-gray-100 text-gray-800 border-gray-300';
       default:
          return 'bg-gray-100 text-gray-800 border-gray-300';
@@ -608,21 +624,6 @@ const columns: ColumnDef<TOrderItem>[] = [
          if (!discountAmount || !promotionType) {
             return <div className="text-muted-foreground">-</div>;
          }
-
-         const getPromotionTypeStyle = (type: string) => {
-            switch (type) {
-               case EPromotionType.COUPON:
-                  return 'bg-orange-100 text-orange-800 border-orange-300';
-               case EPromotionType.EVENT:
-                  return 'bg-cyan-100 text-cyan-800 border-cyan-300';
-               case EPromotionType.EVENT_ITEM:
-                  return 'bg-teal-100 text-teal-800 border-teal-300';
-               case EPromotionType.UNKNOWN:
-                  return 'bg-gray-100 text-gray-800 border-gray-300';
-               default:
-                  return 'bg-gray-100 text-gray-800 border-gray-300';
-            }
-         };
 
          const formatted = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -830,467 +831,488 @@ const OnlineOrdersPage = () => {
 
    return (
       <div className="p-5">
-         <div className="flex items-center py-4">
-            <div className="flex items-center gap-2">
-               <Input
-                  placeholder="Filter emails..."
-                  value={
-                     (table
-                        .getColumn('customer_email')
-                        ?.getFilterValue() as string) ?? ''
-                  }
-                  onChange={(event) => {
-                     setFilters({ customer_email: event.target.value });
+         <div className="flex items-center justify-between">
+            <div>
+               <h1 className="text-3xl font-bold tracking-tight">
+                  Online Orders Management
+               </h1>
+               <p className="text-muted-foreground">
+                  Manage and view all online orders in the system
+               </p>
+            </div>
+         </div>
 
-                     // return table
-                     // .getColumn('customer_email')
-                     // ?.setFilterValue(event.target.value)
-                  }}
-                  className="max-w-sm"
-               />
+         <LoadingOverlay isLoading={isLoading}>
+            <div className="flex items-center py-4">
+               <div className="flex items-center gap-2">
+                  <Input
+                     placeholder="Filter emails..."
+                     value={
+                        (table
+                           .getColumn('customer_email')
+                           ?.getFilterValue() as string) ?? ''
+                     }
+                     onChange={(event) => {
+                        setFilters({ customer_email: event.target.value });
+
+                        // return table
+                        // .getColumn('customer_email')
+                        // ?.setFilterValue(event.target.value)
+                     }}
+                     className="max-w-sm"
+                  />
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto">
+                           Status Filter
+                           <div className="flex items-center gap-2">
+                              {selectedStatuses.length > 2 ? (
+                                 <>
+                                    {selectedStatuses
+                                       .slice(0, 2)
+                                       .map((status) => {
+                                          return (
+                                             <Badge
+                                                key={status}
+                                                variant="outline"
+                                                className={cn(
+                                                   getStatusStyle(status),
+                                                )}
+                                             >
+                                                {status}
+                                             </Badge>
+                                          );
+                                       })}
+                                    <Badge
+                                       variant="outline"
+                                       className="bg-gray-100 text-gray-800 border-gray-300"
+                                    >
+                                       +{selectedStatuses.length - 2}
+                                    </Badge>
+                                 </>
+                              ) : (
+                                 selectedStatuses.map((status) => (
+                                    <Badge
+                                       key={status}
+                                       variant="outline"
+                                       className={cn(getStatusStyle(status))}
+                                    >
+                                       {status}
+                                    </Badge>
+                                 ))
+                              )}
+                              <ChevronDown />
+                           </div>
+                        </Button>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent
+                        align="start"
+                        side="bottom"
+                        sideOffset={4}
+                        className="w-56"
+                     >
+                        <DropdownMenuLabel>Order Status</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.PENDING,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.PENDING)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.PENDING,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.PENDING];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-yellow-100 text-yellow-800 border-yellow-300"
+                              >
+                                 {EOrderStatus.PENDING}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.CONFIRMED,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.CONFIRMED)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.CONFIRMED,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.CONFIRMED];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-blue-100 text-blue-800 border-blue-300"
+                              >
+                                 {EOrderStatus.CONFIRMED}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.PAID,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.PAID)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.PAID,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.PAID];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-green-100 text-green-800 border-green-300"
+                              >
+                                 PAID
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.PREPARING,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.PREPARING)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.PREPARING,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.PREPARING];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-purple-100 text-purple-800 border-purple-300"
+                              >
+                                 {EOrderStatus.PREPARING}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.DELIVERING,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.DELIVERING)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.DELIVERING,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.DELIVERING];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-indigo-100 text-indigo-800 border-indigo-300"
+                              >
+                                 {EOrderStatus.DELIVERING}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.DELIVERED,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.DELIVERED)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.DELIVERED,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.DELIVERED];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-green-100 text-green-800 border-green-300"
+                              >
+                                 {EOrderStatus.DELIVERED}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           onSelect={(e) => e.preventDefault()}
+                           checked={selectedStatuses.includes(
+                              EOrderStatus.CANCELLED,
+                           )}
+                           onCheckedChange={() => {
+                              setSelectedStatuses((prev) => {
+                                 if (prev.includes(EOrderStatus.CANCELLED)) {
+                                    return prev.filter(
+                                       (s) => s !== EOrderStatus.CANCELLED,
+                                    );
+                                 } else {
+                                    return [...prev, EOrderStatus.CANCELLED];
+                                 }
+                              });
+                           }}
+                        >
+                           <div className="flex items-center gap-2">
+                              <Badge
+                                 variant="outline"
+                                 className="bg-red-100 text-red-800 border-red-300"
+                              >
+                                 {EOrderStatus.CANCELLED}
+                              </Badge>
+                           </div>
+                        </DropdownMenuCheckboxItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               </div>
+
                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                      <Button variant="outline" className="ml-auto">
-                        Status Filter
-                        <div className="flex items-center gap-2">
-                           {selectedStatuses.length > 2 ? (
-                              <>
-                                 {selectedStatuses.slice(0, 2).map((status) => {
-                                    return (
-                                       <Badge
-                                          key={status}
-                                          variant="outline"
-                                          className={cn(getStatusStyle(status))}
-                                       >
-                                          {status}
-                                       </Badge>
-                                    );
-                                 })}
-                                 <Badge
-                                    variant="outline"
-                                    className="bg-gray-100 text-gray-800 border-gray-300"
-                                 >
-                                    +{selectedStatuses.length - 2}
-                                 </Badge>
-                              </>
-                           ) : (
-                              selectedStatuses.map((status) => (
-                                 <Badge
-                                    key={status}
-                                    variant="outline"
-                                    className={cn(getStatusStyle(status))}
-                                 >
-                                    {status}
-                                 </Badge>
-                              ))
-                           )}
-                           <ChevronDown />
-                        </div>
+                        Columns <ChevronDown />
                      </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                     align="start"
-                     side="bottom"
-                     sideOffset={4}
-                     className="w-56"
-                  >
-                     <DropdownMenuLabel>Order Status</DropdownMenuLabel>
-                     <DropdownMenuSeparator />
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.PENDING,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.PENDING)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.PENDING,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.PENDING];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-yellow-100 text-yellow-800 border-yellow-300"
-                           >
-                              {EOrderStatus.PENDING}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.CONFIRMED,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.CONFIRMED)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.CONFIRMED,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.CONFIRMED];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-blue-100 text-blue-800 border-blue-300"
-                           >
-                              {EOrderStatus.CONFIRMED}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(EOrderStatus.PAID)}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.PAID)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.PAID,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.PAID];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-green-100 text-green-800 border-green-300"
-                           >
-                              PAID
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.PREPARING,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.PREPARING)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.PREPARING,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.PREPARING];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-purple-100 text-purple-800 border-purple-300"
-                           >
-                              {EOrderStatus.PREPARING}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.DELIVERING,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.DELIVERING)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.DELIVERING,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.DELIVERING];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-indigo-100 text-indigo-800 border-indigo-300"
-                           >
-                              {EOrderStatus.DELIVERING}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.DELIVERED,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.DELIVERED)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.DELIVERED,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.DELIVERED];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-green-100 text-green-800 border-green-300"
-                           >
-                              {EOrderStatus.DELIVERED}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        onSelect={(e) => e.preventDefault()}
-                        checked={selectedStatuses.includes(
-                           EOrderStatus.CANCELLED,
-                        )}
-                        onCheckedChange={() => {
-                           setSelectedStatuses((prev) => {
-                              if (prev.includes(EOrderStatus.CANCELLED)) {
-                                 return prev.filter(
-                                    (s) => s !== EOrderStatus.CANCELLED,
-                                 );
-                              } else {
-                                 return [...prev, EOrderStatus.CANCELLED];
-                              }
-                           });
-                        }}
-                     >
-                        <div className="flex items-center gap-2">
-                           <Badge
-                              variant="outline"
-                              className="bg-red-100 text-red-800 border-red-300"
-                           >
-                              {EOrderStatus.CANCELLED}
-                           </Badge>
-                        </div>
-                     </DropdownMenuCheckboxItem>
+                  <DropdownMenuContent align="end">
+                     {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => {
+                           return (
+                              <DropdownMenuCheckboxItem
+                                 key={column.id}
+                                 className="capitalize"
+                                 checked={column.getIsVisible()}
+                                 onCheckedChange={(value) =>
+                                    column.toggleVisibility(!!value)
+                                 }
+                              >
+                                 {column.id}
+                              </DropdownMenuCheckboxItem>
+                           );
+                        })}
                   </DropdownMenuContent>
                </DropdownMenu>
             </div>
-            <DropdownMenu>
-               <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="ml-auto">
-                     Columns <ChevronDown />
-                  </Button>
-               </DropdownMenuTrigger>
-               <DropdownMenuContent align="end">
-                  {table
-                     .getAllColumns()
-                     .filter((column) => column.getCanHide())
-                     .map((column) => {
-                        return (
-                           <DropdownMenuCheckboxItem
-                              key={column.id}
-                              className="capitalize"
-                              checked={column.getIsVisible()}
-                              onCheckedChange={(value) =>
-                                 column.toggleVisibility(!!value)
-                              }
-                           >
-                              {column.id}
-                           </DropdownMenuCheckboxItem>
-                        );
-                     })}
-               </DropdownMenuContent>
-            </DropdownMenu>
-         </div>
 
-         <div className="overflow-hidden rounded-md border">
-            <Table className="">
-               <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                     <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => {
+            <div className="overflow-hidden rounded-md border">
+               <Table className="">
+                  <TableHeader>
+                     {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id}>
+                           {headerGroup.headers.map((header) => {
+                              return (
+                                 <TableHead key={header.id}>
+                                    {header.isPlaceholder
+                                       ? null
+                                       : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext(),
+                                         )}
+                                 </TableHead>
+                              );
+                           })}
+                        </TableRow>
+                     ))}
+                  </TableHeader>
+                  <TableBody>
+                     {table.getRowModel().rows?.length ? (
+                        table.getRowModel().rows.map((row, index) => (
+                           <TableRow
+                              key={row.id}
+                              data-state={row.getIsSelected() && 'selected'}
+                              className={`cursor-pointer transition-colors ${
+                                 row.getIsSelected()
+                                    ? '!bg-blue-400/20 hover:bg-blue-200'
+                                    : `hover:bg-slate-300/50 ${
+                                         index % 2 === 0
+                                            ? 'bg-white'
+                                            : 'bg-slate-300/30'
+                                      }`
+                              }`}
+                              onClick={() => row.toggleSelected()}
+                           >
+                              {row.getVisibleCells().map((cell) => (
+                                 <TableCell key={cell.id}>
+                                    {flexRender(
+                                       cell.column.columnDef.cell,
+                                       cell.getContext(),
+                                    )}
+                                 </TableCell>
+                              ))}
+                           </TableRow>
+                        ))
+                     ) : (
+                        <TableRow>
+                           <TableCell
+                              colSpan={columns.length}
+                              className="h-24 text-center"
+                           >
+                              No results.
+                           </TableCell>
+                        </TableRow>
+                     )}
+                  </TableBody>
+               </Table>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages >= 1 && (
+               <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                     <Select
+                        value={filters._limit?.toString() || '10'}
+                        onValueChange={(value) => {
+                           setFilters({ _limit: Number(value) });
+                        }}
+                     >
+                        <SelectTrigger className="w-auto h-9">
+                           <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              <SelectItem value="10">10 / page</SelectItem>
+                              <SelectItem value="20">20 / page</SelectItem>
+                              <SelectItem value="50">30 / page</SelectItem>
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+
+                     <div className="text-muted-foreground flex-1 text-sm">
+                        {table.getFilteredSelectedRowModel().rows.length} of{' '}
+                        {table.getFilteredRowModel().rows.length} row(s)
+                        selected.
+                     </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 justify-end mr-5 py-5">
+                     {/* First Page */}
+                     <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => {
+                           setFilters({ _page: 1 });
+                        }}
+                        disabled={isFirstPage}
+                     >
+                        <ChevronsLeft className="h-4 w-4" />
+                     </Button>
+
+                     {/* Previous Page */}
+                     <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => {
+                           if (currentPage > 1) {
+                              setFilters({ _page: currentPage - 1 });
+                           }
+                        }}
+                        disabled={!isPrevPage}
+                     >
+                        <ChevronLeft className="h-4 w-4" />
+                     </Button>
+
+                     {/* Page Numbers */}
+                     <div className="flex items-center gap-1">
+                        {getPageNumbers().map((page, index) => {
+                           if (page === '...') {
+                              return (
+                                 <span
+                                    key={`ellipsis-${index}`}
+                                    className="px-2 text-gray-400"
+                                 >
+                                    <Ellipsis className="h-4 w-4" />
+                                 </span>
+                              );
+                           }
+
                            return (
-                              <TableHead key={header.id}>
-                                 {header.isPlaceholder
-                                    ? null
-                                    : flexRender(
-                                         header.column.columnDef.header,
-                                         header.getContext(),
-                                      )}
-                              </TableHead>
+                              <Button
+                                 key={index}
+                                 variant={
+                                    currentPage === page ? 'default' : 'outline'
+                                 }
+                                 size="icon"
+                                 className={cn(
+                                    'h-9 w-9',
+                                    currentPage === page &&
+                                       'bg-black text-white hover:bg-black/90',
+                                 )}
+                                 onClick={() => {
+                                    setFilters({ _page: page as number });
+                                 }}
+                              >
+                                 {page as number}
+                              </Button>
                            );
                         })}
-                     </TableRow>
-                  ))}
-               </TableHeader>
-               <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                     table.getRowModel().rows.map((row, index) => (
-                        <TableRow
-                           key={row.id}
-                           data-state={row.getIsSelected() && 'selected'}
-                           className={`cursor-pointer transition-colors ${
-                              row.getIsSelected()
-                                 ? '!bg-blue-400/20 hover:bg-blue-200'
-                                 : `hover:bg-slate-300/50 ${
-                                      index % 2 === 0
-                                         ? 'bg-white'
-                                         : 'bg-slate-300/30'
-                                   }`
-                           }`}
-                           onClick={() => row.toggleSelected()}
-                        >
-                           {row.getVisibleCells().map((cell) => (
-                              <TableCell key={cell.id}>
-                                 {flexRender(
-                                    cell.column.columnDef.cell,
-                                    cell.getContext(),
-                                 )}
-                              </TableCell>
-                           ))}
-                        </TableRow>
-                     ))
-                  ) : (
-                     <TableRow>
-                        <TableCell
-                           colSpan={columns.length}
-                           className="h-24 text-center"
-                        >
-                           No results.
-                        </TableCell>
-                     </TableRow>
-                  )}
-               </TableBody>
-            </Table>
-         </div>
+                     </div>
 
-         {/* Pagination Controls */}
-         {totalPages >= 1 && (
-            <div className="flex items-center justify-between">
-               <div className="flex items-center gap-2">
-                  <Select
-                     value={filters._limit?.toString() || '10'}
-                     onValueChange={(value) => {
-                        setFilters({ _limit: Number(value) });
-                     }}
-                  >
-                     <SelectTrigger className="w-auto h-9">
-                        <SelectValue />
-                     </SelectTrigger>
-                     <SelectContent>
-                        <SelectGroup>
-                           <SelectItem value="10">10 / page</SelectItem>
-                           <SelectItem value="20">20 / page</SelectItem>
-                           <SelectItem value="50">30 / page</SelectItem>
-                        </SelectGroup>
-                     </SelectContent>
-                  </Select>
+                     {/* Next Page */}
+                     <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => {
+                           if (currentPage < totalPages) {
+                              setFilters({ _page: currentPage + 1 });
+                           }
+                        }}
+                        disabled={!isNextPage}
+                     >
+                        <ChevronRight className="h-4 w-4" />
+                     </Button>
 
-                  <div className="text-muted-foreground flex-1 text-sm">
-                     {table.getFilteredSelectedRowModel().rows.length} of{' '}
-                     {table.getFilteredRowModel().rows.length} row(s) selected.
+                     {/* Last Page */}
+                     <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-9 w-9"
+                        onClick={() => {
+                           setFilters({ _page: totalPages });
+                        }}
+                        disabled={isLastPage}
+                     >
+                        <ChevronsRight className="h-4 w-4" />
+                     </Button>
                   </div>
                </div>
-
-               <div className="flex items-center gap-2 justify-end mr-5 py-5">
-                  {/* First Page */}
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-9 w-9"
-                     onClick={() => {
-                        setFilters({ _page: 1 });
-                     }}
-                     disabled={isFirstPage}
-                  >
-                     <ChevronsLeft className="h-4 w-4" />
-                  </Button>
-
-                  {/* Previous Page */}
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-9 w-9"
-                     onClick={() => {
-                        if (currentPage > 1) {
-                           setFilters({ _page: currentPage - 1 });
-                        }
-                     }}
-                     disabled={!isPrevPage}
-                  >
-                     <ChevronLeft className="h-4 w-4" />
-                  </Button>
-
-                  {/* Page Numbers */}
-                  <div className="flex items-center gap-1">
-                     {getPageNumbers().map((page, index) => {
-                        if (page === '...') {
-                           return (
-                              <span
-                                 key={`ellipsis-${index}`}
-                                 className="px-2 text-gray-400"
-                              >
-                                 <Ellipsis className="h-4 w-4" />
-                              </span>
-                           );
-                        }
-
-                        return (
-                           <Button
-                              key={index}
-                              variant={
-                                 currentPage === page ? 'default' : 'outline'
-                              }
-                              size="icon"
-                              className={cn(
-                                 'h-9 w-9',
-                                 currentPage === page &&
-                                    'bg-black text-white hover:bg-black/90',
-                              )}
-                              onClick={() => {
-                                 setFilters({ _page: page as number });
-                              }}
-                           >
-                              {page as number}
-                           </Button>
-                        );
-                     })}
-                  </div>
-
-                  {/* Next Page */}
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-9 w-9"
-                     onClick={() => {
-                        if (currentPage < totalPages) {
-                           setFilters({ _page: currentPage + 1 });
-                        }
-                     }}
-                     disabled={!isNextPage}
-                  >
-                     <ChevronRight className="h-4 w-4" />
-                  </Button>
-
-                  {/* Last Page */}
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-9 w-9"
-                     onClick={() => {
-                        setFilters({ _page: totalPages });
-                     }}
-                     disabled={isLastPage}
-                  >
-                     <ChevronsRight className="h-4 w-4" />
-                  </Button>
-               </div>
-            </div>
-         )}
+            )}
+         </LoadingOverlay>
       </div>
    );
 };

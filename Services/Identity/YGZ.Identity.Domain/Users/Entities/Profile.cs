@@ -1,13 +1,13 @@
 ﻿
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.Identity.Domain.Core.Abstractions;
-using YGZ.Identity.Domain.Core.Enums;
 using YGZ.Identity.Domain.Core.Primitives;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Domain.Users.Entities;
 
-public class Profile : Entity<ProfileId>, IAuditable
+public class Profile : Entity<ProfileId>, IAuditable, ISoftDelete
 {
     public Profile(ProfileId id) : base(id)
     {
@@ -24,8 +24,12 @@ public class Profile : Entity<ProfileId>, IAuditable
 
     required public string UserId { get; set; }
     public User User { get; set; } = null!;
-    public DateTime CreatedAt { get; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? UpdatedBy { get; set; } = null;
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; } = null;
+    public string? DeletedBy { get; set; } = null;
 
     public static Profile Create(ProfileId id,
                                   string firstName,
@@ -66,5 +70,26 @@ public class Profile : Entity<ProfileId>, IAuditable
         }
 
         Gender = genderEnum;
+    }
+
+    public ProfileResponse ToResponse()
+    {
+        return new ProfileResponse
+        {
+    Id = Id.Value.ToString() ?? string.Empty,
+    UserId = UserId,
+    FirstName = FirstName,
+    LastName = LastName,
+    BirthDay = BirthDay,
+    Gender = Gender.ToString(),
+    ImageId = Image?.ImageId,
+    ImageUrl = Image?.ImageUrl,
+    CreatedAt = CreatedAt,
+    UpdatedAt = UpdatedAt,
+    UpdatedBy = UpdatedBy,
+    IsDeleted = IsDeleted,
+    DeletedAt = DeletedAt,
+    DeletedBy = DeletedBy
+        };
     }
 }

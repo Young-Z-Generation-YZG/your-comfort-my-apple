@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Application.Abstractions.Data;
 

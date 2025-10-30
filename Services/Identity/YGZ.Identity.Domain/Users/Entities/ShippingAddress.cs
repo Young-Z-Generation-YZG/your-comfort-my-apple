@@ -1,13 +1,13 @@
 ﻿
 
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Identity;
-using YGZ.Identity.Domain.Core.Abstractions;
 using YGZ.Identity.Domain.Core.Primitives;
 using YGZ.Identity.Domain.Users.ValueObjects;
 
 namespace YGZ.Identity.Domain.Users.Entities;
 
-public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
+public class ShippingAddress : Entity<ShippingAddressId>, IAuditable, ISoftDelete
 {
     public ShippingAddress(ShippingAddressId id) : base(id)
     {
@@ -16,14 +16,18 @@ public class ShippingAddress : Entity<ShippingAddressId>, IAuditable
     private ShippingAddress() : base(null!) { }
 
     required public string Label { get; set; }
-    required public string ContactName { get; set; } 
+    required public string ContactName { get; set; }
     required public string ContactPhoneNumber { get; set; }
     required public Address AddressDetail { get; set; }
     public bool IsDefault { get; set; } = false;
     required public string UserId { get; set; }
     public User User { get; set; } = null!;
-    public DateTime CreatedAt { get; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? UpdatedBy { get; set; } = null;
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; } = null;
+    public string? DeletedBy { get; set; } = null;
 
     public static ShippingAddress Create(ShippingAddressId id,
                                          string label,

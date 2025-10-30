@@ -29,11 +29,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public decimal? DiscountAmount { get; init; }
     public required decimal TotalAmount { get; init; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
-    public string? UpdatedBy { get; init; } = null;
-    public bool IsDeleted { get; init; } = false;
-    public DateTime? DeletedAt { get; init; } = null;
-    public string? DeletedBy { get; init; } = null;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? UpdatedBy { get; set; } = null;
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; } = null;
+    public string? DeletedBy { get; set; } = null;
 
     public static Order Create(OrderId orderId,
                                UserId customerId,
@@ -77,7 +77,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         _orderItems.Add(orderItem);
     }
 
-        //public void RemoveOrderItem(OrderItemId orderItemId)
+    //public void RemoveOrderItem(OrderItemId orderItemId)
     //{
     //    var item = _orderItems.FirstOrDefault(x => x.Id == orderItemId);
 
@@ -110,12 +110,12 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
 
     public void SetCancelled()
     {
-       if (OrderStatus != EOrderStatus.PENDING)
-       {
-           throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
-       }
+        if (OrderStatus != EOrderStatus.PENDING)
+        {
+            throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
+        }
 
-       OrderStatus = EOrderStatus.CANCELLED;
+        OrderStatus = EOrderStatus.CANCELLED;
     }
 
     public void SetPreparing()

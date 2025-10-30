@@ -9,6 +9,7 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Profiles;
+using YGZ.Identity.Api.Contracts.Users;
 using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Users.Commands.AddAddress;
 using YGZ.Identity.Application.Users.Commands.DeleteAddress;
@@ -17,6 +18,7 @@ using YGZ.Identity.Application.Users.Commands.UpdateAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateProfile;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
+using YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
@@ -34,6 +36,26 @@ public class UserController : ApiController
     {
         _sender = sender;
         _mapper = mapper;
+    }
+
+    [HttpGet("admin")]
+    [Authorize(Policy = Policies.R__ADMIN_SUPER___RS__ALL)]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.ALL)]
+    public async Task<IActionResult> GetUsersByAdmin([FromQuery] GetUsersPaginationRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetUsersByAdminQuery
+        {
+            Page = request._page,
+            Limit = request._limit,
+            Email = request._email,
+            FirstName = request._firstName,
+            LastName = request._lastName,
+            PhoneNumber = request._phoneNumber
+        };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpGet("me")]
@@ -73,7 +95,7 @@ public class UserController : ApiController
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-    
+
 
     [HttpPut("addresses/{addressId}")]
     [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]

@@ -15,6 +15,8 @@ import {
    IdCard,
    UserPen,
    Building2,
+   Users,
+   User,
 } from 'lucide-react';
 
 import {
@@ -111,6 +113,18 @@ const data = {
       //         },
       //      ],
       //   },
+      {
+         title: 'HRM',
+         url: '/dashboards/hrm',
+         icon: Users,
+         isActive: true,
+      },
+      {
+         title: 'Customer Management',
+         url: '/dashboards/customers',
+         icon: UsersRound,
+         isActive: true,
+      },
       {
          title: 'Order Management',
          url: '/dashboards/orders',

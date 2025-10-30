@@ -20,6 +20,7 @@ import { uploadImageApi } from '~/src/infrastructure/services/upload.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 import { orderingApi } from '~/src/infrastructure/services/order.service';
+import { identityApi } from '~/src/infrastructure/services/identity.service';
 
 const storage = createPersistStorage();
 
@@ -33,6 +34,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       uploadImageApi.reducerPath,
       promotionApi.reducerPath,
       orderingApi.reducerPath,
+      identityApi.reducerPath,
    ],
    whitelist: ['auth'],
 };
@@ -45,6 +47,7 @@ const reducers = combineReducers({
    [uploadImageApi.reducerPath]: uploadImageApi.reducer,
    [promotionApi.reducerPath]: promotionApi.reducer,
    [orderingApi.reducerPath]: orderingApi.reducer,
+   [identityApi.reducerPath]: identityApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -62,6 +65,7 @@ export const reduxStore = configureStore({
          promotionApi.middleware,
          keycloakApi.middleware,
          orderingApi.middleware,
+         identityApi.middleware,
       ),
 });
 

@@ -4,20 +4,19 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Identity;
-using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Users;
 
 namespace YGZ.Identity.Application.Users.Queries.GetProfile;
 
-public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAccountResponse>
+public class GetMeHandler : IQueryHandler<GetMeQuery, GetAccountResponse>
 {
     private readonly IUserHttpContext _userHttpContext;
-    private readonly ILogger<GetMeQueryHandler> _logger;
+    private readonly ILogger<GetMeHandler> _logger;
     private readonly IUserRepository _repository;
 
-    public GetMeQueryHandler(IUserHttpContext userHttpContext,
-                             ILogger<GetMeQueryHandler> logger,
+    public GetMeHandler(IUserHttpContext userHttpContext,
+                             ILogger<GetMeHandler> logger,
                              IUserRepository repository)
     {
         _userHttpContext = userHttpContext;
@@ -42,7 +41,7 @@ public class GetMeQueryHandler : IQueryHandler<GetMeQuery, GetAccountResponse>
             return user.Error;
         }
 
-       return user.Response!.ToResponse();
+        return user.Response!.ToAccountResponse();
     }
 
 }

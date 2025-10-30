@@ -16,12 +16,12 @@ namespace YGZ.Identity.Application.Users.Commands.AddAddress;
 public class AddAddressHandler : ICommandHandler<AddAddressCommand, bool>
 {
     private readonly IUserHttpContext _userHttpContext;
-    private readonly ILogger<GetMeQueryHandler> _logger;
+    private readonly ILogger<GetMeHandler> _logger;
     private readonly IUserRepository _userRepository;
     private readonly IGenericRepository<ShippingAddress, ShippingAddressId> _addressRepository;
 
     public AddAddressHandler(IUserHttpContext userHttpContext,
-                             ILogger<GetMeQueryHandler> logger,
+                             ILogger<GetMeHandler> logger,
                              IUserRepository userRepository,
                              IGenericRepository<ShippingAddress, ShippingAddressId> addressRepository)
     {

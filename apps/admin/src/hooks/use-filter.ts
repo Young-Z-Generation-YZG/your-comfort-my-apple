@@ -15,6 +15,15 @@ type FilterOptions = {
    scroll?: boolean;
 };
 
+// Helper function to remove null values from URLSearchParams
+const removeNullValues = (params: URLSearchParams): void => {
+   Array.from(params.keys()).forEach((key) => {
+      if (params.get(key) === 'null') {
+         params.delete(key);
+      }
+   });
+};
+
 const useFilter = <T extends Record<string, FilterValue>>() => {
    const router = useRouter();
    const searchParams = useSearchParams();
@@ -69,6 +78,13 @@ const useFilter = <T extends Record<string, FilterValue>>() => {
          }
       });
 
+      // Remove keys with null values
+      Object.keys(params).forEach((key) => {
+         if (params[key] === null) {
+            delete params[key];
+         }
+      });
+
       return params as Partial<T>;
    }, [searchParams]);
 
@@ -98,6 +114,9 @@ const useFilter = <T extends Record<string, FilterValue>>() => {
             }
          });
 
+         // Remove any keys with null values from params
+         removeNullValues(params);
+
          router.push(`?${params.toString()}`, { scroll: options.scroll });
       },
       [searchParams, router],
@@ -126,6 +145,9 @@ const useFilter = <T extends Record<string, FilterValue>>() => {
          keys.forEach((key) => {
             params.delete(key as string);
          });
+
+         // Remove any keys with null values from params
+         removeNullValues(params);
 
          router.push(`?${params.toString()}`, { scroll: options.scroll });
       },

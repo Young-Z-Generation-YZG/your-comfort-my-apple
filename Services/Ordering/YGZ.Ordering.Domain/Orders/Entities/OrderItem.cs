@@ -47,11 +47,11 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     }
     public bool IsReviewed { get; private set; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
-    public string? UpdatedBy { get; init; } = null;
-    public bool IsDeleted { get; init; } = false;
-    public DateTime? DeletedAt { get; init; } = null;
-    public string? DeletedBy { get; init; } = null;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public string? UpdatedBy { get; set; } = null;
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? DeletedAt { get; set; } = null;
+    public string? DeletedBy { get; set; } = null;
 
     public static OrderItem Create(OrderItemId orderItemId,
                                    TenantId? tenantId,

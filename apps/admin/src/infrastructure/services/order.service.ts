@@ -20,7 +20,7 @@ export const orderingApi = createApi({
    tagTypes: ['Orders'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getOrdersByAdmin: builder.query<PaginationResponse<any>, string>({
+      getOrdersByAdmin: builder.query<PaginationResponse<any>, any>({
          query: (params: any) => ({
             url: '/api/v1/orders/admin',
             method: 'GET',

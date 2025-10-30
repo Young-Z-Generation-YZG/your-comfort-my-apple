@@ -13,12 +13,12 @@ public class ChangePasswordHandler : ICommandHandler<ChangePasswordCommand, bool
 {
     private readonly IIdentityService _identityService;
     private readonly IUserHttpContext _userHttpContext;
-    private readonly ILogger<GetMeQueryHandler> _logger;
+    private readonly ILogger<GetMeHandler> _logger;
 
 
     public ChangePasswordHandler(IIdentityService identityService,
                                  IUserHttpContext userHttpContext,
-                                 ILogger<GetMeQueryHandler> logger)
+                                 ILogger<GetMeHandler> logger)
     {
         _identityService = identityService;
         _userHttpContext = userHttpContext;
