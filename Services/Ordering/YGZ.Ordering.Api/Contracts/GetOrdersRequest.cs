@@ -1,10 +1,6 @@
-﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
-using YGZ.BuildingBlocks.Shared.Contracts.Common;
-using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
+﻿namespace YGZ.Ordering.Api.Contracts;
 
-namespace YGZ.Ordering.Application.Orders.Queries.GetOrders;
-
-public sealed record GetOrdersByAdminQuery : IQuery<PaginationResponse<OrderDetailsResponse>>
+public sealed record GetOrdersRequest
 {
     public int? _page { get; init; } = 1;
     public int? _limit { get; init; } = 10;

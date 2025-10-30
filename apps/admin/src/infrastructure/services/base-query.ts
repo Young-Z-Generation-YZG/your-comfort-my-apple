@@ -16,4 +16,22 @@ export const baseQuery = (service: string) =>
 
          return headers;
       },
+      paramsSerializer: (params: Record<string, any>) => {
+         const searchParams = new URLSearchParams();
+
+         Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+               // For arrays, append each value separately
+               value.forEach((item) => {
+                  if (item !== null && item !== undefined) {
+                     searchParams.append(key, String(item));
+                  }
+               });
+            } else if (value !== null && value !== undefined) {
+               searchParams.append(key, String(value));
+            }
+         });
+
+         return searchParams.toString();
+      },
    });

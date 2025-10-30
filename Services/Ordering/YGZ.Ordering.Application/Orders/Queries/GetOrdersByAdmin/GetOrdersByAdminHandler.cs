@@ -37,8 +37,8 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
         };
 
         var result = await _repository.GetAllAsync(filterExpression: filterExpression,
-                                                   page: request.Page,
-                                                   limit: request.Limit,
+                                                   page: request._page,
+                                                   limit: request._limit,
                                                    includeExpressions: includeExpressions,
                                                    cancellationToken: cancellationToken);
 
@@ -51,21 +51,60 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
     {
         var filterExpression = ExpressionBuilder.New<Order>();
 
-        if (!string.IsNullOrWhiteSpace(request.CustomerName))
+        if (!string.IsNullOrWhiteSpace(request._customerEmail))
         {
-            filterExpression = filterExpression.And(order => order.ShippingAddress.ContactName.Contains(request.CustomerName));
+            filterExpression = filterExpression.And(order => order.ShippingAddress.ContactEmail.Contains(request._customerEmail));
         }
 
-        if (!string.IsNullOrWhiteSpace(request.OrderCode))
+        if (!string.IsNullOrWhiteSpace(request._customerName))
         {
-            filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request.OrderCode)));
+            filterExpression = filterExpression.And(order => order.ShippingAddress.ContactName.Contains(request._customerName));
         }
 
-        EOrderStatus.TryFromName(request.OrderStatus, out var orderStatus);
-
-        if (!string.IsNullOrWhiteSpace(request.OrderStatus) && orderStatus is not null)
+        if (!string.IsNullOrWhiteSpace(request._customerPhoneNumber))
         {
-            filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
+            filterExpression = filterExpression.And(order => order.ShippingAddress.ContactPhoneNumber.Contains(request._customerPhoneNumber));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request._orderCode))
+        {
+            filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request._orderCode)));
+        }
+
+        // Filter by order status list
+        if (request._orderStatus is not null && request._orderStatus.Any())
+        {
+            var orderStatuses = new List<EOrderStatus>();
+            foreach (var status in request._orderStatus)
+            {
+                if (EOrderStatus.TryFromName(status, out var orderStatus))
+                {
+                    orderStatuses.Add(orderStatus);
+                }
+            }
+
+            if (orderStatuses.Any())
+            {
+                filterExpression = filterExpression.And(order => orderStatuses.Contains(order.OrderStatus));
+            }
+        }
+
+        // Filter by payment method list
+        if (request._paymentMethod is not null && request._paymentMethod.Any())
+        {
+            var paymentMethods = new List<EPaymentMethod>();
+            foreach (var method in request._paymentMethod)
+            {
+                if (EPaymentMethod.TryFromName(method, out var paymentMethod))
+                {
+                    paymentMethods.Add(paymentMethod);
+                }
+            }
+
+            if (paymentMethods.Any())
+            {
+                filterExpression = filterExpression.And(order => paymentMethods.Contains(order.PaymentMethod));
+            }
         }
 
         return filterExpression;
@@ -73,12 +112,11 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
 
     private static PaginationResponse<OrderDetailsResponse> MapToResponse(List<Order> orders, int totalRecords, int totalPages, GetOrdersByAdminQuery request)
     {
-        var queryParams = QueryParamBuilder.Build(request);
-
-        var links = PaginationLinksBuilder.Build(basePath: "",
-                                                 queryParams: queryParams,
-                                                 currentPage: request.Page ?? 1,
-                                                 totalPages: totalPages);
+        var links = PaginationLinksBuilder.Build(
+            basePath: "",
+            request: request,
+            currentPage: request._page,
+            totalPages: totalPages);
 
         var items = orders.Select(order => order.ToResponse());
 
@@ -86,8 +124,8 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
         {
             TotalRecords = totalRecords,
             TotalPages = totalPages,
-            PageSize = request.Limit ?? 10,
-            CurrentPage = request.Page ?? 1,
+            PageSize = request._limit ?? 10,
+            CurrentPage = request._page ?? 1,
             Items = items,
             Links = links
         };

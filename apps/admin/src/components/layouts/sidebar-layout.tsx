@@ -19,6 +19,7 @@ import {
    User,
    Box,
    Warehouse,
+   Laptop,
 } from 'lucide-react';
 
 import {
@@ -60,18 +61,23 @@ const data = {
       },
       {
          title: 'Tenant Management',
-         url: '/dashboards/tenants',
+         url: '/dashboards/tenant-management',
          icon: Building2,
          isActive: true,
          items: [
             {
-               title: 'Products',
-               url: '#',
+               title: 'iPhone',
+               url: '/dashboards/tenant-management/iphone',
                icon: Box,
             },
             {
+               title: 'Mac',
+               url: '/dashboards/tenant-management/mac',
+               icon: Laptop,
+            },
+            {
                title: 'Skus',
-               url: '#',
+               url: '/dashboards/tenant-management/skus',
                icon: Tag,
             },
          ],
@@ -141,7 +147,7 @@ const data = {
       },
       {
          title: 'Customer Management',
-         url: '/dashboards/customers',
+         url: '/dashboards/customer-management',
          icon: UsersRound,
          isActive: true,
       },

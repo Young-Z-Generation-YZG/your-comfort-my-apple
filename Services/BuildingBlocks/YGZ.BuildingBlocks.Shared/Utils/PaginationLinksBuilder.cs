@@ -8,11 +8,33 @@ public static class PaginationLinksBuilder
 {
     /// <summary>
     /// Builds pagination links for first, previous, next, and last pages.
+    /// Legacy overload that accepts Dictionary&lt;string, string&gt; for backward compatibility.
     /// </summary>
     /// <returns>A PaginationLinks object with navigation URLs</returns>
     public static PaginationLinks Build(
         string basePath,
         Dictionary<string, string> queryParams,
+        int currentPage,
+        int totalPages)
+    {
+        // Convert to Dictionary<string, List<string>> format
+        var multiValueParams = new Dictionary<string, List<string>>();
+        foreach (var kvp in queryParams)
+        {
+            multiValueParams[kvp.Key] = new List<string> { kvp.Value };
+        }
+
+        return Build(basePath, multiValueParams, currentPage, totalPages);
+    }
+
+    /// <summary>
+    /// Builds pagination links for first, previous, next, and last pages.
+    /// Main overload that supports multiple values for the same key.
+    /// </summary>
+    /// <returns>A PaginationLinks object with navigation URLs</returns>
+    public static PaginationLinks Build(
+        string basePath,
+        Dictionary<string, List<string>> queryParams,
         int currentPage,
         int totalPages)
     {
@@ -31,19 +53,27 @@ public static class PaginationLinksBuilder
         // Helper method to build URL for a specific page
         string BuildUrl(int page)
         {
-            var paramsCopy = new Dictionary<string, string>(queryParams);
+            var paramsCopy = new Dictionary<string, List<string>>();
 
-            paramsCopy["_page"] = page.ToString();
+            // Copy all query params
+            foreach (var kvp in queryParams)
+            {
+                paramsCopy[kvp.Key] = new List<string>(kvp.Value);
+            }
 
-            var queryString = string.Join("&",
+            // Override page number
+            paramsCopy["_page"] = new List<string> { page.ToString() };
 
-                paramsCopy.Select(kvp =>
+            var queryParts = new List<string>();
+            foreach (var kvp in paramsCopy)
+            {
+                foreach (var value in kvp.Value)
                 {
-                    var key = kvp.Key;
-                    var value = kvp.Value;
+                    queryParts.Add($"{kvp.Key}={Uri.EscapeDataString(value)}");
+                }
+            }
 
-                    return $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}";
-                }));
+            var queryString = string.Join("&", queryParts);
 
             return $"{basePath}?{queryString}";
         }
@@ -74,9 +104,9 @@ public static class PaginationLinksBuilder
         return Build(basePath, queryParams, currentPage ?? 1, totalPages);
     }
 
-    private static Dictionary<string, string> BuildQueryParamsFromRequest<TRequest>(TRequest request) where TRequest : class
+    private static Dictionary<string, List<string>> BuildQueryParamsFromRequest<TRequest>(TRequest request) where TRequest : class
     {
-        var queryParams = new Dictionary<string, string>();
+        var queryParams = new Dictionary<string, List<string>>();
         var properties = typeof(TRequest).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
         foreach (var property in properties)
@@ -86,12 +116,16 @@ public static class PaginationLinksBuilder
             if (value is null)
                 continue;
 
-            var key = "_" + char.ToLower(property.Name[1]) + property.Name.Substring(2);
+            // If property name already starts with underscore, use it as is
+            // Otherwise, add underscore prefix
+            var key = property.Name.StartsWith("_") 
+                ? property.Name 
+                : "_" + char.ToLower(property.Name[0]) + property.Name.Substring(1);
 
-            // Handle List<string> properties
+            // Handle List<string> properties - each item becomes a separate query parameter
             if (value is List<string> list && list.Any())
             {
-                queryParams[key] = string.Join(",", list);
+                queryParams[key] = list;
             }
             // Handle nullable int properties
             else if (value is int?)
@@ -99,8 +133,13 @@ public static class PaginationLinksBuilder
                 var intValue = (int?)value;
                 if (intValue.HasValue)
                 {
-                    queryParams[key] = intValue.Value.ToString();
+                    queryParams[key] = new List<string> { intValue.Value.ToString() };
                 }
+            }
+            // Handle string properties
+            else if (value is string stringValue && !string.IsNullOrWhiteSpace(stringValue))
+            {
+                queryParams[key] = new List<string> { stringValue };
             }
         }
 

@@ -39,7 +39,6 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import useFilter from '~/src/hooks/use-filter';
 import { useEffect, useMemo, useState } from 'react';
 import usePagination from '~/src/hooks/use-pagination';
 import {
@@ -54,6 +53,7 @@ import {
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
+import useFilters from '~/src/hooks/use-custom-filter';
 
 // Helper function to get gender badge styles
 const getGenderStyle = (gender: string) => {
@@ -290,7 +290,7 @@ const fakeData = {
 
 export type TUser = (typeof fakeData.items)[number];
 
-type IUserFilter = {
+type TUserFilter = {
    _page?: number | null;
    _limit?: number | null;
    _email?: string | null;
@@ -422,7 +422,7 @@ const CustomersPage = () => {
    const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
       useIdentityService();
 
-   const { filters, setFilters } = useFilter<IUserFilter>();
+   const { filters, setFilters } = useFilters<TUserFilter>();
 
    const [sorting, setSorting] = useState<SortingState>([]);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(

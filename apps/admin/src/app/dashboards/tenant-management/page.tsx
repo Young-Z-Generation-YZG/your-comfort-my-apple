@@ -10,22 +10,9 @@ import {
    MapPin,
    CheckCircle2,
    XCircle,
-   Calendar,
-   MoreVertical,
-   Edit,
-   Trash2,
 } from 'lucide-react';
 import { Fragment, useState } from 'react';
-import Link from 'next/link';
-import { Badge } from '@components/ui/badge';
-import { Card, CardContent, CardHeader } from '@components/ui/card';
-import {
-   DropdownMenu,
-   DropdownMenuContent,
-   DropdownMenuItem,
-   DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
-import { cn } from '~/src/infrastructure/lib/utils';
+
 import TenantCard from './_components/tenant-card';
 
 // Mock data for tenants

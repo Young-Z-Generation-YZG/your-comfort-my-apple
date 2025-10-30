@@ -1866,7 +1866,7 @@ const columns: ColumnDef<TSkuItem>[] = [
    },
 ];
 
-const WarehousesPage = () => {
+const SkusInTenantPage = () => {
    const { getWarehousesAsync, getWarehousesState, isLoading } =
       useInventoryService();
 
@@ -2186,4 +2186,4 @@ const WarehousesPage = () => {
    );
 };
 
-export default WarehousesPage;
+export default SkusInTenantPage;

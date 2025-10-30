@@ -2,7 +2,7 @@
 
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import usePagination from '~/src/hooks/use-pagination';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
    ColumnDef,
    ColumnFiltersState,
@@ -51,7 +51,6 @@ import { EPaymentMethod } from '~/src/domain/enums/payment-method.enum';
 import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
 import { EPromotionType } from '~/src/domain/enums/promotion-type.enum';
 import { cn } from '~/src/infrastructure/lib/utils';
-import useFilter from '~/src/hooks/use-filter';
 import {
    SelectGroup,
    SelectContent,
@@ -61,6 +60,7 @@ import {
    SelectItem,
 } from '@components/ui/select';
 import { LoadingOverlay } from '@components/loading-overlay';
+import useCustomFilters from '~/src/hooks/use-custom-filter';
 
 const fakeData = {
    total_records: 7,
@@ -733,10 +733,11 @@ const columns: ColumnDef<TOrderItem>[] = [
    },
 ];
 
-type IOrderFilter = {
+type TOrderFilter = {
    _page?: number | null;
    _limit?: number | null;
-   customer_email?: string | null;
+   _orderStatus?: string[] | null;
+   _customerEmail?: string | null;
 };
 
 const OnlineOrdersPage = () => {
@@ -754,16 +755,7 @@ const OnlineOrdersPage = () => {
    const { getOrdersByAdminAsync, getOrdersByAdminState, isLoading } =
       useOrderingService();
 
-   const { filters, setFilters, clearFilters, activeFilterCount } =
-      useFilter<IOrderFilter>();
-
-   // Convert filters to query params object
-   const queryParams = useMemo(() => {
-      return {
-         _page: filters._page || 1,
-         _limit: filters._limit || 10,
-      };
-   }, [filters]);
+   const { filters, setFilters } = useCustomFilters<TOrderFilter>();
 
    const {
       currentPage,
@@ -794,6 +786,13 @@ const OnlineOrdersPage = () => {
            },
    );
 
+   useEffect(() => {
+      const fetchOrders = async () => {
+         await getOrdersByAdminAsync(filters);
+      };
+      fetchOrders();
+   }, [filters, getOrdersByAdminAsync]);
+
    const table = useReactTable({
       data: paginationItems,
       columns: columns,
@@ -822,13 +821,6 @@ const OnlineOrdersPage = () => {
       },
    });
 
-   useEffect(() => {
-      const fetchOrders = async () => {
-         await getOrdersByAdminAsync(queryParams);
-      };
-      fetchOrders();
-   }, [queryParams, getOrdersByAdminAsync]);
-
    return (
       <div className="p-5">
          <div className="flex items-center justify-between">
@@ -853,8 +845,7 @@ const OnlineOrdersPage = () => {
                            ?.getFilterValue() as string) ?? ''
                      }
                      onChange={(event) => {
-                        setFilters({ customer_email: event.target.value });
-
+                        // setFilters({ customer_email: event.target.value });
                         // return table
                         // .getColumn('customer_email')
                         // ?.setFilterValue(event.target.value)
@@ -887,11 +878,13 @@ const OnlineOrdersPage = () => {
                                        variant="outline"
                                        className="bg-gray-100 text-gray-800 border-gray-300"
                                     >
-                                       +{selectedStatuses.length - 2}
+                                       +
+                                       {(filters._orderStatus?.length ?? 0) - 2}
                                     </Badge>
                                  </>
-                              ) : (
-                                 selectedStatuses.map((status) => (
+                              ) : filters._orderStatus &&
+                                filters._orderStatus.length > 0 ? (
+                                 filters._orderStatus.map((status) => (
                                     <Badge
                                        key={status}
                                        variant="outline"
@@ -900,7 +893,7 @@ const OnlineOrdersPage = () => {
                                        {status}
                                     </Badge>
                                  ))
-                              )}
+                              ) : null}
                               <ChevronDown />
                            </div>
                         </Button>
@@ -915,17 +908,26 @@ const OnlineOrdersPage = () => {
                         <DropdownMenuSeparator />
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.PENDING,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('PENDING') ?? false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.PENDING)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.PENDING,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('PENDING')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'PENDING',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.PENDING];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'PENDING',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -941,17 +943,27 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.CONFIRMED,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('CONFIRMED') ??
+                              false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.CONFIRMED)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.CONFIRMED,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('CONFIRMED')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'CONFIRMED',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.CONFIRMED];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'CONFIRMED',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -967,17 +979,26 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.PAID,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('PAID') ?? false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.PAID)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.PAID,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('PAID')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'PAID',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.PAID];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'PAID',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -993,17 +1014,27 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.PREPARING,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('PREPARING') ??
+                              false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.PREPARING)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.PREPARING,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('PREPARING')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'PREPARING',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.PREPARING];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'PREPARING',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -1019,17 +1050,29 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.DELIVERING,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('DELIVERING') ??
+                              false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.DELIVERING)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.DELIVERING,
-                                    );
+                              setFilters((prev) => {
+                                 if (
+                                    prev._orderStatus?.includes('DELIVERING')
+                                 ) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'DELIVERING',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.DELIVERING];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'DELIVERING',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -1045,17 +1088,27 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.DELIVERED,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('DELIVERED') ??
+                              false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.DELIVERED)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.DELIVERED,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('DELIVERED')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'DELIVERED',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.DELIVERED];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'DELIVERED',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -1071,17 +1124,27 @@ const OnlineOrdersPage = () => {
                         </DropdownMenuCheckboxItem>
                         <DropdownMenuCheckboxItem
                            onSelect={(e) => e.preventDefault()}
-                           checked={selectedStatuses.includes(
-                              EOrderStatus.CANCELLED,
-                           )}
+                           checked={
+                              filters._orderStatus?.includes('CANCELLED') ??
+                              false
+                           }
                            onCheckedChange={() => {
-                              setSelectedStatuses((prev) => {
-                                 if (prev.includes(EOrderStatus.CANCELLED)) {
-                                    return prev.filter(
-                                       (s) => s !== EOrderStatus.CANCELLED,
-                                    );
+                              setFilters((prev) => {
+                                 if (prev._orderStatus?.includes('CANCELLED')) {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: prev._orderStatus?.filter(
+                                          (s) => s !== 'CANCELLED',
+                                       ),
+                                    };
                                  } else {
-                                    return [...prev, EOrderStatus.CANCELLED];
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [
+                                          ...(prev._orderStatus ?? []),
+                                          'CANCELLED',
+                                       ],
+                                    };
                                  }
                               });
                            }}
@@ -1095,6 +1158,21 @@ const OnlineOrdersPage = () => {
                               </Badge>
                            </div>
                         </DropdownMenuCheckboxItem>
+                        <DropdownMenuSeparator />
+                        <div className="p-2">
+                           <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full"
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 setSelectedStatuses([]);
+                              }}
+                              disabled={selectedStatuses.length === 0}
+                           >
+                              Clear All
+                           </Button>
+                        </div>
                      </DropdownMenuContent>
                   </DropdownMenu>
                </div>
@@ -1195,7 +1273,7 @@ const OnlineOrdersPage = () => {
                      <Select
                         value={filters._limit?.toString() || '10'}
                         onValueChange={(value) => {
-                           setFilters({ _limit: Number(value) });
+                           //    setFilters({ _limit: Number(value) });
                         }}
                      >
                         <SelectTrigger className="w-auto h-9">
@@ -1224,7 +1302,7 @@ const OnlineOrdersPage = () => {
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => {
-                           setFilters({ _page: 1 });
+                           //    setFilters({ _page: 1 });
                         }}
                         disabled={isFirstPage}
                      >
@@ -1238,7 +1316,7 @@ const OnlineOrdersPage = () => {
                         className="h-9 w-9"
                         onClick={() => {
                            if (currentPage > 1) {
-                              setFilters({ _page: currentPage - 1 });
+                              //   setFilters({ _page: currentPage - 1 });
                            }
                         }}
                         disabled={!isPrevPage}
@@ -1273,7 +1351,7 @@ const OnlineOrdersPage = () => {
                                        'bg-black text-white hover:bg-black/90',
                                  )}
                                  onClick={() => {
-                                    setFilters({ _page: page as number });
+                                    // setFilters({ _page: page as number });
                                  }}
                               >
                                  {page as number}
@@ -1289,7 +1367,7 @@ const OnlineOrdersPage = () => {
                         className="h-9 w-9"
                         onClick={() => {
                            if (currentPage < totalPages) {
-                              setFilters({ _page: currentPage + 1 });
+                              //   setFilters({ _page: currentPage + 1 });
                            }
                         }}
                         disabled={!isNextPage}
@@ -1303,7 +1381,7 @@ const OnlineOrdersPage = () => {
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => {
-                           setFilters({ _page: totalPages });
+                           //    setFilters({ _page: totalPages });
                         }}
                         disabled={isLastPage}
                      >
