@@ -53,7 +53,7 @@ import {
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
-import useFilters from '~/src/hooks/use-custom-filter';
+import useFilters from '~/src/hooks/use-filter';
 
 // Helper function to get gender badge styles
 const getGenderStyle = (gender: string) => {
@@ -422,7 +422,14 @@ const CustomersPage = () => {
    const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
       useIdentityService();
 
-   const { filters, setFilters } = useFilters<TUserFilter>();
+   const { filters, setFilters } = useFilters<TUserFilter>({
+      _page: 'number',
+      _limit: 'number',
+      _email: 'string',
+      _firstName: 'string',
+      _lastName: 'string',
+      _phoneNumber: 'string',
+   });
 
    const [sorting, setSorting] = useState<SortingState>([]);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(

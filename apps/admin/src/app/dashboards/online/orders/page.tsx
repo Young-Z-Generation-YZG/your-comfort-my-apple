@@ -60,7 +60,8 @@ import {
    SelectItem,
 } from '@components/ui/select';
 import { LoadingOverlay } from '@components/loading-overlay';
-import useCustomFilters from '~/src/hooks/use-custom-filter';
+import useCustomFilters from '~/src/hooks/use-filter';
+import useFilters from '~/src/hooks/use-filter';
 
 const fakeData = {
    total_records: 7,
@@ -755,7 +756,12 @@ const OnlineOrdersPage = () => {
    const { getOrdersByAdminAsync, getOrdersByAdminState, isLoading } =
       useOrderingService();
 
-   const { filters, setFilters } = useCustomFilters<TOrderFilter>();
+   const { filters, setFilters } = useFilters<TOrderFilter>({
+      _page: 'number',
+      _limit: 'number',
+      _orderStatus: { array: 'string' },
+      _customerEmail: 'string',
+   });
 
    const {
       currentPage,
@@ -845,10 +851,12 @@ const OnlineOrdersPage = () => {
                            ?.getFilterValue() as string) ?? ''
                      }
                      onChange={(event) => {
-                        // setFilters({ customer_email: event.target.value });
-                        // return table
-                        // .getColumn('customer_email')
-                        // ?.setFilterValue(event.target.value)
+                        setFilters((prev) => {
+                           return {
+                              ...prev,
+                              _customerEmail: event.target.value,
+                           };
+                        });
                      }}
                      className="max-w-sm"
                   />
@@ -857,23 +865,23 @@ const OnlineOrdersPage = () => {
                         <Button variant="outline" className="ml-auto">
                            Status Filter
                            <div className="flex items-center gap-2">
-                              {selectedStatuses.length > 2 ? (
+                              {filters._orderStatus &&
+                              filters._orderStatus?.length &&
+                              filters._orderStatus?.length > 2 ? (
                                  <>
-                                    {selectedStatuses
+                                    {filters._orderStatus
                                        .slice(0, 2)
-                                       .map((status) => {
-                                          return (
-                                             <Badge
-                                                key={status}
-                                                variant="outline"
-                                                className={cn(
-                                                   getStatusStyle(status),
-                                                )}
-                                             >
-                                                {status}
-                                             </Badge>
-                                          );
-                                       })}
+                                       .map((status) => (
+                                          <Badge
+                                             key={status}
+                                             variant="outline"
+                                             className={cn(
+                                                getStatusStyle(status),
+                                             )}
+                                          >
+                                             {status}
+                                          </Badge>
+                                       ))}
                                     <Badge
                                        variant="outline"
                                        className="bg-gray-100 text-gray-800 border-gray-300"
@@ -1166,9 +1174,14 @@ const OnlineOrdersPage = () => {
                               className="w-full"
                               onClick={(e) => {
                                  e.stopPropagation();
-                                 setSelectedStatuses([]);
+                                 setFilters((prev) => {
+                                    return {
+                                       ...prev,
+                                       _orderStatus: [],
+                                    };
+                                 });
                               }}
-                              disabled={selectedStatuses.length === 0}
+                              disabled={filters._orderStatus?.length === 0}
                            >
                               Clear All
                            </Button>

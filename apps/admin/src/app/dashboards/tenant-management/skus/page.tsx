@@ -54,7 +54,7 @@ import useInventoryService from '~/src/hooks/api/use-inventory-service';
 import { useEffect, useMemo, useState } from 'react';
 import usePagination from '~/src/hooks/use-pagination';
 import Image from 'next/image';
-import useFilters from '~/src/hooks/use-custom-filter';
+import useFilters from '~/src/hooks/use-filter';
 
 const fakeData = {
    total_records: 40,
@@ -1870,7 +1870,13 @@ const SkusInTenantPage = () => {
    const { getWarehousesAsync, getWarehousesState, isLoading } =
       useInventoryService();
 
-   const { filters, setFilters } = useFilters<TSkuFilter>();
+   const { filters, setFilters } = useFilters<TSkuFilter>({
+      _page: 'number',
+      _limit: 'number',
+      _colors: { array: 'string' },
+      _storages: { array: 'string' },
+      _models: { array: 'string' },
+   });
 
    const [sorting, setSorting] = useState<SortingState>([]);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(

@@ -1,9 +1,21 @@
 'use client';
 
-import useCustomFilters from '~/src/hooks/use-custom-filter';
+import useFilters from '~/src/hooks/use-filter';
+
+type TOrderFilter = {
+   _page?: number | null;
+   _limit?: number | null;
+   _orderStatus?: string[] | null;
+   _customerEmail?: string | null;
+};
 
 const IphonesPage = () => {
-   const { filters, setFilters } = useCustomFilters();
+   const { filters, setFilters } = useFilters<TOrderFilter>({
+      _page: 'number',
+      _limit: 'number',
+      _orderStatus: { array: 'string' },
+      _customerEmail: 'string',
+   });
 
    console.log('filters', filters);
 
