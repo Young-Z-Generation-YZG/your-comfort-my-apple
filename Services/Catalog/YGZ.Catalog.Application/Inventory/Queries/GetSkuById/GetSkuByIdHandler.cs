@@ -19,6 +19,7 @@ public class GetSkuByIdHandler : IQueryHandler<GetSkuByIdQuery, SkuResponse>
         _repository = repository;
         _logger = logger;
     }
+
     public async Task<Result<SkuResponse>> Handle(GetSkuByIdQuery request, CancellationToken cancellationToken)
     {
         var sku = await _repository.GetByIdAsync(request.SkuId, cancellationToken);

@@ -17,6 +17,8 @@ import {
    Building2,
    Users,
    User,
+   Box,
+   Warehouse,
 } from 'lucide-react';
 
 import {
@@ -60,6 +62,24 @@ const data = {
          title: 'Tenant Management',
          url: '/dashboards/tenants',
          icon: Building2,
+         isActive: true,
+         items: [
+            {
+               title: 'Products',
+               url: '#',
+               icon: Box,
+            },
+            {
+               title: 'Skus',
+               url: '#',
+               icon: Tag,
+            },
+         ],
+      },
+      {
+         title: 'Warehouses',
+         url: '/dashboards/warehouses',
+         icon: Warehouse,
          isActive: true,
          items: [],
       },

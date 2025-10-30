@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Abstractions;
