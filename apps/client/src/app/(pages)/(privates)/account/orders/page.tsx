@@ -38,7 +38,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@components/ui/button';
 import { useRouter } from 'next/navigation';
 // import { useOrders } from './_hooks/useOrders';
-import { useOrders } from './_hooks/';
+// import { useOrders } from './_hooks/';
 import { cn } from '~/infrastructure/lib/utils';
 import usePagination from '@components/hooks/use-pagination';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
@@ -375,8 +375,6 @@ const OrderPage = () => {
                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                      <Input
                         placeholder="Search by order number..."
-                        // value={searchQuery}
-                        // onChange={(e) => handleSearch(e.target.value)}
                         className="pl-9 h-9"
                      />
                   </div>
@@ -428,106 +426,196 @@ const OrderPage = () => {
                      </p>
                   </div>
                ) : paginationItems.length > 0 ? (
-                  <div className="overflow-x-auto">
-                     <Table>
-                        <TableHeader>
-                           <TableRow>
-                              <TableHead className="w-[150px]">
-                                 Order Number
-                              </TableHead>
-                              <TableHead className="w-[120px]">Date</TableHead>
-                              <TableHead className="w-[120px]">
-                                 Status
-                              </TableHead>
-                              <TableHead className="w-[100px]">Items</TableHead>
-                              <TableHead className="text-right w-[120px]">
-                                 Total
-                              </TableHead>
-                              <TableHead className="text-right w-[100px]">
-                                 Actions
-                              </TableHead>
-                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                           <AnimatePresence>
-                              {paginationItems.map(
-                                 (order: TOrderItem, index: number) => {
-                                    const status =
-                                       order.status ==
-                                       EOrderStatus.PENDING_ASSIGNMENT
-                                          ? EOrderStatus.PENDING
-                                          : order.status;
+                  <>
+                     <div className="hidden lg:block overflow-x-auto">
+                        <Table>
+                           <TableHeader>
+                              <TableRow>
+                                 <TableHead className="max-w-[150px]">
+                                    Order Number
+                                 </TableHead>
+                                 <TableHead className="max-w-[150px]">
+                                    Date
+                                 </TableHead>
+                                 <TableHead className="max-w-[100px]">
+                                    Status
+                                 </TableHead>
+                                 <TableHead className="max-w-[80px]">
+                                    Items
+                                 </TableHead>
+                                 <TableHead className="text-right max-w-[120px]">
+                                    Total
+                                 </TableHead>
 
-                                    const statusStyle = getStatusColor(status);
-                                    const hoverStatusStyle =
-                                       getHoverStatusColor(status);
+                                 {/* Ẩn cột Actions trên tablet */}
+                                 <TableHead className="text-right max-w-[100px] hidden lg:table-cell">
+                                    Actions
+                                 </TableHead>
+                              </TableRow>
+                           </TableHeader>
+                           <TableBody>
+                              <AnimatePresence>
+                                 {paginationItems.map(
+                                    (order: TOrderItem, index: number) => {
+                                       const status =
+                                          order.status ==
+                                          EOrderStatus.PENDING_ASSIGNMENT
+                                             ? EOrderStatus.PENDING
+                                             : order.status;
 
-                                    return (
-                                       <motion.tr
-                                          key={order.order_id}
-                                          className="hover:bg-gray-50"
-                                          variants={itemVariants}
-                                          initial="hidden"
-                                          animate="visible"
-                                          custom={index}
-                                          transition={{ duration: 0.2 }}
-                                       >
-                                          <TableCell className="font-medium">
-                                             {order.order_code}
-                                          </TableCell>
-                                          <TableCell>
-                                             {new Date(
-                                                order.created_at,
-                                             ).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric',
-                                             })}
-                                          </TableCell>
-                                          <TableCell>
-                                             <Badge
-                                                className={cn(
-                                                   'select-none',
-                                                   statusStyle,
-                                                   hoverStatusStyle,
+                                       const statusStyle =
+                                          getStatusColor(status);
+                                       const hoverStatusStyle =
+                                          getHoverStatusColor(status);
+
+                                       return (
+                                          <motion.tr
+                                             key={order.order_id}
+                                             className="hover:bg-gray-50 cursor-pointer"
+                                             onClick={() =>
+                                                router.push(
+                                                   `/account/orders/${order.order_id}`,
+                                                )
+                                             }
+                                             variants={itemVariants}
+                                             initial="hidden"
+                                             animate="visible"
+                                             custom={index}
+                                             transition={{ duration: 0.2 }}
+                                          >
+                                             <TableCell className="font-medium">
+                                                {order.order_code}
+                                             </TableCell>
+                                             <TableCell>
+                                                {new Date(
+                                                   order.created_at,
+                                                ).toLocaleDateString('en-US', {
+                                                   year: 'numeric',
+                                                   month: 'short',
+                                                   day: 'numeric',
+                                                })}
+                                             </TableCell>
+                                             <TableCell>
+                                                <Badge
+                                                   className={cn(
+                                                      'select-none',
+                                                      statusStyle,
+                                                      hoverStatusStyle,
+                                                   )}
+                                                >
+                                                   {status.replace('_', ' ')}
+                                                </Badge>
+                                             </TableCell>
+                                             <TableCell>
+                                                {order.order_items.reduce(
+                                                   (acc, i) => acc + i.quantity,
+                                                   0,
                                                 )}
-                                             >
-                                                {status.replace('_', ' ')}
-                                             </Badge>
-                                          </TableCell>
-                                          <TableCell>
+                                             </TableCell>
+                                             <TableCell className="text-right">
+                                                ${order.total_amount.toFixed(2)}
+                                             </TableCell>
+
+                                             {/* Hiện nút Actions chỉ ở desktop */}
+                                             <TableCell className="text-right hidden lg:table-cell">
+                                                <Button
+                                                   variant="ghost"
+                                                   size="sm"
+                                                   className="text-blue-600 hover:text-blue-800"
+                                                   onClick={(e) => {
+                                                      e.stopPropagation(); // tránh xung đột click row
+                                                      router.push(
+                                                         `/account/orders/${order.order_id}`,
+                                                      );
+                                                   }}
+                                                >
+                                                   Details
+                                                   <ChevronRight className="ml-1 h-4 w-4" />
+                                                </Button>
+                                             </TableCell>
+                                          </motion.tr>
+                                       );
+                                    },
+                                 )}
+                              </AnimatePresence>
+                           </TableBody>
+                        </Table>
+                     </div>
+                     <div className="block lg:hidden px-4 py-6">
+                        {paginationItems.map(
+                           (order: TOrderItem, index: number) => {
+                              const status =
+                                 order.status == EOrderStatus.PENDING_ASSIGNMENT
+                                    ? EOrderStatus.PENDING
+                                    : order.status;
+
+                              const statusStyle = getStatusColor(status);
+                              const hoverStatusStyle =
+                                 getHoverStatusColor(status);
+
+                              return (
+                                 <motion.div
+                                    key={order.order_id}
+                                    className="border border-gray-200 rounded-xl p-4 mb-3 bg-white shadow-sm active:scale-[0.98] transition-transform duration-100 cursor-pointer"
+                                    variants={itemVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    custom={index}
+                                    transition={{ duration: 0.2 }}
+                                    onClick={() =>
+                                       router.push(
+                                          `/account/orders/${order.order_id}`,
+                                       )
+                                    }
+                                 >
+                                    <div className="flex justify-between items-center">
+                                       <h2 className="font-semibold text-gray-800">
+                                          {order.order_code}
+                                       </h2>
+                                       <Badge
+                                          className={cn(
+                                             'select-none',
+                                             statusStyle,
+                                             hoverStatusStyle,
+                                          )}
+                                       >
+                                          {status.replace('_', ' ')}
+                                       </Badge>
+                                    </div>
+
+                                    <p className="text-sm text-gray-500 mt-1">
+                                       {new Date(
+                                          order.created_at,
+                                       ).toLocaleDateString('en-US', {
+                                          year: 'numeric',
+                                          month: 'short',
+                                          day: 'numeric',
+                                       })}
+                                    </p>
+
+                                    <div className="flex justify-between mt-3 text-sm text-gray-700">
+                                       <span>
+                                          Items:{' '}
+                                          <span className="font-medium">
                                              {order.order_items.reduce(
-                                                (acc, item) =>
-                                                   acc + item.quantity,
+                                                (acc, i) => acc + i.quantity,
                                                 0,
                                              )}
-                                          </TableCell>
-                                          <TableCell className="text-right">
+                                          </span>
+                                       </span>
+                                       <span>
+                                          Total:{' '}
+                                          <span className="font-medium">
                                              ${order.total_amount.toFixed(2)}
-                                          </TableCell>
-                                          <TableCell className="text-right">
-                                             <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="text-blue-600 hover:text-blue-800"
-                                                onClick={() => {
-                                                   router.push(
-                                                      `/account/orders/${order.order_id}`,
-                                                   );
-                                                }}
-                                             >
-                                                Details
-                                                <ChevronRight className="ml-1 h-4 w-4" />
-                                             </Button>
-                                          </TableCell>
-                                       </motion.tr>
-                                    );
-                                 },
-                              )}
-                           </AnimatePresence>
-                        </TableBody>
-                     </Table>
-                  </div>
+                                          </span>
+                                       </span>
+                                    </div>
+                                 </motion.div>
+                              );
+                           },
+                        )}
+                     </div>
+                  </>
                ) : (
                   <motion.div
                      className="px-6 py-8 text-center"
@@ -536,22 +624,10 @@ const OrderPage = () => {
                      <p className="text-sm text-gray-500">
                         No orders found matching your criteria.
                      </p>
-                     {/* {(searchQuery || statusFilter !== 'all') && (
-                        <Button
-                           variant="link"
-                           className="mt-2 text-sm font-medium text-blue-600"
-                           onClick={clearFilters}
-                        >
-                           Clear filters
-                        </Button>
-                     )} */}
                   </motion.div>
                )}
-
-               {/* Pagination Controls */}
                {totalPages >= 1 && (
                   <div className="flex items-center gap-2 justify-end mr-5 py-5">
-                     {/* First Page */}
                      <Button
                         variant="outline"
                         size="icon"
@@ -561,8 +637,6 @@ const OrderPage = () => {
                      >
                         <ChevronsLeft className="h-4 w-4" />
                      </Button>
-
-                     {/* Previous Page */}
                      <Button
                         variant="outline"
                         size="icon"
@@ -572,8 +646,6 @@ const OrderPage = () => {
                      >
                         <ChevronLeft className="h-4 w-4" />
                      </Button>
-
-                     {/* Page Numbers */}
                      <div className="flex items-center gap-1">
                         {getPageNumbers().map((page, index) => {
                            if (page === '...') {
@@ -605,8 +677,6 @@ const OrderPage = () => {
                            );
                         })}
                      </div>
-
-                     {/* Next Page */}
                      <Button
                         variant="outline"
                         size="icon"
@@ -616,8 +686,6 @@ const OrderPage = () => {
                      >
                         <ChevronRight className="h-4 w-4" />
                      </Button>
-
-                     {/* Last Page */}
                      <Button
                         variant="outline"
                         size="icon"

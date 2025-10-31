@@ -15,12 +15,10 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import { EVerificationType } from '~/domain/enums/verification-type.enum';
 
 const SignInPage = () => {
-   //  const { login, isLoading } = useAuthService();
-
-   const { login, isLoading: isFetching } = useAuth();
+   const { login, isLoading } = useAuthService();
    const appStateRoute = useAppSelector((state) => state.app.route);
    const router = useRouter();
-
+   // const { login, isLoading: isFetching } = useAuth();
    //  const appStateRoute = useAppSelector((state) => state.app.route);
 
    const form = useForm<LoginFormType>({
@@ -59,17 +57,17 @@ const SignInPage = () => {
       }
    };
 
-   useEffect(() => {
-      if (isFetching) {
-         setIsLoading(true);
-      } else {
-         const timeoutId = setTimeout(() => {
-            setIsLoading(false);
-         }, 300);
+   // useEffect(() => {
+   //    if (isFetching) {
+   //       setIsLoading(true);
+   //    } else {
+   //       const timeoutId = setTimeout(() => {
+   //          setIsLoading(false);
+   //       }, 300);
 
-         return () => clearTimeout(timeoutId);
-      }
-   }, [isFetching]);
+   //       return () => clearTimeout(timeoutId);
+   //    }
+   // }, [isFetching]);
 
    return (
       <div className="max-w-[1180px] mx-auto px-10">
@@ -106,10 +104,7 @@ const SignInPage = () => {
                </div>
 
                <div className="lg:w-[500px] md:w-[80%] w-full">
-                  <LoadingOverlay
-                     isLoading={isLoading || isFetching}
-                     text="Signing in..."
-                  >
+                  <LoadingOverlay isLoading={isLoading} text="Signing in...">
                      <div>
                         <form
                            onSubmit={form.handleSubmit(onSubmit)}
@@ -125,7 +120,7 @@ const SignInPage = () => {
                               name="email"
                               label="Email"
                               type="text"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading}
                               className="md:pt-[20px] pt-[35px] md:h-auto h-[100px] lg:text-base md:text-xl text-3xl rounded-xl rounded-b-none"
                               labelClassName="lg:text-base md:text-xl text-3xl"
                               errorTextClassName="lg:text-sm md:text-lg text-2xl pb-5"
@@ -136,7 +131,7 @@ const SignInPage = () => {
                               name="password"
                               label="Password"
                               type="password"
-                              disabled={isLoading || isFetching}
+                              disabled={isLoading}
                               fetchingFunc={onSubmit}
                               visibleEyeIcon={false}
                               hasEnterArrowButton={true}

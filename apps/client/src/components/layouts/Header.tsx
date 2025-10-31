@@ -14,6 +14,7 @@ import { exploreIphoneList } from './_data/explore-iphone-list';
 import useIdentityService from '@components/hooks/api/use-identity-service';
 import { useGetCategoriesAsyncQuery } from '~/infrastructure/services/category.service';
 import { CategoryResponseType } from '~/domain/types/category.type';
+import { useAppSelector } from '~/infrastructure/redux/store';
 
 const mainCategoriesDefault = [
    {

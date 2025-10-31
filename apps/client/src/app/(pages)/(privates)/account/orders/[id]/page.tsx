@@ -322,8 +322,8 @@ export default function OrderDetails() {
 
          {isLoading && (
             <div className="px-6 py-8 flex flex-col gap-4">
-               <div className="flex gap-4">
-                  <div className="w-[60%]">
+               <div className="flex flex-col md:flex-row gap-4">
+                  <div className="w-full md:w-[60%]">
                      <p className="text-sm font-medium text-gray-900 mb-2">
                         Order Information
                      </p>
@@ -331,7 +331,7 @@ export default function OrderDetails() {
                      <Skeleton className="h-[200px] w-full" />
                   </div>
 
-                  <div className="flex flex-col gap-4 w-[40%]">
+                  <div className="flex flex-col gap-4 w-full md:w-[40%]">
                      <div>
                         <p className="text-sm font-medium text-gray-900 mb-2">
                            Shipping Address
@@ -376,8 +376,9 @@ export default function OrderDetails() {
                className="px-6 py-8 flex flex-col gap-4"
                variants={itemVariants}
             >
-               <div className="flex flex-row gap-10">
-                  <div className="w-[60%]">
+               <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+                  {/* Cột trái */}
+                  <div className="w-full md:w-[60%]">
                      <h3 className="text-sm font-medium text-gray-900 mb-2">
                         Order Information
                      </h3>
@@ -390,6 +391,7 @@ export default function OrderDetails() {
                               {displayOrderDetailsData.order_code}
                            </span>
                         </div>
+
                         <div className="flex justify-between">
                            <span className="text-sm text-gray-500">
                               Date Placed
@@ -404,7 +406,8 @@ export default function OrderDetails() {
                               })}
                            </span>
                         </div>
-                        <div className="flex justify-between">
+
+                        <div className="flex justify-between items-center">
                            <span className="text-sm text-gray-500">Status</span>
                            <Badge
                               className={cn(
@@ -445,13 +448,14 @@ export default function OrderDetails() {
                               Delivery
                            </span>
                            <span className="text-sm font-medium">
-                              Expected to ship in 2-3 business days
+                              Expected to ship in 2–3 business days
                            </span>
                         </div>
                      </div>
                   </div>
 
-                  <div className="w-[40%]">
+                  {/* Cột phải */}
+                  <div className="w-full md:w-[40%] mt-6 md:mt-0">
                      <h3 className="text-sm font-medium text-gray-900 mb-2">
                         Shipping Address
                      </h3>
@@ -477,7 +481,7 @@ export default function OrderDetails() {
                            {
                               displayOrderDetailsData.shipping_address
                                  .contact_province
-                           }{' '}
+                           }
                         </p>
                         <p className="text-sm text-gray-500">
                            {
