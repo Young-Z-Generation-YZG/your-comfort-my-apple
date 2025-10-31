@@ -253,6 +253,7 @@ services:
             [
                 "start-dev",
                 "--import-realm",
+                "--features=preview,token-exchange",
                 "--http-enabled=false",
                 "--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info",
                 "--log-console-color=true",

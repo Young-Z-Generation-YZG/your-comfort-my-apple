@@ -37,6 +37,7 @@ import { MainNav } from './sidebar-navigation/main-nav';
 // import { NavSecondary } from '@components/ui/nav-secondary';
 import { NavUser } from '@components/ui/nav-user';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { TenantSwitcher } from '@components/ui/tenant-switcher';
 // import { NavEmployees } from './nav-employees';
 
 const data = {
@@ -45,6 +46,88 @@ const data = {
       email: 'lxbach1608@gmail.com',
       avatar: '',
    },
+   tenants: [
+      {
+         tenantId: '664355f845e56534956be32b',
+         branchId: '664357a235e84033bbd0e6b6',
+         tenantCode: 'WARE_HOUSE',
+         tenantName: 'Ware house',
+         tenantType: 'WARE_HOUSE',
+         tenantAddress: '123 Nguyen Van Linh, Q9, TP.HCM',
+      },
+      {
+         tenantId: '664355f845e56534956be32c',
+         branchId: '664357a235e84033bbd0e6b7',
+         tenantCode: 'HN_CENTRAL',
+         tenantName: 'Hanoi Central Store',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '45 Tran Hung Dao, Hoan Kiem, Ha Noi',
+      },
+      {
+         tenantId: '664355f845e56534956be32d',
+         branchId: '664357a235e84033bbd0e6b8',
+         tenantCode: 'DN_BRANCH',
+         tenantName: 'Da Nang Branch',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '78 Bach Dang, Hai Chau, Da Nang',
+      },
+      {
+         tenantId: '664355f845e56534956be32e',
+         branchId: '664357a235e84033bbd0e6b9',
+         tenantCode: 'DIST_CENTER',
+         tenantName: 'Distribution Center',
+         tenantType: 'DISTRIBUTION',
+         tenantAddress: '234 Xa Lo Ha Noi, Q9, TP.HCM',
+      },
+      {
+         tenantId: '664355f845e56534956be32f',
+         branchId: '664357a235e84033bbd0e6ba',
+         tenantCode: 'PMH_STORE',
+         tenantName: 'Phu My Hung Store',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '89 Nguyen Van Linh, Q7, TP.HCM',
+      },
+      {
+         tenantId: '664355f845e56534956be330',
+         branchId: '664357a235e84033bbd0e6bb',
+         tenantCode: 'CT_BRANCH',
+         tenantName: 'Can Tho Branch',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '156 Tran Hung Dao, Ninh Kieu, Can Tho',
+      },
+      {
+         tenantId: '664355f845e56534956be331',
+         branchId: '664357a235e84033bbd0e6bc',
+         tenantCode: 'VT_WAREHOUSE',
+         tenantName: 'Vung Tau Warehouse',
+         tenantType: 'WARE_HOUSE',
+         tenantAddress: '67 Truong Cong Dinh, TP. Vung Tau',
+      },
+      {
+         tenantId: '664355f845e56534956be332',
+         branchId: '664357a235e84033bbd0e6bd',
+         tenantCode: 'NTG_STORE',
+         tenantName: 'Nha Trang Store',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '234 Tran Phu, TP. Nha Trang, Khanh Hoa',
+      },
+      {
+         tenantId: '664355f845e56534956be333',
+         branchId: '664357a235e84033bbd0e6be',
+         tenantCode: 'BD_BRANCH',
+         tenantName: 'Binh Duong Branch',
+         tenantType: 'RETAIL_STORE',
+         tenantAddress: '45 Dai Lo Binh Duong, Thu Dau Mot, Binh Duong',
+      },
+      {
+         tenantId: '664355f845e56534956be334',
+         branchId: '664357a235e84033bbd0e6bf',
+         tenantCode: 'HUE_CENTER',
+         tenantName: 'Hue Center',
+         tenantType: 'DISTRIBUTION',
+         tenantAddress: '123 Le Loi, TP. Hue, Thua Thien Hue',
+      },
+   ],
    navMain: [
       {
          title: 'Online Shop',
@@ -223,19 +306,7 @@ export function SidebarLayout({
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
-                  <SidebarMenuButton size="lg" asChild>
-                     <a href="#">
-                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                           <Command className="size-4" />
-                        </div>
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                           <span className="truncate font-semibold">
-                              Acme Inc
-                           </span>
-                           <span className="truncate text-xs">Enterprise</span>
-                        </div>
-                     </a>
-                  </SidebarMenuButton>
+                  <TenantSwitcher tenants={data.tenants} />
                </SidebarMenuItem>
             </SidebarMenu>
          </SidebarHeader>

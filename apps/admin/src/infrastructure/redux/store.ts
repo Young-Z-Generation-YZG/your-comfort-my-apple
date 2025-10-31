@@ -13,6 +13,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import appReducer from './features/app.slice';
 import authReducer from './features/auth.slice';
+import tenantReducer from './features/tenant.slice';
 import { promotionApi } from '~/src/infrastructure/services/promotion.service';
 import { authApi } from '~/src/infrastructure/services/auth.service';
 import { keycloakApi } from '~/src/infrastructure/services/keycloak.service';
@@ -38,12 +39,13 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       identityApi.reducerPath,
       inventoryApi.reducerPath,
    ],
-   whitelist: ['auth'],
+   whitelist: ['auth', 'tenant'],
 };
 
 const reducers = combineReducers({
    app: appReducer,
    auth: authReducer,
+   tenant: tenantReducer,
    [authApi.reducerPath]: authApi.reducer,
    [keycloakApi.reducerPath]: keycloakApi.reducer,
    [uploadImageApi.reducerPath]: uploadImageApi.reducer,

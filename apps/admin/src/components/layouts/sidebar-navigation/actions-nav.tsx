@@ -35,6 +35,7 @@ import {
    SidebarMenuItem,
 } from '@components/ui/sidebar';
 import { ModeToggle } from '@components/ui/mode-toggle';
+import UserSwitcher from '@components/ui/user-switcher';
 
 const data = [
    [
@@ -108,8 +109,8 @@ export function ActionNav() {
 
    return (
       <div className="flex items-center gap-2 text-sm">
-         <div className="hidden font-medium text-muted-foreground md:inline-block">
-            {/* Edit Oct 08 */}
+         <div>
+            <UserSwitcher />
          </div>
          <ModeToggle />
          <Button variant="ghost" size="icon" className="h-7 w-7">

@@ -8,11 +8,11 @@ using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Keycloak.Commands;
 
-public class AuthorizationCodeCommandHandler : ICommandHandler<AuthorizationCodeCommand, TokenResponse>
+public class AuthorizationCodeHandler : ICommandHandler<AuthorizationCodeCommand, TokenResponse>
 {
     private readonly IKeycloakService _keycloakService;
 
-    public AuthorizationCodeCommandHandler(IKeycloakService keycloakService)
+    public AuthorizationCodeHandler(IKeycloakService keycloakService)
     {
         _keycloakService = keycloakService;
     }
@@ -21,7 +21,7 @@ public class AuthorizationCodeCommandHandler : ICommandHandler<AuthorizationCode
     {
         var result = await _keycloakService.AuthorizationCode(request);
 
-        if(result is null)
+        if (result is null)
         {
             return Errors.Keycloak.AuthorizationCodeFailed;
         }
