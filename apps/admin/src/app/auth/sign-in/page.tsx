@@ -12,7 +12,7 @@ import useAuthService from '~/src/hooks/api/use-auth-service';
 import Input from '@components/customs/input-field';
 import PasswordInputField from '@components/customs/password-input-field';
 import FieldMessageError from '@components/customs/field-message-error';
-import Label from '@components/customs/Label';
+import Label from '@components/customs/label';
 
 // let loginWindow: Window | null = null;
 

@@ -1,9 +1,7 @@
-﻿
-
-using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 
-namespace YGZ.Identity.Application.Keycloak.Commands;
+namespace YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
 
 public sealed record AuthorizationCodeCommand : ICommand<TokenResponse>
 {

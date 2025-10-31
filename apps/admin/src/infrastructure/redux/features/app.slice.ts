@@ -6,6 +6,8 @@ const AppSlice = createSlice({
       route: {
          previousUnAuthenticatedPath: null as string | null,
       },
+      isImpersonating: false,
+      isLoading: false,
    },
    reducers: {
       setPreviousUnAuthenticatedPath: (
@@ -14,9 +16,19 @@ const AppSlice = createSlice({
       ) => {
          state.route.previousUnAuthenticatedPath = action.payload;
       },
+      setIsImpersonating: (state, action: PayloadAction<boolean>) => {
+         state.isImpersonating = action.payload;
+      },
+      setIsLoading: (state, action: PayloadAction<boolean>) => {
+         state.isLoading = action.payload;
+      },
    },
 });
 
-export const { setPreviousUnAuthenticatedPath } = AppSlice.actions;
+export const {
+   setPreviousUnAuthenticatedPath,
+   setIsImpersonating,
+   setIsLoading,
+} = AppSlice.actions;
 
 export default AppSlice.reducer;

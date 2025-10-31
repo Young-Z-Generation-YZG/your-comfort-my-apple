@@ -53,7 +53,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("change-password")]
-    //[Authorize(Policy = Policies.RoleStaff)]
+    [AllowAnonymous]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<ChangePasswordCommand>(request);

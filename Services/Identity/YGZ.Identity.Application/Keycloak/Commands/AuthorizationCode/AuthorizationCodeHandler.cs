@@ -1,12 +1,10 @@
-﻿
-
-using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Domain.Core.Errors;
 
-namespace YGZ.Identity.Application.Keycloak.Commands;
+namespace YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
 
 public class AuthorizationCodeHandler : ICommandHandler<AuthorizationCodeCommand, TokenResponse>
 {

@@ -18,14 +18,23 @@ import {
 import { SidebarLayout } from '@components/layouts/sidebar-layout';
 import { ActionNav } from '@components/layouts/sidebar-navigation/actions-nav';
 import withAuth from '@components/HoCs/with-auth.hoc';
+import { LoadingOverlay } from '@components/loading-overlay';
+import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
 
 const DashboardLayout = ({
    children,
 }: Readonly<{
    children: React.ReactNode;
 }>) => {
+   const isLoading = useAppSelector((state: RootState) => state.app.isLoading);
+
    return (
       <Fragment>
+         <LoadingOverlay
+            isLoading={isLoading}
+            fullScreen={true}
+            text="Switching user..."
+         />
          <SidebarProvider>
             <SidebarLayout />
             <SidebarInset>

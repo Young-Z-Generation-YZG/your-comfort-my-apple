@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -9,10 +10,11 @@ using Newtonsoft.Json;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
+using YGZ.BuildingBlocks.Shared.Contracts.Keycloak;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.BuilderClasses;
-using YGZ.Identity.Application.Keycloak.Commands;
+using YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Core.Keycloak.Entities;
 using YGZ.Identity.Domain.Users.Entities;
@@ -25,6 +27,7 @@ public class KeycloakService : IKeycloakService
     private readonly ILogger<KeycloakService> _logger;
     private readonly KeycloakSettings _keycloakSettings;
     private readonly HttpClient _httpClient;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private readonly string _nextjsClientUUID;
     private readonly string _nextjsClientId;
@@ -37,11 +40,12 @@ public class KeycloakService : IKeycloakService
     private readonly string _adminEndpoint;
     private readonly string _roleManagementEndpoint;
 
-    public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger)
+    public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger, IHttpContextAccessor httpContextAccessor)
     {
         _logger = logger;
         _keycloakSettings = options.Value;
         _httpClient = httpClient;
+        _httpContextAccessor = httpContextAccessor;
 
         _nextjsClientUUID = _keycloakSettings.NextjsClient.ClientUUID;
         _nextjsClientId = _keycloakSettings.NextjsClient.ClientId;
@@ -738,6 +742,59 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error while retrieving Keycloak role: {RoleName}", roleName);
+            throw;
+        }
+    }
+
+    public async Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId)
+    {
+        try
+        {
+            var subjectToken = await GetAdminTokenResponseAsync();
+
+            // Prepare form-urlencoded request body for token exchange
+            var requestBody = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"),
+                new KeyValuePair<string, string>("subject_token", subjectToken),
+                new KeyValuePair<string, string>("client_id", _adminClientId),
+                new KeyValuePair<string, string>("client_secret", _adminClientSecret),
+                new KeyValuePair<string, string>("requested_subject", userId)
+            });
+
+            _logger.LogInformation("Attempting to impersonate user {UserId}", userId);
+
+            var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseJsonString = await response.Content.ReadAsStringAsync();
+                var tokenExchangeResponse = System.Text.Json.JsonSerializer.Deserialize<TokenExchangeResponse>(responseJsonString);
+
+                if (tokenExchangeResponse == null || string.IsNullOrEmpty(tokenExchangeResponse.AccessToken))
+                {
+                    _logger.LogError("Failed to deserialize token exchange response for user {UserId}", userId);
+                    return Errors.Keycloak.UserNotFound;
+                }
+
+                _logger.LogInformation("Successfully impersonated user {UserId}", userId);
+                return tokenExchangeResponse;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to impersonate user {UserId}. Status: {StatusCode}, Error: {Error}",
+                userId, response.StatusCode, errorContent);
+
+            return Errors.Keycloak.UserNotFound;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "HTTP request exception while impersonating user {UserId}", userId);
+            return Errors.Keycloak.UserNotFound;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error while impersonating user {UserId}", userId);
             throw;
         }
     }

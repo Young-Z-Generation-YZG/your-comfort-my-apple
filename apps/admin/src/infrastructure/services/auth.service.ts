@@ -15,7 +15,8 @@ export const authApi = createApi({
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'identity-services',
       prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.accessToken;
+         const accessToken = (getState() as RootState).auth.currentUser
+            ?.accessToken;
 
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);
@@ -37,14 +38,19 @@ export const authApi = createApi({
             try {
                const { data } = await queryFulfilled;
 
+               console.log('data', data);
+
                dispatch(
                   setLogin({
-                     userId: data.user_id,
-                     userEmail: data.user_email,
-                     username: data.username,
-                     accessToken: data.access_token,
-                     refreshToken: data.refresh_token,
-                     accessTokenExpiredIn: data.access_token_expires_in,
+                     currentUser: {
+                        userId: 'be0cd669-237a-484d-b3cf-793e0ad1b0ea',
+                        userEmail: data.user_email,
+                        username: data.username,
+                        accessToken: data.access_token,
+                        refreshToken: data.refresh_token,
+                        accessTokenExpiredIn: data.access_token_expires_in,
+                        refreshTokenExpiredIn: data.refresh_token_expires_in,
+                     },
                   }),
                );
             } catch (error: unknown) {
@@ -57,7 +63,8 @@ export const authApi = createApi({
       }),
       logout: builder.mutation<void, void>({
          queryFn: async (_, { getState }, __, baseQuery) => {
-            const refreshToken = (getState() as RootState).auth.refreshToken;
+            const refreshToken = (getState() as RootState).auth.currentUser
+               ?.refreshToken;
 
             await baseQuery({
                url: '/api/v1/auth/logout',

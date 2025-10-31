@@ -22,7 +22,7 @@ const useAuthService = () => {
    const authAppState = useAppSelector((state) => state.auth);
 
    const isAuthenticated = useMemo(() => {
-      return Boolean(authAppState.accessToken && authAppState.isAuthenticated);
+      return Boolean(authAppState.currentUser?.accessToken);
    }, [authAppState]);
 
    const loginAsync = useCallback(

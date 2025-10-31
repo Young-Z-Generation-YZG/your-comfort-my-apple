@@ -2,9 +2,10 @@
 
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
+using YGZ.BuildingBlocks.Shared.Contracts.Keycloak;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.BuilderClasses;
-using YGZ.Identity.Application.Keycloak.Commands;
+using YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
 using YGZ.Identity.Domain.Core.Keycloak.Entities;
 using YGZ.Identity.Domain.Users.Entities;
 
@@ -25,4 +26,5 @@ public interface IKeycloakService
     Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
     Task<Result<bool>> DeleteKeycloakUserAsync(string keycloakUserId);
     Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName);
+    Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId);
 }
