@@ -9,6 +9,14 @@ pub struct CreateOrder<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
+    /// CHECK: Treasury account to receive payments
+    #[account(
+        mut,
+        seeds = [TREASURY_SEED],
+        bump
+    )]
+    pub treasury: UncheckedAccount<'info>,
+
     #[account(
         init,
         payer = user,
