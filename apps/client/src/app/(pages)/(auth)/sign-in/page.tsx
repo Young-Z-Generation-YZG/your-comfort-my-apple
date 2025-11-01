@@ -13,6 +13,8 @@ import withAuth from '@components/HoCs/with-auth.hoc';
 import useAuthService from '~/components/hooks/api/use-auth-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { EVerificationType } from '~/domain/enums/verification-type.enum';
+import { MemoCard } from '@components/client/memo-card';
+import { WalletConnectButton } from '@components/client/wallet-connect-button';
 
 const SignInPage = () => {
    const { login, isLoading } = useAuthService();
@@ -178,6 +180,8 @@ const SignInPage = () => {
                                  className="h-8 w-8 invisible"
                               />
                            </button>
+                           <WalletConnectButton />
+                           <MemoCard />
                         </div>
                      </div>
                   </LoadingOverlay>

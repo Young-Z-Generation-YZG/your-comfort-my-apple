@@ -9,6 +9,7 @@ import Footer from '@components/layouts/Footer';
 import { LoadingProvider } from '@components/contexts/loading.context';
 import { Toaster } from '@components/ui/toaster';
 import { Toaster as SonnerToaster } from '@components/ui/sonner';
+import { SolanaProvider } from '@components/providers/solana-provider';
 
 export const metadata: Metadata = {
    title: 'YB Store',
@@ -34,11 +35,13 @@ export default function RootLayout({
          >
             <main>
                <LoadingProvider>
-                  <ReduxProvider>
-                     <Header />
-                     {children}
-                     <Footer />
-                  </ReduxProvider>
+                  <SolanaProvider>
+                     <ReduxProvider>
+                        <Header />
+                        {children}
+                        <Footer />
+                     </ReduxProvider>
+                  </SolanaProvider>
                </LoadingProvider>
             </main>
             <Toaster />
