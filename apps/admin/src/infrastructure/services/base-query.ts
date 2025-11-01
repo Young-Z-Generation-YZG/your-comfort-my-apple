@@ -6,7 +6,11 @@ export const baseQuery = (service: string) =>
    fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + service,
       prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.accessToken;
+         const { currentUser, impersonatedUser } = (getState() as RootState)
+            .auth;
+
+         const accessToken =
+            impersonatedUser?.accessToken || currentUser?.accessToken;
 
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);

@@ -62,7 +62,6 @@ export const keycloakApi = createApi({
          const useAdminTokenOnly = adminOnlyEndpoints.includes(endpoint || '');
 
          if (useAdminTokenOnly) {
-            console.log('useAdminTokenOnly', useAdminTokenOnly);
             // Always use current user's (admin's) token
             accessToken = authAppState.currentUser?.accessToken;
          } else {
@@ -151,6 +150,11 @@ export const keycloakApi = createApi({
                            },
                         }),
                      );
+
+                     setTimeout(() => {
+                        console.log('Reloading page after impersonation');
+                        window.location.reload();
+                     }, 0);
                   }
                } else {
                   dispatch(
@@ -158,6 +162,11 @@ export const keycloakApi = createApi({
                         impersonatedUser: null,
                      }),
                   );
+
+                  setTimeout(() => {
+                     console.log('Reloading page after stopping impersonation');
+                     window.location.reload();
+                  }, 0);
                }
             } catch (error: unknown) {
                console.info(

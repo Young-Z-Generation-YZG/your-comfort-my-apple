@@ -112,9 +112,23 @@ const UserSwitcher = ({ users = defaultUsers }: UserSwitcherProps) => {
    const [selectedUser, setSelectedUser] = React.useState(users[0]);
    const [searchQuery, setSearchQuery] = React.useState('');
 
-   const { impersonatedUser } = useAppSelector((state) => state.auth);
+   const { impersonatedUser, currentUser } = useAppSelector(
+      (state) => state.auth,
+   );
 
    const { impersonateUserAsync } = useKeycloakService();
+
+   // Sync selected user with impersonated user or current user
+   React.useEffect(() => {
+      const activeUserId = impersonatedUser?.userId || currentUser?.userId;
+
+      if (activeUserId) {
+         const foundUser = users.find((user) => user.userId === activeUserId);
+         if (foundUser) {
+            setSelectedUser(foundUser);
+         }
+      }
+   }, [impersonatedUser?.userId, currentUser?.userId, users]);
 
    const filteredUsers = React.useMemo(() => {
       if (!searchQuery) return users;
@@ -160,7 +174,7 @@ const UserSwitcher = ({ users = defaultUsers }: UserSwitcherProps) => {
                      <span className="text-sm font-medium leading-none">
                         {selectedUser.userName}
                      </span>
-                     {impersonatedUser && (
+                     {impersonatedUser?.userId && (
                         <Badge
                            variant="default"
                            className="p-0.5 flex items-center justify-center"
@@ -196,31 +210,37 @@ const UserSwitcher = ({ users = defaultUsers }: UserSwitcherProps) => {
                      No user found.
                   </div>
                ) : (
-                  filteredUsers.map((user) => (
-                     <DropdownMenuItem
-                        key={user.userId}
-                        onSelect={() => handleSelectUser(user)}
-                        className="flex items-center gap-2 py-2"
-                     >
-                        <Avatar className="h-6 w-6">
-                           <AvatarImage src={user.userAvatar} />
-                           <AvatarFallback className="text-[10px]">
-                              {getInitials(user.userName)}
-                           </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col flex-1">
-                           <span className="text-sm font-medium">
-                              {user.userName}
-                           </span>
-                           <span className="text-xs text-muted-foreground">
-                              {user.userEmail}
-                           </span>
-                        </div>
-                        {user.userId === selectedUser.userId && (
-                           <Check className="ml-auto h-4 w-4" />
-                        )}
-                     </DropdownMenuItem>
-                  ))
+                  filteredUsers.map((user) => {
+                     // Check if this user is currently active (either impersonated or current user)
+                     const activeUserId =
+                        impersonatedUser?.userId || currentUser?.userId;
+                     const isActive = user.userId === activeUserId;
+
+                     return (
+                        <DropdownMenuItem
+                           key={user.userId}
+                           disabled={isActive}
+                           onSelect={() => handleSelectUser(user)}
+                           className="flex items-center gap-2 py-2"
+                        >
+                           <Avatar className="h-6 w-6">
+                              <AvatarImage src={user.userAvatar} />
+                              <AvatarFallback className="text-[10px]">
+                                 {getInitials(user.userName)}
+                              </AvatarFallback>
+                           </Avatar>
+                           <div className="flex flex-col flex-1">
+                              <span className="text-sm font-medium">
+                                 {user.userName}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                 {user.userEmail}
+                              </span>
+                           </div>
+                           {isActive && <Check className="ml-auto h-4 w-4" />}
+                        </DropdownMenuItem>
+                     );
+                  })
                )}
             </div>
          </DropdownMenuContent>
