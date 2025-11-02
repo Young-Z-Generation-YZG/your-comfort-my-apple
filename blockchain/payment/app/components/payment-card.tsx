@@ -2,18 +2,51 @@
 
 import { useState } from "react";
 import { useSolana } from "./solana-provider";
-import { Program, AnchorProvider, BN } from "@coral-xyz/anchor";
-import { PublicKey, Connection } from "@solana/web3.js";
+import { useWalletAccountTransactionSendingSigner } from "@solana/react";
+import { type UiWalletAccount } from "@wallet-standard/react";
+import {
+    address,
+    getProgramDerivedAddress,
+    getAddressEncoder,
+} from "@solana/addresses";
+import {
+    pipe,
+    createTransactionMessage,
+    appendTransactionMessageInstruction,
+    setTransactionMessageFeePayerSigner,
+    setTransactionMessageLifetimeUsingBlockhash,
+    signAndSendTransactionMessageWithSigners,
+    getBase58Decoder,
+    type Signature,
+} from "@solana/kit";
+import { getU64Encoder } from "@solana/codecs-numbers";
+import { getUtf8Encoder } from "@solana/codecs-strings";
+import { mergeBytes } from "@solana/codecs-core";
+import { type Instruction } from "@solana/instructions";
+import { type Payment } from "../../target/types/payment";
 
-const PROGRAM_ID = new PublicKey(
+const PROGRAM_ID = address<Payment["address"]>(
     "HRbJQmmbR6i16CZppbvspAq6bN9NQSgU1ZaZSYb7Dpwt"
 );
+const SYSTEM_PROGRAM_ID = address("11111111111111111111111111111111");
 
-function ConnectedPaymentCard({ account }: { account: { address: string } }) {
-    const { selectedWallet } = useSolana();
+// Instruction discriminator for create_order (from IDL)
+const CREATE_ORDER_DISCRIMINATOR = new Uint8Array([
+    141, 54, 37, 207, 237, 210, 250, 215,
+]);
+
+const FAKE_ORDER_ID = "e824f6fa-92e4-4911-8b9e-98bd2ea4b82d";
+
+// Seeds for PDA derivation
+const ORDER_SEED = new TextEncoder().encode("order");
+
+function ConnectedPaymentCard({ account }: { account: UiWalletAccount }) {
+    const { rpc, chain } = useSolana();
+    const signer = useWalletAccountTransactionSendingSigner(account, chain);
     const [usdAmount, setUsdAmount] = useState<string>("");
     const [currency, setCurrency] = useState<string>("USD");
     const [solPriceUsd, setSolPriceUsd] = useState<string>("150");
+    const [receiverAddress, setReceiverAddress] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [txSignature, setTxSignature] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -24,6 +57,28 @@ function ConnectedPaymentCard({ account }: { account: { address: string } }) {
             return;
         }
 
+        if (!receiverAddress || receiverAddress.trim() === "") {
+            setError("Please enter a receiver address");
+            return;
+        }
+
+        if (!signer) {
+            setError("Wallet signer not available");
+            return;
+        }
+
+        // Validate receiver address format
+        let receiverAddressValidated;
+        try {
+            receiverAddressValidated = address(receiverAddress.trim());
+        } catch (err) {
+            setError("Invalid receiver address format");
+            return;
+        }
+
+        console.log("receiverAddressValidated", receiverAddressValidated);
+        console.log("account.address", account.address);
+
         setIsLoading(true);
         setError(null);
         setTxSignature(null);
@@ -33,88 +88,123 @@ function ConnectedPaymentCard({ account }: { account: { address: string } }) {
             const usd = parseFloat(usdAmount);
             const solPrice = parseFloat(solPriceUsd);
             const solAmount = usd / solPrice;
-            const amountLamports = Math.floor(solAmount * 1e9); // Convert to lamports
+            const amountLamports = BigInt(Math.floor(solAmount * 1e9)); // Convert to lamports
 
-            // Generate a unique order ID (timestamp based)
-            const orderId = new BN(Date.now());
+            // Generate a unique order ID (timestamp based as string)
+            const orderId = FAKE_ORDER_ID;
 
-            if (!selectedWallet?.features["solana:signAndSendTransaction"]) {
-                throw new Error(
-                    "Wallet does not support signAndSendTransaction"
-                );
-            }
+            // Get latest blockhash
+            const { value: latestBlockhash } = await rpc
+                .getLatestBlockhash({ commitment: "confirmed" })
+                .send();
 
-            // Create connection
-            const connection = new Connection(
-                "http://127.0.0.1:8899",
-                "confirmed"
+            // Derive user address
+            const userAddress = address(account.address);
+
+            // Derive order PDA
+            // Split UUID (36 bytes) into two seeds: first 32 bytes + remaining 4 bytes
+            // Solana allows multiple seeds, each up to 32 bytes
+            const orderIdBytes = new TextEncoder().encode(orderId);
+            const orderIdFirst32 = orderIdBytes.slice(0, 32); // First 32 bytes
+            const orderIdRemaining = orderIdBytes.slice(32); // Remaining 4 bytes
+
+            // Encode user address to bytes for PDA seed
+            const addressEncoder = getAddressEncoder();
+            const userAddressBytes = addressEncoder.encode(userAddress);
+
+            const [orderAddress] = await getProgramDerivedAddress({
+                programAddress: PROGRAM_ID,
+                seeds: [
+                    ORDER_SEED,
+                    userAddressBytes,
+                    orderIdFirst32, // First 32 bytes of UUID
+                    orderIdRemaining, // Remaining 4 bytes of UUID
+                ],
+            });
+
+            // Build instruction data
+            const u64Encoder = getU64Encoder();
+            const utf8Encoder = getUtf8Encoder();
+
+            // Encode arguments: order_id (string), amount (u64), currency (string)
+            const orderIdEncoded = new Uint8Array(utf8Encoder.encode(orderId));
+            const amountEncoded = new Uint8Array(
+                u64Encoder.encode(amountLamports)
+            );
+            const currencyEncoded = new Uint8Array(
+                utf8Encoder.encode(currency)
             );
 
-            // Create provider with wallet adapter
-            const provider = new AnchorProvider(
-                {
-                    connection,
-                    publicKey: new PublicKey(account.address),
-                    sendTransaction: async (tx, signers) => {
-                        const signAndSendFeature =
-                            selectedWallet.features[
-                                "solana:signAndSendTransaction"
-                            ];
+            // Instruction data = discriminator + order_id + amount + currency
+            const instructionData = mergeBytes([
+                CREATE_ORDER_DISCRIMINATOR,
+                orderIdEncoded,
+                amountEncoded,
+                currencyEncoded,
+            ]);
 
-                        // Serialize transaction
-                        tx.recentBlockhash = (
-                            await connection.getLatestBlockhash()
-                        ).blockhash;
-                        tx.feePayer = new PublicKey(account.address);
-
-                        const serialized = tx.serialize({
-                            requireAllSignatures: false,
-                            verifySignatures: false,
-                        });
-
-                        // Sign and send using wallet
-                        const result =
-                            await signAndSendFeature.signAndSendTransaction({
-                                account: { address: account.address },
-                                chain: "solana:localnet",
-                                transaction: {
-                                    format: "base64",
-                                    message:
-                                        Buffer.from(serialized).toString(
-                                            "base64"
-                                        ),
-                                },
-                            });
-
-                        return result as string;
+            // Create the instruction
+            const createOrderInstruction: Instruction<typeof PROGRAM_ID> = {
+                programAddress: PROGRAM_ID,
+                accounts: [
+                    {
+                        address: userAddress,
+                        role: 3, // writable-signer
                     },
-                } as any,
-                { commitment: "confirmed" }
+                    {
+                        address: receiverAddressValidated,
+                        role: 1, // writable
+                    },
+                    {
+                        address: orderAddress,
+                        role: 1, // writable
+                    },
+                    {
+                        address: SYSTEM_PROGRAM_ID,
+                        role: 0, // readonly
+                    },
+                ],
+                data: instructionData,
+            };
+
+            // Build and send transaction
+            const message = pipe(
+                createTransactionMessage({ version: 0 }),
+                (m) => setTransactionMessageFeePayerSigner(signer, m),
+                (m) =>
+                    setTransactionMessageLifetimeUsingBlockhash(
+                        latestBlockhash,
+                        m
+                    ),
+                (m) =>
+                    appendTransactionMessageInstruction(
+                        createOrderInstruction,
+                        m
+                    )
             );
 
-            // Load program
-            const idl = require("../../target/idl/payment.json");
-            const program = new Program(idl, PROGRAM_ID, provider);
+            const signature = await signAndSendTransactionMessageWithSigners(
+                message
+            );
+            const signatureStr = getBase58Decoder().decode(
+                signature
+            ) as Signature;
 
-            // Send transaction - Anchor will handle PDA derivation
-            const signature = await program.methods
-                .createOrder(orderId, new BN(amountLamports), currency)
-                .accounts({
-                    user: new PublicKey(account.address),
-                })
-                .rpc();
-
-            setTxSignature(signature);
+            setTxSignature(signatureStr);
 
             console.log("Payment successful:", {
-                orderId: orderId.toString(),
-                amount: amountLamports,
+                orderId: orderId,
+                amount: amountLamports.toString(),
                 solAmount: solAmount.toFixed(4),
-                signature,
+                signature: signatureStr,
             });
-        } catch (err: any) {
+        } catch (err) {
             console.error("Payment failed:", err);
-            setError(err.message || "Failed to process payment");
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : "Failed to process payment";
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -172,6 +262,19 @@ function ConnectedPaymentCard({ account }: { account: { address: string } }) {
                 </select>
             </div>
 
+            <div>
+                <label className="block text-sm font-medium mb-1">
+                    Receiver Address
+                </label>
+                <input
+                    type="text"
+                    value={receiverAddress}
+                    onChange={(e) => setReceiverAddress(e.target.value)}
+                    placeholder="Enter receiver Solana address"
+                    className="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-700 font-mono text-sm"
+                />
+            </div>
+
             {usdAmount && (
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
                     <p className="text-sm">
@@ -183,7 +286,13 @@ function ConnectedPaymentCard({ account }: { account: { address: string } }) {
 
             <button
                 onClick={sendPayment}
-                disabled={isLoading || !usdAmount || parseFloat(usdAmount) <= 0}
+                disabled={
+                    isLoading ||
+                    !usdAmount ||
+                    parseFloat(usdAmount) <= 0 ||
+                    !receiverAddress ||
+                    receiverAddress.trim() === ""
+                }
                 className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
                 {isLoading ? "Processing Payment..." : "Pay Now"}
@@ -203,7 +312,9 @@ function ConnectedPaymentCard({ account }: { account: { address: string } }) {
                         Payment Successful!
                     </p>
                     <a
-                        href={`http://localhost:8899/tx/${txSignature}?cluster=localnet`}
+                        href={`https://explorer.solana.com/tx/${txSignature}?cluster=${
+                            chain === "solana:devnet" ? "devnet" : "mainnet"
+                        }`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 dark:text-blue-400 hover:underline"

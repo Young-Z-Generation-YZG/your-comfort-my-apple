@@ -181,7 +181,7 @@ const SignInPage = () => {
                               />
                            </button>
                            <WalletConnectButton />
-                           <MemoCard />
+                           {/* <MemoCard /> */}
                         </div>
                      </div>
                   </LoadingOverlay>

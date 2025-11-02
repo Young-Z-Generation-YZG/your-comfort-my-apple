@@ -15,8 +15,8 @@ payment = "HRbJQmmbR6i16CZppbvspAq6bN9NQSgU1ZaZSYb7Dpwt"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
-# cluster = "devnet"
+# cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

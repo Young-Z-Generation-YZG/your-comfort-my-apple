@@ -43,6 +43,8 @@ export const authApi = createApi({
             try {
                const { data } = await queryFulfilled;
 
+               console.log('data', data);
+
                if (
                   data.verification_type !==
                   EVerificationType.EMAIL_VERIFICATION

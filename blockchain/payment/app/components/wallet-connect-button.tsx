@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useSolana } from "./solana-provider";
+import { useSolana } from "@/components/solana-provider";
+import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown, Wallet, LogOut } from "lucide-react";
 import {
     useConnect,
@@ -21,19 +31,14 @@ function WalletIcon({
     className?: string;
 }) {
     return (
-        <div className={className}>
-            {wallet.icon ? (
-                <img
-                    src={wallet.icon}
-                    alt={`${wallet.name} icon`}
-                    className="w-5 h-5 rounded"
-                />
-            ) : (
-                <div className="w-5 h-5 rounded bg-gray-300 flex items-center justify-center text-xs">
-                    {wallet.name.slice(0, 2).toUpperCase()}
-                </div>
+        <Avatar className={className}>
+            {wallet.icon && (
+                <AvatarImage src={wallet.icon} alt={`${wallet.name} icon`} />
             )}
-        </div>
+            <AvatarFallback>
+                {wallet.name.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
+        </Avatar>
     );
 }
 
@@ -65,126 +70,146 @@ function WalletMenuItem({
 
     return (
         <button
-            className="flex w-full items-center justify-between px-4 py-2 text-sm outline-none hover:bg-gray-100 dark:hover:bg-gray-800 focus:bg-gray-100 dark:focus:bg-gray-800 disabled:pointer-events-none disabled:opacity-50 rounded"
+            className="flex w-full items-center justify-between px-2 py-1.5 text-sm outline-none hover:bg-accent focus:bg-accent disabled:pointer-events-none disabled:opacity-50"
             onClick={handleConnect}
             disabled={isConnecting}
         >
-            <div className="flex items-center gap-3">
-                <WalletIcon wallet={wallet} />
-                <span>{wallet.name}</span>
+            <div className="flex items-center gap-2">
+                <WalletIcon wallet={wallet} className="h-6 w-6" />
+                <span className="font-medium">{wallet.name}</span>
             </div>
-            {isConnecting && (
-                <span className="text-xs text-gray-500">Connecting...</span>
-            )}
         </button>
     );
 }
 
-export function WalletConnectButton() {
-    const {
-        wallets,
-        selectedWallet,
-        selectedAccount,
-        isConnected,
-        setWalletAndAccount,
-    } = useSolana();
-    const [isOpen, setIsOpen] = useState(false);
-    const disconnect = useDisconnect();
+function DisconnectButton({
+    wallet,
+    onDisconnect,
+}: {
+    wallet: UiWallet;
+    onDisconnect: () => void;
+}) {
+    const { setWalletAndAccount } = useSolana();
+    const [isDisconnecting, disconnect] = useDisconnect(wallet);
 
     const handleDisconnect = async () => {
-        if (selectedWallet) {
-            try {
-                await disconnect(selectedWallet);
-                setWalletAndAccount(null, null);
-                setIsOpen(false);
-            } catch (err) {
-                console.error("Failed to disconnect:", err);
-            }
+        try {
+            await disconnect();
+            setWalletAndAccount(null, null);
+            onDisconnect();
+        } catch (err) {
+            console.error("Failed to disconnect wallet:", err);
         }
     };
 
-    if (isConnected && selectedAccount) {
-        return (
-            <div className="relative">
-                <button
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                    <Wallet className="w-4 h-4" />
-                    <span>{truncateAddress(selectedAccount.address)}</span>
-                    <ChevronDown className="w-4 h-4" />
-                </button>
+    return (
+        <DropdownMenuItem
+            className="text-destructive focus:text-destructive cursor-pointer"
+            onClick={handleDisconnect}
+            disabled={isDisconnecting}
+        >
+            <LogOut className="mr-2 h-4 w-4" />
+            Disconnect
+        </DropdownMenuItem>
+    );
+}
 
-                {isOpen && (
-                    <>
-                        <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setIsOpen(false)}
-                        />
-                        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
-                            <div className="p-3 border-b border-gray-200 dark:border-gray-700">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Connected
-                                </p>
-                                <p className="text-sm font-medium truncate">
-                                    {selectedAccount.address}
-                                </p>
-                            </div>
-                            <button
-                                onClick={handleDisconnect}
-                                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-b-lg transition-colors"
-                            >
-                                <LogOut className="w-4 h-4" />
-                                Disconnect
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-        );
-    }
+export function WalletConnectButton() {
+    const { wallets, selectedWallet, selectedAccount, isConnected } =
+        useSolana();
 
-    if (wallets.length === 0) {
-        return (
-            <div className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg text-sm">
-                No wallet found. Please install a Solana wallet extension.
-            </div>
-        );
-    }
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     return (
-        <div className="relative">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-                <Wallet className="w-4 h-4" />
-                <span>Connect Wallet</span>
-                <ChevronDown className="w-4 h-4" />
-            </button>
-
-            {isOpen && (
-                <>
-                    <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setIsOpen(false)}
-                    />
-                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-20">
-                        <div className="p-2">
-                            <p className="px-2 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400">
-                                Select Wallet
-                            </p>
-                            {wallets.map((wallet) => (
-                                <WalletMenuItem
-                                    key={wallet.name}
-                                    wallet={wallet}
-                                    onConnect={() => setIsOpen(false)}
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="outline"
+                    className="min-w-[140px] justify-between"
+                >
+                    {isConnected && selectedWallet && selectedAccount ? (
+                        <>
+                            <div className="flex items-center gap-2">
+                                <WalletIcon
+                                    wallet={selectedWallet}
+                                    className="h-4 w-4"
                                 />
-                            ))}
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
+                                <span className="font-mono text-sm">
+                                    {truncateAddress(selectedAccount.address)}
+                                </span>
+                            </div>
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                        </>
+                    ) : (
+                        <>
+                            <Wallet className="mr-2 h-4 w-4" />
+                            <span>Connect Wallet</span>
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                        </>
+                    )}
+                </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-[280px]">
+                {wallets.length === 0 ? (
+                    <p className="text-sm text-muted-foreground p-3 text-center">
+                        No wallets detected
+                    </p>
+                ) : (
+                    <>
+                        {!isConnected ? (
+                            <>
+                                <DropdownMenuLabel>
+                                    Available Wallets
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {wallets.map((wallet, index) => (
+                                    <WalletMenuItem
+                                        key={`${wallet.name}-${index}`}
+                                        wallet={wallet}
+                                        onConnect={() => setDropdownOpen(false)}
+                                    />
+                                ))}
+                            </>
+                        ) : (
+                            selectedWallet &&
+                            selectedAccount && (
+                                <>
+                                    <DropdownMenuLabel>
+                                        Connected Wallet
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <div className="px-2 py-1.5">
+                                        <div className="flex items-center gap-2">
+                                            <WalletIcon
+                                                wallet={selectedWallet}
+                                                className="h-6 w-6"
+                                            />
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-medium">
+                                                    {selectedWallet.name}
+                                                </span>
+                                                <span className="text-xs text-muted-foreground font-mono">
+                                                    {truncateAddress(
+                                                        selectedAccount.address
+                                                    )}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <DropdownMenuSeparator />
+                                    <DisconnectButton
+                                        wallet={selectedWallet}
+                                        onDisconnect={() =>
+                                            setDropdownOpen(false)
+                                        }
+                                    />
+                                </>
+                            )
+                        )}
+                    </>
+                )}
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 }

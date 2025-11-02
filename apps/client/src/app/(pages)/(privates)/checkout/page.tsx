@@ -31,6 +31,10 @@ import useIdentityService from '@components/hooks/api/use-identity-service';
 import useBasketService from '@components/hooks/api/use-basket-service';
 import CheckoutItem from './_components/checkout-item';
 import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
+import { Check } from 'lucide-react';
+import svgs from '@assets/svgs';
+import { WalletConnectButton } from '@components/client/wallet-connect-button';
+import BlockchainPaymentModel from './_components/blockchain-payment-model';
 
 const fakeData = [
    {
@@ -110,6 +114,12 @@ const CheckoutPage = () => {
    const [selectedAddress, setSelectedAddress] = useState<TAddressItem | null>(
       null,
    );
+   const [displayPaymentBlockchainModel, setDisplayPaymentBlockchainModel] =
+      useState(false);
+
+   const handleClosePaymentModal = () => {
+      setDisplayPaymentBlockchainModel(false);
+   };
 
    const appliedCouponFromQuery = searchParams.get('_couponCode');
 
@@ -175,7 +185,7 @@ const CheckoutPage = () => {
             province: defaultAddress?.province || '',
             country: defaultAddress?.country || '',
          },
-         payment_method: 'VNPAY',
+         payment_method: undefined,
          discount_code: null,
       },
    });
@@ -234,6 +244,16 @@ const CheckoutPage = () => {
          )}
       >
          <LoadingOverlay isLoading={false} fullScreen />
+         {displayPaymentBlockchainModel && (
+            <BlockchainPaymentModel
+               isOpen={displayPaymentBlockchainModel}
+               onClose={handleClosePaymentModal}
+               orderId={`ORDER-${Date.now()}`}
+               amount={
+                  getCheckoutItemsState.data?.total_amount?.toFixed(2) || '0.00'
+               }
+            />
+         )}
          <div className="max-w-[1156px] w-full grid grid-cols-12 mt-10">
             <div className="col-span-8 pr-[64px]">
                <div className="">
@@ -429,6 +449,42 @@ const CheckoutPage = () => {
                                  errors={form.formState.errors}
                                  watch={form.watch}
                               />
+                              <div className="relative mt-5">
+                                 <input
+                                    type="radio"
+                                    {...form.register('payment_method')}
+                                    id="payment-solana"
+                                    value="SOLANA"
+                                    className="peer sr-only"
+                                 />
+                                 <label
+                                    htmlFor="payment-solana"
+                                    className="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 cursor-pointer hover:border-gray-300 peer-checked:border-gray-900 peer-checked:bg-gray-50 transition-all duration-200 ease-in-out"
+                                 >
+                                    <div className="mb-2 rounded-full bg-gray-100 p-2">
+                                       <Image
+                                          src={
+                                             svgs.solanaLogo ||
+                                             '/placeholder.svg'
+                                          }
+                                          alt="SOLANA"
+                                          width={24}
+                                          height={24}
+                                          className="h-6 w-6"
+                                       />
+                                    </div>
+                                    <div className="font-medium select-none font-SFProText">
+                                       Solana
+                                    </div>
+                                    <div className="text-xs text-gray-500 text-center mt-1 select-none">
+                                       Blockchain payment
+                                    </div>
+                                    <div className="mt-5">
+                                       <WalletConnectButton />
+                                    </div>
+                                 </label>
+                                 <Check className="absolute top-4 right-4 h-5 w-5 text-gray-900 opacity-0 peer-checked:opacity-100" />
+                              </div>
                            </div>
                         </div>
 
@@ -537,14 +593,29 @@ const CheckoutPage = () => {
                               '0.00'}
                         </div>
                      </div>
-                     <Button
-                        className="w-full h-fit bg-[#0070f0] text-white rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                        onClick={() => {
-                           form.handleSubmit(handleSubmit)();
-                        }}
-                     >
-                        Place Order
-                     </Button>
+                     {form.getValues('payment_method') !== 'SOLANA' && (
+                        <Button
+                           className="w-full h-fit bg-[#0070f0] text-white rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
+                           onClick={() => {
+                              form.handleSubmit(handleSubmit)();
+                           }}
+                        >
+                           Place Order
+                        </Button>
+                     )}
+                     {form.getValues('payment_method') === 'SOLANA' && (
+                        <Button
+                           className="w-full h-fit bg-[#0070f0] text-white rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
+                           onClick={() => {
+                              form.trigger();
+                              if (form.formState.isValid) {
+                                 setDisplayPaymentBlockchainModel(true);
+                              }
+                           }}
+                        >
+                           Pay with Solana
+                        </Button>
+                     )}
                      <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                         <div className="w-full flex flex-row items-center">
                            <Image

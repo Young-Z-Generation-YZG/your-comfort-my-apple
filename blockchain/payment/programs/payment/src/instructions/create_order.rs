@@ -4,27 +4,29 @@ use crate::constants::*;
 use crate::states::*;
 
 #[derive(Accounts)]
-#[instruction(order_id: u64, amount: u64, currency: String)]
+#[instruction(order_id: String, amount: u64, currency: String)]
 pub struct CreateOrder<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
 
-    /// CHECK: Treasury account to receive payments
-    #[account(
-        mut,
-        seeds = [TREASURY_SEED],
-        bump
-    )]
-    pub treasury: UncheckedAccount<'info>,
+    /// CHECK: Receiver account (PublicKey) to receive payments
+    #[account(mut)]
+    pub receiver: UncheckedAccount<'info>,
 
     #[account(
         init,
         payer = user,
         space = ORDER_SPACE,
-        seeds = [ORDER_SEED, user.key().as_ref(), order_id.to_le_bytes().as_ref()],
+        seeds = [
+            ORDER_SEED, 
+            user.key().as_ref(), 
+            &order_id.as_bytes()[..32], // First 32 bytes of UUID
+            &order_id.as_bytes()[32..], // Remaining 4 bytes of UUID (split into 2 seeds)
+        ],
         bump
     )]
     pub order: Account<'info, Order>,
+
     pub system_program: Program<'info, System>,
 }
 

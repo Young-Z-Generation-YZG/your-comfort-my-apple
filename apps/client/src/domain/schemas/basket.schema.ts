@@ -73,7 +73,7 @@ const checkoutSchema = z.object({
       province: z.string().min(1, { message: 'Province is required' }),
       country: z.string().min(1, { message: 'Country is required' }),
    }),
-   payment_method: z.enum(['COD', 'VNPAY', 'MOMO'], {
+   payment_method: z.enum(['COD', 'VNPAY', 'MOMO', 'SOLANA'], {
       errorMap: () => ({ message: 'Payment method is required' }),
    }),
    discount_code: z.string().nullable().default(null),

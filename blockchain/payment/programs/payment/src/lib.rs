@@ -14,24 +14,24 @@ pub mod payment {
 
     pub fn create_order(
         ctx: Context<CreateOrder>,
-        order_id: u64,
+        order_id: String,
         amount: u64,
         currency: String,
     ) -> Result<()> {
         let clock = Clock::get()?;
         let order = &mut ctx.accounts.order;
 
-        // Transfer payment from user to treasury
+        // Transfer payment from user to receiver
         // Note: Account rent is automatically paid by Anchor's init constraint
         anchor_lang::solana_program::program::invoke(
             &anchor_lang::solana_program::system_instruction::transfer(
                 &ctx.accounts.user.key(),
-                &ctx.accounts.treasury.key(),
+                &ctx.accounts.receiver.key(),
                 amount,
             ),
             &[
                 ctx.accounts.user.to_account_info(),
-                ctx.accounts.treasury.to_account_info(),
+                ctx.accounts.receiver.to_account_info(),
                 ctx.accounts.system_program.to_account_info(),
             ],
         )?;
@@ -42,7 +42,7 @@ pub mod payment {
             amount,
             currency
         );
-        msg!("Payment of {} lamports transferred to treasury", amount);
+        msg!("Payment of {} lamports transferred to receiver", amount);
 
         // Set order fields
         order.id = order_id;

@@ -2,6 +2,7 @@
 
 import { WalletConnectButton } from "@/components/wallet-connect-button";
 import { PaymentCard } from "@/components/payment-card";
+import { MemoCard } from "@/components/memo-card";
 
 export default function Home() {
     return (
@@ -11,6 +12,7 @@ export default function Home() {
                     <WalletConnectButton />
                 </div>
                 <PaymentCard />
+                <MemoCard />
             </div>
         </div>
     );
