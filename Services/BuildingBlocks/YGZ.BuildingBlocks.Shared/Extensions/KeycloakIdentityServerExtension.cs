@@ -1,9 +1,10 @@
-﻿using System.Text.Json;
-using Keycloak.AuthServices.Authentication;
+﻿using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.BuildingBlocks.Shared.Authorization;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.BuildingBlocks.Shared.Extensions;
@@ -37,6 +38,40 @@ public static class KeycloakIdentityServerExtension
                 {
                     b.RequireResourceRoles(Roles.ADMIN_SUPER);
                 });
+
+                o.AddPolicy(Policies.GetUsers, b =>
+                {
+                    b.RequireResourceRoles(Roles.ADMIN_SUPER, Roles.ADMIN);
+                    // Only ADMIN must provide X-TenantId; ADMIN_SUPER is exempt
+                    b.Requirements.Add(new TenantHeaderRequirement(Roles.ADMIN));
+                });
+
+                // Combined policy: Require ADMIN_SUPER OR ADMIN (OR logic)
+                // o.AddPolicy(Policies.R_ADMIN_SUPER_OR_ADMIN__RS_USERS__A_RU, b =>
+                // {
+                //     b.RequireAssertion(context =>
+                //     {
+                //         var resourceAccessClaim = context.User.FindFirst("resource_access")?.Value;
+                //         if (string.IsNullOrEmpty(resourceAccessClaim)) return false;
+
+                //         using var jsonDoc = JsonDocument.Parse(resourceAccessClaim);
+                //         var root = jsonDoc.RootElement;
+
+                //         // Get client roles from resource_access
+                //         if (root.TryGetProperty("ybstore-admin-dashboard-client-id", out var client) &&
+                //             client.TryGetProperty("roles", out var roles))
+                //         {
+                //             var roleList = roles.EnumerateArray()
+                //                 .Select(r => r.GetString())
+                //                 .Where(r => !string.IsNullOrEmpty(r))
+                //                 .ToList();
+
+                //             return roleList.Contains(Roles.ADMIN_SUPER) || roleList.Contains(Roles.ADMIN);
+                //         }
+
+                //         return false;
+                //     });
+                // });
 
                 // Alternative: If you enable the KeycloakClaimsTransformation below,
                 // you can use standard RequireRole instead:
@@ -93,6 +128,9 @@ public static class KeycloakIdentityServerExtension
             })
             .AddKeycloakAuthorization(configuration)
             .AddAuthorizationServer(configuration);
+
+        // Register custom authorization handlers
+        services.AddScoped<IAuthorizationHandler, TenantHeaderRequirementHandler>();
 
         return services;
     }

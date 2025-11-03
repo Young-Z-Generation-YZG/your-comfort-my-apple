@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Auth;
+using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 using YGZ.Identity.Application.Auths.Commands.Login;
@@ -31,6 +32,7 @@ public class AuthController : ApiController
     }
 
     [HttpPost("login")]
+    [SwaggerHeader("X-TenantId", "Tenant identifier for multi-tenant operations", "", false)]
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {

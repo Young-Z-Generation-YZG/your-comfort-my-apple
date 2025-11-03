@@ -35,9 +35,12 @@ const useIdentityService = () => {
    const isLoading = useMemo(() => {
       return (
          getUsersByAdminQueryState.isLoading ||
-         getUsersByAdminQueryState.isLoading
+         getUsersByAdminQueryState.isFetching
       );
-   }, [getUsersByAdminQueryState.isLoading]);
+   }, [
+      getUsersByAdminQueryState.isLoading,
+      getUsersByAdminQueryState.isFetching,
+   ]);
 
    // Centrally track success with toasts
    useMemo(() => {

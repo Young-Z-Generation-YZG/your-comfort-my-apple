@@ -27,6 +27,7 @@ services
 
 services.AddProblemDetails();
 services.AddHttpContextAccessor();
+// services.AddScoped<TenantProvider>();
 services.AddEndpointsApiExplorer();
 services.AddControllers(options => options.AddProtectedResources());
 

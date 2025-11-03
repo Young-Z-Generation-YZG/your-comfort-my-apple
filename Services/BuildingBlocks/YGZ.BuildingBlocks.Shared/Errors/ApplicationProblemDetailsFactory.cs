@@ -1,13 +1,13 @@
 ﻿
 
+using System.Diagnostics;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
-using FluentValidation;
+using Microsoft.Extensions.Options;
 
 namespace YGZ.BuildingBlocks.Shared.Errors;
 
@@ -23,13 +23,12 @@ public class ApplicationProblemDetailsFactory : ProblemDetailsFactory
         _logger = logger;
     }
 
-    public override ProblemDetails CreateProblemDetails(
-        HttpContext httpContext,
-        int? statusCode = null,
-        string? title = null,
-        string? type = null,
-        string? detail = null,
-        string? instance = null)
+    public override ProblemDetails CreateProblemDetails(HttpContext httpContext,
+                                                        int? statusCode = null,
+                                                        string? title = null,
+                                                        string? type = null,
+                                                        string? detail = null,
+                                                        string? instance = null)
     {
         statusCode ??= 500;
 
@@ -113,7 +112,9 @@ public class ApplicationProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions.Add("error", error);
 
             _logger.LogError("Exception occurred: {@Title} {@Error} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", error.Message, error, problemDetails, traceId, DateTime.UtcNow);
-        } else {
+        }
+        else
+        {
             _logger.LogError("[Global exception occurred]: {@Title} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", problemDetails.Title, problemDetails, traceId, DateTime.UtcNow);
         }
     }

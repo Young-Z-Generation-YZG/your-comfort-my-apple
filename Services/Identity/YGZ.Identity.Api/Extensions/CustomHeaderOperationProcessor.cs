@@ -13,7 +13,7 @@ public class CustomHeaderOperationProcessor : IOperationProcessor
         // Add X-Tenant-Id header
         context.OperationDescription.Operation.Parameters.Add(new NSwag.OpenApiParameter
         {
-            Name = "X-Tenant-Id",
+            Name = "X-TenantId",
             Kind = NSwag.OpenApiParameterKind.Header,
             Type = NJsonSchema.JsonObjectType.String,
             IsRequired = false,

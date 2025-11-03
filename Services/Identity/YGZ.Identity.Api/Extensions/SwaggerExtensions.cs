@@ -49,7 +49,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
             // Add custom headers to all operations
-            settings.OperationProcessors.Add(new CustomHeaderOperationProcessor());
+            // settings.OperationProcessors.Add(new CustomHeaderOperationProcessor());
 
             // Add processor for SwaggerHeader attributes
             settings.OperationProcessors.Add(new SwaggerHeaderOperationProcessor());

@@ -67,6 +67,8 @@ const authSlice = createSlice({
          if (!action.payload.impersonatedUser) {
             state.currentUserKey = 'currentUser';
          }
+
+         console.log('APP STATE: setImpersonatedUser');
       },
       setLogout: (state) => {
          state.currentUser = null;

@@ -153,7 +153,7 @@ export const keycloakApi = createApi({
 
                      setTimeout(() => {
                         console.log('Reloading page after impersonation');
-                        window.location.reload();
+                        // window.location.reload();
                      }, 0);
                   }
                } else {
@@ -165,7 +165,7 @@ export const keycloakApi = createApi({
 
                   setTimeout(() => {
                      console.log('Reloading page after stopping impersonation');
-                     window.location.reload();
+                     //  window.location.reload();
                   }, 0);
                }
             } catch (error: unknown) {

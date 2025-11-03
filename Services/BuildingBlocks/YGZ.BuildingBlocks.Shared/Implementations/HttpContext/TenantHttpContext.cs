@@ -8,6 +8,7 @@ public class TenantHttpContext : ITenantHttpContext
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<TenantHttpContext> _logger;
+    private const string TenantIdHeaderName = "X-TenantId";
 
     public TenantHttpContext(IHttpContextAccessor httpContextAccessor, ILogger<TenantHttpContext> logger)
     {
@@ -28,15 +29,21 @@ public class TenantHttpContext : ITenantHttpContext
         return branchId;
     }
 
-    public string GetTenantId()
+    public string? GetTenantId()
     {
-        var tenantId = _httpContextAccessor.HttpContext?.User.FindFirst("tenant_id")?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "tenant_id")?.Value;
+        var tenantIdFromHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName].FirstOrDefault();
+        var tenantIdFromUser = _httpContextAccessor.HttpContext?.User.FindFirst("tenant_id")?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "tenant_id")?.Value;
 
-        if (string.IsNullOrEmpty(tenantId))
-        {
-            _logger.LogWarning("No tenant ID found in user claims.");
-            throw new UnauthorizedAccessException("Tenant ID not found in token.");
-        }
+        var tenantId = tenantIdFromHeader ?? tenantIdFromUser;
+
+        _logger.LogInformation("Tenant ID: {TenantId}", tenantId);
+
+        // if (string.IsNullOrEmpty(tenantId))
+        // {
+        //     _logger.LogWarning("No tenant ID found in user claims.");
+
+        //     throw new UnauthorizedAccessException("Tenant ID not found in token.");
+        // }
 
         return tenantId;
     }

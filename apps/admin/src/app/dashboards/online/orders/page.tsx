@@ -62,6 +62,9 @@ import {
 import { LoadingOverlay } from '@components/loading-overlay';
 import useCustomFilters from '~/src/hooks/use-filter';
 import useFilters from '~/src/hooks/use-filter';
+import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { useDispatch } from 'react-redux';
+import { orderingApi } from '~/src/infrastructure/services/order.service';
 
 const fakeData = {
    total_records: 7,
@@ -753,6 +756,14 @@ const OnlineOrdersPage = () => {
       useState(false);
    const [selectedStatuses, setSelectedStatuses] = useState<EOrderStatus[]>([]);
 
+   const isFirstFetch = useRef(false);
+
+   //    App state
+   const { tenantId } = useAppSelector((state) => state.tenant);
+   const { impersonatedUser } = useAppSelector((state) => state.auth);
+
+   const dispatch = useDispatch();
+
    const { getOrdersByAdminAsync, getOrdersByAdminState, isLoading } =
       useOrderingService();
 
@@ -775,7 +786,9 @@ const OnlineOrdersPage = () => {
       paginationItems,
       getPageNumbers,
    } = usePagination(
-      getOrdersByAdminState.data && getOrdersByAdminState.data.items.length > 0
+      getOrdersByAdminState.isSuccess &&
+         getOrdersByAdminState.data &&
+         getOrdersByAdminState.data.items.length > 0
          ? getOrdersByAdminState.data
          : {
               total_records: 0,
@@ -796,8 +809,9 @@ const OnlineOrdersPage = () => {
       const fetchOrders = async () => {
          await getOrdersByAdminAsync(filters);
       };
+
       fetchOrders();
-   }, [filters, getOrdersByAdminAsync]);
+   }, [filters, getOrdersByAdminAsync, tenantId, impersonatedUser]);
 
    const table = useReactTable({
       data: paginationItems,

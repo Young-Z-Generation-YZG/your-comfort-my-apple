@@ -1,6 +1,11 @@
 'use client';
 
-import { ChevronDown, TrendingUp } from 'lucide-react';
+import {
+   ChevronDown,
+   TrendingUp,
+   ArrowUpRight,
+   ArrowDownRight,
+} from 'lucide-react';
 import {
    CartesianGrid,
    LabelList,
@@ -31,6 +36,7 @@ import {
    DropdownMenuContent,
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
+import { Badge } from '@components/ui/badge';
 import { isWithinInterval, startOfMonth } from 'date-fns';
 import { useState, useMemo } from 'react';
 
@@ -44,6 +50,7 @@ import {
    PopoverContent,
    PopoverTrigger,
 } from '~/src/components/ui/popover';
+import { ToggleGroup, ToggleGroupItem } from '@components/ui/toggle-group';
 
 export const description = 'A line chart with a label';
 
@@ -2066,6 +2073,95 @@ const RevenueAnalytics = () => {
             month.
          </p>
 
+         {/* Cards */}
+         <div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+               <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                     <CardTitle className="text-sm font-medium">
+                        Total Revenue
+                     </CardTitle>
+                     <Badge variant="secondary" className="gap-1">
+                        <ArrowUpRight className="h-3 w-3" /> +12.5%
+                     </Badge>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="text-2xl font-bold">$1,250.00</div>
+                     <p className="text-xs text-muted-foreground mt-3 flex items-center gap-2">
+                        Trending up this month
+                        <TrendingUp className="h-3.5 w-3.5" />
+                     </p>
+                     <p className="text-xs text-muted-foreground">
+                        Visitors for the last 6 months
+                     </p>
+                  </CardContent>
+               </Card>
+
+               <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                     <CardTitle className="text-sm font-medium">
+                        New Customers
+                     </CardTitle>
+                     <Badge variant="destructive" className="gap-1">
+                        <ArrowDownRight className="h-3 w-3" /> -20%
+                     </Badge>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="text-2xl font-bold">1,234</div>
+                     <p className="text-xs text-muted-foreground mt-3 flex items-center gap-2">
+                        Down 20% this period
+                        <TrendingUp className="h-3.5 w-3.5 rotate-180" />
+                     </p>
+                     <p className="text-xs text-muted-foreground">
+                        Acquisition needs attention
+                     </p>
+                  </CardContent>
+               </Card>
+
+               <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                     <CardTitle className="text-sm font-medium">
+                        Active Accounts
+                     </CardTitle>
+                     <Badge variant="secondary" className="gap-1">
+                        <ArrowUpRight className="h-3 w-3" /> +12.5%
+                     </Badge>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="text-2xl font-bold">45,678</div>
+                     <p className="text-xs text-muted-foreground mt-3 flex items-center gap-2">
+                        Strong user retention
+                        <TrendingUp className="h-3.5 w-3.5" />
+                     </p>
+                     <p className="text-xs text-muted-foreground">
+                        Engagement exceed targets
+                     </p>
+                  </CardContent>
+               </Card>
+
+               <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                     <CardTitle className="text-sm font-medium">
+                        Growth Rate
+                     </CardTitle>
+                     <Badge variant="secondary" className="gap-1">
+                        <ArrowUpRight className="h-3 w-3" /> +4.5%
+                     </Badge>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="text-2xl font-bold">4.5%</div>
+                     <p className="text-xs text-muted-foreground mt-3 flex items-center gap-2">
+                        Steady performance increase
+                        <TrendingUp className="h-3.5 w-3.5" />
+                     </p>
+                     <p className="text-xs text-muted-foreground">
+                        Meets growth projections
+                     </p>
+                  </CardContent>
+               </Card>
+            </div>
+         </div>
+
          <div>
             {/* Filter section */}
             <div>
@@ -2215,11 +2311,31 @@ const RevenueAnalytics = () => {
 
                {/* Chart 1 */}
                <Card className="mt-4">
-                  <CardHeader>
-                     <CardTitle>Revenue & Orders Chart</CardTitle>
-                     <CardDescription>
-                        January - December 2025 - Order Performance
-                     </CardDescription>
+                  <CardHeader className="flex flex-row items-start justify-between">
+                     <div>
+                        <CardTitle>Revenue & Orders Chart</CardTitle>
+                        <CardDescription>
+                           January - December 2025 - Order Performance
+                        </CardDescription>
+                     </div>
+
+                     <ToggleGroup
+                        type="single"
+                        value={'30d'}
+                        onValueChange={() => {}}
+                        variant="outline"
+                        className="flex"
+                     >
+                        <ToggleGroupItem value="90d">
+                           Last 3 months
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="30d">
+                           Last 30 days
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="7d">
+                           Last 7 days
+                        </ToggleGroupItem>
+                     </ToggleGroup>
                   </CardHeader>
                   <CardContent>
                      <ChartContainer config={chartConfig}>

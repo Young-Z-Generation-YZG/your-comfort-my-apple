@@ -39,10 +39,16 @@ public class UserController : ApiController
     }
 
     [HttpGet("admin")]
-    [Authorize(Policy = Policies.R__ADMIN_SUPER___RS__ALL)]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.ALL)]
+    [Authorize(Policy = Policies.GetUsers)]
+    [ProtectedResource(Resources.RESOURCE_USERS, [
+        Scopes.ALL,
+        Scopes.READ_ANY,
+    ])]
+    [SwaggerHeader("X-TenantId", "Tenant identifier for multi-tenant operations", "", false)]
     public async Task<IActionResult> GetUsersByAdmin([FromQuery] GetUsersPaginationRequest request, CancellationToken cancellationToken)
     {
+        var tenantId = Request.Headers["X-TenantId"].FirstOrDefault();
+
         var query = new GetUsersByAdminQuery
         {
             Page = request._page,

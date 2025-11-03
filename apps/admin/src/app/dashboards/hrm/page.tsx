@@ -54,6 +54,7 @@ import {
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
 import useFilters from '~/src/hooks/use-filter';
+import { useAppSelector } from '~/src/infrastructure/redux/store';
 
 // Helper function to get gender badge styles
 const getGenderStyle = (gender: string) => {
@@ -437,10 +438,9 @@ const HRMPage = () => {
    );
    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-   // Get users data from state or use empty array
-   const usersData = useMemo(() => {
-      return getUsersByAdminState.data?.items || [];
-   }, [getUsersByAdminState.data]);
+   //    App state
+   const { tenantId } = useAppSelector((state) => state.tenant);
+   const { impersonatedUser } = useAppSelector((state) => state.auth);
 
    const {
       currentPage,
@@ -451,9 +451,12 @@ const HRMPage = () => {
       isFirstPage,
       isNextPage,
       isPrevPage,
+      paginationItems,
       getPageNumbers,
    } = usePagination(
-      getUsersByAdminState.data && getUsersByAdminState.data.items.length > 0
+      getUsersByAdminState.isSuccess &&
+         getUsersByAdminState.data &&
+         getUsersByAdminState.data.items.length > 0
          ? getUsersByAdminState.data
          : {
               total_records: 0,
@@ -472,7 +475,7 @@ const HRMPage = () => {
 
    // Setup table
    const table = useReactTable({
-      data: usersData,
+      data: paginationItems,
       columns,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -494,7 +497,7 @@ const HRMPage = () => {
       };
 
       fetchUsers();
-   }, [filters, getUsersByAdminAsync]);
+   }, [filters, getUsersByAdminAsync, tenantId, impersonatedUser]);
 
    return (
       <div className="p-5">
@@ -628,7 +631,7 @@ const HRMPage = () => {
                         <div className="text-muted-foreground text-sm">
                            Showing{' '}
                            <span className="font-medium">
-                              {usersData.length > 0
+                              {paginationItems.length > 0
                                  ? (currentPage - 1) * pageSize + 1
                                  : 0}
                            </span>{' '}

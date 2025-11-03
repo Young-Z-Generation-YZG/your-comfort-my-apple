@@ -38,8 +38,6 @@ export const authApi = createApi({
             try {
                const { data } = await queryFulfilled;
 
-               console.log('data', data);
-
                dispatch(
                   setLogin({
                      currentUser: {

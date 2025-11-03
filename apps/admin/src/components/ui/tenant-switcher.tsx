@@ -20,19 +20,45 @@ import {
    SidebarMenuItem,
 } from '@components/ui/sidebar';
 import { Input } from '@components/ui/input';
+import { useDispatch } from 'react-redux';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
+import { useAppSelector } from '~/src/infrastructure/redux/store';
 
 export function TenantSwitcher({
    tenants,
 }: {
    tenants: {
-      tenantId: string;
-      tenantCode: string;
+      tenantId?: string | null;
+      tenantCode?: string | null;
       tenantName: string;
-      tenantAddress?: string;
+      tenantAddress?: string | null;
    }[];
 }) {
-   const [selectedTenant, setSelectedTenant] = React.useState(tenants[0]);
+   const dispatch = useDispatch();
+   const { tenantId } = useAppSelector((state) => state.tenant);
+
+   // Set default selected tenant based on Redux tenantId
+   const getInitialTenant = () => {
+      if (tenantId) {
+         const tenant = tenants.find((t) => t.tenantId === tenantId);
+         if (tenant) return tenant;
+      }
+      return tenants[0]; // Fallback to first tenant
+   };
+
+   const [selectedTenant, setSelectedTenant] =
+      React.useState(getInitialTenant());
    const [searchQuery, setSearchQuery] = React.useState('');
+
+   // Sync selected tenant when Redux tenantId changes
+   React.useEffect(() => {
+      if (tenantId) {
+         const tenant = tenants.find((t) => t.tenantId === tenantId);
+         if (tenant && tenant.tenantId !== selectedTenant?.tenantId) {
+            setSelectedTenant(tenant);
+         }
+      }
+   }, [tenantId, tenants, selectedTenant]);
 
    const filteredTenants = React.useMemo(() => {
       if (!searchQuery) return tenants;
@@ -43,13 +69,21 @@ export function TenantSwitcher({
    }, [tenants, searchQuery]);
 
    const handleSelectTenant = (tenant: {
-      tenantId: string;
-      tenantCode: string;
+      tenantId?: string | null;
+      tenantCode?: string | null;
       tenantName: string;
-      tenantAddress?: string;
+      tenantAddress?: string | null;
    }) => {
       setSelectedTenant(tenant);
       setSearchQuery('');
+
+      dispatch(
+         setTenant({
+            tenantId: tenant.tenantId,
+            tenantCode: tenant.tenantCode,
+            tenantName: tenant.tenantName,
+         }),
+      );
    };
 
    return (
@@ -102,6 +136,7 @@ export function TenantSwitcher({
                               key={tenant.tenantId}
                               onSelect={() => handleSelectTenant(tenant)}
                               className="flex items-center gap-2"
+                              disabled={tenant.tenantId === tenantId}
                            >
                               <div className="flex flex-col flex-1">
                                  <span className="font-medium">
