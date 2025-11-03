@@ -1,7 +1,14 @@
 'use client';
 
-import { ChevronDown, TrendingUp, CalendarIcon } from 'lucide-react';
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from 'recharts';
+import { ChevronDown, TrendingUp } from 'lucide-react';
+import {
+   CartesianGrid,
+   LabelList,
+   Line,
+   LineChart,
+   XAxis,
+   YAxis,
+} from 'recharts';
 
 import {
    Card,
@@ -24,10 +31,8 @@ import {
    DropdownMenuContent,
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import { addDays, format } from 'date-fns';
-import { useState } from 'react';
-import { cn } from '~/src/infrastructure/lib/utils';
-import { Separator } from '@components/ui/separator';
+import { isWithinInterval, startOfMonth } from 'date-fns';
+import { useState, useMemo } from 'react';
 
 import { ChevronDownIcon } from 'lucide-react';
 import { type DateRange } from 'react-day-picker';
@@ -1931,47 +1936,6 @@ const fakeData = {
 // export type TOrder = typeof fakeData;
 export type TOrderItem = (typeof fakeData.items)[number];
 
-// Transform fakeData into chart data
-const processOrderData = () => {
-   const dateMap = new Map<
-      string,
-      { revenue: number; orders: number; timestamp: number }
-   >();
-
-   fakeData.items.forEach((order) => {
-      if (order.status === 'PAID') {
-         const date = new Date(order.created_at);
-         const dateKey = date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-         });
-
-         if (!dateMap.has(dateKey)) {
-            dateMap.set(dateKey, {
-               revenue: 0,
-               orders: 0,
-               timestamp: date.getTime(),
-            });
-         }
-
-         const current = dateMap.get(dateKey)!;
-         current.revenue += order.total_amount;
-         current.orders += 1;
-      }
-   });
-
-   // Sort by timestamp to ensure chronological order
-   return Array.from(dateMap.entries())
-      .sort(([, a], [, b]) => a.timestamp - b.timestamp)
-      .map(([date, data]) => ({
-         date,
-         revenue: data.revenue,
-         orders: data.orders,
-      }));
-};
-
-const chartData = processOrderData();
-
 const chartConfig = {
    revenue: {
       label: 'Revenue ($)',
@@ -1983,13 +1947,90 @@ const chartConfig = {
    },
 } satisfies ChartConfig;
 
-const RevenueAnalytics = () => {
-   //    const [dateRange, setDateRange] = useState<DateRange | undefined>({
-   //       from: addDays(new Date(), -20),
-   //       to: new Date(),
-   //    });
+type FilterMetric = 'revenue' | 'orders' | 'both';
+type GroupBy = 'date' | 'month';
 
+const RevenueAnalytics = () => {
+   // Filter states
    const [range, setRange] = useState<DateRange | undefined>(undefined);
+   const [filterMetric, setFilterMetric] = useState<FilterMetric>('both');
+   const [groupBy, setGroupBy] = useState<GroupBy>('date');
+   const [isFiltered, setIsFiltered] = useState(false);
+
+   // Process and filter data
+   const chartData = useMemo(() => {
+      const dateMap = new Map<
+         string,
+         { revenue: number; orders: number; timestamp: number }
+      >();
+
+      fakeData.items.forEach((order) => {
+         if (order.status === 'PAID') {
+            const date = new Date(order.created_at);
+
+            // Apply date range filter if set and filter is active
+            if (isFiltered && range?.from && range?.to) {
+               const isInRange = isWithinInterval(date, {
+                  start: range.from,
+                  end: range.to,
+               });
+               if (!isInRange) return;
+            }
+
+            // Group by date or month
+            let dateKey: string;
+            let timestamp: number;
+
+            if (groupBy === 'month') {
+               dateKey = date.toLocaleDateString('en-US', {
+                  month: 'short',
+                  year: 'numeric',
+               });
+               timestamp = startOfMonth(date).getTime();
+            } else {
+               dateKey = date.toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+               });
+               timestamp = date.getTime();
+            }
+
+            if (!dateMap.has(dateKey)) {
+               dateMap.set(dateKey, {
+                  revenue: 0,
+                  orders: 0,
+                  timestamp,
+               });
+            }
+
+            const current = dateMap.get(dateKey)!;
+            current.revenue += order.total_amount;
+            current.orders += 1;
+         }
+      });
+
+      // Sort by timestamp
+      return Array.from(dateMap.entries())
+         .sort(([, a], [, b]) => a.timestamp - b.timestamp)
+         .map(([date, data]) => ({
+            date,
+            revenue: data.revenue,
+            orders: data.orders,
+         }));
+   }, [range, groupBy, isFiltered]);
+
+   // Handle filter submission
+   const handleSubmitFilter = () => {
+      setIsFiltered(true);
+   };
+
+   // Reset filter
+   const handleResetFilter = () => {
+      setRange(undefined);
+      setFilterMetric('both');
+      setGroupBy('date');
+      setIsFiltered(false);
+   };
 
    return (
       <div className="flex flex-col flex-1 gap-4 p-4">
@@ -2003,22 +2044,73 @@ const RevenueAnalytics = () => {
          </p>
 
          <div>
+            {/* Filter section */}
             <div className="flex items-center gap-4">
                <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                      <Button variant="outline">
-                        Filter by
+                        Filter by:{' '}
+                        {filterMetric === 'both'
+                           ? 'All'
+                           : filterMetric === 'revenue'
+                             ? 'Revenue'
+                             : 'Orders'}
                         <div className="flex items-center gap-2">
                            <ChevronDown />
                         </div>
                      </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                     <DropdownMenuCheckboxItem>
+                  <DropdownMenuContent
+                     align="start"
+                     side="bottom"
+                     sideOffset={4}
+                  >
+                     <DropdownMenuCheckboxItem
+                        checked={filterMetric === 'both'}
+                        onCheckedChange={() => setFilterMetric('both')}
+                     >
+                        All
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        checked={filterMetric === 'revenue'}
+                        onCheckedChange={() => setFilterMetric('revenue')}
+                     >
                         Revenue
                      </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        checked={filterMetric === 'orders'}
+                        onCheckedChange={() => setFilterMetric('orders')}
+                     >
                         Quantity of orders
+                     </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button variant="outline">
+                        Group by: {groupBy === 'date' ? 'Date' : 'Month'}
+                        <div className="flex items-center gap-2">
+                           <ChevronDown />
+                        </div>
+                     </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                     align="start"
+                     side="bottom"
+                     sideOffset={4}
+                  >
+                     <DropdownMenuCheckboxItem
+                        checked={groupBy === 'date'}
+                        onCheckedChange={() => setGroupBy('date')}
+                     >
+                        Date
+                     </DropdownMenuCheckboxItem>
+                     <DropdownMenuCheckboxItem
+                        checked={groupBy === 'month'}
+                        onCheckedChange={() => setGroupBy('month')}
+                     >
+                        Month
                      </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                </DropdownMenu>
@@ -2053,7 +2145,47 @@ const RevenueAnalytics = () => {
                      </PopoverContent>
                   </Popover>
                </div>
+               <Button
+                  variant="default"
+                  onClick={handleSubmitFilter}
+                  disabled={!range?.from || !range?.to}
+               >
+                  Apply Filter
+               </Button>
+               {isFiltered && (
+                  <Button variant="outline" onClick={handleResetFilter}>
+                     Reset
+                  </Button>
+               )}
             </div>
+
+            {/* Filter status */}
+            {isFiltered && (
+               <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span>
+                     Showing{' '}
+                     <strong>
+                        {filterMetric === 'both'
+                           ? 'All Metrics'
+                           : filterMetric === 'revenue'
+                             ? 'Revenue'
+                             : 'Orders'}
+                     </strong>{' '}
+                     grouped by{' '}
+                     <strong>{groupBy === 'date' ? 'Date' : 'Month'}</strong>
+                     {range?.from && range?.to && (
+                        <>
+                           {' '}
+                           from{' '}
+                           <strong>
+                              {range.from.toLocaleDateString()}
+                           </strong> to{' '}
+                           <strong>{range.to.toLocaleDateString()}</strong>
+                        </>
+                     )}
+                  </span>
+               </div>
+            )}
             <Card className="mt-4">
                <CardHeader>
                   <CardTitle>Revenue & Orders Chart</CardTitle>
@@ -2079,39 +2211,75 @@ const RevenueAnalytics = () => {
                            axisLine={false}
                            tickMargin={8}
                         />
+                        <YAxis
+                           tickLine={false}
+                           axisLine={false}
+                           tickMargin={8}
+                           tickFormatter={(value) => `${value}`}
+                        />
                         <ChartTooltip
                            cursor={false}
                            content={<ChartTooltipContent indicator="line" />}
                         />
-                        <Line
-                           dataKey="revenue"
-                           type="natural"
-                           stroke="hsl(var(--color-revenue))"
-                           strokeWidth={2}
-                           dot={{
-                              fill: 'hsl(var(--color-revenue))',
-                           }}
-                           activeDot={{
-                              r: 6,
-                           }}
-                        >
-                           <LabelList
-                              position="top"
-                              offset={12}
-                              className="fill-foreground"
-                              fontSize={12}
-                           />
-                        </Line>
+                        {(filterMetric === 'revenue' ||
+                           filterMetric === 'both') && (
+                           <Line
+                              dataKey="revenue"
+                              type="natural"
+                              stroke="hsl(var(--color-revenue))"
+                              strokeWidth={2}
+                              dot={{
+                                 fill: 'hsl(var(--color-revenue))',
+                              }}
+                              activeDot={{
+                                 r: 6,
+                              }}
+                           >
+                              <LabelList
+                                 position="top"
+                                 offset={12}
+                                 className="fill-foreground"
+                                 fontSize={12}
+                              />
+                           </Line>
+                        )}
+                        {(filterMetric === 'orders' ||
+                           filterMetric === 'both') && (
+                           <Line
+                              dataKey="orders"
+                              type="natural"
+                              stroke="hsl(var(--color-orders))"
+                              strokeWidth={2}
+                              dot={{
+                                 fill: 'hsl(var(--color-orders))',
+                              }}
+                              activeDot={{
+                                 r: 6,
+                              }}
+                           >
+                              <LabelList
+                                 position="top"
+                                 offset={12}
+                                 className="fill-foreground"
+                                 fontSize={12}
+                              />
+                           </Line>
+                        )}
                      </LineChart>
                   </ChartContainer>
                </CardContent>
                <CardFooter className="flex-col items-start gap-2 text-sm">
                   <div className="flex gap-2 leading-none font-medium">
-                     Total revenue from paid orders{' '}
+                     {filterMetric === 'revenue' && 'Revenue Analytics'}
+                     {filterMetric === 'orders' && 'Order Analytics'}
+                     {filterMetric === 'both' &&
+                        'Revenue & Order Analytics'}{' '}
                      <TrendingUp className="h-4 w-4" />
                   </div>
                   <div className="text-muted-foreground leading-none">
-                     Showing revenue trends for paid orders only
+                     {isFiltered
+                        ? `Showing filtered data ${groupBy === 'month' ? 'grouped by month' : 'by date'}`
+                        : 'Showing all paid orders from January - December 2025'}
                   </div>
                </CardFooter>
             </Card>
