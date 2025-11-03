@@ -1951,11 +1951,34 @@ type FilterMetric = 'revenue' | 'orders' | 'both';
 type GroupBy = 'date' | 'month';
 
 const RevenueAnalytics = () => {
-   // Filter states
+   // Filter states for Chart 1
    const [range, setRange] = useState<DateRange | undefined>(undefined);
    const [filterMetric, setFilterMetric] = useState<FilterMetric>('both');
    const [groupBy, setGroupBy] = useState<GroupBy>('date');
    const [isFiltered, setIsFiltered] = useState(false);
+
+   // Filter states for Chart 2 - Multi-select years
+   const [selectedYears, setSelectedYears] = useState<{
+      year2024: boolean;
+      year2025: boolean;
+   }>({
+      year2024: true,
+      year2025: true,
+   });
+
+   const toggleYear = (year: 'year2024' | 'year2025') => {
+      setSelectedYears((prev) => ({
+         ...prev,
+         [year]: !prev[year],
+      }));
+   };
+
+   const getYearFilterLabel = () => {
+      if (selectedYears.year2024 && selectedYears.year2025) return 'Both Years';
+      if (selectedYears.year2024) return '2024';
+      if (selectedYears.year2025) return '2025';
+      return 'Select Years';
+   };
 
    // Process and filter data
    const chartData = useMemo(() => {
@@ -2045,244 +2068,447 @@ const RevenueAnalytics = () => {
 
          <div>
             {/* Filter section */}
-            <div className="flex items-center gap-4">
-               <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                     <Button variant="outline">
-                        Filter by:{' '}
-                        {filterMetric === 'both'
-                           ? 'All'
-                           : filterMetric === 'revenue'
-                             ? 'Revenue'
-                             : 'Orders'}
-                        <div className="flex items-center gap-2">
-                           <ChevronDown />
-                        </div>
-                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                     align="start"
-                     side="bottom"
-                     sideOffset={4}
-                  >
-                     <DropdownMenuCheckboxItem
-                        checked={filterMetric === 'both'}
-                        onCheckedChange={() => setFilterMetric('both')}
-                     >
-                        All
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        checked={filterMetric === 'revenue'}
-                        onCheckedChange={() => setFilterMetric('revenue')}
-                     >
-                        Revenue
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        checked={filterMetric === 'orders'}
-                        onCheckedChange={() => setFilterMetric('orders')}
-                     >
-                        Quantity of orders
-                     </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-               </DropdownMenu>
-
-               <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                     <Button variant="outline">
-                        Group by: {groupBy === 'date' ? 'Date' : 'Month'}
-                        <div className="flex items-center gap-2">
-                           <ChevronDown />
-                        </div>
-                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                     align="start"
-                     side="bottom"
-                     sideOffset={4}
-                  >
-                     <DropdownMenuCheckboxItem
-                        checked={groupBy === 'date'}
-                        onCheckedChange={() => setGroupBy('date')}
-                     >
-                        Date
-                     </DropdownMenuCheckboxItem>
-                     <DropdownMenuCheckboxItem
-                        checked={groupBy === 'month'}
-                        onCheckedChange={() => setGroupBy('month')}
-                     >
-                        Month
-                     </DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-               </DropdownMenu>
-
-               {/* Date range picker */}
-               <div>
-                  <Popover>
-                     <PopoverTrigger asChild>
-                        <Button
-                           variant="outline"
-                           id="dates"
-                           className="w-56 justify-between font-normal"
-                        >
-                           {range?.from && range?.to
-                              ? `${range.from.toLocaleDateString()} - ${range.to.toLocaleDateString()}`
-                              : 'Select date'}
-                           <ChevronDownIcon />
+            <div>
+               <div className="flex items-center gap-4">
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                           Filter by:{' '}
+                           {filterMetric === 'both'
+                              ? 'All'
+                              : filterMetric === 'revenue'
+                                ? 'Revenue'
+                                : 'Orders'}
+                           <div className="flex items-center gap-2">
+                              <ChevronDown />
+                           </div>
                         </Button>
-                     </PopoverTrigger>
-                     <PopoverContent
-                        className="w-auto overflow-hidden p-0"
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent
                         align="start"
+                        side="bottom"
+                        sideOffset={4}
                      >
-                        <Calendar
-                           mode="range"
-                           selected={range}
-                           captionLayout="dropdown"
-                           onSelect={(range) => {
-                              setRange(range);
-                           }}
-                        />
-                     </PopoverContent>
-                  </Popover>
-               </div>
-               <Button
-                  variant="default"
-                  onClick={handleSubmitFilter}
-                  disabled={!range?.from || !range?.to}
-               >
-                  Apply Filter
-               </Button>
-               {isFiltered && (
-                  <Button variant="outline" onClick={handleResetFilter}>
-                     Reset
+                        <DropdownMenuCheckboxItem
+                           checked={filterMetric === 'both'}
+                           onCheckedChange={() => setFilterMetric('both')}
+                        >
+                           All
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           checked={filterMetric === 'revenue'}
+                           onCheckedChange={() => setFilterMetric('revenue')}
+                        >
+                           Revenue
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           checked={filterMetric === 'orders'}
+                           onCheckedChange={() => setFilterMetric('orders')}
+                        >
+                           Quantity of orders
+                        </DropdownMenuCheckboxItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                           Group by: {groupBy === 'date' ? 'Date' : 'Month'}
+                           <div className="flex items-center gap-2">
+                              <ChevronDown />
+                           </div>
+                        </Button>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent
+                        align="start"
+                        side="bottom"
+                        sideOffset={4}
+                     >
+                        <DropdownMenuCheckboxItem
+                           checked={groupBy === 'date'}
+                           onCheckedChange={() => setGroupBy('date')}
+                        >
+                           Date
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           checked={groupBy === 'month'}
+                           onCheckedChange={() => setGroupBy('month')}
+                        >
+                           Month
+                        </DropdownMenuCheckboxItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Date range picker */}
+                  <div>
+                     <Popover>
+                        <PopoverTrigger asChild>
+                           <Button
+                              variant="outline"
+                              id="dates"
+                              className="w-56 justify-between font-normal"
+                           >
+                              {range?.from && range?.to
+                                 ? `${range.from.toLocaleDateString()} - ${range.to.toLocaleDateString()}`
+                                 : 'Select date'}
+                              <ChevronDownIcon />
+                           </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                           className="w-auto overflow-hidden p-0"
+                           align="start"
+                        >
+                           <Calendar
+                              mode="range"
+                              selected={range}
+                              captionLayout="dropdown"
+                              onSelect={(range) => {
+                                 setRange(range);
+                              }}
+                           />
+                        </PopoverContent>
+                     </Popover>
+                  </div>
+                  <Button
+                     variant="ghost"
+                     className="text-blue-600 hover:text-blue-600 hover:underline"
+                     onClick={handleSubmitFilter}
+                     disabled={!range?.from || !range?.to}
+                  >
+                     Apply Filter
                   </Button>
+                  {isFiltered && (
+                     <Button variant="outline" onClick={handleResetFilter}>
+                        Reset
+                     </Button>
+                  )}
+               </div>
+
+               {/* Filter status */}
+               {isFiltered && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                     <span>
+                        Showing{' '}
+                        <strong>
+                           {filterMetric === 'both'
+                              ? 'All Metrics'
+                              : filterMetric === 'revenue'
+                                ? 'Revenue'
+                                : 'Orders'}
+                        </strong>{' '}
+                        grouped by{' '}
+                        <strong>{groupBy === 'date' ? 'Date' : 'Month'}</strong>
+                        {range?.from && range?.to && (
+                           <>
+                              {' '}
+                              from{' '}
+                              <strong>
+                                 {range.from.toLocaleDateString()}
+                              </strong>{' '}
+                              to{' '}
+                              <strong>{range.to.toLocaleDateString()}</strong>
+                           </>
+                        )}
+                     </span>
+                  </div>
                )}
+
+               {/* Chart 1 */}
+               <Card className="mt-4">
+                  <CardHeader>
+                     <CardTitle>Revenue & Orders Chart</CardTitle>
+                     <CardDescription>
+                        January - December 2025 - Order Performance
+                     </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                     <ChartContainer config={chartConfig}>
+                        <LineChart
+                           accessibilityLayer
+                           data={chartData}
+                           margin={{
+                              top: 20,
+                              left: 12,
+                              right: 12,
+                           }}
+                        >
+                           <CartesianGrid vertical={false} />
+                           <XAxis
+                              dataKey="date"
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                           />
+                           <YAxis
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                              tickFormatter={(value) => `${value}`}
+                           />
+                           <ChartTooltip
+                              cursor={false}
+                              content={<ChartTooltipContent indicator="line" />}
+                           />
+                           {(filterMetric === 'revenue' ||
+                              filterMetric === 'both') && (
+                              <Line
+                                 dataKey="revenue"
+                                 type="natural"
+                                 stroke="hsl(var(--color-revenue))"
+                                 strokeWidth={2}
+                                 dot={{
+                                    fill: 'hsl(var(--color-revenue))',
+                                 }}
+                                 activeDot={{
+                                    r: 6,
+                                 }}
+                              >
+                                 <LabelList
+                                    position="top"
+                                    offset={12}
+                                    className="fill-foreground"
+                                    fontSize={12}
+                                 />
+                              </Line>
+                           )}
+                           {(filterMetric === 'orders' ||
+                              filterMetric === 'both') && (
+                              <Line
+                                 dataKey="orders"
+                                 type="natural"
+                                 stroke="hsl(var(--color-orders))"
+                                 strokeWidth={2}
+                                 dot={{
+                                    fill: 'hsl(var(--color-orders))',
+                                 }}
+                                 activeDot={{
+                                    r: 6,
+                                 }}
+                              >
+                                 <LabelList
+                                    position="top"
+                                    offset={12}
+                                    className="fill-foreground"
+                                    fontSize={12}
+                                 />
+                              </Line>
+                           )}
+                        </LineChart>
+                     </ChartContainer>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-2 text-sm">
+                     <div className="flex gap-2 leading-none font-medium">
+                        {filterMetric === 'revenue' && 'Revenue Analytics'}
+                        {filterMetric === 'orders' && 'Order Analytics'}
+                        {filterMetric === 'both' &&
+                           'Revenue & Order Analytics'}{' '}
+                        <TrendingUp className="h-4 w-4" />
+                     </div>
+                     <div className="text-muted-foreground leading-none">
+                        {isFiltered
+                           ? `Showing filtered data ${groupBy === 'month' ? 'grouped by month' : 'by date'}`
+                           : 'Showing all paid orders from January - December 2025'}
+                     </div>
+                  </CardFooter>
+               </Card>
             </div>
 
-            {/* Filter status */}
-            {isFiltered && (
-               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>
-                     Showing{' '}
-                     <strong>
-                        {filterMetric === 'both'
-                           ? 'All Metrics'
-                           : filterMetric === 'revenue'
-                             ? 'Revenue'
-                             : 'Orders'}
-                     </strong>{' '}
-                     grouped by{' '}
-                     <strong>{groupBy === 'date' ? 'Date' : 'Month'}</strong>
-                     {range?.from && range?.to && (
-                        <>
-                           {' '}
-                           from{' '}
-                           <strong>
-                              {range.from.toLocaleDateString()}
-                           </strong> to{' '}
-                           <strong>{range.to.toLocaleDateString()}</strong>
-                        </>
-                     )}
-                  </span>
+            <div className="mt-10">
+               <div className="flex items-center gap-4">
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button variant="outline">
+                           Filter by: {getYearFilterLabel()}
+                           <div className="flex items-center gap-2">
+                              <ChevronDown />
+                           </div>
+                        </Button>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent
+                        align="start"
+                        side="bottom"
+                        sideOffset={4}
+                     >
+                        <DropdownMenuCheckboxItem
+                           checked={selectedYears.year2024}
+                           onCheckedChange={() => toggleYear('year2024')}
+                        >
+                           2024
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                           checked={selectedYears.year2025}
+                           onCheckedChange={() => toggleYear('year2025')}
+                        >
+                           2025
+                        </DropdownMenuCheckboxItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
                </div>
-            )}
-            <Card className="mt-4">
-               <CardHeader>
-                  <CardTitle>Revenue & Orders Chart</CardTitle>
-                  <CardDescription>
-                     January - December 2025 - Order Performance
-                  </CardDescription>
-               </CardHeader>
-               <CardContent>
-                  <ChartContainer config={chartConfig}>
-                     <LineChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                           top: 20,
-                           left: 12,
-                           right: 12,
+
+               {/* Chart 2 - Multi-Year Comparison */}
+               <Card className="mt-4">
+                  <CardHeader>
+                     <CardTitle>
+                        {selectedYears.year2024 && selectedYears.year2025
+                           ? 'Year-over-Year Revenue Comparison'
+                           : selectedYears.year2024
+                             ? '2024 Revenue Analytics'
+                             : selectedYears.year2025
+                               ? '2025 Revenue Analytics'
+                               : 'Revenue Analytics'}
+                     </CardTitle>
+                     <CardDescription>
+                        {selectedYears.year2024 && selectedYears.year2025
+                           ? 'Monthly revenue comparison between 2024 and 2025'
+                           : selectedYears.year2024
+                             ? 'Monthly revenue for 2024'
+                             : selectedYears.year2025
+                               ? 'Monthly revenue for 2025'
+                               : 'Select years to display'}
+                     </CardDescription>
+                     <div className="flex items-center gap-4">
+                        {[
+                           { year: 2024, color: '#e11d48', key: 'year2024' },
+                           { year: 2025, color: '#3b82f6', key: 'year2025' },
+                        ].map((item) => (
+                           <div
+                              key={item.key}
+                              className="flex items-center gap-2"
+                           >
+                              <span
+                                 className="w-5 h-2 rounded-full"
+                                 style={{ backgroundColor: item.color }}
+                              ></span>
+                              <p className="text-sm font-medium">{item.year}</p>
+                           </div>
+                        ))}
+                     </div>
+                  </CardHeader>
+                  <CardContent>
+                     <ChartContainer
+                        config={{
+                           year2024: {
+                              label: '2024',
+                              color: 'hsl(var(--chart-1))',
+                           },
+                           year2025: {
+                              label: '2025',
+                              color: 'hsl(var(--chart-2))',
+                           },
                         }}
                      >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                           dataKey="date"
-                           tickLine={false}
-                           axisLine={false}
-                           tickMargin={8}
-                        />
-                        <YAxis
-                           tickLine={false}
-                           axisLine={false}
-                           tickMargin={8}
-                           tickFormatter={(value) => `${value}`}
-                        />
-                        <ChartTooltip
-                           cursor={false}
-                           content={<ChartTooltipContent indicator="line" />}
-                        />
-                        {(filterMetric === 'revenue' ||
-                           filterMetric === 'both') && (
-                           <Line
-                              dataKey="revenue"
-                              type="natural"
-                              stroke="hsl(var(--color-revenue))"
-                              strokeWidth={2}
-                              dot={{
-                                 fill: 'hsl(var(--color-revenue))',
-                              }}
-                              activeDot={{
-                                 r: 6,
-                              }}
-                           >
-                              <LabelList
-                                 position="top"
-                                 offset={12}
-                                 className="fill-foreground"
-                                 fontSize={12}
-                              />
-                           </Line>
-                        )}
-                        {(filterMetric === 'orders' ||
-                           filterMetric === 'both') && (
-                           <Line
-                              dataKey="orders"
-                              type="natural"
-                              stroke="hsl(var(--color-orders))"
-                              strokeWidth={2}
-                              dot={{
-                                 fill: 'hsl(var(--color-orders))',
-                              }}
-                              activeDot={{
-                                 r: 6,
-                              }}
-                           >
-                              <LabelList
-                                 position="top"
-                                 offset={12}
-                                 className="fill-foreground"
-                                 fontSize={12}
-                              />
-                           </Line>
-                        )}
-                     </LineChart>
-                  </ChartContainer>
-               </CardContent>
-               <CardFooter className="flex-col items-start gap-2 text-sm">
-                  <div className="flex gap-2 leading-none font-medium">
-                     {filterMetric === 'revenue' && 'Revenue Analytics'}
-                     {filterMetric === 'orders' && 'Order Analytics'}
-                     {filterMetric === 'both' &&
-                        'Revenue & Order Analytics'}{' '}
-                     <TrendingUp className="h-4 w-4" />
-                  </div>
-                  <div className="text-muted-foreground leading-none">
-                     {isFiltered
-                        ? `Showing filtered data ${groupBy === 'month' ? 'grouped by month' : 'by date'}`
-                        : 'Showing all paid orders from January - December 2025'}
-                  </div>
-               </CardFooter>
-            </Card>
+                        <LineChart
+                           accessibilityLayer
+                           data={[
+                              { month: 'Jan', year2024: 2800, year2025: 4600 },
+                              { month: 'Feb', year2024: 3200, year2025: 5200 },
+                              { month: 'Mar', year2024: 2900, year2025: 3800 },
+                              { month: 'Apr', year2024: 3500, year2025: 5400 },
+                              { month: 'May', year2024: 2700, year2025: 4100 },
+                              { month: 'Jun', year2024: 3100, year2025: 4000 },
+                              { month: 'Jul', year2024: 3400, year2025: 3100 },
+                              { month: 'Aug', year2024: 3800, year2025: 4800 },
+                              { month: 'Sep', year2024: 2600, year2025: 3350 },
+                              { month: 'Oct', year2024: 3300, year2025: 3890 },
+                              { month: 'Nov', year2024: 2900, year2025: 7000 },
+                              { month: 'Dec', year2024: 4200, year2025: 9100 },
+                           ]}
+                           margin={{
+                              top: 20,
+                              left: 12,
+                              right: 12,
+                           }}
+                        >
+                           <CartesianGrid vertical={false} />
+                           <XAxis
+                              dataKey="month"
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                           />
+                           <YAxis
+                              tickLine={false}
+                              axisLine={false}
+                              tickMargin={8}
+                              tickFormatter={(value) => `$${value}`}
+                           />
+                           <ChartTooltip
+                              cursor={false}
+                              content={<ChartTooltipContent indicator="line" />}
+                           />
+                           {selectedYears.year2024 && (
+                              <Line
+                                 dataKey="year2024"
+                                 type="natural"
+                                 stroke="#e11d48"
+                                 strokeWidth={2}
+                                 dot={{
+                                    fill: '#e11d48',
+                                 }}
+                                 activeDot={{
+                                    r: 6,
+                                 }}
+                              >
+                                 <LabelList
+                                    position="top"
+                                    offset={12}
+                                    className="fill-foreground"
+                                    fontSize={12}
+                                 />
+                              </Line>
+                           )}
+                           {selectedYears.year2025 && (
+                              <Line
+                                 dataKey="year2025"
+                                 type="natural"
+                                 stroke="#3b82f6"
+                                 strokeWidth={2}
+                                 dot={{
+                                    fill: '#3b82f6',
+                                 }}
+                                 activeDot={{
+                                    r: 6,
+                                 }}
+                              >
+                                 <LabelList
+                                    position="top"
+                                    offset={12}
+                                    className="fill-foreground"
+                                    fontSize={12}
+                                 />
+                              </Line>
+                           )}
+                        </LineChart>
+                     </ChartContainer>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-2 text-sm">
+                     <div className="flex gap-2 leading-none font-medium">
+                        {selectedYears.year2024 &&
+                           selectedYears.year2025 &&
+                           '2025 shows 38% increase compared to 2024'}
+                        {selectedYears.year2024 &&
+                           !selectedYears.year2025 &&
+                           'Showing 2024 revenue data'}
+                        {selectedYears.year2025 &&
+                           !selectedYears.year2024 &&
+                           'Showing 2025 revenue data'}
+                        {!selectedYears.year2024 &&
+                           !selectedYears.year2025 &&
+                           'No data selected'}{' '}
+                        <TrendingUp className="h-4 w-4" />
+                     </div>
+                     <div className="text-muted-foreground leading-none">
+                        {selectedYears.year2024 && selectedYears.year2025
+                           ? 'Comparing monthly revenue across two years'
+                           : selectedYears.year2024
+                             ? 'Displaying 2024 monthly revenue trend'
+                             : selectedYears.year2025
+                               ? 'Displaying 2025 monthly revenue trend'
+                               : 'Select at least one year to display data'}
+                     </div>
+                  </CardFooter>
+               </Card>
+            </div>
          </div>
       </div>
    );
