@@ -17,10 +17,10 @@ public static class AuthorizationConstants
         public const string READ_OWN = nameof(READ_OWN);
         public const string UPDATE_OWN = nameof(UPDATE_OWN);
         public const string DELETE_OWN = nameof(DELETE_OWN);
-        public const string CREATE_ALL = nameof(CREATE_ALL);
-        public const string READ_ALL = nameof(READ_ALL);
-        public const string UPDATE_ALL = nameof(UPDATE_ALL);
-        public const string DELETE_ALL = nameof(DELETE_ALL);
+        public const string CREATE_ANY = nameof(CREATE_ANY);
+        public const string READ_ANY = nameof(READ_ANY);
+        public const string UPDATE_ANY = nameof(UPDATE_ANY);
+        public const string DELETE_ANY = nameof(DELETE_ANY);
 
     }
 
@@ -28,11 +28,13 @@ public static class AuthorizationConstants
     {
         public const string REQUIRE_AUTHENTICATION = nameof(REQUIRE_AUTHENTICATION);
         public const string R__ADMIN_SUPER___RS__ALL = nameof(R__ADMIN_SUPER___RS__ALL);
+        public const string GetUsers = nameof(GetUsers);
     }
 
     public static class Roles
     {
         public const string ADMIN_SUPER = nameof(ADMIN_SUPER);
+        public const string ADMIN = nameof(ADMIN);
         public const string STAFF = nameof(STAFF);
         public const string USER = nameof(USER);
     }

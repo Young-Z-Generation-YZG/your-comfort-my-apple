@@ -4,4 +4,5 @@ public interface IUserHttpContext
 {
     string GetUserId();
     string GetUserEmail();
+    List<string> GetUserRoles();
 }
