@@ -47,6 +47,7 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new StoreBasketRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new StoreEventItemRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CheckoutBasketRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CheckoutBasketWithBlockchainRequestExample());
 
         });
 

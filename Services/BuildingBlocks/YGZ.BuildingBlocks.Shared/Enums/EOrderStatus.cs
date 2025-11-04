@@ -6,6 +6,7 @@ public class EOrderStatus : SmartEnum<EOrderStatus>
 {
     public EOrderStatus(string name, int value) : base(name, value) { }
 
+    public static readonly EOrderStatus UNKNOWN = new(nameof(UNKNOWN), 0);
     public static readonly EOrderStatus PENDING = new(nameof(PENDING), 0);
     public static readonly EOrderStatus CONFIRMED = new(nameof(CONFIRMED), 0);
     public static readonly EOrderStatus PREPARING = new(nameof(PREPARING), 0);

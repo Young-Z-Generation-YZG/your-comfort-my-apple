@@ -22,21 +22,31 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder
             .Property(o => o.TenantId)
             .HasConversion(
-                id => id != null ? id.Value : (Guid?)null,
-                value => value.HasValue ? TenantId.Of(value.Value) : null)
+                id => id!.Value,
+                value => !string.IsNullOrEmpty(value) ? TenantId.Of(value) : null!)
+            .HasMaxLength(255)
             .IsRequired(false);
 
         builder
             .Property(o => o.BranchId)
             .HasConversion(
-                id => id != null ? id.Value : (Guid?)null,
-                value => value.HasValue ? BranchId.Of(value.Value) : null)
+                id => id!.Value,
+                value => !string.IsNullOrEmpty(value) ? BranchId.Of(value) : null!)
+            .HasMaxLength(255)
             .IsRequired(false);
 
         builder
             .Property(o => o.CustomerId)
             .HasConversion(id => id.Value, value => UserId.Of(value.ToString()))
             .IsRequired();
+
+        builder.Property(o => o.CustomerPublicKey)
+            .HasMaxLength(500)
+            .IsRequired(false);
+
+        builder.Property(o => o.Tx)
+            .HasMaxLength(500)
+            .IsRequired(false);
 
         builder.ComplexProperty(o => o.Code, code =>
         {

@@ -11,6 +11,7 @@ import {
    useLazyGetCheckoutItemsQuery,
    useCheckoutBasketMutation,
    useStoreEventItemMutation,
+   useCheckoutBasketWithBlockchainMutation,
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
@@ -30,6 +31,10 @@ const useBasketService = () => {
       useProceedToCheckoutMutation();
    const [checkoutBasketMutation, checkoutBasketMutationState] =
       useCheckoutBasketMutation();
+   const [
+      checkoutBasketWithBlockchainMutation,
+      checkoutBasketWithBlockchainMutationState,
+   ] = useCheckoutBasketWithBlockchainMutation();
 
    useCheckApiError([
       { title: 'Get Basket failed', error: getBasketQueryState.error },
@@ -44,6 +49,14 @@ const useBasketService = () => {
       {
          title: 'Store Event Item failed',
          error: storeEventItemMutationState.error,
+      },
+      {
+         title: 'Checkout Basket failed',
+         error: checkoutBasketMutationState.error,
+      },
+      {
+         title: 'Checkout Basket With Blockchain failed',
+         error: checkoutBasketWithBlockchainMutationState.error,
       },
       // { title: 'Store Basket failed', error: storeBasketMutationState.error },
       // { title: 'Delete Basket failed', error: deleteBasketMutationState.error },
@@ -157,6 +170,30 @@ const useBasketService = () => {
       [checkoutBasketMutation],
    );
 
+   const checkoutBasketWithBlockchainAsync = useCallback(
+      async (
+         payload: ICheckoutPayload & {
+            crypto_uuid: string;
+            customer_public_key: string;
+            tx: string;
+         },
+      ) => {
+         try {
+            const result =
+               await checkoutBasketWithBlockchainMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [checkoutBasketWithBlockchainMutation],
+   );
+
    const isLoading = useMemo(() => {
       return (
          getBasketQueryState.isLoading ||
@@ -167,7 +204,8 @@ const useBasketService = () => {
          getCheckoutItemsQueryState.isLoading ||
          getCheckoutItemsQueryState.isFetching ||
          checkoutBasketMutationState.isLoading ||
-         storeEventItemMutationState.isLoading
+         storeEventItemMutationState.isLoading ||
+         checkoutBasketWithBlockchainMutationState.isLoading
       );
    }, [
       getBasketQueryState.isLoading,
@@ -179,6 +217,7 @@ const useBasketService = () => {
       getCheckoutItemsQueryState.isFetching,
       checkoutBasketMutationState.isLoading,
       storeEventItemMutationState.isLoading,
+      checkoutBasketWithBlockchainMutationState.isLoading,
    ]);
 
    return {
@@ -197,6 +236,7 @@ const useBasketService = () => {
       proceedToCheckoutAsync,
       checkoutBasketAsync,
       storeEventItemAsync,
+      checkoutBasketWithBlockchainAsync,
    };
 };
 

@@ -30,11 +30,13 @@ import withAuth from '@components/HoCs/with-auth.hoc';
 import useIdentityService from '@components/hooks/api/use-identity-service';
 import useBasketService from '@components/hooks/api/use-basket-service';
 import CheckoutItem from './_components/checkout-item';
-import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
 import { Check } from 'lucide-react';
 import svgs from '@assets/svgs';
 import { WalletConnectButton } from '@components/client/wallet-connect-button';
 import BlockchainPaymentModel from './_components/blockchain-payment-model';
+import { EPaymentType } from '~/domain/enums/payment-type.enum';
+import { useSolana } from '@components/providers/solana-provider';
+import { toast } from 'sonner';
 
 const fakeData = [
    {
@@ -95,9 +97,41 @@ const fakeCheckoutCart = {
 };
 
 const fakeCheckoutResponse = {
-   payment_redirect_url:
-      'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=2500000000&vnp_Command=pay&vnp_CreateDate=20251028225140&vnp_CurrCode=VND&vnp_IpAddr=127.0.0.1&vnp_Locale=vn&vnp_OrderInfo=ORDER_ID%3De824f6fa-92e4-4911-8b9e-98bd2ea4b82d&vnp_OrderType=VNPAY_CHECKOUT&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A3000%2Fcheckout%2Fpayment-callback&vnp_TmnCode=SB1TO3BK&vnp_TxnRef=638972887005197901&vnp_Version=2.1.0&vnp_SecureHash=695ee3da6712e246efa37fa73e51b7e3fd7a227940341b5f792a29b36d5e7bce457ebcf953cb810aacd501b251a5c5e4bdac62914c9da24e53f7a7556dc3fa7f',
-   order_details_redirect_url: 'string',
+   order_id: 'b384e952-bb28-4f97-8e04-f2f055481d77',
+   cart_items: [
+      {
+         is_selected: true,
+         model_id: '664351e90087aa09993f5ae7',
+         product_name: 'iPhone 15 128GB Blue',
+         color: {
+            name: 'Blue',
+            normalized_name: 'BLUE',
+            hex_code: '',
+            showcase_image_id: '',
+            order: 0,
+         },
+         model: {
+            name: 'iPhone 15',
+            normalized_name: 'IPHONE_15',
+            order: 0,
+         },
+         storage: {
+            name: '128GB',
+            normalized_name: '128GB',
+            order: 0,
+         },
+         display_image_url:
+            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
+         unit_price: 1000,
+         quantity: 1,
+         sub_total_amount: 1000,
+         promotion: null,
+         index: 1,
+      },
+   ],
+   payment_redirect_url: 'string',
+   order_details_redirect_url:
+      '/account/orders/b384e952-bb28-4f97-8e04-f2f055481d77',
 };
 
 export type TCheckoutResponse = typeof fakeCheckoutResponse;
@@ -117,6 +151,8 @@ const CheckoutPage = () => {
    const [displayPaymentBlockchainModel, setDisplayPaymentBlockchainModel] =
       useState(false);
 
+   const { isConnected } = useSolana();
+
    const handleClosePaymentModal = () => {
       setDisplayPaymentBlockchainModel(false);
    };
@@ -135,6 +171,10 @@ const CheckoutPage = () => {
       getCheckoutItemsState,
       isLoading: isLoadingBasket,
    } = useBasketService();
+
+   const isLoading = useMemo(() => {
+      return isLoadingAddresses || isLoadingBasket;
+   }, [isLoadingAddresses, isLoadingBasket]);
 
    useEffect(() => {
       const getAddresses = async () => {
@@ -211,11 +251,7 @@ const CheckoutPage = () => {
    }, [defaultAddress]);
 
    const handleSubmit = async (data: CheckoutFormType) => {
-      console.log('data', data);
-
       const result = await checkoutBasketAsync(data);
-
-      console.log('result', result);
 
       if (result.isSuccess) {
          if (
@@ -243,14 +279,16 @@ const CheckoutPage = () => {
             'font-SFProDisplay w-full flex flex-col items-center justify-start bg-white',
          )}
       >
-         <LoadingOverlay isLoading={false} fullScreen />
+         <LoadingOverlay isLoading={isLoading} fullScreen />
          {displayPaymentBlockchainModel && (
             <BlockchainPaymentModel
+               form={form}
                isOpen={displayPaymentBlockchainModel}
                onClose={handleClosePaymentModal}
-               orderId={`ORDER-${Date.now()}`}
                amount={
-                  getCheckoutItemsState.data?.total_amount?.toFixed(2) || '0.00'
+                  (
+                     getCheckoutItemsState.data as unknown as TCheckoutCart
+                  )?.total_amount?.toFixed(2) || '0.00'
                }
             />
          )}
@@ -454,7 +492,7 @@ const CheckoutPage = () => {
                                     type="radio"
                                     {...form.register('payment_method')}
                                     id="payment-solana"
-                                    value="SOLANA"
+                                    value={EPaymentType.SOLANA.toString()}
                                     className="peer sr-only"
                                  />
                                  <label
@@ -506,17 +544,21 @@ const CheckoutPage = () => {
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
                         {getCheckoutItemsState.data &&
-                           getCheckoutItemsState.data.cart_items.length > 0 &&
-                           getCheckoutItemsState.data.cart_items.map(
-                              (item: ICartItem, index) => {
-                                 return (
-                                    <CheckoutItem
-                                       key={index}
-                                       item={item as unknown as TCheckoutItem}
-                                    />
-                                 );
-                              },
-                           )}
+                        (getCheckoutItemsState.data as unknown as TCheckoutCart)
+                           .cart_items.length > 0
+                           ? (
+                                getCheckoutItemsState.data as unknown as TCheckoutCart
+                             ).cart_items.map(
+                                (item: TCheckoutItem, index: number) => {
+                                   return (
+                                      <CheckoutItem
+                                         key={index}
+                                         item={item as unknown as TCheckoutItem}
+                                      />
+                                   );
+                                },
+                             )
+                           : null}
                      </div>
                   </div>
                   <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
@@ -529,15 +571,20 @@ const CheckoutPage = () => {
                            <div className="font-semibold">
                               $
                               {getCheckoutItemsState.data &&
-                                 getCheckoutItemsState.data.cart_items.length >
-                                    0 &&
-                                 getCheckoutItemsState.data.cart_items
-                                    .reduce(
-                                       (acc, item) =>
-                                          acc + item.unit_price * item.quantity,
-                                       0,
-                                    )
-                                    .toFixed(2)}
+                              (
+                                 getCheckoutItemsState.data as unknown as TCheckoutCart
+                              ).cart_items.length > 0
+                                 ? (
+                                      getCheckoutItemsState.data as unknown as TCheckoutCart
+                                   ).cart_items
+                                      .reduce(
+                                         (acc: number, item: TCheckoutItem) =>
+                                            acc +
+                                            item.unit_price * item.quantity,
+                                         0,
+                                      )
+                                      .toFixed(2)
+                                 : '0.00'}
                            </div>
                         </div>
                         <Accordion type="multiple" className="w-full h-full ">
@@ -556,22 +603,26 @@ const CheckoutPage = () => {
                                     <div className="font-semibold">
                                        - $
                                        {getCheckoutItemsState.data &&
-                                          getCheckoutItemsState.data.cart_items
-                                             .length > 0 &&
-                                          getCheckoutItemsState.data.cart_items
-                                             .reduce(
-                                                (acc, item) =>
-                                                   acc +
-                                                   ((
-                                                      item as unknown as TCheckoutItem
-                                                   ).promotion
-                                                      ?.discount_amount ?? 0) *
-                                                      (
-                                                         item as unknown as TCheckoutItem
-                                                      ).quantity,
-                                                0,
-                                             )
-                                             .toFixed(2)}
+                                       (
+                                          getCheckoutItemsState.data as unknown as TCheckoutCart
+                                       ).cart_items.length > 0
+                                          ? (
+                                               getCheckoutItemsState.data as unknown as TCheckoutCart
+                                            ).cart_items
+                                               .reduce(
+                                                  (
+                                                     acc: number,
+                                                     item: TCheckoutItem,
+                                                  ) =>
+                                                     acc +
+                                                     (item.promotion
+                                                        ?.discount_amount ??
+                                                        0) *
+                                                        item.quantity,
+                                                  0,
+                                               )
+                                               .toFixed(2)
+                                          : '0.00'}
                                     </div>
                                  </div>
                               </AccordionContent>
@@ -584,16 +635,18 @@ const CheckoutPage = () => {
                         <div className="">Total</div>
                         <div className="">
                            $
-                           {(getCheckoutItemsState.data &&
-                              getCheckoutItemsState.data.cart_items.length >
-                                 0 &&
-                              getCheckoutItemsState.data.total_amount.toFixed(
-                                 2,
-                              )) ??
-                              '0.00'}
+                           {getCheckoutItemsState.data &&
+                           (
+                              getCheckoutItemsState.data as unknown as TCheckoutCart
+                           ).cart_items.length > 0
+                              ? (
+                                   getCheckoutItemsState.data as unknown as TCheckoutCart
+                                ).total_amount.toFixed(2)
+                              : '0.00'}
                         </div>
                      </div>
-                     {form.getValues('payment_method') !== 'SOLANA' && (
+                     {form.getValues('payment_method') !==
+                        EPaymentType.SOLANA.toString() && (
                         <Button
                            className="w-full h-fit bg-[#0070f0] text-white rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
                            onClick={() => {
@@ -603,12 +656,27 @@ const CheckoutPage = () => {
                            Place Order
                         </Button>
                      )}
-                     {form.getValues('payment_method') === 'SOLANA' && (
+                     {form.getValues('payment_method') ===
+                        EPaymentType.SOLANA.toString() && (
                         <Button
                            className="w-full h-fit bg-[#0070f0] text-white rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
                            onClick={() => {
                               form.trigger();
-                              if (form.formState.isValid) {
+
+                              if (!isConnected) {
+                                 toast.error(
+                                    'Please connect your wallet first',
+                                    {
+                                       style: {
+                                          backgroundColor: '#FEE2E2',
+                                          color: '#991B1B',
+                                          border: '1px solid #FCA5A5',
+                                       },
+                                       duration: 1000,
+                                    },
+                                 );
+                              }
+                              if (form.formState.isValid && isConnected) {
                                  setDisplayPaymentBlockchainModel(true);
                               }
                            }}

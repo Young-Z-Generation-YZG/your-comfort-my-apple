@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace YGZ.Basket.Api.Contracts;
 
-public class CheckoutBasketRequest
+public sealed record CheckoutBasketRequest
 {
     [Required]
     [JsonPropertyName("shipping_address")]

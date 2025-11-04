@@ -41,10 +41,10 @@ const DEFAULT_PUBLIC_KEY_RECEIVER =
 // Seeds for PDA derivation
 const ORDER_SEED = new TextEncoder().encode('order');
 
-const FAKE_ORDER_ID = crypto.randomUUID();
-
 const useBlockchainPayment = () => {
    const { selectedAccount, rpc, chain } = useSolana();
+
+   const ORDER_ID = crypto.randomUUID();
 
    const [isLoading, setIsLoading] = useState(false);
 
@@ -56,7 +56,7 @@ const useBlockchainPayment = () => {
    const addressEncoder = getAddressEncoder();
    const u64Encoder = getU64Encoder();
 
-   const createPaymentOrder = async (orderId: string, amount: string) => {
+   const createPaymentOrder = async (amount: string) => {
       try {
          setIsLoading(true);
 
@@ -90,7 +90,7 @@ const useBlockchainPayment = () => {
          // Derive order PDA
          // Split UUID (36 bytes) into two seeds: first 32 bytes + remaining 4 bytes
          // Solana allows multiple seeds, each up to 32 bytes
-         const orderIdBytes = new TextEncoder().encode(FAKE_ORDER_ID);
+         const orderIdBytes = new TextEncoder().encode(ORDER_ID);
          const orderIdFirst32 = orderIdBytes.slice(0, 32); // First 32 bytes
          const orderIdRemaining = orderIdBytes.slice(32); // Remaining 4 bytes
 
@@ -110,7 +110,7 @@ const useBlockchainPayment = () => {
          // Borsh String format: 4 bytes (u32 length) + actual bytes
 
          // Encode order_id as Borsh String
-         const orderIdStr = FAKE_ORDER_ID;
+         const orderIdStr = ORDER_ID;
          const orderIdStrBytes = new TextEncoder().encode(orderIdStr);
          const orderIdLength = new Uint8Array(4);
          new DataView(orderIdLength.buffer).setUint32(
@@ -186,19 +186,40 @@ const useBlockchainPayment = () => {
          const signatureStr = getBase58Decoder().decode(signature) as Signature;
 
          console.log('Payment successful:', {
-            orderId: FAKE_ORDER_ID,
+            orderId: ORDER_ID,
             amount: amountLamports.toString(),
             amountLamports: amountLamports,
             signature: signatureStr,
          });
+
+         return {
+            isSuccess: true,
+            isError: false,
+            data: {
+               orderId: ORDER_ID,
+               customerPublicKey: selectedAccount?.address,
+               amount: amountLamports.toString(),
+               amountLamports: amountLamports,
+               signature: signatureStr,
+            },
+            error: null,
+         };
       } catch (error: unknown) {
          console.log('error', error);
+
+         return {
+            isSuccess: false,
+            isError: true,
+            data: null,
+            error: error,
+         };
       } finally {
          setIsLoading(false);
       }
    };
 
    return {
+      ORDER_ID,
       createPaymentOrder,
       isLoading,
    };

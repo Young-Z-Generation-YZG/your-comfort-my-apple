@@ -7,7 +7,7 @@ import {
 } from '~/infrastructure/utils/http/fetch-error-handler';
 import { toast } from 'sonner';
 
-const styleObj = {
+const errorStyleObj = {
    backgroundColor: '#FEE2E2',
    color: '#991B1B',
    border: '1px solid #FCA5A5',
@@ -57,21 +57,21 @@ export const useCheckApiError = (
             if (isClientErrorResponse(parsedError)) {
                toast.error(title, {
                   description: parsedError.error.message,
-                  style: styleObj,
+                  style: errorStyleObj,
                   cancel: cancelObj,
                   duration: 2000,
                });
             } else if (isServerErrorResponse(parsedError)) {
                toast.error('Server Busy', {
                   description: parsedError.title,
-                  style: styleObj,
+                  style: errorStyleObj,
                   cancel: cancelObj,
                   duration: 2000,
                });
             } else if (isUnknownErrorResponse(parsedError)) {
                toast.error('Server Busy', {
                   description: parsedError.status as string,
-                  style: styleObj,
+                  style: errorStyleObj,
                   cancel: cancelObj,
                   duration: 2000,
                });

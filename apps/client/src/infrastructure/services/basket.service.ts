@@ -1,12 +1,21 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
 import { IStoreBasketPayload } from '~/domain/interfaces/baskets/basket.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('basket-services')(args, api, extraOptions);
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
+   const result = await baseQuery('basket-services')(
+      args,
+      api,
+      extraOptions as unknown as any,
+   );
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -35,22 +44,25 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      storeEventItem: builder.mutation<any, any>({
-         query: (payload: any) => ({
+      storeEventItem: builder.mutation<unknown, unknown>({
+         query: (payload: unknown) => ({
             url: `/api/v1/baskets/event-item`,
             method: 'POST',
             body: payload,
          }),
          invalidatesTags: ['Baskets'],
       }),
-      getBasket: builder.query<any, any>({
-         query: (queries: any) =>
-            createQueryEncodedUrl('/api/v1/baskets', queries),
+      getBasket: builder.query<unknown, unknown>({
+         query: (queries: unknown) =>
+            createQueryEncodedUrl('/api/v1/baskets', queries as object),
          providesTags: ['Baskets'],
       }),
-      getCheckoutItems: builder.query<any, any>({
-         query: (queries: any) =>
-            createQueryEncodedUrl('/api/v1/baskets/checkout-items', queries),
+      getCheckoutItems: builder.query<unknown, unknown>({
+         query: (queries: unknown) =>
+            createQueryEncodedUrl(
+               '/api/v1/baskets/checkout-items',
+               queries as object,
+            ),
          providesTags: ['Baskets'],
       }),
       deleteBasket: builder.mutation({
@@ -68,9 +80,17 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      checkoutBasket: builder.mutation<any, any>({
-         query: (payload: any) => ({
+      checkoutBasket: builder.mutation<unknown, unknown>({
+         query: (payload: unknown) => ({
             url: `/api/v1/baskets/checkout`,
+            method: 'POST',
+            body: payload,
+         }),
+         invalidatesTags: ['Baskets'],
+      }),
+      checkoutBasketWithBlockchain: builder.mutation<unknown, unknown>({
+         query: (payload: unknown) => ({
+            url: `/api/v1/baskets/checkout/blockchain`,
             method: 'POST',
             body: payload,
          }),
@@ -88,4 +108,5 @@ export const {
    useDeleteBasketMutation,
    useProceedToCheckoutMutation,
    useCheckoutBasketMutation,
+   useCheckoutBasketWithBlockchainMutation,
 } = basketApi;

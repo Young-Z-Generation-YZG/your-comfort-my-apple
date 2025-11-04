@@ -7,6 +7,8 @@ public sealed record CreateOrderCommand : ICommand<bool>
 {
     public required Guid OrderId { get; init; }
     public required string CustomerId { get; init; }
+    public string? CustomerPublicKey { get; init; }
+    public string? Tx { get; init; }
     public required string CustomerEmail { get; init; }
     public required ShippingAddressCommand ShippingAddress { get; init; }
     public PromotionInOrderCommand? Promotion { get; init; }

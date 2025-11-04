@@ -10,5 +10,5 @@ public class EPaymentMethod : SmartEnum<EPaymentMethod>
     public static readonly EPaymentMethod COD = new(nameof(COD), 0);
     public static readonly EPaymentMethod VNPAY = new(nameof(VNPAY), 0);
     public static readonly EPaymentMethod MOMO = new(nameof(MOMO), 0);
-    public static readonly EPaymentMethod BLOCKCHAIN = new(nameof(BLOCKCHAIN), 0);
+    public static readonly EPaymentMethod SOLANA = new(nameof(SOLANA), 0);
 }

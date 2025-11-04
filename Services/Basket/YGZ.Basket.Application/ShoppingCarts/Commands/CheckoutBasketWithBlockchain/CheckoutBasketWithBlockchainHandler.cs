@@ -1,10 +1,7 @@
 ﻿using Grpc.Core;
 using MassTransit;
-using Microsoft.AspNetCore.Http;
 using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
-using YGZ.Basket.Application.Abstractions.Providers.Momo;
-using YGZ.Basket.Application.Abstractions.Providers.vnpay;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -16,36 +13,28 @@ using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Discount.Grpc.Protos;
 
-namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
+namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasketWithBlockchain;
 
-public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketCommand, CheckoutBasketResponse>
+public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBasketWithBlockchainCommand, CheckoutBasketResponse>
 {
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
     private readonly IUserRequestContext _userContext;
-    private readonly IVnpayProvider _vnpayProvider;
-    private readonly IMomoProvider _momoProvider;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CheckoutBasketHandler(IBasketRepository basketRepository,
-                                        IPublishEndpoint publishEndpoint,
-                                        IUserRequestContext userContext,
-                                        DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
-                                        IVnpayProvider vnpayProvider,
-                                        IHttpContextAccessor httpContextAccessor,
-                                        IMomoProvider momoProvider)
+    public CheckoutBasketWithBlockchainHandler(IBasketRepository basketRepository,
+                                               IPublishEndpoint publishEndpoint,
+                                               IUserRequestContext userContext,
+                                               DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _basketRepository = basketRepository;
         _publishIntegrationEvent = publishEndpoint;
         _userContext = userContext;
         _discountProtoServiceClient = discountProtoServiceClient;
-        _vnpayProvider = vnpayProvider;
-        _httpContextAccessor = httpContextAccessor;
-        _momoProvider = momoProvider;
     }
 
-    public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)
+
+    public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketWithBlockchainCommand request, CancellationToken cancellationToken)
     {
         var userEmail = _userContext.GetUserEmail();
         var userId = _userContext.GetUserId();
@@ -186,7 +175,12 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         }
 
 
-        var orderId = Guid.NewGuid();
+        var parseOrderIdResult = Guid.TryParse(request.CryptoUUID, out var orderId);
+
+        if (!parseOrderIdResult)
+        {
+            return Errors.Basket.InvalidCryptoUUID;
+        }
 
         var orderItems = checkoutShoppingCart.CartItems
             .Select(x => x.ToCheckoutItemIntegrationEvent())
@@ -197,8 +191,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             OrderId = orderId,
             CustomerId = userId,
             CustomerEmail = userEmail,
-            CustomerPublicKey = null,
-            Tx = null,
+            CustomerPublicKey = request.CustomerPublicKey,
+            Tx = request.Tx,
             ContactName = request.ShippingAddress.ContactName,
             ContactPhoneNumber = request.ShippingAddress.ContactPhoneNumber,
             AddressLine = request.ShippingAddress.AddressLine,
@@ -224,60 +218,11 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         //await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
 
- switch (request.PaymentMethod)
-            {
-                case nameof(EPaymentMethod.VNPAY):
-                var model = new VnpayInformationModel()
-                {
-                    OrderType = "VNPAY_CHECKOUT",
-                    OrderDescription = $"ORDER_ID={orderId}",
-                    Amount = result.Response.TotalAmount * 25000,
-                    Name = request.ShippingAddress.ContactName,
-                };
-
-                var paymentUrl = _vnpayProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
-
-                if (string.IsNullOrEmpty(paymentUrl))
-                {
-                    return Errors.Payment.VnpayPaymentUrlInvalid;
-                }
-
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    PaymentRedirectUrl = paymentUrl
-                };
-
-                case nameof(EPaymentMethod.MOMO):
-                var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
-                {
-                    FullName = $"{request.ShippingAddress.ContactName}",
-                    OrderId = $"ORDER_ID={orderId}",
-                    OrderInfo = "MOMO_CHECKOUT",
-                    Amount = (double)10 * 25000,
-                });
-
-                if (momoPaymentUrl?.ErrorCode != 0)
-                {
-                    return Errors.Payment.MomoPaymentUrlInvalid;
-                }
-
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    PaymentRedirectUrl = momoPaymentUrl!.PayUrl
-                };
-                case nameof(EPaymentMethod.COD):
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    OrderDetailsRedirectUrl = $"/account/orders/{orderId}"
-                };
-                default:
-                return Errors.Payment.Invalid;
-            }
+        return new CheckoutBasketResponse()
+        {
+            OrderId = orderId.ToString(),
+            CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+            OrderDetailsRedirectUrl = $"/account/orders/{orderId}"
+        };
     }
 }

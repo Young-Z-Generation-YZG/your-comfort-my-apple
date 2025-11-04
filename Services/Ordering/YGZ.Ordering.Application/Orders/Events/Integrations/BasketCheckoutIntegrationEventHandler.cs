@@ -76,6 +76,8 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
         {
             OrderId = context.OrderId,
             CustomerId = context.CustomerId,
+            CustomerPublicKey = context.CustomerPublicKey,
+            Tx = context.Tx,
             CustomerEmail = context.CustomerEmail,
             ShippingAddress = shippingAddress,
             Promotion = orderPromotion,

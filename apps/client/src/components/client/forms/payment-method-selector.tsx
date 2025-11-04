@@ -5,6 +5,7 @@ import { Check } from 'lucide-react';
 import type { UseFormRegister, FormState, UseFormWatch } from 'react-hook-form';
 import { CheckoutFormType } from '~/domain/schemas/basket.schema';
 import svgs from '@assets/svgs';
+import { EPaymentType } from '~/domain/enums/payment-type.enum';
 
 // Payment method icons
 const paymentMethodIcons = {
@@ -40,7 +41,7 @@ export function PaymentMethodSelector({
                <input
                   type="radio"
                   id="payment-cod"
-                  value="COD"
+                  value={EPaymentType.COD.toString()}
                   {...register('payment_method')}
                   className="peer sr-only"
                />
@@ -72,7 +73,7 @@ export function PaymentMethodSelector({
                <input
                   type="radio"
                   id="payment-vnpay"
-                  value="VNPAY"
+                  value={EPaymentType.VNPAY.toString()}
                   {...register('payment_method')}
                   className="peer sr-only"
                />
@@ -104,7 +105,7 @@ export function PaymentMethodSelector({
                <input
                   type="radio"
                   id="payment-momo"
-                  value="MOMO"
+                  value={EPaymentType.MOMO.toString()}
                   disabled={true}
                   {...register('payment_method')}
                   className="peer sr-only"

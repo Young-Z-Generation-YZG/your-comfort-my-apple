@@ -180,8 +180,6 @@ const SignInPage = () => {
                                  className="h-8 w-8 invisible"
                               />
                            </button>
-                           <WalletConnectButton />
-                           {/* <MemoCard /> */}
                         </div>
                      </div>
                   </LoadingOverlay>

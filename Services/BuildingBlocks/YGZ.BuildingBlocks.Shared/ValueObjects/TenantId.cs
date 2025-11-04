@@ -4,39 +4,27 @@ namespace YGZ.BuildingBlocks.Shared.ValueObjects;
 
 public class TenantId : ValueObject
 {
-    public Guid Value { get; private set; }
+    public string? Value { get; private set; }
 
 
-    private TenantId(Guid guid)
+    private TenantId(string? id)
     {
-        Value = guid;
+        Value = id;
     }
 
-    public static TenantId Create()
+    public static TenantId Create(string id)
     {
-        return new TenantId(Guid.NewGuid());
+        return new TenantId(id);
     }
 
-    public static TenantId Of(string guid)
+    public static TenantId Of(string? id)
     {
-        Guid.TryParse(guid, out var parsedGuid);
-
-        if (parsedGuid == Guid.Empty)
-        {
-            throw new ArgumentException("Invalid GUID format", nameof(parsedGuid));
-        }
-
-        return new TenantId(parsedGuid);
-    }
-
-    public static TenantId Of(Guid guid)
-    {
-        return new TenantId(guid);
+        return new TenantId(id ?? null);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Value ?? string.Empty;
     }
 }
 

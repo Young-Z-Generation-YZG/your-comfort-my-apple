@@ -16,9 +16,11 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public TenantId? TenantId { get; init; }
     public BranchId? BranchId { get; init; }
     public required UserId CustomerId { get; init; }
+    public string? CustomerPublicKey { get; init; }
+    public string? Tx { get; init; }
     public required Code Code { get; init; }
     public required EPaymentMethod PaymentMethod { get; init; }
-    public EOrderStatus OrderStatus { get; private set; }
+    public EOrderStatus OrderStatus { get; private set; } = EOrderStatus.UNKNOWN;
     public required ShippingAddress ShippingAddress { get; init; }
     private readonly List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
@@ -37,6 +39,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
 
     public static Order Create(OrderId orderId,
                                UserId customerId,
+                               string? customerPublicKey,
+                               string? tx,
                                Code code,
                                EPaymentMethod paymentMethod,
                                EOrderStatus orderStatus,
@@ -55,6 +59,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             TenantId = tenantId,
             BranchId = branchId,
             CustomerId = customerId,
+            CustomerPublicKey = customerPublicKey,
+            Tx = tx,
             Code = code,
             PaymentMethod = paymentMethod,
             OrderStatus = orderStatus,

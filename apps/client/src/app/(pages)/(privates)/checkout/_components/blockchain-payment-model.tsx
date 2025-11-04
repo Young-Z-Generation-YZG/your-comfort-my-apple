@@ -3,40 +3,100 @@
 import useBlockchainPayment from '@components/hooks/blockchain/use-blockchain-payment';
 import { X } from 'lucide-react';
 import { useSolana } from '@components/providers/solana-provider';
+import useBasketService from '@components/hooks/api/use-basket-service';
+import { useMemo, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
+import { CheckoutFormType } from '~/domain/schemas/basket.schema';
+import { LoadingOverlay } from '@components/client/loading-overlay';
+import { TCheckoutResponse } from '../page';
+import { useRouter } from 'next/navigation';
 
 interface BlockchainPaymentModelProps {
+   form: UseFormReturn<CheckoutFormType>;
    isOpen: boolean;
    onClose: () => void;
-   orderId: string;
    amount: string;
 }
 
 const BlockchainPaymentModel = ({
+   form,
    isOpen,
    onClose,
-   orderId,
    amount,
 }: BlockchainPaymentModelProps) => {
-   const { createPaymentOrder, isLoading } = useBlockchainPayment();
+   const router = useRouter();
+   const [processing, setProcessing] = useState(false);
+
+   const {
+      createPaymentOrder,
+      isLoading: isLoadingBlockchain,
+      ORDER_ID,
+   } = useBlockchainPayment();
+
    const { isConnected } = useSolana();
+
+   const { checkoutBasketWithBlockchainAsync, isLoading: isLoadingBasket } =
+      useBasketService();
 
    const handlePaymentWithSolana = async () => {
       if (!isConnected) {
          alert('Please connect your wallet first');
+
          return;
       }
 
-      await createPaymentOrder(orderId, amount);
+      setProcessing(true);
 
-      // Close modal after payment attempt
-      // You can add success/error handling here based on your needs
+      const result = await createPaymentOrder(amount);
+
+      if (
+         result?.isSuccess &&
+         result.data &&
+         result.data.orderId &&
+         result.data.customerPublicKey &&
+         result.data.signature
+      ) {
+         const checkoutResult = await checkoutBasketWithBlockchainAsync({
+            ...form.getValues(),
+            crypto_uuid: result.data.orderId,
+            customer_public_key: result.data.customerPublicKey,
+            tx: result.data.signature,
+         });
+
+         if (checkoutResult.isSuccess) {
+            if (
+               (checkoutResult.data as unknown as TCheckoutResponse)
+                  .payment_redirect_url
+            ) {
+               window.location.href = (
+                  checkoutResult.data as unknown as TCheckoutResponse
+               ).payment_redirect_url;
+            } else if (
+               (checkoutResult.data as unknown as TCheckoutResponse)
+                  .order_details_redirect_url
+            ) {
+               router.replace(
+                  (checkoutResult.data as unknown as TCheckoutResponse)
+                     .order_details_redirect_url,
+               );
+            }
+         }
+      }
+
+      setProcessing(false);
+
       onClose();
    };
+
+   const isLoading = useMemo(() => {
+      return isLoadingBlockchain || isLoadingBasket || processing;
+   }, [isLoadingBlockchain, isLoadingBasket, processing]);
 
    if (!isOpen) return null;
 
    return (
       <>
+         <LoadingOverlay isLoading={isLoading} fullScreen />
          {/* Overlay with blur effect */}
          <div
             className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -70,7 +130,7 @@ const BlockchainPaymentModel = ({
                      <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Order ID:</span>
                         <span className="font-medium text-gray-900">
-                           {orderId}
+                           {ORDER_ID}
                         </span>
                      </div>
                      <div className="flex justify-between text-sm">

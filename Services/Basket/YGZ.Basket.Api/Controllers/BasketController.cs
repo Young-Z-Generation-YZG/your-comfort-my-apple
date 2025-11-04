@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.Basket.Api.Contracts;
 using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
+using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasketWithBlockchain;
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.ProceedCheckout;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
@@ -76,6 +77,17 @@ public class BasketController : ApiController
 
         var result = await _sender.Send(cmd, cancellationToken);
 
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("checkout/blockchain")]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    public async Task<IActionResult> CheckoutBasketWithBlockchain([FromBody] CheckoutBasketWithBlockchainRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<CheckoutBasketWithBlockchainCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+        
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 

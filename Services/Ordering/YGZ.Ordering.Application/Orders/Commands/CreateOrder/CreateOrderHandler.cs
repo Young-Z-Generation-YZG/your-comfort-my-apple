@@ -40,9 +40,11 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
 
         var newOrder = Order.Create(orderId: OrderId.Of(request.OrderId),
                                     customerId: UserId.Of(request.CustomerId),
+                                    customerPublicKey: request.CustomerPublicKey,
+                                    tx: request.Tx,
                                     code: Code.GenerateCode(),
                                     paymentMethod: paymentMethodEnum,
-                                    orderStatus: EOrderStatus.PENDING,
+                                    orderStatus: paymentMethodEnum == EPaymentMethod.SOLANA ? EOrderStatus.PAID : EOrderStatus.PENDING,
                                     shippingAddress: shippingAddress,
                                     promotionId: request.Promotion?.PromotionId,
                                     promotionType: request.Promotion?.PromotionType,

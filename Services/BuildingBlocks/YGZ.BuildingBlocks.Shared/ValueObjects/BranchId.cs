@@ -4,36 +4,27 @@ namespace YGZ.BuildingBlocks.Shared.ValueObjects;
 
 public class BranchId : ValueObject
 {
-    public Guid Value { get; private set; }
+    public string? Value { get; private set; }
 
-    private BranchId(Guid guid)
+
+    private BranchId(string? id)
     {
-        Value = guid;
-    }
-    public static BranchId Create()
-    {
-        return new BranchId(Guid.NewGuid());
+        Value = id;
     }
 
-    public static BranchId Of(string guid)
+    public static BranchId Create(string id)
     {
-        Guid.TryParse(guid, out var parsedGuid);
-
-        if (parsedGuid == Guid.Empty)
-        {
-            throw new ArgumentException("Invalid GUID format", nameof(parsedGuid));
-        }
-
-        return new BranchId(parsedGuid);
+        return new BranchId(id);
     }
 
-    public static BranchId? Of(Guid? guid)
+    public static BranchId Of(string? id)
     {
-        return guid is not null ? new BranchId(guid.Value) : null;
+        return new BranchId(id ?? null);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Value ?? string.Empty;
     }
 }
+

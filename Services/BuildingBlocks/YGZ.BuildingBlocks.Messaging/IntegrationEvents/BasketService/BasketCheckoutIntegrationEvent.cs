@@ -8,6 +8,8 @@ public record BasketCheckoutIntegrationEvent : IntegrationEvent
     public required Guid OrderId { get; init; }
     public required string CustomerId { get; init; }
     public required string CustomerEmail { get; init; }
+    public string? CustomerPublicKey { get; init; }
+    public string? Tx { get; init; }
     public required string ContactName { get; init; }
     public required string ContactPhoneNumber { get; init; }
     public required string AddressLine { get; init; }
