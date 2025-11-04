@@ -11,13 +11,13 @@ namespace YGZ.Catalog.Application.Inventory.Queries.GetSkuById;
 
 public class GetSkuByIdHandler : IQueryHandler<GetSkuByIdQuery, SkuResponse>
 {
-    private readonly IMongoRepository<SKU, SkuId> _repository;
     private readonly ILogger<GetSkuByIdHandler> _logger;
+    private readonly IMongoRepository<SKU, SkuId> _repository;
 
-    public GetSkuByIdHandler(IMongoRepository<SKU, SkuId> repository, ILogger<GetSkuByIdHandler> logger)
+    public GetSkuByIdHandler(ILogger<GetSkuByIdHandler> logger, IMongoRepository<SKU, SkuId> repository)
     {
-        _repository = repository;
         _logger = logger;
+        _repository = repository;
     }
 
     public async Task<Result<SkuResponse>> Handle(GetSkuByIdQuery request, CancellationToken cancellationToken)

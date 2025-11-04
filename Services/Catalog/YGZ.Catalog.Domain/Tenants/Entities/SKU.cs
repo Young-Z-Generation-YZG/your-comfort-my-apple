@@ -1,5 +1,4 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Abstractions;
@@ -123,6 +122,29 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             AvailableInStock -= reservedQuantity;
 
             ReservedForEvent = ReservedForEvent.Create(eventId, eventItemId, eventName, reservedQuantity);
+        }
+    }
+
+    public void DeductQuantity(int quantity)
+    {
+        if (AvailableInStock < quantity)
+        {
+            throw new Exception("Reserved quantity is less than the quantity to deduct");
+        }
+
+        AvailableInStock -= quantity;
+    }
+
+    public void DeductReservedQuantity(int quantity)
+    {
+        if (ReservedForEvent is not null)
+        {
+            if (ReservedForEvent.ReservedQuantity < quantity)
+            {
+                throw new Exception("Reserved quantity is less than the quantity to deduct");
+            }
+
+            ReservedForEvent.ReservedQuantity -= quantity;
         }
     }
 

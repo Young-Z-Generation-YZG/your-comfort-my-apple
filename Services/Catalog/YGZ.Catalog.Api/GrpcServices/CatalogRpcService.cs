@@ -3,8 +3,10 @@ using MapsterMapper;
 using MediatR;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Api.Protos;
-using YGZ.Catalog.Application.Tenants.Queries.GetTenantById;
+using YGZ.Catalog.Application.Inventory.Commands.CheckInsufficientStock;
 using YGZ.Catalog.Application.Inventory.Queries.GetSkuById;
+using YGZ.Catalog.Application.Tenants.Queries.GetTenantById;
+using YGZ.Catalog.Domain.Core.Errors;
 
 namespace YGZ.Catalog.Api.GrpcServices;
 
@@ -63,11 +65,22 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
 
         if (result.IsFailure)
         {
-            throw new RpcException(new Status(StatusCode.NotFound, result.Error.Message), new Metadata
+            if (result.Error == Errors.Inventory.SkuDoesNotExist)
             {
-                { "error-code", result.Error.Code },
-                { "service-name", "CatalogService" }
-            });
+                throw new RpcException(new Status(StatusCode.NotFound, result.Error.Message), new Metadata
+                {
+                    { "error-code", result.Error.Code },
+                    { "service-name", "CatalogService" }
+                });
+            }
+            else
+            {
+                throw new RpcException(new Status(StatusCode.Internal, result.Error.Message), new Metadata
+                {
+                    { "error-code", result.Error.Code },
+                    { "service-name", "CatalogService" }
+                });
+            }
         }
 
         return new SkuModel
@@ -89,6 +102,84 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
         };
     }
 
+    // public async override Task<BooleanResponse> DeductQuantityGrpc(DeductQuantityRequest request, ServerCallContext context)
+    // {
+    //     return await base.DeductQuantityGrpc(request, context);
+    //     //var command = new DeductQuantityCommand
+    //     //{
+    //     //    SkuId = request.SkuId,
+    //     //    Quantity = request.Quantity.HasValue ? request.Quantity.Value : 0
+    //     //};
+
+    //     //var result = await _sender.Send(command);
+
+    //     //if (result.IsFailure)
+    //     //{
+    //     //    if (result.Error == Errors.Inventory.QuantityIsLessThanTheQuantityToDeduct)
+    //     //    {
+    //     //        throw new RpcException(new Status(StatusCode.FailedPrecondition, result.Error.Message), new Metadata
+    //     //        {
+    //     //            { "error-code", result.Error.Code },
+    //     //            { "service-name", "CatalogService" }
+    //     //        });
+    //     //    }
+    //     //    else
+    //     //    {
+    //     //        throw new RpcException(new Status(StatusCode.Internal, result.Error.Message), new Metadata
+    //     //        {
+    //     //            { "error-code", result.Error.Code },
+    //     //            { "service-name", "CatalogService" }
+    //     //        });
+    //     //    }
+    //     //}
+
+    //     //return new BooleanResponse { IsSuccess = result.Response };
+    // }
+
+    public async override Task<BooleanResponse> CheckInsufficientGrpc(CheckInsufficientRequest request, ServerCallContext context)
+    {
+        var promotionType = request.PromotionType switch
+        {
+            EPromotionTypeGrpc.PromotionTypeCoupon => EPromotionType.COUPON,
+            EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT,
+            _ => EPromotionType.UNKNOWN
+        };
+
+        var command = new CheckInsufficientStockCommand
+        {
+            ModelId = request.ModelId,
+            NormalizedModel = request.NormalizedModel,
+            NormalizedStorage = request.NormalizedStorage,
+            NormalizedColor = request.NormalizedColor,
+            Quantity = request.Quantity.HasValue ? request.Quantity.Value : 0,
+            PromotionId = request.PromotionId,
+            PromotionType = promotionType
+        };
+
+        var result = await _sender.Send(command);
+
+        if (result.IsFailure)
+        {
+            if (result.Error == Errors.Inventory.SkuDoesNotExist)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, result.Error.Message), new Metadata
+                {
+                    { "error-code", result.Error.Code },
+                    { "service-name", "CatalogService" }
+                });
+            }
+            else
+            {
+                throw new RpcException(new Status(StatusCode.Internal, result.Error.Message), new Metadata
+                {
+                    { "error-code", result.Error.Code },
+                    { "service-name", "CatalogService" }
+                });
+            }
+        }
+
+        return new BooleanResponse { IsSuccess = result.Response };
+    }
 
     // privates methods
     private static ETenantTypeGrpc ConvertToETenantTypeGrpc(ETenantType tenantType)

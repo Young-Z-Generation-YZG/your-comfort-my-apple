@@ -5,6 +5,7 @@ using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Domain.Orders.Entities;
+using YGZ.Ordering.Domain.Orders.Events;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders;
@@ -110,6 +111,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
         }
+
+        this.AddDomainEvent(new OrderConfirmedDomainEvent(this));
 
         OrderStatus = EOrderStatus.CONFIRMED;
     }

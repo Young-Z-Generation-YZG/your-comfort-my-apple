@@ -36,12 +36,22 @@ enum ETenantStateGrpc
     TENANT_STATE_MAINTENANCE = 3;
 }
 
+enum EPromotionTypeGrpc
+{
+    PROMOTION_TYPE_UNKNOWN = 0;
+    PROMOTION_TYPE_COUPON = 1;
+    PROMOTION_TYPE_EVENT = 2;
+}
+
 service CatalogProtoService {
     rpc CheckTenantExistGrpc (CheckTenantExistRequest) returns (BooleanResponse);
 
     // GET requests
     rpc GetTenantByIdGrpc (GetTenantByIdRequest) returns (TenantModel);
     rpc GetSkuByIdGrpc (GetSkuByIdRequest) returns (SkuModel);
+
+    // POST requests
+    rpc CheckInsufficientGrpc (CheckInsufficientRequest) returns (BooleanResponse);
 }
 
 
@@ -89,6 +99,17 @@ message GetSkuByIdRequest {
 message CheckTenantExistRequest {
     google.protobuf.StringValue tenant_id = 1;
 }
+
+message CheckInsufficientRequest {
+    google.protobuf.StringValue model_id = 1;
+    google.protobuf.StringValue normalized_model = 2;
+    google.protobuf.StringValue normalized_storage = 3;
+    google.protobuf.StringValue normalized_color = 4;
+    google.protobuf.Int32Value quantity = 5;
+    google.protobuf.StringValue promotion_id = 6;
+    EPromotionTypeGrpc promotion_type = 7;
+}
+
 
 
 // responses

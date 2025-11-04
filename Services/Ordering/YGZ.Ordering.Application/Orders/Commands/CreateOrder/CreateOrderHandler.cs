@@ -44,7 +44,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     tx: request.Tx,
                                     code: Code.GenerateCode(),
                                     paymentMethod: paymentMethodEnum,
-                                    orderStatus: paymentMethodEnum == EPaymentMethod.SOLANA ? EOrderStatus.PAID : EOrderStatus.PENDING,
+                                    orderStatus: paymentMethodEnum.Name == EPaymentMethod.SOLANA.Name ? EOrderStatus.PAID : EOrderStatus.PENDING,
                                     shippingAddress: shippingAddress,
                                     promotionId: request.Promotion?.PromotionId,
                                     promotionType: request.Promotion?.PromotionType,

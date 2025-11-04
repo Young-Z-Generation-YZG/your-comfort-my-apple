@@ -16,6 +16,17 @@ public class Error
         ServiceName = serviceName;
     }
 
+    public static bool operator ==(Error left, Error right)
+    {
+        return left.Code == right.Code;
+    }
+
+    public static bool operator !=(Error left, Error right)
+    {
+        return left.Code != right.Code;
+    }
+
+    public static Error UnknownError => new(GetAssemblyName() + "Test", "Unknown error", GetAssemblyName());
     public static Error NoneError => new(GetAssemblyName() + "Test", "None error", GetAssemblyName());
     public static Error ValidationError => new(GetAssemblyName() + "Test", "Validation error", GetAssemblyName());
     public static Error BadRequest(string code, string message, string serviceName) => new(code, message, serviceName);

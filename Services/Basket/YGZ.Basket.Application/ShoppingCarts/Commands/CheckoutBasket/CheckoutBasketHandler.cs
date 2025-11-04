@@ -224,60 +224,60 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         //await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
 
- switch (request.PaymentMethod)
+        switch (request.PaymentMethod)
+        {
+            case nameof(EPaymentMethod.VNPAY):
+            var model = new VnpayInformationModel()
             {
-                case nameof(EPaymentMethod.VNPAY):
-                var model = new VnpayInformationModel()
-                {
-                    OrderType = "VNPAY_CHECKOUT",
-                    OrderDescription = $"ORDER_ID={orderId}",
-                    Amount = result.Response.TotalAmount * 25000,
-                    Name = request.ShippingAddress.ContactName,
-                };
+                OrderType = "VNPAY_CHECKOUT",
+                OrderDescription = $"ORDER_ID={orderId}",
+                Amount = result.Response.TotalAmount * 25000,
+                Name = request.ShippingAddress.ContactName,
+            };
 
-                var paymentUrl = _vnpayProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
+            var paymentUrl = _vnpayProvider.CreatePaymentUrl(model, _httpContextAccessor.HttpContext!);
 
-                if (string.IsNullOrEmpty(paymentUrl))
-                {
-                    return Errors.Payment.VnpayPaymentUrlInvalid;
-                }
-
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    PaymentRedirectUrl = paymentUrl
-                };
-
-                case nameof(EPaymentMethod.MOMO):
-                var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
-                {
-                    FullName = $"{request.ShippingAddress.ContactName}",
-                    OrderId = $"ORDER_ID={orderId}",
-                    OrderInfo = "MOMO_CHECKOUT",
-                    Amount = (double)10 * 25000,
-                });
-
-                if (momoPaymentUrl?.ErrorCode != 0)
-                {
-                    return Errors.Payment.MomoPaymentUrlInvalid;
-                }
-
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    PaymentRedirectUrl = momoPaymentUrl!.PayUrl
-                };
-                case nameof(EPaymentMethod.COD):
-                return new CheckoutBasketResponse()
-                {
-                    OrderId = orderId.ToString(),
-                    CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                    OrderDetailsRedirectUrl = $"/account/orders/{orderId}"
-                };
-                default:
-                return Errors.Payment.Invalid;
+            if (string.IsNullOrEmpty(paymentUrl))
+            {
+                return Errors.Payment.VnpayPaymentUrlInvalid;
             }
+
+            return new CheckoutBasketResponse()
+            {
+                OrderId = orderId.ToString(),
+                CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+                PaymentRedirectUrl = paymentUrl
+            };
+
+            case nameof(EPaymentMethod.MOMO):
+            var momoPaymentUrl = await _momoProvider.CreatePaymentUrlAsync(new MomoInformationModel()
+            {
+                FullName = $"{request.ShippingAddress.ContactName}",
+                OrderId = $"ORDER_ID={orderId}",
+                OrderInfo = "MOMO_CHECKOUT",
+                Amount = (double)10 * 25000,
+            });
+
+            if (momoPaymentUrl?.ErrorCode != 0)
+            {
+                return Errors.Payment.MomoPaymentUrlInvalid;
+            }
+
+            return new CheckoutBasketResponse()
+            {
+                OrderId = orderId.ToString(),
+                CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+                PaymentRedirectUrl = momoPaymentUrl!.PayUrl
+            };
+            case nameof(EPaymentMethod.COD):
+            return new CheckoutBasketResponse()
+            {
+                OrderId = orderId.ToString(),
+                CartItems = checkoutShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+                OrderDetailsRedirectUrl = $"/account/orders/{orderId}"
+            };
+            default:
+            return Errors.Payment.Invalid;
+        }
     }
 }
