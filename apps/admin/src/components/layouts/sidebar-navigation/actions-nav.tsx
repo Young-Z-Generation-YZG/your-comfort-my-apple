@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useMemo, useState } from 'react';
 import {
    ArrowDown,
    ArrowUp,
@@ -36,6 +36,13 @@ import {
 } from '@components/ui/sidebar';
 import { ModeToggle } from '@components/ui/mode-toggle';
 import UserSwitcher from '@components/ui/user-switcher';
+import useIdentityService from '~/src/hooks/api/use-identity-service';
+import { useEffect } from 'react';
+import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
+import { ERole } from '~/src/domain/enums/role.enum';
+import usePagination from '~/src/hooks/use-pagination';
+import { useDispatch } from 'react-redux';
+import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
 
 const data = [
    [
@@ -101,16 +108,68 @@ const data = [
 ];
 
 export function ActionNav() {
-   const [isOpen, setIsOpen] = React.useState(false);
+   const [isOpen, setIsOpen] = useState(false);
 
-   // React.useEffect(() => {
-   //   setIsOpen(true);
-   // }, []);
+   const dispatch = useDispatch();
+
+   const { currentUser, impersonatedUser } = useAppSelector(
+      (state: RootState) => state.auth,
+   );
+
+   const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
+      useIdentityService();
+
+   const roles = useMemo(
+      () => currentUser?.roles || impersonatedUser?.roles || [],
+      [currentUser, impersonatedUser],
+   );
+
+   useEffect(() => {
+      const fetchUsers = async () => {
+         if (roles.includes(ERole.ADMIN_SUPER)) {
+            await getUsersByAdminAsync(
+               {
+                  _page: 1,
+                  _limit: 10,
+               },
+               { useSuperAdminToken: true },
+            );
+         }
+      };
+
+      fetchUsers();
+   }, [getUsersByAdminAsync, roles, dispatch]);
+
+   const { paginationItems: staffItems } = usePagination(
+      getUsersByAdminState.isSuccess &&
+         getUsersByAdminState.data &&
+         getUsersByAdminState.data.items.length > 0
+         ? getUsersByAdminState.data
+         : {
+              total_records: 0,
+              total_pages: 0,
+              page_size: 0,
+              current_page: 0,
+              items: [],
+              links: {
+                 first: null,
+                 last: null,
+                 prev: null,
+                 next: null,
+              },
+           },
+   );
+
+   //
+
+   useEffect(() => {
+      dispatch(setIsLoading(isLoading));
+   }, [isLoading, dispatch]);
 
    return (
       <div className="flex items-center gap-2 text-sm">
          <div>
-            <UserSwitcher />
+            <UserSwitcher users={staffItems} />
          </div>
          <ModeToggle />
          <Button variant="ghost" size="icon" className="h-7 w-7">

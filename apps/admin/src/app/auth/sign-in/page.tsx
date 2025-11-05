@@ -13,11 +13,30 @@ import Input from '@components/customs/input-field';
 import PasswordInputField from '@components/customs/password-input-field';
 import FieldMessageError from '@components/customs/field-message-error';
 import Label from '@components/customs/label';
+import { useDispatch } from 'react-redux';
+import {
+   setLogin,
+   setRoles,
+} from '~/src/infrastructure/redux/features/auth.slice';
 
 // let loginWindow: Window | null = null;
 
+const fakeIdentityData = {
+   id: '65dad719-7368-4d9f-b623-f308299e9575',
+   username: 'admin@gmail.com',
+   email: 'admin@gmail.com',
+   email_confirmed: true,
+   phone_number: '0333284890',
+   roles: ['ADMIN'],
+};
+
+export type TIdentity = typeof fakeIdentityData;
+
 const SignInPage = () => {
-   const { isLoading, loginAsync } = useAuthService();
+   const { isLoading, loginAsync, getIdentityAsync, getIdentityState } =
+      useAuthService();
+
+   const dispatch = useDispatch();
 
    const form = useForm({
       resolver: loginResolver,
@@ -167,7 +186,29 @@ const SignInPage = () => {
                         <form
                            onSubmit={form.handleSubmit(
                               async (data: TLoginForm) => {
-                                 await loginAsync(data);
+                                 const result = await loginAsync(data);
+
+                                 if (result.isSuccess && result.data) {
+                                    const identityResult =
+                                       await getIdentityAsync();
+
+                                    if (
+                                       identityResult.isSuccess &&
+                                       identityResult.data
+                                    ) {
+                                       dispatch(
+                                          setRoles({
+                                             currentUser: {
+                                                roles: identityResult.data
+                                                   .roles,
+                                             },
+                                             impersonatedUser: {
+                                                roles: null,
+                                             },
+                                          }),
+                                       );
+                                    }
+                                 }
                               },
                            )}
                            className="flex flex-col gap-5"

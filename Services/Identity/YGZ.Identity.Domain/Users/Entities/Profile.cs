@@ -76,20 +76,20 @@ public class Profile : Entity<ProfileId>, IAuditable, ISoftDelete
     {
         return new ProfileResponse
         {
-    Id = Id.Value.ToString() ?? string.Empty,
-    UserId = UserId,
-    FirstName = FirstName,
-    LastName = LastName,
-    BirthDay = BirthDay,
-    Gender = Gender.ToString(),
-    ImageId = Image?.ImageId,
-    ImageUrl = Image?.ImageUrl,
-    CreatedAt = CreatedAt,
-    UpdatedAt = UpdatedAt,
-    UpdatedBy = UpdatedBy,
-    IsDeleted = IsDeleted,
-    DeletedAt = DeletedAt,
-    DeletedBy = DeletedBy
+            Id = Id.Value.ToString() ?? string.Empty,
+            UserId = UserId,
+            FirstName = FirstName,
+            LastName = LastName,
+            BirthDay = BirthDay,
+            Gender = Gender.ToString(),
+            ImageId = Image?.ImageId,
+            ImageUrl = Image?.ImageUrl,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
         };
     }
 }

@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 type TenantAppState = {
    tenantId?: string | null;
    branchId?: string | null;
-   tenantCode?: string | null;
    tenantSubDomain?: string | null;
    tenantName?: string | null;
    tenantType?: string | null;
@@ -13,7 +12,6 @@ type TenantAppState = {
 const initialState: TenantAppState = {
    tenantId: null,
    branchId: null,
-   tenantCode: null,
    tenantSubDomain: null,
    tenantName: null,
    tenantType: null,
@@ -27,7 +25,6 @@ const tenantSlice = createSlice({
       setTenant: (state, action: PayloadAction<TenantAppState>) => {
          state.tenantId = action.payload.tenantId;
          state.branchId = action.payload.branchId;
-         state.tenantCode = action.payload.tenantCode;
          state.tenantSubDomain = action.payload.tenantSubDomain;
          state.tenantName = action.payload.tenantName;
          state.tenantType = action.payload.tenantType;

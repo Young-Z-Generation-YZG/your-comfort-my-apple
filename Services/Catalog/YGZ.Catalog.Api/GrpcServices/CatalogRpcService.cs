@@ -49,7 +49,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
         return new TenantModel
         {
             Id = result.Response.Id,
-            Code = result.Response.Code,
+            SubDomain = result.Response.SubDomain,
             Name = result.Response.Name,
             Description = result.Response.Description,
             TenantType = ConvertToETenantTypeGrpc(ETenantType.FromName(result.Response.TenantType)),

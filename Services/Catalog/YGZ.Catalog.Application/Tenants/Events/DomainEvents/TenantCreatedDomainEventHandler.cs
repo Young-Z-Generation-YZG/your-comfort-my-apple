@@ -15,26 +15,26 @@ namespace YGZ.Catalog.Application.Tenants.Events.DomainEvents;
 
 public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreatedDomainEvent>
 {
+    private readonly ILogger<TenantCreatedDomainEventHandler> _logger;
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<IphoneSkuPrice, SkuPriceId> _iphoneSkuPriceRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
     private readonly IDistributedCache _distributedCache;
-    private readonly ILogger<TenantCreatedDomainEventHandler> _logger;
 
-    public TenantCreatedDomainEventHandler(IMongoRepository<SKU, SkuId> skuRepository,
+    public TenantCreatedDomainEventHandler(ILogger<TenantCreatedDomainEventHandler> logger,
+                                           IMongoRepository<SKU, SkuId> skuRepository,
                                            IMongoRepository<IphoneModel, ModelId> iphoneModelRepository,
                                            IMongoRepository<Branch, BranchId> branchRepository,
                                            IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository,
-                                           IDistributedCache distributedCache,
-                                           ILogger<TenantCreatedDomainEventHandler> logger)
+                                           IDistributedCache distributedCache)
     {
+        _logger = logger;
         _skuRepository = skuRepository;
         _iphoneModelRepository = iphoneModelRepository;
         _branchRepository = branchRepository;
         _distributedCache = distributedCache;
         _iphoneSkuPriceRepository = iphoneSkuPriceRepository;
-        _logger = logger;
     }
 
     public async Task Handle(TenantCreatedDomainEvent notification, CancellationToken cancellationToken)

@@ -40,9 +40,10 @@ public class CreateTenantHandler : ICommandHandler<CreateTenantCommand, bool>
 
         var newTenant = Tenant.Create(tenantId: tenantId,
                                       name: request.Name,
-                                      description: request.TenantDescription,
+                                      subDomain: request.SubDomain, 
                                       tenantType: tenantTypeEnum,
-                                      branch: newBranch);
+                                      branch: newBranch,
+                                      description: request.TenantDescription);
 
         try
         {
@@ -61,7 +62,7 @@ public class CreateTenantHandler : ICommandHandler<CreateTenantCommand, bool>
 
             return result.Response;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await _repository.RollbackTransaction(cancellationToken);
 

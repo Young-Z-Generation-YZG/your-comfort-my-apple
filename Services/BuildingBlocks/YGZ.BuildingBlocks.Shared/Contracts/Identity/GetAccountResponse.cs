@@ -7,18 +7,18 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Identity;
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record GetAccountResponse
 {
-    required public string Email { get; set; }
-    required public string FirstName { get; set; }
-    required public string LastName { get; set; }
-    required public string PhoneNumber { get; set; }
-    required public string BirthDate { get; set; }
-    required public string ImageId { get; set; }
-    required public string ImageUrl { get; set; }
-    required public string DefaultAddressLabel { get; set; }
-    required public string DefaultContactName { get; set; }
-    required public string DefaultContactPhoneNumber { get; set; }
-    required public string DefaultAddressLine { get; set; }
-    required public string DefaultAddressDistrict { get; set; }
-    required public string DefaultAddressProvince { get; set; }
-    required public string DefaultAddressCountry { get; set; }
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string PhoneNumber { get; set; }
+    public required string BirthDate { get; set; }
+    public required string ImageId { get; set; }
+    public required string ImageUrl { get; set; }
+    public required string DefaultAddressLabel { get; set; }
+    public required string DefaultContactName { get; set; }
+    public required string DefaultContactPhoneNumber { get; set; }
+    public required string DefaultAddressLine { get; set; }
+    public required string DefaultAddressDistrict { get; set; }
+    public required string DefaultAddressProvince { get; set; }
+    public required string DefaultAddressCountry { get; set; }
 }

@@ -13,8 +13,9 @@ public class CreateTenantRequestExample : ISchemaProcessor
 
             schema.Example = new
             {
-                name = "YB Store Truong Chinh",
-                branch_address = "so 1023 Truong Chinh, Thanh Xuan, Ha Noi",
+                name = "1060 KVC TD",
+                sub_domain = "hcm-td-kvc-1060",
+                branch_address = "Số 1060, Kha Vạn Cân, Linh Chiểu, Thủ Đức",
                 tenant_type = ETenantType.BRANCH.Name,
                 tenant_description = "tenant_description",
                 branch_description = "branch_description",

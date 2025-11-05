@@ -11,9 +11,19 @@ const useIdentityService = () => {
    useCheckApiError([]);
 
    const getUsersByAdminAsync = useCallback(
-      async (params: any) => {
+      async (params: any, options?: { useSuperAdminToken?: boolean }) => {
          try {
-            const result = await getUsersByAdminTrigger(params).unwrap();
+            // Merge custom option into params
+            const queryParams = {
+               ...params,
+               __useSuperAdminToken: options?.useSuperAdminToken || false,
+            };
+
+            // Call RTK Query trigger with merged params
+            const result = await getUsersByAdminTrigger(
+               queryParams,
+               false,
+            ).unwrap();
             return {
                isSuccess: true,
                isError: false,

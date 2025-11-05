@@ -23,6 +23,7 @@ import { createPersistStorage } from './persist-storage';
 import { orderingApi } from '~/src/infrastructure/services/order.service';
 import { identityApi } from '~/src/infrastructure/services/identity.service';
 import { inventoryApi } from '~/src/infrastructure/services/inventory.service';
+import { tenantApi } from '~/src/infrastructure/services/tenant.service';
 
 const storage = createPersistStorage();
 
@@ -38,6 +39,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       orderingApi.reducerPath,
       identityApi.reducerPath,
       inventoryApi.reducerPath,
+      tenantApi.reducerPath,
    ],
    whitelist: ['auth', 'tenant'],
 };
@@ -46,6 +48,7 @@ const reducers = combineReducers({
    app: appReducer,
    auth: authReducer,
    tenant: tenantReducer,
+   [tenantApi.reducerPath]: tenantApi.reducer,
    [authApi.reducerPath]: authApi.reducer,
    [keycloakApi.reducerPath]: keycloakApi.reducer,
    [uploadImageApi.reducerPath]: uploadImageApi.reducer,
@@ -72,6 +75,7 @@ export const reduxStore = configureStore({
          orderingApi.middleware,
          identityApi.middleware,
          inventoryApi.middleware,
+         tenantApi.middleware,
       ),
 });
 

@@ -39,7 +39,7 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import usePagination from '~/src/hooks/use-pagination';
 import {
    ArrowUpDown,

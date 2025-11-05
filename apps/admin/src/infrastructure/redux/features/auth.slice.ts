@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, current } from '@reduxjs/toolkit';
 
 type AuthAppState = {
    currentUserKey?: 'currentUser' | 'impersonatedUser' | null;
@@ -8,6 +8,7 @@ type AuthAppState = {
       username?: string | null;
       accessToken?: string | null;
       refreshToken?: string | null;
+      roles?: string[] | null;
       accessTokenExpiredIn?: number | null;
       refreshTokenExpiredIn?: number | null;
    } | null;
@@ -17,6 +18,7 @@ type AuthAppState = {
       username?: string | null;
       accessToken?: string | null;
       refreshToken?: string | null;
+      roles?: string[] | null;
       accessTokenExpiredIn?: number | null;
       refreshTokenExpiredIn?: number | null;
    } | null;
@@ -32,6 +34,7 @@ const authSlice = createSlice({
          username: null,
          accessToken: null,
          refreshToken: null,
+         roles: null,
          accessTokenExpiredIn: null,
          refreshTokenExpiredIn: null,
       },
@@ -41,6 +44,7 @@ const authSlice = createSlice({
          username: null,
          accessToken: null,
          refreshToken: null,
+         roles: null,
          accessTokenExpiredIn: null,
          refreshTokenExpiredIn: null,
       },
@@ -54,6 +58,8 @@ const authSlice = createSlice({
       ) => {
          state.currentUserKey = 'currentUser';
          state.currentUser = action.payload.currentUser;
+
+         console.log('AUTH APP STATE: setLogin', current(state));
       },
       setImpersonatedUser: (
          state,
@@ -68,15 +74,36 @@ const authSlice = createSlice({
             state.currentUserKey = 'currentUser';
          }
 
-         console.log('APP STATE: setImpersonatedUser');
+         console.log('AUTH APP STATE: setImpersonatedUser', current(state));
+      },
+      setRoles: (
+         state,
+         action: PayloadAction<{
+            currentUser: { roles: string[] | null };
+            impersonatedUser: { roles: string[] | null };
+         }>,
+      ) => {
+         if (state.currentUser && action.payload.currentUser.roles) {
+            state.currentUser.roles = action.payload.currentUser.roles;
+         }
+
+         if (state.impersonatedUser && action.payload.impersonatedUser.roles) {
+            state.impersonatedUser.roles =
+               action.payload.impersonatedUser.roles;
+         }
+
+         console.log('AUTH APP STATE: setRoles', current(state));
       },
       setLogout: (state) => {
          state.currentUser = null;
          state.impersonatedUser = null;
+
+         console.log('AUTH APP STATE: setLogout', current(state));
       },
    },
 });
 
-export const { setLogin, setImpersonatedUser, setLogout } = authSlice.actions;
+export const { setLogin, setImpersonatedUser, setLogout, setRoles } =
+   authSlice.actions;
 
 export default authSlice.reducer;

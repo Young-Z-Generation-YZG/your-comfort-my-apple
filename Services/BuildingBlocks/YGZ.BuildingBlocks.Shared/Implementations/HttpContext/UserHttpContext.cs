@@ -7,11 +7,10 @@ namespace YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
 
 public class UserHttpContext : IUserHttpContext
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<UserHttpContext> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserHttpContext(IHttpContextAccessor httpContextAccessor,
-                              ILogger<UserHttpContext> logger)
+    public UserHttpContext(ILogger<UserHttpContext> logger, IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
@@ -19,8 +18,7 @@ public class UserHttpContext : IUserHttpContext
 
     public string GetUserEmail()
     {
-        var email = _httpContextAccessor.HttpContext?.User.FindFirst("email")?.Value ??
-            _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+        var email = _httpContextAccessor.HttpContext?.User.FindFirst("email")?.Value ?? _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
         if (string.IsNullOrEmpty(email))
         {

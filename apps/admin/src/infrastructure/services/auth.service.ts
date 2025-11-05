@@ -1,33 +1,38 @@
 import {
    createApi,
-   fetchBaseQuery,
    FetchBaseQueryError,
    FetchBaseQueryMeta,
    QueryReturnValue,
 } from '@reduxjs/toolkit/query/react';
 import { setLogin, setLogout } from '../redux/features/auth.slice';
-import envConfig from '../config/env.config';
 import { RootState } from '../redux/store';
+import { baseQuery } from './base-query';
+import { setTenant } from '../redux/features/tenant.slice';
+
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('identity-services')(args, api, extraOptions);
+
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
+
+   return result;
+};
 
 export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'identity-services',
-      prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.currentUser
-            ?.accessToken;
-
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
-         }
-
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
+      getIdentity: builder.query<any, any>({
+         query: () => ({
+            url: '/api/v1/auth/me',
+            method: 'GET',
+         }),
+         providesTags: ['auth'],
+      }),
       login: builder.mutation({
          query: (payload: any) => ({
             url: '/api/v1/auth/login',
@@ -84,6 +89,11 @@ export const authApi = createApi({
          onQueryStarted(arg, { dispatch }) {
             try {
                dispatch(setLogout());
+               dispatch(
+                  setTenant({
+                     tenantId: null,
+                  }),
+               );
             } catch (error: unknown) {
                console.info(
                   '[AuthService]::logout::try/catch',
@@ -95,4 +105,5 @@ export const authApi = createApi({
    }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useLazyGetIdentityQuery } =
+   authApi;

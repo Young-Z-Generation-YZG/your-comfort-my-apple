@@ -8,6 +8,8 @@ import {
 } from '~/src/infrastructure/services/keycloak.service';
 import { useDispatch } from 'react-redux';
 import { setImpersonatedUser } from '~/src/infrastructure/redux/features/auth.slice';
+import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 
 const useKeycloakService = () => {
    const [authorizationCodeMutation, authorizationCodeMutationState] =
@@ -16,6 +18,10 @@ const useKeycloakService = () => {
       useImpersonateUserMutation();
 
    const dispatch = useDispatch();
+
+   const { currentUser, impersonatedUser } = useAppSelector(
+      (state: RootState) => state.auth,
+   );
 
    useCheckApiError([
       {
@@ -56,6 +62,14 @@ const useKeycloakService = () => {
                }),
             );
 
+            if (userId === currentUser?.userId) {
+               dispatch(
+                  setTenant({
+                     tenantId: null,
+                  }),
+               );
+            }
+
             const result = await impersonateUserMutation(userId).unwrap();
 
             return {
@@ -68,7 +82,7 @@ const useKeycloakService = () => {
             return { isSuccess: false, isError: true, data: null, error };
          }
       },
-      [impersonateUserMutation, dispatch],
+      [impersonateUserMutation, dispatch, currentUser],
    );
 
    // centrally track the loading state

@@ -1,6 +1,6 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
-using YGZ.Catalog.Domain.Core.Abstractions;
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
@@ -29,17 +29,23 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     [BsonElement("rating")]
     public int Rating { get; private set; }
 
+    [BsonElement("CreatedAt")]
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
+    [BsonElement("UpdatedAt")]
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public bool IsDeleted { get; init; } = false;
+    [BsonElement("UpdatedBy")]
+    public string? UpdatedBy { get; set; } = null;
 
-    public DateTime? DeletedAt { get; init; } = null;
+    [BsonElement("IsDeleted")]
+    public bool IsDeleted { get; set; } = false;
 
-    public string? DeletedBy { get; init; } = null;
+    [BsonElement("DeletedAt")]
+    public DateTime? DeletedAt { get; set; } = null;
 
-    public string? UpdatedBy { get; init; } = null;
+    [BsonElement("DeletedBy")]
+    public string? DeletedBy { get; set; } = null;
 
     public static Review Create(ModelId modelId, SkuId skuId, CustomerOrder customerOrder, string content, int rating)
     {

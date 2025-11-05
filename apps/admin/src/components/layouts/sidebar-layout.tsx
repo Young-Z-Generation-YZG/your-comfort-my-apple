@@ -38,6 +38,13 @@ import { MainNav } from './sidebar-navigation/main-nav';
 import { NavUser } from '@components/ui/nav-user';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TenantSwitcher } from '@components/ui/tenant-switcher';
+import usePagination from '~/src/hooks/use-pagination';
+import { useEffect, useMemo } from 'react';
+import useIdentityService from '~/src/hooks/api/use-identity-service';
+import useTenantService from '~/src/hooks/api/use-tenant-service';
+import { ERole } from '~/src/domain/enums/role.enum';
+import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
+import { useDispatch } from 'react-redux';
 // import { NavEmployees } from './nav-employees';
 
 const data = {
@@ -232,23 +239,276 @@ const data = {
    ],
 };
 
+const superAdminSidebarData = [
+   {
+      title: 'Tenant Management',
+      url: '/dashboards/tenant-management',
+      icon: Building2,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Online Shop',
+      url: '/dashboards/online/orders',
+      icon: ScrollText,
+      isActive: true,
+      items: [
+         {
+            title: 'Orders List',
+            url: '/dashboards/online/orders',
+            icon: ScrollText,
+         },
+      ],
+   },
+   {
+      title: 'Product Management',
+      url: '/dashboards/product-management',
+      icon: Building2,
+      isActive: true,
+      items: [
+         {
+            title: 'iPhone',
+            url: '/dashboards/tenant-management/iphone',
+            icon: Box,
+         },
+         {
+            title: 'Mac',
+            url: '/dashboards/tenant-management/mac',
+            icon: Laptop,
+         },
+      ],
+   },
+   {
+      title: 'Warehouses',
+      url: '/dashboards/warehouses',
+      icon: Warehouse,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'HRM',
+      url: '/dashboards/hrm',
+      icon: Users,
+      isActive: true,
+   },
+   {
+      title: 'Customer Management',
+      url: '/dashboards/customer-management',
+      icon: UsersRound,
+      isActive: true,
+   },
+   {
+      title: 'Order Management',
+      url: '/dashboards/orders',
+      icon: ScrollText,
+      isActive: true,
+      items: [
+         {
+            title: 'Orders List',
+            url: '#',
+            icon: ScrollText,
+         },
+      ],
+   },
+];
+
+const adminSidebarData = [
+   {
+      title: 'Product Management',
+      url: '#',
+      icon: Building2,
+      isActive: true,
+      items: [
+         {
+            title: 'iPhone',
+            url: '#',
+            icon: Box,
+         },
+         {
+            title: 'Mac',
+            url: '#',
+            icon: Laptop,
+         },
+      ],
+   },
+   {
+      title: 'Inventory Management',
+      url: '#',
+      icon: Warehouse,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Branch HRM',
+      url: '/dashboards/hrm',
+      icon: Users,
+      isActive: true,
+   },
+   {
+      title: 'Customer Management',
+      url: '#',
+      icon: UsersRound,
+      isActive: true,
+   },
+   {
+      title: 'Order Management',
+      url: '#',
+      icon: ScrollText,
+      isActive: true,
+      items: [
+         {
+            title: 'Orders List',
+            url: '#',
+            icon: ScrollText,
+         },
+      ],
+   },
+];
+
+const fakeTenantsData = {
+   total_records: 2,
+   total_pages: 1,
+   page_size: 10,
+   current_page: 1,
+   items: [
+      {
+         id: '664355f845e56534956be32b',
+         name: 'Ware house',
+         sub_domain: 'admin',
+         description: '',
+         tenant_type: 'WARE_HOUSE',
+         tenant_state: 'ACTIVE',
+         embedded_branch: {
+            id: '664357a235e84033bbd0e6b6',
+            tenant_id: '664355f845e56534956be32b',
+            name: 'Ware house branch',
+            address: 'Ware house address',
+            description: null,
+            manager: null,
+            created_at: '2025-11-05T14:36:11.364Z',
+            updated_at: '2025-11-05T14:36:11.364Z',
+            updated_by: '',
+            is_deleted: false,
+            deleted_at: null,
+            deleted_by: '',
+         },
+         created_at: '2025-11-05T14:36:11.364Z',
+         updated_at: '2025-11-05T14:36:11.364Z',
+         updated_by: '',
+         is_deleted: false,
+         deleted_at: null,
+         deleted_by: '',
+      },
+      {
+         id: '690b6214ed407c59d0537d18',
+         name: '1060 KVC TD',
+         sub_domain: 'hcm-td-kvc-1060',
+         description: 'tenant_description',
+         tenant_type: 'BRANCH',
+         tenant_state: 'ACTIVE',
+         embedded_branch: {
+            id: '690b6214ed407c59d0537d19',
+            tenant_id: '690b6214ed407c59d0537d18',
+            name: '1060 KVC TD',
+            address: 'Số 1060, Kha Vạn Cân, Linh Chiểu, Thủ Đức',
+            description: 'branch_description',
+            manager: null,
+            created_at: '2025-11-05T14:41:24.287Z',
+            updated_at: '2025-11-05T14:41:24.287Z',
+            updated_by: '',
+            is_deleted: false,
+            deleted_at: null,
+            deleted_by: '',
+         },
+         created_at: '2025-11-05T14:41:24.288Z',
+         updated_at: '2025-11-05T14:41:24.288Z',
+         updated_by: '',
+         is_deleted: false,
+         deleted_at: null,
+         deleted_by: '',
+      },
+   ],
+   links: {
+      first: '?_page=1&_limit=10',
+      prev: null,
+      next: null,
+      last: '?_page=1&_limit=10',
+   },
+};
+
+export type TTenantItem = (typeof fakeTenantsData.items)[number];
+
 export function SidebarLayout({
    ...props
 }: React.ComponentProps<typeof Sidebar>) {
-   const { currentUser } = useAppSelector((state) => state.auth);
+   const { currentUser, impersonatedUser } = useAppSelector(
+      (state) => state.auth,
+   );
+
+   const dispatch = useDispatch();
+
+   const roles = useMemo(
+      () => currentUser?.roles || impersonatedUser?.roles || [],
+      [currentUser, impersonatedUser],
+   );
+
+   const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
+
+   useEffect(() => {
+      const fetchTenants = async () => {
+         await getTenantsAsync('');
+      };
+      if (roles.includes(ERole.ADMIN_SUPER)) {
+         fetchTenants();
+      }
+   }, [getTenantsAsync, roles]);
+
+   const { paginationItems: tenantItems } = usePagination(
+      getTenantsState.isSuccess &&
+         getTenantsState.data &&
+         getTenantsState.data.items.length > 0
+         ? getTenantsState.data
+         : {
+              total_records: 0,
+              total_pages: 0,
+              page_size: 0,
+              current_page: 0,
+              items: [],
+              links: {
+                 first: null,
+                 last: null,
+                 prev: null,
+                 next: null,
+              },
+           },
+   );
+
+   useEffect(() => {
+      dispatch(setIsLoading(isLoading));
+   }, [isLoading, dispatch]);
+
+   const sidebarData = useMemo(() => {
+      if (
+         roles.includes(ERole.ADMIN_SUPER) &&
+         !impersonatedUser?.roles?.includes(ERole.ADMIN)
+      ) {
+         return superAdminSidebarData;
+      }
+      return adminSidebarData;
+   }, [roles, impersonatedUser]);
 
    return (
       <Sidebar variant="inset" {...props}>
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
-                  <TenantSwitcher tenants={data.tenants} />
+                  <TenantSwitcher tenants={tenantItems} />
                </SidebarMenuItem>
             </SidebarMenu>
          </SidebarHeader>
          <SidebarContent>
             <DashboardNav dashboards={data.dashboards} />
-            <MainNav items={data.navMain} />
+            <MainNav items={sidebarData} />
             {/* <NavEmployees employees={data.employees} /> */}
             {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
          </SidebarContent>

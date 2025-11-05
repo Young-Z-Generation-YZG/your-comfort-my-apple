@@ -33,7 +33,7 @@ const DashboardLayout = ({
          <LoadingOverlay
             isLoading={isLoading}
             fullScreen={true}
-            text="Switching user..."
+            text="Switching tenant/user..."
          />
          <SidebarProvider>
             <SidebarLayout />

@@ -13,7 +13,7 @@ public static class SeedTenantData
         {
             return new List<Tenant>
             {
-                Tenant.Create(TenantId.Of("664355f845e56534956be32b"), "Ware house", ETenantType.WARE_HOUSE, Branch.Create(BranchId.Of("664357a235e84033bbd0e6b6"), TenantId.Of("664355f845e56534956be32b"), "Ware house branch", "Ware house address", null))
+                Tenant.Create(TenantId.Of("664355f845e56534956be32b"), "Ware house", "admin", ETenantType.WARE_HOUSE, Branch.Create(BranchId.Of("664357a235e84033bbd0e6b6"), TenantId.Of("664355f845e56534956be32b"), "Ware house branch", "Ware house address", null))
             };
         }
     }

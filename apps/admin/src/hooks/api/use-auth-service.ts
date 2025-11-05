@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import {
+   useLazyGetIdentityQuery,
    useLoginMutation,
    useLogoutMutation,
 } from '~/src/infrastructure/services/auth.service';
@@ -11,6 +12,7 @@ import { useRouter } from 'next/navigation';
 const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [logoutMutation, logoutMutationState] = useLogoutMutation();
+   const [getIdentityTrigger, getIdentityState] = useLazyGetIdentityQuery();
 
    const router = useRouter();
 
@@ -54,10 +56,27 @@ const useAuthService = () => {
       }
    }, [logoutMutation, router]);
 
+   const getIdentityAsync = useCallback(async () => {
+      try {
+         const result = await getIdentityTrigger({}).unwrap();
+         return { isSuccess: true, isError: false, data: result, error: null };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [getIdentityTrigger]);
+
    // centrally track the loading state
    const isLoading = useMemo(() => {
-      return loginMutationState.isLoading;
-   }, [loginMutationState.isLoading]);
+      return (
+         loginMutationState.isLoading ||
+         getIdentityState.isLoading ||
+         getIdentityState.isFetching
+      );
+   }, [
+      loginMutationState.isLoading,
+      getIdentityState.isLoading,
+      getIdentityState.isFetching,
+   ]);
 
    // centrally track the success
    useMemo(() => {
@@ -84,10 +103,12 @@ const useAuthService = () => {
       // States
       isLoading,
       isAuthenticated,
+      getIdentityState,
 
       // Actions
       loginAsync,
       logoutAsync,
+      getIdentityAsync,
 
       // Mutation states
       loginState: loginMutationState,

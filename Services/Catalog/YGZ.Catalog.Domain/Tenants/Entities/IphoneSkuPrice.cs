@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -54,17 +54,23 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
         }
     }
 
+    [BsonElement("CreatedAt")]
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
+    [BsonElement("UpdatedAt")]
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public string? UpdatedBy { get; init; } = null;
+    [BsonElement("UpdatedBy")]
+    public string? UpdatedBy { get; set; } = null;
 
-    public bool IsDeleted { get; init; } = false;
+    [BsonElement("IsDeleted")]
+    public bool IsDeleted { get; set; } = false;
 
-    public DateTime? DeletedAt { get; init; } = null;
+    [BsonElement("DeletedAt")]
+    public DateTime? DeletedAt { get; set; } = null;
 
-    public string? DeletedBy { get; init; } = null;
+    [BsonElement("DeletedBy")]
+    public string? DeletedBy { get; set; } = null;
 
     public static IphoneSkuPrice Create(SkuPriceId skuPriceId, ModelId modelId, Model model, Color color, Storage storage, decimal unitPrice)
     {

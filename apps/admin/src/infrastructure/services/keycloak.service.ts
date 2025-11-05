@@ -57,6 +57,8 @@ export const keycloakApi = createApi({
          const authAppState = (getState() as RootState).auth;
          let accessToken = null;
 
+         console.log('endpoint', endpoint);
+
          // Endpoints that should always use admin token (not impersonated token)
          const adminOnlyEndpoints = ['impersonateUser'];
          const useAdminTokenOnly = adminOnlyEndpoints.includes(endpoint || '');
@@ -127,7 +129,9 @@ export const keycloakApi = createApi({
                ).auth;
 
                dispatch(setIsLoading(true));
+
                const { data } = await queryFulfilled;
+
                dispatch(setIsLoading(false));
 
                // Get current user's ID from state
@@ -135,38 +139,22 @@ export const keycloakApi = createApi({
                   (getState() as RootState).auth.impersonatedUser?.userId ??
                   null;
 
-               if (currentUser?.userId !== impersonatedUser?.userId) {
-                  if (data.access_token) {
-                     dispatch(setIsImpersonating(true));
+               console.log('impersonatedUserId', impersonatedUserId);
 
-                     dispatch(
-                        setImpersonatedUser({
-                           impersonatedUser: {
-                              userId: impersonatedUserId,
-                              userEmail: data.user_email,
-                              username: data.username,
-                              accessToken: data.access_token,
-                              refreshToken: data.refresh_token,
-                           },
-                        }),
-                     );
+               if (data.access_token) {
+                  dispatch(setIsImpersonating(true));
 
-                     setTimeout(() => {
-                        console.log('Reloading page after impersonation');
-                        // window.location.reload();
-                     }, 0);
-                  }
-               } else {
                   dispatch(
                      setImpersonatedUser({
-                        impersonatedUser: null,
+                        impersonatedUser: {
+                           userId: impersonatedUserId,
+                           userEmail: data.user_email,
+                           username: data.username,
+                           accessToken: data.access_token,
+                           refreshToken: data.refresh_token,
+                        },
                      }),
                   );
-
-                  setTimeout(() => {
-                     console.log('Reloading page after stopping impersonation');
-                     //  window.location.reload();
-                  }, 0);
                }
             } catch (error: unknown) {
                console.info(

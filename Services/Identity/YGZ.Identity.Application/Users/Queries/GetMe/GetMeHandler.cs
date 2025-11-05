@@ -11,16 +11,16 @@ namespace YGZ.Identity.Application.Users.Queries.GetProfile;
 
 public class GetMeHandler : IQueryHandler<GetMeQuery, GetAccountResponse>
 {
-    private readonly IUserHttpContext _userHttpContext;
     private readonly ILogger<GetMeHandler> _logger;
+    private readonly IUserHttpContext _userHttpContext;
     private readonly IUserRepository _repository;
 
-    public GetMeHandler(IUserHttpContext userHttpContext,
-                             ILogger<GetMeHandler> logger,
-                             IUserRepository repository)
+    public GetMeHandler(ILogger<GetMeHandler> logger,
+                        IUserHttpContext userHttpContext,
+                        IUserRepository repository)
     {
-        _userHttpContext = userHttpContext;
         _logger = logger;
+        _userHttpContext = userHttpContext;
         _repository = repository;
     }
 

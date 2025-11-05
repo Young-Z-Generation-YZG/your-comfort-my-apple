@@ -8,12 +8,12 @@ namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModels;
 
 public sealed record GetIphoneModelsQuery() : IQuery<PaginationResponse<IphoneModelResponse>>
 {
-    public int? Page { get; set; }
-    public int? Limit { get; set; }
-    public List<string>? Colors { get; set; } = new List<string>();
-    public List<string>? Storages { get; set; } = new List<string>();
-    public List<string>? Models { get; set; } = new List<string>();
-    public string? MinPrice { get; set; }
-    public string? MaxPrice { get; set; }
-    public string? PriceSort { get; set; }
+    public int? Page { get; init; }
+    public int? Limit { get; init; }
+    public List<string>? Colors { get; init; } = new List<string>();
+    public List<string>? Storages { get; init; } = new List<string>();
+    public List<string>? Models { get; init; } = new List<string>();
+    public string? MinPrice { get; init; }
+    public string? MaxPrice { get; init; }
+    public string? PriceSort { get; init; }
 }

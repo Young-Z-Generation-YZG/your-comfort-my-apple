@@ -5,6 +5,7 @@ namespace YGZ.Catalog.Application.Tenants.Commands;
 public sealed record CreateTenantCommand : ICommand<bool>
 {
     public required string Name { get; init; }
+    public required string SubDomain { get; init; }
     public required string BranchAddress { get; init; }
     public required string TenantType { get; init; }
     public string? TenantDescription { get; init; }

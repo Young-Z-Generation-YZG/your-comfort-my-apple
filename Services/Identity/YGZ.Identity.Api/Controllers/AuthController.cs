@@ -14,12 +14,15 @@ using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
+using YGZ.Identity.Application.Auths.Queries.GetIdentity;
+using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
 
 [Route("api/v{version:apiVersion}/auth")]
 [ApiVersion(1)]
 [OpenApiTag("auth", Description = "Manage auths.")]
+[Authorize(Policy = Policies.REQUIRE_AUTHENTICATION)]
 public class AuthController : ApiController
 {
     private readonly ISender _sender;
@@ -29,6 +32,21 @@ public class AuthController : ApiController
     {
         _sender = sender;
         _mapper = mapper;
+    }
+
+    [HttpGet("me")]
+    // [ProtectedResource(Resources.RESOURCE_USERS, [
+    //     Scopes.ALL,
+    //     Scopes.READ_ANY,
+    // ])]
+    // [SwaggerHeader("X-TenantId", "Tenant identifier for multi-tenant operations", "", false)]
+    public async Task<IActionResult> GetIdentity(CancellationToken cancellationToken)
+    {
+        var query = new GetIdentityQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPost("login")]

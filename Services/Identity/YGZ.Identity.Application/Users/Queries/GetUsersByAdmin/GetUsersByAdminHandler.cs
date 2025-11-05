@@ -14,17 +14,20 @@ namespace YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 
 public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, PaginationResponse<UserResponse>>
 {
-    private readonly IUserHttpContext _userHttpContext;
     private readonly ILogger<GetUsersByAdminHandler> _logger;
+    private readonly IUserHttpContext _userHttpContext;
+    private readonly ITenantHttpContext _tenantHttpContext;
     private readonly IIdentityDbContext _identityDbContext;
     private readonly DbSet<User> _userDbSet;
 
     public GetUsersByAdminHandler(IUserHttpContext userHttpContext,
                                 ILogger<GetUsersByAdminHandler> logger,
+                                ITenantHttpContext tenantHttpContext,
                                 IIdentityDbContext identityDbContext)
     {
         _userHttpContext = userHttpContext;
         _logger = logger;
+        _tenantHttpContext = tenantHttpContext;
         _identityDbContext = identityDbContext;
         _userDbSet = identityDbContext.Users;
     }

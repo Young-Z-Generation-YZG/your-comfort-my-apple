@@ -7,6 +7,9 @@ public class CreateTenantRequest
     [JsonPropertyName("name")]
     public required string Name { get; init; }
 
+    [JsonPropertyName("sub_domain")]
+    public required string SubDomain { get; init; }
+
     [JsonPropertyName("branch_address")]
     public required string BranchAddress { get; init; }
 

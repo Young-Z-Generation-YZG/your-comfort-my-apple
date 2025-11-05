@@ -1,9 +1,11 @@
 ﻿
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
+using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
@@ -14,30 +16,54 @@ namespace YGZ.Identity.Infrastructure.Services;
 
 public class IdentityService : IIdentityService
 {
+    private readonly ILogger<IdentityService> _logger;
     private readonly UserManager<User> _userManager;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly ILogger<IdentityService> _logger;
     private readonly IKeycloakService _keycloakService;
-    RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IIdentityDbContext _identityDbContext;
 
-    public IdentityService(
-        ILogger<IdentityService> logger,
-        UserManager<User> userManager,
-        IPasswordHasher<User> passwordHasher,
-        IKeycloakService keycloakService,
-        RoleManager<IdentityRole> roleManager)
+    public IdentityService(ILogger<IdentityService> logger,
+                           UserManager<User> userManager,
+                           IPasswordHasher<User> passwordHasher,
+                           IKeycloakService keycloakService,
+                           RoleManager<IdentityRole> roleManager,
+                           IIdentityDbContext identityDbContext)
     {
         _logger = logger;
         _userManager = userManager;
         _passwordHasher = passwordHasher;
         _keycloakService = keycloakService;
         _roleManager = roleManager;
+        _identityDbContext = identityDbContext;
     }
     public async Task<Result<User>> FindUserAsync(string email)
     {
         try
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
+
+            if (existingUser is null)
+            {
+                return Errors.User.DoesNotExist;
+            }
+
+            return existingUser;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<Result<User>> FindUserAsyncIgnoreFilters(string email)
+    {
+        try
+        {
+            // Use IgnoreQueryFilters to bypass tenant filtering for this specific endpoint
+            var existingUser = await _identityDbContext.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpperInvariant());
 
             if (existingUser is null)
             {
@@ -129,7 +155,7 @@ public class IdentityService : IIdentityService
 
             return existingUser;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             //_logger.LogError(ex, "Exception occurred: {Message} {@Exception}", ex.Message, ex);
             throw;
@@ -152,7 +178,7 @@ public class IdentityService : IIdentityService
 
             return encodedToken;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -180,7 +206,7 @@ public class IdentityService : IIdentityService
                 byte[] tokenBytes = Convert.FromBase64String(encodedToken);
                 decodedToken = Encoding.UTF8.GetString(tokenBytes);
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 return Errors.Auth.InvalidToken;
             }
@@ -206,7 +232,7 @@ public class IdentityService : IIdentityService
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -229,7 +255,7 @@ public class IdentityService : IIdentityService
 
             return encodedToken;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -257,7 +283,7 @@ public class IdentityService : IIdentityService
                 byte[] tokenBytes = Convert.FromBase64String(encodedToken);
                 decodedToken = Encoding.UTF8.GetString(tokenBytes);
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
                 return Errors.Auth.InvalidToken;
             }
@@ -285,7 +311,7 @@ public class IdentityService : IIdentityService
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -318,9 +344,22 @@ public class IdentityService : IIdentityService
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.User.CannotChangePassword;
+        }
+    }
+
+    public async Task<Result<List<string>>> GetRolesAsync(User user)
+    {
+        try
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.ToList();
+        }
+        catch (Exception)
+        {
+            return Errors.User.CannotGetRoles;
         }
     }
 }

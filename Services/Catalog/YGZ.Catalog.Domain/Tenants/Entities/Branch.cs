@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
-using YGZ.Catalog.Domain.Core.Abstractions;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
@@ -26,17 +26,23 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
     [BsonElement("manager")]
     public BranchManager? Manager { get; init; }
 
+    [BsonElement("CreatedAt")]
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
-    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
+    [BsonElement("UpdatedAt")]
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public string? UpdatedBy { get; init; } = null;
+    [BsonElement("UpdatedBy")]
+    public string? UpdatedBy { get; set; } = null;
 
-    public bool IsDeleted { get; init; } = false;
+    [BsonElement("IsDeleted")]
+    public bool IsDeleted { get; set; } = false;
 
-    public DateTime? DeletedAt { get; init; } = null;
+    [BsonElement("DeletedAt")]
+    public DateTime? DeletedAt { get; set; } = null;
 
-    public string? DeletedBy { get; init; } = null;
+    [BsonElement("DeletedBy")]
+    public string? DeletedBy { get; set; } = null;
 
     public static Branch Create(BranchId branchId, TenantId tenantId, string name, string address, BranchManager? manager, string? description = null)
     {
@@ -59,7 +65,13 @@ public class Branch : Entity<BranchId>, IAuditable, ISoftDelete
             Name = Name,
             Address = Address,
             Description = Description ?? null,
-            Manager = Manager?.ToResponse() ?? null
+            Manager = Manager?.ToResponse() ?? null,
+            CreatedAt = CreatedAt.ToUniversalTime(),
+            UpdatedAt = UpdatedAt.ToUniversalTime(),
+            UpdatedBy = UpdatedBy ?? string.Empty,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt?.ToUniversalTime(),
+            DeletedBy = DeletedBy ?? string.Empty
         };
     }
 }

@@ -9,10 +9,9 @@ export const baseQuery = (service: string) =>
          const { currentUser, impersonatedUser } = (getState() as RootState)
             .auth;
 
-         const { tenantId, branchId, tenantSubDomain } = (
-            getState() as RootState
-         ).tenant;
+         const { tenantId } = (getState() as RootState).tenant;
 
+         // Use impersonated user token if available, otherwise current user
          const accessToken =
             impersonatedUser?.accessToken || currentUser?.accessToken;
 
@@ -20,12 +19,8 @@ export const baseQuery = (service: string) =>
             headers.set('Authorization', `Bearer ${accessToken}`);
          }
 
-         console.log('tenantId', tenantId);
-
          if (tenantId) {
             headers.set('X-TenantId', tenantId);
-            // headers.set('X-BranchId', branchId);
-            // headers.set('X-TenantSubDomain', tenantSubDomain);
          }
 
          headers.set('ngrok-skip-browser-warning', 'true');

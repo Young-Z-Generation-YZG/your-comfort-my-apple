@@ -59,7 +59,7 @@ service CatalogProtoService {
 message TenantModel
 {
     google.protobuf.StringValue id = 1;
-    google.protobuf.StringValue code = 2;
+    google.protobuf.StringValue sub_domain = 2;
     google.protobuf.StringValue name = 3;
     google.protobuf.StringValue description = 4;
     ETenantTypeGrpc tenant_type = 5;
