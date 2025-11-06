@@ -1,11 +1,11 @@
-using MongoDB.Bson.Serialization.Attributes;
-using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Products;
+using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.Catalog.Domain.Core.Primitives;
 
-namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.ProductModel.ValueObjects;
 
-public class IphoneSkuPriceList : ValueObject
+public class SkuPriceList : ValueObject
 {
     [BsonElement("normalized_model")]
     public required string NormalizedModel { get; init; }
@@ -19,13 +19,13 @@ public class IphoneSkuPriceList : ValueObject
     [BsonElement("unit_price")]
     public required decimal UnitPrice { get; init; }
 
-    public static IphoneSkuPriceList Create(string model, string color, string storage, decimal unitPrice)
+    public static SkuPriceList Create(string model, string color, string storage, decimal unitPrice)
     {
         EIphoneModel.TryFromName(model, out var modelEnum);
         EColor.TryFromName(color, out var colorEnum);
         EStorage.TryFromName(storage, out var storageEnum);
 
-        return new IphoneSkuPriceList
+        return new SkuPriceList
         {
             NormalizedModel = modelEnum.Name,
             NormalizedColor = colorEnum.Name,
@@ -42,9 +42,9 @@ public class IphoneSkuPriceList : ValueObject
         yield return UnitPrice;
     }
 
-    public IphoneSkuPriceListResponse ToResponse()
+    public SkuPriceListResponse ToResponse()
     {
-        return new IphoneSkuPriceListResponse
+        return new SkuPriceListResponse
         {
             NormalizedModel = NormalizedModel,
             NormalizedColor = NormalizedColor,

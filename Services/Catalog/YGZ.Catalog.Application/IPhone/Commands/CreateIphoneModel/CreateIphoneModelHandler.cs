@@ -129,6 +129,7 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
                                           showcaseImages: showcaseImages,
                                           description: request.Description,
                                           averageRating: initAverageRating,
+                                          isNewest: true,
                                           ratingStars: initRatingStars);
 
         var result = await _iphoneModelRepository.InsertOneAsync(newModel);

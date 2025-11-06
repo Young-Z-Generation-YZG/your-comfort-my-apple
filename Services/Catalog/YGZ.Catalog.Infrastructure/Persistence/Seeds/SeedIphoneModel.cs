@@ -148,7 +148,8 @@ public static class SeedIphoneModel
                                               showcaseImages: showcaseImages,
                                               description: "iPhone 15 model description.",
                                               averageRating: initAverageRating,
-                                              ratingStars: initRatingStars);
+                                              ratingStars: initRatingStars,
+                                              isNewest: true);
 
             return new List<IphoneModel>
             {

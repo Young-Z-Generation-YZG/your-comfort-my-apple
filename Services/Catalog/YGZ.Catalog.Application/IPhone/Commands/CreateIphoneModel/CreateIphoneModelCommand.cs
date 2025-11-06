@@ -13,4 +13,5 @@ public sealed record CreateIphoneModelCommand : ICommand<bool>
     public string Description { get; init; } = string.Empty;
     public List<ImageCommand> ShowcaseImages { get; init; } = [];
     public string? CategoryId { get; init; }
+    public bool IsNewest { get; init; } = false;
 }

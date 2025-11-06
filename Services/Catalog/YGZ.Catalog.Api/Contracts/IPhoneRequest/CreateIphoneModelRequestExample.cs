@@ -150,7 +150,8 @@ new
                         order = 4,
                     },
                 },
-                category_id = "67346f7549189f7314e4ef0c"
+                category_id = "67346f7549189f7314e4ef0c",
+                is_newest = true
             };
         }
     }

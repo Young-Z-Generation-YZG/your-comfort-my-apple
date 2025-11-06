@@ -54,6 +54,9 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     [BsonElement("rating_stars")]
     public List<RatingStar> RatingStars { get; set; }
 
+    [BsonElement("is_newest")]
+    public bool IsNewest { get; set; } = false;
+
     [BsonElement("slug")]
     public required Slug Slug { get; init; }
 
@@ -98,6 +101,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      string description,
                                      AverageRating averageRating,
                                      List<RatingStar> ratingStars,
+                                     bool isNewest,
                                      int? overallSold = 0)
     {
         var newModel = new IphoneModel(iPhoneModelId)
@@ -113,6 +117,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Description = description,
             AverageRating = averageRating,
             OverallSold = (int)overallSold!,
+            IsNewest = isNewest,
             Slug = Slug.Create(name),
         };
 
@@ -159,5 +164,10 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         AverageRating.RemoveRating(review.Rating);
 
         RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count -= 1;
+    }
+
+    public void SetIsNewest(bool isNewest)
+    {
+        IsNewest = isNewest;
     }
 }

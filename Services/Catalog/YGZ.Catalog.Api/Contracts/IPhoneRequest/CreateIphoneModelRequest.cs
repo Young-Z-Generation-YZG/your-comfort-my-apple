@@ -31,4 +31,8 @@ public sealed record CreateIphoneModelRequest
     [Required]
     [JsonPropertyName("category_id")]
     public required string CategoryId { get; init; }
+
+    [Required]
+    [JsonPropertyName("is_newest")]
+    public required bool IsNewest { get; init; }
 }
