@@ -1,9 +1,12 @@
 ﻿
 using MediatR;
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
+using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
@@ -11,15 +14,22 @@ namespace YGZ.Catalog.Application.Iphone.Events.DomainEvents;
 
 public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneModelCreatedDomainEvent>
 {
+    private readonly ILogger<IphoneModelCreatedDomainEventHandler> _logger;
+    private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
 
-    public IphoneModelCreatedDomainEventHandler(IMongoRepository<SKU, SkuId> mongoRepository)
+    public IphoneModelCreatedDomainEventHandler(ILogger<IphoneModelCreatedDomainEventHandler> logger,
+                                                IMongoRepository<SKU, SkuId> mongoRepository,
+                                                IMongoRepository<ProductModel, ModelId> productModelRepository)
     {
+        _logger = logger;
         _skuRepository = mongoRepository;
+        _productModelRepository = productModelRepository;
     }
 
     public async Task Handle(IphoneModelCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
+        // Initialize the skus list
         var skus = new List<SKU>();
 
         foreach (var model in notification.IphoneModel.Models)
@@ -47,5 +57,7 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
         }
 
         await _skuRepository.InsertManyAsync(skus);
+
+        List<SkuPriceList> prices = notification.IphoneModel.Prices.Select(p => SkuPriceList.Create(p.NormalizedModel, p.NormalizedColor, p.NormalizedStorage, p.UnitPrice)).ToList();
     }
 }

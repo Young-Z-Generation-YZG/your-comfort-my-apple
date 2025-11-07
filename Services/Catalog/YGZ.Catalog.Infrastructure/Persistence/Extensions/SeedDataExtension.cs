@@ -42,7 +42,7 @@ public static class SeedDataExtension
 
 
         await SeedTenantsAsync(tenantRepository);
-        //await SeedBranchesAsync(branchRepository);
+
         //await SeedSkusAsync(skuRepository);
     }
 
@@ -72,18 +72,18 @@ public static class SeedDataExtension
         }
     }
 
-    //private static async Task SeedBranchesAsync(IMongoRepository<Branch, BranchId> branchRepository)
-    //{
-    //    var existingItems = await branchRepository.GetAllAsync();
+    private static async Task SeedBranchesAsync(IMongoRepository<Branch, BranchId> branchRepository)
+    {
+        var existingItems = await branchRepository.GetAllAsync();
 
-    //    if (existingItems.Count == 0)
-    //    {
-    //        foreach (var item in SeedTenantData.Branches)
-    //        {
-    //            await branchRepository.InsertOneAsync(item);
-    //        }
-    //    }
-    //}
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedTenantData.Branches)
+            {
+                await branchRepository.InsertOneAsync(item);
+            }
+        }
+    }
 
     //private static async Task SeedSkusAsync(IMongoRepository<SKU, SkuId> skuRepository)
     //{

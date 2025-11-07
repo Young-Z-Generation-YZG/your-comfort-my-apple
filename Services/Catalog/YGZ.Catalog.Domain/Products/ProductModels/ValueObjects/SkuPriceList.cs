@@ -3,7 +3,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Products;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
 
-namespace YGZ.Catalog.Domain.Products.ProductModel.ValueObjects;
+namespace YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 
 public class SkuPriceList : ValueObject
 {

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import type { TNewestProduct } from '~/app/(pages)/home/page';
+import { TNewestProduct } from '~/infrastructure/services/product.service';
 
 type NewestProductProps = {
    product: TNewestProduct;
@@ -10,29 +10,29 @@ type NewestProductProps = {
 
 const NewestProduct = ({ product }: NewestProductProps) => {
    const { minPrice, maxPrice } = useMemo(() => {
-      if (!product.skuPrices || product.skuPrices.length === 0) {
+      if (!product.sku_prices || product.sku_prices.length === 0) {
          return { minPrice: 0, maxPrice: 0 };
       }
 
-      const prices = product.skuPrices.map((sku) => sku.unit_price);
+      const prices = product.sku_prices.map((sku) => sku.unit_price);
       return {
          minPrice: Math.min(...prices),
          maxPrice: Math.max(...prices),
       };
-   }, [product.skuPrices]);
+   }, [product.sku_prices]);
 
    const displayName = useMemo(() => {
-      if (!product.modelItems || product.modelItems.length === 0) {
+      if (!product.model_items || product.model_items.length === 0) {
          return product.name;
       }
 
-      return product.modelItems
+      return [...product.model_items]
          .sort((a, b) => a.order - b.order)
          .map((model) => model.name)
          .join(' & ');
-   }, [product.modelItems, product.name]);
+   }, [product.model_items, product.name]);
 
-   const firstImage = product.showcaseImages?.[0];
+   const firstImage = product.showcase_images?.[0];
 
    return (
       <div

@@ -8,7 +8,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Product;
+using YGZ.Catalog.Domain.Products.ProductModels;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetPopularProducts;
 
@@ -82,6 +82,7 @@ public class GetPopularProductsHandler : IQueryHandler<GetPopularProductsQuery, 
                 new RatingStarResponse { Star = 4, Count = 0 },
                 new RatingStarResponse { Star = 5, Count = 0 }
             },
+            Promotion = model.Promotion?.ToResponse() ?? null,
             IsNewest = model.IsNewest,
             Slug = model.Slug.Value!,
             CreatedAt = model.CreatedAt,

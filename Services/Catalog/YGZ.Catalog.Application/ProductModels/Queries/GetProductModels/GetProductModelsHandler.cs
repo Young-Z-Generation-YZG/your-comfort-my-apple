@@ -7,7 +7,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Products;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Product;
+using YGZ.Catalog.Domain.Products.ProductModels;
 
 namespace YGZ.Catalog.Application.Products.Queries.GetProductModels;
 

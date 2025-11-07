@@ -37,27 +37,24 @@ const useProductService = () => {
       [getProductsTrigger],
    );
 
-   const getPopularProductsAsync = useCallback(
-      async (params: string) => {
-         try {
-            const result = await getPopularProductsTrigger(params).unwrap();
-            return {
-               isSuccess: true,
-               isError: false,
-               data: result,
-               error: null,
-            };
-         } catch (error) {
-            return {
-               isSuccess: false,
-               isError: true,
-               data: null,
-               error,
-            };
-         }
-      },
-      [getPopularProductsTrigger],
-   );
+   const getPopularProductsAsync = useCallback(async () => {
+      try {
+         const result = await getPopularProductsTrigger().unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return {
+            isSuccess: false,
+            isError: true,
+            data: null,
+            error,
+         };
+      }
+   }, [getPopularProductsTrigger]);
 
    const getNewestProductsAsync = useCallback(async () => {
       try {

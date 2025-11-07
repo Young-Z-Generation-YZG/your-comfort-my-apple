@@ -27,7 +27,9 @@ public class Model : ValueObject
 
     public static Model Create(string name, int order)
     {
-        EIphoneModel.TryFromName(SnakeCaseSerializer.Serialize(name).ToUpper(), out var modelEnum);
+        var normalizedName = SnakeCaseSerializer.Serialize(name).ToUpper();
+
+        EIphoneModel.TryFromName(normalizedName, out var modelEnum);
 
         if (modelEnum is null)
         {

@@ -1,13 +1,14 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Products;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.ProductModel.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 
-namespace YGZ.Catalog.Domain.Products.Product;
+namespace YGZ.Catalog.Domain.Products.ProductModels;
 
 [BsonCollection("ProductModels")]
 public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
@@ -50,6 +51,9 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     [BsonElement("overall_sold")]
     public int OverallSold { get; set; } = 0;
 
+    [BsonElement("promotion")]
+    public Promotion? Promotion { get; set; }
+
     [BsonElement("is_newest")]
     public bool IsNewest { get; set; } = false;
 
@@ -75,26 +79,26 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; set; } = null;
 
 
-    public static ProductModel Create(
-        ModelId productModelId,
-        Category category,
-        string name,
-        string productClassification,
-        List<Model> models,
-        List<Color> colors,
-        List<Storage> storages,
-        List<SkuPriceList> prices,
-        List<Image> showcaseImages,
-        string description,
-        bool isNewest = false,
-        int? overallSold = 0)
+    public static ProductModel Create(ModelId productModelId,
+                                      Category category,
+                                      string name,
+                                      EProductClassification productClassification,
+                                      List<Model> models,
+                                      List<Color> colors,
+                                      List<Storage> storages,
+                                      List<SkuPriceList> prices,
+                                      List<Image> showcaseImages,
+                                      string description,
+                                      Promotion? promotion,
+                                      bool isNewest = false,
+                                      int? overallSold = 0)
     {
         var newModel = new ProductModel(productModelId)
         {
             Category = category,
             Name = name,
             NormalizedModel = SnakeCaseSerializer.Serialize(name).ToUpper(),
-            ProductClassification = productClassification,
+            ProductClassification = productClassification.Name,
             Models = models,
             Colors = colors,
             Storages = storages,
@@ -102,6 +106,7 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             ShowcaseImages = showcaseImages,
             Description = description,
             OverallSold = (int)overallSold!,
+            Promotion = promotion,
             IsNewest = isNewest,
             Slug = Slug.Create(name)
         };
@@ -124,6 +129,7 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             SkuPrices = Prices.Select(p => p.ToResponse()).ToList(),
             Description = Description,
             ShowcaseImages = ShowcaseImages.Select(img => img.ToResponse()).ToList(),
+            Promotion = Promotion?.ToResponse(),
             IsNewest = IsNewest,
             Slug = Slug.Value!,
             CreatedAt = CreatedAt,

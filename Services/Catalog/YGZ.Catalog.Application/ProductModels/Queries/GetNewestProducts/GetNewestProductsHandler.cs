@@ -8,32 +8,32 @@ using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Product;
+using YGZ.Catalog.Domain.Products.ProductModels;
 
-namespace YGZ.Catalog.Application.Products.Queries.GetSuggestionProducts;
+namespace YGZ.Catalog.Application.Products.Queries.GetRecommendationProducts;
 
-public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQuery, PaginationResponse<SuggestionProductResponse>>
+public class GetNewestProductsHandler : IQueryHandler<GetNewestProductsQuery, PaginationResponse<NewestProductResponse>>
 {
-    private readonly ILogger<GetSuggestionProductsHandler> _logger;
+    private readonly ILogger<GetNewestProductsHandler> _logger;
     private readonly IMongoRepository<ProductModel, ModelId> _modelRepository;
 
-    public GetSuggestionProductsHandler(ILogger<GetSuggestionProductsHandler> logger, IMongoRepository<ProductModel, ModelId> modelRepository)
+    public GetNewestProductsHandler(ILogger<GetNewestProductsHandler> logger, IMongoRepository<ProductModel, ModelId> modelRepository)
     {
         _logger = logger;
         _modelRepository = modelRepository;
     }
 
-    public async Task<Result<PaginationResponse<SuggestionProductResponse>>> Handle(GetSuggestionProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<NewestProductResponse>>> Handle(GetNewestProductsQuery request, CancellationToken cancellationToken)
     {
         // Default pagination: page 1, limit 5
         var page = 1;
         var limit = 5;
 
-        // Sort by overall_sold descending (highest sold first)
-        var sort = Builders<ProductModel>.Sort.Descending("overall_sold");
+        // Sort by CreatedAt descending (newest first)
+        var sort = Builders<ProductModel>.Sort.Descending("CreatedAt");
 
-        // Empty filter to get all products
-        var filter = Builders<ProductModel>.Filter.Empty;
+        // Filter by is_newest == true
+        var filter = Builders<ProductModel>.Filter.Eq("is_newest", true);
 
         var result = await _modelRepository.GetAllAsync(
             _page: page,
@@ -47,9 +47,9 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
         return response;
     }
 
-    private static PaginationResponse<SuggestionProductResponse> MapToResponse((List<ProductModel> items, int totalRecords, int totalPages) result, int page, int limit)
+    private static PaginationResponse<NewestProductResponse> MapToResponse((List<ProductModel> items, int totalRecords, int totalPages) result, int page, int limit)
     {
-        var items = result.items.Select(model => new SuggestionProductResponse
+        var items = result.items.Select(model => new NewestProductResponse
         {
             Id = model.Id.Value!,
             Category = model.Category.ToResponse(),
@@ -68,20 +68,6 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             }).ToList(),
             Description = model.Description,
             ShowcaseImages = model.ShowcaseImages.Select(img => img.ToResponse()).ToList(),
-            OverallSold = model.OverallSold,
-            AverageRating = new AverageRatingResponse
-            {
-                RatingAverageValue = 0,
-                RatingCount = 0
-            },
-            RatingStars = new List<RatingStarResponse>
-            {
-                new RatingStarResponse { Star = 1, Count = 0 },
-                new RatingStarResponse { Star = 2, Count = 0 },
-                new RatingStarResponse { Star = 3, Count = 0 },
-                new RatingStarResponse { Star = 4, Count = 0 },
-                new RatingStarResponse { Star = 5, Count = 0 }
-            },
             IsNewest = model.IsNewest,
             Slug = model.Slug.Value!,
             CreatedAt = model.CreatedAt,
@@ -98,7 +84,7 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             currentPage: page,
             totalPages: result.totalPages);
 
-        return new PaginationResponse<SuggestionProductResponse>
+        return new PaginationResponse<NewestProductResponse>
         {
             TotalRecords = result.totalRecords,
             TotalPages = result.totalPages,

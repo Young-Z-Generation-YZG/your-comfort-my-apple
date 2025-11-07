@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
@@ -7,7 +8,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Products;
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
-public sealed record SuggestionProductResponse
+public class PopularProductResponse
 {
     public required string Id { get; init; }
     public required CategoryResponse Category { get; init; }
@@ -23,6 +24,7 @@ public sealed record SuggestionProductResponse
     public required int OverallSold { get; init; }
     required public List<RatingStarResponse> RatingStars { get; init; }
     public required AverageRatingResponse AverageRating { get; init; }
+    public PromotionResponse? Promotion { get; init; }
     public bool IsNewest { get; init; }
     public required string Slug { get; init; }
     public DateTime CreatedAt { get; init; }

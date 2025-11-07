@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.ValueObjects;
@@ -20,6 +21,7 @@ public sealed record ProductModelResponse
     public required List<SkuPriceListResponse> SkuPrices { get; init; }
     public string? Description { get; init; }
     public required List<ImageResponse> ShowcaseImages { get; init; }
+    public PromotionResponse? Promotion { get; init; }
     public bool IsNewest { get; init; }
     public required string Slug { get; init; }
     public DateTime CreatedAt { get; init; }

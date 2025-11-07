@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 import RatingStar from '@components/ui/rating-star';
-import type { TPopularProduct } from '~/app/(pages)/home/page';
+import { TPopularProduct } from '~/infrastructure/services/product.service';
 
 type PopularProductProps = {
    product: TPopularProduct;
@@ -11,29 +11,29 @@ type PopularProductProps = {
 
 const PopularProduct = ({ product }: PopularProductProps) => {
    const { minPrice, maxPrice } = useMemo(() => {
-      if (!product.skuPrices || product.skuPrices.length === 0) {
+      if (!product.sku_prices || product.sku_prices.length === 0) {
          return { minPrice: 0, maxPrice: 0 };
       }
 
-      const prices = product.skuPrices.map((sku) => sku.unit_price);
+      const prices = product.sku_prices.map((sku) => sku.unit_price);
       return {
          minPrice: Math.min(...prices),
          maxPrice: Math.max(...prices),
       };
-   }, [product.skuPrices]);
+   }, [product.sku_prices]);
 
    const displayName = useMemo(() => {
-      if (!product.modelItems || product.modelItems.length === 0) {
+      if (!product.model_items || product.model_items.length === 0) {
          return product.name;
       }
 
-      return product.modelItems
+      return [...product.model_items]
          .sort((a, b) => a.order - b.order)
          .map((model) => model.name)
          .join(' & ');
-   }, [product.modelItems, product.name]);
+   }, [product.model_items, product.name]);
 
-   const firstImage = product.showcaseImages?.[0];
+   const firstImage = product.showcase_images?.[0];
    const hasPromotion = product.promotion && product.promotion.final_price;
 
    return (
@@ -95,18 +95,18 @@ const PopularProduct = ({ product }: PopularProductProps) => {
             <div className="mb-4 flex items-center gap-3 text-sm">
                <div className="flex items-center gap-1">
                   <RatingStar
-                     rating={product.averageRating?.rating_average_value || 0}
+                     rating={product.average_rating?.rating_average_value || 0}
                      size="sm"
                   />
                   <span className="ml-1 text-xs text-gray-600 dark:text-gray-400">
-                     ({product.averageRating?.rating_count || 0})
+                     ({product.average_rating?.rating_count || 0})
                   </span>
                </div>
-               {product.overallSold > 0 && (
+               {product.overall_sold > 0 && (
                   <>
                      <span className="text-gray-300 dark:text-gray-600">|</span>
                      <span className="text-xs text-gray-600 dark:text-gray-400">
-                        {product.overallSold.toLocaleString()} sold
+                        {product.overall_sold.toLocaleString()} sold
                      </span>
                   </>
                )}

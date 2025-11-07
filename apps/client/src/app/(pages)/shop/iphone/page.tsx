@@ -27,14 +27,7 @@ import { cn } from '~/infrastructure/lib/utils';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import useFilter from '../_hooks/use-filter';
 import usePagination from '@components/hooks/use-pagination';
-import SuggestionProduct from '@components/client/suggestion-product';
-import {
-   Carousel,
-   CarouselContent,
-   CarouselItem,
-   CarouselNext,
-   CarouselPrevious,
-} from '@components/ui/carousel';
+import SuggestionProducts from './_components/suggestion-products';
 
 type IphoneModelsFilter = {
    _colors: string[];
@@ -484,458 +477,11 @@ const fakeData = {
    },
 };
 
-const suggestionProductFakeData = {
-   total_records: 1,
-   total_pages: 1,
-   page_size: 5,
-   current_page: 1,
-   items: [
-      {
-         id: '664351e90087aa09993f5ae7',
-         category: {
-            id: '67dc470aa9ee0a5e6fbafdab',
-            name: 'iPhone',
-            description: 'iPhone categories.',
-            order: 2,
-            slug: 'iphone',
-            parent_id: null,
-            created_at: '2025-10-21T05:33:50.043Z',
-            updated_at: '2025-10-21T05:33:50.043Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         name: 'iPhone 15',
-         modelItems: [
-            {
-               name: 'iPhone 15',
-               normalized_name: 'IPHONE_15',
-               order: 0,
-            },
-            {
-               name: 'iPhone 15 Plus',
-               normalized_name: 'IPHONE_15_PLUS',
-               order: 1,
-            },
-         ],
-         colorItems: [
-            {
-               name: 'Blue',
-               normalized_name: 'BLUE',
-               hex_code: '#D5DDDF',
-               showcase_image_id:
-                  'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-               order: 0,
-            },
-            {
-               name: 'Pink',
-               normalized_name: 'PINK',
-               hex_code: '#EBD3D4',
-               showcase_image_id:
-                  'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-               order: 1,
-            },
-            {
-               name: 'Yellow',
-               normalized_name: 'YELLOW',
-               hex_code: '#EDE6C8',
-               showcase_image_id:
-                  'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-               order: 2,
-            },
-            {
-               name: 'Green',
-               normalized_name: 'GREEN',
-               hex_code: '#D0D9CA',
-               showcase_image_id:
-                  'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-               order: 3,
-            },
-            {
-               name: 'Black',
-               normalized_name: 'BLACK',
-               hex_code: '#4B4F50',
-               showcase_image_id:
-                  'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-               order: 4,
-            },
-         ],
-         storageItems: [
-            {
-               name: '128GB',
-               normalized_name: '128GB',
-               order: 0,
-            },
-            {
-               name: '256GB',
-               normalized_name: '256GB',
-               order: 1,
-            },
-            {
-               name: '512GB',
-               normalized_name: '512GB',
-               order: 2,
-            },
-            {
-               name: '1TB',
-               normalized_name: '1TB',
-               order: 3,
-            },
-         ],
-         skuPrices: [
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLUE',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLUE',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLUE',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLUE',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'PINK',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'PINK',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'PINK',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'PINK',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'YELLOW',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'YELLOW',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'YELLOW',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'YELLOW',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'GREEN',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'GREEN',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'GREEN',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'GREEN',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLACK',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLACK',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLACK',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15',
-               normalized_color: 'BLACK',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLUE',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLUE',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLUE',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLUE',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'PINK',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'PINK',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'PINK',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'PINK',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'YELLOW',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'YELLOW',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'YELLOW',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'YELLOW',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'GREEN',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'GREEN',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'GREEN',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'GREEN',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLACK',
-               normalized_storage: '128GB',
-               unit_price: 1000,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLACK',
-               normalized_storage: '256GB',
-               unit_price: 1100,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLACK',
-               normalized_storage: '512GB',
-               unit_price: 1200,
-            },
-            {
-               normalized_model: 'IPHONE_15_PLUS',
-               normalized_color: 'BLACK',
-               normalized_storage: '1TB',
-               unit_price: 1300,
-            },
-         ],
-         description: 'iPhone 15 model description.',
-         showcaseImages: [
-            {
-               image_id: 'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-               image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-               image_name: '',
-               image_description: '',
-               image_width: 0,
-               image_height: 0,
-               image_bytes: 0,
-               image_order: 0,
-            },
-            {
-               image_id: 'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-               image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-               image_name: '',
-               image_description: '',
-               image_width: 0,
-               image_height: 0,
-               image_bytes: 0,
-               image_order: 1,
-            },
-            {
-               image_id: 'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-               image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-               image_name: '',
-               image_description: '',
-               image_width: 0,
-               image_height: 0,
-               image_bytes: 0,
-               image_order: 2,
-            },
-            {
-               image_id: 'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-               image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-               image_name: '',
-               image_description: '',
-               image_width: 0,
-               image_height: 0,
-               image_bytes: 0,
-               image_order: 3,
-            },
-            {
-               image_id: 'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-               image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-               image_name: '',
-               image_description: '',
-               image_width: 0,
-               image_height: 0,
-               image_bytes: 0,
-               image_order: 4,
-            },
-         ],
-         overallSold: 0,
-         promotion: {
-            promotion_type: 'INSTANT_DISCOUNT',
-            promotion_discount_type: 'PERCENTAGE',
-            promotion_discount_value: 0.1,
-            promotion_discount_amount: 130,
-            final_price: 1170,
-         },
-         ratingStars: [
-            {
-               star: 1,
-               count: 0,
-            },
-            {
-               star: 2,
-               count: 0,
-            },
-            {
-               star: 3,
-               count: 0,
-            },
-            {
-               star: 4,
-               count: 0,
-            },
-            {
-               star: 5,
-               count: 0,
-            },
-         ],
-         averageRating: {
-            rating_average_value: 0,
-            rating_count: 0,
-         },
-         slug: 'iphone-15',
-      },
-   ],
-   links: {
-      first: '?_page=1&_limit=5',
-      prev: null,
-      next: null,
-      last: '?_page=1&_limit=5',
-   },
-};
-
-export type TSuggestionProduct =
-   (typeof suggestionProductFakeData.items)[number];
-
 const IphoneShopPage = () => {
    const { filters, setFilters, clearFilters, activeFilterCount } =
       useFilter<IphoneModelsFilter>();
 
-   const { getModelBySlugState, getIphoneModelsAsync, isLoading } =
+   const { getIphoneModelsState, getIphoneModelsAsync, isLoading } =
       useCatalogService();
 
    // Convert filters to query string for API call
@@ -969,14 +515,6 @@ const IphoneShopPage = () => {
       getIphoneModelsAsync(queryString);
    }, [queryString, getIphoneModelsAsync]);
 
-   // Use pagination data from API or fallback to fake data
-   const paginationResponseData = useMemo(() => {
-      if (getModelBySlugState.isSuccess && getModelBySlugState.data) {
-         return getModelBySlugState.data;
-      }
-      return fakeData;
-   }, [getModelBySlugState.isSuccess, getModelBySlugState.data]);
-
    const {
       currentPage,
       totalPages,
@@ -988,7 +526,25 @@ const IphoneShopPage = () => {
       isPrevPage,
       paginationItems,
       getPageNumbers,
-   } = usePagination(paginationResponseData);
+   } = usePagination(
+      getIphoneModelsState.isSuccess &&
+         getIphoneModelsState.data &&
+         getIphoneModelsState.data.items.length > 0
+         ? getIphoneModelsState.data
+         : {
+              total_records: 0,
+              total_pages: 0,
+              page_size: 0,
+              current_page: 0,
+              items: [],
+              links: {
+                 first: null,
+                 last: null,
+                 prev: null,
+                 next: null,
+              },
+           },
+   );
 
    const handleSortChange = (value: string) => {
       // Map sort value to priceSort
@@ -1344,34 +900,7 @@ const IphoneShopPage = () => {
          </div>
 
          {/* SUGGESTION PRODUCTS */}
-         <div className="w-full px-4 py-8">
-            <div className="mx-auto max-w-7xl">
-               <h2 className="mb-8 text-center text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
-                  You might also like
-               </h2>
-
-               <Carousel
-                  opts={{
-                     align: 'start',
-                     loop: true,
-                  }}
-                  className="w-full"
-               >
-                  <CarouselContent className="-ml-4">
-                     {suggestionProductFakeData.items.map((product) => (
-                        <CarouselItem
-                           key={product.id}
-                           className="pl-4 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                        >
-                           <SuggestionProduct product={product} />
-                        </CarouselItem>
-                     ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden md:flex" />
-                  <CarouselNext className="hidden md:flex" />
-               </Carousel>
-            </div>
-         </div>
+         <SuggestionProducts />
       </div>
    );
 };

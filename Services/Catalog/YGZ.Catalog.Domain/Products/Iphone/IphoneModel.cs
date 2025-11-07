@@ -1,12 +1,15 @@
-﻿
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels;
+using YGZ.Catalog.Domain.Products.ProductModels.Events;
+using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.Iphone;
 
@@ -26,6 +29,9 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
 
     [BsonElement("normalized_model")]
     public string NormalizedModel { get; init; } = default!;
+
+    [BsonElement("product_classification")]
+    public required string ProductClassification { get; init; }
 
     [BsonElement("models")]
     public List<Model> Models { get; set; } = [];
@@ -109,6 +115,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Category = category,
             Name = name,
             NormalizedModel = SnakeCaseSerializer.Serialize(name).ToUpper(),
+            ProductClassification = EProductClassification.IPHONE.Name,
             Models = models,
             Colors = colors,
             Storages = storages,
@@ -120,6 +127,23 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             IsNewest = isNewest,
             Slug = Slug.Create(name),
         };
+
+        List<SkuPriceList> productModelPrices = newModel.Prices.Select(p => SkuPriceList.Create(p.NormalizedModel, p.NormalizedColor, p.NormalizedStorage, p.UnitPrice)).ToList();
+
+        var productModel = ProductModel.Create(productModelId: newModel.Id,
+                                               category: newModel.Category,
+                                               name: newModel.Name,
+                                               productClassification: EProductClassification.IPHONE,
+                                               models: newModel.Models,
+                                               colors: newModel.Colors,
+                                               storages: newModel.Storages,
+                                               prices: productModelPrices,
+                                               showcaseImages: newModel.ShowcaseImages,
+                                               description: newModel.Description,
+                                               promotion: null,
+                                               isNewest: newModel.IsNewest);
+
+        newModel.AddDomainEvent(new ProductModelCreatedDomainEvent(productModel));
 
         return newModel;
     }
