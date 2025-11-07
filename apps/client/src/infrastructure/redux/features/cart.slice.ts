@@ -1,81 +1,48 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IBasketItemPayload } from '~/domain/interfaces/baskets/basket.interface';
+import { createSlice, PayloadAction, current } from '@reduxjs/toolkit';
+import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
 
-const initialState = {
-   value: {
-      items: [] as IBasketItemPayload[],
-      currentOrder: 0,
-   },
+export type CartState = TCart;
+
+const initialState: CartState = {
+   user_email: '',
+   cart_items: [],
+   total_amount: 0,
 };
 
 const cartSlice = createSlice({
    name: 'cart',
-   initialState: initialState,
+   initialState,
    reducers: {
-      addRangeItems: (state, action: PayloadAction<IBasketItemPayload[]>) => {
-         if (action.payload.length === 0) return;
+      SyncCart: (state, action: PayloadAction<TCart>) => {
+         state.user_email = action.payload.user_email;
+         state.cart_items = action.payload.cart_items;
+         state.total_amount = action.payload.total_amount;
 
-         state.value.items = action.payload.map((item) => {
-            state.value.currentOrder++;
-
-            return {
-               ...item,
-               order_index: state.value.currentOrder,
-            };
-         });
+         console.log('CART APP STATE: SyncCart', current(state));
       },
-      addCartItem: (state, action: PayloadAction<IBasketItemPayload>) => {
-         const existingItem = state.value.items.find(
-            (item) => item.product_id === action.payload.product_id,
+      AddNewCartItem: (state, action: PayloadAction<TCartItem>) => {
+         state.cart_items = [...state.cart_items, action.payload];
+      },
+      AddCartItems: (state, action: PayloadAction<TCartItem[]>) => {
+         state.cart_items = [...action.payload];
+      },
+      UpdateQuantity: (state, action: PayloadAction<TCartItem>) => {
+         state.cart_items = state.cart_items.map((item) =>
+            item.model_id === action.payload.model_id &&
+            item.color.normalized_name ===
+               action.payload.color.normalized_name &&
+            item.storage.normalized_name ===
+               action.payload.storage.normalized_name
+               ? { ...item, quantity: action.payload.quantity }
+               : item,
          );
 
-         if (existingItem) {
-            existingItem.quantity += action.payload.quantity;
-            if (existingItem.promotion) {
-               existingItem.promotion.promotion_final_price =
-                  existingItem.promotion.promotion_discount_unit_price *
-                  existingItem.quantity;
-            }
-         } else {
-            state.value.items.push({
-               ...action.payload,
-               order: state.value.currentOrder,
-            });
-
-            state.value.currentOrder += 1;
-         }
-      },
-      updateCartQuantity: (
-         state,
-         action: PayloadAction<{ product_id: string; quantity: number }>,
-      ) => {
-         const existingItem = state.value.items.find(
-            (item) => item.product_id === action.payload.product_id,
-         );
-
-         if (existingItem) {
-            existingItem.quantity = action.payload.quantity;
-         }
-      },
-      removeCartItem: (state, action: PayloadAction<string>) => {
-         state.value.currentOrder = state.value.items.length;
-
-         state.value.items = state.value.items.filter(
-            (item) => item.product_id !== action.payload,
-         );
-      },
-      deleteCart: (state) => {
-         state.value.items = [];
-         state.value.currentOrder = 0;
+         console.log('CART APP STATE: UpdateQuantity', current(state));
       },
    },
 });
 
-export const {
-   addRangeItems,
-   addCartItem,
-   updateCartQuantity,
-   removeCartItem,
-   deleteCart,
-} = cartSlice.actions;
+export const { SyncCart, UpdateQuantity, AddNewCartItem, AddCartItems } =
+   cartSlice.actions;
+
 export default cartSlice.reducer;

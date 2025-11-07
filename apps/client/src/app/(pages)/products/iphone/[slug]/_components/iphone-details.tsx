@@ -18,7 +18,6 @@ import { Button } from '@components/ui/button';
 import {
    iphoneDetailsFakeData,
    TColorItem,
-   TIphoneModelDetails,
    TModelItem,
    TStorageItem,
 } from '../_data/fake-data';
@@ -26,10 +25,28 @@ import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
 import useBasketService from '@components/hooks/api/use-basket-service';
 import { toast } from 'sonner';
+import { LoadingOverlay } from '@components/client/loading-overlay';
+import { useAppSelector } from '~/infrastructure/redux/store';
+import useCartSync from '@components/hooks/use-cart-sync';
+import { TCartItem } from '~/infrastructure/services/basket.service';
+import { TIphoneModelDetails } from '~/infrastructure/services/catalog.service';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
    return `w_${Math.round((height * widthRatio) / heightRatio)},h_${height}`;
+};
+
+const toastStyle = {
+   backgroundColor: '#F0FFF0',
+   color: '#18673D',
+   border: '1px solid #50C878',
+   fontWeight: 'bold',
+};
+const errorToastStyle = {
+   backgroundColor: '#FFF5F5',
+   color: '#B91C1C',
+   border: '1px solid #FCA5A5',
+   fontWeight: 'bold',
 };
 
 const IphoneDetails = () => {
@@ -53,8 +70,18 @@ const IphoneDetails = () => {
 
    const { slug } = useParams();
 
-   const { getModelBySlugAsync, getModelBySlugState } = useCatalogService();
-   const { storeBasketAsync } = useBasketService();
+   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+   const { storeBasketSync } = useCartSync();
+
+   const {
+      getModelBySlugAsync,
+      getModelBySlugState,
+      isLoading: isGetModelBySlugLoading,
+   } = useCatalogService();
+
+   const { storeBasketAsync, isLoading: isStoreBasketLoading } =
+      useBasketService();
 
    useEffect(() => {
       const fetchModel = async () => {
@@ -81,6 +108,10 @@ const IphoneDetails = () => {
 
       return getModelBySlugState.data.storage_items;
    }, [getModelBySlugState.data]);
+
+   const isLoading = useMemo(() => {
+      return isGetModelBySlugLoading || isStoreBasketLoading;
+   }, [isGetModelBySlugLoading, isStoreBasketLoading]);
 
    // Progressive selection handlers
    const handleModelSelection = (model: {
@@ -190,57 +221,108 @@ const IphoneDetails = () => {
             return;
          }
 
-         const result = await storeBasketAsync({
-            cart_items: [
+         if (isAuthenticated) {
+            const result = await storeBasketAsync({
+               cart_items: [
+                  {
+                     is_selected: false,
+                     model_id: (getModelBySlugState.data as TIphoneModelDetails)
+                        .id,
+                     color: {
+                        name: selectedColor.name,
+                        normalized_name: selectedColor.normalized_name,
+                     },
+                     model: {
+                        name: selectedModel.name,
+                        normalized_name: selectedModel.normalized_name,
+                     },
+                     storage: {
+                        name: selectedStorage.name,
+                        normalized_name: selectedStorage.normalized_name,
+                     },
+                     quantity: 1,
+                  },
+               ],
+            });
+
+            if (result.isSuccess) {
+               toast.success('Item added to cart', {
+                  position: 'bottom-center',
+                  style: toastStyle,
+               });
+            } else {
+               toast.error('Failed to add item to cart', {
+                  position: 'bottom-center',
+                  style: errorToastStyle,
+               });
+            }
+         } else {
+            const data = getModelBySlugState.data as TIphoneModelDetails;
+
+            const color = {
+               name: selectedColor.name,
+               normalized_name: selectedColor.normalized_name,
+               hex_code:
+                  data.color_items.find(
+                     (color) =>
+                        color.normalized_name === selectedColor.normalized_name,
+                  )?.hex_code || '',
+               showcase_image_id:
+                  data.color_items.find(
+                     (color) =>
+                        color.normalized_name === selectedColor.normalized_name,
+                  )?.showcase_image_id || '',
+               order:
+                  data.color_items.find(
+                     (color) =>
+                        color.normalized_name === selectedColor.normalized_name,
+                  )?.order || 0,
+            };
+
+            const model = {
+               name: selectedModel.name,
+               normalized_name: selectedModel.normalized_name,
+               order: 0,
+            };
+
+            const storage = {
+               name: selectedStorage.name,
+               normalized_name: selectedStorage.normalized_name,
+               order: 0,
+            };
+
+            const display_image_url =
+               data.showcase_images.find(
+                  (image) => image.image_id === color.showcase_image_id,
+               )?.image_url || '';
+
+            storeBasketSync([
                {
                   is_selected: false,
-                  model_id: (getModelBySlugState.data as TIphoneModelDetails)
-                     .id,
-                  color: {
-                     name: selectedColor.name,
-                     normalized_name: selectedColor.normalized_name,
-                  },
-                  model: {
-                     name: selectedModel.name,
-                     normalized_name: selectedModel.normalized_name,
-                  },
-                  storage: {
-                     name: selectedStorage.name,
-                     normalized_name: selectedStorage.normalized_name,
-                  },
+                  model_id: data.id,
+                  product_name: `${selectedModel.name} ${selectedStorage.name} ${selectedColor.name}`,
+                  color: color,
+                  model: model,
+                  storage: storage,
+                  display_image_url: display_image_url,
+                  unit_price: 1000,
+                  promotion: null,
                   quantity: 1,
+                  sub_total_amount: 1000,
+                  index: 1,
                },
-            ],
-         });
+            ]);
 
-         const toastStyle = {
-            backgroundColor: '#F0FFF0',
-            color: '#18673D',
-            border: '1px solid #50C878',
-            fontWeight: 'bold',
-         };
-         const errorToastStyle = {
-            backgroundColor: '#FFF5F5',
-            color: '#B91C1C',
-            border: '1px solid #FCA5A5',
-            fontWeight: 'bold',
-         };
-
-         if (result.isSuccess) {
             toast.success('Item added to cart', {
                position: 'bottom-center',
                style: toastStyle,
-            });
-         } else {
-            toast.error('Failed to add item to cart', {
-               position: 'bottom-center',
-               style: errorToastStyle,
             });
          }
       };
 
       return (
          <div className="fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+            <LoadingOverlay isLoading={isLoading} fullScreen />
             <div className="max-w-[1240px] mx-auto px-6 py-4">
                {!isAllSelected ? (
                   <div className="flex flex-row items-center justify-between gap-4">

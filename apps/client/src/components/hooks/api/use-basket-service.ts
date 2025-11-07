@@ -1,8 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import {
-   IGetBasketQueries,
-   IStoreBasketPayload,
-} from '~/domain/interfaces/baskets/basket.interface';
+import { IGetBasketQueries } from '~/domain/interfaces/baskets/basket.interface';
 import {
    useDeleteBasketMutation,
    useLazyGetBasketQuery,
@@ -12,11 +9,19 @@ import {
    useCheckoutBasketMutation,
    useStoreEventItemMutation,
    useCheckoutBasketWithBlockchainMutation,
+   TStoreBasketPayload,
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
+import { useDispatch } from 'react-redux';
+import { SyncCart } from '~/infrastructure/redux/features/cart.slice';
+import { useAppSelector } from '~/infrastructure/redux/store';
 
 const useBasketService = () => {
+   const dispatch = useDispatch();
+
+   const cartAppState = useAppSelector((state) => state.cart);
+
    const [getBasketQueryTrigger, getBasketQueryState] = useLazyGetBasketQuery();
    const [getCheckoutItemsQueryTrigger, getCheckoutItemsQueryState] =
       useLazyGetCheckoutItemsQuery();
@@ -66,6 +71,7 @@ const useBasketService = () => {
       async (queries: IGetBasketQueries) => {
          try {
             const result = await getBasketQueryTrigger(queries).unwrap();
+
             return {
                isSuccess: true,
                isError: false,
@@ -97,7 +103,7 @@ const useBasketService = () => {
    );
 
    const storeBasketAsync = useCallback(
-      async (payload: IStoreBasketPayload) => {
+      async (payload: TStoreBasketPayload) => {
          try {
             const result = await storeBasketMutation(payload).unwrap();
             return {
@@ -132,7 +138,7 @@ const useBasketService = () => {
 
    const deleteBasketAsync = useCallback(async () => {
       try {
-         const result = await deleteBasketMutation({}).unwrap();
+         const result = await deleteBasketMutation().unwrap();
          return {
             isSuccess: true,
             isError: false,

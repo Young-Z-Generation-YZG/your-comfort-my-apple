@@ -28,7 +28,7 @@ import { tenantApi } from '~/src/infrastructure/services/tenant.service';
 const storage = createPersistStorage();
 
 const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
-   key: 'root',
+   key: 'admin-root',
    version: 1,
    storage: storage,
    blacklist: [

@@ -1,9 +1,9 @@
 'use client';
-import '/globals.css';
+
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import Image from 'next/image';
-import { FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
@@ -18,59 +18,21 @@ import {
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useCartForm } from './_hooks/useCartForm';
 import { usePromoCode } from './_hooks/usePromoCode';
-import CartItem, { TCartItem } from './_components/cart-item';
-import { ICartItem } from '~/domain/interfaces/baskets/basket.interface';
+import CartItem from './_components/cart-item';
 import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
 import useBasketService from '@components/hooks/api/use-basket-service';
-import { useEffect } from 'react';
-
-const fakeData = {
-   user_email: 'user@gmail.com',
-   cart_items: [
-      {
-         is_selected: true,
-         model_id: '664351e90087aa09993f5ae7',
-         product_name: 'iPhone 15 128GB BLUE',
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '',
-            showcase_image_id: '',
-            order: 0,
-         },
-         model: {
-            name: 'iPhone 15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1000,
-         quantity: 2,
-         sub_total_amount: 1800.0,
-         promotion: {
-            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-            promotion_type: 'COUPON',
-            product_unit_price: 1000,
-            discount_type: 'PERCENTAGE',
-            discount_value: 0.1,
-            discount_amount: 100.0,
-            final_price: 900.0,
-         },
-         index: 1,
-      },
-   ],
-   total_amount: 1800.0,
-};
+import { useEffect, useMemo } from 'react';
+import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
+import { useAppSelector } from '~/infrastructure/redux/store';
+import useCartSync from '@components/hooks/use-cart-sync';
+import useCartFormV2 from './_hooks/useCartFormV2';
 
 const CartPage = () => {
    const router = useRouter();
+
+   const { isAuthenticated } = useAppSelector((state) => state.auth);
+   const cartAppState = useAppSelector((state) => state.cart);
 
    const {
       getBasketAsync,
@@ -80,6 +42,8 @@ const CartPage = () => {
       proceedToCheckoutAsync,
       isLoading,
    } = useBasketService();
+
+   const { storeBasketSync } = useCartSync();
 
    // Promo code management
    const {
@@ -92,30 +56,53 @@ const CartPage = () => {
 
    useEffect(() => {
       const fetchBasket = async () => {
-         const result = await getBasketAsync({
+         await getBasketAsync({
             _couponCode: urlCouponCode,
          });
-         if (result.isSuccess) {
-            console.log(result.data);
-         }
       };
-      fetchBasket();
-   }, [getBasketAsync, urlCouponCode]);
+
+      if (isAuthenticated) {
+         fetchBasket();
+      }
+   }, [getBasketAsync, urlCouponCode, isAuthenticated]);
+
+   const basketData = useMemo(() => {
+      if (getBasketState.isSuccess && getBasketState.data)
+         return getBasketState.data as TCart;
+
+      return {
+         user_email: '',
+         cart_items: cartAppState.cart_items,
+         total_amount: 0,
+      } as TCart;
+   }, [getBasketState, cartAppState]);
+
+   console.log('basketData', basketData);
 
    // Cart form management with auto-save
-   const { form, selectedItems, handleQuantityChange, handleRemoveItem } =
-      useCartForm({
-         basketData: getBasketState.data,
-         storeBasket: storeBasketAsync,
-         deleteBasket: deleteBasketAsync,
+   //  const { form, selectedItems, handleQuantityChange, handleRemoveItem } =
+   //     useCartForm({
+   //        basketData: basketData,
+   //        storeBasketAsync: storeBasketAsync,
+   //        storeBasketSync: storeBasketSync,
+   //        deleteBasket: () => Promise.resolve(true),
+   //     });
+
+   const { form, cartItems, handleQuantityChange, handleRemoveItem } =
+      useCartFormV2({
+         basketData: basketData,
       });
+
+   console.log('form 2', form.getValues());
+
+   console.log('cartItems 2', cartItems);
 
    // Validate and apply promo code (only when items are selected)
    const handleValidatedApplyPromoCode = () => {
-      if (selectedItems.length === 0) {
-         return;
-      }
-      handleApplyPromoCode();
+      // if (selectedItems.length === 0) {
+      //    return;
+      // }
+      // handleApplyPromoCode();
    };
 
    return (
@@ -137,8 +124,10 @@ const CartPage = () => {
                   <LoadingOverlay isLoading={isLoading}>
                      <FormProvider {...form}>
                         <form>
-                           {getBasketState.data?.cart_items.map(
-                              (item: ICartItem, index: number) => (
+                           {/* {(
+                              getBasketState.data as unknown as TCart
+                           )?.cart_items.map(
+                              (item: TCartItem, index: number) => (
                                  <div
                                     key={`${item.model_id}-${index}`}
                                     className="w-full flex flex-row justify-start items-center gap-3"
@@ -151,12 +140,46 @@ const CartPage = () => {
                                     <CartItem
                                        item={item as unknown as TCartItem}
                                        index={index}
-                                       onQuantityChange={handleQuantityChange}
-                                       onRemoveItem={handleRemoveItem}
+                                       onQuantityChange={
+                                          // handleQuantityChange
+                                          () => {}
+                                       }
+                                       onRemoveItem={
+                                          // handleRemoveItem
+                                          () => {}
+                                       }
                                     />
                                  </div>
                               ),
-                           )}
+                           )} */}
+
+                           {basketData.cart_items.length > 0 &&
+                              cartItems.length > 0 &&
+                              basketData.cart_items.map(
+                                 (item: TCartItem, index: number) => (
+                                    <div
+                                       key={`${item.model_id}-${index}`}
+                                       className="w-full flex flex-row justify-start items-center gap-3"
+                                    >
+                                       {isAuthenticated ? (
+                                          <CheckboxField
+                                             name={`cart_items.${index}.is_selected`}
+                                             form={form}
+                                             checkboxClassName="h-5 w-5"
+                                          />
+                                       ) : null}
+                                       <CartItem
+                                          item={item as unknown as TCartItem}
+                                          currentCartItem={cartItems[index]}
+                                          index={index}
+                                          onQuantityChange={
+                                             handleQuantityChange
+                                          }
+                                          onRemoveItem={handleRemoveItem}
+                                       />
+                                    </div>
+                                 ),
+                              )}
                         </form>
                      </FormProvider>
                   </LoadingOverlay>
@@ -168,21 +191,29 @@ const CartPage = () => {
                      Promo Code
                   </div>
                   <div className="w-full flex flex-row justify-between items-end ">
-                     <Input
-                        className="w-[200px] h-fit p-0 border-[#999999] border-t-0 border-l-0 border-r-0 border-b-1 rounded-none 
+                     <div className="w-full flex flex-col justify-start items-start">
+                        <Input
+                           className="w-[200px] h-fit p-0 border-[#999999] border-t-0 border-l-0 border-r-0 border-b-1 rounded-none 
                         focus-visible:ring-0 focus-visible:ring-offset-0 text-[18px] font-light tracking-[0.2px]"
-                        placeholder="Enter promo code"
-                        value={promoCode}
-                        onChange={handlePromoCodeChange}
-                        disabled={isLoading}
-                     />
+                           placeholder="Enter promo code"
+                           value={promoCode}
+                           onChange={handlePromoCodeChange}
+                           disabled={!isAuthenticated || isLoading}
+                        />
+                        {!isAuthenticated ? (
+                           <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
+                              Please login to apply a promo code
+                           </p>
+                        ) : null}
+                     </div>
                      <Button
                         className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
                         onClick={handleValidatedApplyPromoCode}
                         disabled={
+                           isAuthenticated ||
                            isLoading ||
                            !promoCode.trim() ||
-                           selectedItems.length === 0
+                           cartItems.length === 0
                         }
                      >
                         Apply
@@ -204,9 +235,9 @@ const CartPage = () => {
                      </div>
                   ) : (
                      <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
-                        {selectedItems.length === 0
+                        {/* {selectedItems.length === 0
                            ? 'Please select items to apply a promo code'
-                           : ''}
+                           : ''} */}
                      </p>
                   )}
                </div>
@@ -220,7 +251,9 @@ const CartPage = () => {
                         <div className="font-semibold">
                            $
                            {getBasketState.data
-                              ? getBasketState.data.total_amount.toFixed(2)
+                              ? (
+                                   getBasketState.data as unknown as TCart
+                                ).total_amount.toFixed(2)
                               : '0.00'}
                         </div>
                      </div>
@@ -236,9 +269,11 @@ const CartPage = () => {
                                  </div>
                                  <div className="font-semibold">
                                     - $
-                                    {getBasketState.data?.cart_items
+                                    {(
+                                       getBasketState.data as unknown as TCart
+                                    )?.cart_items
                                        .reduce(
-                                          (acc, item) =>
+                                          (acc: number, item: TCartItem) =>
                                              acc +
                                              ((item as unknown as TCartItem)
                                                 .promotion?.discount_amount ??
@@ -261,13 +296,15 @@ const CartPage = () => {
                      <div className="">
                         $
                         {getBasketState.data
-                           ? getBasketState.data.total_amount.toFixed(2)
+                           ? (
+                                getBasketState.data as unknown as TCart
+                             ).total_amount.toFixed(2)
                            : '0.00'}
                      </div>
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                     disabled={isLoading || selectedItems.length === 0}
+                     //  disabled={isLoading || selectedItems.length === 0}
                      onClick={async () => {
                         const result = await proceedToCheckoutAsync();
 
@@ -280,7 +317,7 @@ const CartPage = () => {
                      }}
                   >
                      Checkout{' '}
-                     {selectedItems.length > 0 && `(${selectedItems.length})`}
+                     {/* {selectedItems.length > 0 && `(${selectedItems.length})`} */}
                   </Button>
                   <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                      <div className="w-full flex flex-row items-center">

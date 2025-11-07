@@ -6,46 +6,50 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { Input } from '@components/ui/input';
 import Link from 'next/link';
 import NextImage from 'next/image';
+import {
+   TCartItem,
+   TStoreBasketItem,
+} from '~/infrastructure/services/basket.service';
 
-const fakeData = {
-   is_selected: true,
-   model_id: '664351e90087aa09993f5ae7',
-   product_name: 'iPhone 15 128GB BLUE',
-   color: {
-      name: 'BLUE',
-      normalized_name: 'BLUE',
-      hex_code: '',
-      showcase_image_id: '',
-      order: 0,
-   },
-   model: {
-      name: 'iPhone 15',
-      normalized_name: 'IPHONE_15',
-      order: 0,
-   },
-   storage: {
-      name: '128GB',
-      normalized_name: '128GB',
-      order: 0,
-   },
-   display_image_url:
-      'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-   unit_price: 1000,
-   quantity: 1,
-   sub_total_amount: 900.0,
-   promotion: {
-      promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-      promotion_type: 'COUPON',
-      product_unit_price: 1000,
-      discount_type: 'PERCENTAGE',
-      discount_value: 0.1,
-      discount_amount: 100.0,
-      final_price: 900.0,
-   },
-   index: 1,
-};
+// const fakeData = {
+//    is_selected: true,
+//    model_id: '664351e90087aa09993f5ae7',
+//    product_name: 'iPhone 15 128GB BLUE',
+//    color: {
+//       name: 'BLUE',
+//       normalized_name: 'BLUE',
+//       hex_code: '',
+//       showcase_image_id: '',
+//       order: 0,
+//    },
+//    model: {
+//       name: 'iPhone 15',
+//       normalized_name: 'IPHONE_15',
+//       order: 0,
+//    },
+//    storage: {
+//       name: '128GB',
+//       normalized_name: '128GB',
+//       order: 0,
+//    },
+//    display_image_url:
+//       'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
+//    unit_price: 1000,
+//    quantity: 1,
+//    sub_total_amount: 900.0,
+//    promotion: {
+//       promotion_id: '550e8400-e29b-41d4-a716-446655440000',
+//       promotion_type: 'COUPON',
+//       product_unit_price: 1000,
+//       discount_type: 'PERCENTAGE',
+//       discount_value: 0.1,
+//       discount_amount: 100.0,
+//       final_price: 900.0,
+//    },
+//    index: 1,
+// };
 
-export type TCartItem = typeof fakeData;
+// export type TCartItem = typeof fakeData;
 
 // Constants
 const MIN_QUANTITY = 1;
@@ -53,6 +57,7 @@ const MAX_QUANTITY = 99;
 
 interface CartItemProps {
    item: TCartItem;
+   currentCartItem: TStoreBasketItem;
    index: number;
    onQuantityChange: (index: number, newQuantity: number) => void;
    onRemoveItem: (index: number) => void;
@@ -60,23 +65,26 @@ interface CartItemProps {
 
 const CartItem = ({
    item,
+   currentCartItem,
    index,
    onQuantityChange,
    onRemoveItem,
 }: CartItemProps) => {
    const handleIncrement = () => {
-      if (item.quantity < MAX_QUANTITY) {
-         onQuantityChange(index, item.quantity + 1);
+      if (currentCartItem.quantity < MAX_QUANTITY) {
+         onQuantityChange(index, currentCartItem.quantity + 1);
       }
    };
 
    const handleDecrement = () => {
-      if (item.quantity > MIN_QUANTITY) {
-         onQuantityChange(index, item.quantity - 1);
+      if (currentCartItem.quantity > MIN_QUANTITY) {
+         onQuantityChange(index, currentCartItem.quantity - 1);
       }
    };
 
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log('e', e.target.value);
+
       const value = parseInt(e.target.value) || MIN_QUANTITY;
       const clampedValue = Math.max(
          MIN_QUANTITY,
@@ -84,6 +92,8 @@ const CartItem = ({
       );
       onQuantityChange(index, clampedValue);
    };
+
+   if (!currentCartItem) return null;
 
    return (
       <div
@@ -121,7 +131,7 @@ const CartItem = ({
                            ${(item.unit_price * item.quantity).toFixed(2)}
                         </div>
                         <div className="w-full text-[14px] font-light ">
-                           x {item.quantity}
+                           x {currentCartItem.quantity}
                         </div>
                      </div>
                   )}
@@ -165,7 +175,7 @@ const CartItem = ({
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-l-full flex p-0 z-0"
                      onClick={handleDecrement}
-                     disabled={item.quantity <= MIN_QUANTITY}
+                     disabled={currentCartItem.quantity <= MIN_QUANTITY}
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">-</p>
                   </Button>
@@ -174,14 +184,14 @@ const CartItem = ({
                      min={MIN_QUANTITY}
                      max={MAX_QUANTITY}
                      className="w-8 h-6 p-0 border-x-0 border-[#ebebeb] text-center rounded-none text-xs"
-                     value={item.quantity}
+                     value={currentCartItem.quantity}
                      onChange={handleInputChange}
                   />
                   <Button
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-r-full flex p-0"
                      onClick={handleIncrement}
-                     disabled={item.quantity >= MAX_QUANTITY}
+                     disabled={currentCartItem.quantity >= MAX_QUANTITY}
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">+</p>
                   </Button>

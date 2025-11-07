@@ -23,13 +23,14 @@ import { reviewApi } from '~/infrastructure/services/review.service';
 import { basketApi } from '~/infrastructure/services/basket.service';
 import { identityApi } from '~/infrastructure/services/identity.service';
 import { orderingApi } from '~/infrastructure/services/ordering.service';
+import { productApi } from '~/infrastructure/services/product.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 
 const storage = createPersistStorage();
 
 const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
-   key: 'root',
+   key: 'client-root',
    version: 1,
    storage: storage, // Add the storage option or any other required options
    blacklist: [
@@ -41,6 +42,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       basketApi.reducerPath,
       orderingApi.reducerPath,
       identityApi.reducerPath,
+      productApi.reducerPath,
    ], // Add the blacklist option
    whitelist: ['auth', 'cart', 'search'],
 };
@@ -58,6 +60,7 @@ const reducers = combineReducers({
    [basketApi.reducerPath]: basketApi.reducer,
    [orderingApi.reducerPath]: orderingApi.reducer,
    [identityApi.reducerPath]: identityApi.reducer,
+   [productApi.reducerPath]: productApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -78,6 +81,7 @@ export const reduxStore = configureStore({
          basketApi.middleware,
          orderingApi.middleware,
          identityApi.middleware,
+         productApi.middleware,
       ),
 });
 

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import useProductService from '@components/hooks/api/use-product-service';
 import usePagination from '@components/hooks/use-pagination';
 import { Badge } from '@components/ui/badge';
+import { LoadingOverlay } from '@components/client/loading-overlay';
 
 // Staggered animation variants
 const containerVariants = {
@@ -918,7 +919,7 @@ const Search = () => {
                      />
                   </div>
                </div>
-               <div>
+               <LoadingOverlay isLoading={isLoading}>
                   <div>
                      {paginationItems.length > 0 && (
                         <ul className="py-2 flex flex-col gap-2 max-h-[200px] overflow-y-auto">
@@ -1041,7 +1042,7 @@ const Search = () => {
                         </li>
                      </ul>
                   </div>
-               </div>
+               </LoadingOverlay>
             </motion.div>
          </div>
       </motion.div>

@@ -2,7 +2,12 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { IBasket } from '~/domain/interfaces/baskets/basket.interface';
+import {
+   TCart,
+   TCartItem,
+   TStoreBasketPayload,
+} from '~/infrastructure/services/basket.service';
+import { useAppSelector } from '~/infrastructure/redux/store';
 
 const cartItemSchema = z.object({
    is_selected: z.boolean(),
@@ -31,7 +36,7 @@ const cartItemSchema = z.object({
       .max(99, { message: 'Quantity cannot exceed 99' }),
 });
 
-const cartFormSchema = z.object({
+export const cartFormSchema = z.object({
    cart_items: z.array(cartItemSchema),
 });
 
@@ -40,16 +45,20 @@ export type CartFormData = z.infer<typeof cartFormSchema>;
 const DEBOUNCE_DELAY = 100;
 
 interface UseCartFormProps {
-   basketData: IBasket | undefined;
-   storeBasket: (data: { cart_items: any[] }) => Promise<any>;
+   basketData: TCart;
+   storeBasketAsync: (payload: TStoreBasketPayload) => Promise<any>;
+   storeBasketSync: (cartItems: TCartItem[]) => void;
    deleteBasket: () => Promise<any>;
 }
 
 export const useCartForm = ({
    basketData,
-   storeBasket,
+   storeBasketAsync,
+   storeBasketSync,
    deleteBasket,
 }: UseCartFormProps) => {
+   const { isAuthenticated } = useAppSelector((state) => state.auth);
+
    const form = useForm<CartFormData>({
       resolver: zodResolver(cartFormSchema),
    });
@@ -103,21 +112,45 @@ export const useCartForm = ({
 
       const handleBasketUpdate = async () => {
          try {
+            console.log('cartItems', cartItems);
+            console.log('isAuthenticated', isAuthenticated);
+
             if (cartItems.length === 0) {
                // Delete basket when empty
                await deleteBasket();
             } else {
                // Store basket with items
-               await storeBasket({
-                  cart_items: cartItems.map((item) => ({
-                     is_selected: item.is_selected,
-                     model_id: item.model_id,
-                     color: item.color,
-                     model: item.model,
-                     storage: item.storage,
-                     quantity: item.quantity,
-                  })),
-               });
+               if (isAuthenticated) {
+                  await storeBasketAsync({
+                     cart_items: cartItems.map((item) => ({
+                        is_selected: item.is_selected,
+                        model_id: item.model_id,
+                        color: item.color,
+                        model: item.model,
+                        storage: item.storage,
+                        quantity: item.quantity,
+                     })),
+                  });
+               } else {
+                  const cartItems: TCartItem[] = basketData.cart_items.map(
+                     (item) => ({
+                        is_selected: item.is_selected,
+                        model_id: item.model_id,
+                        color: item.color,
+                        model: item.model,
+                        storage: item.storage,
+                        quantity: item.quantity,
+                        product_name: item.product_name,
+                        display_image_url: item.display_image_url,
+                        unit_price: item.unit_price,
+                        promotion: item.promotion,
+                        sub_total_amount: item.sub_total_amount,
+                        index: item.index,
+                     }),
+                  );
+
+                  // storeBasketSync(cartItems);
+               }
             }
          } catch (error) {
             console.error('Failed to update basket:', error);
@@ -126,7 +159,14 @@ export const useCartForm = ({
 
       const timeoutId = setTimeout(handleBasketUpdate, DEBOUNCE_DELAY);
       return () => clearTimeout(timeoutId);
-   }, [cartItems, storeBasket, deleteBasket, basketData]);
+   }, [
+      cartItems,
+      storeBasketAsync,
+      deleteBasket,
+      basketData,
+      isAuthenticated,
+      storeBasketSync,
+   ]);
 
    // Handle quantity change
    const handleQuantityChange = useCallback(
