@@ -1,12 +1,12 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
-using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -15,12 +15,12 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrders;
 public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, PaginationResponse<OrderDetailsResponse>>
 {
     private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly ILogger<GetOrdersByAdminHandler> _logger;
 
     public GetOrdersByAdminHandler(IGenericRepository<Order, OrderId> repository,
-                                 IUserRequestContext userContext,
-                                 ILogger<GetOrdersByAdminHandler> logger)
+                                   IUserHttpContext userContext,
+                                   ILogger<GetOrdersByAdminHandler> logger)
     {
         _repository = repository;
         _userContext = userContext;

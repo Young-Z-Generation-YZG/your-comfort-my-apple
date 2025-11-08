@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Cache.Entities;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -19,28 +19,21 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 {
     private readonly IBasketRepository _basketRepository;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly IUserRequestContext _userContext;
-    private readonly ISKUPriceCache _skuPriceCache;
-    private readonly IColorImageCache _colorImageCache;
+    private readonly IUserHttpContext _userContext;
     private readonly IModelSlugCache _modelSlugCache;
     private readonly IDistributedCache _distributedCache;
     private readonly ILogger<StoreEventItemHandler> _logger;
 
-    public StoreEventItemHandler(
-        IBasketRepository basketRepository,
-        IUserRequestContext userContext,
-        DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
-        ISKUPriceCache skuPriceCache,
-        IColorImageCache colorImageCache,
-        IModelSlugCache modelSlugCache,
-        IDistributedCache distributedCache,
-        ILogger<StoreEventItemHandler> logger)
+    public StoreEventItemHandler(IBasketRepository basketRepository,
+                                 IUserHttpContext userContext,
+                                 DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
+                                 IModelSlugCache modelSlugCache,
+                                 IDistributedCache distributedCache,
+                                 ILogger<StoreEventItemHandler> logger)
     {
         _basketRepository = basketRepository;
         _userContext = userContext;
         _discountProtoServiceClient = discountProtoServiceClient;
-        _skuPriceCache = skuPriceCache;
-        _colorImageCache = colorImageCache;
         _modelSlugCache = modelSlugCache;
         _distributedCache = distributedCache;
         _logger = logger;

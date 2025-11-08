@@ -1,6 +1,7 @@
 ﻿
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Contracts.Reviews;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
@@ -15,19 +16,22 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     public Review(ReviewId id) : base(id) { }
 
     [BsonElement("model_id")]
-    public ModelId ModelId { get; init; }
+    public required ModelId ModelId { get; init; }
 
     [BsonElement("sku_id")]
-    public SkuId SkuId { get; init; }
+    public required SkuId SkuId { get; init; }
 
-    [BsonElement("customer_order")]
-    public required CustomerOrder CustomerOrder { get; init; }
+    [BsonElement("order_info")]
+    public required OrderInfo OrderInfo { get; init; }
+
+    [BsonElement("customer_review_info")]
+    public required CustomerReviewInfo CustomerReviewInfo { get; init; }
 
     [BsonElement("content")]
-    public string Content { get; private set; }
+    public required string Content { get; set; }
 
     [BsonElement("rating")]
-    public int Rating { get; private set; }
+    public required int Rating { get; set; }
 
     [BsonElement("CreatedAt")]
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -47,22 +51,23 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     [BsonElement("DeletedBy")]
     public string? DeletedBy { get; set; } = null;
 
-    public static Review Create(ModelId modelId, SkuId skuId, CustomerOrder customerOrder, string content, int rating)
+    public static Review Create(ReviewId reviewId, ModelId modelId, SkuId skuId, OrderInfo orderInfo, CustomerReviewInfo customerReviewInfo, string content, int rating)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(content);
         ArgumentOutOfRangeException.ThrowIfLessThan(rating, 1);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(rating, 5);
 
-        var review = new Review(ReviewId.Create())
+        var review = new Review(reviewId)
         {
             ModelId = modelId,
             SkuId = skuId,
-            CustomerOrder = customerOrder,
+            OrderInfo = orderInfo,
+            CustomerReviewInfo = customerReviewInfo,
             Content = content,
             Rating = rating,
         };
 
-        //review.AddDomainEvent(new ReviewCreatedDomainEvent(review));
+        review.AddDomainEvent(new ReviewCreatedDomainEvent(review));
 
         return review;
     }
@@ -82,5 +87,44 @@ public class Review : Entity<ReviewId>, IAuditable, ISoftDelete
     public void Delete()
     {
         AddDomainEvent(new ReviewDeletedDomainEvent(this));
+    }
+
+    public ProductModelReviewResponse ToProductModelReviewResponse()
+    {
+        return new ProductModelReviewResponse
+        {
+            Id = Id.Value!,
+            ModelId = ModelId.Value!,
+            SkuId = SkuId.Value!,
+            OrderInfo = OrderInfo.ToResponse(),
+            CustomerReviewInfo = CustomerReviewInfo.ToResponse(),
+            Rating = Rating,
+            Content = Content,
+            CreatedAt = CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            UpdatedAt = UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
+    }
+
+    public ReviewInOrderResponse ToReviewInOrderResponse()
+    {
+        return new ReviewInOrderResponse
+        {
+            Id = Id.Value!,
+            ModelId = ModelId.Value!,
+            SkuId = SkuId.Value!,
+            OrderInfo = OrderInfo.ToResponse(),
+            Rating = Rating,
+            Content = Content,
+            CreatedAt = CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            UpdatedAt = UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
     }
 }

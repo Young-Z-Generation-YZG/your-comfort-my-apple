@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Application.Abstractions.Providers.Momo;
 using YGZ.Basket.Application.Abstractions.Providers.vnpay;
@@ -10,6 +9,7 @@ using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -23,14 +23,14 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly IVnpayProvider _vnpayProvider;
     private readonly IMomoProvider _momoProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CheckoutBasketHandler(IBasketRepository basketRepository,
                                         IPublishEndpoint publishEndpoint,
-                                        IUserRequestContext userContext,
+                                        IUserHttpContext userContext,
                                         DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
                                         IVnpayProvider vnpayProvider,
                                         IHttpContextAccessor httpContextAccessor,

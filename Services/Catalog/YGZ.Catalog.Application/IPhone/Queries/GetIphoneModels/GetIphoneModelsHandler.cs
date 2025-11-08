@@ -10,13 +10,13 @@ using YGZ.Catalog.Domain.Products.Iphone;
 
 namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModels;
 
-public class GetModelsQueryHandler : IQueryHandler<GetIphoneModelsQuery, PaginationResponse<IphoneModelResponse>>
+public class GetIphoneModelsHandler : IQueryHandler<GetIphoneModelsQuery, PaginationResponse<IphoneModelResponse>>
 {
     private readonly IMongoRepository<IphoneModel, ModelId> _modelRepository;
-    private readonly ILogger<GetModelsQueryHandler> _logger;
+    private readonly ILogger<GetIphoneModelsHandler> _logger;
 
-    public GetModelsQueryHandler(IMongoRepository<IphoneModel, ModelId> modelRepository,
-                                 ILogger<GetModelsQueryHandler> logger)
+    public GetIphoneModelsHandler(IMongoRepository<IphoneModel, ModelId> modelRepository,
+                                 ILogger<GetIphoneModelsHandler> logger)
     {
         _modelRepository = modelRepository;
         _logger = logger;

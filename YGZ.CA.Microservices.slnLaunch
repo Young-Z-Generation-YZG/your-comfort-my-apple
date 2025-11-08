@@ -11,14 +11,6 @@
         "Action": "Start"
       },
       {
-        "Path": "Services\\Discount\\YGZ.Discount.Grpc\\YGZ.Discount.Grpc.csproj",
-        "Action": "Start"
-      },
-      {
-        "Path": "Services\\Basket\\YGZ.Basket.Api\\YGZ.Basket.Api.csproj",
-        "Action": "Start"
-      },
-      {
         "Path": "Services\\Ordering\\YGZ.Ordering.Api\\YGZ.Ordering.Api.csproj",
         "Action": "Start"
       }

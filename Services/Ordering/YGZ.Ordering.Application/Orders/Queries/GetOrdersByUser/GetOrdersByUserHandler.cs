@@ -1,13 +1,13 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
-using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -17,11 +17,11 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
 {
     private readonly ILogger<GetOrdersByUserHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
 
     public GetOrdersByUserHandler(ILogger<GetOrdersByUserHandler> logger,
                                   IGenericRepository<Order, OrderId> repository,
-                                  IUserRequestContext userContext)
+                                  IUserHttpContext userContext)
     {
         _repository = repository;
         _userContext = userContext;

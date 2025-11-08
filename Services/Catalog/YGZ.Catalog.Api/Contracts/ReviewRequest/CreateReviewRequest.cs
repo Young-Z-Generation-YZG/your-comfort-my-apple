@@ -7,29 +7,23 @@ namespace YGZ.Catalog.Api.Contracts.ReviewRequest;
 public class CreateReviewRequest
 {
     [Required]
-    [JsonPropertyName("product_id")]
-    required public string ProductId { get; set; }
-
-    [Required]
-    [JsonPropertyName("model_id")]
-    required public string ModelId { get; set; }
-
-    [Required]
-    [JsonPropertyName("content")]
-    required public string Content { get; set; }
-
-    [Required]
-    [JsonPropertyName("rating")]
-    required public int Rating { get; set; }
-
-    [JsonPropertyName("customer_username")]
-    required public string CustomerUserName { get; set; }
+    [JsonPropertyName("sku_id")]
+    public required string SkuId { get; init; }
 
     [Required]
     [JsonPropertyName("order_id")]
-    required public string OrderId { get; set; }
+    public required string OrderId { get; init; }
 
     [Required]
     [JsonPropertyName("order_item_id")]
-    required public string OrderItemId { get; set; }
+    public required string OrderItemId { get; init; }
+    
+    [Required]
+    [JsonPropertyName("content")]
+    public required string Content { get; init; }
+
+    [Required]
+    [JsonPropertyName("rating")]
+    public required int Rating { get; init; }
+
 }

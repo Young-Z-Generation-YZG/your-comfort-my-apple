@@ -4,8 +4,7 @@ using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.CatalogServices;
-using YGZ.Ordering.Application.OrderItems.Commands;
-using YGZ.Ordering.Application.Orders.Events.Extensions;
+using YGZ.Ordering.Application.OrderItems.Commands.UpdateIsReviewed;
 
 namespace YGZ.Ordering.Application.Orders.Events.Integrations;
 
@@ -23,9 +22,12 @@ public class ReviewCreatedIntegrationEventHandler : IConsumer<ReviewCreatedInteg
 
     public async Task Consume(ConsumeContext<ReviewCreatedIntegrationEvent> context)
     {
-        _logger.LogInformation("Integration envent handled: {IntegrationEvent}", context.Message.GetType().Name);
+        _logger.LogInformation("Integration event handled: {IntegrationEvent}", context.Message.GetType().Name);
 
-        UpdateReviewCommand command = context.ToCommand();
+        UpdateIsReviewedCommand command = new UpdateIsReviewedCommand
+        {
+            OrderItemId = context.Message.OrderItemId
+        };
 
         await _sender.Send(command);
     }

@@ -231,9 +231,9 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                 return true;
             }
 
-            return Errors.IPhone16Model.UpdatedFailure;
+            return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -261,9 +261,9 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                 return true;
             }
 
-            return Errors.IPhone16Model.UpdatedFailure;
+            return false;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }

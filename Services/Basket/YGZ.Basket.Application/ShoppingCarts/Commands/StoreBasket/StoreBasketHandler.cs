@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Cache.Entities;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -17,14 +17,14 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
 {
     private readonly ILogger<StoreBasketHandler> _logger;
     private readonly IBasketRepository _basketRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly ISKUPriceCache _skuPriceCache;
     private readonly IModelSlugCache _modelSlugCache;
     private readonly IDistributedCache _distributedCache;
 
     public StoreBasketHandler(IBasketRepository basketRepository,
                               ILogger<StoreBasketHandler> logger,
-                              IUserRequestContext userContext,
+                              IUserHttpContext userContext,
                               IModelSlugCache modelSlugCache,
                               IDistributedCache distributedCache,
                               ISKUPriceCache skuPriceCache)

@@ -1,29 +1,37 @@
 ﻿
 
+using MassTransit;
 using MediatR;
+using YGZ.BuildingBlocks.Messaging.IntegrationEvents.CatalogServices;
+using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
+using YGZ.Catalog.Domain.Products.ProductModels;
 
 namespace YGZ.Catalog.Application.Reviews.Events.DomainEvents;
 
 public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreatedDomainEvent>
 {
-    //private readonly IIPhone16ModelRepository _modelRepository;
-    //private readonly IMongoRepository<IPhone16Detail, IphoneId> _iPhoneRepository;
+    private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
+    private readonly IPublishEndpoint _integrationEventSender;
 
-    //public ReviewCreatedDomainEventHandler(IMongoRepository<IPhone16Detail, IPhone16Id> iPhoneRepository, IIPhone16ModelRepository modelRepository)
-    //{
-    //    _iPhoneRepository = iPhoneRepository;
-    //    _modelRepository = modelRepository;
-    //}
+    public ReviewCreatedDomainEventHandler(IMongoRepository<ProductModel, ModelId> productModelRepository, IPublishEndpoint integrationEventSender)
+    {
+        _productModelRepository = productModelRepository;
+        _integrationEventSender = integrationEventSender;
+    }
 
     public async Task Handle(ReviewCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        //var iphone = await _iPhoneRepository.GetByIdAsync(notification.Review.ProductId.Value!, cancellationToken);
+        var productModel = await _productModelRepository.GetByIdAsync(notification.Review.ModelId.Value!, cancellationToken);
 
-        //var model = await _modelRepository.GetByIdAsync(iphone.IPhoneModelId.Value!, cancellationToken);
+        productModel.AddNewRating(notification.Review);
 
-        //model.AddNewRating(notification.Review);
+        await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
 
-        //await _modelRepository.UpdateAsync(model.Id.Value!, model, cancellationToken);
+        // await _integrationEventSender.Publish(new ReviewCreatedIntegrationEvent
+        // {
+        //     OrderItemId = notification.Review.CustomerOrder.OrderItemId
+        // }, cancellationToken);
     }
 }

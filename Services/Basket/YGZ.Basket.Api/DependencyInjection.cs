@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using YGZ.Basket.Api.HttpContext;
-using YGZ.Basket.Application.Abstractions;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
 
 namespace YGZ.Basket.Api;
 
@@ -18,7 +18,9 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IUserRequestContext, UserRequestContext>();
+
+        services.AddScoped<IUserHttpContext, UserHttpContext>();
+        services.AddScoped<ITenantHttpContext, TenantHttpContext>();
 
         return services;
     }

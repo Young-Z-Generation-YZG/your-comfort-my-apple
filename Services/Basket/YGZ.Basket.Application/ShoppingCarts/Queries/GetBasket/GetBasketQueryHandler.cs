@@ -1,10 +1,10 @@
 ﻿using Grpc.Core;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -16,10 +16,10 @@ namespace YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
 public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 {
     private readonly IBasketRepository _basketRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
-    public GetBasketQueryHandler(IBasketRepository basketRepository, IUserRequestContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+    public GetBasketQueryHandler(IBasketRepository basketRepository, IUserHttpContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _discountProtoServiceClient = discountProtoServiceClient;
         _basketRepository = basketRepository;

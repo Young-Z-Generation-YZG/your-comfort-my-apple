@@ -19,8 +19,11 @@ public sealed record ProductModelResponse
     public required List<ColorResponse> ColorItems { get; init; }
     public required List<StorageResponse> StorageItems { get; init; }
     public required List<SkuPriceListResponse> SkuPrices { get; init; }
-    public string? Description { get; init; }
     public required List<ImageResponse> ShowcaseImages { get; init; }
+    public string? Description { get; init; }
+    public required AverageRatingResponse AverageRating { get; init; }
+    public required List<RatingStarResponse> RatingStars { get; init; }
+    public required int OverallSold { get; init; }
     public PromotionResponse? Promotion { get; init; }
     public bool IsNewest { get; init; }
     public required string Slug { get; init; }

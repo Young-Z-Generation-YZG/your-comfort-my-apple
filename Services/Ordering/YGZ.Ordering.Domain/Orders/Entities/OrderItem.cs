@@ -98,9 +98,9 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
         };
     }
 
-    public void CheckIsReviewed()
+    public void SetIsReviewed(bool isReviewed)
     {
-        this.IsReviewed = true;
+        this.IsReviewed = isReviewed;
     }
 
     public OrderItemResponse ToResponse()

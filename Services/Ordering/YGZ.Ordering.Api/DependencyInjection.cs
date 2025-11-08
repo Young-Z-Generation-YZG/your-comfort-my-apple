@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Ordering.Api.HttpContext;
-using YGZ.Ordering.Application.Abstractions;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Implementations.HttpContext;
 using YGZ.Ordering.Api.RpcServices;
 
 namespace YGZ.Ordering.Api;
@@ -19,7 +19,8 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
-        services.AddScoped<IUserRequestContext, UserRequestContext>();
+        services.AddScoped<IUserHttpContext, UserHttpContext>();
+        services.AddScoped<ITenantHttpContext, TenantHttpContext>();
 
         return services;
     }

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.ProceedCheckout;
@@ -11,10 +11,10 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.ProceedCheckout;
 public class ProceedCheckoutHandler : ICommandHandler<ProceedCheckoutCommand, bool>
 {
     private readonly IBasketRepository _basketRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly ILogger<ProceedCheckoutHandler> _logger;
 
-    public ProceedCheckoutHandler(IBasketRepository basketRepository, IUserRequestContext userContext, ILogger<ProceedCheckoutHandler> logger)
+    public ProceedCheckoutHandler(IBasketRepository basketRepository, IUserHttpContext userContext, ILogger<ProceedCheckoutHandler> logger)
     {
         _basketRepository = basketRepository;
         _userContext = userContext;

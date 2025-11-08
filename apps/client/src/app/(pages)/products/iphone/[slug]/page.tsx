@@ -8,6 +8,7 @@ import CompareIPhoneSection from '~/components/client/compare-iphone-section';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import useBasketService from '@components/hooks/api/use-basket-service';
+import ReviewsSection from './_components/review-section';
 
 const IphoneDetailPage = () => {
    const { isLoading } = useCatalogService();
@@ -34,6 +35,9 @@ const IphoneDetailPage = () => {
 
             {/* Product Info */}
             <ProductInfo />
+
+            {/* Reviews section */}
+            <ReviewsSection />
 
             {/* Compare iPhone Section */}
             <div className="mx-auto mt-20 mb-24">

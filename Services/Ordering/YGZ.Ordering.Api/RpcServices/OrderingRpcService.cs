@@ -2,7 +2,7 @@
 using MapsterMapper;
 using MediatR;
 using YGZ.Ordering.Api.Protos;
-using YGZ.Ordering.Application.OrderItems.Commands;
+using YGZ.Ordering.Application.OrderItems.Commands.UpdateIsReviewed;
 
 namespace YGZ.Ordering.Api.RpcServices;
 
@@ -17,13 +17,31 @@ public class OrderingRpcService : OrderingProtoService.OrderingProtoServiceBase
         _sender = sender;
     }
 
-    public override async Task<BooleanResponse> UpdateReviewOrderItem(UpdateReviewOrderItemRquest request, ServerCallContext context)
+    public override async Task<BooleanGrpcResponse> UpdateOrderItemIsReviewedGrpc(UpdateOrderItemIsReviewedGrpcRequest request, ServerCallContext context)
     {
-        var cmd = _mapper.Map<UpdateReviewCommand>(request);
+        var cmd = new UpdateIsReviewedCommand
+        {
+            OrderItemId = request.OrderItemId
+        };
 
         var result = await _sender.Send(cmd, context.CancellationToken);
 
-        var response = _mapper.Map<BooleanResponse>(result.Response!);
+        if (result.IsFailure)
+        {
+            return new BooleanGrpcResponse
+            {
+                IsSuccess = false,
+                IsFailure = true,
+                ErrorMessage = result.Error.Message
+            };
+        }
+
+        var response = new BooleanGrpcResponse
+        {
+            IsSuccess = true,
+            IsFailure = false,
+            ErrorMessage = null
+        };
 
         return response;
     }

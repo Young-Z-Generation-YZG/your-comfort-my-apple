@@ -140,54 +140,14 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                                prices: productModelPrices,
                                                showcaseImages: newModel.ShowcaseImages,
                                                description: newModel.Description,
+                                               averageRating: newModel.AverageRating,
+                                               ratingStars: newModel.RatingStars,
                                                promotion: null,
                                                isNewest: newModel.IsNewest);
 
         newModel.AddDomainEvent(new ProductModelCreatedDomainEvent(productModel));
 
         return newModel;
-    }
-
-    public decimal? GetPrice(Model model, Color color, Storage storage)
-    {
-        return Prices.FirstOrDefault(p =>
-            p.NormalizedModel == model.NormalizedName &&
-            p.NormalizedColor == color.NormalizedName &&
-            p.NormalizedStorage == storage.NormalizedName)?.UnitPrice;
-    }
-
-    public void AddNewRating(Review review)
-    {
-        if (review.Rating < 1 || review.Rating > 5)
-            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
-
-        AverageRating.AddNewRating(review.Rating);
-
-        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count += 1;
-    }
-
-    public void UpdateRating(Review oldReview, Review newReview)
-    {
-        if (oldReview.Rating < 1 || oldReview.Rating > 5)
-            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
-
-        if (newReview.Rating < 1 || newReview.Rating > 5)
-            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
-
-        AverageRating.UpdateRating(oldReview.Rating, newReview.Rating);
-
-        RatingStars.FirstOrDefault(x => x.Star == oldReview.Rating)!.Count -= 1;
-        RatingStars.FirstOrDefault(x => x.Star == newReview.Rating)!.Count += 1;
-    }
-
-    public void DeleteRating(Review review)
-    {
-        if (review.Rating < 1 || review.Rating > 5)
-            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
-
-        AverageRating.RemoveRating(review.Rating);
-
-        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count -= 1;
     }
 
     public void SetIsNewest(bool isNewest)

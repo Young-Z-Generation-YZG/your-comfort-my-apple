@@ -30,6 +30,7 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
 import { TCartItem } from '~/infrastructure/services/basket.service';
 import { TIphoneModelDetails } from '~/infrastructure/services/catalog.service';
+import ReviewsSection from './review-section';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -672,6 +673,7 @@ const IphoneDetails = () => {
                   {/* End Storage */}
                </div>
             </div>
+            {/* end right */}
          </div>
 
          {/* Checkout Bottom Bar */}

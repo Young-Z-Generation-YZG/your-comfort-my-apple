@@ -1,7 +1,6 @@
-﻿
-using YGZ.Basket.Application.Abstractions;
-using YGZ.Basket.Application.Abstractions.Data;
+﻿using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
@@ -9,9 +8,9 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, bool>
 {
     private readonly IBasketRepository _basketRepository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
 
-    public DeleteBasketCommandHandler(IBasketRepository basketRepository, IUserRequestContext userContext)
+    public DeleteBasketCommandHandler(IBasketRepository basketRepository, IUserHttpContext userContext)
     {
         _basketRepository = basketRepository;
         _userContext = userContext;

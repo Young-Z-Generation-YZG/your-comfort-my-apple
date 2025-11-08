@@ -6,6 +6,7 @@ using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Products.ProductModels;
@@ -15,7 +16,7 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
 {
     public ProductModel(ModelId id) : base(id)
     {
-
+        RatingStars = InitRatingStar();
     }
 
     [BsonElement("category")]
@@ -47,6 +48,12 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
 
     [BsonElement("description")]
     public string Description { get; set; } = default!;
+
+    [BsonElement("average_rating")]
+    public AverageRating AverageRating { get; set; } = AverageRating.Create(0, 0);
+
+    [BsonElement("rating_stars")]
+    public List<RatingStar> RatingStars { get; set; }
 
     [BsonElement("overall_sold")]
     public int OverallSold { get; set; } = 0;
@@ -89,6 +96,8 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                       List<SkuPriceList> prices,
                                       List<Image> showcaseImages,
                                       string description,
+                                         AverageRating averageRating,
+                                     List<RatingStar> ratingStars,
                                       Promotion? promotion,
                                       bool isNewest = false,
                                       int? overallSold = 0)
@@ -105,6 +114,8 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Prices = prices,
             ShowcaseImages = showcaseImages,
             Description = description,
+            AverageRating = averageRating,
+            RatingStars = ratingStars,
             OverallSold = (int)overallSold!,
             Promotion = promotion,
             IsNewest = isNewest,
@@ -112,6 +123,57 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         };
 
         return newModel;
+    }
+
+    protected List<RatingStar> InitRatingStar()
+    {
+        var ratingStars = new List<RatingStar>();
+
+        for (int i = 1; i <= 5; i++)
+        {
+            ratingStars.Add(RatingStar.Create(i, 0));
+        }
+
+        return ratingStars;
+    }
+
+    public void AddNewRating(Review review)
+    {
+        if (review.Rating < 1 || review.Rating > 5)
+            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
+
+        AverageRating.AddNewRating(review.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count += 1;
+    }
+
+    public void UpdateRating(Review oldReview, Review newReview)
+    {
+        if (oldReview.Rating < 1 || oldReview.Rating > 5)
+            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
+
+        if (newReview.Rating < 1 || newReview.Rating > 5)
+            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
+
+        AverageRating.UpdateRating(oldReview.Rating, newReview.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == oldReview.Rating)!.Count -= 1;
+        RatingStars.FirstOrDefault(x => x.Star == newReview.Rating)!.Count += 1;
+    }
+
+    public void DeleteRating(Review review)
+    {
+        if (review.Rating < 1 || review.Rating > 5)
+            throw new ArgumentOutOfRangeException("Rating must be between 1 and 5");
+
+        AverageRating.RemoveRating(review.Rating);
+
+        RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count -= 1;
+    }
+
+    public void SetIsNewest(bool isNewest)
+    {
+        IsNewest = isNewest;
     }
 
     public ProductModelResponse ToResponse()
@@ -127,8 +189,11 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             ColorItems = Colors.Select(c => c.ToResponse()).ToList(),
             StorageItems = Storages.Select(s => s.ToResponse()).ToList(),
             SkuPrices = Prices.Select(p => p.ToResponse()).ToList(),
-            Description = Description,
             ShowcaseImages = ShowcaseImages.Select(img => img.ToResponse()).ToList(),
+            Description = Description,
+            AverageRating = AverageRating.ToResponse(),
+            RatingStars = RatingStars.Select(x => x.ToResponse()).ToList(),
+            OverallSold = OverallSold,
             Promotion = Promotion?.ToResponse(),
             IsNewest = IsNewest,
             Slug = Slug.Value!,

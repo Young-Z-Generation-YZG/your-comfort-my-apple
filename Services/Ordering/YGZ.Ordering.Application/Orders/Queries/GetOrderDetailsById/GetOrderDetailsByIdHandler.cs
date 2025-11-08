@@ -2,9 +2,9 @@
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
-using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -14,10 +14,10 @@ namespace YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 public class GetOrderDetailsByIdHandler : IQueryHandler<GetOrderDetailsByIdQuery, OrderDetailsResponse>
 {
     private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly ILogger<GetOrderDetailsByIdHandler> _logger;
 
-    public GetOrderDetailsByIdHandler(IUserRequestContext userContext,
+    public GetOrderDetailsByIdHandler(IUserHttpContext userContext,
                                       IGenericRepository<Order, OrderId> repository,
                                       ILogger<GetOrderDetailsByIdHandler> logger)
     {

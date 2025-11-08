@@ -6,6 +6,7 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.ReviewRequest;
 using YGZ.Catalog.Application.Reviews.Commands;
+using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByModel;
 using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByOrder;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
@@ -27,11 +28,11 @@ public class ReviewController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet("{modelId}")]
+    [HttpGet("model/{productModelSlug}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetReviewsOfModel([FromRoute] string modelId, [FromQuery] GetReviewsByModelRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetReviewsOfModel([FromRoute] string productModelSlug, [FromQuery] GetReviewsByModelRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetReviewsByModelQuery(modelId)
+        var query = new GetReviewsByProductModelSlugQuery(productModelSlug)
         {
             Page = request._page,
             Limit = request._limit,
@@ -72,6 +73,7 @@ public class ReviewController : ApiController
         cmd.ReviewId = reviewId;
 
         var result = await _sender.Send(cmd, cancellationToken);
+
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 

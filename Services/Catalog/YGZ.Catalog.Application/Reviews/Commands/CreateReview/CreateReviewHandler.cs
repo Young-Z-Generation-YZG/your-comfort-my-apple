@@ -1,0 +1,89 @@
+﻿
+
+using Microsoft.Extensions.Logging;
+using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.Catalog.Application.Abstractions.Data;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.Entities;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
+using YGZ.Ordering.Api.Protos;
+
+namespace YGZ.Catalog.Application.Reviews.Commands;
+
+public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
+{
+    private readonly ILogger<CreateReviewHandler> _logger;
+    private readonly IMongoRepository<Review, ReviewId> _reviewRepository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
+    private readonly IUserHttpContext _userHttpContext;
+    private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
+
+    public CreateReviewHandler(ILogger<CreateReviewHandler> logger,
+                               IMongoRepository<Review, ReviewId> reviewRepository,
+                               IMongoRepository<SKU, SkuId> skuRepository,
+                               IUserHttpContext userHttpContext,
+                               OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
+    {
+        _logger = logger;
+        _reviewRepository = reviewRepository;
+        _skuRepository = skuRepository;
+        _userHttpContext = userHttpContext;
+        _orderingProtoServiceClient = orderingProtoServiceClient;
+    }
+
+    public async Task<Result<bool>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
+    {
+        var userId = _userHttpContext.GetUserId();
+        var userEmail = _userHttpContext.GetUserEmail();
+
+        var sku = await _skuRepository.GetByIdAsync(request.SkuId, cancellationToken);
+
+        if (sku is null)
+        {
+            return false;
+        }
+
+        var orderInfo = OrderInfo.Create(
+            orderId: request.OrderId,
+            orderItemId: request.OrderItemId
+        );
+
+        var customerReviewInfo = CustomerReviewInfo.Create(
+            name: userEmail ?? userId ?? "Anonymous",
+            avatarImageUrl: null
+        );
+
+        var review = Review.Create(
+            reviewId: ReviewId.Create(),
+            modelId: sku.ModelId,
+            skuId: sku.Id,
+            orderInfo: orderInfo,
+            customerReviewInfo: customerReviewInfo,
+            content: request.Content,
+            rating: request.Rating
+        );
+
+        var result = await _reviewRepository.InsertOneAsync(review);
+
+        if (!result.Response)
+        {
+            return result.Response;
+        }
+
+
+        var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+        {
+            OrderItemId = request.OrderItemId
+        });
+
+        if (rpcResult.IsFailure)
+        {
+            return false;
+        }
+
+        return true;
+    }
+}

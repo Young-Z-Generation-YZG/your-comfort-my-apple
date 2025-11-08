@@ -1,11 +1,15 @@
-﻿using YGZ.BuildingBlocks.Shared.Contracts.Common;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.Catalog.Domain.Core.Primitives;
 
 namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 
 public class RatingStar : ValueObject
 {
+    [BsonElement("star")]
     required public int Star { get; set; }
+
+    [BsonElement("count")]
     public int Count { get; set; } = 0;
 
     public override IEnumerable<object> GetEqualityComponents()

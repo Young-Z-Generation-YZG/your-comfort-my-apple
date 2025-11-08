@@ -1,12 +1,12 @@
 ﻿using Grpc.Core;
 using MassTransit;
-using YGZ.Basket.Application.Abstractions;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -20,11 +20,11 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
 
     public CheckoutBasketWithBlockchainHandler(IBasketRepository basketRepository,
                                                IPublishEndpoint publishEndpoint,
-                                               IUserRequestContext userContext,
+                                               IUserHttpContext userContext,
                                                DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _basketRepository = basketRepository;

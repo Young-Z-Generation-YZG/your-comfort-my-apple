@@ -2,8 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.Ordering.Application.Abstractions;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -12,12 +12,12 @@ namespace YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand, bool>
 {
     private readonly IGenericRepository<Order, OrderId> _repository;
-    private readonly IUserRequestContext _userContext;
+    private readonly IUserHttpContext _userContext;
     private readonly ILogger<UpdateOrderStatusHandler> _logger;
 
     public UpdateOrderStatusHandler(IGenericRepository<Order, OrderId> repository,
-                              IUserRequestContext userContext,
-                              ILogger<UpdateOrderStatusHandler> logger)
+                                    IUserHttpContext userContext,
+                                    ILogger<UpdateOrderStatusHandler> logger)
     {
         _repository = repository;
         _userContext = userContext;

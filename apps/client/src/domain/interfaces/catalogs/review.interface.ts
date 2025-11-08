@@ -1,11 +1,9 @@
 export interface IReviewPayload {
-   product_id: string;
-   model_id: string;
-   rating: number;
-   content: string;
+   sku_id: string;
    order_id: string;
    order_item_id: string;
-   customer_username: string;
+   content: string;
+   rating: number;
 }
 
 export interface IUpdateReviewPayload {

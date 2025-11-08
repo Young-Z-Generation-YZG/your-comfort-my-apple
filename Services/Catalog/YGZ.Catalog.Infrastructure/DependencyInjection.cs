@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.BuildingBlocks.Shared.Extensions;
