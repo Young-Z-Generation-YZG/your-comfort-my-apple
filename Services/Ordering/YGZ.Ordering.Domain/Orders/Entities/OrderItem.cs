@@ -16,7 +16,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public TenantId? TenantId { get; set; }
     public BranchId? BranchId { get; set; }
     public required OrderId OrderId { get; init; }
-    public string? SkuId { get; init; }
+    public required string SkuId { get; init; }
     public required string ModelId { get; init; }
     public required string ModelName { get; init; }
     public required string ColorName { get; init; }
@@ -57,7 +57,7 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
                                    TenantId? tenantId,
                                    BranchId? branchId,
                                    OrderId orderId,
-                                   string? skuId,
+                                   string skuId,
                                    string modelId,
                                    string modelName,
                                    string colorName,

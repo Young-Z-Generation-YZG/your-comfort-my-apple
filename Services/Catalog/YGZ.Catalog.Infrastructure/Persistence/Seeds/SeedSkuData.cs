@@ -33,7 +33,7 @@ public static class SeedSkuData
 
             return new List<SKU>
             {
-                SKU.Create(IPHONE_15_MODEL_ID, WARE_HOUSE_TENANT_1, WARE_HOUSE_BRANCH_1, SkuCode.Create(ClASSIFICATION_IPHONE.Name, IPHONE_15.NormalizedName, STORAGE_128.NormalizedName, BLUE.NormalizedName), ClASSIFICATION_IPHONE, IPHONE_15, BLUE, STORAGE_128, 1000)
+                //SKU.Create(IPHONE_15_MODEL_ID, WARE_HOUSE_TENANT_1, WARE_HOUSE_BRANCH_1, SkuCode.Create(ClASSIFICATION_IPHONE.Name, IPHONE_15.NormalizedName, STORAGE_128.NormalizedName, BLUE.NormalizedName), ClASSIFICATION_IPHONE, IPHONE_15, BLUE, STORAGE_128, 1000)
             };
         }
     }

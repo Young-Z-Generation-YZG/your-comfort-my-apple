@@ -31,6 +31,7 @@ public sealed record ShippingAddressCommand
 public sealed record OrderItemCommand
 {
     public required string ModelId { get; init; }
+    public required string SkuId { get; init; }
     public required string ProductName { get; init; }
     public required string NormalizedModel { get; init; }
     public required string NormalizedColor { get; init; }

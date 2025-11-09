@@ -32,6 +32,7 @@ const useCartSync = () => {
             cart_items: cartAppState.cart_items.map((item) => ({
                is_selected: item.is_selected,
                model_id: item.model_id,
+               sku_id: item.sku_id,
                model: item.model,
                color: item.color,
                storage: item.storage,
@@ -52,6 +53,7 @@ const useCartSync = () => {
 
             const existingItem = cartAppState.cart_items.find(
                (item) =>
+                  item.sku_id === incomingItem.sku_id &&
                   item.model.normalized_name ===
                      incomingItem.model.normalized_name &&
                   item.color.normalized_name ===

@@ -21,7 +21,8 @@ public class OrderingRpcService : OrderingProtoService.OrderingProtoServiceBase
     {
         var cmd = new UpdateIsReviewedCommand
         {
-            OrderItemId = request.OrderItemId
+            OrderItemId = request.OrderItemId,
+            IsReviewed = request.IsReviewed
         };
 
         var result = await _sender.Send(cmd, context.CancellationToken);
@@ -32,6 +33,7 @@ public class OrderingRpcService : OrderingProtoService.OrderingProtoServiceBase
             {
                 IsSuccess = false,
                 IsFailure = true,
+                ErrorCode = result.Error.Code,
                 ErrorMessage = result.Error.Message
             };
         }
@@ -40,6 +42,7 @@ public class OrderingRpcService : OrderingProtoService.OrderingProtoServiceBase
         {
             IsSuccess = true,
             IsFailure = false,
+            ErrorCode = null,
             ErrorMessage = null
         };
 

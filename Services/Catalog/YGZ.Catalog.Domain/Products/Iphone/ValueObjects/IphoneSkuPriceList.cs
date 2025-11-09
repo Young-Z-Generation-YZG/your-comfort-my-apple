@@ -7,6 +7,10 @@ namespace YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 
 public class IphoneSkuPriceList : ValueObject
 {
+
+    [BsonElement("sku_id")]
+    public required string SkuId { get; init; }
+
     [BsonElement("normalized_model")]
     public required string NormalizedModel { get; init; }
 
@@ -19,7 +23,7 @@ public class IphoneSkuPriceList : ValueObject
     [BsonElement("unit_price")]
     public required decimal UnitPrice { get; init; }
 
-    public static IphoneSkuPriceList Create(string model, string color, string storage, decimal unitPrice)
+    public static IphoneSkuPriceList Create(string skuId, string model, string color, string storage, decimal unitPrice)
     {
         EIphoneModel.TryFromName(model, out var modelEnum);
         EColor.TryFromName(color, out var colorEnum);
@@ -27,6 +31,7 @@ public class IphoneSkuPriceList : ValueObject
 
         return new IphoneSkuPriceList
         {
+            SkuId = skuId,
             NormalizedModel = modelEnum.Name,
             NormalizedColor = colorEnum.Name,
             NormalizedStorage = storageEnum.Name,
@@ -46,6 +51,7 @@ public class IphoneSkuPriceList : ValueObject
     {
         return new IphoneSkuPriceListResponse
         {
+            SkuId = SkuId,
             NormalizedModel = NormalizedModel,
             NormalizedColor = NormalizedColor,
             NormalizedStorage = NormalizedStorage,

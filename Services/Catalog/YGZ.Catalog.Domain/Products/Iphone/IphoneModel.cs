@@ -6,6 +6,7 @@ using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.Events;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Domain.Products.ProductModels;
 using YGZ.Catalog.Domain.Products.ProductModels.Events;
@@ -128,7 +129,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
             Slug = Slug.Create(name),
         };
 
-        List<SkuPriceList> productModelPrices = newModel.Prices.Select(p => SkuPriceList.Create(p.NormalizedModel, p.NormalizedColor, p.NormalizedStorage, p.UnitPrice)).ToList();
+        List<SkuPriceList> productModelPrices = newModel.Prices.Select(p => SkuPriceList.Create(p.SkuId, p.NormalizedModel, p.NormalizedColor, p.NormalizedStorage, p.UnitPrice)).ToList();
 
         var productModel = ProductModel.Create(productModelId: newModel.Id,
                                                category: newModel.Category,
@@ -145,7 +146,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                                promotion: null,
                                                isNewest: newModel.IsNewest);
 
-        newModel.AddDomainEvent(new ProductModelCreatedDomainEvent(productModel));
+        newModel.AddDomainEvent(new IphoneModelCreatedDomainEvent(newModel, productModel));
 
         return newModel;
     }

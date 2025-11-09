@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -42,6 +41,7 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
         await _branchRepository.InsertOneAsync(notification.Branch);
 
         var iphoneModels = await _iphoneModelRepository.GetAllAsync();
+        var iphoneSkuPrices = await _iphoneSkuPriceRepository.GetAllAsync();
 
         var skus = new List<SKU>();
 
@@ -53,39 +53,19 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                 {
                     foreach (var storageItem in model.Storages)
                     {
-                        decimal unitPrice = 0;
+                        var iphoneSkuPrice = iphoneSkuPrices.FirstOrDefault(p => p.Model.NormalizedName == modelItem.NormalizedName && p.Storage.NormalizedName == storageItem.NormalizedName && p.Color.NormalizedName == colorItem.NormalizedName);
 
-                        var cachedKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(
-                            modelName: EIphoneModel.FromName(modelItem.NormalizedName),
-                            storageName: EStorage.FromName(storageItem.NormalizedName),
-                            colorName: EColor.FromName(colorItem.NormalizedName)
-                        );
-                        var cachedPrice = await _distributedCache.GetStringAsync(cachedKey, cancellationToken);
-
-                        unitPrice = cachedPrice is not null ? decimal.Parse(cachedPrice) : 0;
-
-                        if (cachedPrice is null)
-                        {
-                            var skuPrice = await _iphoneSkuPriceRepository.GetByFilterAsync(filter: Builders<IphoneSkuPrice>.Filter.Eq(x => x.UniqueQuery, cachedKey), cancellationToken: cancellationToken);
-
-                            if (skuPrice is not null)
-                            {
-                                unitPrice = skuPrice.UnitPrice;
-                            }
-                        }
-
-                        var sku = SKU.Create(
-                            modelId: model.Id,
-                            tenantId: notification.Tenant.Id,
-                            branchId: notification.Branch.Id,
-                            skuCode: SkuCode.Create(EProductClassification.IPHONE.Name, modelItem.Name, storageItem.Name, colorItem.Name),
-                            productClassification: EProductClassification.IPHONE,
-                            model: modelItem,
-                            color: colorItem,
-                            storage: storageItem,
-                            unitPrice: unitPrice,
-                            availableInStock: 0
-                        );
+                        var sku = SKU.Create(skuId: notification.Tenant.TenantType == ETenantType.WARE_HOUSE.Name ? SkuId.Of(iphoneSkuPrice?.Id.Value!) : SkuId.Create(),
+                                             modelId: model.Id,
+                                             tenantId: notification.Tenant.Id,
+                                             branchId: notification.Branch.Id,
+                                             skuCode: SkuCode.Create(EProductClassification.IPHONE.Name, modelItem.Name, storageItem.Name, colorItem.Name),
+                                             productClassification: EProductClassification.IPHONE,
+                                             model: modelItem,
+                                             color: colorItem,
+                                             storage: storageItem,
+                                             unitPrice: iphoneSkuPrice.UnitPrice,
+                                             availableInStock: 50);
 
                         skus.Add(sku);
                     }

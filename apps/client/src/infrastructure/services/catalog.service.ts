@@ -2,6 +2,16 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
+import {
+   TCategory,
+   TSkuPrice,
+   TStorageItem,
+   TColorItem,
+   TModelItem,
+   TShowcaseImage,
+   TRatingStar,
+   TAverageRating,
+} from './product.service';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('catalog-services')(args, api, extraOptions);
@@ -7880,7 +7890,21 @@ const fakeGetModelBySlugResponse = {
    ],
 };
 
-export type TIphoneModelDetails = typeof fakeGetModelBySlugResponse;
+export type TIphoneModelDetails = {
+   id: string;
+   category: TCategory;
+   name: string;
+   model_items: TModelItem[];
+   color_items: TColorItem[];
+   storage_items: TStorageItem[];
+   sku_prices: TSkuPrice[];
+   description: string;
+   showcase_images: TShowcaseImage[];
+   overall_sold: number;
+   rating_stars: TRatingStar[];
+   average_rating: TAverageRating;
+   branchs: typeof fakeGetModelBySlugResponse.branchs;
+};
 
 export const catalogApi = createApi({
    reducerPath: 'catalog-api',

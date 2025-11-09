@@ -11,6 +11,7 @@ public class ShoppingCartItem
 {
     public required bool IsSelected { get; init; }
     public required string ModelId { get; init; }
+    public required string SkuId { get; init; }
     public required string ProductName { get; init; }
     public required Model Model { get; init; }
     public required Color Color { get; init; }
@@ -47,6 +48,7 @@ public class ShoppingCartItem
     public static ShoppingCartItem Create(
         bool isSelected,
         string modelId,
+        string skuId,
         string productName,
         Model model,
         Color color,
@@ -63,6 +65,7 @@ public class ShoppingCartItem
         {
             IsSelected = isSelected,
             ModelId = modelId,
+            SkuId = skuId,
             ProductName = productName,
             Model = model,
             Color = color,
@@ -82,6 +85,7 @@ public class ShoppingCartItem
         {
             IsSelected = IsSelected,
             ModelId = ModelId,
+            SkuId = SkuId,
             ProductName = ProductName,
             Color = Color.ToResponse(),
             Model = Model.ToResponse(),
@@ -100,6 +104,7 @@ public class ShoppingCartItem
         return new CheckoutItemIntegrationEvent
         {
             ModelId = ModelId,
+            SkuId = SkuId,
             ProductName = ProductName,
             NormalizedModel = Model.NormalizedName,
             NormalizedColor = Color.NormalizedName,

@@ -1372,6 +1372,7 @@ export type TStorageItem = {
    order: number;
 };
 export type TSkuPrice = {
+   sku_id: string;
    normalized_model: string;
    normalized_color: string;
    normalized_storage: string;

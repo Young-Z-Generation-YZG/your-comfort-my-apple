@@ -19,6 +19,7 @@ public sealed record CartItemResponse()
 {
     public required bool IsSelected { get; init; }
     public required string ModelId { get; init; }
+    public required string SkuId { get; init; }
     public required string ProductName { get; init; }
     public required ColorResponse Color { get; init; }
     public required ModelResponse Model { get; init; }

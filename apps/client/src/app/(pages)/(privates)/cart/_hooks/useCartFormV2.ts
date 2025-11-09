@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
+import {
+   TCart,
+   TCartItem,
+   TStoreBasketPayload,
+} from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { useDispatch } from 'react-redux';
 import { AddCartItems } from '~/infrastructure/redux/features/cart.slice';
@@ -10,6 +14,7 @@ import { AddCartItems } from '~/infrastructure/redux/features/cart.slice';
 const cartItemSchema = z.object({
    is_selected: z.boolean(),
    model_id: z.string().min(1, { message: 'Model ID is required' }),
+   sku_id: z.string().min(1, { message: 'SKU ID is required' }),
    color: z.object({
       name: z.string().min(1, { message: 'Color name is required' }),
       normalized_name: z
@@ -42,14 +47,23 @@ export type CartFormData = z.infer<typeof cartFormSchema>;
 
 interface UseCartFormProps {
    basketData: TCart;
+   storeBasketAsync?: (payload: TStoreBasketPayload) => Promise<{
+      isSuccess: boolean;
+      isError: boolean;
+      data: boolean | null;
+      error: unknown;
+   }>;
 }
 
-const useCartFormV2 = ({ basketData }: UseCartFormProps) => {
+const useCartFormV2 = ({ basketData, storeBasketAsync }: UseCartFormProps) => {
    const [cartItems, setCartItems] = useState<TCartItem[]>([]);
 
    const cartItemState = useAppSelector((state) => state.cart.cart_items);
 
    const dispatch = useDispatch();
+
+   // Track previous cart items to detect selection changes
+   const prevCartItemsRef = useRef<typeof cartItems>([]);
 
    const form = useForm<CartFormData>({
       resolver: zodResolver(cartFormSchema),
@@ -57,12 +71,19 @@ const useCartFormV2 = ({ basketData }: UseCartFormProps) => {
          cart_items: basketData.cart_items.map((item) => ({
             is_selected: item.is_selected,
             model_id: item.model_id,
+            sku_id: item.sku_id,
             color: item.color,
             model: item.model,
             storage: item.storage,
             quantity: item.quantity,
          })),
       },
+   });
+
+   // Watch cart_items for changes
+   const watchedCartItems = useWatch({
+      control: form.control,
+      name: 'cart_items',
    });
 
    const handleQuantityChange = useCallback(
@@ -123,9 +144,64 @@ const useCartFormV2 = ({ basketData }: UseCartFormProps) => {
       [cartItemState, dispatch, form],
    );
 
+   // Update cartItems state when watched values change
    useEffect(() => {
-      setCartItems(form.getValues('cart_items') as TCartItem[]);
-   }, [form]);
+      if (watchedCartItems) {
+         setCartItems(watchedCartItems as TCartItem[]);
+      }
+   }, [watchedCartItems]);
+
+   // Watch for selection changes and call API
+   useEffect(() => {
+      if (!watchedCartItems || !storeBasketAsync) return;
+
+      // Check if any is_selected value has changed
+      const hasSelectionChanged = prevCartItemsRef.current.some(
+         (prevItem, index) => {
+            const currentItem = watchedCartItems[index];
+            return (
+               currentItem && prevItem?.is_selected !== currentItem.is_selected
+            );
+         },
+      );
+
+      if (hasSelectionChanged && prevCartItemsRef.current.length > 0) {
+         // Update Redux state
+         //  const updatedCartItems = cartItemState.map((item) => {
+         //     const formItem = watchedCartItems.find(
+         //        (formItem) =>
+         //           formItem.model_id === item.model_id &&
+         //           formItem.color.normalized_name ===
+         //              item.color.normalized_name &&
+         //           formItem.storage.normalized_name ===
+         //              item.storage.normalized_name,
+         //     );
+         //     return formItem
+         //        ? { ...item, is_selected: formItem.is_selected }
+         //        : item;
+         //  });
+
+         //  dispatch(AddCartItems(updatedCartItems as TCartItem[]));
+
+         // Call storeBasket API
+         const payload: TStoreBasketPayload = {
+            cart_items: watchedCartItems.map((item) => ({
+               is_selected: item.is_selected,
+               model_id: item.model_id,
+               sku_id: item.sku_id,
+               model: item.model,
+               color: item.color,
+               storage: item.storage,
+               quantity: item.quantity,
+            })),
+         };
+
+         storeBasketAsync(payload);
+      }
+
+      // Update ref for next comparison
+      prevCartItemsRef.current = watchedCartItems as typeof cartItems;
+   }, [watchedCartItems, storeBasketAsync, cartItemState, dispatch]);
 
    return {
       form,

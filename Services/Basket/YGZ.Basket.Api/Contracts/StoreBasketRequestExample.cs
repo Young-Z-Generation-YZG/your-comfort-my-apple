@@ -18,6 +18,7 @@ public class StoreBasketRequestExample : ISchemaProcessor
                     {
                         is_selected = false,
                         model_id = "68e403d5617b27ad030bf28f",
+                        sku_id = "68e403d5617b27ad030bf28f",
                         model = new
                         {
                             name = "iPhone 15",

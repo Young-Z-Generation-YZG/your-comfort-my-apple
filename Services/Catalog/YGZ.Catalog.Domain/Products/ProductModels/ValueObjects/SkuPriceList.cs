@@ -7,6 +7,9 @@ namespace YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 
 public class SkuPriceList : ValueObject
 {
+    [BsonElement("sku_id")]
+    public required string SkuId { get; init; }
+
     [BsonElement("normalized_model")]
     public required string NormalizedModel { get; init; }
 
@@ -19,7 +22,7 @@ public class SkuPriceList : ValueObject
     [BsonElement("unit_price")]
     public required decimal UnitPrice { get; init; }
 
-    public static SkuPriceList Create(string model, string color, string storage, decimal unitPrice)
+    public static SkuPriceList Create(string skuId, string model, string color, string storage, decimal unitPrice)
     {
         EIphoneModel.TryFromName(model, out var modelEnum);
         EColor.TryFromName(color, out var colorEnum);
@@ -27,6 +30,7 @@ public class SkuPriceList : ValueObject
 
         return new SkuPriceList
         {
+            SkuId = skuId,
             NormalizedModel = modelEnum.Name,
             NormalizedColor = colorEnum.Name,
             NormalizedStorage = storageEnum.Name,
@@ -36,6 +40,7 @@ public class SkuPriceList : ValueObject
 
     public override IEnumerable<object> GetEqualityComponents()
     {
+        yield return SkuId;
         yield return NormalizedModel;
         yield return NormalizedColor;
         yield return NormalizedStorage;
@@ -46,6 +51,7 @@ public class SkuPriceList : ValueObject
     {
         return new SkuPriceListResponse
         {
+            SkuId = SkuId,
             NormalizedModel = NormalizedModel,
             NormalizedColor = NormalizedColor,
             NormalizedStorage = NormalizedStorage,

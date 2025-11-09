@@ -76,7 +76,8 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
 
         var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
         {
-            OrderItemId = request.OrderItemId
+            OrderItemId = request.OrderItemId,
+            IsReviewed = true
         });
 
         if (rpcResult.IsFailure)

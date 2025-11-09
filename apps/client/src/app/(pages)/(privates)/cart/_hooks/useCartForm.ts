@@ -11,6 +11,7 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 
 const cartItemSchema = z.object({
    is_selected: z.boolean(),
+   sku_id: z.string().min(1, { message: 'SKU ID is required' }),
    model_id: z.string().min(1, { message: 'Model ID is required' }),
    color: z.object({
       name: z.string().min(1, { message: 'Color name is required' }),
@@ -125,6 +126,7 @@ export const useCartForm = ({
                      cart_items: cartItems.map((item) => ({
                         is_selected: item.is_selected,
                         model_id: item.model_id,
+                        sku_id: item.sku_id,
                         color: item.color,
                         model: item.model,
                         storage: item.storage,
@@ -136,6 +138,7 @@ export const useCartForm = ({
                      (item) => ({
                         is_selected: item.is_selected,
                         model_id: item.model_id,
+                        sku_id: item.sku_id,
                         color: item.color,
                         model: item.model,
                         storage: item.storage,

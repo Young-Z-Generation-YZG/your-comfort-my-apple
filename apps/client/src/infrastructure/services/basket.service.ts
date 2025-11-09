@@ -36,6 +36,7 @@ const fakeGetBasketResponse = {
       {
          is_selected: true,
          model_id: '664351e90087aa09993f5ae7',
+         sku_id: '664351e90087aa09993f5ae7',
          product_name: 'iPhone 15 128GB Blue',
          color: {
             name: 'Blue',
@@ -83,6 +84,7 @@ export type TCart = {
 export type TCartItem = {
    is_selected: boolean;
    model_id: string;
+   sku_id: string;
    product_name: string;
    color: {
       name: string;
@@ -117,31 +119,27 @@ export type TCartItem = {
    index: number;
 };
 
-const storeBasketPayloadExample = {
-   cart_items: [
-      {
-         is_selected: false,
-         model_id: '68e403d5617b27ad030bf28f',
-         model: {
-            name: 'iPhone 15',
-            normalized_name: 'IPHONE_15',
-         },
-         color: {
-            name: 'Blue',
-            normalized_name: 'BLUE',
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-         },
-         quantity: 1,
-      },
-   ],
+export type TStoreBasketPayload = {
+   cart_items: TStoreBasketItem[];
 };
-
-export type TStoreBasketPayload = typeof storeBasketPayloadExample;
-export type TStoreBasketItem =
-   (typeof storeBasketPayloadExample.cart_items)[number];
+export type TStoreBasketItem = {
+   is_selected: boolean;
+   model_id: string;
+   sku_id: string;
+   model: {
+      name: string;
+      normalized_name: string;
+   };
+   color: {
+      name: string;
+      normalized_name: string;
+   };
+   storage: {
+      name: string;
+      normalized_name: string;
+   };
+   quantity: number;
+};
 
 const storeEventItemPayloadExample = {
    event_item_id: '04edf970-b569-44ac-a116-9847731929ab',

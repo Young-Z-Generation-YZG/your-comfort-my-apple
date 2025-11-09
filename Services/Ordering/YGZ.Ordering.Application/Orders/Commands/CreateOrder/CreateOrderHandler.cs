@@ -59,7 +59,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                                 tenantId: null,
                                                 branchId: null,
                                                 orderId: newOrder.Id,
-                                                skuId: null,
+                                                skuId: orderItem.SkuId,
                                                 modelId: orderItem.ModelId,
                                                 modelName: orderItem.NormalizedModel,
                                                 colorName: orderItem.NormalizedColor,

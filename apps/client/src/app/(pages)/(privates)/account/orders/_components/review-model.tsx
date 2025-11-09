@@ -11,24 +11,20 @@ import {
    ReviewResolver,
 } from '~/domain/schemas/catalog.schema';
 import { useForm } from 'react-hook-form';
-import {
-   useCreateReviewAsyncMutation,
-   useDeleteReviewAsyncMutation,
-   useUpdateReviewAsyncMutation,
-} from '~/infrastructure/services/review.service';
 import { cn } from '~/infrastructure/lib/utils';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import { OrderDetailsResponse } from '~/domain/interfaces/orders/order.interface';
-import { ORDER_STATUS_TYPE_ENUM } from '~/domain/enums/order-type.enum';
+import useReviewService from '@components/hooks/api/use-review-service';
+import { IReviewPayload } from '~/domain/interfaces/catalogs/review.interface';
+import NextImage from 'next/image';
 
 type ReviewModalProps = {
-   order: OrderDetailsResponse | null;
    item: {
       product_id: string;
       model_id: string;
       order_id: string;
       order_item_id: string;
+      sku_id?: string | null;
       name: string;
       image: string;
       isReviewed: boolean;
@@ -44,7 +40,6 @@ type ReviewModalProps = {
 };
 
 export function ReviewModal({
-   order,
    item,
    reviewedData,
    onClose,
@@ -56,7 +51,7 @@ export function ReviewModal({
    const [comment, setComment] = useState(reviewedData.content || '');
    const [isSubmitting, setIsSubmitting] = useState(false);
 
-   const auth = useAppSelector((state) => state.auth.value);
+   const authAppState = useAppSelector((state) => state.auth);
 
    const form = useForm<ReviewFormType>({
       resolver: ReviewResolver,
@@ -67,52 +62,91 @@ export function ReviewModal({
          product_id: item.product_id,
          rating: reviewedData.rating || 0,
          content: reviewedData.content || '',
-         customer_username: auth.username || '',
+         customer_username:
+            authAppState.username || authAppState.userEmail || '',
       },
    });
+
+   // Update form values and local state when reviewedData or item changes
+   useEffect(() => {
+      const currentRating = reviewedData.rating || 0;
+      const currentContent = reviewedData.content || '';
+
+      // Update local state
+      setRating(currentRating);
+      setComment(currentContent);
+
+      // Reset form with new values
+      form.reset({
+         order_id: item.order_id,
+         order_item_id: item.order_item_id,
+         model_id: item.model_id,
+         product_id: item.product_id,
+         rating: currentRating,
+         content: currentContent,
+         customer_username:
+            authAppState.username || authAppState.userEmail || '',
+      });
+   }, [
+      reviewedData.rating,
+      reviewedData.content,
+      item.order_id,
+      item.order_item_id,
+      item.model_id,
+      item.product_id,
+      authAppState.username,
+      authAppState.userEmail,
+      form,
+   ]);
 
    const {
       formState: { errors },
    } = form;
 
-   const [
+   const {
       createReviewAsync,
-      { isLoading: isCreating, error: submitError, isError, reset },
-   ] = useCreateReviewAsyncMutation();
-
-   const [
       updateReviewAsync,
-      {
-         isLoading: isUpdating,
-         error: updateError,
-         isError: isUpdateError,
-         reset: resetUpdate,
-      },
-   ] = useUpdateReviewAsyncMutation();
-
-   const [
       deleteReviewAsync,
-      {
-         isLoading: isDeleting,
-         error: deleteError,
-         isError: isDeleteError,
-         reset: resetDelete,
-      },
-   ] = useDeleteReviewAsyncMutation();
+      isLoading,
+   } = useReviewService();
 
    const handleSubmit = async (data: ReviewFormType) => {
-      console.log('data', data);
+      if (!item.sku_id) {
+         toast({
+            title: 'Error',
+            description: 'SKU ID is required to submit a review.',
+            variant: 'destructive',
+            duration: 2000,
+         });
+         return;
+      }
 
-      await createReviewAsync(data).unwrap();
+      const payload: IReviewPayload = {
+         sku_id: item.sku_id,
+         order_id: item.order_id,
+         order_item_id: item.order_item_id,
+         content: data.content.trim(),
+         rating: data.rating,
+      };
 
-      onSubmit();
-      onClose();
+      const result = await createReviewAsync(payload);
 
-      toast({
-         title: 'Review submitted',
-         description: 'Thank you for your feedback!',
-         duration: 2000,
-      });
+      if (result.isSuccess) {
+         toast({
+            title: 'Review submitted',
+            description: 'Thank you for your feedback!',
+            duration: 2000,
+         });
+         onSubmit();
+         onClose();
+      } else {
+         toast({
+            title: 'Error',
+            description: 'Failed to submit review. Please try again.',
+            variant: 'destructive',
+            duration: 2000,
+         });
+      }
    };
 
    const handleUpdate = async ({
@@ -124,52 +158,67 @@ export function ReviewModal({
       rating: number;
       content: string;
    }) => {
-      if (reviewId) {
-         await updateReviewAsync({
-            body: {
-               rating: rating,
-               content: content,
-            },
-            reviewId: reviewId,
-         }).unwrap();
+      if (!reviewId) return;
 
-         onSubmit();
-         onClose();
+      const result = await updateReviewAsync(reviewId, {
+         rating,
+         content: content.trim(),
+      });
 
+      if (result.isSuccess) {
          toast({
             title: 'Review updated',
             description: 'Your review has been updated!',
+            duration: 2000,
+         });
+         onSubmit();
+         onClose();
+      } else {
+         toast({
+            title: 'Error',
+            description: 'Failed to update review. Please try again.',
+            variant: 'destructive',
             duration: 2000,
          });
       }
    };
 
    const handleDelete = async (reviewId?: string) => {
-      if (reviewId) {
-         await deleteReviewAsync(reviewId).unwrap();
+      if (!reviewId) return;
 
-         onSubmit();
-         onClose();
+      const result = await deleteReviewAsync(reviewId);
 
+      if (result.isSuccess) {
          toast({
             title: 'Review deleted',
             description: 'Your review has been deleted!',
+            duration: 2000,
+         });
+         onSubmit();
+         onClose();
+      } else {
+         toast({
+            title: 'Error',
+            description: 'Failed to delete review. Please try again.',
+            variant: 'destructive',
             duration: 2000,
          });
       }
    };
 
    useEffect(() => {
-      setIsSubmitting(isCreating || isUpdating || isDeleting);
-   }, [isCreating, isUpdating, isDeleting]);
+      setIsSubmitting(isLoading);
+   }, [isLoading]);
 
    return (
       <div className="space-y-6">
          <div className="flex items-start space-x-4">
             <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-               <img
+               <NextImage
                   src={item.image || '/placeholder.svg'}
                   alt={item.name}
+                  width={80}
+                  height={80}
                   className="w-full h-full object-center object-cover"
                />
             </div>

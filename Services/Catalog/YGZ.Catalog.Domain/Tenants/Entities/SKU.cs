@@ -74,6 +74,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; set; } = null;
 
     public static SKU Create(
+        SkuId skuId,
         ModelId modelId,
         TenantId tenantId,
         BranchId branchId,
@@ -85,7 +86,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
         decimal unitPrice,
         int availableInStock = 0)
     {
-        var sku = new SKU(SkuId.Create())
+        var sku = new SKU(skuId)
         {
             ModelId = modelId,
             TenantId = tenantId,

@@ -61,6 +61,7 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             StorageItems = model.Storages.Select(s => s.ToResponse()).ToList(),
             SkuPrices = model.Prices.Select(p => new IphoneSkuPriceListResponse
             {
+                SkuId = p.SkuId,
                 NormalizedModel = p.NormalizedModel,
                 NormalizedColor = p.NormalizedColor,
                 NormalizedStorage = p.NormalizedStorage,

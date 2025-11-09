@@ -81,6 +81,7 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             var shoppingCartItem = ShoppingCartItem.Create(
                 isSelected: item.IsSelected,
                 modelId: item.ModelId,
+                skuId: item.SkuId,
                 productName: $"{model.Name} {storage.Name} {color.Name}",
                 model: model,
                 color: color,

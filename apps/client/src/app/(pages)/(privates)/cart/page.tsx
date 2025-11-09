@@ -34,6 +34,8 @@ const CartPage = () => {
    const { isAuthenticated } = useAppSelector((state) => state.auth);
    const cartAppState = useAppSelector((state) => state.cart);
 
+   useCartSync();
+
    const {
       getBasketAsync,
       getBasketState,
@@ -67,6 +69,8 @@ const CartPage = () => {
    }, [getBasketAsync, urlCouponCode, isAuthenticated]);
 
    const basketData = useMemo(() => {
+      console.log('getBasketState', getBasketState);
+
       if (getBasketState.isSuccess && getBasketState.data)
          return getBasketState.data as TCart;
 
@@ -91,7 +95,12 @@ const CartPage = () => {
    const { form, cartItems, handleQuantityChange, handleRemoveItem } =
       useCartFormV2({
          basketData: basketData,
+         storeBasketAsync: storeBasketAsync,
       });
+
+   const selectedItems = form
+      .getValues('cart_items')
+      .filter((item) => item.is_selected);
 
    console.log('form 2', form.getValues());
 
@@ -124,37 +133,8 @@ const CartPage = () => {
                   <LoadingOverlay isLoading={isLoading}>
                      <FormProvider {...form}>
                         <form>
-                           {/* {(
-                              getBasketState.data as unknown as TCart
-                           )?.cart_items.map(
-                              (item: TCartItem, index: number) => (
-                                 <div
-                                    key={`${item.model_id}-${index}`}
-                                    className="w-full flex flex-row justify-start items-center gap-3"
-                                 >
-                                    <CheckboxField
-                                       name={`cart_items.${index}.is_selected`}
-                                       form={form}
-                                       checkboxClassName="h-5 w-5"
-                                    />
-                                    <CartItem
-                                       item={item as unknown as TCartItem}
-                                       index={index}
-                                       onQuantityChange={
-                                          // handleQuantityChange
-                                          () => {}
-                                       }
-                                       onRemoveItem={
-                                          // handleRemoveItem
-                                          () => {}
-                                       }
-                                    />
-                                 </div>
-                              ),
-                           )} */}
-
                            {basketData.cart_items.length > 0 &&
-                              cartItems.length > 0 &&
+                              // cartItems.length > 0 &&
                               basketData.cart_items.map(
                                  (item: TCartItem, index: number) => (
                                     <div
@@ -304,7 +284,7 @@ const CartPage = () => {
                   </div>
                   <Button
                      className="w-full h-fit border rounded-full text-[14px] font-medium tracking-[0.2px] mt-5"
-                     //  disabled={isLoading || selectedItems.length === 0}
+                     disabled={isLoading || selectedItems.length === 0}
                      onClick={async () => {
                         const result = await proceedToCheckoutAsync();
 

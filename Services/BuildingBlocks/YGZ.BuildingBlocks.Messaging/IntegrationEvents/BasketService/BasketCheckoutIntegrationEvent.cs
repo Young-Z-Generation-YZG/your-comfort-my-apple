@@ -35,6 +35,7 @@ public record CartCommand
 public record CheckoutItemIntegrationEvent
 {
     public required string ModelId { get; init; }
+    public required string SkuId { get; init; }
     public required string ProductName { get; init; }
     public required string NormalizedModel { get; init; }
     public required string NormalizedColor { get; init; }

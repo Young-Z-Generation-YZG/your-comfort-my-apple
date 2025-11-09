@@ -26,7 +26,9 @@ public class ReviewCreatedIntegrationEventHandler : IConsumer<ReviewCreatedInteg
 
         UpdateIsReviewedCommand command = new UpdateIsReviewedCommand
         {
-            OrderItemId = context.Message.OrderItemId
+            OrderItemId = context.Message.OrderItemId,
+            IsReviewed = true
+
         };
 
         await _sender.Send(command);

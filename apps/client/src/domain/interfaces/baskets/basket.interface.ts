@@ -5,6 +5,7 @@ import { IColor, IModel, IStorage } from '../common/value-objects.interface';
 export interface IBasketItemPayload {
    is_selected: boolean;
    model_id: string;
+   sku_id: string;
    color: {
       name: string;
       normalized_name: string;

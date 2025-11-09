@@ -146,7 +146,8 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
         var shoppingCartItem = ShoppingCartItem.Create(
             isSelected: true,
-            modelId: "ModelId",
+            modelId: "missing model id",
+            skuId: eventItem.SkuId,
             productName: $"{eventItem.Model.Name} {eventItem.Storage.Name} {eventItem.Color.Name}",
             model: model,
             color: color,

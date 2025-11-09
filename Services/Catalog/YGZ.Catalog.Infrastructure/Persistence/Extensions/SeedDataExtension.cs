@@ -32,7 +32,7 @@ public static class SeedDataExtension
         await SeedCategoriesAsync(categoryRepository);
 
         await SeedIphoneModelsAsync(iphoneModelRepository);
-        await SeedIphoneSkuPricesAsync(iphoneSkuPriceRepository);
+        // await SeedIphoneSkuPricesAsync(iphoneSkuPriceRepository);
 
 
         // cache data

@@ -17,14 +17,6 @@ import {
    TableHeader,
    TableRow,
 } from '@components/ui/table';
-// import {
-//    Pagination,
-//    PaginationContent,
-//    PaginationItem,
-//    PaginationLink,
-//    PaginationNext,
-//    PaginationPrevious,
-// } from '@components/ui/pagination';
 import { Badge } from '@components/ui/badge';
 import {
    Search,
@@ -42,202 +34,7 @@ import usePagination from '@components/hooks/use-pagination';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
 import useOrderingService from '@components/hooks/api/use-ordering-service';
 import { useEffect } from 'react';
-
-const fakeOrders = {
-   total_records: 3,
-   total_pages: 1,
-   page_size: 5,
-   current_page: 1,
-   items: [
-      {
-         tenant_id: null,
-         branch_id: null,
-         order_id: '073b0b68-f7fb-46a0-8851-1e472092f29c',
-         customer_id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
-         customer_email: 'user@gmail.com',
-         order_code: '#912039',
-         status: 'PAID',
-         payment_method: 'VNPAY',
-         shipping_address: {
-            contact_name: 'Foo Bar',
-            contact_email: 'user@gmail.com',
-            contact_phone_number: '0333284890',
-            contact_address_line: '123 Street',
-            contact_district: 'Thu Duc',
-            contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
-         },
-         order_items: [
-            {
-               order_id: '073b0b68-f7fb-46a0-8851-1e472092f29c',
-               order_item_id: '23e54d5b-02e5-4194-87dd-585007a22c4b',
-               sku_id: null,
-               model_id: '68e403d5617b27ad030bf28f',
-               model_name: 'IPHONE_15',
-               color_name: 'BLUE',
-               storage_name: '128GB',
-               unit_price: 1000,
-               display_image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-               model_slug: 'iphone-15',
-               quantity: 1,
-               promotion: null,
-               is_reviewed: false,
-               created_at: '2025-10-27T17:47:57.662349Z',
-               updated_at: '2025-10-27T17:47:57.662349Z',
-               updated_by: null,
-               is_deleted: false,
-               deleted_at: null,
-               deleted_by: null,
-            },
-         ],
-         promotion_id: null,
-         promotion_type: null,
-         discount_type: null,
-         discount_value: null,
-         discount_amount: null,
-         total_amount: 1000,
-         created_at: '2025-10-27T17:47:57.661369Z',
-         updated_at: '2025-10-27T17:47:57.66137Z',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         tenant_id: null,
-         branch_id: null,
-         order_id: '5b7404da-3b34-48f8-ab46-fc858b0698d7',
-         customer_id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
-         customer_email: 'user@gmail.com',
-         order_code: '#268356',
-         status: 'PAID',
-         payment_method: 'VNPAY',
-         shipping_address: {
-            contact_name: 'Foo Bar',
-            contact_email: 'user@gmail.com',
-            contact_phone_number: '0333284890',
-            contact_address_line: '123 Street',
-            contact_district: 'Thu Duc',
-            contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
-         },
-         order_items: [
-            {
-               order_id: '5b7404da-3b34-48f8-ab46-fc858b0698d7',
-               order_item_id: '77cd2f63-5890-4fc5-8f85-ea86b0f4aef1',
-               sku_id: null,
-               model_id: '68e403d5617b27ad030bf28f',
-               model_name: 'IPHONE_15',
-               color_name: 'BLUE',
-               storage_name: '128GB',
-               unit_price: 1000,
-               display_image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-               model_slug: 'iphone-15',
-               quantity: 1,
-               promotion: {
-                  promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-                  promotion_type: 'COUPON',
-                  discount_type: 'PERCENTAGE',
-                  discount_value: 0.1,
-                  discount_amount: 100,
-                  final_price: 900,
-               },
-               is_reviewed: false,
-               created_at: '2025-10-27T18:01:42.770772Z',
-               updated_at: '2025-10-27T18:01:42.770772Z',
-               updated_by: null,
-               is_deleted: false,
-               deleted_at: null,
-               deleted_by: null,
-            },
-         ],
-         promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-         promotion_type: 'COUPON',
-         discount_type: 'PERCENTAGE',
-         discount_value: 0.1,
-         discount_amount: 100,
-         total_amount: 900,
-         created_at: '2025-10-27T18:01:42.769227Z',
-         updated_at: '2025-10-27T18:01:42.769227Z',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         tenant_id: null,
-         branch_id: null,
-         order_id: 'a6c9fbce-ab37-4472-b8d6-a3684b9d8241',
-         customer_id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
-         customer_email: 'user@gmail.com',
-         order_code: '#750653',
-         status: 'PAID',
-         payment_method: 'VNPAY',
-         shipping_address: {
-            contact_name: 'Foo Bar',
-            contact_email: 'user@gmail.com',
-            contact_phone_number: '0333284890',
-            contact_address_line: '123 Street',
-            contact_district: 'Thu Duc',
-            contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
-         },
-         order_items: [
-            {
-               order_id: 'a6c9fbce-ab37-4472-b8d6-a3684b9d8241',
-               order_item_id: '0c9d7078-2949-43e7-a4af-6acf3dd8453e',
-               sku_id: null,
-               model_id: 'ModelId',
-               model_name: 'IPHONE_15',
-               color_name: 'BLUE',
-               storage_name: '256GB',
-               unit_price: 1100,
-               display_image_url:
-                  'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-               model_slug: '',
-               quantity: 1,
-               promotion: {
-                  promotion_id: '99a356c8-c026-4137-8820-394763f30521',
-                  promotion_type: 'EVENT',
-                  discount_type: 'PERCENTAGE',
-                  discount_value: 0.1,
-                  discount_amount: 110,
-                  final_price: 990,
-               },
-               is_reviewed: false,
-               created_at: '2025-10-27T18:07:03.60679Z',
-               updated_at: '2025-10-27T18:07:03.60679Z',
-               updated_by: null,
-               is_deleted: false,
-               deleted_at: null,
-               deleted_by: null,
-            },
-         ],
-         promotion_id: '99a356c8-c026-4137-8820-394763f30521',
-         promotion_type: 'EVENT',
-         discount_type: 'PERCENTAGE',
-         discount_value: 0.1,
-         discount_amount: 110,
-         total_amount: 990,
-         created_at: '2025-10-27T18:07:03.606782Z',
-         updated_at: '2025-10-27T18:07:03.606782Z',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-   ],
-   links: {
-      first: '?_page=1&_limit=5',
-      prev: null,
-      next: null,
-      last: '?_page=1&_limit=5',
-   },
-};
-
-type TOrderItem = (typeof fakeOrders.items)[number];
+import { TOrder } from '~/infrastructure/services/ordering.service';
 
 const getHoverStatusColor = (status: string) => {
    switch (status) {
@@ -330,7 +127,19 @@ const OrderPage = () => {
    } = usePagination(
       getOrdersState.data && getOrdersState.data.items.length > 0
          ? getOrdersState.data
-         : fakeOrders,
+         : {
+              total_records: 0,
+              total_pages: 0,
+              page_size: 0,
+              current_page: 0,
+              items: [],
+              links: {
+                 first: null,
+                 last: null,
+                 prev: null,
+                 next: null,
+              },
+           },
    );
 
    return (
@@ -449,7 +258,7 @@ const OrderPage = () => {
                         <TableBody>
                            <AnimatePresence>
                               {paginationItems.map(
-                                 (order: TOrderItem, index: number) => {
+                                 (order: TOrder, index: number) => {
                                     const status =
                                        order.status ==
                                        EOrderStatus.PENDING_ASSIGNMENT

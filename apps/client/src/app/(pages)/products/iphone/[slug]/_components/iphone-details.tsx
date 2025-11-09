@@ -28,9 +28,7 @@ import { toast } from 'sonner';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
-import { TCartItem } from '~/infrastructure/services/basket.service';
 import { TIphoneModelDetails } from '~/infrastructure/services/catalog.service';
-import ReviewsSection from './review-section';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -223,10 +221,19 @@ const IphoneDetails = () => {
          }
 
          if (isAuthenticated) {
+            const sku_id =
+               getModelBySlugState.data?.sku_prices.find(
+                  (sku) =>
+                     sku.normalized_model === selectedModel.normalized_name &&
+                     sku.normalized_color === selectedColor.normalized_name &&
+                     sku.normalized_storage === selectedStorage.normalized_name,
+               )?.sku_id || '';
+
             const result = await storeBasketAsync({
                cart_items: [
                   {
                      is_selected: false,
+                     sku_id: sku_id,
                      model_id: (getModelBySlugState.data as TIphoneModelDetails)
                         .id,
                      color: {
@@ -297,10 +304,19 @@ const IphoneDetails = () => {
                   (image) => image.image_id === color.showcase_image_id,
                )?.image_url || '';
 
+            const sku_id =
+               getModelBySlugState.data?.sku_prices.find(
+                  (sku) =>
+                     sku.normalized_model === selectedModel.normalized_name &&
+                     sku.normalized_color === selectedColor.normalized_name &&
+                     sku.normalized_storage === selectedStorage.normalized_name,
+               )?.sku_id || '';
+
             storeBasketSync([
                {
                   is_selected: false,
                   model_id: data.id,
+                  sku_id: sku_id,
                   product_name: `${selectedModel.name} ${selectedStorage.name} ${selectedColor.name}`,
                   color: color,
                   model: model,

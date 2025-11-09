@@ -21,6 +21,10 @@ public sealed record CartItemRequest()
     public required string ModelId { get; init; }
 
     [Required]
+    [JsonPropertyName("sku_id")]
+    public required string SkuId { get; init; }
+
+    [Required]
     [JsonPropertyName("model")]
     public required ModelRequest Model { get; init; }
 

@@ -13,10 +13,12 @@ service OrderingProtoService {
 
 message UpdateOrderItemIsReviewedGrpcRequest {
 	google.protobuf.StringValue order_item_id = 1;
+    bool is_reviewed = 2;
 }
 
 message BooleanGrpcResponse {
 	bool is_success = 1;
 	bool is_failure = 2;
-	google.protobuf.StringValue error_message = 3;
+	google.protobuf.StringValue error_code = 3;
+	google.protobuf.StringValue error_message = 4;
 }

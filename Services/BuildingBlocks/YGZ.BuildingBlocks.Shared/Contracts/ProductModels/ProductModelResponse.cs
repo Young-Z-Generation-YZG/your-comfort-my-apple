@@ -39,6 +39,7 @@ public sealed record ProductModelResponse
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record SkuPriceListResponse
 {
+    public required string SkuId { get; init; }
     public required string NormalizedModel { get; init; }
     public required string NormalizedColor { get; init; }
     public required string NormalizedStorage { get; init; }
