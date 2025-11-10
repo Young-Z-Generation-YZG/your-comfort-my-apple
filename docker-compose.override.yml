@@ -101,26 +101,6 @@ services:
         networks:
             - app-network
 
-    # db.catalog.replica.secondary:
-    #     container_name: db.catalog.replica.secondary
-    #     restart: always
-    #     expose:
-    #         - 27017
-    #     volumes:
-    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-secondary:/data/db
-    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
-
-    # db.catalog.replica.arbiter:
-    #     container_name: db.catalog.replica.arbiter
-    #     restart: always
-    #     expose:
-    #         - 27017
-    #     volumes:
-    #         - ./provision/dockerVolumes/mongoDb/volumes/replica-arbiter:/data/db
-    #         - ./provision/dockerVolumes/mongoDb/key/replica.key:/key/replica.key
-    #     command: "mongod --bind_ip_all --replSet rs0 --keyFile /key/replica.key"
-
     mongo.setup:
         container_name: mongo.setup
         depends_on:
@@ -143,34 +123,6 @@ services:
         networks:
             - app-network
         restart: "no"
-
-    # mongo.setup:
-    #     container_name: mongo.setup
-    #     restart: on-failure
-    #     environment:
-    #         - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-    #         - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    #     depends_on:
-    #         - db.catalog.replica.primary
-    #         - db.catalog.replica.secondary
-    #         - db.catalog.replica.arbiter
-    #     volumes:
-    #         - ./provision/dockerVolumes/mongoDb/scripts/init_test_two.sh:/scripts/init_test_two.sh
-    #     entrypoint: ["/bin/bash", "/scripts/init_test_two.sh"]
-    #     networks:
-    #         - app-network
-
-    # mongo.express:
-    #     container_name: mongo.express
-    #     restart: always
-    #     ports:
-    #         - ${MONGOEXP_PORT}:8081
-    #     environment:
-    #         - ME_CONFIG_BASICAUTH_USERNAME=${MONGOEXP_USERNAME}
-    #         - ME_CONFIG_BASICAUTH_PASSWORD=${MONGOEXP_PASSWORD}
-    #         - ME_CONFIG_MONGODB_URL="mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@db.catalog.replica.primary:27017/?replicaSet=rs0"
-    #     depends_on:
-    #         - db.catalog.replica.primary
 
     db.basket:
         image: postgres:alpine
@@ -315,6 +267,7 @@ services:
             - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - ConnectionStrings__RedisDb=db.distributedcache:6379
+            - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
@@ -360,6 +313,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
+            - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
         ports:

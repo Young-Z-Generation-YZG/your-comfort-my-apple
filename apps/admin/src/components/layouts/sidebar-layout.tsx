@@ -268,7 +268,7 @@ const superAdminSidebarData = [
       items: [
          {
             title: 'iPhone',
-            url: '/dashboards/tenant-management/iphone',
+            url: '/dashboards/product-management/iphone',
             icon: Box,
          },
          {
