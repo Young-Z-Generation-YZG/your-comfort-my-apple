@@ -57,6 +57,8 @@ export const keycloakApi = createApi({
          const authAppState = (getState() as RootState).auth;
          let accessToken = null;
 
+         console.log('accessToken 1', accessToken);
+
          console.log('endpoint', endpoint);
 
          // Endpoints that should always use admin token (not impersonated token)
@@ -75,6 +77,8 @@ export const keycloakApi = createApi({
             }
          }
 
+         console.log('accessToken 2', accessToken);
+
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);
          }
@@ -87,13 +91,15 @@ export const keycloakApi = createApi({
    endpoints: (builder) => ({
       authorizationCode: builder.mutation({
          query: (payload: unknown) => ({
-            url: '/api/v1/auth/login',
+            url: '/api/v1/keycloak/exchange-token/authorization-code',
             method: 'POST',
             body: payload,
          }),
          async onQueryStarted(arg, { dispatch, queryFulfilled }) {
             try {
                const { data } = await queryFulfilled;
+
+               console.log('data', data);
 
                dispatch(
                   setLogin({

@@ -15,6 +15,10 @@ export const baseQuery = (service: string) =>
          const accessToken =
             impersonatedUser?.accessToken || currentUser?.accessToken;
 
+         console.log('accessToken', accessToken);
+         console.log('currentUser', currentUser);
+         console.log('impersonatedUser', impersonatedUser);
+
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);
          }

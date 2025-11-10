@@ -20,7 +20,7 @@ public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, b
     {
         var userEmail = _userContext.GetUserEmail();
 
-        var result = await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
+        var result = await _basketRepository.ClearBasketAsync(userEmail, cancellationToken);
 
         if (result.IsFailure)
         {

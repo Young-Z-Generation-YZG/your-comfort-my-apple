@@ -29,12 +29,12 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CheckoutBasketHandler(IBasketRepository basketRepository,
-                                        IPublishEndpoint publishEndpoint,
-                                        IUserHttpContext userContext,
-                                        DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
-                                        IVnpayProvider vnpayProvider,
-                                        IHttpContextAccessor httpContextAccessor,
-                                        IMomoProvider momoProvider)
+                                 IPublishEndpoint publishEndpoint,
+                                 IUserHttpContext userContext,
+                                 DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
+                                 IVnpayProvider vnpayProvider,
+                                 IHttpContextAccessor httpContextAccessor,
+                                 IMomoProvider momoProvider)
     {
         _basketRepository = basketRepository;
         _publishIntegrationEvent = publishEndpoint;

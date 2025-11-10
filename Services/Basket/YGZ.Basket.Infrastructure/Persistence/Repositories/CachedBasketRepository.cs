@@ -45,10 +45,20 @@ public class CachedBasketRepository : IBasketRepository
 
     public async Task<Result<bool>> DeleteBasketAsync(string userEmail, CancellationToken cancellationToken)
     {
-        await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
+        await _basketRepository.ClearBasketAsync(userEmail, cancellationToken);
 
         await _distributedCache.RemoveAsync(userEmail, cancellationToken);
 
         return true;
+    }
+
+    public Task<Result<bool>> DeleteSelectedItemsBasketAsync(string userEmail, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Result<bool>> ClearBasketAsync(string userEmail, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

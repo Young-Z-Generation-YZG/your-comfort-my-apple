@@ -14,12 +14,11 @@ import PasswordInputField from '@components/customs/password-input-field';
 import FieldMessageError from '@components/customs/field-message-error';
 import Label from '@components/customs/label';
 import { useDispatch } from 'react-redux';
-import {
-   setLogin,
-   setRoles,
-} from '~/src/infrastructure/redux/features/auth.slice';
-
-// let loginWindow: Window | null = null;
+import { setRoles } from '~/src/infrastructure/redux/features/auth.slice';
+import { redirectToIdentityProvider } from '~/src/infrastructure/identity-server/keycloak';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from '~/src/hooks/use-toast';
 
 const fakeIdentityData = {
    id: '65dad719-7368-4d9f-b623-f308299e9575',
@@ -33,10 +32,12 @@ const fakeIdentityData = {
 export type TIdentity = typeof fakeIdentityData;
 
 const SignInPage = () => {
-   const { isLoading, loginAsync, getIdentityAsync, getIdentityState } =
-      useAuthService();
+   const { isLoading, loginAsync, getIdentityAsync } = useAuthService();
 
    const dispatch = useDispatch();
+   const router = useRouter();
+   const loginWindowRef = useRef<Window | null>(null);
+   const [isKeycloakLoading, setIsKeycloakLoading] = useState(false);
 
    const form = useForm({
       resolver: loginResolver,
@@ -46,25 +47,115 @@ const SignInPage = () => {
       },
    });
 
-   //    const handleAuthorizationCode = () => {
-   //       const identityUrl = redirectToIdentityProvider();
+   const handleKeycloakLogin = () => {
+      const identityUrl = redirectToIdentityProvider();
+      setIsKeycloakLoading(true);
 
-   //       setIsLoading(true);
+      // Open popup window
+      loginWindowRef.current = window.open(
+         identityUrl,
+         'keycloak-login',
+         'width=800,height=600,top=100,left=100',
+      );
 
-   //       loginWindow = window.open(
-   //          identityUrl,
-   //          '_blank',
-   //          'width=800,height=600,top=100,left=100',
-   //       );
+      // Check if popup was blocked
+      if (!loginWindowRef.current || loginWindowRef.current.closed) {
+         setIsKeycloakLoading(false);
+         toast({
+            variant: 'destructive',
+            title: 'Popup blocked',
+            description: 'Please allow popups for this site to continue.',
+         });
+         return;
+      }
 
-   //       // Fallback for when the popup is closed manually
-   //       const interval = setInterval(() => {
-   //          if (loginWindow && loginWindow.closed) {
-   //             clearInterval(interval);
-   //             setIsLoading(false);
-   //          }
-   //       }, 500);
-   //    };
+      // Monitor popup window closure
+      const checkClosed = setInterval(() => {
+         if (loginWindowRef.current?.closed) {
+            clearInterval(checkClosed);
+            setIsKeycloakLoading(false);
+         }
+      }, 500);
+   };
+
+   // Setup message event listener for popup communication
+   useEffect(() => {
+      const handleAuthMessages = (event: MessageEvent) => {
+         console.log(
+            'Message received:',
+            event.data,
+            'from origin:',
+            event.origin,
+         );
+
+         // Verify the origin of the message for security
+         if (event.origin !== window.location.origin) {
+            console.log(
+               'Origin mismatch:',
+               event.origin,
+               'expected:',
+               window.location.origin,
+            );
+            return;
+         }
+
+         // Handle different message types
+         if (typeof event.data === 'object' && event.data !== null) {
+            const { status } = event.data;
+            console.log('Auth status:', status);
+
+            if (status === 'AUTH_SUCCESS') {
+               console.log('Authentication successful, navigating...');
+               setIsKeycloakLoading(false);
+
+               toast({
+                  title: 'Authentication successful',
+                  description: 'Welcome back!',
+               });
+
+               // Fetch identity to get roles, then navigate
+               getIdentityAsync()
+                  .then((identityResult) => {
+                     if (identityResult.isSuccess && identityResult.data) {
+                        dispatch(
+                           setRoles({
+                              currentUser: {
+                                 roles: identityResult.data.roles,
+                              },
+                              impersonatedUser: {
+                                 roles: null,
+                              },
+                           }),
+                        );
+                     }
+                  })
+                  .finally(() => {
+                     // Navigate to revenue analytics dashboard after identity fetch
+                     console.log('Navigating to /dashboards/revenue-analytics');
+                     window.location.href = '/dashboards/revenue-analytics';
+                  });
+            } else if (status === 'AUTH_FAILED') {
+               setIsKeycloakLoading(false);
+               toast({
+                  variant: 'destructive',
+                  title: 'Authentication failed',
+                  description: 'Please try again.',
+               });
+            }
+         }
+      };
+
+      // Add the event listener
+      window.addEventListener('message', handleAuthMessages);
+
+      // Clean up the event listener when component unmounts
+      return () => {
+         window.removeEventListener('message', handleAuthMessages);
+         if (loginWindowRef.current && !loginWindowRef.current.closed) {
+            loginWindowRef.current.close();
+         }
+      };
+   }, [dispatch, getIdentityAsync, router]);
 
    //    useEffect(() => {
    //       setIsLoading(isLoginLoading);
@@ -117,7 +208,10 @@ const SignInPage = () => {
 
    return (
       <div className="bg-white flex">
-         <LoadingOverlay isLoading={isLoading} fullScreen />
+         <LoadingOverlay
+            isLoading={isLoading || isKeycloakLoading}
+            fullScreen
+         />
          <div className="bg-[#ebebeb] relative h-screen flex items-center justify-center w-[75%] overflow-hidden">
             <div className="w-full flex items-center justify-center absolute top-3">
                <Image
@@ -241,19 +335,18 @@ const SignInPage = () => {
                   </p>
 
                   <Button
-                     className="w-full font-semibold"
+                     className="w-full font-semibold flex items-center justify-center gap-2"
                      variant="outline"
-                     onClick={() => {
-                        // handleAuthorizationCode();
-                     }}
-                     disabled={isLoading}
+                     onClick={handleKeycloakLogin}
+                     disabled={isLoading || isKeycloakLoading}
                   >
-                     Authorization
+                     <span>Login with Keycloak</span>
                      <Image
                         src={svgs.keycloak}
-                        width={100}
-                        height={100}
+                        width={24}
+                        height={24}
                         alt="keycloak"
+                        className="w-6 h-6"
                      />
                   </Button>
                </div>

@@ -273,7 +273,7 @@ const superAdminSidebarData = [
          },
          {
             title: 'Mac',
-            url: '/dashboards/tenant-management/mac',
+            url: '#',
             icon: Laptop,
          },
       ],
@@ -315,13 +315,13 @@ const superAdminSidebarData = [
 const adminSidebarData = [
    {
       title: 'Product Management',
-      url: '#',
+      url: '/dashboards/product-management',
       icon: Building2,
       isActive: true,
       items: [
          {
             title: 'iPhone',
-            url: '#',
+            url: '/dashboards/product-management/iphone',
             icon: Box,
          },
          {

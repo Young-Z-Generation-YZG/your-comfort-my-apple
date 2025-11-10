@@ -605,12 +605,16 @@ public class KeycloakService : IKeycloakService
             new KeyValuePair<string, string>("client_id", _nextjsClientId),
             new KeyValuePair<string, string>("client_secret", _nextjsClientSecret),
             new KeyValuePair<string, string>("code", request.Code),
-            new KeyValuePair<string, string>("redirect_uri", "http://localhost:3000/auth/callback")
+            new KeyValuePair<string, string>("redirect_uri", "http://localhost:3001/auth/callback")
         });
 
         try
         {
             var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            _logger.LogError("Failed to retrieve user token. Status: {StatusCode}, Error: {Error}", response.StatusCode, content);
 
             if (response.IsSuccessStatusCode)
             {
