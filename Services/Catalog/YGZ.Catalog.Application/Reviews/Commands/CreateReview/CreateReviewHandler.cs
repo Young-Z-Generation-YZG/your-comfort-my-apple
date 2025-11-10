@@ -9,7 +9,6 @@ using YGZ.Catalog.Domain.Products.Iphone.Entities;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
-using YGZ.Ordering.Api.Protos;
 
 namespace YGZ.Catalog.Application.Reviews.Commands;
 
@@ -19,19 +18,16 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
     private readonly IMongoRepository<Review, ReviewId> _reviewRepository;
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IUserHttpContext _userHttpContext;
-    private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
 
     public CreateReviewHandler(ILogger<CreateReviewHandler> logger,
                                IMongoRepository<Review, ReviewId> reviewRepository,
                                IMongoRepository<SKU, SkuId> skuRepository,
-                               IUserHttpContext userHttpContext,
-                               OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
+                               IUserHttpContext userHttpContext)
     {
         _logger = logger;
         _reviewRepository = reviewRepository;
         _skuRepository = skuRepository;
         _userHttpContext = userHttpContext;
-        _orderingProtoServiceClient = orderingProtoServiceClient;
     }
 
     public async Task<Result<bool>> Handle(CreateReviewCommand request, CancellationToken cancellationToken)
@@ -71,18 +67,6 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
         if (!result.Response)
         {
             return result.Response;
-        }
-
-
-        var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
-        {
-            OrderItemId = request.OrderItemId,
-            IsReviewed = true
-        });
-
-        if (rpcResult.IsFailure)
-        {
-            return false;
         }
 
         return true;

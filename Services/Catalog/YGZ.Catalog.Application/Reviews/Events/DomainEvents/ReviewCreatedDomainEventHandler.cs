@@ -2,23 +2,24 @@
 
 using MassTransit;
 using MediatR;
-using YGZ.BuildingBlocks.Messaging.IntegrationEvents.CatalogServices;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
 using YGZ.Catalog.Domain.Products.ProductModels;
+using YGZ.Ordering.Api.Protos;
 
 namespace YGZ.Catalog.Application.Reviews.Events.DomainEvents;
 
 public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreatedDomainEvent>
 {
     private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
-    private readonly IPublishEndpoint _integrationEventSender;
+    private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
 
-    public ReviewCreatedDomainEventHandler(IMongoRepository<ProductModel, ModelId> productModelRepository, IPublishEndpoint integrationEventSender)
+
+    public ReviewCreatedDomainEventHandler(IMongoRepository<ProductModel, ModelId> productModelRepository, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
     {
         _productModelRepository = productModelRepository;
-        _integrationEventSender = integrationEventSender;
+        _orderingProtoServiceClient = orderingProtoServiceClient;
     }
 
     public async Task Handle(ReviewCreatedDomainEvent notification, CancellationToken cancellationToken)
@@ -29,9 +30,15 @@ public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreate
 
         await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
 
-        // await _integrationEventSender.Publish(new ReviewCreatedIntegrationEvent
-        // {
-        //     OrderItemId = notification.Review.CustomerOrder.OrderItemId
-        // }, cancellationToken);
+                var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+        {
+            OrderItemId = notification.Review.OrderInfo.OrderItemId,
+            IsReviewed = true
+        });
+
+        if (rpcResult.IsFailure)
+        {
+            throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+        }
     }
 }

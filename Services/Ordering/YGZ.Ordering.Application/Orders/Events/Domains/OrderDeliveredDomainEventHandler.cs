@@ -6,21 +6,20 @@ using YGZ.Ordering.Domain.Orders.Events;
 
 namespace YGZ.Ordering.Application.Orders.Events.Domains;
 
-public class OrderConfirmedDomainEventHandler : INotificationHandler<OrderConfirmedDomainEvent>
+public class OrderDeliveredDomainEventHandler : INotificationHandler<OrderDeliveredDomainEvent>
 {
-    private readonly ILogger<OrderConfirmedDomainEventHandler> _logger;
+    private readonly ILogger<OrderDeliveredDomainEventHandler> _logger;
     private readonly IPublishEndpoint _integrationEventSender;
 
-    public OrderConfirmedDomainEventHandler(ILogger<OrderConfirmedDomainEventHandler> logger,
+    public OrderDeliveredDomainEventHandler(ILogger<OrderDeliveredDomainEventHandler> logger,
                                             IPublishEndpoint integrationEventSender)
     {
         _logger = logger;
         _integrationEventSender = integrationEventSender;
     }
-
-    public async Task Handle(OrderConfirmedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(OrderDeliveredDomainEvent notification, CancellationToken cancellationToken)
     {
-        await _integrationEventSender.Publish(new OrderConfirmedIntegrationEvent
+        await _integrationEventSender.Publish(new OrderDeliveredIntegrationEvent
         {
             OrderId = notification.Order.Id.Value.ToString(),
             OrderItems = notification.Order.OrderItems.Select(x => new OrderItemIntegrationEvent

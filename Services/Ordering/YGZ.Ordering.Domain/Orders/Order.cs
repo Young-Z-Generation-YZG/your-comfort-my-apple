@@ -151,6 +151,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException($"Order is not in status {EOrderStatus.DELIVERING.Name}");
         }
+
+        this.AddDomainEvent(new OrderDeliveredDomainEvent(this));
     }
 
     public OrderDetailsResponse ToResponse()
