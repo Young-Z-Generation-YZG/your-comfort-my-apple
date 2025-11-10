@@ -34,7 +34,7 @@ public class BasketRepository : IBasketRepository
 
             return basket;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -50,13 +50,13 @@ public class BasketRepository : IBasketRepository
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.Basket.CannotStoreBasket;
         }
     }
 
-    public async Task<Result<bool>> DeleteBasketAsync(string userEmail, CancellationToken cancellationToken)
+    public async Task<Result<bool>> ClearBasketAsync(string userEmail, CancellationToken cancellationToken)
     {
         try
         {
@@ -66,10 +66,37 @@ public class BasketRepository : IBasketRepository
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return Errors.Basket.CannotStoreBasket;
         }
     }
 
+    public async Task<Result<bool>> DeleteSelectedItemsBasketAsync(string userEmail, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var basketResult = await GetBasketAsync(userEmail, cancellationToken);
+
+            if (basketResult.IsFailure)
+            {
+                return basketResult.Error;
+            }
+
+            var basket = basketResult.Response!;
+
+            // Remove selected items from the cart
+            basket.CartItems = basket.CartItems.Where(item => !item.IsSelected).ToList();
+
+            // Store the updated basket
+            _documentSession.Store(basket);
+            await _documentSession.SaveChangesAsync(cancellationToken);
+
+            return true;
+        }
+        catch (Exception)
+        {
+            return Errors.Basket.CannotStoreBasket;
+        }
+    }
 }

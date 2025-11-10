@@ -222,7 +222,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         await _publishIntegrationEvent.Publish(integrationEventMessage, cancellationToken);
 
-        //await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
+        await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
 
         switch (request.PaymentMethod)
         {
