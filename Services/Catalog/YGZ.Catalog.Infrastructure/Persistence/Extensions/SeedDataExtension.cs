@@ -85,19 +85,6 @@ public static class SeedDataExtension
         }
     }
 
-    //private static async Task SeedSkusAsync(IMongoRepository<SKU, SkuId> skuRepository)
-    //{
-    //    var existingItems = await skuRepository.GetAllAsync();
-
-    //    if (existingItems.Count == 0)
-    //    {
-    //        foreach (var item in SeedSkuData.InventorySkus)
-    //        {
-    //            await skuRepository.InsertOneAsync(item);
-    //        }
-    //    }
-    //}
-
     private static async Task SeedIphoneModelsAsync(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository)
     {
         var existingItems = await iphoneModelRepository.GetAllAsync();
@@ -120,6 +107,11 @@ public static class SeedDataExtension
             }
 
             foreach (var item in SeedIphoneModel.Iphone17Models)
+            {
+                await iphoneModelRepository.InsertOneAsync(item);
+            }
+
+            foreach (var item in SeedIphoneModel.Iphone17ProModels)
             {
                 await iphoneModelRepository.InsertOneAsync(item);
             }

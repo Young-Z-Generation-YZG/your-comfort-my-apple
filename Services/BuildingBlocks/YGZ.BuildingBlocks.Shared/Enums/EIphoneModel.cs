@@ -13,6 +13,7 @@ public class EIphoneModel : SmartEnum<EIphoneModel>
     public static readonly EIphoneModel IPHONE_16_PLUS = new(nameof(IPHONE_16_PLUS), 0);
     public static readonly EIphoneModel IPHONE_16E = new(nameof(IPHONE_16E), 0);
     public static readonly EIphoneModel IPHONE_17 = new(nameof(IPHONE_17), 0);
-    public static readonly EIphoneModel IPHONE_17_PRO = new(nameof(IPHONE_17_PRO), 0);
+    public static readonly EIphoneModel IPHONE_17_PRO = new(nameof(IPHONE_17_PRO), 0); 
+    public static readonly EIphoneModel IPHONE_17_PRO_MAX = new(nameof(IPHONE_17_PRO_MAX), 0); 
     public static readonly EIphoneModel IPHONE_17_AIR = new(nameof(IPHONE_17_AIR), 0);
 }

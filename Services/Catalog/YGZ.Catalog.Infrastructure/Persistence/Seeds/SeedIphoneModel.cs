@@ -39,18 +39,6 @@ public static class SeedIphoneModel
             Color BLACK_15 = Color.Create("Black", "#4B4F50", "iphone-15-finish-select-202309-6-1inch-black_hhhvfs", 4);
 
 
-
-            Color LAVENDER_17 = Color.Create("Lavender", "#", "iphone-17-finish-select-202509-lavender_ttymfa", 0);
-            Color SAGE_17 = Color.Create("Sage", "#", "iphone-17-finish-select-202509-sage_aw371h", 1);
-            Color MIST_BLUE_17 = Color.Create("Mist Blue", "#", "iphone-17-finish-select-202509-mistblue_gcqb5o", 2);
-            Color WHITE_17 = Color.Create("White", "#", "iphone-17-finish-select-202509-white_hphgpt", 3);
-            Color BLACK_17 = Color.Create("Black", "#", "iphone-17-finish-select-202509-black_df2lsp", 4);
-
-            Color SILVER_17_PRO = Color.Create("Silver", "#", "iphone-17-pro-finish-select-202509-6-3inch-silver_p9eegd", 0);
-            Color COSMIC_ORANGE_17_PRO = Color.Create("Cosmic Orange", "#", "iphone-17-pro-finish-select-202509-6-3inch-cosmicorange_ye9ms2", 1);
-            Color DEEP_BLUE_17_PRO = Color.Create("Deep Blue", "#", "iphone-17-pro-finish-select-202509-6-3inch-deepblue_xhdpyx", 2);
-
-
             // Seed storages
             Storage STORAGE_128 = Storage.Create("128GB", 128, 0);
             Storage STORAGE_256 = Storage.Create("256GB", 256, 1);
@@ -669,7 +657,7 @@ public static class SeedIphoneModel
             skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fc9"));
             skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fca"));
             skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fcb"));
-            
+
 
             // Seed sku prices
             List<SkuPriceList> prices = new List<SkuPriceList>();
@@ -748,9 +736,165 @@ public static class SeedIphoneModel
     {
         get
         {
+            Model IPHONE_17_PRO = Model.Create("iPhone 17 Pro", 0);
+            Model IPHONE_17_PRO_MAX = Model.Create("iPhone 17 Pro Max", 1);
+
+
+            Color SILVER_17_PRO = Color.Create("Silver", "#E6E6E6", "iphone-17-pro-finish-select-202509-6-3inch-silver_p9eegd", 0);
+            Color COSMIC_ORANGE_17_PRO = Color.Create("Cosmic Orange", "#F67E36", "iphone-17-pro-finish-select-202509-6-3inch-cosmicorange_ye9ms2", 1);
+            Color DEEP_BLUE_17_PRO = Color.Create("Deep Blue", "#3F4C77", "iphone-17-pro-finish-select-202509-6-3inch-deepblue_xhdpyx", 2);
+
+            // Seed storages
+            Storage STORAGE_128 = Storage.Create("128GB", 128, 0);
+            Storage STORAGE_256 = Storage.Create("256GB", 256, 1);
+            Storage STORAGE_512 = Storage.Create("512GB", 512, 2);
+            Storage STORAGE_1024 = Storage.Create("1TB", 1024, 3);
+
+            // Seed showcase images
+            List<Image> showcaseImages = new List<Image>
+            {
+                Image.Create("iphone-17-pro-finish-select-202509-6-3inch-silver_p9eegd", "https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-17-pro-finish-select-202509-6-3inch-silver_p9eegd.webp", "", "", 0, 0, 0, 0),
+                Image.Create("iphone-17-pro-finish-select-202509-6-3inch-cosmicorange_ye9ms2", "https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-17-pro-finish-select-202509-6-3inch-cosmicorange_ye9ms2.webp", "", "", 0, 0, 0, 1),
+                Image.Create("iphone-17-pro-finish-select-202509-6-3inch-deepblue_xhdpyx", "https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-17-pro-finish-select-202509-6-3inch-deepblue_xhdpyx.webp", "", "", 0, 0, 0, 2),
+            };
+
+
+            // Seed average rating and rating stars
+            AverageRating initAverageRating = AverageRating.Create(0, 0);
+            List<RatingStar> initRatingStars = new List<RatingStar>
+            {
+                RatingStar.Create(1, 0),
+                RatingStar.Create(2, 0),
+                RatingStar.Create(3, 0),
+                RatingStar.Create(4, 0),
+                RatingStar.Create(5, 0),
+            };
+
+            // Seed models in prices
+            List<Model> modelsInPrices = new()
+            {
+                IPHONE_17_PRO,
+                IPHONE_17_PRO_MAX,
+            };
+
+            // Seed colors in prices
+            List<Color> colorsInPrices = new()
+            {
+                SILVER_17_PRO,
+                COSMIC_ORANGE_17_PRO,
+                DEEP_BLUE_17_PRO,
+            };
+
+            // Seed storages in prices
+            List<Storage> storagesInPrices = new()
+            {
+                STORAGE_128,
+                STORAGE_256,
+                STORAGE_512,
+                STORAGE_1024,
+            };
+
+            // Seed skus
+            List<SkuPriceId> skus = new List<SkuPriceId>();
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fcc"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fcd"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fce"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fcf"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd0"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd1"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd2"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd3"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd4"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd5"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd6"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd7"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd8"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fd9"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fda"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fdb"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fdc"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fdd"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fde"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fdf"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fe0"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fe1"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fe2"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fe3"));
+
+            // Seed sku prices
+            List<SkuPriceList> prices = new List<SkuPriceList>();
+
+            // Model 0 (IPHONE_17_PRO), Color 0 (SILVER_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[0].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[1].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[2].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[3].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Model 0 (IPHONE_17_PRO), Color 1 (COSMIC_ORANGE_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[4].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[5].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[6].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[7].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Model 0 (IPHONE_17_PRO), Color 2 (DEEP_BLUE_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[8].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[9].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[10].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[11].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Model 1 (IPHONE_17_PRO_MAX), Color 0 (SILVER_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[12].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[13].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[14].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[15].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Model 1 (IPHONE_17_PRO_MAX), Color 1 (COSMIC_ORANGE_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[16].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[17].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[18].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[19].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Model 1 (IPHONE_17_PRO_MAX), Color 2 (DEEP_BLUE_17_PRO)
+            prices.Add(SkuPriceList.Create(skus[20].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1800));
+            prices.Add(SkuPriceList.Create(skus[21].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1900));
+            prices.Add(SkuPriceList.Create(skus[22].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 2000));
+            prices.Add(SkuPriceList.Create(skus[23].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
+
+            // Seed iPhone category
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null);
+
+            // Seed iPhone 17 Pro model
+            var IPHONE_17_PRO_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("664354400087aa09993f5b17"),
+                                              category: IPHONE_CATEGORY,
+                                              name: "iPhone 17 Pro",
+                                              models: new List<Model>
+                                              {
+                                                    IPHONE_17_PRO,
+                                                    IPHONE_17_PRO_MAX
+                                              },
+                                              colors: new List<Color>
+                                              {
+                                                    SILVER_17_PRO,
+                                                    COSMIC_ORANGE_17_PRO,
+                                                    DEEP_BLUE_17_PRO
+                                              },
+                                              storages: new List<Storage>
+                                              {
+                                                    STORAGE_128,
+                                                    STORAGE_256,
+                                                    STORAGE_512,
+                                                    STORAGE_1024
+                                              },
+                                              prices: prices,
+                                              showcaseImages: showcaseImages,
+                                              description: "iPhone 17 Pro model description.",
+                                              averageRating: initAverageRating,
+                                              ratingStars: initRatingStars,
+                                              isNewest: false);
+
             return new List<IphoneModel>
             {
-
+                IPHONE_17_PRO_MODEL
             };
         }
     }
