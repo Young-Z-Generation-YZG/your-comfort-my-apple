@@ -21,7 +21,7 @@ public static class SeedIphoneModel
             // Model IPHONE_16_PRO = Model.Create("IPHONE_16_PRO", 0);
             // Model IPHONE_16_PRO_MAX = Model.Create("IPHONE_16_PRO_MAX", 1);
 
-            //Model IPHONE_16_E = Model.Create("iPhone 16 E", 0);
+
 
             //Model IPHONE_17 = Model.Create("iPhone 17", 0);
 
@@ -39,9 +39,6 @@ public static class SeedIphoneModel
             Color BLACK_15 = Color.Create("Black", "#4B4F50", "iphone-15-finish-select-202309-6-1inch-black_hhhvfs", 4);
 
 
-
-            Color WHITE_16_E = Color.Create("White", "#", "iphone-16e-finish-select-202502-white_g1coja", 0);
-            Color BLACK_16_E = Color.Create("Black", "#", "iphone-16e-finish-select-202502-black_yq48ki", 1);
 
             Color LAVENDER_17 = Color.Create("Lavender", "#", "iphone-17-finish-select-202509-lavender_ttymfa", 0);
             Color SAGE_17 = Color.Create("Sage", "#", "iphone-17-finish-select-202509-sage_aw371h", 1);
@@ -85,25 +82,25 @@ public static class SeedIphoneModel
 
             List<Model> modelsInPrices = new()
             {
-                Model.Create("IPHONE_15", 0),
-                Model.Create("IPHONE_15_PLUS", 0)
+                IPHONE_15,
+                IPHONE_15_PLUS
             };
 
             List<Color> colorsInPrices = new()
             {
-                Color.Create("BLUE", "", "", 0),
-                Color.Create("PINK", "", "", 0),
-                Color.Create("YELLOW", "", "", 0),
-                Color.Create("GREEN", "", "", 0),
-                Color.Create("BLACK", "", "", 0),
+                BLUE_15,
+                PINK_15,
+                YELLOW_15,
+                GREEN_15,
+                BLACK_15,
             };
 
             List<Storage> storagesInPrices = new()
             {
-                Storage.Create("128GB", 128, 0),
-                Storage.Create("256GB", 256, 0),
-                Storage.Create("512GB", 512, 0),
-                Storage.Create("1TB", 1024, 0),
+                STORAGE_128,
+                STORAGE_256,
+                STORAGE_512,
+                STORAGE_1024,
             };
 
 
@@ -464,9 +461,120 @@ public static class SeedIphoneModel
     {
         get
         {
+            Model IPHONE_16_E = Model.Create("iPhone 16e", 0);
+
+
+            Color WHITE_16_E = Color.Create("White", "#FAFAFA", "iphone-16e-finish-select-202502-white_g1coja", 0);
+            Color BLACK_16_E = Color.Create("Black", "#4B4F50", "iphone-16e-finish-select-202502-black_yq48ki", 1);
+
+
+            // Seed storages
+            Storage STORAGE_128 = Storage.Create("128GB", 128, 0);
+            Storage STORAGE_256 = Storage.Create("256GB", 256, 1);
+            Storage STORAGE_512 = Storage.Create("512GB", 512, 2);
+            Storage STORAGE_1024 = Storage.Create("1TB", 1024, 3);
+
+            // Seed showcase images
+            List<Image> showcaseImages = new List<Image>
+            {
+                Image.Create("iphone-16e-finish-select-202502-white_g1coja", "https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-16e-finish-select-202502-white_g1coja.webp", "", "", 0, 0, 0, 0),
+                Image.Create("iphone-16e-finish-select-202502-black_yq48ki", "https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-16e-finish-select-202502-black_yq48ki.webp", "", "", 0, 0, 0, 1),
+            };
+
+            // Seed average rating and rating stars
+            AverageRating initAverageRating = AverageRating.Create(0, 0);
+            List<RatingStar> initRatingStars = new List<RatingStar>
+            {
+                RatingStar.Create(1, 0),
+                RatingStar.Create(2, 0),
+                RatingStar.Create(3, 0),
+                RatingStar.Create(4, 0),
+                RatingStar.Create(5, 0),
+            };
+
+            // Seed models in prices
+            List<Model> modelsInPrices = new()
+            {
+                IPHONE_16_E,
+            };
+
+            // Seed colors in prices
+            List<Color> colorsInPrices = new()
+            {
+                WHITE_16_E,
+                BLACK_16_E,
+            };
+
+            // Seed storages in prices
+            List<Storage> storagesInPrices = new()
+            {
+                STORAGE_128,
+                STORAGE_256,
+                STORAGE_512,
+                STORAGE_1024,
+            };
+
+
+            // Seed skus
+            List<SkuPriceId> skus = new List<SkuPriceId>();
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb0"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb1"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb2"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb3"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb4"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb5"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb6"));
+            skus.Add(SkuPriceId.Of("690f4601e2295b9f94f23fb7"));
+
+
+            // Seed sku prices
+            List<SkuPriceList> prices = new List<SkuPriceList>();
+
+            // Model 0 (IPHONE_16_E), Color 0 (WHITE_16_E)
+            prices.Add(SkuPriceList.Create(skus[0].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1300));
+            prices.Add(SkuPriceList.Create(skus[1].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1400));
+            prices.Add(SkuPriceList.Create(skus[2].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1500));
+            prices.Add(SkuPriceList.Create(skus[3].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1600));
+
+            // Model 0 (IPHONE_16_E), Color 1 (BLACK_16_E)
+            prices.Add(SkuPriceList.Create(skus[4].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1300));
+            prices.Add(SkuPriceList.Create(skus[5].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1400));
+            prices.Add(SkuPriceList.Create(skus[6].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1500));
+            prices.Add(SkuPriceList.Create(skus[7].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1600));
+
+            // Seed iPhone category
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null);
+
+            // Seed iPhone 16 E model
+            var IPHONE_16_E_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("6643543e0087aa09993f5b15"),
+                                              category: IPHONE_CATEGORY,
+                                              name: "iPhone 16 E",
+                                              models: new List<Model>
+                                              {
+                                                    IPHONE_16_E
+                                              },
+                                              colors: new List<Color>
+                                              {
+                                                    WHITE_16_E,
+                                                    BLACK_16_E
+                                              },
+                                              storages: new List<Storage>
+                                              {
+                                                    STORAGE_128,
+                                                    STORAGE_256,
+                                                    STORAGE_512,
+                                                    STORAGE_1024
+                                              },
+                                              prices: prices,
+                                              showcaseImages: showcaseImages,
+                                              description: "iPhone 16 E model description.",
+                                              averageRating: initAverageRating,
+                                              ratingStars: initRatingStars,
+                                              isNewest: false);
+
             return new List<IphoneModel>
             {
-
+                IPHONE_16_E_MODEL
             };
         }
     }
