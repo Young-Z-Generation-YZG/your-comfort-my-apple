@@ -115,6 +115,11 @@ public static class SeedDataExtension
             {
                 await iphoneModelRepository.InsertOneAsync(item);
             }
+
+            foreach (var item in SeedIphoneModel.Iphone17AirModels)
+            {
+                await iphoneModelRepository.InsertOneAsync(item);
+            }
         }
     }
 

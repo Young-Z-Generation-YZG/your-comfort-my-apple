@@ -24,5 +24,9 @@ public class EColor : SmartEnum<EColor>
     public static readonly EColor SILVER = new(nameof(SILVER), 0);
     public static readonly EColor COSMIC_ORANGE = new(nameof(COSMIC_ORANGE), 0);
     public static readonly EColor DEEP_BLUE = new(nameof(DEEP_BLUE), 0);
+    public static readonly EColor SKY_BLUE = new(nameof(SKY_BLUE), 0);
+    public static readonly EColor LIGHT_GOLD = new(nameof(LIGHT_GOLD), 0);
+    public static readonly EColor CLOUD_WHITE = new(nameof(CLOUD_WHITE), 0);
+    public static readonly EColor SPACE_BLACK = new(nameof(SPACE_BLACK), 0);
 
 }
