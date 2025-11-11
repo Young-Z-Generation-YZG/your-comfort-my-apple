@@ -17,6 +17,7 @@ using YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateProfile;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
+using YGZ.Identity.Application.Users.Queries.GetListUsers;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
 using YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
@@ -57,6 +58,20 @@ public class UserController : ApiController
             FirstName = request._firstName,
             LastName = request._lastName,
             PhoneNumber = request._phoneNumber
+        };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("list")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetListUsers([FromQuery] GetListUsersRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetListUsersQuery
+        {
+            Roles = request._roles
         };
 
         var result = await _sender.Send(query, cancellationToken);

@@ -128,7 +128,7 @@ public class User : IdentityUser, IAggregate, IAuditable, ISoftDelete
             NormalizedEmail = NormalizedEmail ?? string.Empty,
             EmailConfirmed = EmailConfirmed,
             PhoneNumber = PhoneNumber!,
-            Profile = Profile.ToResponse(),
+            Profile =  Profile != null ? Profile.ToResponse() : null,
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,
             UpdatedBy = UpdatedBy,

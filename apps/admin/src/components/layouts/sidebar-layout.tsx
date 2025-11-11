@@ -365,79 +365,6 @@ const adminSidebarData = [
    },
 ];
 
-const fakeTenantsData = {
-   total_records: 2,
-   total_pages: 1,
-   page_size: 10,
-   current_page: 1,
-   items: [
-      {
-         id: '664355f845e56534956be32b',
-         name: 'Ware house',
-         sub_domain: 'admin',
-         description: '',
-         tenant_type: 'WARE_HOUSE',
-         tenant_state: 'ACTIVE',
-         embedded_branch: {
-            id: '664357a235e84033bbd0e6b6',
-            tenant_id: '664355f845e56534956be32b',
-            name: 'Ware house branch',
-            address: 'Ware house address',
-            description: null,
-            manager: null,
-            created_at: '2025-11-05T14:36:11.364Z',
-            updated_at: '2025-11-05T14:36:11.364Z',
-            updated_by: '',
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: '',
-         },
-         created_at: '2025-11-05T14:36:11.364Z',
-         updated_at: '2025-11-05T14:36:11.364Z',
-         updated_by: '',
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: '',
-      },
-      {
-         id: '690b6214ed407c59d0537d18',
-         name: '1060 KVC TD',
-         sub_domain: 'hcm-td-kvc-1060',
-         description: 'tenant_description',
-         tenant_type: 'BRANCH',
-         tenant_state: 'ACTIVE',
-         embedded_branch: {
-            id: '690b6214ed407c59d0537d19',
-            tenant_id: '690b6214ed407c59d0537d18',
-            name: '1060 KVC TD',
-            address: 'Số 1060, Kha Vạn Cân, Linh Chiểu, Thủ Đức',
-            description: 'branch_description',
-            manager: null,
-            created_at: '2025-11-05T14:41:24.287Z',
-            updated_at: '2025-11-05T14:41:24.287Z',
-            updated_by: '',
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: '',
-         },
-         created_at: '2025-11-05T14:41:24.288Z',
-         updated_at: '2025-11-05T14:41:24.288Z',
-         updated_by: '',
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: '',
-      },
-   ],
-   links: {
-      first: '?_page=1&_limit=10',
-      prev: null,
-      next: null,
-      last: '?_page=1&_limit=10',
-   },
-};
-
-export type TTenantItem = (typeof fakeTenantsData.items)[number];
-
 export function SidebarLayout({
    ...props
 }: React.ComponentProps<typeof Sidebar>) {
@@ -454,34 +381,20 @@ export function SidebarLayout({
 
    const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
 
+   const tenantItems = useMemo(() => {
+      return getTenantsState.isSuccess && getTenantsState.data
+         ? getTenantsState.data
+         : [];
+   }, [getTenantsState.isSuccess, getTenantsState.data]);
+
    useEffect(() => {
       const fetchTenants = async () => {
-         await getTenantsAsync('');
+         await getTenantsAsync();
       };
       if (roles.includes(ERole.ADMIN_SUPER)) {
          fetchTenants();
       }
    }, [getTenantsAsync, roles]);
-
-   const { paginationItems: tenantItems } = usePagination(
-      getTenantsState.isSuccess &&
-         getTenantsState.data &&
-         getTenantsState.data.items.length > 0
-         ? getTenantsState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
 
    useEffect(() => {
       dispatch(setIsLoading(isLoading));

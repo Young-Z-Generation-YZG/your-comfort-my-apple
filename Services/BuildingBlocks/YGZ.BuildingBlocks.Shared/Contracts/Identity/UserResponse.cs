@@ -17,7 +17,7 @@ public sealed record UserResponse
     public required string NormalizedEmail { get; init; }
     public required bool EmailConfirmed { get; init; }
     public required string PhoneNumber { get; init; }
-    public required ProfileResponse Profile { get; init; }
+    public ProfileResponse? Profile { get; init; }
     public required DateTime CreatedAt { get; init; }
     public required DateTime UpdatedAt { get; init; }
     public string? UpdatedBy { get; init; }

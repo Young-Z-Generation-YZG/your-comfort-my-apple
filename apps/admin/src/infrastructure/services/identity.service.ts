@@ -4,6 +4,84 @@ import envConfig from '../config/env.config';
 import { RootState } from '../redux/store';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 
+const fakeUsersList = [
+   {
+      id: '65dad719-7368-4d9f-b623-f308299e9575',
+      tenant_id: '690b6214ed407c59d0537d18',
+      branch_id: null,
+      tenant_code: null,
+      user_name: 'admin@gmail.com',
+      normalized_user_name: 'ADMIN@GMAIL.COM',
+      email: 'admin@gmail.com',
+      normalized_email: 'ADMIN@GMAIL.COM',
+      email_confirmed: true,
+      phone_number: '0333284890',
+      profile: null,
+      created_at: '0001-01-01T00:00:00',
+      updated_at: '0001-01-01T00:00:00',
+      updated_by: null,
+      is_deleted: false,
+      deleted_at: null,
+      deleted_by: null,
+   },
+   {
+      id: 'e79d0b6f-af5a-4162-a6fd-8194d5a5f616',
+      tenant_id: '690b6214ed407c59d0537d18',
+      branch_id: null,
+      tenant_code: null,
+      user_name: 'staff@gmail.com',
+      normalized_user_name: 'STAFF@GMAIL.COM',
+      email: 'staff@gmail.com',
+      normalized_email: 'STAFF@GMAIL.COM',
+      email_confirmed: true,
+      phone_number: '0333284890',
+      profile: null,
+      created_at: '0001-01-01T00:00:00',
+      updated_at: '0001-01-01T00:00:00',
+      updated_by: null,
+      is_deleted: false,
+      deleted_at: null,
+      deleted_by: null,
+   },
+];
+
+export type TUser = {
+   id: string;
+   tenant_id: string;
+   branch_id: string;
+   tenant_code: string;
+   user_name: string;
+   normalized_user_name: string;
+   email: string;
+   normalized_email: string;
+   email_confirmed: boolean;
+   phone_number: string;
+   profile: TUserProfile;
+   created_at: string;
+   updated_at: string;
+   updated_by: string;
+   is_deleted: boolean;
+   deleted_at: string;
+   deleted_by: string;
+};
+
+export type TUserProfile = {
+   id: string;
+   user_id: string;
+   first_name: string;
+   last_name: string;
+   birth_day: string;
+   gender: string;
+   image_id: string;
+   image_url: string | null;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
 const identityBaseQuery = async (args: any, api: any, extraOptions: any) => {
    const state = api.getState() as RootState;
    const { currentUser, impersonatedUser } = state.auth;
@@ -80,7 +158,18 @@ export const identityApi = createApi({
          }),
          providesTags: ['Users'],
       }),
+      getListUsers: builder.query<TUser[], { roles: string[] }>({
+         query: (params: { roles: string[] }) => ({
+            url: '/api/v1/users/list',
+            method: 'GET',
+            params: {
+               _roles: params.roles,
+            },
+         }),
+         providesTags: ['Users'],
+      }),
    }),
 });
 
-export const { useLazyGetUsersByAdminQuery } = identityApi;
+export const { useLazyGetUsersByAdminQuery, useLazyGetListUsersQuery } =
+   identityApi;

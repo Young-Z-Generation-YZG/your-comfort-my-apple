@@ -10,6 +10,7 @@ using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Contracts.Profiles;
 using YGZ.Identity.Api.Contracts.Tenants;
+using YGZ.Identity.Api.Contracts.Users;
 
 namespace YGZ.Identity.Api.Extensions;
 
@@ -55,6 +56,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new SwaggerHeaderOperationProcessor());
 
             settings.OperationProcessors.Add(new AccessOtpRequestExample());
+            settings.OperationProcessors.Add(new GetListUsersRequestExample());
 
             // Add the custom schema processor for LoginRequest examples
             settings.SchemaSettings.SchemaProcessors.Add(new LoginRequestExample());

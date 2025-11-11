@@ -32,10 +32,10 @@ public class TenantController : ApiController
     {
         var query = new GetTenantsQuery
         {
-            Page = request._page,
-            Limit = request._limit,
-            TenantName = request._tenantName,
-            TenantType = request._tenantType
+            //Page = request._page,
+            //Limit = request._limit,
+            //TenantName = request._tenantName,
+            //TenantType = request._tenantType
         };
 
         var result = await _sender.Send(query, cancellationToken);

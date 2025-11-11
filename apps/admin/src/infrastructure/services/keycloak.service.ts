@@ -1,47 +1,3 @@
-// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-// import { setLogin } from '../redux/features/auth.slice';
-
-// export const keycloakApi = createApi({
-//    reducerPath: 'keycloak-api',
-//    tagTypes: ['keycloak'],
-//    baseQuery: fetchBaseQuery({
-//       baseUrl: 'https://1f6e-116-108-118-49.ngrok-free.app',
-//       prepareHeaders: (headers) => {
-//          headers.set('ngrok-skip-browser-warning', 'true');
-
-//          return headers;
-//       },
-//    }),
-//    endpoints: (builder) => ({
-//       authorizationCode: builder.mutation({
-//          query: (payload: { code: string }) => ({
-//             url: 'identity-services/api/v1/auth/keycloak/authorization-code',
-//             method: 'POST',
-//             body: payload,
-//          }),
-//          async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-//             try {
-//                const { data } = await queryFulfilled;
-
-//                console.log('data', data);
-
-//                dispatch(
-//                   setLogin({
-//                      user_email: data.user_email,
-//                      access_token: data.access_token,
-//                      refresh_token: data.refresh_token,
-//                   }),
-//                );
-//             } catch (error) {
-//                console.log('[ERROR]::keycloakApi:', error);
-//             }
-//          },
-//       }),
-//    }),
-// });
-
-// export const { useAuthorizationCodeMutation } = keycloakApi;
-
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setImpersonatedUser, setLogin } from '../redux/features/auth.slice';
 import envConfig from '../config/env.config';
@@ -56,10 +12,6 @@ export const keycloakApi = createApi({
       prepareHeaders: (headers, { getState, endpoint }) => {
          const authAppState = (getState() as RootState).auth;
          let accessToken = null;
-
-         console.log('accessToken 1', accessToken);
-
-         console.log('endpoint', endpoint);
 
          // Endpoints that should always use admin token (not impersonated token)
          const adminOnlyEndpoints = ['impersonateUser'];
@@ -99,8 +51,6 @@ export const keycloakApi = createApi({
             try {
                const { data } = await queryFulfilled;
 
-               console.log('data', data);
-
                dispatch(
                   setLogin({
                      currentUser: {
@@ -115,10 +65,7 @@ export const keycloakApi = createApi({
                   }),
                );
             } catch (error: unknown) {
-               console.info(
-                  '[AuthService]::login::try/catch',
-                  JSON.stringify(error, null, 2),
-               );
+               throw error;
             }
          },
       }),
@@ -145,8 +92,6 @@ export const keycloakApi = createApi({
                   (getState() as RootState).auth.impersonatedUser?.userId ??
                   null;
 
-               console.log('impersonatedUserId', impersonatedUserId);
-
                if (data.access_token) {
                   dispatch(setIsImpersonating(true));
 
@@ -163,10 +108,7 @@ export const keycloakApi = createApi({
                   );
                }
             } catch (error: unknown) {
-               console.info(
-                  '[AuthService]::login::try/catch',
-                  JSON.stringify(error, null, 2),
-               );
+               throw error;
             }
          },
       }),

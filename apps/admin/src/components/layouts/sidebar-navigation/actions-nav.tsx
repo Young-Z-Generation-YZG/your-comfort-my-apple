@@ -40,7 +40,6 @@ import useIdentityService from '~/src/hooks/api/use-identity-service';
 import { useEffect } from 'react';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
-import usePagination from '~/src/hooks/use-pagination';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
 
@@ -116,8 +115,16 @@ export function ActionNav() {
       (state: RootState) => state.auth,
    );
 
-   const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
+   const { getListUsersAsync, getListUsersState, isLoading } =
       useIdentityService();
+
+   const staffItems = useMemo(() => {
+      return getListUsersState.isSuccess && getListUsersState.data
+         ? getListUsersState.data
+         : [];
+   }, [getListUsersState.isSuccess, getListUsersState.data]);
+
+   console.log(staffItems);
 
    const roles = useMemo(
       () => currentUser?.roles || impersonatedUser?.roles || [],
@@ -127,40 +134,14 @@ export function ActionNav() {
    useEffect(() => {
       const fetchUsers = async () => {
          if (roles.includes(ERole.ADMIN_SUPER)) {
-            await getUsersByAdminAsync(
-               {
-                  _page: 1,
-                  _limit: 10,
-               },
-               { useSuperAdminToken: true },
-            );
+            await getListUsersAsync({
+               roles: [ERole.ADMIN_SUPER, ERole.ADMIN, ERole.STAFF],
+            });
          }
       };
 
       fetchUsers();
-   }, [getUsersByAdminAsync, roles, dispatch]);
-
-   const { paginationItems: staffItems } = usePagination(
-      getUsersByAdminState.isSuccess &&
-         getUsersByAdminState.data &&
-         getUsersByAdminState.data.items.length > 0
-         ? getUsersByAdminState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
-
-   //
+   }, [getListUsersAsync, roles, dispatch]);
 
    useEffect(() => {
       dispatch(setIsLoading(isLoading));

@@ -9,27 +9,24 @@ const useTenantService = () => {
    const [getTenantByIdTrigger, getTenantByIdState] =
       useLazyGetTenantByIdQuery();
 
-   const getTenantsAsync = useCallback(
-      async (params: string) => {
-         try {
-            const result = await getTenantsTrigger(params).unwrap();
-            return {
-               isSuccess: true,
-               isError: false,
-               data: result,
-               error: null,
-            };
-         } catch (error) {
-            return {
-               isSuccess: false,
-               isError: true,
-               data: null,
-               error,
-            };
-         }
-      },
-      [getTenantsTrigger],
-   );
+   const getTenantsAsync = useCallback(async () => {
+      try {
+         const result = await getTenantsTrigger().unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return {
+            isSuccess: false,
+            isError: true,
+            data: null,
+            error,
+         };
+      }
+   }, [getTenantsTrigger]);
 
    const getTenantByIdAsync = useCallback(
       async (id: string) => {

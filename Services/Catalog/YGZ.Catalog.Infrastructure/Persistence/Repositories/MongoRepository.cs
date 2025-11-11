@@ -88,9 +88,9 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return _transactionContext.CurrentSession;
     }
 
-    public async Task<List<TEntity>> GetAllAsync()
+    public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null)
     {
-        return await _collection.Find(new BsonDocument()).ToListAsync();
+        return await _collection.Find(new BsonDocument()).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)

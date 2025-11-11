@@ -2,11 +2,16 @@ import { useCallback, useMemo } from 'react';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
 
 import { toast } from 'sonner';
-import { useLazyGetUsersByAdminQuery } from '~/src/infrastructure/services/identity.service';
+import {
+   useLazyGetListUsersQuery,
+   useLazyGetUsersByAdminQuery,
+} from '~/src/infrastructure/services/identity.service';
 
 const useIdentityService = () => {
    const [getUsersByAdminTrigger, getUsersByAdminQueryState] =
       useLazyGetUsersByAdminQuery();
+   const [getListUsersTrigger, getListUsersQueryState] =
+      useLazyGetListUsersQuery();
 
    useCheckApiError([]);
 
@@ -42,42 +47,51 @@ const useIdentityService = () => {
       [getUsersByAdminTrigger],
    );
 
+   const getListUsersAsync = useCallback(
+      async (params: { roles: string[] }) => {
+         try {
+            const result = await getListUsersTrigger(params).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getListUsersTrigger],
+   );
+
    const isLoading = useMemo(() => {
       return (
          getUsersByAdminQueryState.isLoading ||
-         getUsersByAdminQueryState.isFetching
+         getUsersByAdminQueryState.isFetching ||
+         getListUsersQueryState.isLoading ||
+         getListUsersQueryState.isFetching
       );
    }, [
       getUsersByAdminQueryState.isLoading,
       getUsersByAdminQueryState.isFetching,
+      getListUsersQueryState.isLoading,
+      getListUsersQueryState.isFetching,
    ]);
-
-   // Centrally track success with toasts
-   useMemo(() => {
-      const successToastStyle = {
-         style: {
-            backgroundColor: '#DCFCE7',
-            color: '#166534',
-            border: '1px solid #86EFAC',
-         },
-         cancel: {
-            label: 'Close',
-            onClick: () => {},
-            actionButtonStyle: {
-               backgroundColor: '#16A34A',
-               color: '#FFFFFF',
-            },
-         },
-      };
-   }, []);
 
    return {
       // states
       isLoading,
       getUsersByAdminState: getUsersByAdminQueryState,
+      getListUsersState: getListUsersQueryState,
 
       // actions
       getUsersByAdminAsync,
+      getListUsersAsync,
    };
 };
 

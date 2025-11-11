@@ -23,16 +23,16 @@ import { Input } from '@components/ui/input';
 import { useDispatch } from 'react-redux';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
-import { TTenantItem } from '@components/layouts/sidebar-layout';
 import { ERole } from '~/src/domain/enums/role.enum';
 import useAuthService from '~/src/hooks/api/use-auth-service';
 import { setRoles } from '~/src/infrastructure/redux/features/auth.slice';
+import { TTenant } from '~/src/infrastructure/services/tenant.service';
 
-export function TenantSwitcher({ tenants }: { tenants: TTenantItem[] }) {
+const DEFAULT_TENANT_ID = '664355f845e56534956be32b';
+
+export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
    const { tenantId } = useAppSelector((state) => state.tenant);
-   const [selectedTenant, setSelectedTenant] = useState<TTenantItem | null>(
-      null,
-   );
+   const [selectedTenant, setSelectedTenant] = useState<TTenant | null>(null);
    const [searchQuery, setSearchQuery] = useState('');
 
    const { currentUser, impersonatedUser } = useAppSelector(
@@ -45,6 +45,10 @@ export function TenantSwitcher({ tenants }: { tenants: TTenantItem[] }) {
       () => currentUser?.roles || impersonatedUser?.roles || [],
       [currentUser, impersonatedUser],
    );
+
+   const defaultTenant = useMemo(() => {
+      return tenants.find((t) => t.id === DEFAULT_TENANT_ID) || null;
+   }, [tenants]);
 
    // Check if user has permission to switch tenants
    const canSwitchTenants = useMemo(
@@ -62,29 +66,7 @@ export function TenantSwitcher({ tenants }: { tenants: TTenantItem[] }) {
 
    const { getIdentityAsync } = useAuthService();
 
-   // Sync selected tenant when Redux tenantId changes or tenants load
-   //    useEffect(() => {
-   //       if (tenants.length === 0) return;
-
-   //       if (tenantId) {
-   //          const tenant = tenants.find((t) => t.id === tenantId);
-   //          if (tenant && tenant.id !== selectedTenant?.id) {
-   //             setSelectedTenant(tenant);
-   //          }
-   //       } else if (!selectedTenant) {
-   //          // If no tenantId in Redux, set first tenant
-   //          setSelectedTenant(tenants[0]);
-   //          dispatch(
-   //             setTenant({
-   //                tenantId: tenants[0].id,
-   //                tenantCode: tenants[0].code,
-   //                tenantName: tenants[0].name,
-   //             }),
-   //          );
-   //       }
-   //    }, [tenantId, tenants, selectedTenant, dispatch]);
-
-   const handleSelectTenant = (tenant: TTenantItem) => {
+   const handleSelectTenant = (tenant: TTenant) => {
       setSelectedTenant(tenant);
       setSearchQuery('');
       dispatch(
@@ -128,14 +110,12 @@ export function TenantSwitcher({ tenants }: { tenants: TTenantItem[] }) {
    useEffect(() => {
       if (tenants.length === 0) return;
 
-      if (tenantId) {
-         setSelectedTenant(tenants.find((t) => t.id === tenantId) || null);
-      } else {
-         setSelectedTenant(() => {
-            return tenants.find((t) => t.sub_domain === 'admin') || null;
-         });
+      if (tenantId || defaultTenant) {
+         setSelectedTenant(
+            tenants.find((t) => t.id === tenantId) || defaultTenant || null,
+         );
       }
-   }, [tenants, tenantId, setSelectedTenant]);
+   }, [tenants, tenantId, setSelectedTenant, defaultTenant]);
 
    // Don't render if no tenants available
    if (!selectedTenant || tenants.length === 0) {
@@ -194,7 +174,8 @@ export function TenantSwitcher({ tenants }: { tenants: TTenantItem[] }) {
                                  onSelect={() => handleSelectTenant(tenant)}
                                  className="flex items-center gap-2"
                                  disabled={
-                                    tenant.id === tenantId || tenantId === null
+                                    tenant.id === tenantId ||
+                                    tenant.id === defaultTenant?.id
                                  }
                               >
                                  <div className="flex flex-col flex-1">

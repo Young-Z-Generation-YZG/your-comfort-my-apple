@@ -8,7 +8,7 @@ namespace YGZ.Catalog.Application.Abstractions.Data;
 
 public interface IMongoRepository<TEntity, TId> where TEntity : Entity<TId> where TId : ValueObject
 {
-    Task<List<TEntity>> GetAllAsync();
+    Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null);
     Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken);
 
     Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(int? _page,
