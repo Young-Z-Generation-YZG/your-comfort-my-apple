@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -8,22 +9,26 @@ using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Application.IPhone.Commands.CreateIphoneModel;
 
-public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModelCommand, bool>
+public class CreateIPhoneModelHandler : ICommandHandler<CreateIphoneModelCommand, bool>
 {
+    private readonly ILogger<CreateIPhoneModelHandler> _logger;
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IMongoRepository<Category, CategoryId> _categoryRepository;
 
 
-    public CreateIPhoneModelCommandHandler(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository,
-                                           IMongoRepository<SKU, SkuId> skuRepository,
-                                           IMongoRepository<Category, CategoryId> categoryRepository)
+    public CreateIPhoneModelHandler(ILogger<CreateIPhoneModelHandler> logger,
+                                    IMongoRepository<IphoneModel, ModelId> iphoneModelRepository,
+                                    IMongoRepository<SKU, SkuId> skuRepository,
+                                    IMongoRepository<Category, CategoryId> categoryRepository)
     {
+        _logger = logger;
         _iphoneModelRepository = iphoneModelRepository;
         _categoryRepository = categoryRepository;
         _skuRepository = skuRepository;
@@ -52,7 +57,7 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
             RatingStar.Create(5, 0),
         };
 
-        List<IphoneSkuPriceList> prices = new List<IphoneSkuPriceList>();
+        List<SkuPriceList> prices = new List<SkuPriceList>();
         List<Model> modelsInPrices = new()
             {
                 Model.Create("IPHONE_15", 0),
@@ -81,55 +86,55 @@ public class CreateIPhoneModelCommandHandler : ICommandHandler<CreateIphoneModel
         List<SKU> skus = await _skuRepository.GetAllAsync(Builders<SKU>.Filter.Where(x => x.ModelId == modelId), cancellationToken);
 
         // init
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[0].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[0].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[1].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[2].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[3].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
-        prices.Add(IphoneSkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[0].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[0].NormalizedName, 1000));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[1].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[1].NormalizedName, 1100));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[2].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[2].NormalizedName, 1200));
+        prices.Add(SkuPriceList.Create(skus.Find(x => x.Color.NormalizedName == colorsInPrices[4].NormalizedName && x.Storage.NormalizedName == storagesInPrices[3].NormalizedName)?.Id.Value, modelsInPrices[1].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1300));
 
         var newModel = IphoneModel.Create(iPhoneModelId: modelId,
                                           category: category!,

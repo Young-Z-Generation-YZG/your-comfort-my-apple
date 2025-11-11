@@ -44,7 +44,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
     public List<Storage> Storages { get; set; } = [];
 
     [BsonElement("prices")]
-    public List<IphoneSkuPriceList> Prices { get; set; } = [];
+    public List<SkuPriceList> Prices { get; set; } = [];
 
     [BsonElement("showcase_image")]
     public List<Image> ShowcaseImages { get; set; } = [];
@@ -103,7 +103,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                      List<Model> models,
                                      List<Color> colors,
                                      List<Storage> storages,
-                                     List<IphoneSkuPriceList> prices,
+                                     List<SkuPriceList> prices,
                                      List<Image> showcaseImages,
                                      string description,
                                      AverageRating averageRating,

@@ -1,7 +1,6 @@
 ﻿
 using MediatR;
 using Microsoft.Extensions.Logging;
-using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
@@ -42,25 +41,9 @@ public class IphoneModelCreatedDomainEventHandler : INotificationHandler<IphoneM
                 {
                     var price = notification.IphoneModel.Prices.FirstOrDefault(p => p.NormalizedModel == model.NormalizedName && p.NormalizedColor == color.NormalizedName && p.NormalizedStorage == storage.NormalizedName);
 
-                    // var skuId = SkuId.Create();
-
-                    // var sku = SKU.Create(skuId: skuId,
-                    //                      modelId: notification.IphoneModel.Id,
-                    //                      tenantId: TenantId.Create(),
-                    //                      branchId: BranchId.Create(),
-                    //                      skuCode: SkuCode.Create(EProductClassification.IPHONE.Name, model.Name, storage.Name, color.Name),
-                    //                      productClassification: EProductClassification.IPHONE,
-                    //                      model: model,
-                    //                      color: color,
-                    //                      storage: storage,
-                    //                      unitPrice: price?.UnitPrice ?? 0,
-                    //                      availableInStock: 50);
-
-                    // skus.Add(sku);
-
                     var iphoneSkuPriceId = notification.IphoneModel.Prices.FirstOrDefault(p => p.NormalizedModel == model.NormalizedName && p.NormalizedColor == color.NormalizedName && p.NormalizedStorage == storage.NormalizedName)?.SkuId;
 
-                    var iphoneSkuPrice = IphoneSkuPrice.Create(skuPriceId: SkuPriceId.Of(iphoneSkuPriceId),
+                    var iphoneSkuPrice = IphoneSkuPrice.Create(skuPriceId: SkuPriceId.Of(iphoneSkuPriceId!),
                                                                modelId: notification.IphoneModel.Id,
                                                                model: model,
                                                                color: color,

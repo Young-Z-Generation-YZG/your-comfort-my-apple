@@ -18,4 +18,11 @@ public class EColor : SmartEnum<EColor>
     public static readonly EColor DESERT_TITANIUM = new(nameof(DESERT_TITANIUM), 0);
     public static readonly EColor WHITE_TITANIUM = new(nameof(WHITE_TITANIUM), 0);
     public static readonly EColor BLACK_TITANIUM = new(nameof(BLACK_TITANIUM), 0);
+    public static readonly EColor LAVENDER = new(nameof(LAVENDER), 0);
+    public static readonly EColor SAGE = new(nameof(SAGE), 0);
+    public static readonly EColor MIST_BLUE = new(nameof(MIST_BLUE), 0);
+    public static readonly EColor SILVER = new(nameof(SILVER), 0);
+    public static readonly EColor COSMIC_ORANGE = new(nameof(COSMIC_ORANGE), 0);
+    public static readonly EColor DEEP_BLUE = new(nameof(DEEP_BLUE), 0);
+
 }

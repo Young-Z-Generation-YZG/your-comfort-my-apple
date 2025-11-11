@@ -36,12 +36,12 @@ public static class SeedDataExtension
 
 
         // cache data
-        await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
-        await SeedCacheColorImages(iphoneModelRepository, distributedCache);
+        //await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
+        //await SeedCacheColorImages(iphoneModelRepository, distributedCache);
 
 
 
-        await SeedTenantsAsync(tenantRepository);
+        //await SeedTenantsAsync(tenantRepository);
 
         //await SeedSkusAsync(skuRepository);
     }
@@ -104,7 +104,12 @@ public static class SeedDataExtension
 
         if (existingItems.Count == 0)
         {
-            foreach (var item in SeedIphoneModel.IphoneModels)
+            foreach (var item in SeedIphoneModel.Iphone15Models)
+            {
+                await iphoneModelRepository.InsertOneAsync(item);
+            }
+
+            foreach (var item in SeedIphoneModel.Iphone16Models)
             {
                 await iphoneModelRepository.InsertOneAsync(item);
             }
