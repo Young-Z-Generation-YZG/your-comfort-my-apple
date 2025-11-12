@@ -22,5 +22,6 @@ public static partial class Errors
         public static Error CannotBeDeleted = Error.BadRequest(code: "Keycloak.CannotBeDeleted", message: "User cannot be deleted", serviceName: "KeycloakService");
         public static Error RoleNotFound = Error.BadRequest(code: "Keycloak.RoleNotFound", message: "Role not found", serviceName: "KeycloakService");
         public static Error RoleRetrievalFailed = Error.BadRequest(code: "Keycloak.RoleRetrievalFailed", message: "Role retrieval failed", serviceName: "KeycloakService");
+        public static Error LogoutFailed = Error.BadRequest(code: "Keycloak.LogoutFailed", message: "Logout failed", serviceName: "KeycloakService");
     }
 }

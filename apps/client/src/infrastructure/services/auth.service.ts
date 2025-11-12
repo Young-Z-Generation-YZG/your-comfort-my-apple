@@ -5,7 +5,11 @@ import {
    FetchBaseQueryMeta,
    QueryReturnValue,
 } from '@reduxjs/toolkit/query/react';
-import { setLogin, setLogout } from '../redux/features/auth.slice';
+import {
+   setLogin,
+   setLogout,
+   setUseAccessToken,
+} from '../redux/features/auth.slice';
 import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import envConfig from '~/infrastructure/config/env.config';
 import {
@@ -21,10 +25,14 @@ export const authApi = createApi({
    baseQuery: fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + 'identity-services',
       prepareHeaders: (headers, { getState }) => {
-         const accessToken = (getState() as RootState).auth.accessToken;
+         const authAppState = (getState() as RootState).auth;
 
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
+         const token = authAppState.useRefreshToken
+            ? authAppState.refreshToken
+            : authAppState.accessToken;
+
+         if (token) {
+            headers.set('Authorization', `Bearer ${token}`);
          }
 
          headers.set('ngrok-skip-browser-warning', 'true');
@@ -72,7 +80,9 @@ export const authApi = createApi({
          queryFn: async (_, { getState }, __, baseQuery) => {
             const refreshToken = (getState() as RootState).auth.refreshToken;
 
-            await baseQuery({
+            console.log('refreshToken', refreshToken);
+
+            const result = await baseQuery({
                url: '/api/v1/auth/logout',
                method: 'POST',
                headers: {
@@ -80,19 +90,22 @@ export const authApi = createApi({
                },
             });
 
-            return {
-               data: true,
-               error: null,
-            } as unknown as QueryReturnValue<
+            return result as unknown as QueryReturnValue<
                void,
                FetchBaseQueryError,
                FetchBaseQueryMeta
             >;
          },
-         onQueryStarted(arg, { dispatch }) {
+         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
             try {
+               await queryFulfilled;
+               // Only dispatch logout after successful API call
+               dispatch(setUseAccessToken(false));
                dispatch(setLogout());
             } catch (error: unknown) {
+               // Even if API call fails, logout locally
+               dispatch(setUseAccessToken(false));
+               dispatch(setLogout());
                console.info(
                   '[AuthService]::logout::try/catch',
                   JSON.stringify(error, null, 2),
@@ -141,6 +154,59 @@ export const authApi = createApi({
             body: payload,
          }),
       }),
+      refreshToken: builder.mutation({
+         queryFn: async (_, { getState }, __, baseQuery) => {
+            const refreshToken = (getState() as RootState).auth.refreshToken;
+
+            if (!refreshToken) {
+               return {
+                  error: {
+                     status: 401,
+                     data: { message: 'No refresh token available' },
+                  },
+               } as unknown as QueryReturnValue<
+                  any,
+                  FetchBaseQueryError,
+                  FetchBaseQueryMeta
+               >;
+            }
+
+            const result = await baseQuery({
+               url: '/api/v1/auth/refresh',
+               method: 'POST',
+               body: { refresh_token: refreshToken },
+            });
+
+            return result as unknown as QueryReturnValue<
+               any,
+               FetchBaseQueryError,
+               FetchBaseQueryMeta
+            >;
+         },
+         async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
+            try {
+               const { data } = await queryFulfilled;
+               const currentState = (getState() as RootState).auth;
+
+               // Update tokens while preserving user info
+               dispatch(
+                  setLogin({
+                     userId: currentState.userId!,
+                     userEmail: currentState.userEmail!,
+                     username: currentState.username!,
+                     accessToken: data.access_token,
+                     refreshToken: data.refresh_token,
+                     accessTokenExpiredIn: data.access_token_expires_in,
+                  }),
+               );
+            } catch (error: unknown) {
+               console.info(
+                  '[AuthService]::refreshToken::try/catch',
+                  JSON.stringify(error, null, 2),
+               );
+            }
+         },
+      }),
    }),
 });
 
@@ -152,4 +218,5 @@ export const {
    useResetPasswordMutation,
    useChangePasswordMutation,
    useLogoutMutation,
+   useRefreshTokenMutation,
 } = authApi;

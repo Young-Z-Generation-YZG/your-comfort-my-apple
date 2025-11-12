@@ -8,17 +8,20 @@ import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { toast } from 'sonner';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
 import { useRouter } from 'next/navigation';
+import { setUseRefreshToken } from '~/src/infrastructure/redux/features/auth.slice';
+import { useDispatch } from 'react-redux';
 
 const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [logoutMutation, logoutMutationState] = useLogoutMutation();
    const [getIdentityTrigger, getIdentityState] = useLazyGetIdentityQuery();
 
+   const dispatch = useDispatch();
    const router = useRouter();
 
    useCheckApiError([
       { title: 'Login failed', error: loginMutationState.error },
-      // { title: 'Logout failed', error: logoutMutationState.error },
+      { title: 'Logout failed', error: logoutMutationState.error },
    ]);
 
    const authAppState = useAppSelector((state) => state.auth);
@@ -46,6 +49,8 @@ const useAuthService = () => {
 
    const logoutAsync = useCallback(async () => {
       try {
+         dispatch(setUseRefreshToken(true));
+
          await logoutMutation().unwrap();
 
          router.replace('/auth/sign-in');
@@ -54,7 +59,7 @@ const useAuthService = () => {
       } catch (error) {
          return { isSuccess: false, isError: true, data: null, error };
       }
-   }, [logoutMutation, router]);
+   }, [logoutMutation, router, dispatch]);
 
    const getIdentityAsync = useCallback(async () => {
       try {

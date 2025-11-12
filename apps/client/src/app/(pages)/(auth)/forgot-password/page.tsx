@@ -4,45 +4,33 @@ import { GoArrowUpRight } from 'react-icons/go';
 import Link from 'next/link';
 import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@components/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import {
    sendEmailResetPasswordFormType,
    sendEmailResetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
-import { useSendEmailResetPasswordAsyncMutation } from '~/infrastructure/services/auth.service';
+import useAuthService from '@components/hooks/api/use-auth-service';
 
 const defaultValues: sendEmailResetPasswordFormType = {
    email: '',
 };
 
-const sendEmailResetPasswordPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
-   const router = useRouter();
-
-   const { toast } = useToast();
+const SendEmailResetPasswordPage = () => {
+   const { sendEmailResetPassword, isLoading, sendEmailResetPasswordState } =
+      useAuthService();
 
    const form = useForm<sendEmailResetPasswordFormType>({
       resolver: sendEmailResetPasswordResolver,
       defaultValues: defaultValues,
    });
 
-   const [
-      sendEmailAsync,
-      { isLoading: isFetching, isSuccess, data, error, isError, reset },
-   ] = useSendEmailResetPasswordAsyncMutation();
-
    const onSubmit = async (data: sendEmailResetPasswordFormType) => {
       console.log('data', data);
 
-      await sendEmailAsync(data).unwrap();
+      await sendEmailResetPassword(data);
    };
 
-   useEffect(() => {
-      setIsLoading(isFetching);
-   }, [isFetching]);
+   const isSuccess = sendEmailResetPasswordState.isSuccess;
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -131,4 +119,4 @@ const sendEmailResetPasswordPage = () => {
    );
 };
 
-export default sendEmailResetPasswordPage;
+export default SendEmailResetPasswordPage;

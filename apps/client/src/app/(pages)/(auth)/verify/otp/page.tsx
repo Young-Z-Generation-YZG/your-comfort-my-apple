@@ -3,11 +3,11 @@
 
 import { useEffect, useState } from 'react';
 import { OTPInput } from '@components/client/forms/otp-input';
-import Button from '../../_components/button';
+import { Button } from '@components/ui/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
 import { useForm } from 'react-hook-form';
-import useAuth from '../../../../../components/hooks/api/use-auth-service';
+import useAuthService from '@components/hooks/api/use-auth-service';
 
 const defaultValues: OtpFormType = {
    email: '',
@@ -26,7 +26,7 @@ const OtpPage = () => {
       defaultValues: defaultValues,
    });
 
-   const { verifyOtp, isLoading, verifyOtpState } = useAuth();
+   const { verifyOtp, isLoading, verifyOtpState } = useAuthService();
 
    // Countdown timer for resend code
    useEffect(() => {

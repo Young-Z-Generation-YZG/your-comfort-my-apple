@@ -1,5 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { LoginFormType } from '~/domain/schemas/auth.schema';
+import {
+   LoginFormType,
+   sendEmailResetPasswordFormType,
+   resetPasswordFormType,
+   changePasswordFormType,
+} from '~/domain/schemas/auth.schema';
 import {
    useChangePasswordMutation,
    useLoginMutation,
@@ -8,13 +13,17 @@ import {
    useVerifyOtpMutation,
    useRegisterMutation,
    useLogoutMutation,
+   useRefreshTokenMutation,
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
 import { useCheckApiError } from '../use-check-error';
 import { useRouter } from 'next/navigation';
+import { setUseAccessToken } from '~/infrastructure/redux/features/auth.slice';
+import { useDispatch } from 'react-redux';
 
 const useAuthService = () => {
+   const dispatch = useDispatch();
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [registerMutation, registerMutationState] = useRegisterMutation();
    const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
@@ -25,6 +34,8 @@ const useAuthService = () => {
    const [changePasswordMutation, changePasswordMutationState] =
       useChangePasswordMutation();
    const [logoutMutation, logoutMutationState] = useLogoutMutation();
+   const [refreshTokenMutation, refreshTokenMutationState] =
+      useRefreshTokenMutation();
 
    const router = useRouter();
 
@@ -44,7 +55,8 @@ const useAuthService = () => {
          title: 'Change Password failed',
          error: changePasswordMutationState.error,
       },
-      // { title: 'Logout failed', error: logoutMutationState.error },
+      { title: 'Logout failed', error: logoutMutationState.error },
+      { title: 'Refresh Token failed', error: refreshTokenMutationState.error },
    ]);
 
    const authAppState = useAppSelector((state) => state.auth);
@@ -72,6 +84,8 @@ const useAuthService = () => {
 
    const logout = useCallback(async () => {
       try {
+         dispatch(setUseAccessToken(false));
+
          await logoutMutation().unwrap();
 
          router.push('/sign-in');
@@ -80,7 +94,21 @@ const useAuthService = () => {
       } catch (error) {
          return { isSuccess: false, isError: true, data: null, error };
       }
-   }, [logoutMutation, router]);
+   }, [logoutMutation, router, dispatch]);
+
+   const refreshToken = useCallback(async () => {
+      try {
+         const result = await refreshTokenMutation(null).unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [refreshTokenMutation]);
 
    const register = useCallback(
       async (data: any) => {
@@ -116,17 +144,78 @@ const useAuthService = () => {
       [verifyOtpMutation],
    );
 
+   const sendEmailResetPassword = useCallback(
+      async (data: sendEmailResetPasswordFormType) => {
+         try {
+            const result = await sendEmailResetPasswordMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [sendEmailResetPasswordMutation],
+   );
+
+   const resetPassword = useCallback(
+      async (data: resetPasswordFormType) => {
+         try {
+            const result = await resetPasswordMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [resetPasswordMutation],
+   );
+
+   const changePassword = useCallback(
+      async (data: changePasswordFormType) => {
+         try {
+            const result = await changePasswordMutation(data).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [changePasswordMutation],
+   );
+
    // centrally track the loading state
    const isLoading = useMemo(() => {
       return (
          loginMutationState.isLoading ||
          registerMutationState.isLoading ||
-         verifyOtpMutationState.isLoading
+         verifyOtpMutationState.isLoading ||
+         logoutMutationState.isLoading ||
+         refreshTokenMutationState.isLoading ||
+         sendEmailResetPasswordMutationState.isLoading ||
+         resetPasswordMutationState.isLoading ||
+         changePasswordMutationState.isLoading
       );
    }, [
       loginMutationState.isLoading,
       registerMutationState.isLoading,
       verifyOtpMutationState.isLoading,
+      logoutMutationState.isLoading,
+      refreshTokenMutationState.isLoading,
+      sendEmailResetPasswordMutationState.isLoading,
+      resetPasswordMutationState.isLoading,
+      changePasswordMutationState.isLoading,
    ]);
 
    // centrally track the success
@@ -155,8 +244,38 @@ const useAuthService = () => {
                border: '1px solid #86EFAC',
             },
          });
+      } else if (sendEmailResetPasswordMutationState.isSuccess) {
+         toast.success('Reset password email sent!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+         });
+      } else if (resetPasswordMutationState.isSuccess) {
+         toast.success('Password reset successful!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+         });
+      } else if (changePasswordMutationState.isSuccess) {
+         toast.success('Password changed successfully!', {
+            style: {
+               backgroundColor: '#DCFCE7',
+               color: '#166534',
+               border: '1px solid #86EFAC',
+            },
+         });
       }
-   }, [loginMutationState, verifyOtpMutationState]);
+   }, [
+      loginMutationState,
+      verifyOtpMutationState,
+      sendEmailResetPasswordMutationState,
+      resetPasswordMutationState,
+      changePasswordMutationState,
+   ]);
 
    return {
       // States
@@ -168,11 +287,19 @@ const useAuthService = () => {
       logout,
       register,
       verifyOtp,
+      refreshToken,
+      sendEmailResetPassword,
+      resetPassword,
+      changePassword,
 
       // Mutation states
       loginState: loginMutationState,
       registerState: registerMutationState,
       verifyOtpState: verifyOtpMutationState,
+      refreshTokenState: refreshTokenMutationState,
+      sendEmailResetPasswordState: sendEmailResetPasswordMutationState,
+      resetPasswordState: resetPasswordMutationState,
+      changePasswordState: changePasswordMutationState,
    };
 };
 

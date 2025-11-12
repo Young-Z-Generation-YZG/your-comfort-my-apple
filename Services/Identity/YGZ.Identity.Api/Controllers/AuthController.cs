@@ -5,16 +5,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 using YGZ.Identity.Application.Auths.Commands.Login;
+using YGZ.Identity.Application.Auths.Commands.Logout;
+using YGZ.Identity.Application.Auths.Commands.RefreshToken;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Application.Auths.Commands.ResetPassword;
 using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 using YGZ.Identity.Application.Auths.Queries.GetIdentity;
+using YGZ.Identity.Domain.Core.Errors;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
@@ -127,14 +132,69 @@ public class AuthController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    //[HttpPost("refresh")]
-    //[Authorize(Policy = Policies.RoleStaff)]
-    //public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshAccessTokenRequest request, CancellationToken cancellationToken)
-    //{
-    //    var cmd = _mapper.Map<RefreshAccessTokenCommand>(request);
+    private IActionResult HandleAuthFailure<TResponse>(Result<TResponse> result)
+    {
+        if (result.IsSuccess)
+        {
+            throw new InvalidOperationException("Result is not failure");
+        }
 
-    //    var result = await _sender.Send(cmd, cancellationToken);
+        // HttpContext.Items.Add("error", result.Error);
 
-    //    return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    //}
+        return Unauthorized(Problem(title: "Unauthorized", statusCode: 401).Value);
+    }
+
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshAccessToken(CancellationToken cancellationToken)
+    {
+        // Extract Bearer token from Authorization header
+        var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            var errorResult = Result<TokenResponse>.Failure(Errors.Auth.MissingAuthorizationHeader);
+            return HandleAuthFailure(errorResult);
+        }
+
+        var refreshToken = authHeader.Substring("Bearer ".Length).Trim();
+        
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            var errorResult = Result<TokenResponse>.Failure(Errors.Auth.MissingAuthorizationHeader);
+            return HandleAuthFailure(errorResult);
+        }
+
+        var cmd = new RefreshTokenCommand { RefreshToken = refreshToken };
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleAuthFailure);
+    }
+
+    [HttpPost("logout")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        // Extract Bearer token from Authorization header
+        var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            var errorResult = Result<bool>.Failure(Errors.Auth.MissingAuthorizationHeader);
+            return HandleAuthFailure(errorResult);
+        }
+
+        var refreshToken = authHeader.Substring("Bearer ".Length).Trim();
+        
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            var errorResult = Result<bool>.Failure(Errors.Auth.MissingAuthorizationHeader);
+            return HandleAuthFailure(errorResult);
+        }
+
+        var cmd = new LogoutCommand { RefreshToken = refreshToken };
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleAuthFailure);
+    }
 }

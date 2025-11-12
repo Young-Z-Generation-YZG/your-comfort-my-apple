@@ -4,22 +4,18 @@ import { GoArrowUpRight } from 'react-icons/go';
 import Link from 'next/link';
 import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useEffect, useState } from 'react';
-import { useResetPasswordAsyncMutation } from '~/infrastructure/services/auth.service';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useToast } from '@components/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import {
    resetPasswordFormType,
    resetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
-import Button from '../../_components/button';
+import { Button } from '@components/ui/button';
+import useAuthService from '@components/hooks/api/use-auth-service';
 
 const ResetPasswordPage = () => {
-   const [isLoading, setIsLoading] = useState(false);
-   const router = useRouter();
    const searchParams = useSearchParams();
-   const { toast } = useToast();
+   const { resetPassword, isLoading, resetPasswordState } = useAuthService();
 
    const _email = searchParams.get('_email');
    const _token = searchParams.get('_token');
@@ -34,22 +30,15 @@ const ResetPasswordPage = () => {
       },
    });
 
-   const [
-      resetPasswordAsync,
-      { isLoading: isFetching, isSuccess, data, error, isError, reset },
-   ] = useResetPasswordAsyncMutation();
-
    const onSubmit = async (data: resetPasswordFormType) => {
       console.log('data', data);
 
-      const result = await resetPasswordAsync(data).unwrap();
+      const result = await resetPassword(data);
 
       console.log('result', result);
    };
 
-   useEffect(() => {
-      setIsLoading(isFetching);
-   }, [isFetching]);
+   const isSuccess = resetPasswordState.isSuccess;
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -116,13 +105,10 @@ const ResetPasswordPage = () => {
                                  disabled={
                                     form.formState.isSubmitting ||
                                     isLoading ||
-                                    isFetching ||
                                     form.formState.isValidating
                                  }
                               >
-                                 {isLoading || isFetching
-                                    ? 'Loading...'
-                                    : 'Submit'}
+                                 {isLoading ? 'Loading...' : 'Submit'}
                               </Button>
                            </form>
                         </div>

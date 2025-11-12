@@ -11,6 +11,7 @@ public static partial class Errors
         public static Error ExpiredToken = Error.BadRequest(code: "Auth.ExpiredToken", message: "Expired Otp", serviceName: "IdentityService");
         public static Error InvalidOtp = Error.BadRequest(code: "Auth.InvalidOtp", message: "Invalid Otp", serviceName: "IdentityService");
         public static Error InvalidToken = Error.BadRequest(code: "Auth.InvalidToken", message: "Invalid Token", serviceName: "IdentityService");
+        public static Error MissingAuthorizationHeader = Error.BadRequest(code: "Auth.MissingAuthorizationHeader", message: "Missing or invalid Authorization header. Expected format: Bearer <refresh_token>", serviceName: "IdentityService");
         public static Error ConfirmEmailVerificationFailure = Error.BadRequest(code: "Auth.ConfirmEmailVerificationFailure", message: "Failed to confirm email verification", serviceName: "IdentityService");
         public static Error ResetPasswordNotMatched = Error.BadRequest(code: "Auth.PasswordNotMatched", message: "Password and Confirm Password are not matched", serviceName: "IdentityService");
     }

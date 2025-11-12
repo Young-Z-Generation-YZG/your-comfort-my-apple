@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -373,9 +374,85 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.EmailVerificationFailed;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
+        }
+    }
+
+    public async Task<Result<bool>> ValidateRefreshTokenAsync(string refreshToken)
+    {
+        var introspectionEndpoint = $"{_keycloakSettings.AuthServerUrl}realms/{_keycloakSettings.Realm}/protocol/openid-connect/token/introspect";
+
+        var requestBody = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("token", refreshToken),
+            new KeyValuePair<string, string>("client_id", _nextjsClientId),
+            new KeyValuePair<string, string>("client_secret", _nextjsClientSecret)
+        });
+
+        try
+        {
+            var response = await _httpClient.PostAsync(introspectionEndpoint, requestBody);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to validate refresh token. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
+                return Errors.Keycloak.InvalidCredentials;
+            }
+
+            var introspectionResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+
+            if (introspectionResponse == null)
+            {
+                _logger.LogError("Invalid introspection response from Keycloak");
+                return Errors.Keycloak.InvalidCredentials;
+            }
+
+            // Check if token is active
+            if (introspectionResponse.TryGetValue("active", out var activeValue))
+            {
+                bool isActive = false;
+                
+                // Try to parse as bool directly if it's already a bool
+                if (activeValue is bool activeBool)
+                {
+                    isActive = activeBool;
+                }
+                // Otherwise try to parse as string
+                else if (activeValue != null && bool.TryParse(activeValue.ToString(), out bool parsedActive))
+                {
+                    isActive = parsedActive;
+                }
+
+                if (isActive)
+                {
+                    // Verify it's a refresh token (not an access token)
+                    if (introspectionResponse.TryGetValue("token_type", out var tokenType) &&
+                        tokenType?.ToString()?.Equals("Refresh", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        _logger.LogInformation("Refresh token validated successfully");
+                        return true;
+                    }
+
+                    // Some Keycloak versions might not return token_type, check by absence of "scope" or presence of "typ"
+                    if (!introspectionResponse.ContainsKey("scope") ||
+                        (introspectionResponse.TryGetValue("typ", out var typ) && typ?.ToString()?.Equals("Refresh", StringComparison.OrdinalIgnoreCase) == true))
+                    {
+                        _logger.LogInformation("Refresh token validated successfully");
+                        return true;
+                    }
+                }
+            }
+
+            _logger.LogWarning("Refresh token is not active or invalid");
+            return Errors.Keycloak.InvalidCredentials;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while validating refresh token");
+            return Errors.Keycloak.InvalidCredentials;
         }
     }
 
@@ -393,17 +470,60 @@ public class KeycloakService : IKeycloakService
         {
             var response = await _httpClient.PostAsync(_tokenEndpoint, requestBody);
 
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Failed to refresh access token. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
+                return Errors.Keycloak.InvalidCredentials;
+            }
+
             var tokenResponse = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
             if (tokenResponse == null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
             {
-                throw new Exception("Failed to retrieve user token.");
+                _logger.LogError("Failed to retrieve user token from refresh token response");
+                return Errors.Keycloak.InvalidCredentials;
             }
+
             return tokenResponse;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            _logger.LogError(ex, "Exception occurred while refreshing access token");
+            return Errors.Keycloak.InvalidCredentials;
+        }
+    }
+
+    public async Task<Result<bool>> LogoutAsync(string refreshToken)
+    {
+        var logoutEndpoint = $"{_keycloakSettings.AuthServerUrl}realms/{_keycloakSettings.Realm}/protocol/openid-connect/logout";
+
+        var requestBody = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("client_id", _nextjsClientId),
+            new KeyValuePair<string, string>("client_secret", _nextjsClientSecret),
+            new KeyValuePair<string, string>("refresh_token", refreshToken)
+        });
+
+        try
+        {
+            var response = await _httpClient.PostAsync(logoutEndpoint, requestBody);
+
+            if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NoContent)
+            {
+                _logger.LogInformation("Successfully logged out user");
+                return true;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to logout user. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
+
+            return Errors.Keycloak.LogoutFailed;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occurred while logging out user");
+            return Errors.Keycloak.LogoutFailed;
         }
     }
 

@@ -23,7 +23,9 @@ public interface IKeycloakService
     Task<Result<bool>> SendEmailResetPasswordAsync(string email);
     Task<Result<bool>> ChangePasswordAsync(string email, string currPassword, string newPassword);
     Task<Result<bool>> ResetPasswordAsync(string email, string newPassword);
+    Task<Result<bool>> ValidateRefreshTokenAsync(string refreshToken);
     Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
+    Task<Result<bool>> LogoutAsync(string refreshToken);
     Task<Result<bool>> DeleteKeycloakUserAsync(string keycloakUserId);
     Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName);
     Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId);

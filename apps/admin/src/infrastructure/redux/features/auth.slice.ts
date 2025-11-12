@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, current } from '@reduxjs/toolkit';
 
 type AuthAppState = {
    currentUserKey?: 'currentUser' | 'impersonatedUser' | null;
+   useRefreshToken?: boolean;
    currentUser?: {
       userId?: string | null;
       userEmail?: string | null;
@@ -28,6 +29,7 @@ const authSlice = createSlice({
    name: 'auth',
    initialState: {
       currentUserKey: null,
+      useRefreshToken: false,
       currentUser: {
          userId: null,
          userEmail: null,
@@ -58,6 +60,7 @@ const authSlice = createSlice({
       ) => {
          state.currentUserKey = 'currentUser';
          state.currentUser = action.payload.currentUser;
+         state.useRefreshToken = false;
 
          console.log('AUTH APP STATE: setLogin', current(state));
       },
@@ -100,10 +103,18 @@ const authSlice = createSlice({
 
          console.log('AUTH APP STATE: setLogout', current(state));
       },
+      setUseRefreshToken: (state, action: PayloadAction<boolean>) => {
+         state.useRefreshToken = action.payload;
+      },
    },
 });
 
-export const { setLogin, setImpersonatedUser, setLogout, setRoles } =
-   authSlice.actions;
+export const {
+   setLogin,
+   setImpersonatedUser,
+   setLogout,
+   setRoles,
+   setUseRefreshToken,
+} = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
@@ -10,7 +11,8 @@ public class Storage
     public string Name { get; init; }
     public string NormalizedName { get; init; }
     
-    [JsonConstructor]
+    [System.Text.Json.Serialization.JsonConstructor]
+    [Newtonsoft.Json.JsonConstructor]
     private Storage(string name, string normalizedName)
     {
         Name = name;

@@ -86,7 +86,7 @@ public class BasketRepository : IBasketRepository
             var basket = basketResult.Response!;
 
             // Remove selected items from the cart
-            basket.CartItems = basket.CartItems.Where(item => !item.IsSelected).ToList();
+            basket.CartItems.RemoveAll(item => item.IsSelected);
 
             // Store the updated basket
             _documentSession.Store(basket);
