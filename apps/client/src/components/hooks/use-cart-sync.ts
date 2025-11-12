@@ -1,10 +1,7 @@
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useBasketService from './api/use-basket-service';
 import { useCallback, useEffect } from 'react';
-import {
-   TCartItem,
-   TStoreBasketPayload,
-} from '~/infrastructure/services/basket.service';
+import { TCartItem } from '~/infrastructure/services/basket.service';
 import { useDispatch } from 'react-redux';
 import {
    AddCartItems,
@@ -25,8 +22,8 @@ const useCartSync = () => {
 
    useEffect(() => {
       console.log('cartAppState in useCartSync', cartAppState);
-      // if isAuthenticated == true
-      // sync redux state to basket data
+
+      // Sync 1 way from redux state to basket data
       if (isAuthenticated && cartAppState.cart_items.length > 0) {
          storeBasketAsync({
             cart_items: cartAppState.cart_items.map((item) => ({

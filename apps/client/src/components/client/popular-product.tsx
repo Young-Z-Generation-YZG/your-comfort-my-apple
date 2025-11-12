@@ -4,12 +4,14 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import RatingStar from '@components/ui/rating-star';
 import { TPopularProduct } from '~/infrastructure/services/product.service';
+import { useRouter } from 'next/navigation';
 
 type PopularProductProps = {
    product: TPopularProduct;
 };
 
 const PopularProduct = ({ product }: PopularProductProps) => {
+   const router = useRouter();
    const { minPrice, maxPrice } = useMemo(() => {
       if (!product.sku_prices || product.sku_prices.length === 0) {
          return { minPrice: 0, maxPrice: 0 };
@@ -40,7 +42,9 @@ const PopularProduct = ({ product }: PopularProductProps) => {
       <div
          className="group relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-orange-200 
                     bg-gradient-to-br from-white to-orange-50/30 shadow-lg transition-all duration-300 
-                    hover:shadow-2xl hover:scale-[1.02] dark:border-orange-700 dark:from-gray-800 dark:to-orange-950/30"
+                    hover:scale-[1.02] hover:shadow-[0_4px_12px_-2px_rgba(251,146,60,0.3)] 
+                    dark:border-orange-700 dark:from-gray-800 dark:to-orange-950/30 
+                    dark:hover:shadow-[0_4px_12px_-2px_rgba(251,146,60,0.25)]"
       >
          {/* POPULAR Badge */}
          <div className="absolute left-4 top-4 z-10">
@@ -160,8 +164,11 @@ const PopularProduct = ({ product }: PopularProductProps) => {
                className="w-full rounded-full bg-gradient-to-r from-orange-600 to-red-600 py-3.5 text-base 
                           font-semibold text-white shadow-lg transition-all duration-300 
                           hover:from-orange-700 hover:to-red-700 hover:shadow-xl hover:-translate-y-0.5"
+               onClick={() => {
+                  router.push(`/products/iphone/${product.slug}`);
+               }}
             >
-               Buy now
+               Discover now
             </button>
          </div>
       </div>

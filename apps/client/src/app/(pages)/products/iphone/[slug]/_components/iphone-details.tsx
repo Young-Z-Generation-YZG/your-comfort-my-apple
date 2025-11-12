@@ -15,12 +15,6 @@ import HelpItem from './help-item';
 import ColorItem from './color-item';
 import StorageItem from './storage-item';
 import { Button } from '@components/ui/button';
-import {
-   iphoneDetailsFakeData,
-   TColorItem,
-   TModelItem,
-   TStorageItem,
-} from '../_data/fake-data';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
 import useBasketService from '@components/hooks/api/use-basket-service';
@@ -28,7 +22,17 @@ import { toast } from 'sonner';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
-import { TIphoneModelDetails } from '~/infrastructure/services/catalog.service';
+import {
+   TBranchWithSkus,
+   TIphoneModelDetails,
+   TSku,
+} from '~/infrastructure/services/catalog.service';
+import {
+   TColorItem,
+   TShowcaseImage,
+   TModelItem,
+   TStorageItem,
+} from '~/infrastructure/services/product.service';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -79,22 +83,35 @@ const IphoneDetails = () => {
       isLoading: isGetModelBySlugLoading,
    } = useCatalogService();
 
+   const displayData = useMemo(() => {
+      return getModelBySlugState.isSuccess && getModelBySlugState.data
+         ? getModelBySlugState.data
+         : null;
+   }, [getModelBySlugState.isSuccess, getModelBySlugState.data]);
+
    const { storeBasketAsync, isLoading: isStoreBasketLoading } =
       useBasketService();
 
    useEffect(() => {
-      const fetchModel = async () => {
-         await getModelBySlugAsync(slug as string);
-      };
-
-      fetchModel();
+      getModelBySlugAsync(slug as string);
    }, [getModelBySlugAsync, slug]);
 
    const models = useMemo(() => {
-      if (!getModelBySlugState.data) return [];
+      if (!getModelBySlugState.isSuccess || !getModelBySlugState.data)
+         return [];
+
+      if (getModelBySlugState.data.model_items.length === 1) {
+         setSelectedModel(getModelBySlugState.data.model_items[0]);
+
+         return [];
+      }
 
       return getModelBySlugState.data.model_items;
-   }, [getModelBySlugState.data]);
+   }, [
+      getModelBySlugState.data,
+      setSelectedModel,
+      getModelBySlugState.isSuccess,
+   ]);
 
    const colors = useMemo(() => {
       if (!getModelBySlugState.data) return [];
@@ -133,9 +150,11 @@ const IphoneDetails = () => {
 
       // Navigate to the image corresponding to the selected color
       const targetImageIndex = getImageIndexByColor(color.normalized_name);
-      setCurrentSlide(targetImageIndex);
-      if (carouselApi) {
-         carouselApi.scrollTo(targetImageIndex);
+      if (targetImageIndex !== undefined) {
+         setCurrentSlide(targetImageIndex);
+         if (carouselApi && targetImageIndex !== undefined) {
+            carouselApi.scrollTo(targetImageIndex);
+         }
       }
 
       // Only reset storage selection if not completed initial selection
@@ -147,8 +166,8 @@ const IphoneDetails = () => {
    // Function to find the index of the image corresponding to the selected color
    const getImageIndexByColor = (colorName: string) => {
       // Find the selected color item from the original data
-      const selectedColorItem = iphoneDetailsFakeData.color_items.find(
-         (color) => color.normalized_name === colorName,
+      const selectedColorItem = displayData?.color_items.find(
+         (color: TColorItem) => color.normalized_name === colorName,
       );
 
       if (!selectedColorItem) {
@@ -156,8 +175,9 @@ const IphoneDetails = () => {
       }
 
       // Find the index of the showcase image that matches the selected color's showcase_image_id
-      const imageIndex = iphoneDetailsFakeData.showcase_images.findIndex(
-         (image) => image.image_id === selectedColorItem.showcase_image_id,
+      const imageIndex = displayData?.showcase_images.findIndex(
+         (image: TShowcaseImage) =>
+            image.image_id === selectedColorItem.showcase_image_id,
       );
 
       // Return the index, or 0 if not found
@@ -186,10 +206,10 @@ const IphoneDetails = () => {
          return [];
       }
 
-      return iphoneDetailsFakeData.branchs
-         .map((branchData) => {
+      return displayData?.branchs
+         .map((branchData: TBranchWithSkus) => {
             // Find the matching SKU for this branch
-            const matchingSku = branchData.skus.find((sku) => {
+            const matchingSku = branchData.skus.find((sku: TSku) => {
                return (
                   sku.model.normalized_name === selectedModel.normalized_name &&
                   sku.color.normalized_name === selectedColor.normalized_name &&
@@ -206,7 +226,7 @@ const IphoneDetails = () => {
          .filter((branchData) => branchData.sku !== undefined);
    };
 
-   const filteredBranches = getFilteredBranches();
+   const filteredBranches = getFilteredBranches() || [];
 
    const renderCheckoutBottom = () => {
       const isAllSelected = selectedModel && selectedColor && selectedStorage;
@@ -220,121 +240,133 @@ const IphoneDetails = () => {
             return;
          }
 
-         if (isAuthenticated) {
-            const sku_id =
-               getModelBySlugState.data?.sku_prices.find(
-                  (sku) =>
-                     sku.normalized_model === selectedModel.normalized_name &&
-                     sku.normalized_color === selectedColor.normalized_name &&
-                     sku.normalized_storage === selectedStorage.normalized_name,
-               )?.sku_id || '';
+         const data = getModelBySlugState.data as TIphoneModelDetails;
 
-            const result = await storeBasketAsync({
-               cart_items: [
-                  {
-                     is_selected: false,
-                     sku_id: sku_id,
-                     model_id: (getModelBySlugState.data as TIphoneModelDetails)
-                        .id,
-                     color: {
-                        name: selectedColor.name,
-                        normalized_name: selectedColor.normalized_name,
-                     },
-                     model: {
-                        name: selectedModel.name,
-                        normalized_name: selectedModel.normalized_name,
-                     },
-                     storage: {
-                        name: selectedStorage.name,
-                        normalized_name: selectedStorage.normalized_name,
-                     },
-                     quantity: 1,
-                  },
-               ],
-            });
+         const color = {
+            name: selectedColor.name,
+            normalized_name: selectedColor.normalized_name,
+            hex_code:
+               data.color_items.find(
+                  (color) =>
+                     color.normalized_name === selectedColor.normalized_name,
+               )?.hex_code || '',
+            showcase_image_id:
+               data.color_items.find(
+                  (color) =>
+                     color.normalized_name === selectedColor.normalized_name,
+               )?.showcase_image_id || '',
+            order:
+               data.color_items.find(
+                  (color) =>
+                     color.normalized_name === selectedColor.normalized_name,
+               )?.order || 0,
+         };
 
-            if (result.isSuccess) {
-               toast.success('Item added to cart', {
-                  position: 'bottom-center',
-                  style: toastStyle,
-               });
-            } else {
-               toast.error('Failed to add item to cart', {
-                  position: 'bottom-center',
-                  style: errorToastStyle,
-               });
-            }
-         } else {
-            const data = getModelBySlugState.data as TIphoneModelDetails;
+         const model = {
+            name: selectedModel.name,
+            normalized_name: selectedModel.normalized_name,
+            order: 0,
+         };
 
-            const color = {
-               name: selectedColor.name,
-               normalized_name: selectedColor.normalized_name,
-               hex_code:
-                  data.color_items.find(
-                     (color) =>
-                        color.normalized_name === selectedColor.normalized_name,
-                  )?.hex_code || '',
-               showcase_image_id:
-                  data.color_items.find(
-                     (color) =>
-                        color.normalized_name === selectedColor.normalized_name,
-                  )?.showcase_image_id || '',
-               order:
-                  data.color_items.find(
-                     (color) =>
-                        color.normalized_name === selectedColor.normalized_name,
-                  )?.order || 0,
-            };
+         const storage = {
+            name: selectedStorage.name,
+            normalized_name: selectedStorage.normalized_name,
+            order: 0,
+         };
 
-            const model = {
-               name: selectedModel.name,
-               normalized_name: selectedModel.normalized_name,
-               order: 0,
-            };
+         const display_image_url =
+            data.showcase_images.find(
+               (image) => image.image_id === color.showcase_image_id,
+            )?.image_url || '';
 
-            const storage = {
-               name: selectedStorage.name,
-               normalized_name: selectedStorage.normalized_name,
-               order: 0,
-            };
+         const sku_id =
+            getModelBySlugState.data?.sku_prices.find(
+               (sku) =>
+                  sku.normalized_model === selectedModel.normalized_name &&
+                  sku.normalized_color === selectedColor.normalized_name &&
+                  sku.normalized_storage === selectedStorage.normalized_name,
+            )?.sku_id || '';
 
-            const display_image_url =
-               data.showcase_images.find(
-                  (image) => image.image_id === color.showcase_image_id,
-               )?.image_url || '';
+         const unit_price =
+            getModelBySlugState.data?.sku_prices.find(
+               (sku) =>
+                  sku.normalized_model === selectedModel.normalized_name &&
+                  sku.normalized_color === selectedColor.normalized_name &&
+                  sku.normalized_storage === selectedStorage.normalized_name,
+            )?.unit_price || 0;
 
-            const sku_id =
-               getModelBySlugState.data?.sku_prices.find(
-                  (sku) =>
-                     sku.normalized_model === selectedModel.normalized_name &&
-                     sku.normalized_color === selectedColor.normalized_name &&
-                     sku.normalized_storage === selectedStorage.normalized_name,
-               )?.sku_id || '';
+         const sub_total_amount = unit_price * 1;
 
-            storeBasketSync([
-               {
-                  is_selected: false,
-                  model_id: data.id,
-                  sku_id: sku_id,
-                  product_name: `${selectedModel.name} ${selectedStorage.name} ${selectedColor.name}`,
-                  color: color,
-                  model: model,
-                  storage: storage,
-                  display_image_url: display_image_url,
-                  unit_price: 1000,
-                  promotion: null,
-                  quantity: 1,
-                  sub_total_amount: 1000,
-                  index: 1,
-               },
-            ]);
+         storeBasketSync([
+            {
+               is_selected: false,
+               model_id: data.id,
+               sku_id: sku_id,
+               product_name: `${selectedModel.name} ${selectedStorage.name} ${selectedColor.name}`,
+               color: color,
+               model: model,
+               storage: storage,
+               display_image_url: display_image_url,
+               unit_price: unit_price,
+               promotion: null,
+               quantity: 1,
+               sub_total_amount: sub_total_amount,
+               index: 1,
+            },
+         ]);
 
-            toast.success('Item added to cart', {
-               position: 'bottom-center',
-               style: toastStyle,
-            });
-         }
+         toast.success('Item added to cart', {
+            position: 'bottom-center',
+            style: toastStyle,
+         });
+
+         //  if (isAuthenticated) {
+         //     const sku_id =
+         //        getModelBySlugState.data?.sku_prices.find(
+         //           (sku) =>
+         //              sku.normalized_model === selectedModel.normalized_name &&
+         //              sku.normalized_color === selectedColor.normalized_name &&
+         //              sku.normalized_storage === selectedStorage.normalized_name,
+         //        )?.sku_id || '';
+
+         //     const result = await storeBasketAsync({
+         //        cart_items: [
+         //           {
+         //              is_selected: false,
+         //              sku_id: sku_id,
+         //              model_id: (getModelBySlugState.data as TIphoneModelDetails)
+         //                 .id,
+         //              color: {
+         //                 name: selectedColor.name,
+         //                 normalized_name: selectedColor.normalized_name,
+         //              },
+         //              model: {
+         //                 name: selectedModel.name,
+         //                 normalized_name: selectedModel.normalized_name,
+         //              },
+         //              storage: {
+         //                 name: selectedStorage.name,
+         //                 normalized_name: selectedStorage.normalized_name,
+         //              },
+         //              quantity: 1,
+         //           },
+         //        ],
+         //     });
+
+         //     if (result.isSuccess) {
+         //        toast.success('Item added to cart', {
+         //           position: 'bottom-center',
+         //           style: toastStyle,
+         //        });
+         //     } else {
+         //        toast.error('Failed to add item to cart', {
+         //           position: 'bottom-center',
+         //           style: errorToastStyle,
+         //        });
+         //     }
+         //  } else {
+
+         //  }
       };
 
       return (
@@ -432,13 +464,6 @@ const IphoneDetails = () => {
                         <Button
                            className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white transition-all duration-200"
                            onClick={() => {
-                              // console.log('Add to Bag:', {
-                              //    selectedModel,
-                              //    selectedColor,
-                              //    selectedStorage,
-                              //    availableBranches: filteredBranches,
-                              // });
-
                               handleAddToBag();
                            }}
                         >
@@ -476,7 +501,7 @@ const IphoneDetails = () => {
                   New
                </span>
                <h1 className="text-[48px] font-semibold leading-[52px] pb-2 mb-[13px]">
-                  {iphoneDetailsFakeData.name}
+                  {displayData?.name || 'NO DATA'}
                </h1>
                <div className="text-[15px] font-light leading-[20px]">
                   From $999 or $41.62/mo. for 24 mo.
@@ -510,7 +535,7 @@ const IphoneDetails = () => {
                   }}
                >
                   <CarouselContent>
-                     {iphoneDetailsFakeData.showcase_images.map((image) => (
+                     {displayData?.showcase_images?.map((image) => (
                         <CarouselItem key={image.image_id}>
                            <div className="w-full overflow-hidden relative h-[1000px]">
                               <NextImage
@@ -524,7 +549,7 @@ const IphoneDetails = () => {
                               />
                            </div>
                         </CarouselItem>
-                     ))}
+                     )) || []}
                   </CarouselContent>
 
                   <CarouselPrevious className="left-[1rem]" />
@@ -532,7 +557,7 @@ const IphoneDetails = () => {
 
                   <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
                      {Array.from({
-                        length: iphoneDetailsFakeData.showcase_images.length,
+                        length: displayData?.showcase_images?.length || 0,
                      }).map((_, index) => (
                         <div
                            className="w-[10px] h-[10px] rounded-full transition-colors duration-200"

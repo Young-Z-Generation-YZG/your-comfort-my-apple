@@ -22,9 +22,6 @@ public static class SeedIphoneModel
             // Model IPHONE_16_PRO_MAX = Model.Create("IPHONE_16_PRO_MAX", 1);
 
 
-            //Model IPHONE_17_AIR = Model.Create("iPhone 17 Air", 0);
-
-
             // Seed colors
             Color BLUE_15 = Color.Create("Blue", "#D5DDDF", "iphone-15-finish-select-202309-6-1inch-blue_zgxzmz", 0);
             Color PINK_15 = Color.Create("Pink", "#EBD3D4", "iphone-15-finish-select-202309-6-1inch-pink_j6v96t", 1);
@@ -210,7 +207,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 15 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
-                                              isNewest: true);
+                                              isNewest: false);
 
             return new List<IphoneModel>
             {
@@ -430,7 +427,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 16 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
-                                              isNewest: true);
+                                              isNewest: false);
 
             return new List<IphoneModel>
             {
@@ -717,7 +714,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
-                                              isNewest: false);
+                                              isNewest: true);
 
             return new List<IphoneModel>
             {
@@ -884,7 +881,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 Pro model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
-                                              isNewest: false);
+                                              isNewest: true);
 
             return new List<IphoneModel>
             {
@@ -1033,7 +1030,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 Air model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
-                                              isNewest: false);
+                                              isNewest: true);
 
             return new List<IphoneModel>
             {

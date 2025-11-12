@@ -43,22 +43,47 @@ public class CachedBasketRepository : IBasketRepository
         return true;
     }
 
-    public async Task<Result<bool>> DeleteBasketAsync(string userEmail, CancellationToken cancellationToken)
+    public async Task<Result<bool>> DeleteSelectedItemsBasketAsync(string userEmail, CancellationToken cancellationToken)
     {
-        await _basketRepository.ClearBasketAsync(userEmail, cancellationToken);
+        try
+        {
+            var result = await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
 
-        await _distributedCache.RemoveAsync(userEmail, cancellationToken);
+            if (result.IsFailure)
+            {
+                return result;
+            }
+
+            // Get the updated basket and update cache
+            var basketResult = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
+            if (basketResult.IsSuccess)
+            {
+                await _distributedCache.SetStringAsync(userEmail, JsonSerializer.Serialize(basketResult.Response), cancellationToken);
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public async Task<Result<bool>> ClearBasketAsync(string userEmail, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _basketRepository.ClearBasketAsync(userEmail, cancellationToken);
+
+            await _distributedCache.RemoveAsync(userEmail, cancellationToken);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
 
         return true;
-    }
 
-    public Task<Result<bool>> DeleteSelectedItemsBasketAsync(string userEmail, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task<Result<bool>> ClearBasketAsync(string userEmail, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 }

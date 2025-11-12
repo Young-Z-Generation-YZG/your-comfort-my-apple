@@ -7,6 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
+import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from '@components/ui/button';
 import { Input } from '@components/ui/input';
 import {
@@ -163,6 +164,25 @@ const CartPage = () => {
                         </form>
                      </FormProvider>
                   </LoadingOverlay>
+                  {basketData.cart_items.length !== 0 && (
+                     <Button
+                        variant="outline"
+                        className="w-full h-fit border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 
+                                   rounded-full text-[14px] font-medium tracking-[0.2px] mt-3 
+                                   transition-all duration-200 ease-in-out flex items-center justify-center gap-2
+                                   disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isLoading}
+                        onClick={async () => {
+                           await deleteBasketAsync();
+                           await getBasketAsync({
+                              _couponCode: null,
+                           });
+                        }}
+                     >
+                        <FaRegTrashAlt className="w-4 h-4" />
+                        Clear Cart
+                     </Button>
+                  )}
                </div>
             </div>
             <div className="col-span-4 h-full relative">
@@ -215,9 +235,9 @@ const CartPage = () => {
                      </div>
                   ) : (
                      <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
-                        {/* {selectedItems.length === 0
+                        {selectedItems.length === 0
                            ? 'Please select items to apply a promo code'
-                           : ''} */}
+                           : ''}
                      </p>
                   )}
                </div>

@@ -25,6 +25,7 @@ public sealed record SkuResponse
     public required string Slug { get; init; }
     public required DateTime CreatedAt { get; init; }
     public required DateTime UpdatedAt { get; init; }
+    public required string? UpdatedBy { get; init; }
     public DateTime? DeletedAt { get; init; }
     public string? DeletedBy { get; init; }
     public bool IsDeleted { get; init; }

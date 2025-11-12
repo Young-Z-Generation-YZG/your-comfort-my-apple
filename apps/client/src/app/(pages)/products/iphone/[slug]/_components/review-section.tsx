@@ -23,25 +23,15 @@ type ReviewFilters = {
 
 const ReviewsSection = () => {
    const { slug } = useParams();
-   const { filters, setFilters } = useFilter<ReviewFilters>();
+   const { filters, setFilters, removeFilter } = useFilter<ReviewFilters>();
    const {
       getReviewByProductModelSlugAsync,
       getReviewByProductModelSlugState,
       isLoading,
    } = useReviewService();
 
-   // Hard code limit to 5, page defaults to 1
    const page = filters._page || 1;
    const limit = 5;
-
-   useEffect(() => {
-      if (slug) {
-         // Initialize page filter with default if not set
-         if (!filters._page) {
-            setFilters({ _page: 1 });
-         }
-      }
-   }, [slug, filters._page, setFilters]);
 
    useEffect(() => {
       if (slug && page) {
@@ -99,7 +89,12 @@ const ReviewsSection = () => {
 
    const handlePageChange = (page: number) => {
       if (page !== currentPage && page >= 1 && page <= totalPages) {
-         setFilters({ _page: page });
+         // Only add _page to URL if it's not page 1, remove it if it's page 1
+         if (page === 1) {
+            removeFilter('_page'); // Remove _page from URL when going to page 1
+         } else {
+            setFilters({ _page: page });
+         }
          window.scrollTo({ top: 0, behavior: 'smooth' });
       }
    };

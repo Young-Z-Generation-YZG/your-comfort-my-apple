@@ -17,6 +17,7 @@ interface IphoneModelProps {
    models: IModel[];
    colors: IColor[];
    storages: IStorage[];
+   displayImageUrl: string;
    averageRating: IAverageRating;
    skuPrices: ISKUPrice[];
    modelSlug: string;
@@ -26,6 +27,7 @@ const IphoneModel = ({
    models,
    colors,
    storages,
+   displayImageUrl,
    averageRating,
    skuPrices,
    modelSlug,
@@ -58,9 +60,7 @@ const IphoneModel = ({
             {/* image */}
             <div className="basis-[20%] overflow-hidden relative h-[300px] rounded-lg">
                <NextImage
-                  src={
-                     'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp'
-                  }
+                  src={displayImageUrl}
                   alt={`test`}
                   width={Math.round((1000 * 16) / 9)}
                   height={1000}

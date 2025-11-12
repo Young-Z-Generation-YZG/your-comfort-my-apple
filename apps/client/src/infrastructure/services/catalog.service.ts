@@ -7903,7 +7903,89 @@ export type TIphoneModelDetails = {
    overall_sold: number;
    rating_stars: TRatingStar[];
    average_rating: TAverageRating;
-   branchs: typeof fakeGetModelBySlugResponse.branchs;
+   branchs: TBranchWithSkus[];
+};
+
+export type TBranch = {
+   id: string;
+   tenant_id: string;
+   name: string;
+   address: string;
+   description: string;
+   manager: any;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TModel = {
+   name: string;
+   normalized_name: string;
+   order: number;
+};
+
+export type TColor = {
+   name: string;
+   normalized_name: string;
+   hex_code: string;
+   showcase_image_id: string;
+   order: number;
+};
+
+export type TStorage = {
+   name: string;
+   normalized_name: string;
+   order: number;
+};
+
+export type TReservedForEvent = {
+   event_id: string;
+   event_item_id: string;
+   event_name: string;
+   reserved_quantity: number;
+};
+
+export type TSku = {
+   id: string;
+   code: string;
+   model_id: string;
+   tenant_id: string;
+   branch_id: string;
+   product_classification: string;
+   model: TModel;
+   color: TColor;
+   storage: TStorage;
+   unit_price: number;
+   available_in_stock: 48;
+   total_sold: 0;
+   reserved_for_event: TReservedForEvent;
+   state: string;
+   slug: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   deleted_at: string | null;
+   deleted_by: string | null;
+   is_deleted: boolean;
+};
+
+export type TBranchWithSkus = {
+   branch: TBranch;
+   skus: TSku[];
+};
+
+export type TGetIphoneModelsFilter = {
+   _page?: number | null;
+   _limit?: number | null;
+   _colors?: string[] | null;
+   _storages?: string[] | null;
+   _models?: string[] | null;
+   _minPrice?: number | null;
+   _maxPrice?: number | null;
+   _priceSort?: 'ASC' | 'DESC' | null;
 };
 
 export const catalogApi = createApi({
@@ -7918,8 +8000,14 @@ export const catalogApi = createApi({
             return response as PaginationResponse<any>;
          },
       }),
-      getIphoneModels: builder.query<PaginationResponse<any>, string>({
-         query: (params = '') => `/api/v1/products/iphone/models?${params}`,
+      getIphoneModels: builder.query<
+         PaginationResponse<any>,
+         TGetIphoneModelsFilter
+      >({
+         query: (params) => ({
+            url: '/api/v1/products/iphone/models',
+            params,
+         }),
          providesTags: ['Catalogs'],
       }),
       getModelBySlug: builder.query<TIphoneModelDetails, string>({

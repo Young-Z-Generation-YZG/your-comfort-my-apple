@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import {
    useLazyGetIphoneModelsQuery,
    useLazyGetModelBySlugQuery,
+   TGetIphoneModelsFilter,
 } from '~/infrastructure/services/catalog.service';
 
 const useCatalogService = () => {
@@ -11,7 +12,18 @@ const useCatalogService = () => {
       useLazyGetModelBySlugQuery();
 
    const getIphoneModelsAsync = useCallback(
-      async (params: string) => {
+      async (
+         params: TGetIphoneModelsFilter = {
+            _page: 1,
+            _limit: 10,
+            _colors: null,
+            _storages: null,
+            _models: null,
+            _minPrice: null,
+            _maxPrice: null,
+            _priceSort: null,
+         },
+      ) => {
          try {
             const result = await getIphoneModelsTrigger(params).unwrap();
             return {

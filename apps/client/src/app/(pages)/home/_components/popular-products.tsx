@@ -70,7 +70,7 @@ const PopularProducts = () => {
                   {paginationItems.map((product) => (
                      <CarouselItem
                         key={product.id}
-                        className="pl-4 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                        className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
                      >
                         <PopularProduct product={product} />
                      </CarouselItem>

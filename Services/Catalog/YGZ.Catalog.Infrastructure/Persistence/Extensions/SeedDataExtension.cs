@@ -32,16 +32,15 @@ public static class SeedDataExtension
         await SeedCategoriesAsync(categoryRepository);
 
         await SeedIphoneModelsAsync(iphoneModelRepository);
-        // await SeedIphoneSkuPricesAsync(iphoneSkuPriceRepository);
 
 
         // cache data
-        //await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
-        //await SeedCacheColorImages(iphoneModelRepository, distributedCache);
+        await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
+        await SeedCacheColorImages(iphoneModelRepository, distributedCache);
 
 
 
-        //await SeedTenantsAsync(tenantRepository);
+        await SeedTenantsAsync(tenantRepository);
 
         //await SeedSkusAsync(skuRepository);
     }
@@ -72,18 +71,6 @@ public static class SeedDataExtension
         }
     }
 
-    private static async Task SeedBranchesAsync(IMongoRepository<Branch, BranchId> branchRepository)
-    {
-        var existingItems = await branchRepository.GetAllAsync();
-
-        if (existingItems.Count == 0)
-        {
-            foreach (var item in SeedTenantData.Branches)
-            {
-                await branchRepository.InsertOneAsync(item);
-            }
-        }
-    }
 
     private static async Task SeedIphoneModelsAsync(IMongoRepository<IphoneModel, ModelId> iphoneModelRepository)
     {
@@ -123,18 +110,6 @@ public static class SeedDataExtension
         }
     }
 
-    private static async Task SeedIphoneSkuPricesAsync(IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository)
-    {
-        var existingItems = await iphoneSkuPriceRepository.GetAllAsync();
-
-        if (existingItems.Count == 0)
-        {
-            foreach (var item in SeedPriceData.IphoneSkuPrices)
-            {
-                await iphoneSkuPriceRepository.InsertOneAsync(item);
-            }
-        }
-    }
 
     // seed cache data
     private static async Task SeedCacheIphoneSkuPrices(IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository, IDistributedCache distributedCache)

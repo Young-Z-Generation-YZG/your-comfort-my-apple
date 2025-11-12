@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +10,6 @@ import Image from 'next/image';
 import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import ServiceCard from './service-card';
 import { appleServices } from '../_constants/services-data';
-import { iphoneDetailsFakeData } from '../_data/fake-data';
 import { ApplePickupIcon, DeliveryTruckIcon } from '@components/icon';
 
 interface ProductInfoProps {
@@ -51,7 +51,7 @@ const ProductInfo = ({
                <div className="pr-[10px] mr-[41px] flex flex-col items-start justify-start">
                   <span className="text-[#1D1D1F] tracking-[0.3px] w-full text-[38px] font-semibold leading-[46px]">
                      Your new <br />
-                     {iphoneDetailsFakeData.name}.
+                     {'NO DATA AVAILABLE'}.
                   </span>
                   <span className="text-[#86868B] tracking-[0.3px] w-full text-[38px] font-semibold leading-[46px]">
                      Just the way you <br />
@@ -177,7 +177,7 @@ const ProductInfo = ({
                   </div>
                   <div className="w-full flex flex-row gap-0 justify-center items-center">
                      <div className="basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]">
-                        {iphoneDetailsFakeData.name}
+                        {'NO DATA AVAILABLE'}
                      </div>
                      <div className="basis-[25%] pt-5 pb-[50px] text-center text-[14px] font-light leading-[20px] tracking-[0.3px]">
                         USB-C Charge Cable

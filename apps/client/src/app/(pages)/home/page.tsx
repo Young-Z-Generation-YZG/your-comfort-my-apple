@@ -175,7 +175,6 @@ const HomePage = () => {
          )}
       >
          <div className="hero-container max-w-[1264px] h-screen px-8 mb-[100px] mx-auto flex flex-row">
-            {/* <div className='hero-gradient bg-gray-300 h-[100px] w-full absolute top-0 bottom-0 left-0 right-0 z-0'></div> */}
             <div className="hero-content basis-1/2 h-full bg-transparent relative z-10 flex flex-col items-start gap-[30px]">
                <div className="content-header max-w-[600px] mt-8 text-[94px] font-medium leading-[97px] tracking-[-3.76px] text-[#3a3a3a]">
                   Financial infrastructure to grow your revenue

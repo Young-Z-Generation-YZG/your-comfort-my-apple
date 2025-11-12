@@ -70,13 +70,15 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             var modelSlugCache = ModelSlugCache.Of(item.ModelId);
 
             EColor.TryFromName(color.NormalizedName, out var colorEnum);
+            EIphoneModel.TryFromName(model.NormalizedName, out var modelEnum);
+            EStorage.TryFromName(storage.NormalizedName, out var storageEnum);
 
-            var unitPrice = await _skuPriceCache.GetPriceAsync(skuPriceCache);
+            var unitPrice = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum, storageEnum, colorEnum));
             var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(item.ModelId, colorEnum));
             var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
 
-            var subTotalAmount = unitPrice * item.Quantity;
+            var subTotalAmount = decimal.Parse(unitPrice ?? "0") * item.Quantity;
 
             var shoppingCartItem = ShoppingCartItem.Create(
                 isSelected: item.IsSelected,
@@ -87,7 +89,7 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
                 color: color,
                 storage: storage,
                 displayImageUrl: displayImageUrl ?? "",
-                unitPrice: unitPrice ?? 0,
+                unitPrice: decimal.Parse(unitPrice ?? "0"),
                 promotion: null,
                 quantity: item.Quantity,
                 modelSlug: modelSlug ?? "",

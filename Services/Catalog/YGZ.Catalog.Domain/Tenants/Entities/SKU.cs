@@ -176,6 +176,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             Slug = Slug.Value,
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
             DeletedAt = DeletedAt,
             DeletedBy = DeletedBy,
             IsDeleted = IsDeleted

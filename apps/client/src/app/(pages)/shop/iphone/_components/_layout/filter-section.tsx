@@ -8,6 +8,12 @@ import {
 } from '@components/ui/accordion';
 import { DualRangeSlider } from '@components/ui/dualRangeSlider';
 import { Button } from '@components/ui/button';
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from '@components/ui/tooltip';
 import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';
@@ -58,11 +64,22 @@ const models = [
       value: 'iphone-16e',
    },
    {
-      name: 'iPhone 16 Pro',
-      normalizedName: 'IPHONE_16_PRO',
-      value: 'iphone-16-pro',
+      name: 'iPhone 17',
+      normalizedName: 'IPHONE_17',
+      value: 'iphone-17',
+   },
+   {
+      name: 'iPhone 17 Pro',
+      normalizedName: 'IPHONE_17_PRO',
+      value: 'iphone-17-pro',
+   },
+   {
+      name: 'iPhone 17 Air',
+      normalizedName: 'IPHONE_17_AIR',
+      value: 'iphone-17-air',
    },
 ];
+
 const colors = [
    {
       name: 'ultramarine',
@@ -103,6 +120,56 @@ const colors = [
       name: 'black',
       normalizedName: 'BLACK',
       hex: '#3C4042',
+   },
+   {
+      name: 'Lavender',
+      normalizedName: 'LAVENDER',
+      hex: '#E7D9F2',
+   },
+   {
+      name: 'Sage',
+      normalizedName: 'SAGE',
+      hex: '#BBC89E',
+   },
+   {
+      name: 'Mist Blue',
+      normalizedName: 'MIST_BLUE',
+      hex: '#A7BDDE',
+   },
+   {
+      name: 'Silver',
+      normalizedName: 'SILVER',
+      hex: '#E6E6E6',
+   },
+   {
+      name: 'Cosmic Orange',
+      normalizedName: 'COSMIC_ORANGE',
+      hex: '#F67E36',
+   },
+   {
+      name: 'Deep Blue',
+      normalizedName: 'DEEP_BLUE',
+      hex: '#3F4C77',
+   },
+   {
+      name: 'Sky Blue',
+      normalizedName: 'SKY_BLUE',
+      hex: '#E5F2FA',
+   },
+   {
+      name: 'Light Gold',
+      normalizedName: 'LIGHT_GOLD',
+      hex: '#FAF3E6',
+   },
+   {
+      name: 'Cloud White',
+      normalizedName: 'CLOUD_WHITE',
+      hex: '#FCFCFC',
+   },
+   {
+      name: 'Space Black',
+      normalizedName: 'SPACE_BLACK',
+      hex: '#121212',
    },
 ];
 
@@ -235,28 +302,36 @@ const FilterSection = () => {
                         COLORS
                      </AccordionTrigger>
                      <AccordionContent className="pt-4">
-                        <div className="grid grid-cols-4 gap-x-0 gap-y-4 ml-2">
-                           {colors.map((color) => (
-                              <div
-                                 key={color.name}
-                                 onClick={() =>
-                                    toggleColor(color.normalizedName)
-                                 }
-                                 className={cn(
-                                    'h-[30px] w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
-                                    {
-                                       'ring-2 ring-[#2563EB] ring-offset-2 ring-offset-white':
-                                          selectedColors.includes(
-                                             color.normalizedName,
-                                          ),
-                                    },
-                                 )}
-                                 style={{
-                                    backgroundColor: color.hex,
-                                 }}
-                              />
-                           ))}
-                        </div>
+                        <TooltipProvider delayDuration={200}>
+                           <div className="grid grid-cols-4 gap-x-0 gap-y-4 ml-2">
+                              {colors.map((color) => (
+                                 <Tooltip key={color.name}>
+                                    <TooltipTrigger asChild>
+                                       <div
+                                          onClick={() =>
+                                             toggleColor(color.normalizedName)
+                                          }
+                                          className={cn(
+                                             'h-[30px] w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
+                                             {
+                                                'ring-2 ring-[#2563EB] ring-offset-2 ring-offset-white':
+                                                   selectedColors.includes(
+                                                      color.normalizedName,
+                                                   ),
+                                             },
+                                          )}
+                                          style={{
+                                             backgroundColor: color.hex,
+                                          }}
+                                       />
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={12} side="top">
+                                       <p>{color.name}</p>
+                                    </TooltipContent>
+                                 </Tooltip>
+                              ))}
+                           </div>
+                        </TooltipProvider>
                      </AccordionContent>
                   </AccordionItem>
                </motion.div>

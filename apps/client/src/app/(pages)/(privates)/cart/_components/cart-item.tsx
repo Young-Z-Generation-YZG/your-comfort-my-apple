@@ -71,13 +71,13 @@ const CartItem = ({
    onRemoveItem,
 }: CartItemProps) => {
    const handleIncrement = () => {
-      if (currentCartItem.quantity < MAX_QUANTITY) {
+      if (currentCartItem && currentCartItem.quantity < MAX_QUANTITY) {
          onQuantityChange(index, currentCartItem.quantity + 1);
       }
    };
 
    const handleDecrement = () => {
-      if (currentCartItem.quantity > MIN_QUANTITY) {
+      if (currentCartItem && currentCartItem.quantity > MIN_QUANTITY) {
          onQuantityChange(index, currentCartItem.quantity - 1);
       }
    };
@@ -93,7 +93,7 @@ const CartItem = ({
       onQuantityChange(index, clampedValue);
    };
 
-   if (!currentCartItem) return null;
+   if (!currentCartItem && !item) return null;
 
    return (
       <div
@@ -175,7 +175,10 @@ const CartItem = ({
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-l-full flex p-0 z-0"
                      onClick={handleDecrement}
-                     disabled={currentCartItem.quantity <= MIN_QUANTITY}
+                     disabled={
+                        currentCartItem &&
+                        currentCartItem.quantity <= MIN_QUANTITY
+                     }
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">-</p>
                   </Button>
@@ -184,14 +187,24 @@ const CartItem = ({
                      min={MIN_QUANTITY}
                      max={MAX_QUANTITY}
                      className="w-8 h-6 p-0 border-x-0 border-[#ebebeb] text-center rounded-none text-xs"
-                     value={currentCartItem.quantity}
+                     value={(() => {
+                        if (item.quantity) {
+                           return item.quantity;
+                        }
+                        if (currentCartItem && currentCartItem.quantity) {
+                           return currentCartItem.quantity;
+                        }
+                     })()}
                      onChange={handleInputChange}
                   />
                   <Button
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-r-full flex p-0"
                      onClick={handleIncrement}
-                     disabled={currentCartItem.quantity >= MAX_QUANTITY}
+                     disabled={
+                        currentCartItem &&
+                        currentCartItem.quantity >= MAX_QUANTITY
+                     }
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">+</p>
                   </Button>

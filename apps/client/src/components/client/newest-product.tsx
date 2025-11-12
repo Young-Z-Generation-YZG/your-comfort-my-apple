@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { TNewestProduct } from '~/infrastructure/services/product.service';
 
@@ -9,6 +10,7 @@ type NewestProductProps = {
 };
 
 const NewestProduct = ({ product }: NewestProductProps) => {
+   const router = useRouter();
    const { minPrice, maxPrice } = useMemo(() => {
       if (!product.sku_prices || product.sku_prices.length === 0) {
          return { minPrice: 0, maxPrice: 0 };
@@ -36,9 +38,11 @@ const NewestProduct = ({ product }: NewestProductProps) => {
 
    return (
       <div
-         className="group relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-blue-200 
-                    bg-gradient-to-br from-white to-blue-50/30 shadow-lg transition-all duration-300 
-                    hover:shadow-2xl hover:scale-[1.02] dark:border-blue-700 dark:from-gray-800 dark:to-blue-950/30"
+         className="group relative flex h-full flex-col overflow-hidden rounded-3xl border-2 border-blue-200
+                    bg-gradient-to-br from-white to-blue-50/30 transition-all duration-300 
+                     hover:scale-[1.02] hover:shadow-[0_4px_12px_-2px_rgba(59,130,246,0.3)] 
+                     dark:border-blue-700 dark:from-gray-800 dark:to-blue-950/30 
+                     dark:hover:shadow-[0_4px_12px_-2px_rgba(59,130,246,0.25)]"
       >
          {/* NEW Badge */}
          <div className="absolute left-4 top-4 z-10">
@@ -104,6 +108,9 @@ const NewestProduct = ({ product }: NewestProductProps) => {
                className="w-full rounded-full bg-gradient-to-r from-blue-600 to-purple-600 py-3.5 text-base 
                           font-semibold text-white shadow-lg transition-all duration-300 
                           hover:from-blue-700 hover:to-purple-700 hover:shadow-xl hover:-translate-y-0.5"
+               onClick={() => {
+                  router.push(`/products/iphone/${product.slug}`);
+               }}
             >
                Discover now
             </button>

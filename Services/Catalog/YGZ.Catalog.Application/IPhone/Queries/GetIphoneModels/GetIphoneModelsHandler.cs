@@ -93,7 +93,7 @@ public class GetIphoneModelsHandler : IQueryHandler<GetIphoneModelsQuery, Pagina
 
         if (request.Models is not null && request.Models.Any())
         {
-            var productModels = request.Models.Select(x => x.ToLower()).ToList();
+            var productModels = request.Models.Select(x => x.ToUpper()).ToList();
             filter &= filterBuilder.AnyIn(x => x.Models.Select(m => m.NormalizedName), productModels);
         }
 
