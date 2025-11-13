@@ -1,0 +1,112 @@
+@startuml
+actor Actor
+boundary SignUpPage
+control AuthController
+control RegisterHandler
+control KeycloakService
+control IdentityService
+control OtpGenerator
+control CachedRepository
+control EmailService
+database DB
+
+Actor -> SignUpPage: input(email, password, \nconfirm_password, \nfirst_name, last_name, \nphone_number, birth_day, country)
+activate Actor
+activate SignUpPage
+
+SignUpPage -> AuthController: registerCmd(dto)
+activate AuthController
+
+AuthController -> RegisterHandler: registerCmd(dto)
+activate RegisterHandler
+
+RegisterHandler -> KeycloakService: GetUserByUsernameOrEmailAsync(email)
+activate KeycloakService
+KeycloakService --> RegisterHandler: Result(existingUser)
+deactivate KeycloakService
+
+alt user already exists
+    RegisterHandler --> AuthController: return Errors.User.AlreadyExists
+    deactivate RegisterHandler
+    AuthController --> SignUpPage: return Error(message)
+    deactivate AuthController
+    SignUpPage --> Actor: message("Email already exists")
+    deactivate SignUpPage
+    deactivate Actor
+else user not found
+    RegisterHandler -> KeycloakService: CreateKeycloakUserAsync(userRepresentation)
+    activate KeycloakService
+    KeycloakService --> RegisterHandler: Result(keycloakUserId)
+    deactivate KeycloakService
+
+    alt keycloak user creation failed
+        RegisterHandler -> KeycloakService: DeleteKeycloakUserAsync(keycloakUserId)
+        RegisterHandler --> AuthController: return keycloakResult.Error
+        deactivate RegisterHandler
+        AuthController --> SignUpPage: return Error(message)
+        deactivate AuthController
+        SignUpPage --> Actor: message("Registration failed")
+        deactivate SignUpPage
+        deactivate Actor
+    else keycloak user created
+        RegisterHandler -> IdentityService: CreateUserAsync(dto, keycloakUserId)
+        activate IdentityService
+        IdentityService -> DB: SaveUser(user)
+        activate DB
+        DB --> IdentityService: Result(userRecord)
+        deactivate DB
+        IdentityService --> RegisterHandler: Result(userResult)
+        deactivate IdentityService
+
+        alt identity user creation failed
+            RegisterHandler -> KeycloakService: DeleteKeycloakUserAsync(keycloakUserId)
+            RegisterHandler --> AuthController: return userResult.Error
+            deactivate RegisterHandler
+            AuthController --> SignUpPage: return Error(message)
+            deactivate AuthController
+            SignUpPage --> Actor: message("Registration failed")
+            deactivate SignUpPage
+            deactivate Actor
+        else identity user created
+            RegisterHandler -> OtpGenerator: GenerateOtp(6)
+            OtpGenerator --> RegisterHandler: otp
+
+            RegisterHandler -> CachedRepository: SetAsync(email, otp, 5 minutes)
+            CachedRepository --> RegisterHandler: stored
+
+            RegisterHandler -> IdentityService: GenerateEmailVerificationTokenAsync(email)
+            activate IdentityService
+            IdentityService -> DB: CreateEmailVerificationToken(email)
+            activate DB
+            DB --> IdentityService: Result(token)
+            deactivate DB
+            IdentityService --> RegisterHandler: Result(tokenResult)
+            deactivate IdentityService
+
+            RegisterHandler -> EmailService: SendEmailAsync(emailCommand)
+            activate EmailService
+            EmailService --> RegisterHandler: sent
+            deactivate EmailService
+
+            alt email sending failed
+                RegisterHandler --> AuthController: return Errors.Email.FailureToSendEmail
+                deactivate RegisterHandler
+                AuthController --> SignUpPage: return Error(message)
+                deactivate AuthController
+                SignUpPage --> Actor: message("Registration failed")
+                deactivate SignUpPage
+                deactivate Actor
+            else email sent
+                RegisterHandler --> AuthController: return EmailVerificationResponse(params, verificationType, ttl)
+                deactivate RegisterHandler
+                AuthController --> SignUpPage: return EmailVerificationResponse
+                deactivate AuthController
+                SignUpPage --> Actor: message("Check your \nemail to verify account")
+                deactivate SignUpPage
+                deactivate Actor
+            end
+        end
+    end
+end
+
+@enduml

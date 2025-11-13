@@ -1,0 +1,98 @@
+@startuml
+actor Actor
+boundary HomePage
+boundary SignInPage
+control AuthController
+control LoginHandler
+control IdentityService
+control KeycloakService
+control OtpGenerator
+control CachedRepository
+control EmailService
+database DB
+
+Actor -> SignInPage: input(email,password)
+activate Actor
+activate SignInPage
+
+SignInPage -> AuthController: login(dto)
+activate AuthController
+
+AuthController -> LoginHandler: login(dto)
+activate LoginHandler
+
+LoginHandler -> IdentityService: LoginAsync(dto)
+activate IdentityService
+IdentityService -> DB: validateCredentials(dto)
+activate DB
+DB --> IdentityService: Result(user)
+deactivate DB
+IdentityService --> LoginHandler: Result(user)
+deactivate IdentityService
+
+alt login failed
+    LoginHandler --> AuthController: return Error(message)
+    deactivate LoginHandler
+    AuthController --> SignInPage: return Error(message)
+    deactivate AuthController
+    SignInPage --> Actor: message("Invalid credentials")
+    deactivate SignInPage
+    deactivate Actor
+else login success
+    alt email not confirmed
+        LoginHandler -> OtpGenerator: GenerateOtp(6)
+        OtpGenerator --> LoginHandler: otp
+
+        LoginHandler -> CachedRepository: SetAsync(email, otp, 5 minutes)
+        CachedRepository --> LoginHandler: stored
+
+        LoginHandler -> IdentityService: GenerateEmailVerificationTokenAsync(email)
+        activate IdentityService
+        IdentityService -> DB: CreateEmailVerificationToken(email)
+        activate DB
+        DB --> IdentityService: Result(token)
+        deactivate DB
+        IdentityService --> LoginHandler: Result(tokenResult)
+        deactivate IdentityService
+
+        alt token generation failed
+            LoginHandler --> AuthController: return tokenResult.Error
+            deactivate LoginHandler
+            AuthController --> SignInPage: return Error(message)
+            deactivate AuthController
+            SignInPage --> Actor: message("Verification unavailable")
+            deactivate SignInPage
+            deactivate Actor
+        else token generated
+            LoginHandler -> EmailService: SendEmailAsync(emailCommand)
+            activate EmailService
+            EmailService --> LoginHandler: sent
+            deactivate EmailService
+
+            LoginHandler --> AuthController: return EmailVerificationResponse(params, verificationType)
+            deactivate LoginHandler
+            AuthController --> SignInPage: return EmailVerificationResponse
+            deactivate AuthController
+            SignInPage --> Actor: message("Check your email to verify account")
+            deactivate SignInPage
+            deactivate Actor
+        end
+    else email confirmed
+        LoginHandler -> KeycloakService: GetKeycloakTokenPairAsync(dto)
+        activate KeycloakService
+        KeycloakService --> LoginHandler: TokenPair(accessToken, refreshToken)
+        deactivate KeycloakService
+
+        LoginHandler --> AuthController: return LoginResponse(tokens)
+        deactivate LoginHandler
+        AuthController --> SignInPage: return LoginResponse(tokens)
+        deactivate AuthController
+        SignInPage -> HomePage: navigate()
+        activate HomePage
+        HomePage --> Actor: display(HomePage)
+        deactivate HomePage
+        deactivate SignInPage
+        deactivate Actor
+    end
+end
+@enduml
