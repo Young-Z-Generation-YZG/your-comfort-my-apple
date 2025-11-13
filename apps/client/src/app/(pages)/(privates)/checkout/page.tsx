@@ -177,34 +177,26 @@ const CheckoutPage = () => {
    }, [isLoadingAddresses, isLoadingBasket]);
 
    useEffect(() => {
-      const getAddresses = async () => {
-         await getAddressesAsync();
-      };
-
-      getAddresses();
+      getAddressesAsync();
    }, [getAddressesAsync]);
 
    useEffect(() => {
-      const getCheckoutItems = async () => {
-         await getCheckoutItemsAsync({ _couponCode: appliedCouponFromQuery });
-      };
-
-      getCheckoutItems();
+      getCheckoutItemsAsync({ _couponCode: appliedCouponFromQuery });
    }, [getCheckoutItemsAsync, appliedCouponFromQuery]);
 
-   const defaultAddress = useMemo(() => {
-      if (getAddressesState.data) {
-         const getDefaultAddress = (
-            getAddressesState.data as unknown as TAddressItem[]
-         ).find((address) => address.is_default);
+   //  const defaultAddress = useMemo(() => {
+   //     if (getAddressesState.data) {
+   //        const getDefaultAddress = (
+   //           getAddressesState.data as unknown as TAddressItem[]
+   //        ).find((address) => address.is_default);
 
-         if (getDefaultAddress) {
-            return getDefaultAddress;
-         }
-      }
+   //        if (getDefaultAddress) {
+   //           return getDefaultAddress;
+   //        }
+   //     }
 
-      return null;
-   }, [getAddressesState]);
+   //     return null;
+   //  }, [getAddressesState]);
 
    const addressesList = useMemo(() => {
       if (getAddressesState.data) {
@@ -218,12 +210,12 @@ const CheckoutPage = () => {
       resolver: CheckoutResolver,
       defaultValues: {
          shipping_address: {
-            contact_name: defaultAddress?.contact_name || '',
-            contact_phone_number: defaultAddress?.contact_phone_number || '',
-            address_line: defaultAddress?.address_line || '',
-            district: defaultAddress?.district || '',
-            province: defaultAddress?.province || '',
-            country: defaultAddress?.country || '',
+            contact_name: '',
+            contact_phone_number: '',
+            address_line: '',
+            district: '',
+            province: '',
+            country: '',
          },
          payment_method: undefined,
          discount_code: null,
@@ -245,10 +237,32 @@ const CheckoutPage = () => {
    };
 
    useEffect(() => {
-      if (defaultAddress) {
-         setSelectedAddress(defaultAddress);
+      if (getAddressesState.isSuccess && getAddressesState.data) {
+         const defaultAddress = getAddressesState.data.find(
+            (address) => address.is_default,
+         );
+
+         if (defaultAddress) {
+            setSelectedAddress(defaultAddress);
+
+            form.setValue(
+               'shipping_address.contact_name',
+               defaultAddress.contact_name,
+            );
+            form.setValue(
+               'shipping_address.contact_phone_number',
+               defaultAddress.contact_phone_number,
+            );
+            form.setValue(
+               'shipping_address.address_line',
+               defaultAddress.address_line,
+            );
+            form.setValue('shipping_address.district', defaultAddress.district);
+            form.setValue('shipping_address.province', defaultAddress.province);
+            form.setValue('shipping_address.country', defaultAddress.country);
+         }
       }
-   }, [defaultAddress]);
+   }, [getAddressesState, form]);
 
    const handleSubmit = async (data: CheckoutFormType) => {
       const result = await checkoutBasketAsync(data);
