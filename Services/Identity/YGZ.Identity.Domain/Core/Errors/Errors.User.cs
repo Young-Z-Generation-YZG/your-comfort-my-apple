@@ -16,5 +16,6 @@ public static partial class Errors
         public static Error CannotResetPassword = Error.BadRequest(code: "User.CannotResetPassword", message: "User cannot reset password", serviceName: "IdentityService");
         public static Error CannotChangePassword = Error.BadRequest(code: "User.CannotChangePassword", message: "User cannot change password", serviceName: "IdentityService");
         public static Error CannotGetRoles = Error.BadRequest(code: "User.CannotGetRoles", message: "Cannot get user roles", serviceName: "IdentityService");
+        public static Error CannotBeDeleted = Error.BadRequest(code: "User.CannotBeDeleted", message: "User cannot be deleted", serviceName: "IdentityService");
     }
 }
