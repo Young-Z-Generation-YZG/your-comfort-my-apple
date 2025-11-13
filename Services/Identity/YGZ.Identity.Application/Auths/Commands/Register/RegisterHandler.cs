@@ -74,9 +74,13 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
         if (keycloakUserResult.IsFailure)
         {
-            await _keycloakService.DeleteKeycloakUserAsync(keycloakUserResult.Response!);
+            var deleteResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserResult.Response!);
+            if (deleteResult.IsFailure)
+            {
+                _logger.LogError("Failed to delete keycloak user: {ErrorMessage}", deleteResult.Error.Message);
+            }
 
-            return keycloakUserResult.Error;
+            return Errors.User.FailedToRegister;
         }
 
         var createResult = await _identityService.CreateUserAsync(request, new Guid(keycloakUserId));
@@ -84,12 +88,13 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         if (createResult.IsFailure)
         {
             // rollback keycloak user
-            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
-
-            if (!boolResult.Response)
+            var deleteResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+            if (deleteResult.IsFailure)
             {
-                return createResult.Error;
+                _logger.LogError("Failed to delete keycloak user: {ErrorMessage}", deleteResult.Error.Message);
             }
+
+            return Errors.User.FailedToRegister;
         }
 
         var otp = _otpGenerator.GenerateOtp(6);
@@ -101,18 +106,20 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         if (emailTokenResult.IsFailure)
         {
             // rollback keycloak user
-            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
-            if (!boolResult.Response)
+            var deleteResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+            if (deleteResult.IsFailure)
             {
-                return emailTokenResult.Error;
+                _logger.LogError("Failed to delete keycloak user: {ErrorMessage}", deleteResult.Error.Message);
             }
 
             // rollback user
             var boolResult2 = await _identityService.DeleteUserAsync(keycloakUserId);
-            if (!boolResult2.Response)
+            if (boolResult2.IsFailure)
             {
-                return emailTokenResult.Error;
+                _logger.LogError("Failed to delete user: {ErrorMessage}", boolResult2.Error.Message);
             }
+
+            return Errors.User.FailedToRegister;
         }
 
         var command = new EmailCommand(
@@ -132,23 +139,25 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         {
             await _emailService.SendEmailAsync(command);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // rollback keycloak user
-            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
-            if (!boolResult.Response)
+            var deleteResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+            if (deleteResult.IsFailure)
             {
-                return Errors.Keycloak.UserNotFound;
+                _logger.LogError("Failed to delete keycloak user: {ErrorMessage}", deleteResult.Error.Message);
             }
 
             // rollback user
             var boolResult2 = await _identityService.DeleteUserAsync(keycloakUserId);
-            if (!boolResult2.Response)
+            if (boolResult2.IsFailure)
             {
-                return Errors.User.CannotBeDeleted;
+                _logger.LogError("Failed to delete user: {ErrorMessage}", boolResult2.Error.Message);
             }
 
-            throw;
+            _logger.LogError("Failed to send email: {ErrorMessage}", ex.Message);
+
+            return Errors.User.FailedToRegister;
         }
 
         Dictionary<string, string> Params = new Dictionary<string, string>

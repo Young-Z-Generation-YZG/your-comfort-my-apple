@@ -777,6 +777,8 @@ public class KeycloakService : IKeycloakService
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
                 return true;
+            } else {
+                return Errors.Keycloak.FailedToDeleteUser;
             }
         }
         catch (HttpRequestException)
@@ -787,8 +789,6 @@ public class KeycloakService : IKeycloakService
         {
             throw;
         }
-
-        return false;
     }
 
     public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName)
