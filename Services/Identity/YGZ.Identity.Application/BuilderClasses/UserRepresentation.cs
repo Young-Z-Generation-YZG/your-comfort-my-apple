@@ -121,7 +121,7 @@ public class UserRepresentationBuilder
         return this;
     }
 
-    public UserRepresentationBuilder WithAttribute(string key, string value)
+    private UserRepresentationBuilder WithAttribute(string key, string value)
     {
         _userRepresentation.Attributes ??= new Dictionary<string, List<string>>();
 
@@ -148,9 +148,9 @@ public class UserRepresentationBuilder
         return WithAttribute("tenant_id", tenantId);
     }
 
-    public UserRepresentationBuilder WithTenantCode(string tenantCode)
+    public UserRepresentationBuilder WithSubDomain(string subDomain)
     {
-        return WithAttribute("tenant_code", tenantCode);
+        return WithAttribute("sub_domain", subDomain);
     }
 
     public UserRepresentationBuilder WithTenantType(string tenantType)
@@ -163,15 +163,21 @@ public class UserRepresentationBuilder
         return WithAttribute("branch_id", branchId);
     }
 
+    public UserRepresentationBuilder WithFullName(string fullName)
+    {
+        return WithAttribute("full_name", fullName);
+    }
+
     /// <summary>
     /// Adds all tenant-related attributes at once
     /// </summary>
-    public UserRepresentationBuilder WithTenantAttributes(string? tenantId, string? tenantCode, string? tenantType, string? branchId)
+    public UserRepresentationBuilder WithTenantAttributes(string? tenantId, string? subDomain, string? tenantType, string? branchId, string? fullName)
     {
         return WithTenantId(tenantId ?? "")
-               .WithTenantCode(tenantCode ?? "")
+               .WithSubDomain(subDomain ?? "")
                .WithTenantType(tenantType ?? "")
-               .WithBranchId(branchId ?? "");
+               .WithBranchId(branchId ?? "")
+               .WithFullName(fullName ?? "");
     }
 
     public UserRepresentation Build()

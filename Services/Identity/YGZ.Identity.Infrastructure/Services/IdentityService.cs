@@ -82,13 +82,6 @@ public class IdentityService : IIdentityService
     {
         try
         {
-            var existingUser = await _userManager.FindByEmailAsync(request.Email);
-
-            if (existingUser is not null)
-            {
-                return Errors.User.AlreadyExists;
-            }
-
             var newUser = User.Create(
                 guid: userId,
                 email: request.Email,
@@ -106,6 +99,8 @@ public class IdentityService : IIdentityService
             );
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
+
+            var checkRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER); 
 
             var result = await _userManager.CreateAsync(newUser);
 
@@ -157,23 +152,23 @@ public class IdentityService : IIdentityService
         }
         catch (Exception)
         {
-            //_logger.LogError(ex, "Exception occurred: {Message} {@Exception}", ex.Message, ex);
             throw;
         }
     }
 
-    public async Task<Result<string>> GenerateEmailVerificationTokenAsync(string email)
+    public async Task<Result<string>> GenerateEmailVerificationTokenAsync(string userId)
     {
         try
         {
-            var searchResult = await FindUserAsync(email);
-            if (searchResult.IsFailure)
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
             {
-                return searchResult.Error;
+                return Errors.User.DoesNotExist;
             }
 
-            var user = searchResult.Response!;
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
             var encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
             return encodedToken;
@@ -359,7 +354,57 @@ public class IdentityService : IIdentityService
         }
         catch (Exception)
         {
-            return Errors.User.CannotGetRoles;
+            throw;
+        }
+    }
+
+    public async Task<Result<User?>> FindUserByEmailAsync(string email)
+    {
+        try
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+        if(user is null)
+        {
+            return Errors.User.DoesNotExist;
+        }
+
+        return user;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public async Task<Result<bool>> DeleteUserAsync(string keycloakUserId)
+    {
+        try
+        {
+            if (!Guid.TryParse(keycloakUserId, out var userId))
+            {
+                return Errors.User.DoesNotExist;
+            }
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user is null)
+            {
+                return Errors.User.DoesNotExist;
+            }
+
+            var deleteResult = await _userManager.DeleteAsync(user);
+
+            if (!deleteResult.Succeeded)
+            {
+                return Errors.User.CannotBeDeleted;
+            }
+
+            return true;
+        }
+        catch (Exception)
+        {
+            throw;
         }
     }
 }

@@ -214,7 +214,6 @@ public class KeycloakService : IKeycloakService
             {
                 await DeleteKeycloakUserAsync(userId!);
 
-                _logger.LogError("Failed to assign role to user {UserId}", userId);
                 return Errors.Keycloak.CannotAssignRole;
             }
         }
@@ -775,35 +774,21 @@ public class KeycloakService : IKeycloakService
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            // According to Keycloak API docs, successful deletion returns 204 No Content
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                _logger.LogInformation("Successfully deleted Keycloak user with ID: {UserId}", keycloakUserId);
                 return true;
             }
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                _logger.LogWarning("Keycloak user not found with ID: {UserId}", keycloakUserId);
-                return Errors.Keycloak.UserNotFound;
-            }
-
-            var errorContent = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Failed to delete Keycloak user. Status: {StatusCode}, Error: {Error}",
-                response.StatusCode, errorContent);
-
-            return Errors.Keycloak.CannotBeDeleted;
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
-            _logger.LogError(ex, "HTTP request exception while deleting Keycloak user with ID: {UserId}", keycloakUserId);
-            return Errors.Keycloak.CannotBeDeleted;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Unexpected error while deleting Keycloak user with ID: {UserId}", keycloakUserId);
             throw;
         }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return false;
     }
 
     public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName)

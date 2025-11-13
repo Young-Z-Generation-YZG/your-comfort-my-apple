@@ -25,13 +25,13 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
     private readonly IEmailService _emailService;
     private readonly string _webClientUrl;
 
-    public RegisterHandler(IIdentityService identityService,
-                                  ILogger<RegisterHandler> logger,
-                                  IKeycloakService keycloakService,
-                                  IOtpGenerator otpGenerator,
-                                  IEmailService emailService,
-                                  ICachedRepository cachedRepository,
-                                  IConfiguration configuration)
+    public RegisterHandler(ILogger<RegisterHandler> logger,
+                           IIdentityService identityService,
+                           IKeycloakService keycloakService,
+                           IOtpGenerator otpGenerator,
+                           IEmailService emailService,
+                           ICachedRepository cachedRepository,
+                           IConfiguration configuration)
     {
         _logger = logger;
         _identityService = identityService;
@@ -44,9 +44,10 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
     public async Task<Result<EmailVerificationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var keycloakUser = await _keycloakService.GetUserByUsernameOrEmailAsync(request.Email);
 
-        if (keycloakUser.Response is not null)
+        var userResult = await _identityService.FindUserByEmailAsync(request.Email);
+
+        if(userResult.Response is not null)
         {
             return Errors.User.AlreadyExists;
         }
@@ -61,49 +62,68 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
             .WithPassword(request.Password)
             .WithTenantAttributes(
                 tenantId: null,
-                tenantCode: null,
+                subDomain: null,
                 tenantType: null,
-                branchId: null
+                branchId: null,
+                fullName: $"{request.FirstName} {request.LastName}"
             )
             .Build();
 
-        var keycloakResult = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+        var keycloakUserResult = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+        var keycloakUserId = keycloakUserResult.Response!;
 
-        if (keycloakResult.IsFailure)
+        if (keycloakUserResult.IsFailure)
         {
-            await _keycloakService.DeleteKeycloakUserAsync(keycloakResult.Response!);
+            await _keycloakService.DeleteKeycloakUserAsync(keycloakUserResult.Response!);
 
-            return keycloakResult.Error;
+            return keycloakUserResult.Error;
         }
 
-        var userResult = await _identityService.CreateUserAsync(request, new Guid(keycloakResult.Response!));
+        var createResult = await _identityService.CreateUserAsync(request, new Guid(keycloakUserId));
 
-        if (userResult.IsFailure)
+        if (createResult.IsFailure)
         {
-            await _keycloakService.DeleteKeycloakUserAsync(keycloakResult.Response!);
-            return userResult.Error;
+            // rollback keycloak user
+            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+
+            if (!boolResult.Response)
+            {
+                return createResult.Error;
+            }
         }
 
         var otp = _otpGenerator.GenerateOtp(6);
 
         await _cachedRepository.SetAsync(request.Email, otp, TimeSpan.FromMinutes(5));
 
-        var tokenResult = await _identityService.GenerateEmailVerificationTokenAsync(request.Email).ConfigureAwait(false);
+        var emailTokenResult = await _identityService.GenerateEmailVerificationTokenAsync(keycloakUserId).ConfigureAwait(false);
 
-        if (tokenResult.IsFailure)
+        if (emailTokenResult.IsFailure)
         {
-            return tokenResult.Error;
+            // rollback keycloak user
+            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+            if (!boolResult.Response)
+            {
+                return emailTokenResult.Error;
+            }
+
+            // rollback user
+            var boolResult2 = await _identityService.DeleteUserAsync(keycloakUserId);
+            if (!boolResult2.Response)
+            {
+                return emailTokenResult.Error;
+            }
         }
 
         var command = new EmailCommand(
                     ReceiverEmail: request.Email,
-                    Subject: "YGZ Zone Email Verifycation",
+                    Subject: "YGZ Zone Email Verification",
                     ViewName: "EmailVerification",
                     Model: new EmailVerificationModel
                     {
                         FullName = $"{request.FirstName} {request.LastName}",
                         VerifyOtp = otp,
-                        VerificationLink = $"{_webClientUrl}/verify/otp?_email={request.Email}&_token={tokenResult.Response}&_otp={otp}"
+                        VerificationLink = $"{_webClientUrl}/verify/otp?_email={request.Email}&_token={emailTokenResult.Response}&_otp={otp}"
                     },
                     Attachments: null
         );
@@ -112,17 +132,29 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         {
             await _emailService.SendEmailAsync(command);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError("Failed to send email verification to {Email}. Error: {Error}", request.Email, ex.Message);
+            // rollback keycloak user
+            var boolResult = await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
+            if (!boolResult.Response)
+            {
+                return Errors.Keycloak.UserNotFound;
+            }
 
-            return Errors.Email.FailureToSendEmail;
+            // rollback user
+            var boolResult2 = await _identityService.DeleteUserAsync(keycloakUserId);
+            if (!boolResult2.Response)
+            {
+                return Errors.User.CannotBeDeleted;
+            }
+
+            throw;
         }
 
         Dictionary<string, string> Params = new Dictionary<string, string>
         {
             { "_email", request.Email },
-            { "_token", tokenResult.Response! }
+            { "_token", emailTokenResult.Response! }
         };
 
         var response = new EmailVerificationResponse
