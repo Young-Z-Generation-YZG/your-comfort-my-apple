@@ -6,5 +6,5 @@ namespace YGZ.Catalog.Application.Inventory.Commands.UpdateSkuCommand;
 
 public sealed record DeductQuantityCommand : ICommand<bool>
 {
-    public required OrderConfirmedIntegrationEvent Order { get; init; }
+    public required OrderIntegrationEvent Order { get; init; }
 }

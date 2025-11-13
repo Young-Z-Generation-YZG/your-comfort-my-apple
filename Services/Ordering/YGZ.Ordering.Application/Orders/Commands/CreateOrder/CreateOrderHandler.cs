@@ -44,7 +44,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     tx: request.Tx,
                                     code: Code.GenerateCode(),
                                     paymentMethod: paymentMethodEnum,
-                                    orderStatus: paymentMethodEnum.Name == EPaymentMethod.SOLANA.Name ? EOrderStatus.PAID : EOrderStatus.PENDING,
+                                    orderStatus: EOrderStatus.PENDING,
                                     shippingAddress: shippingAddress,
                                     promotionId: request.Promotion?.PromotionId,
                                     promotionType: request.Promotion?.PromotionType,
@@ -53,30 +53,34 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     discountAmount: request.Promotion?.DiscountAmount,
                                     totalAmount: request.TotalAmount);
 
-        foreach (var orderItem in request.OrderItems)
-        {
-            var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
-                                                tenantId: null,
-                                                branchId: null,
-                                                orderId: newOrder.Id,
-                                                skuId: orderItem.SkuId,
-                                                modelId: orderItem.ModelId,
-                                                modelName: orderItem.NormalizedModel,
-                                                colorName: orderItem.NormalizedColor,
-                                                storageName: orderItem.NormalizedStorage,
-                                                unitPrice: orderItem.UnitPrice,
-                                                displayImageUrl: orderItem.DisplayImageUrl,
-                                                modelSlug: orderItem.ModelSlug,
-                                                quantity: orderItem.Quantity,
-                                                promotionId: orderItem.Promotion?.PromotionId,
-                                                promotionType: orderItem.Promotion?.PromotionType,
-                                                discountType: orderItem.Promotion?.DiscountType,
-                                                discountValue: orderItem.Promotion?.DiscountValue,
-                                                discountAmount: orderItem.Promotion?.DiscountAmount,
-                                                isReviewed: false);
-
-            newOrder.AddOrderItem(newOrderItem);
+        if (paymentMethodEnum == EPaymentMethod.SOLANA) {
+            newOrder.SetPaid();
         }
+
+            foreach (var orderItem in request.OrderItems)
+            {
+                var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
+                                                    tenantId: null,
+                                                    branchId: null,
+                                                    orderId: newOrder.Id,
+                                                    skuId: orderItem.SkuId,
+                                                    modelId: orderItem.ModelId,
+                                                    modelName: orderItem.NormalizedModel,
+                                                    colorName: orderItem.NormalizedColor,
+                                                    storageName: orderItem.NormalizedStorage,
+                                                    unitPrice: orderItem.UnitPrice,
+                                                    displayImageUrl: orderItem.DisplayImageUrl,
+                                                    modelSlug: orderItem.ModelSlug,
+                                                    quantity: orderItem.Quantity,
+                                                    promotionId: orderItem.Promotion?.PromotionId,
+                                                    promotionType: orderItem.Promotion?.PromotionType,
+                                                    discountType: orderItem.Promotion?.DiscountType,
+                                                    discountValue: orderItem.Promotion?.DiscountValue,
+                                                    discountAmount: orderItem.Promotion?.DiscountAmount,
+                                                    isReviewed: false);
+
+                newOrder.AddOrderItem(newOrderItem);
+            }
 
 
         var result = await _repository.AddAsync(newOrder, cancellationToken);

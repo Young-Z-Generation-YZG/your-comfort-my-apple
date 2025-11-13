@@ -752,7 +752,7 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception)
         {
-            return null;
+            throw;
         }
     }
 

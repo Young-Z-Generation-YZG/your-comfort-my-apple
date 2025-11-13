@@ -6,19 +6,19 @@ using YGZ.Ordering.Domain.Orders.Events;
 
 namespace YGZ.Ordering.Application.Orders.Events.Domains;
 
-public class OrderConfirmedDomainEventHandler : INotificationHandler<OrderConfirmedDomainEvent>
+public class OrderPaidDomainEventHandler : INotificationHandler<OrderPaidDomainEvent>
 {
-    private readonly ILogger<OrderConfirmedDomainEventHandler> _logger;
+    private readonly ILogger<OrderPaidDomainEventHandler> _logger;
     private readonly IPublishEndpoint _integrationEventSender;
 
-    public OrderConfirmedDomainEventHandler(ILogger<OrderConfirmedDomainEventHandler> logger,
-                                            IPublishEndpoint integrationEventSender)
+    public OrderPaidDomainEventHandler(ILogger<OrderPaidDomainEventHandler> logger,
+                                       IPublishEndpoint integrationEventSender)
     {
         _logger = logger;
         _integrationEventSender = integrationEventSender;
     }
 
-    public async Task Handle(OrderConfirmedDomainEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(OrderPaidDomainEvent notification, CancellationToken cancellationToken)
     {
         var orderItems = notification.Order.OrderItems.Select(x => new OrderItemIntegrationEvent
         {
@@ -32,7 +32,8 @@ public class OrderConfirmedDomainEventHandler : INotificationHandler<OrderConfir
             PromotionType = x.PromotionType
         }).ToList();
 
-        await _integrationEventSender.Publish(new OrderConfirmedIntegrationEvent
+
+        await _integrationEventSender.Publish(new OrderPaidIntegrationEvent
         {
             Order = new OrderIntegrationEvent
             {

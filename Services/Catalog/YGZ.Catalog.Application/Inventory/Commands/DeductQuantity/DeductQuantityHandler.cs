@@ -1,7 +1,5 @@
 ﻿
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -27,15 +25,7 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
     {
         foreach (var orderItem in request.Order.OrderItems)
         {
-            FilterDefinition<SKU> filter = null;
-
-            filter = Builders<SKU>.Filter.And(
-                   Builders<SKU>.Filter.Eq("model_id", new ObjectId(orderItem.ModelId)),
-                   Builders<SKU>.Filter.Eq("model.normalized_name", orderItem.NormalizedModel),
-                   Builders<SKU>.Filter.Eq("storage.normalized_name", orderItem.NormalizedStorage),
-                   Builders<SKU>.Filter.Eq("color.normalized_name", orderItem.NormalizedColor));
-
-            var sku = await _repository.GetByFilterAsync(filter, cancellationToken);
+            var sku = await _repository.GetByIdAsync(orderItem.SkuId, cancellationToken);
 
             if (sku is null)
             {

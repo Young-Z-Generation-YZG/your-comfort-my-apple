@@ -84,17 +84,6 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         _orderItems.Add(orderItem);
     }
 
-    //public void RemoveOrderItem(OrderItemId orderItemId)
-    //{
-    //    var item = _orderItems.FirstOrDefault(x => x.Id == orderItemId);
-
-    //    if (item is not null)
-    //    {
-    //        _orderItems.Remove(item);
-    //    }
-    //}
-
-
     public void SetPaid()
     {
         if (OrderStatus != EOrderStatus.PENDING)
@@ -103,6 +92,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         }
 
         OrderStatus = EOrderStatus.PAID;
+
+        this.AddDomainEvent(new OrderPaidDomainEvent(this));
     }
 
     public void SetConfirmed()
@@ -111,10 +102,9 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException($"Order is not in status {EOrderStatus.PENDING.Name}");
         }
+        OrderStatus = EOrderStatus.CONFIRMED;
 
         this.AddDomainEvent(new OrderConfirmedDomainEvent(this));
-
-        OrderStatus = EOrderStatus.CONFIRMED;
     }
 
     public void SetCancelled()

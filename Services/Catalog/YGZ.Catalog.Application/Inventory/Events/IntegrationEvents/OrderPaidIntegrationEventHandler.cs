@@ -6,22 +6,21 @@ using YGZ.Catalog.Application.Inventory.Commands.UpdateSkuCommand;
 
 namespace YGZ.Catalog.Application.Inventory.Events.IntegrationEvents;
 
-public class OrderConfirmedIntegrationEventHandler : IConsumer<OrderConfirmedIntegrationEvent>
+public class OrderPaidIntegrationEventHandler : IConsumer<OrderPaidIntegrationEvent>
 {
-    private readonly ILogger<OrderConfirmedIntegrationEventHandler> _logger;
+    private readonly ILogger<OrderPaidIntegrationEventHandler> _logger;
     private readonly ISender _sender;
 
-    public OrderConfirmedIntegrationEventHandler(ILogger<OrderConfirmedIntegrationEventHandler> logger,
-                                                 ISender sender)
+    public OrderPaidIntegrationEventHandler(ILogger<OrderPaidIntegrationEventHandler> logger,
+                                            ISender sender)
     {
         _logger = logger;
         _sender = sender;
     }
 
-    public async Task Consume(ConsumeContext<OrderConfirmedIntegrationEvent> context)
+    public async Task Consume(ConsumeContext<OrderPaidIntegrationEvent> context)
     {
         _logger.LogInformation("Integration event handled: {IntegrationEvent}", context.Message.GetType().Name);
-
 
         await _sender.Send(new DeductQuantityCommand
         {

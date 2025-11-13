@@ -29,8 +29,6 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 
     public async Task<Result<bool>> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
     {
-
-
         var orderId = OrderId.Of(request.OrderId);
 
         var expressions = new Expression<Func<Order, object>>[]

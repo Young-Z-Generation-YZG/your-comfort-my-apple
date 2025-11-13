@@ -52,6 +52,7 @@ service CatalogProtoService {
 
     // POST requests
     rpc CheckInsufficientGrpc (CheckInsufficientRequest) returns (BooleanResponse);
+    rpc DeductQuantityGrpc (DeductQuantityGrpcRequest) returns (BooleanResponse);
 }
 
 
@@ -110,6 +111,13 @@ message CheckInsufficientRequest {
     EPromotionTypeGrpc promotion_type = 7;
 }
 
+
+message DeductQuantityGrpcRequest {
+    google.protobuf.StringValue sku_id = 1;
+    google.protobuf.Int32Value quantity = 2;
+    google.protobuf.StringValue promotion_id = 3;
+    EPromotionTypeGrpc promotion_type = 4;
+}
 
 
 // responses

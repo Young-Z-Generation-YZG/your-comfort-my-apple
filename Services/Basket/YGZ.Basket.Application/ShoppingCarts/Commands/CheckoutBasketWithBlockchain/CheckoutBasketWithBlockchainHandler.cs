@@ -216,6 +216,8 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
         await _publishIntegrationEvent.Publish(integrationEventMessage, cancellationToken);
 
+        await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
+
         //await _basketRepository.DeleteBasketAsync(userEmail, cancellationToken);
 
         return new CheckoutBasketResponse()

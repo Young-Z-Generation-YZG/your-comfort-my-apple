@@ -4,6 +4,11 @@ namespace YGZ.BuildingBlocks.Messaging.IntegrationEvents.CatalogService;
 
 public sealed record OrderConfirmedIntegrationEvent : IntegrationEvent
 {
+    public required OrderIntegrationEvent Order { get; init; }
+}
+
+public sealed record OrderIntegrationEvent
+{
     public required string OrderId { get; init; }
     public required List<OrderItemIntegrationEvent> OrderItems { get; init; }
 }
@@ -19,3 +24,4 @@ public sealed record OrderItemIntegrationEvent
     public string? PromotionId { get; init; }
     public string? PromotionType { get; init; }
 }
+
