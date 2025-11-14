@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Linq;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;

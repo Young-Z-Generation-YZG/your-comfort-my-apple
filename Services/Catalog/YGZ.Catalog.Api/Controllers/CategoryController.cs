@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.CategoryRequest;
-using YGZ.Catalog.Application.Categories.Queries.GetCategories;
 using YGZ.Catalog.Application.Categories.Commands.CreateCategory;
+using YGZ.Catalog.Application.Categories.Queries.GetCategories;
+using YGZ.Catalog.Application.Categories.Queries.GetCategoryDetails;
 
 namespace YGZ.Catalog.Api.Controllers;
 
@@ -38,8 +39,18 @@ public class CategoryController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    [HttpGet("{categoryId}")]
+    public async Task<IActionResult> GetCategoryDetails([FromRoute] string categoryId, CancellationToken cancellationToken)
+    {
+        var query = new GetCategoryDetailsQuery { CategoryId = categoryId };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
     [HttpPost()]
-    public async Task<IActionResult> CreateCategogy([FromBody] CreateCategoryRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<CreateCategoryCommand>(request);
 
