@@ -17,7 +17,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public Category(CategoryId id) : base(id) { }
 
     [BsonElement("name")]
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
     [BsonElement("parent_category")]
     public Category? ParentCategory { get; set; }
@@ -26,13 +26,13 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public List<Category>? SubCategories { get; set; }
 
     [BsonElement("description")]
-    public string? Description { get; init; }
+    public string? Description { get; set; }
 
     [BsonElement("slug")]
-    public Slug Slug { get; set; } = default!;
+    public required Slug Slug { get; set; }
 
     [BsonElement("order")]
-    public int Order { get; set; }
+    public int Order { get; set; } = 0;
 
     [BsonElement("CreatedAt")]
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -63,6 +63,18 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
             Slug = Slug.Create(name),
             Order = order,
         };
+    }
+
+    public void Update(string? name, string? description, int? order, Category? parentCategory, List<Category>? subCategories)
+    {
+        this.Name = name ?? this.Name;
+        this.Description = description ?? this.Description;
+        this.Order = order.HasValue ? order.Value : this.Order;
+        this.ParentCategory = parentCategory ?? this.ParentCategory;
+        this.SubCategories = subCategories ?? this.SubCategories;
+
+        this.UpdatedAt = DateTime.UtcNow;
+        this.UpdatedBy = "System";
     }
 
     public CategoryResponse ToResponse(List<ProductModelResponse>? productModels = null)
