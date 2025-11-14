@@ -41,6 +41,10 @@ service DiscountProtoService {
     rpc GetCouponByCodeGrpc (GetCouponByCodeRequest) returns (CouponModel);
     rpc GetCouponsGrpc (GetCouponsRequest) returns (GetCouponsResponse);
 
+    // 15/11/2025
+    rpc GetEventsGrpc (GetEventsGrpcRequest) returns (ListEventResponse);
+    rpc GetEventDetailsGrpc (GetEventDetailsGrpcRequest) returns (EventResponse);
+
     rpc GetEventWithEventItemsGrpc (GetEventWithEventItemsRequest) returns (GetEventWithEventItemsResponse);   
     rpc GetEventItemByIdGrpc (GetEventItemByIdRequest) returns (EventItemModel);
 }
@@ -65,8 +69,14 @@ message EventModel {
     google.protobuf.StringValue id = 1;
     google.protobuf.StringValue title = 2;
     google.protobuf.StringValue description = 3;
-    google.protobuf.Timestamp start_date = 4;
-    google.protobuf.Timestamp end_date = 5;
+    google.protobuf.Timestamp   start_date = 4;
+    google.protobuf.Timestamp   end_date = 5;
+    google.protobuf.Timestamp   created_at = 6;
+    google.protobuf.Timestamp   updated_at = 7;
+    google.protobuf.StringValue updated_by = 8;
+    bool                        is_deleted = 9;
+    google.protobuf.Timestamp   deleted_at = 10;
+    google.protobuf.StringValue deleted_by = 11;
 }
 
 message EventItemModel {
@@ -85,6 +95,12 @@ message EventItemModel {
     google.protobuf.DoubleValue original_price = 13;
     google.protobuf.Int32Value stock = 14;
     google.protobuf.Int32Value Sold = 15;
+    google.protobuf.Timestamp   created_at = 16;
+    google.protobuf.Timestamp   updated_at = 17;
+    google.protobuf.StringValue updated_by = 18;
+    bool                        is_deleted = 19;
+    google.protobuf.Timestamp   deleted_at = 20;
+    google.protobuf.StringValue deleted_by = 21;
 }
 
 
@@ -124,6 +140,11 @@ message UseCouponRequest {
 // GET requests
 message GetEventWithEventItemsRequest {}
 
+message GetEventsGrpcRequest {}
+message GetEventDetailsGrpcRequest {
+    google.protobuf.StringValue event_id = 1;
+}
+
 message GetEventItemByIdRequest {
     google.protobuf.StringValue event_item_id = 1;
 }
@@ -155,7 +176,6 @@ message StorageValueObject {
 
 
 // responses
-
 message GetEventWithEventItemsResponse {
     EventModel event = 1;
     repeated EventItemModel event_items = 2;
@@ -167,4 +187,13 @@ message BooleanResponse {
 
 message GetCouponsResponse {
     repeated CouponModel coupons = 1;   
+}
+
+message EventResponse {
+    EventModel event_model = 1;
+    repeated EventItemModel event_item_models = 2;
+}
+
+message ListEventResponse {
+    repeated EventResponse event_responses = 1;
 }

@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.Event.Entities;
@@ -13,8 +14,8 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
     public required string Title { get; set; }
     public required string Description { get; set; }
     public required EEventState State { get; set; }
-    public DateTime? StartDate { get; set; } = null;
-    public DateTime? EndDate { get; set; } = null;
+    public required DateTime StartDate { get; set; }
+    public required DateTime EndDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
@@ -29,8 +30,8 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
     public static Event Create(EventId id,
                                string title,
                                string? description,
-                               DateTime? startDate,
-                               DateTime? endDate)
+                               DateTime startDate,
+                               DateTime endDate)
     {
         return new Event(id)
         {
@@ -67,5 +68,24 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
     public void RemoveEventItem(EventItem eventItem)
     {
         _eventItems.Remove(eventItem);
+    }
+
+    public EventResponse ToResponse(List<EventItemResponse>? eventItems = null)
+    {
+        return new EventResponse
+        {
+            Id = Id.Value.ToString()!,
+            Title = Title,
+            Description = Description,
+            StartDate = StartDate,
+            EndDate = EndDate,
+            EventItems = eventItems,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
     }
 }

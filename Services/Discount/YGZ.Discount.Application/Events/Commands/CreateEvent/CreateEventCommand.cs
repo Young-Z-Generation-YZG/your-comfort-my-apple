@@ -4,8 +4,8 @@ namespace YGZ.Discount.Application.Events.Commands.CreateEvent;
 
 public sealed record CreateEventCommand : ICommand<bool>
 {
-    public required string Title { get; set; }
-    public string? Description { get; set; } = string.Empty;
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
+    public required string Title { get; init; }
+    public string? Description { get; init; }
+    public required DateTime StartDate { get; init; }
+    public required DateTime EndDate { get; init; }
 }

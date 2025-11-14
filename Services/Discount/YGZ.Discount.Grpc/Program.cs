@@ -1,6 +1,6 @@
 using YGZ.Discount.Application;
-using YGZ.Discount.Application.Services;
 using YGZ.Discount.Grpc;
+using YGZ.Discount.Grpc.GrpcServices;
 using YGZ.Discount.Infrastructure;
 using YGZ.Discount.Infrastructure.Persistence.Extensions;
 

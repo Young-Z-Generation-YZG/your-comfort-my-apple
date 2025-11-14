@@ -17,10 +17,10 @@ public class CreateEventHandler : ICommandHandler<CreateEventCommand, bool>
     public async Task<Result<bool>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
         var entity = Event.Create(id: EventId.Create(),
-                            title: request.Title,
-                            description: request.Description,
-                            startDate: request.StartDate,
-                            endDate: request.EndDate);
+                                  title: request.Title,
+                                  description: request.Description,
+                                  startDate: request.StartDate,
+                                  endDate: request.EndDate);
 
         var result = await _repository.AddAsync(entity, cancellationToken);
 

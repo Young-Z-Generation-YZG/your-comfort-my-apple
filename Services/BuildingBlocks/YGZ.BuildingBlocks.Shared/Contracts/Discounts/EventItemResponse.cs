@@ -1,5 +1,9 @@
-﻿namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
 
+namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record EventItemResponse
 {
     public required string Id { get; init; }
@@ -18,4 +22,10 @@ public sealed record EventItemResponse
     public required decimal OriginalPrice { get; init; }
     public required int Stock { get; init; }
     public required int Sold { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; init; }
+    public string? UpdatedBy { get; init; }
+    public bool IsDeleted { get; init; }
+    public DateTime? DeletedAt { get; init; }
+    public string? DeletedBy { get; init; }
 }

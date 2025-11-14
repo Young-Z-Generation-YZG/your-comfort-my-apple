@@ -1,4 +1,5 @@
-﻿using YGZ.BuildingBlocks.Shared.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Domain.Abstractions.Data;
 using YGZ.Discount.Domain.Core.Primitives;
 using YGZ.Discount.Domain.Event.Events;
@@ -80,5 +81,34 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
 
 
         return eventItem;
+    }
+
+    public EventItemResponse ToResponse()
+    {
+        return new EventItemResponse
+        {
+            Id = Id.Value.ToString()!,
+            EventId = EventId.Value.ToString()!,
+            ModelName = ModelName,
+            NormalizedModel = NormalizedModel,
+            ColorName = ColorName,
+            NormalizedColor = NormalizedColor,
+            ColorHexCode = ColorHaxCode,
+            StorageName = StorageName,
+            NormalizedStorage = NormalizedStorage,
+            ProductClassification = ProductClassification.Name,
+            ImageUrl = ImageUrl,
+            DiscountType = DiscountType.Name,
+            DiscountValue = DiscountValue,
+            OriginalPrice = OriginalPrice,
+            Stock = Stock,
+            Sold = Sold,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
     }
 }

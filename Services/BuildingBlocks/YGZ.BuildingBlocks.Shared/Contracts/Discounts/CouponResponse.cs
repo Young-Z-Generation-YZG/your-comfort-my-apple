@@ -1,5 +1,10 @@
-﻿namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
 
+namespace YGZ.BuildingBlocks.Shared.Contracts.Discounts;
+
+
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record CouponResponse
 {
     public required string Id { get; init; }

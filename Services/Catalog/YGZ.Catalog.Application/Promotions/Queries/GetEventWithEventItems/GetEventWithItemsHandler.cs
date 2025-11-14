@@ -1,11 +1,8 @@
 ﻿using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Promotions;
-using YGZ.BuildingBlocks.Shared.Contracts.Discounts;
 using YGZ.BuildingBlocks.Shared.Enums;
-using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.Catalog.Application.Abstractions.Data;
-using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
 using YGZ.Discount.Grpc.Protos;
@@ -27,98 +24,99 @@ public class GetEventWithItemsHandler : IQueryHandler<GetEventWithItemsQuery, Ev
 
     public async Task<Result<EventWithItemsResponse>> Handle(GetEventWithItemsQuery request, CancellationToken cancellationToken)
     {
-        // Call gRPC service to get event with event items
-        var grpcRequest = new GetEventWithEventItemsRequest();
-        var grpcResponse = await _discountProtoServiceClient.GetEventWithEventItemsGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+        throw new NotImplementedException();
+        //// Call gRPC service to get event with event items
+        //var grpcRequest = new GetEventWithEventItemsRequest();
+        //var grpcResponse = await _discountProtoServiceClient.GetEventWithEventItemsGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
 
-        if (grpcResponse?.Event == null || grpcResponse.EventItems.Count == 0)
-        {
-            return Errors.Iphone.ModelDoesNotExist;
-        }
+        //if (grpcResponse?.Event == null || grpcResponse.EventItems.Count == 0)
+        //{
+        //    return Errors.Iphone.ModelDoesNotExist;
+        //}
 
-        var eventItemResponses = new List<EventItemResponse>();
+        //var eventItemResponses = new List<EventItemResponse>();
 
-        // Process each event item
-        foreach (var eventItem in grpcResponse.EventItems)
-        {
-            var modelName = eventItem.Model?.Name;
+        //// Process each event item
+        //foreach (var eventItem in grpcResponse.EventItems)
+        //{
+        //    var modelName = eventItem.Model?.Name;
 
-            if (string.IsNullOrWhiteSpace(modelName))
-            {
-                continue;
-            }
+        //    if (string.IsNullOrWhiteSpace(modelName))
+        //    {
+        //        continue;
+        //    }
 
-            // Get the corresponding iPhone model - need to search by model name, not ID
-            var iphoneModels = await _iPhoneModelRepository.GetAllAsync();
-            var iphoneModel = iphoneModels.FirstOrDefault(m => m.Name.Contains(modelName, StringComparison.OrdinalIgnoreCase));
+        //    // Get the corresponding iPhone model - need to search by model name, not ID
+        //    var iphoneModels = await _iPhoneModelRepository.GetAllAsync();
+        //    var iphoneModel = iphoneModels.FirstOrDefault(m => m.Name.Contains(modelName, StringComparison.OrdinalIgnoreCase));
 
-            if (iphoneModel is null)
-            {
-                continue;
-            }
+        //    if (iphoneModel is null)
+        //    {
+        //        continue;
+        //    }
 
-            // Find matching value objects
-            var modelNormalized = eventItem.Model?.NormalizedName;
-            var colorNormalized = eventItem.Color?.NormalizedName;
-            var storageNormalized = eventItem.Storage?.NormalizedName;
+        //    // Find matching value objects
+        //    var modelNormalized = eventItem.Model?.NormalizedName;
+        //    var colorNormalized = eventItem.Color?.NormalizedName;
+        //    var storageNormalized = eventItem.Storage?.NormalizedName;
 
-            var modelValueObject = iphoneModel.Models.FirstOrDefault(x => x.NormalizedName == modelNormalized);
-            var colorValueObject = iphoneModel.Colors.FirstOrDefault(x => x.NormalizedName == colorNormalized);
-            var storageValueObject = iphoneModel.Storages.FirstOrDefault(x => x.NormalizedName == storageNormalized);
+        //    var modelValueObject = iphoneModel.Models.FirstOrDefault(x => x.NormalizedName == modelNormalized);
+        //    var colorValueObject = iphoneModel.Colors.FirstOrDefault(x => x.NormalizedName == colorNormalized);
+        //    var storageValueObject = iphoneModel.Storages.FirstOrDefault(x => x.NormalizedName == storageNormalized);
 
-            if (colorValueObject is null || storageValueObject is null || modelValueObject is null)
-            {
-                continue;
-            }
+        //    if (colorValueObject is null || storageValueObject is null || modelValueObject is null)
+        //    {
+        //        continue;
+        //    }
 
-            var originalPrice = (decimal)(eventItem.OriginalPrice ?? 0);
-            var discountValue = (decimal)(eventItem.DiscountValue ?? 0);
-            var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
+        //    var originalPrice = (decimal)(eventItem.OriginalPrice ?? 0);
+        //    var discountValue = (decimal)(eventItem.DiscountValue ?? 0);
+        //    var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
 
-            var discountAmount = CalculateDiscountAmount(originalPrice, discountValue, discountType);
-            var finalPrice = originalPrice - discountAmount;
+        //    var discountAmount = CalculateDiscountAmount(originalPrice, discountValue, discountType);
+        //    var finalPrice = originalPrice - discountAmount;
 
-            var itemResponse = MapToResponse(
-                eventItemId: eventItem.Id,
-                iphoneModel: iphoneModel,
-                modelValueObject: modelValueObject,
-                colorValueObject: colorValueObject,
-                storageValueObject: storageValueObject,
-                originalPrice: originalPrice,
-                discountType: discountType.Name,
-                discountValue: discountValue,
-                discountAmount: discountAmount,
-                finalPrice: finalPrice,
-                stock: eventItem.Stock ?? 0,
-                Sold: eventItem.Sold ?? 0, // Will be available after proto regeneration
-                imageUrl: eventItem.DisplayImageUrl ?? string.Empty,
-                modelSlug: iphoneModel.Slug.Value ?? string.Empty
-            );
+        //    var itemResponse = MapToResponse(
+        //        eventItemId: eventItem.Id,
+        //        iphoneModel: iphoneModel,
+        //        modelValueObject: modelValueObject,
+        //        colorValueObject: colorValueObject,
+        //        storageValueObject: storageValueObject,
+        //        originalPrice: originalPrice,
+        //        discountType: discountType.Name,
+        //        discountValue: discountValue,
+        //        discountAmount: discountAmount,
+        //        finalPrice: finalPrice,
+        //        stock: eventItem.Stock ?? 0,
+        //        Sold: eventItem.Sold ?? 0, // Will be available after proto regeneration
+        //        imageUrl: eventItem.DisplayImageUrl ?? string.Empty,
+        //        modelSlug: iphoneModel.Slug.Value ?? string.Empty
+        //    );
 
-            eventItemResponses.Add(itemResponse);
-        }
+        //    eventItemResponses.Add(itemResponse);
+        //}
 
-        if (!eventItemResponses.Any())
-        {
-            return Errors.Iphone.ModelDoesNotExist;
-        }
+        //if (!eventItemResponses.Any())
+        //{
+        //    return Errors.Iphone.ModelDoesNotExist;
+        //}
 
-        // Create event response from gRPC data
-        var eventResponse = new EventResponse
-        {
-            Id = grpcResponse.Event.Id ?? string.Empty,
-            Title = grpcResponse.Event.Title ?? string.Empty,
-            Description = grpcResponse.Event.Description ?? string.Empty,
-            StartDate = grpcResponse.Event.StartDate?.ToDateTime(),
-            EndDate = grpcResponse.Event.EndDate?.ToDateTime()
-        };
+        //// Create event response from gRPC data
+        //var eventResponse = new EventResponse
+        //{
+        //    Id = grpcResponse.Event.Id ?? string.Empty,
+        //    Title = grpcResponse.Event.Title ?? string.Empty,
+        //    Description = grpcResponse.Event.Description ?? string.Empty,
+        //    StartDate = grpcResponse.Event.StartDate?.ToDateTime(),
+        //    EndDate = grpcResponse.Event.EndDate?.ToDateTime()
+        //};
 
-        // Return the complete response with event and event items
-        return new EventWithItemsResponse
-        {
-            Event = eventResponse,
-            EventItems = eventItemResponses
-        };
+        //// Return the complete response with event and event items
+        //return new EventWithItemsResponse
+        //{
+        //    Event = eventResponse,
+        //    EventItems = eventItemResponses
+        //};
     }
 
     private decimal CalculateDiscountAmount(decimal originalPrice, decimal discountValue, EDiscountType discountType)
