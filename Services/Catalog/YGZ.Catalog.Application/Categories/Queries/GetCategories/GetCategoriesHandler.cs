@@ -1,44 +1,53 @@
-﻿
-using MapsterMapper;
+﻿using Microsoft.Extensions.Logging;
+using System.Linq;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels;
 
 
 namespace YGZ.Catalog.Application.Categories.Queries.GetCategories;
 
 public class GetCategoriesHandler : IQueryHandler<GetCategoriesQuery, List<CategoryResponse>>
 {
+    private readonly ILogger<GetCategoriesHandler> _logger;
     private readonly IMongoRepository<Category, CategoryId> _repository;
-    private readonly IMapper _mapper;
+    private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
 
-    public GetCategoriesHandler(IMongoRepository<Category, CategoryId> repository, IMapper mapper)
+    public GetCategoriesHandler(ILogger<GetCategoriesHandler> logger,
+                                IMongoRepository<Category, CategoryId> repository,
+                                IMongoRepository<ProductModel, ModelId> productModelRepository)
     {
+        _logger = logger;
         _repository = repository;
-        _mapper = mapper;
+        _productModelRepository = productModelRepository;
     }
 
     public async Task<Result<List<CategoryResponse>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await _repository.GetAllAsync();
+        var categoriesTask = _repository.GetAllAsync(cancellationToken);
+        var productModelsTask = _productModelRepository.GetAllAsync(cancellationToken);
 
-        List<CategoryResponse> response = MapToResponse(categories);
+        await Task.WhenAll(categoriesTask, productModelsTask);
 
-        return response;
-    }
+        var categories = categoriesTask.Result;
+        var productModels = productModelsTask.Result;
 
-    private List<CategoryResponse> MapToResponse(List<Category> categories)
-    {
-        List<CategoryResponse> res = categories.Select(c =>
+        var modelsLookup = productModels
+            .Where(pm => !string.IsNullOrWhiteSpace(pm.Category.Id.Value))
+            .GroupBy(pm => pm.Category.Id.Value!)
+            .ToDictionary(group => group.Key, group => group.Select(pm => pm.ToResponse()).ToList());
+
+        var response = categories.Select(category =>
         {
-            var category = _mapper.Map<CategoryResponse>(c);
-
-            return category;
+            modelsLookup.TryGetValue(category.Id.Value!, out var categoryModels);
+            return category.ToResponse(categoryModels);
         }).ToList();
 
-        return res;
+        return response;
     }
 }

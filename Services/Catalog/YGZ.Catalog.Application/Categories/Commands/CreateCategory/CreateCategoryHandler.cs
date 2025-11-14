@@ -17,9 +17,11 @@ public class CreateCategoryHandler : ICommandHandler<CreateCategoryCommand, bool
     }
     public async Task<Result<bool>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        if (request.ParentId is not null)
+        Category? parentCategory = null;
+
+        if (!string.IsNullOrWhiteSpace(request.ParentId))
         {
-            var parentCategory = await _repository.GetByIdAsync(request.ParentId, cancellationToken);
+            parentCategory = await _repository.GetByIdAsync(request.ParentId, cancellationToken);
 
             if (parentCategory is null)
             {
@@ -31,7 +33,7 @@ public class CreateCategoryHandler : ICommandHandler<CreateCategoryCommand, bool
                                                name: request.Name,
                                                description: request.Description,
                                                request.Order,
-                                               CategoryId.Of(request.ParentId));
+                                               parentCategory);
 
         await _repository.InsertOneAsync(newCategory);
 

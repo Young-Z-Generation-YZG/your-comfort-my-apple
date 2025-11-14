@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
+using YGZ.BuildingBlocks.Shared.Contracts.Products;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -10,18 +11,22 @@ using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 namespace YGZ.Catalog.Domain.Categories;
 
 [BsonCollection("Categories")]
+[BsonIgnoreExtraElements]
 public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
 {
     public Category(CategoryId id) : base(id) { }
 
-    [BsonElement("parent_id")]
-    public CategoryId? ParentId { get; set; } = null;
-
     [BsonElement("name")]
-    public string Name { get; set; } = default!;
+    public required string Name { get; init; }
+
+    [BsonElement("parent_category")]
+    public Category? ParentCategory { get; set; }
+
+    [BsonElement("sub_categories")]
+    public List<Category>? SubCategories { get; set; }
 
     [BsonElement("description")]
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; init; }
 
     [BsonElement("slug")]
     public Slug Slug { get; set; } = default!;
@@ -48,20 +53,19 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; set; } = null;
 
 
-    public static Category Create(CategoryId id, string name, string description, int order, CategoryId? parentId)
+    public static Category Create(CategoryId id, string name, string? description, int order, Category? parentCategory)
     {
         return new Category(id)
         {
-            Id = id,
             Name = name,
+            ParentCategory = parentCategory,
             Description = description,
             Slug = Slug.Create(name),
             Order = order,
-            ParentId = parentId
         };
     }
 
-    public CategoryResponse ToResponse()
+    public CategoryResponse ToResponse(List<ProductModelResponse>? productModels = null)
     {
         return new CategoryResponse
         {
@@ -70,7 +74,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
             Description = Description,
             Order = Order,
             Slug = Slug.Value,
-            ParentId = ParentId?.Value ?? null,
+            ParentCategory = ParentCategory?.ToResponse(),
+            SubCategories = SubCategories?.Select(sc => sc.ToResponse()).ToList(),
+            ProductModels = productModels,
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,
             UpdatedBy = UpdatedBy,

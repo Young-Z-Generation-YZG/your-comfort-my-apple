@@ -6,7 +6,6 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Domain.Core.Abstractions;
-using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
 using YGZ.Catalog.Infrastructure.Settings;

@@ -184,20 +184,6 @@ const CheckoutPage = () => {
       getCheckoutItemsAsync({ _couponCode: appliedCouponFromQuery });
    }, [getCheckoutItemsAsync, appliedCouponFromQuery]);
 
-   //  const defaultAddress = useMemo(() => {
-   //     if (getAddressesState.data) {
-   //        const getDefaultAddress = (
-   //           getAddressesState.data as unknown as TAddressItem[]
-   //        ).find((address) => address.is_default);
-
-   //        if (getDefaultAddress) {
-   //           return getDefaultAddress;
-   //        }
-   //     }
-
-   //     return null;
-   //  }, [getAddressesState]);
-
    const addressesList = useMemo(() => {
       if (getAddressesState.data) {
          return getAddressesState.data as unknown as TAddressItem[];
