@@ -52,7 +52,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
     await app.ApplyMigrationAsync();
-    //await app.ApplySeedDataAsync();
+    await app.ApplySeedDataAsync();
 }
 
 app.UseHealthChecks("/health", new HealthCheckOptions

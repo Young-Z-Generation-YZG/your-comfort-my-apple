@@ -30,7 +30,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public string? DiscountType { get; init; }
     public decimal? DiscountValue { get; init; }
     public decimal? DiscountAmount { get; init; }
-    public required decimal TotalAmount { get; init; }
+    public decimal TotalAmount { get; set; } = 0;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; set; } = null;
@@ -51,9 +51,10 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                                string? discountType,
                                decimal? discountValue,
                                decimal? discountAmount,
-                               decimal totalAmount,
+                               decimal? totalAmount = 0,
                                TenantId? tenantId = null,
-                               BranchId? branchId = null)
+                               BranchId? branchId = null,
+                               DateTime? createdAt = null)
     {
         var order = new Order(orderId)
         {
@@ -71,7 +72,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             DiscountType = discountType,
             DiscountValue = discountValue,
             DiscountAmount = discountAmount,
-            TotalAmount = totalAmount
+            TotalAmount = totalAmount ?? 0,
+            CreatedAt = createdAt ?? DateTime.UtcNow
         };
 
         //order.AddDomainEvent(new OrderCreatedDomainEvent(order));

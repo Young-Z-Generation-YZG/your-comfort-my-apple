@@ -1,7 +1,9 @@
 ﻿
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using YGZ.Ordering.Infrastructure.Persistence.Seeds;
 
 namespace YGZ.Ordering.Infrastructure.Persistence.Extensions;
 
@@ -18,25 +20,17 @@ public static class SeedDataExtension
 
     private static async Task SeedAsync(OrderDbContext context)
     {
-        //await SeedOrdersAsync(context);
-        //await SeedOrderItemsAsync(context);
+        await SeedOrdersAsync(context);
     }
 
-    //private static async Task SeedOrdersAsync(OrderDbContext context)
-    //{
-    //    if (!await context.Orders.AnyAsync())
-    //    {
-    //        await context.Orders.AddRangeAsync(SeedData.Orders);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
+    private static async Task SeedOrdersAsync(OrderDbContext context)
+    {
+        if (await context.Orders.AnyAsync())
+        {
+            return;
+        }
 
-    //private static async Task SeedOrderItemsAsync(OrderDbContext context)
-    //{
-    //    if (!await context.OrderItems.AnyAsync())
-    //    {
-    //        await context.OrderItems.AddRangeAsync(SeedData.OrderItems);
-    //        await context.SaveChangesAsync();
-    //    }
-    //}
+        await context.Orders.AddRangeAsync(SeedOrderData.Orders);
+        await context.SaveChangesAsync();
+    }
 }

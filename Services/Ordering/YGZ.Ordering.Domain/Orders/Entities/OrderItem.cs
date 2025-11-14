@@ -71,7 +71,8 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
                                    string? discountType,
                                    decimal? discountValue,
                                    decimal? discountAmount,
-                                   bool isReviewed)
+                                   bool isReviewed,
+                                   DateTime? createdAt = null)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
 
@@ -94,7 +95,8 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
             DiscountType = discountType,
             DiscountValue = discountValue,
             DiscountAmount = discountAmount,
-            IsReviewed = isReviewed
+            IsReviewed = isReviewed,
+            CreatedAt = createdAt ?? DateTime.UtcNow
         };
     }
 
