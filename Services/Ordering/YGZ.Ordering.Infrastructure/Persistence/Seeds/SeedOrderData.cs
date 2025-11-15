@@ -2786,6 +2786,601 @@ public static class SeedOrderData
 
 
 
+            // 24 variant items of iPhone 17 Pro
+            List<OrderItem> orderItemsList109 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["19_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList110 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["20_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList111 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["21_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList112 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[0], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["22_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList113 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["23_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList114 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["24_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList115 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["25_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList116 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[1], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["26_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList117 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["27_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList118 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["28_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList119 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["29_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList120 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO"],
+                                 modelName: iPhone17ProModelsList[0],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[0], iPhone17ProColorsList[2], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["30_04_2025"]),
+            };
+
+            List<OrderItem> orderItemsList121 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["01_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList122 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["02_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList123 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["03_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList124 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[0],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[0], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["04_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList125 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["05_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList126 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["06_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList127 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["07_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList128 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[1],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[1], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["08_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList129 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["09_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList130 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["10_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList131 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["11_05_2025"]),
+            };
+
+            List<OrderItem> orderItemsList132 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelName: iPhone17ProModelsList[1],
+                                 colorName: iPhone17ProColorsList[2],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone17ProModelsList[1], iPhone17ProColorsList[2], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone17ProModelsList[1]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["12_05_2025"]),
+            };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             // 40 orders of iPhone 15
@@ -4850,6 +5445,462 @@ public static class SeedOrderData
     order108.TotalAmount = orderItemsList108.Sum(x => x.SubTotalAmount);
 
 
+    // 24 orders of iPhone 17 Pro
+    var order109 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["19_04_2025"]);
+    order109.AddOrderItem(orderItemsList109[0]);
+    order109.TotalAmount = orderItemsList109.Sum(x => x.SubTotalAmount);
+
+    var order110 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["20_04_2025"]);
+    order110.AddOrderItem(orderItemsList110[0]);
+    order110.TotalAmount = orderItemsList110.Sum(x => x.SubTotalAmount);
+
+    var order111 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["21_04_2025"]);
+    order111.AddOrderItem(orderItemsList111[0]);
+    order111.TotalAmount = orderItemsList111.Sum(x => x.SubTotalAmount);
+
+    var order112 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["22_04_2025"]);
+    order112.AddOrderItem(orderItemsList112[0]);
+    order112.TotalAmount = orderItemsList112.Sum(x => x.SubTotalAmount);
+
+    var order113 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["23_04_2025"]);
+    order113.AddOrderItem(orderItemsList113[0]);
+    order113.TotalAmount = orderItemsList113.Sum(x => x.SubTotalAmount);
+
+    var order114 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["24_04_2025"]);
+    order114.AddOrderItem(orderItemsList114[0]);
+    order114.TotalAmount = orderItemsList114.Sum(x => x.SubTotalAmount);
+
+    var order115 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["25_04_2025"]);
+    order115.AddOrderItem(orderItemsList115[0]);
+    order115.TotalAmount = orderItemsList115.Sum(x => x.SubTotalAmount);
+
+    var order116 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["26_04_2025"]);
+    order116.AddOrderItem(orderItemsList116[0]);
+    order116.TotalAmount = orderItemsList116.Sum(x => x.SubTotalAmount);
+
+    var order117 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["27_04_2025"]);
+    order117.AddOrderItem(orderItemsList117[0]);
+    order117.TotalAmount = orderItemsList117.Sum(x => x.SubTotalAmount);
+
+    var order118 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["28_04_2025"]);
+    order118.AddOrderItem(orderItemsList118[0]);
+    order118.TotalAmount = orderItemsList118.Sum(x => x.SubTotalAmount);
+
+    var order119 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["29_04_2025"]);
+    order119.AddOrderItem(orderItemsList119[0]);
+    order119.TotalAmount = orderItemsList119.Sum(x => x.SubTotalAmount);
+
+    var order120 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["30_04_2025"]);
+    order120.AddOrderItem(orderItemsList120[0]);
+    order120.TotalAmount = orderItemsList120.Sum(x => x.SubTotalAmount);
+
+    var order121 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["01_05_2025"]);
+    order121.AddOrderItem(orderItemsList121[0]);
+    order121.TotalAmount = orderItemsList121.Sum(x => x.SubTotalAmount);
+
+    var order122 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["02_05_2025"]);
+    order122.AddOrderItem(orderItemsList122[0]);
+    order122.TotalAmount = orderItemsList122.Sum(x => x.SubTotalAmount);
+
+    var order123 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["03_05_2025"]);
+    order123.AddOrderItem(orderItemsList123[0]);
+    order123.TotalAmount = orderItemsList123.Sum(x => x.SubTotalAmount);
+
+    var order124 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["04_05_2025"]);
+    order124.AddOrderItem(orderItemsList124[0]);
+    order124.TotalAmount = orderItemsList124.Sum(x => x.SubTotalAmount);
+
+    var order125 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["05_05_2025"]);
+    order125.AddOrderItem(orderItemsList125[0]);
+    order125.TotalAmount = orderItemsList125.Sum(x => x.SubTotalAmount);
+
+    var order126 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["06_05_2025"]);
+    order126.AddOrderItem(orderItemsList126[0]);
+    order126.TotalAmount = orderItemsList126.Sum(x => x.SubTotalAmount);
+
+    var order127 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["07_05_2025"]);
+    order127.AddOrderItem(orderItemsList127[0]);
+    order127.TotalAmount = orderItemsList127.Sum(x => x.SubTotalAmount);
+
+    var order128 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["08_05_2025"]);
+    order128.AddOrderItem(orderItemsList128[0]);
+    order128.TotalAmount = orderItemsList128.Sum(x => x.SubTotalAmount);
+
+    var order129 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["09_05_2025"]);
+    order129.AddOrderItem(orderItemsList129[0]);
+    order129.TotalAmount = orderItemsList129.Sum(x => x.SubTotalAmount);
+
+    var order130 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["10_05_2025"]);
+    order130.AddOrderItem(orderItemsList130[0]);
+    order130.TotalAmount = orderItemsList130.Sum(x => x.SubTotalAmount);
+
+    var order131 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["11_05_2025"]);
+    order131.AddOrderItem(orderItemsList131[0]);
+    order131.TotalAmount = orderItemsList131.Sum(x => x.SubTotalAmount);
+
+    var order132 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["12_05_2025"]);
+    order132.AddOrderItem(orderItemsList132[0]);
+    order132.TotalAmount = orderItemsList132.Sum(x => x.SubTotalAmount);
 
 
             return new List<Order>
@@ -4961,7 +6012,31 @@ public static class SeedOrderData
                 order105,
                 order106,
                 order107,
-                order108
+                order108,
+                order109,
+                order110,
+                order111,
+                order112,
+                order113,
+                order114,
+                order115,
+                order116,
+                order117,
+                order118,
+                order119,
+                order120,
+                order121,
+                order122,
+                order123,
+                order124,
+                order125,
+                order126,
+                order127,
+                order128,
+                order129,
+                order130,
+                order131,
+                order132
             };
         }
     }
