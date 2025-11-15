@@ -14,9 +14,9 @@ namespace YGZ.Discount.Application.Events.Commands.AddEventItem;
 
 public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
 {
+    private readonly ILogger<AddEventItemsHandler> _logger;
     private readonly IGenericRepository<Event, ValueObjects.EventId> _repository;
     private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
-    private readonly ILogger<AddEventItemsHandler> _logger;
 
     public AddEventItemsHandler(IGenericRepository<Event, ValueObjects.EventId> repository,
                                 CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient,
@@ -29,105 +29,88 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
 
     public async Task<Result<bool>> Handle(AddEventItemsCommand request, CancellationToken cancellationToken)
     {
-        if (!request.EventItems.Any())
+        if (request.DiscountEventItems is null || !request.DiscountEventItems.Any())
         {
-            _logger.LogError("No EventItems provided in the request.");
-
+            _logger.LogError("No DiscountEventItems provided in the request.");
             return false;
         }
 
         // Get the event
         var eventId = ValueObjects.EventId.Of(request.EventId);
-
-        foreach (var item in request.EventItems)
-        {
-            try
-            {
-                var checkTenantExist = await _catalogProtoServiceClient.GetTenantByIdGrpcAsync(new GetTenantByIdRequest
-                {
-                    TenantId = item.TenantId
-                }, cancellationToken: cancellationToken);
-
-                if (checkTenantExist is null)
-                {
-                    throw new RpcException(new Status(StatusCode.NotFound, $"Tenant with ID {item.TenantId} not found"));
-                }
-
-            }
-            catch (RpcException ex)
-            {
-                _logger.LogError(ex, "Error checking tenant existence for tenant {TenantId}", item.TenantId);
-                throw new RpcException(new Status(StatusCode.Internal, "Internal error occurred while checking tenant existence"));
-            }
-
-        }
-
         var eventEntity = await _repository.GetByIdAsync(eventId, cancellationToken);
 
         if (eventEntity is null)
         {
             _logger.LogError("Event with ID {EventId} not found.", request.EventId);
-
             return false;
         }
 
         // Create and add event items
-        foreach (var itemCmd in request.EventItems)
+        foreach (var itemCmd in request.DiscountEventItems)
         {
             try
             {
-                var checkEnoughSku = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                // Fetch SKU details from Catalog service
+                var skuResponse = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
                 {
                     SkuId = itemCmd.SkuId
                 }, cancellationToken: cancellationToken);
 
-                if (checkEnoughSku is null)
+                if (skuResponse is null)
                 {
+                    _logger.LogError("SKU with ID {SkuId} not found.", itemCmd.SkuId);
                     throw new RpcException(new Status(StatusCode.NotFound, $"SKU with ID {itemCmd.SkuId} not found"));
                 }
 
-                if (checkEnoughSku.AvailableInStock < itemCmd.Stock)
+                // Validate stock availability
+                if (skuResponse.AvailableInStock < itemCmd.Stock)
                 {
-                    _logger.LogError("SKU with ID {SkuId} has not enough stock. Available: {AvailableInStock}, Requested: {Stock}", itemCmd.SkuId, checkEnoughSku.AvailableInStock, itemCmd.Stock);
-                    throw new RpcException(new Status(StatusCode.FailedPrecondition, $"SKU with ID {itemCmd.SkuId} has not enough stock. Available: {checkEnoughSku.AvailableInStock}, Requested: {itemCmd.Stock}"));
+                    _logger.LogError("SKU with ID {SkuId} has not enough stock. Available: {AvailableInStock}, Requested: {Stock}",
+                        itemCmd.SkuId, skuResponse.AvailableInStock, itemCmd.Stock);
+                    throw new RpcException(new Status(StatusCode.FailedPrecondition,
+                        $"SKU with ID {itemCmd.SkuId} has not enough stock. Available: {skuResponse.AvailableInStock}, Requested: {itemCmd.Stock}"));
                 }
+
+                // Convert enums
+                var productClassification = EProductClassification.FromName(skuResponse.ProductClassification, false);
+                var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
+
+                // Calculate original price from SKU unit price
+                var originalPrice = skuResponse.UnitPrice.HasValue ? (decimal)skuResponse.UnitPrice.Value : 0;
+
+                // Create event item with data from SKU
+                var eventItem = EventItemEntity.Create(eventItemId: EventItemId.Create(),
+                                                       eventId: eventId,
+                                                       skuId: itemCmd.SkuId,
+                                                       tenantId: skuResponse.TenantId,
+                                                       branchId: skuResponse.BranchId,
+                                                       modelName: skuResponse.NormalizedModel, // Using normalized as fallback
+                                                       normalizedModel: skuResponse.NormalizedModel,
+                                                       colorName: skuResponse.NormalizedColor, // Using normalized as fallback
+                                                       normalizedColor: skuResponse.NormalizedColor,
+                                                       colorHaxCode: string.Empty, // Not available in SKU response
+                                                       storageName: skuResponse.NormalizedStorage, // Using normalized as fallback
+                                                       normalizedStorage: skuResponse.NormalizedStorage,
+                                                       productClassification: productClassification,
+                                                       discountType: discountType,
+                                                       imageUrl: string.Empty, // Not available in SKU response
+                                                       discountValue: itemCmd.DiscountValue,
+                                                       originalPrice: originalPrice,
+                                                       stock: itemCmd.Stock);
+
+                eventEntity.AddEventItem(eventItem);
             }
             catch (RpcException ex)
             {
+                _logger.LogError(ex, "Error processing event item for SKU {SkuId}", itemCmd.SkuId);
                 throw;
-                //_logger.LogError(ex, "Error checking SKU existence for SKU {SkuId}", itemCmd.SkuId);
-                //throw new RpcException(new Status(StatusCode.Internal, "Internal error occurred while checking SKU existence"));
             }
-
-            var productClassification = EProductClassification.FromName(itemCmd.ProductClassification, false);
-            var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
-
-            var eventItem = EventItemEntity.Create(eventItemId: EventItemId.Create(),
-                                                   eventId: eventId,
-                                                   skuId: itemCmd.SkuId,
-                                                   tenantId: itemCmd.TenantId,
-                                                   branchId: itemCmd.BranchId,
-                                                   modelName: itemCmd.Model.Name,
-                                                   normalizedModel: itemCmd.Model.NormalizedName,
-                                                   colorName: itemCmd.Color.Name,
-                                                   normalizedColor: itemCmd.Color.NormalizedName,
-                                                   colorHaxCode: itemCmd.Color.HexCode,
-                                                   storageName: itemCmd.Storage.Name,
-                                                   normalizedStorage: itemCmd.Storage.NormalizedName,
-                                                   productClassification: productClassification,
-                                                   discountType: discountType,
-                                                   imageUrl: itemCmd.DisplayImageUrl,
-                                                   discountValue: itemCmd.DiscountValue,
-                                                   originalPrice: itemCmd.OriginalPrice,
-                                                   stock: itemCmd.Stock);
-
-            eventEntity.AddEventItem(eventItem);
         }
 
         // Save changes
         await _repository.UpdateAsync(eventEntity, cancellationToken);
 
-        _logger.LogInformation("Added {Count} event items to event {EventId}", request.EventItems.Count, request.EventId);
+        _logger.LogInformation("Added {Count} event items to event {EventId}", request.DiscountEventItems.Count, request.EventId);
 
         return true;
     }

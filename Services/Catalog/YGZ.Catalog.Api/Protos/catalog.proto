@@ -83,6 +83,12 @@ message SkuModel
     google.protobuf.Int32Value total_sold = 12;
     ESkuStateGrpc sku_state = 13;
     google.protobuf.StringValue slug = 14;
+    google.protobuf.Timestamp   created_at = 15;
+    google.protobuf.Timestamp   updated_at = 16;
+    google.protobuf.StringValue updated_by = 17;
+    bool                        is_deleted = 18;
+    google.protobuf.Timestamp   deleted_at = 19;
+    google.protobuf.StringValue deleted_by = 20;
 }
 
 

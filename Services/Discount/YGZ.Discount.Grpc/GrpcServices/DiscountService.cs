@@ -10,6 +10,7 @@ using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
 using YGZ.Discount.Application.Events.Commands.AddEventItem;
 using YGZ.Discount.Application.Events.Commands.CreateEvent;
+using YGZ.Discount.Application.Events.Commands.UpdateEvent;
 using YGZ.Discount.Application.Events.Queries.GetEventDetails;
 using YGZ.Discount.Application.Events.Queries.GetEvents;
 using YGZ.Discount.Grpc.Protos;
@@ -19,9 +20,9 @@ namespace YGZ.Discount.Grpc.GrpcServices;
 
 public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 {
+    private readonly ILogger<DiscountService> _logger;
     private readonly IMapper _mapper;
     private readonly ISender _sender;
-    private readonly ILogger<DiscountService> _logger;
 
     public DiscountService(IMapper mapper,
                            ISender sender,
@@ -144,15 +145,71 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         return response;
     }
 
-    public override async Task<BooleanResponse> AddEventItemsGrpc(AddEventItemsRequest request, ServerCallContext context)
+    public override async Task<BooleanResponse> AddEventItemsGrpc(AddEventItemsGrpcRequest request, ServerCallContext context)
     {
-        var cmd = _mapper.Map<AddEventItemsCommand>(request);
+        var cmd = new AddEventItemsCommand
+        {
+            EventId = request.EventId,
+            DiscountEventItems = request.DiscountEventItems.Select(item => new DiscountEventItemCommand
+            {
+                SkuId = item.SkuId,
+                DiscountType = ConvertDiscountTypeGrpcToString(item.DiscountType),
+                DiscountValue = (decimal)(item.DiscountValue ?? 0),
+                Stock = item.Stock ?? 0
+            }).ToList()
+        };
 
         var result = await _sender.Send(cmd);
 
-        var response = _mapper.Map<BooleanResponse>(result.Response);
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
+        }
 
-        return response;
+        return new BooleanResponse { IsSuccess = result.Response };
+    }
+
+    public override async Task<BooleanResponse> UpdateEventGrpc(UpdateEventGrpcRequest request, ServerCallContext context)
+    {
+        var cmd = new UpdateEventCommand
+        {
+            EventId = request.EventId,
+            Title = request.Title,
+            Description = request.Description,
+            StartDate = request.StartDate?.ToDateTime(),
+            EndDate = request.EndDate?.ToDateTime(),
+            AddEventItems = request.AddEventItems?.Select(item => new DiscountEventItemCommand
+            {
+                SkuId = item.SkuId,
+                DiscountType = ConvertDiscountTypeGrpcToString(item.DiscountType),
+                DiscountValue = (decimal)(item.DiscountValue ?? 0),
+                Stock = item.Stock ?? 0
+            }).ToList(),
+            RemoveEventItemIds = request.RemoveEventItemIds?.Select(id => id).ToList()
+        };
+
+        var result = await _sender.Send(cmd);
+
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
+        }
+
+        return new BooleanResponse { IsSuccess = result.Response };
     }
 
     // GET METHODS
@@ -436,6 +493,16 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     private static Timestamp? ToTimestampUtc(DateTime? dateTime)
     {
         return dateTime is null ? null : ToTimestampUtc(dateTime.Value);
+    }
+
+    private static string ConvertDiscountTypeGrpcToString(EDiscountTypeGrpc discountType)
+    {
+        return discountType switch
+        {
+            EDiscountTypeGrpc.DiscountTypePercentage => "PERCENTAGE",
+            EDiscountTypeGrpc.DiscountTypeFixed => "FIXED",
+            _ => "UNKNOWN"
+        };
     }
 
     private static StatusCode MapErrorToStatusCode(Error error)

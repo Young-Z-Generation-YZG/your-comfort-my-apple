@@ -20,7 +20,7 @@ public class EventItemCreatedIntegrationEventHandler : IConsumer<EventItemCreate
 
     public async Task Consume(ConsumeContext<EventItemCreatedIntegrationEvent> context)
     {
-        _logger.LogInformation("Integration event received: {IntegrationEvent} for EventItemId: {EventItemId}", 
+        _logger.LogInformation("Integration event received: {IntegrationEvent} for EventItemId: {EventItemId}",
             nameof(EventItemCreatedIntegrationEvent), context.Message.EventItemId);
 
         var command = new ReserveEventItemStockCommand
@@ -35,8 +35,8 @@ public class EventItemCreatedIntegrationEventHandler : IConsumer<EventItemCreate
         };
 
         await _sender.Send(command);
-        
-        _logger.LogInformation("Successfully processed EventItemCreatedIntegrationEvent for EventItemId: {EventItemId}", 
+
+        _logger.LogInformation("Successfully processed EventItemCreatedIntegrationEvent for EventItemId: {EventItemId}",
             context.Message.EventItemId);
     }
 }

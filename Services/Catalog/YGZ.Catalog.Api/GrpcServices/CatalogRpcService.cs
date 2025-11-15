@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using MapsterMapper;
 using MediatR;
 using YGZ.BuildingBlocks.Shared.Enums;
@@ -100,6 +101,12 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
             TotalSold = result.Response.TotalSold,
             SkuState = ConvertToESkuStateGrpc(ESkuState.FromName(result.Response.State)),
             Slug = result.Response.Slug,
+            CreatedAt = ToTimestampUtc(result.Response.CreatedAt),
+            UpdatedAt = ToTimestampUtc(result.Response.UpdatedAt),
+            UpdatedBy = result.Response.UpdatedBy,
+            IsDeleted = result.Response.IsDeleted,
+            DeletedAt = ToTimestampUtc(result.Response.DeletedAt),
+            DeletedBy = result.Response.DeletedBy
         };
     }
 
@@ -220,5 +227,15 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
             "INACTIVE" => ESkuStateGrpc.SkuStateInactive,
             _ => ESkuStateGrpc.SkuStateUnknown
         };
+    }
+
+    private static Timestamp ToTimestampUtc(DateTime dateTime)
+    {
+        return Timestamp.FromDateTime(DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+    }
+
+    private static Timestamp? ToTimestampUtc(DateTime? dateTime)
+    {
+        return dateTime is null ? null : ToTimestampUtc(dateTime.Value);
     }
 }

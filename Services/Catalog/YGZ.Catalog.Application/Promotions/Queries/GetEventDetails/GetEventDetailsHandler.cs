@@ -1,13 +1,11 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.Discount.Grpc.Protos;
-using SharedEventResponse = YGZ.BuildingBlocks.Shared.Contracts.Discounts.EventResponse;
 using SharedEventItemResponse = YGZ.BuildingBlocks.Shared.Contracts.Discounts.EventItemResponse;
+using SharedEventResponse = YGZ.BuildingBlocks.Shared.Contracts.Discounts.EventResponse;
 
 namespace YGZ.Catalog.Application.Promotions.Queries.GetEventDetails;
 

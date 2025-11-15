@@ -33,9 +33,10 @@ enum EDiscountTypeGrpc {
 service DiscountProtoService {
     // POST requests
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
-    rpc AddEventItemsGrpc (AddEventItemsRequest) returns (BooleanResponse);
+    rpc AddEventItemsGrpc (AddEventItemsGrpcRequest) returns (BooleanResponse);
     rpc CreateCouponGrpc (CreateCouponRequest)  returns (BooleanResponse);
     rpc UseCouponGrpc (UseCouponRequest) returns (BooleanResponse);
+    rpc UpdateEventGrpc (UpdateEventGrpcRequest) returns (BooleanResponse);
 
     // GET requests
     rpc GetCouponByCodeGrpc (GetCouponByCodeRequest) returns (CouponModel);
@@ -120,6 +121,16 @@ message CreateCouponRequest {
     google.protobuf.Int32Value stock = 10;
 }
 
+message UpdateEventGrpcRequest {
+    google.protobuf.StringValue event_id = 1;
+    google.protobuf.StringValue title = 2;
+    google.protobuf.StringValue description = 3;
+    google.protobuf.Timestamp start_date = 4;
+    google.protobuf.Timestamp end_date = 5;
+    repeated DiscountEventItemRequest add_event_items = 6;  // Items to add
+    repeated google.protobuf.StringValue remove_event_item_ids = 7;  // Item IDs to remove
+}
+
 message CreateEventRequest {
     google.protobuf.StringValue title = 1;
     google.protobuf.StringValue description = 2;
@@ -127,9 +138,16 @@ message CreateEventRequest {
     google.protobuf.Timestamp end_date = 4;
 }
 
-message AddEventItemsRequest {
+message DiscountEventItemRequest {
+    google.protobuf.StringValue sku_id = 1;
+    EDiscountTypeGrpc discount_type = 2;
+    google.protobuf.DoubleValue discount_value = 3;
+    google.protobuf.Int32Value Stock = 4;
+}
+
+message AddEventItemsGrpcRequest {
     google.protobuf.StringValue event_id = 1;
-    repeated EventItemModel event_items = 2;
+    repeated DiscountEventItemRequest discount_event_items = 2;
 }
 
 message UseCouponRequest {

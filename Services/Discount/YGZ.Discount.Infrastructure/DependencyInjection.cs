@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +26,16 @@ public static class DependencyInjection
         services.AddPostgresDatabase(configuration);
 
         services.AddQueuesFromApplicationLayer(configuration);
+
+        var redisConnectionString = configuration.GetConnectionString(ConnectionStrings.RedisDb)!;
+
+        services.AddSingleton<StackExchange.Redis.IConnectionMultiplexer>(sp =>
+            StackExchange.Redis.ConnectionMultiplexer.Connect(redisConnectionString));
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnectionString;
+        });
 
         return services;
     }
