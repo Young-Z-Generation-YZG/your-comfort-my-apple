@@ -2109,7 +2109,198 @@ public static class SeedOrderData
             };
 
 
+           // 8 variant items of iPhone 16e
+            List<OrderItem> orderItemsList81 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[0],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["22_03_2025"]),
+            };
 
+            List<OrderItem> orderItemsList82 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[0],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["23_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList83 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[0],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["24_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList84 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[0],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[0], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["25_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList85 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-128GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[1],
+                                 storageName: StoragesList[0],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[0]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[0]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["26_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList86 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-256GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[1],
+                                 storageName: StoragesList[1],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[1]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[1]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["27_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList87 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-512GB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[1],
+                                 storageName: StoragesList[2],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[2]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[2]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["28_03_2025"]),
+            };
+
+            List<OrderItem> orderItemsList88 = new List<OrderItem>
+            {
+                OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-1TB
+                                 tenantId: TenantId.Of(listTenantId[0]),
+                                 branchId: null,
+                                 orderId: OrderId.Create(),
+                                 skuId: Guid.NewGuid().ToString("N"),
+                                 modelId: ModelIds["IPHONE_16E"],
+                                 modelName: iPhone16EModelsList[0],
+                                 colorName: iPhone16EColorsList[1],
+                                 storageName: StoragesList[3],
+                                 unitPrice: GetPriceFromSkuPriceList(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[3]),
+                                 displayImageUrl: GetDisplayImageUrl(iPhone16EModelsList[0], iPhone16EColorsList[1], StoragesList[3]),
+                                 modelSlug: GetModelSlug(iPhone16EModelsList[0]),
+                                 quantity: 1,
+                                 promotionId: null,
+                                 promotionType: null,
+                                 discountType: null,
+                                 discountValue: null,
+                                 discountAmount: null,
+                                 isReviewed: false,
+                                 createdAt: CreatedAtDateTimes["29_03_2025"]),
+            };
 
 
 
@@ -3642,7 +3833,158 @@ public static class SeedOrderData
     order80.TotalAmount = orderItemsList80.Sum(x => x.SubTotalAmount);
 
 
+    // 8 orders of iPhone 16e
+    var order81 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["22_03_2025"]);
+    order81.AddOrderItem(orderItemsList81[0]);
+    order81.TotalAmount = orderItemsList81.Sum(x => x.SubTotalAmount);
 
+    var order82 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["23_03_2025"]);
+    order82.AddOrderItem(orderItemsList82[0]);
+    order82.TotalAmount = orderItemsList82.Sum(x => x.SubTotalAmount);
+
+    var order83 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["24_03_2025"]);
+    order83.AddOrderItem(orderItemsList83[0]);
+    order83.TotalAmount = orderItemsList83.Sum(x => x.SubTotalAmount);
+
+    var order84 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["25_03_2025"]);
+    order84.AddOrderItem(orderItemsList84[0]);
+    order84.TotalAmount = orderItemsList84.Sum(x => x.SubTotalAmount);
+
+    var order85 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["26_03_2025"]);
+    order85.AddOrderItem(orderItemsList85[0]);
+    order85.TotalAmount = orderItemsList85.Sum(x => x.SubTotalAmount);
+
+    var order86 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["27_03_2025"]);
+    order86.AddOrderItem(orderItemsList86[0]);
+    order86.TotalAmount = orderItemsList86.Sum(x => x.SubTotalAmount);
+
+    var order87 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["28_03_2025"]);
+    order87.AddOrderItem(orderItemsList87[0]);
+    order87.TotalAmount = orderItemsList87.Sum(x => x.SubTotalAmount);
+
+    var order88 = Order.Create(orderId: OrderId.Create(),
+                               tenantId: TenantId.Of(listTenantId[0]),
+                               branchId: null,
+                               customerId: listUserIds[0],
+                               customerPublicKey: null,
+                               tx: null,
+                               code: Code.GenerateCode(),
+                               paymentMethod: EPaymentMethod.COD,
+                               orderStatus: EOrderStatus.DELIVERED,
+                               shippingAddress: listShippingAddresses[0],
+                               promotionId: null,
+                               promotionType: null,
+                               discountType: null,
+                               discountValue: null,
+                               discountAmount: null,
+                               createdAt: CreatedAtDateTimes["29_03_2025"]);
+    order88.AddOrderItem(orderItemsList88[0]);
+    order88.TotalAmount = orderItemsList88.Sum(x => x.SubTotalAmount);
 
 
 
@@ -3731,7 +4073,15 @@ public static class SeedOrderData
                 order77,
                 order78,
                 order79,
-                order80
+                order80,
+                order81,
+                order82,
+                order83,
+                order84,
+                order85,
+                order86,
+                order87,
+                order88
             };
         }
     }
