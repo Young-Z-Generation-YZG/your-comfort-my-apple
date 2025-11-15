@@ -2109,7 +2109,7 @@ public static class SeedOrderData
             };
 
 
-           // 8 variant items of iPhone 16e
+            // 8 variant items of iPhone 16e
             List<OrderItem> orderItemsList81 = new List<OrderItem>
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-128GB
@@ -3082,7 +3082,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
                                  storageName: StoragesList[0],
@@ -3106,7 +3106,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
                                  storageName: StoragesList[1],
@@ -3130,7 +3130,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
                                  storageName: StoragesList[2],
@@ -3154,7 +3154,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
                                  storageName: StoragesList[3],
@@ -3178,7 +3178,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
                                  storageName: StoragesList[0],
@@ -3202,7 +3202,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
                                  storageName: StoragesList[1],
@@ -3226,7 +3226,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
                                  storageName: StoragesList[2],
@@ -3250,7 +3250,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
                                  storageName: StoragesList[3],
@@ -3274,7 +3274,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
                                  storageName: StoragesList[0],
@@ -3298,7 +3298,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
                                  storageName: StoragesList[1],
@@ -3322,7 +3322,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
                                  storageName: StoragesList[2],
@@ -3346,7 +3346,7 @@ public static class SeedOrderData
                                  branchId: null,
                                  orderId: OrderId.Create(),
                                  skuId: Guid.NewGuid().ToString("N"),
-                                 modelId: ModelIds["IPHONE_17_PRO_MAX"],
+                                 modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
                                  storageName: StoragesList[3],
@@ -4530,2066 +4530,2066 @@ public static class SeedOrderData
 
 
 
-    // 40 orders of iPhone 16
-    var order41 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["10_02_2025"]);
-    order41.AddOrderItem(orderItemsList41[0]);
-    order41.TotalAmount = orderItemsList41.Sum(x => x.SubTotalAmount);
-
-    var order42 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["11_02_2025"]);
-    order42.AddOrderItem(orderItemsList42[0]);
-    order42.TotalAmount = orderItemsList42.Sum(x => x.SubTotalAmount);
-
-    var order43 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["12_02_2025"]);
-    order43.AddOrderItem(orderItemsList43[0]);
-    order43.TotalAmount = orderItemsList43.Sum(x => x.SubTotalAmount);
-
-    var order44 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["13_02_2025"]);
-    order44.AddOrderItem(orderItemsList44[0]);
-    order44.TotalAmount = orderItemsList44.Sum(x => x.SubTotalAmount);
-
-    var order45 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["14_02_2025"]);
-    order45.AddOrderItem(orderItemsList45[0]);
-    order45.TotalAmount = orderItemsList45.Sum(x => x.SubTotalAmount);
-
-    var order46 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["15_02_2025"]);
-    order46.AddOrderItem(orderItemsList46[0]);
-    order46.TotalAmount = orderItemsList46.Sum(x => x.SubTotalAmount);
-
-    var order47 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["16_02_2025"]);
-    order47.AddOrderItem(orderItemsList47[0]);
-    order47.TotalAmount = orderItemsList47.Sum(x => x.SubTotalAmount);
-
-    var order48 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["17_02_2025"]);
-    order48.AddOrderItem(orderItemsList48[0]);
-    order48.TotalAmount = orderItemsList48.Sum(x => x.SubTotalAmount);
-
-    var order49 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["18_02_2025"]);
-    order49.AddOrderItem(orderItemsList49[0]);
-    order49.TotalAmount = orderItemsList49.Sum(x => x.SubTotalAmount);
-
-    var order50 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["19_02_2025"]);
-    order50.AddOrderItem(orderItemsList50[0]);
-    order50.TotalAmount = orderItemsList50.Sum(x => x.SubTotalAmount);
-
-    var order51 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["20_02_2025"]);
-    order51.AddOrderItem(orderItemsList51[0]);
-    order51.TotalAmount = orderItemsList51.Sum(x => x.SubTotalAmount);
-
-    var order52 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["21_02_2025"]);
-    order52.AddOrderItem(orderItemsList52[0]);
-    order52.TotalAmount = orderItemsList52.Sum(x => x.SubTotalAmount);
-
-    var order53 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["22_02_2025"]);
-    order53.AddOrderItem(orderItemsList53[0]);
-    order53.TotalAmount = orderItemsList53.Sum(x => x.SubTotalAmount);
-
-    var order54 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["23_02_2025"]);
-    order54.AddOrderItem(orderItemsList54[0]);
-    order54.TotalAmount = orderItemsList54.Sum(x => x.SubTotalAmount);
-
-    var order55 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["24_02_2025"]);
-    order55.AddOrderItem(orderItemsList55[0]);
-    order55.TotalAmount = orderItemsList55.Sum(x => x.SubTotalAmount);
-
-    var order56 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["25_02_2025"]);
-    order56.AddOrderItem(orderItemsList56[0]);
-    order56.TotalAmount = orderItemsList56.Sum(x => x.SubTotalAmount);
-
-    var order57 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["26_02_2025"]);
-    order57.AddOrderItem(orderItemsList57[0]);
-    order57.TotalAmount = orderItemsList57.Sum(x => x.SubTotalAmount);
-
-    var order58 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["27_02_2025"]);
-    order58.AddOrderItem(orderItemsList58[0]);
-    order58.TotalAmount = orderItemsList58.Sum(x => x.SubTotalAmount);
-
-    var order59 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["28_02_2025"]);
-    order59.AddOrderItem(orderItemsList59[0]);
-    order59.TotalAmount = orderItemsList59.Sum(x => x.SubTotalAmount);
-
-    var order60 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["01_03_2025"]);
-    order60.AddOrderItem(orderItemsList60[0]);
-    order60.TotalAmount = orderItemsList60.Sum(x => x.SubTotalAmount);
-
-    var order61 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["02_03_2025"]);
-    order61.AddOrderItem(orderItemsList61[0]);
-    order61.TotalAmount = orderItemsList61.Sum(x => x.SubTotalAmount);
-
-    var order62 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["03_03_2025"]);
-    order62.AddOrderItem(orderItemsList62[0]);
-    order62.TotalAmount = orderItemsList62.Sum(x => x.SubTotalAmount);
-
-    var order63 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["04_03_2025"]);
-    order63.AddOrderItem(orderItemsList63[0]);
-    order63.TotalAmount = orderItemsList63.Sum(x => x.SubTotalAmount);
-
-    var order64 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["05_03_2025"]);
-    order64.AddOrderItem(orderItemsList64[0]);
-    order64.TotalAmount = orderItemsList64.Sum(x => x.SubTotalAmount);
-
-    var order65 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["06_03_2025"]);
-    order65.AddOrderItem(orderItemsList65[0]);
-    order65.TotalAmount = orderItemsList65.Sum(x => x.SubTotalAmount);
-
-    var order66 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["07_03_2025"]);
-    order66.AddOrderItem(orderItemsList66[0]);
-    order66.TotalAmount = orderItemsList66.Sum(x => x.SubTotalAmount);
-
-    var order67 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["08_03_2025"]);
-    order67.AddOrderItem(orderItemsList67[0]);
-    order67.TotalAmount = orderItemsList67.Sum(x => x.SubTotalAmount);
-
-    var order68 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["09_03_2025"]);
-    order68.AddOrderItem(orderItemsList68[0]);
-    order68.TotalAmount = orderItemsList68.Sum(x => x.SubTotalAmount);
-
-    var order69 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["10_03_2025"]);
-    order69.AddOrderItem(orderItemsList69[0]);
-    order69.TotalAmount = orderItemsList69.Sum(x => x.SubTotalAmount);
-
-    var order70 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["11_03_2025"]);
-    order70.AddOrderItem(orderItemsList70[0]);
-    order70.TotalAmount = orderItemsList70.Sum(x => x.SubTotalAmount);
-
-    var order71 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["12_03_2025"]);
-    order71.AddOrderItem(orderItemsList71[0]);
-    order71.TotalAmount = orderItemsList71.Sum(x => x.SubTotalAmount);
-
-    var order72 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["13_03_2025"]);
-    order72.AddOrderItem(orderItemsList72[0]);
-    order72.TotalAmount = orderItemsList72.Sum(x => x.SubTotalAmount);
-
-    var order73 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["14_03_2025"]);
-    order73.AddOrderItem(orderItemsList73[0]);
-    order73.TotalAmount = orderItemsList73.Sum(x => x.SubTotalAmount);
-
-    var order74 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["15_03_2025"]);
-    order74.AddOrderItem(orderItemsList74[0]);
-    order74.TotalAmount = orderItemsList74.Sum(x => x.SubTotalAmount);
-
-    var order75 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["16_03_2025"]);
-    order75.AddOrderItem(orderItemsList75[0]);
-    order75.TotalAmount = orderItemsList75.Sum(x => x.SubTotalAmount);
-
-    var order76 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["17_03_2025"]);
-    order76.AddOrderItem(orderItemsList76[0]);
-    order76.TotalAmount = orderItemsList76.Sum(x => x.SubTotalAmount);
-
-    var order77 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["18_03_2025"]);
-    order77.AddOrderItem(orderItemsList77[0]);
-    order77.TotalAmount = orderItemsList77.Sum(x => x.SubTotalAmount);
-
-    var order78 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["19_03_2025"]);
-    order78.AddOrderItem(orderItemsList78[0]);
-    order78.TotalAmount = orderItemsList78.Sum(x => x.SubTotalAmount);
-
-    var order79 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["20_03_2025"]);
-    order79.AddOrderItem(orderItemsList79[0]);
-    order79.TotalAmount = orderItemsList79.Sum(x => x.SubTotalAmount);
-
-    var order80 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["21_03_2025"]);
-    order80.AddOrderItem(orderItemsList80[0]);
-    order80.TotalAmount = orderItemsList80.Sum(x => x.SubTotalAmount);
-
-
-    // 8 orders of iPhone 16e
-    var order81 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["22_03_2025"]);
-    order81.AddOrderItem(orderItemsList81[0]);
-    order81.TotalAmount = orderItemsList81.Sum(x => x.SubTotalAmount);
-
-    var order82 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["23_03_2025"]);
-    order82.AddOrderItem(orderItemsList82[0]);
-    order82.TotalAmount = orderItemsList82.Sum(x => x.SubTotalAmount);
-
-    var order83 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["24_03_2025"]);
-    order83.AddOrderItem(orderItemsList83[0]);
-    order83.TotalAmount = orderItemsList83.Sum(x => x.SubTotalAmount);
-
-    var order84 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["25_03_2025"]);
-    order84.AddOrderItem(orderItemsList84[0]);
-    order84.TotalAmount = orderItemsList84.Sum(x => x.SubTotalAmount);
-
-    var order85 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["26_03_2025"]);
-    order85.AddOrderItem(orderItemsList85[0]);
-    order85.TotalAmount = orderItemsList85.Sum(x => x.SubTotalAmount);
-
-    var order86 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["27_03_2025"]);
-    order86.AddOrderItem(orderItemsList86[0]);
-    order86.TotalAmount = orderItemsList86.Sum(x => x.SubTotalAmount);
-
-    var order87 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["28_03_2025"]);
-    order87.AddOrderItem(orderItemsList87[0]);
-    order87.TotalAmount = orderItemsList87.Sum(x => x.SubTotalAmount);
-
-    var order88 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["29_03_2025"]);
-    order88.AddOrderItem(orderItemsList88[0]);
-    order88.TotalAmount = orderItemsList88.Sum(x => x.SubTotalAmount);
-
-
-    // 20 orders of iPhone 17
-    var order89 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["30_03_2025"]);
-    order89.AddOrderItem(orderItemsList89[0]);
-    order89.TotalAmount = orderItemsList89.Sum(x => x.SubTotalAmount);
-
-    var order90 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["31_03_2025"]);
-    order90.AddOrderItem(orderItemsList90[0]);
-    order90.TotalAmount = orderItemsList90.Sum(x => x.SubTotalAmount);
-
-    var order91 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["01_04_2025"]);
-    order91.AddOrderItem(orderItemsList91[0]);
-    order91.TotalAmount = orderItemsList91.Sum(x => x.SubTotalAmount);
-
-    var order92 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["02_04_2025"]);
-    order92.AddOrderItem(orderItemsList92[0]);
-    order92.TotalAmount = orderItemsList92.Sum(x => x.SubTotalAmount);
-
-    var order93 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["03_04_2025"]);
-    order93.AddOrderItem(orderItemsList93[0]);
-    order93.TotalAmount = orderItemsList93.Sum(x => x.SubTotalAmount);
-
-    var order94 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["04_04_2025"]);
-    order94.AddOrderItem(orderItemsList94[0]);
-    order94.TotalAmount = orderItemsList94.Sum(x => x.SubTotalAmount);
-
-    var order95 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["05_04_2025"]);
-    order95.AddOrderItem(orderItemsList95[0]);
-    order95.TotalAmount = orderItemsList95.Sum(x => x.SubTotalAmount);
-
-    var order96 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["06_04_2025"]);
-    order96.AddOrderItem(orderItemsList96[0]);
-    order96.TotalAmount = orderItemsList96.Sum(x => x.SubTotalAmount);
-
-    var order97 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["07_04_2025"]);
-    order97.AddOrderItem(orderItemsList97[0]);
-    order97.TotalAmount = orderItemsList97.Sum(x => x.SubTotalAmount);
-
-    var order98 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["08_04_2025"]);
-    order98.AddOrderItem(orderItemsList98[0]);
-    order98.TotalAmount = orderItemsList98.Sum(x => x.SubTotalAmount);
-
-    var order99 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["09_04_2025"]);
-    order99.AddOrderItem(orderItemsList99[0]);
-    order99.TotalAmount = orderItemsList99.Sum(x => x.SubTotalAmount);
-
-    var order100 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["10_04_2025"]);
-    order100.AddOrderItem(orderItemsList100[0]);
-    order100.TotalAmount = orderItemsList100.Sum(x => x.SubTotalAmount);
-
-    var order101 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["11_04_2025"]);
-    order101.AddOrderItem(orderItemsList101[0]);
-    order101.TotalAmount = orderItemsList101.Sum(x => x.SubTotalAmount);
-
-    var order102 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["12_04_2025"]);
-    order102.AddOrderItem(orderItemsList102[0]);
-    order102.TotalAmount = orderItemsList102.Sum(x => x.SubTotalAmount);
-
-    var order103 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["13_04_2025"]);
-    order103.AddOrderItem(orderItemsList103[0]);
-    order103.TotalAmount = orderItemsList103.Sum(x => x.SubTotalAmount);
-
-    var order104 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["14_04_2025"]);
-    order104.AddOrderItem(orderItemsList104[0]);
-    order104.TotalAmount = orderItemsList104.Sum(x => x.SubTotalAmount);
-
-    var order105 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["15_04_2025"]);
-    order105.AddOrderItem(orderItemsList105[0]);
-    order105.TotalAmount = orderItemsList105.Sum(x => x.SubTotalAmount);
-
-    var order106 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["16_04_2025"]);
-    order106.AddOrderItem(orderItemsList106[0]);
-    order106.TotalAmount = orderItemsList106.Sum(x => x.SubTotalAmount);
-
-    var order107 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["17_04_2025"]);
-    order107.AddOrderItem(orderItemsList107[0]);
-    order107.TotalAmount = orderItemsList107.Sum(x => x.SubTotalAmount);
-
-    var order108 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["18_04_2025"]);
-    order108.AddOrderItem(orderItemsList108[0]);
-    order108.TotalAmount = orderItemsList108.Sum(x => x.SubTotalAmount);
-
-
-    // 24 orders of iPhone 17 Pro
-    var order109 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["19_04_2025"]);
-    order109.AddOrderItem(orderItemsList109[0]);
-    order109.TotalAmount = orderItemsList109.Sum(x => x.SubTotalAmount);
-
-    var order110 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["20_04_2025"]);
-    order110.AddOrderItem(orderItemsList110[0]);
-    order110.TotalAmount = orderItemsList110.Sum(x => x.SubTotalAmount);
-
-    var order111 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["21_04_2025"]);
-    order111.AddOrderItem(orderItemsList111[0]);
-    order111.TotalAmount = orderItemsList111.Sum(x => x.SubTotalAmount);
-
-    var order112 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["22_04_2025"]);
-    order112.AddOrderItem(orderItemsList112[0]);
-    order112.TotalAmount = orderItemsList112.Sum(x => x.SubTotalAmount);
-
-    var order113 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["23_04_2025"]);
-    order113.AddOrderItem(orderItemsList113[0]);
-    order113.TotalAmount = orderItemsList113.Sum(x => x.SubTotalAmount);
-
-    var order114 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["24_04_2025"]);
-    order114.AddOrderItem(orderItemsList114[0]);
-    order114.TotalAmount = orderItemsList114.Sum(x => x.SubTotalAmount);
-
-    var order115 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["25_04_2025"]);
-    order115.AddOrderItem(orderItemsList115[0]);
-    order115.TotalAmount = orderItemsList115.Sum(x => x.SubTotalAmount);
-
-    var order116 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["26_04_2025"]);
-    order116.AddOrderItem(orderItemsList116[0]);
-    order116.TotalAmount = orderItemsList116.Sum(x => x.SubTotalAmount);
-
-    var order117 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["27_04_2025"]);
-    order117.AddOrderItem(orderItemsList117[0]);
-    order117.TotalAmount = orderItemsList117.Sum(x => x.SubTotalAmount);
-
-    var order118 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["28_04_2025"]);
-    order118.AddOrderItem(orderItemsList118[0]);
-    order118.TotalAmount = orderItemsList118.Sum(x => x.SubTotalAmount);
-
-    var order119 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["29_04_2025"]);
-    order119.AddOrderItem(orderItemsList119[0]);
-    order119.TotalAmount = orderItemsList119.Sum(x => x.SubTotalAmount);
-
-    var order120 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["30_04_2025"]);
-    order120.AddOrderItem(orderItemsList120[0]);
-    order120.TotalAmount = orderItemsList120.Sum(x => x.SubTotalAmount);
-
-    var order121 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["01_05_2025"]);
-    order121.AddOrderItem(orderItemsList121[0]);
-    order121.TotalAmount = orderItemsList121.Sum(x => x.SubTotalAmount);
-
-    var order122 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["02_05_2025"]);
-    order122.AddOrderItem(orderItemsList122[0]);
-    order122.TotalAmount = orderItemsList122.Sum(x => x.SubTotalAmount);
-
-    var order123 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["03_05_2025"]);
-    order123.AddOrderItem(orderItemsList123[0]);
-    order123.TotalAmount = orderItemsList123.Sum(x => x.SubTotalAmount);
-
-    var order124 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["04_05_2025"]);
-    order124.AddOrderItem(orderItemsList124[0]);
-    order124.TotalAmount = orderItemsList124.Sum(x => x.SubTotalAmount);
-
-    var order125 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["05_05_2025"]);
-    order125.AddOrderItem(orderItemsList125[0]);
-    order125.TotalAmount = orderItemsList125.Sum(x => x.SubTotalAmount);
-
-    var order126 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["06_05_2025"]);
-    order126.AddOrderItem(orderItemsList126[0]);
-    order126.TotalAmount = orderItemsList126.Sum(x => x.SubTotalAmount);
-
-    var order127 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["07_05_2025"]);
-    order127.AddOrderItem(orderItemsList127[0]);
-    order127.TotalAmount = orderItemsList127.Sum(x => x.SubTotalAmount);
-
-    var order128 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["08_05_2025"]);
-    order128.AddOrderItem(orderItemsList128[0]);
-    order128.TotalAmount = orderItemsList128.Sum(x => x.SubTotalAmount);
-
-    var order129 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["09_05_2025"]);
-    order129.AddOrderItem(orderItemsList129[0]);
-    order129.TotalAmount = orderItemsList129.Sum(x => x.SubTotalAmount);
-
-    var order130 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["10_05_2025"]);
-    order130.AddOrderItem(orderItemsList130[0]);
-    order130.TotalAmount = orderItemsList130.Sum(x => x.SubTotalAmount);
-
-    var order131 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["11_05_2025"]);
-    order131.AddOrderItem(orderItemsList131[0]);
-    order131.TotalAmount = orderItemsList131.Sum(x => x.SubTotalAmount);
-
-    var order132 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["12_05_2025"]);
-    order132.AddOrderItem(orderItemsList132[0]);
-    order132.TotalAmount = orderItemsList132.Sum(x => x.SubTotalAmount);
-
-
-    // 16 orders of iPhone 17 Air
-    var order133 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["13_05_2025"]);
-    order133.AddOrderItem(orderItemsList133[0]);
-    order133.TotalAmount = orderItemsList133.Sum(x => x.SubTotalAmount);
-
-    var order134 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["14_05_2025"]);
-    order134.AddOrderItem(orderItemsList134[0]);
-    order134.TotalAmount = orderItemsList134.Sum(x => x.SubTotalAmount);
-
-    var order135 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["15_05_2025"]);
-    order135.AddOrderItem(orderItemsList135[0]);
-    order135.TotalAmount = orderItemsList135.Sum(x => x.SubTotalAmount);
-
-    var order136 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["16_05_2025"]);
-    order136.AddOrderItem(orderItemsList136[0]);
-    order136.TotalAmount = orderItemsList136.Sum(x => x.SubTotalAmount);
-
-    var order137 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["17_05_2025"]);
-    order137.AddOrderItem(orderItemsList137[0]);
-    order137.TotalAmount = orderItemsList137.Sum(x => x.SubTotalAmount);
-
-    var order138 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["18_05_2025"]);
-    order138.AddOrderItem(orderItemsList138[0]);
-    order138.TotalAmount = orderItemsList138.Sum(x => x.SubTotalAmount);
-
-    var order139 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["19_05_2025"]);
-    order139.AddOrderItem(orderItemsList139[0]);
-    order139.TotalAmount = orderItemsList139.Sum(x => x.SubTotalAmount);
-
-    var order140 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["20_05_2025"]);
-    order140.AddOrderItem(orderItemsList140[0]);
-    order140.TotalAmount = orderItemsList140.Sum(x => x.SubTotalAmount);
-
-    var order141 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["21_05_2025"]);
-    order141.AddOrderItem(orderItemsList141[0]);
-    order141.TotalAmount = orderItemsList141.Sum(x => x.SubTotalAmount);
-
-    var order142 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["22_05_2025"]);
-    order142.AddOrderItem(orderItemsList142[0]);
-    order142.TotalAmount = orderItemsList142.Sum(x => x.SubTotalAmount);
-
-    var order143 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["23_05_2025"]);
-    order143.AddOrderItem(orderItemsList143[0]);
-    order143.TotalAmount = orderItemsList143.Sum(x => x.SubTotalAmount);
-
-    var order144 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["24_05_2025"]);
-    order144.AddOrderItem(orderItemsList144[0]);
-    order144.TotalAmount = orderItemsList144.Sum(x => x.SubTotalAmount);
-
-    var order145 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["25_05_2025"]);
-    order145.AddOrderItem(orderItemsList145[0]);
-    order145.TotalAmount = orderItemsList145.Sum(x => x.SubTotalAmount);
-
-    var order146 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["26_05_2025"]);
-    order146.AddOrderItem(orderItemsList146[0]);
-    order146.TotalAmount = orderItemsList146.Sum(x => x.SubTotalAmount);
-
-    var order147 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["27_05_2025"]);
-    order147.AddOrderItem(orderItemsList147[0]);
-    order147.TotalAmount = orderItemsList147.Sum(x => x.SubTotalAmount);
-
-    var order148 = Order.Create(orderId: OrderId.Create(),
-                               tenantId: TenantId.Of(listTenantId[0]),
-                               branchId: null,
-                               customerId: listUserIds[0],
-                               customerPublicKey: null,
-                               tx: null,
-                               code: Code.GenerateCode(),
-                               paymentMethod: EPaymentMethod.COD,
-                               orderStatus: EOrderStatus.DELIVERED,
-                               shippingAddress: listShippingAddresses[0],
-                               promotionId: null,
-                               promotionType: null,
-                               discountType: null,
-                               discountValue: null,
-                               discountAmount: null,
-                               createdAt: CreatedAtDateTimes["28_05_2025"]);
-    order148.AddOrderItem(orderItemsList148[0]);
-    order148.TotalAmount = orderItemsList148.Sum(x => x.SubTotalAmount);
+            // 40 orders of iPhone 16
+            var order41 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["10_02_2025"]);
+            order41.AddOrderItem(orderItemsList41[0]);
+            order41.TotalAmount = orderItemsList41.Sum(x => x.SubTotalAmount);
+
+            var order42 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["11_02_2025"]);
+            order42.AddOrderItem(orderItemsList42[0]);
+            order42.TotalAmount = orderItemsList42.Sum(x => x.SubTotalAmount);
+
+            var order43 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["12_02_2025"]);
+            order43.AddOrderItem(orderItemsList43[0]);
+            order43.TotalAmount = orderItemsList43.Sum(x => x.SubTotalAmount);
+
+            var order44 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["13_02_2025"]);
+            order44.AddOrderItem(orderItemsList44[0]);
+            order44.TotalAmount = orderItemsList44.Sum(x => x.SubTotalAmount);
+
+            var order45 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["14_02_2025"]);
+            order45.AddOrderItem(orderItemsList45[0]);
+            order45.TotalAmount = orderItemsList45.Sum(x => x.SubTotalAmount);
+
+            var order46 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["15_02_2025"]);
+            order46.AddOrderItem(orderItemsList46[0]);
+            order46.TotalAmount = orderItemsList46.Sum(x => x.SubTotalAmount);
+
+            var order47 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["16_02_2025"]);
+            order47.AddOrderItem(orderItemsList47[0]);
+            order47.TotalAmount = orderItemsList47.Sum(x => x.SubTotalAmount);
+
+            var order48 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["17_02_2025"]);
+            order48.AddOrderItem(orderItemsList48[0]);
+            order48.TotalAmount = orderItemsList48.Sum(x => x.SubTotalAmount);
+
+            var order49 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["18_02_2025"]);
+            order49.AddOrderItem(orderItemsList49[0]);
+            order49.TotalAmount = orderItemsList49.Sum(x => x.SubTotalAmount);
+
+            var order50 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["19_02_2025"]);
+            order50.AddOrderItem(orderItemsList50[0]);
+            order50.TotalAmount = orderItemsList50.Sum(x => x.SubTotalAmount);
+
+            var order51 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["20_02_2025"]);
+            order51.AddOrderItem(orderItemsList51[0]);
+            order51.TotalAmount = orderItemsList51.Sum(x => x.SubTotalAmount);
+
+            var order52 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["21_02_2025"]);
+            order52.AddOrderItem(orderItemsList52[0]);
+            order52.TotalAmount = orderItemsList52.Sum(x => x.SubTotalAmount);
+
+            var order53 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["22_02_2025"]);
+            order53.AddOrderItem(orderItemsList53[0]);
+            order53.TotalAmount = orderItemsList53.Sum(x => x.SubTotalAmount);
+
+            var order54 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["23_02_2025"]);
+            order54.AddOrderItem(orderItemsList54[0]);
+            order54.TotalAmount = orderItemsList54.Sum(x => x.SubTotalAmount);
+
+            var order55 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["24_02_2025"]);
+            order55.AddOrderItem(orderItemsList55[0]);
+            order55.TotalAmount = orderItemsList55.Sum(x => x.SubTotalAmount);
+
+            var order56 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["25_02_2025"]);
+            order56.AddOrderItem(orderItemsList56[0]);
+            order56.TotalAmount = orderItemsList56.Sum(x => x.SubTotalAmount);
+
+            var order57 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["26_02_2025"]);
+            order57.AddOrderItem(orderItemsList57[0]);
+            order57.TotalAmount = orderItemsList57.Sum(x => x.SubTotalAmount);
+
+            var order58 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["27_02_2025"]);
+            order58.AddOrderItem(orderItemsList58[0]);
+            order58.TotalAmount = orderItemsList58.Sum(x => x.SubTotalAmount);
+
+            var order59 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["28_02_2025"]);
+            order59.AddOrderItem(orderItemsList59[0]);
+            order59.TotalAmount = orderItemsList59.Sum(x => x.SubTotalAmount);
+
+            var order60 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["01_03_2025"]);
+            order60.AddOrderItem(orderItemsList60[0]);
+            order60.TotalAmount = orderItemsList60.Sum(x => x.SubTotalAmount);
+
+            var order61 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["02_03_2025"]);
+            order61.AddOrderItem(orderItemsList61[0]);
+            order61.TotalAmount = orderItemsList61.Sum(x => x.SubTotalAmount);
+
+            var order62 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["03_03_2025"]);
+            order62.AddOrderItem(orderItemsList62[0]);
+            order62.TotalAmount = orderItemsList62.Sum(x => x.SubTotalAmount);
+
+            var order63 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["04_03_2025"]);
+            order63.AddOrderItem(orderItemsList63[0]);
+            order63.TotalAmount = orderItemsList63.Sum(x => x.SubTotalAmount);
+
+            var order64 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["05_03_2025"]);
+            order64.AddOrderItem(orderItemsList64[0]);
+            order64.TotalAmount = orderItemsList64.Sum(x => x.SubTotalAmount);
+
+            var order65 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["06_03_2025"]);
+            order65.AddOrderItem(orderItemsList65[0]);
+            order65.TotalAmount = orderItemsList65.Sum(x => x.SubTotalAmount);
+
+            var order66 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["07_03_2025"]);
+            order66.AddOrderItem(orderItemsList66[0]);
+            order66.TotalAmount = orderItemsList66.Sum(x => x.SubTotalAmount);
+
+            var order67 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["08_03_2025"]);
+            order67.AddOrderItem(orderItemsList67[0]);
+            order67.TotalAmount = orderItemsList67.Sum(x => x.SubTotalAmount);
+
+            var order68 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["09_03_2025"]);
+            order68.AddOrderItem(orderItemsList68[0]);
+            order68.TotalAmount = orderItemsList68.Sum(x => x.SubTotalAmount);
+
+            var order69 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["10_03_2025"]);
+            order69.AddOrderItem(orderItemsList69[0]);
+            order69.TotalAmount = orderItemsList69.Sum(x => x.SubTotalAmount);
+
+            var order70 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["11_03_2025"]);
+            order70.AddOrderItem(orderItemsList70[0]);
+            order70.TotalAmount = orderItemsList70.Sum(x => x.SubTotalAmount);
+
+            var order71 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["12_03_2025"]);
+            order71.AddOrderItem(orderItemsList71[0]);
+            order71.TotalAmount = orderItemsList71.Sum(x => x.SubTotalAmount);
+
+            var order72 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["13_03_2025"]);
+            order72.AddOrderItem(orderItemsList72[0]);
+            order72.TotalAmount = orderItemsList72.Sum(x => x.SubTotalAmount);
+
+            var order73 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["14_03_2025"]);
+            order73.AddOrderItem(orderItemsList73[0]);
+            order73.TotalAmount = orderItemsList73.Sum(x => x.SubTotalAmount);
+
+            var order74 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["15_03_2025"]);
+            order74.AddOrderItem(orderItemsList74[0]);
+            order74.TotalAmount = orderItemsList74.Sum(x => x.SubTotalAmount);
+
+            var order75 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["16_03_2025"]);
+            order75.AddOrderItem(orderItemsList75[0]);
+            order75.TotalAmount = orderItemsList75.Sum(x => x.SubTotalAmount);
+
+            var order76 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["17_03_2025"]);
+            order76.AddOrderItem(orderItemsList76[0]);
+            order76.TotalAmount = orderItemsList76.Sum(x => x.SubTotalAmount);
+
+            var order77 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["18_03_2025"]);
+            order77.AddOrderItem(orderItemsList77[0]);
+            order77.TotalAmount = orderItemsList77.Sum(x => x.SubTotalAmount);
+
+            var order78 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["19_03_2025"]);
+            order78.AddOrderItem(orderItemsList78[0]);
+            order78.TotalAmount = orderItemsList78.Sum(x => x.SubTotalAmount);
+
+            var order79 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["20_03_2025"]);
+            order79.AddOrderItem(orderItemsList79[0]);
+            order79.TotalAmount = orderItemsList79.Sum(x => x.SubTotalAmount);
+
+            var order80 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["21_03_2025"]);
+            order80.AddOrderItem(orderItemsList80[0]);
+            order80.TotalAmount = orderItemsList80.Sum(x => x.SubTotalAmount);
+
+
+            // 8 orders of iPhone 16e
+            var order81 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["22_03_2025"]);
+            order81.AddOrderItem(orderItemsList81[0]);
+            order81.TotalAmount = orderItemsList81.Sum(x => x.SubTotalAmount);
+
+            var order82 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["23_03_2025"]);
+            order82.AddOrderItem(orderItemsList82[0]);
+            order82.TotalAmount = orderItemsList82.Sum(x => x.SubTotalAmount);
+
+            var order83 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["24_03_2025"]);
+            order83.AddOrderItem(orderItemsList83[0]);
+            order83.TotalAmount = orderItemsList83.Sum(x => x.SubTotalAmount);
+
+            var order84 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["25_03_2025"]);
+            order84.AddOrderItem(orderItemsList84[0]);
+            order84.TotalAmount = orderItemsList84.Sum(x => x.SubTotalAmount);
+
+            var order85 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["26_03_2025"]);
+            order85.AddOrderItem(orderItemsList85[0]);
+            order85.TotalAmount = orderItemsList85.Sum(x => x.SubTotalAmount);
+
+            var order86 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["27_03_2025"]);
+            order86.AddOrderItem(orderItemsList86[0]);
+            order86.TotalAmount = orderItemsList86.Sum(x => x.SubTotalAmount);
+
+            var order87 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["28_03_2025"]);
+            order87.AddOrderItem(orderItemsList87[0]);
+            order87.TotalAmount = orderItemsList87.Sum(x => x.SubTotalAmount);
+
+            var order88 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["29_03_2025"]);
+            order88.AddOrderItem(orderItemsList88[0]);
+            order88.TotalAmount = orderItemsList88.Sum(x => x.SubTotalAmount);
+
+
+            // 20 orders of iPhone 17
+            var order89 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["30_03_2025"]);
+            order89.AddOrderItem(orderItemsList89[0]);
+            order89.TotalAmount = orderItemsList89.Sum(x => x.SubTotalAmount);
+
+            var order90 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["31_03_2025"]);
+            order90.AddOrderItem(orderItemsList90[0]);
+            order90.TotalAmount = orderItemsList90.Sum(x => x.SubTotalAmount);
+
+            var order91 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["01_04_2025"]);
+            order91.AddOrderItem(orderItemsList91[0]);
+            order91.TotalAmount = orderItemsList91.Sum(x => x.SubTotalAmount);
+
+            var order92 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["02_04_2025"]);
+            order92.AddOrderItem(orderItemsList92[0]);
+            order92.TotalAmount = orderItemsList92.Sum(x => x.SubTotalAmount);
+
+            var order93 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["03_04_2025"]);
+            order93.AddOrderItem(orderItemsList93[0]);
+            order93.TotalAmount = orderItemsList93.Sum(x => x.SubTotalAmount);
+
+            var order94 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["04_04_2025"]);
+            order94.AddOrderItem(orderItemsList94[0]);
+            order94.TotalAmount = orderItemsList94.Sum(x => x.SubTotalAmount);
+
+            var order95 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["05_04_2025"]);
+            order95.AddOrderItem(orderItemsList95[0]);
+            order95.TotalAmount = orderItemsList95.Sum(x => x.SubTotalAmount);
+
+            var order96 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["06_04_2025"]);
+            order96.AddOrderItem(orderItemsList96[0]);
+            order96.TotalAmount = orderItemsList96.Sum(x => x.SubTotalAmount);
+
+            var order97 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["07_04_2025"]);
+            order97.AddOrderItem(orderItemsList97[0]);
+            order97.TotalAmount = orderItemsList97.Sum(x => x.SubTotalAmount);
+
+            var order98 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["08_04_2025"]);
+            order98.AddOrderItem(orderItemsList98[0]);
+            order98.TotalAmount = orderItemsList98.Sum(x => x.SubTotalAmount);
+
+            var order99 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["09_04_2025"]);
+            order99.AddOrderItem(orderItemsList99[0]);
+            order99.TotalAmount = orderItemsList99.Sum(x => x.SubTotalAmount);
+
+            var order100 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["10_04_2025"]);
+            order100.AddOrderItem(orderItemsList100[0]);
+            order100.TotalAmount = orderItemsList100.Sum(x => x.SubTotalAmount);
+
+            var order101 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["11_04_2025"]);
+            order101.AddOrderItem(orderItemsList101[0]);
+            order101.TotalAmount = orderItemsList101.Sum(x => x.SubTotalAmount);
+
+            var order102 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["12_04_2025"]);
+            order102.AddOrderItem(orderItemsList102[0]);
+            order102.TotalAmount = orderItemsList102.Sum(x => x.SubTotalAmount);
+
+            var order103 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["13_04_2025"]);
+            order103.AddOrderItem(orderItemsList103[0]);
+            order103.TotalAmount = orderItemsList103.Sum(x => x.SubTotalAmount);
+
+            var order104 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["14_04_2025"]);
+            order104.AddOrderItem(orderItemsList104[0]);
+            order104.TotalAmount = orderItemsList104.Sum(x => x.SubTotalAmount);
+
+            var order105 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["15_04_2025"]);
+            order105.AddOrderItem(orderItemsList105[0]);
+            order105.TotalAmount = orderItemsList105.Sum(x => x.SubTotalAmount);
+
+            var order106 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["16_04_2025"]);
+            order106.AddOrderItem(orderItemsList106[0]);
+            order106.TotalAmount = orderItemsList106.Sum(x => x.SubTotalAmount);
+
+            var order107 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["17_04_2025"]);
+            order107.AddOrderItem(orderItemsList107[0]);
+            order107.TotalAmount = orderItemsList107.Sum(x => x.SubTotalAmount);
+
+            var order108 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["18_04_2025"]);
+            order108.AddOrderItem(orderItemsList108[0]);
+            order108.TotalAmount = orderItemsList108.Sum(x => x.SubTotalAmount);
+
+
+            // 24 orders of iPhone 17 Pro
+            var order109 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["19_04_2025"]);
+            order109.AddOrderItem(orderItemsList109[0]);
+            order109.TotalAmount = orderItemsList109.Sum(x => x.SubTotalAmount);
+
+            var order110 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["20_04_2025"]);
+            order110.AddOrderItem(orderItemsList110[0]);
+            order110.TotalAmount = orderItemsList110.Sum(x => x.SubTotalAmount);
+
+            var order111 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["21_04_2025"]);
+            order111.AddOrderItem(orderItemsList111[0]);
+            order111.TotalAmount = orderItemsList111.Sum(x => x.SubTotalAmount);
+
+            var order112 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["22_04_2025"]);
+            order112.AddOrderItem(orderItemsList112[0]);
+            order112.TotalAmount = orderItemsList112.Sum(x => x.SubTotalAmount);
+
+            var order113 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["23_04_2025"]);
+            order113.AddOrderItem(orderItemsList113[0]);
+            order113.TotalAmount = orderItemsList113.Sum(x => x.SubTotalAmount);
+
+            var order114 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["24_04_2025"]);
+            order114.AddOrderItem(orderItemsList114[0]);
+            order114.TotalAmount = orderItemsList114.Sum(x => x.SubTotalAmount);
+
+            var order115 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["25_04_2025"]);
+            order115.AddOrderItem(orderItemsList115[0]);
+            order115.TotalAmount = orderItemsList115.Sum(x => x.SubTotalAmount);
+
+            var order116 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["26_04_2025"]);
+            order116.AddOrderItem(orderItemsList116[0]);
+            order116.TotalAmount = orderItemsList116.Sum(x => x.SubTotalAmount);
+
+            var order117 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["27_04_2025"]);
+            order117.AddOrderItem(orderItemsList117[0]);
+            order117.TotalAmount = orderItemsList117.Sum(x => x.SubTotalAmount);
+
+            var order118 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["28_04_2025"]);
+            order118.AddOrderItem(orderItemsList118[0]);
+            order118.TotalAmount = orderItemsList118.Sum(x => x.SubTotalAmount);
+
+            var order119 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["29_04_2025"]);
+            order119.AddOrderItem(orderItemsList119[0]);
+            order119.TotalAmount = orderItemsList119.Sum(x => x.SubTotalAmount);
+
+            var order120 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["30_04_2025"]);
+            order120.AddOrderItem(orderItemsList120[0]);
+            order120.TotalAmount = orderItemsList120.Sum(x => x.SubTotalAmount);
+
+            var order121 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["01_05_2025"]);
+            order121.AddOrderItem(orderItemsList121[0]);
+            order121.TotalAmount = orderItemsList121.Sum(x => x.SubTotalAmount);
+
+            var order122 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["02_05_2025"]);
+            order122.AddOrderItem(orderItemsList122[0]);
+            order122.TotalAmount = orderItemsList122.Sum(x => x.SubTotalAmount);
+
+            var order123 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["03_05_2025"]);
+            order123.AddOrderItem(orderItemsList123[0]);
+            order123.TotalAmount = orderItemsList123.Sum(x => x.SubTotalAmount);
+
+            var order124 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["04_05_2025"]);
+            order124.AddOrderItem(orderItemsList124[0]);
+            order124.TotalAmount = orderItemsList124.Sum(x => x.SubTotalAmount);
+
+            var order125 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["05_05_2025"]);
+            order125.AddOrderItem(orderItemsList125[0]);
+            order125.TotalAmount = orderItemsList125.Sum(x => x.SubTotalAmount);
+
+            var order126 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["06_05_2025"]);
+            order126.AddOrderItem(orderItemsList126[0]);
+            order126.TotalAmount = orderItemsList126.Sum(x => x.SubTotalAmount);
+
+            var order127 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["07_05_2025"]);
+            order127.AddOrderItem(orderItemsList127[0]);
+            order127.TotalAmount = orderItemsList127.Sum(x => x.SubTotalAmount);
+
+            var order128 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["08_05_2025"]);
+            order128.AddOrderItem(orderItemsList128[0]);
+            order128.TotalAmount = orderItemsList128.Sum(x => x.SubTotalAmount);
+
+            var order129 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["09_05_2025"]);
+            order129.AddOrderItem(orderItemsList129[0]);
+            order129.TotalAmount = orderItemsList129.Sum(x => x.SubTotalAmount);
+
+            var order130 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["10_05_2025"]);
+            order130.AddOrderItem(orderItemsList130[0]);
+            order130.TotalAmount = orderItemsList130.Sum(x => x.SubTotalAmount);
+
+            var order131 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["11_05_2025"]);
+            order131.AddOrderItem(orderItemsList131[0]);
+            order131.TotalAmount = orderItemsList131.Sum(x => x.SubTotalAmount);
+
+            var order132 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["12_05_2025"]);
+            order132.AddOrderItem(orderItemsList132[0]);
+            order132.TotalAmount = orderItemsList132.Sum(x => x.SubTotalAmount);
+
+
+            // 16 orders of iPhone 17 Air
+            var order133 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["13_05_2025"]);
+            order133.AddOrderItem(orderItemsList133[0]);
+            order133.TotalAmount = orderItemsList133.Sum(x => x.SubTotalAmount);
+
+            var order134 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["14_05_2025"]);
+            order134.AddOrderItem(orderItemsList134[0]);
+            order134.TotalAmount = orderItemsList134.Sum(x => x.SubTotalAmount);
+
+            var order135 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["15_05_2025"]);
+            order135.AddOrderItem(orderItemsList135[0]);
+            order135.TotalAmount = orderItemsList135.Sum(x => x.SubTotalAmount);
+
+            var order136 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["16_05_2025"]);
+            order136.AddOrderItem(orderItemsList136[0]);
+            order136.TotalAmount = orderItemsList136.Sum(x => x.SubTotalAmount);
+
+            var order137 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["17_05_2025"]);
+            order137.AddOrderItem(orderItemsList137[0]);
+            order137.TotalAmount = orderItemsList137.Sum(x => x.SubTotalAmount);
+
+            var order138 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["18_05_2025"]);
+            order138.AddOrderItem(orderItemsList138[0]);
+            order138.TotalAmount = orderItemsList138.Sum(x => x.SubTotalAmount);
+
+            var order139 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["19_05_2025"]);
+            order139.AddOrderItem(orderItemsList139[0]);
+            order139.TotalAmount = orderItemsList139.Sum(x => x.SubTotalAmount);
+
+            var order140 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["20_05_2025"]);
+            order140.AddOrderItem(orderItemsList140[0]);
+            order140.TotalAmount = orderItemsList140.Sum(x => x.SubTotalAmount);
+
+            var order141 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["21_05_2025"]);
+            order141.AddOrderItem(orderItemsList141[0]);
+            order141.TotalAmount = orderItemsList141.Sum(x => x.SubTotalAmount);
+
+            var order142 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["22_05_2025"]);
+            order142.AddOrderItem(orderItemsList142[0]);
+            order142.TotalAmount = orderItemsList142.Sum(x => x.SubTotalAmount);
+
+            var order143 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["23_05_2025"]);
+            order143.AddOrderItem(orderItemsList143[0]);
+            order143.TotalAmount = orderItemsList143.Sum(x => x.SubTotalAmount);
+
+            var order144 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["24_05_2025"]);
+            order144.AddOrderItem(orderItemsList144[0]);
+            order144.TotalAmount = orderItemsList144.Sum(x => x.SubTotalAmount);
+
+            var order145 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["25_05_2025"]);
+            order145.AddOrderItem(orderItemsList145[0]);
+            order145.TotalAmount = orderItemsList145.Sum(x => x.SubTotalAmount);
+
+            var order146 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["26_05_2025"]);
+            order146.AddOrderItem(orderItemsList146[0]);
+            order146.TotalAmount = orderItemsList146.Sum(x => x.SubTotalAmount);
+
+            var order147 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["27_05_2025"]);
+            order147.AddOrderItem(orderItemsList147[0]);
+            order147.TotalAmount = orderItemsList147.Sum(x => x.SubTotalAmount);
+
+            var order148 = Order.Create(orderId: OrderId.Create(),
+                                       tenantId: TenantId.Of(listTenantId[0]),
+                                       branchId: null,
+                                       customerId: listUserIds[0],
+                                       customerPublicKey: null,
+                                       tx: null,
+                                       code: Code.GenerateCode(),
+                                       paymentMethod: EPaymentMethod.COD,
+                                       orderStatus: EOrderStatus.DELIVERED,
+                                       shippingAddress: listShippingAddresses[0],
+                                       promotionId: null,
+                                       promotionType: null,
+                                       discountType: null,
+                                       discountValue: null,
+                                       discountAmount: null,
+                                       createdAt: CreatedAtDateTimes["28_05_2025"]);
+            order148.AddOrderItem(orderItemsList148[0]);
+            order148.TotalAmount = orderItemsList148.Sum(x => x.SubTotalAmount);
 
             return new List<Order>
             {
