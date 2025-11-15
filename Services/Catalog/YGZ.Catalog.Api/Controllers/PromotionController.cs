@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Catalog.Application.Promotions.Queries.GetEventDetails;
 using YGZ.Catalog.Application.Promotions.Queries.GetEvents;
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -32,13 +33,13 @@ public class PromotionController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    // [HttpGet("{eventId}")]
-    // public async Task<IActionResult> GetEventById([FromRoute] string eventId, CancellationToken cancellationToken)
-    // {
-    //     var query = new GetEventDetailsQuery { EventId = eventId };
+    [HttpGet("{eventId}")]
+    public async Task<IActionResult> GetEventById([FromRoute] string eventId, CancellationToken cancellationToken)
+    {
+        var query = new GetEventDetailsQuery { EventId = eventId };
 
-    //     var result = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
-    //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    // }
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 }
