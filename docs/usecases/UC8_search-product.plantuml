@@ -1,0 +1,46 @@
+@startuml UC8_search_product
+actor Actor
+boundary SearchPage
+control CatalogController
+control GetProductModelsHandler
+control MongoRepository
+database MongoDB
+
+Actor -> SearchPage: input(textSearch)
+activate Actor
+activate SearchPage
+
+SearchPage -> CatalogController: searchProductModels(query)
+activate CatalogController
+
+CatalogController -> GetProductModelsHandler: getProductModels(query)
+activate GetProductModelsHandler
+
+GetProductModelsHandler -> GetProductModelsHandler: BuildFilter(query)
+
+opt textSearch provided
+    GetProductModelsHandler -> GetProductModelsHandler: filter Regex(name, /textSearch/i)
+end
+
+GetProductModelsHandler -> MongoRepository: GetAll(filter, null, ct)
+activate MongoRepository
+MongoRepository -> MongoDB: query(filter, pagination)
+activate MongoDB
+MongoDB --> MongoRepository: (items, totalRecords, totalPages)
+deactivate MongoDB
+MongoRepository --> GetProductModelsHandler: (items, totalRecords, totalPages)
+deactivate MongoRepository
+
+GetProductModelsHandler -> GetProductModelsHandler: MapToResponse(result, query)\nwith PaginationLinksBuilder.Build(...)
+GetProductModelsHandler --> CatalogController: PaginationResponse<ProductModelResponse>
+deactivate GetProductModelsHandler
+
+CatalogController --> SearchPage: PaginationResponse
+deactivate CatalogController
+
+SearchPage --> Actor: display(Search results with pagination)
+deactivate SearchPage
+deactivate Actor
+
+@enduml
+
