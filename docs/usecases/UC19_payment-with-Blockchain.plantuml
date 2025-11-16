@@ -35,21 +35,13 @@ deactivate BasketRepository
 
 alt basket empty or no items
     CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.BasketEmpty
-    deactivate CheckoutBasketWithBlockchainHandler
     CartController --> CheckoutPage: return Errors.Basket.BasketEmpty
-    deactivate CartController
     CheckoutPage --> Actor: message("Basket is empty")
-    deactivate CheckoutPage
-    deactivate Actor
 else has items
     alt no items selected
         CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.NotSelectedItems
-        deactivate CheckoutBasketWithBlockchainHandler
         CartController --> CheckoutPage: return Errors.Basket.NotSelectedItems
-        deactivate CartController
         CheckoutPage --> Actor: message("No items selected for checkout")
-        deactivate CheckoutPage
-        deactivate Actor
     else proceed
         alt contains event items
             CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: FilterEventItems()
@@ -65,12 +57,8 @@ else has items
 
                 alt coupon not found
                     CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Discount.CouponNotFound
-                    deactivate CheckoutBasketWithBlockchainHandler
                     CartController --> CheckoutPage: return Errors.Discount.CouponNotFound
-                    deactivate CartController
                     CheckoutPage --> Actor: message("Coupon not found")
-                    deactivate CheckoutPage
-                    deactivate Actor
                 else coupon valid
                     CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Select items IsSelected == true
                     CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Calculate totalCartValue
@@ -89,12 +77,8 @@ else has items
         CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: TryParse(request.CryptoUUID)
         alt invalid CryptoUUID
             CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.InvalidCryptoUUID
-            deactivate CheckoutBasketWithBlockchainHandler
             CartController --> CheckoutPage: return Errors.Basket.InvalidCryptoUUID
-            deactivate CartController
             CheckoutPage --> Actor: message("Invalid transaction ID")
-            deactivate CheckoutPage
-            deactivate Actor
         else valid CryptoUUID
             CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Prepare BasketCheckoutIntegrationEvent\n(orderId=CryptoUUID, userId, userEmail,\ncustomerPublicKey, tx, shippingAddress,\npromotion data, totals)
             CheckoutBasketWithBlockchainHandler -> PublishEndpoint: Publish(integrationEvent)

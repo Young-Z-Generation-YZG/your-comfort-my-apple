@@ -1,0 +1,65 @@
+@startuml UC33_write_review
+actor Actor
+boundary ProductDetailsPage
+control ReviewController
+control CreateReviewHandler
+control UserHttpContext
+control SkuRepository
+control ReviewRepository
+
+Actor -> ProductDetailsPage: submit review(skuId, orderId,\norderItemId, content, rating)
+activate Actor
+activate ProductDetailsPage
+
+ProductDetailsPage -> ReviewController: createReview(request)
+activate ReviewController
+
+ReviewController -> CreateReviewHandler: createReview(request)
+activate CreateReviewHandler
+
+CreateReviewHandler -> UserHttpContext: GetUserId()
+activate UserHttpContext
+UserHttpContext --> CreateReviewHandler: userId
+deactivate UserHttpContext
+
+CreateReviewHandler -> UserHttpContext: GetUserEmail()
+activate UserHttpContext
+UserHttpContext --> CreateReviewHandler: userEmail
+deactivate UserHttpContext
+
+CreateReviewHandler -> SkuRepository: GetByIdAsync(skuId)
+activate SkuRepository
+SkuRepository --> CreateReviewHandler: SKU | null
+deactivate SkuRepository
+
+alt sku not found
+    CreateReviewHandler --> ReviewController: return false
+    ReviewController --> ProductDetailsPage: return false
+    ProductDetailsPage --> Actor: message("Unable to find product for review")
+else sku found
+    CreateReviewHandler -> CreateReviewHandler: Build OrderInfo(orderId, orderItemId)
+    CreateReviewHandler -> CreateReviewHandler: Build CustomerReviewInfo(name = userEmail || userId || \"Anonymous\")
+    CreateReviewHandler -> CreateReviewHandler: Create Review(modelId, skuId,\norderInfo, customerInfo, content, rating)
+
+    CreateReviewHandler -> ReviewRepository: InsertOneAsync(review)
+    activate ReviewRepository
+    ReviewRepository --> CreateReviewHandler: Result(bool)
+    deactivate ReviewRepository
+
+    alt insert failed
+        CreateReviewHandler --> ReviewController: return false
+        ReviewController --> ProductDetailsPage: return false
+        ProductDetailsPage --> Actor: message("Failed to submit review")
+    else insert success
+        CreateReviewHandler --> ReviewController: return true
+        deactivate CreateReviewHandler
+        ReviewController --> ProductDetailsPage: return true
+        deactivate ReviewController
+        ProductDetailsPage --> Actor: message("Review submitted")
+        deactivate ProductDetailsPage
+        deactivate Actor
+    end
+end
+
+@enduml
+
