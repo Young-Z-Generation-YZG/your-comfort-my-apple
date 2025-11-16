@@ -1,4 +1,4 @@
-@startuml UC6_filter-product
+@startuml UC5_view-product-list
 actor Actor
 boundary ProductListPage
 control CatalogController

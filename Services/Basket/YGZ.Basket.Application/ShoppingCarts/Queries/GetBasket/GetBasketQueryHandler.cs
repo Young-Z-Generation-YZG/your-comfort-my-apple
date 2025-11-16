@@ -32,11 +32,6 @@ public class GetBasketQueryHandler : IQueryHandler<GetBasketQuery, GetBasketResp
 
         var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 
-        if (result.IsFailure)
-        {
-            return result.Error;
-        }
-
         var shoppingCart = result.Response!;
 
         if (shoppingCart.CartItems is null || !shoppingCart.CartItems.Any())

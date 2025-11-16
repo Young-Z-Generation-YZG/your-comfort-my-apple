@@ -4,22 +4,26 @@ using Microsoft.Extensions.Caching.Distributed;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using Microsoft.Extensions.Logging;
 
 namespace YGZ.Basket.Infrastructure.Persistence.Repositories;
 
 public class CachedBasketRepository : IBasketRepository
 {
+    private readonly ILogger<CachedBasketRepository> _logger;
     private readonly IBasketRepository _basketRepository;
     private readonly IDistributedCache _distributedCache;
 
-    public CachedBasketRepository(IBasketRepository basketRepository, IDistributedCache distributedCache)
+    public CachedBasketRepository( ILogger<CachedBasketRepository> logger, IBasketRepository basketRepository, IDistributedCache distributedCache)
     {
+        _logger = logger;
         _basketRepository = basketRepository;
         _distributedCache = distributedCache;
     }
 
     public async Task<Result<ShoppingCart>> GetBasketAsync(string userEmail, CancellationToken cancellationToken)
     {
+        try {
         var cachedBasket = await _distributedCache.GetStringAsync(userEmail, cancellationToken);
 
         if (!string.IsNullOrEmpty(cachedBasket))
@@ -32,15 +36,24 @@ public class CachedBasketRepository : IBasketRepository
         await _distributedCache.SetStringAsync(userEmail, JsonSerializer.Serialize(basket.Response), cancellationToken);
 
         return basket;
+        } catch (Exception ex) {
+            _logger.LogError("Failed to get basket: {ErrorMessage}", ex.Message);
+            throw;
+        }
     }
 
     public async Task<Result<bool>> StoreBasketAsync(ShoppingCart shoppingCart, CancellationToken cancellationToken)
     {
+        try {
         await _basketRepository.StoreBasketAsync(shoppingCart, cancellationToken);
 
         await _distributedCache.SetStringAsync(shoppingCart.UserEmail, JsonSerializer.Serialize(shoppingCart), cancellationToken);
 
         return true;
+        } catch (Exception ex) {
+            _logger.LogError("Failed to store basket: {ErrorMessage}", ex.Message);
+            throw;
+        }
     }
 
     public async Task<Result<bool>> DeleteSelectedItemsBasketAsync(string userEmail, CancellationToken cancellationToken)

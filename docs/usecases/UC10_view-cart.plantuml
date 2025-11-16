@@ -1,0 +1,70 @@
+@startuml UC10_view_cart
+actor Actor
+boundary CartPage
+control CartController
+control GetBasketQueryHandler
+control UserHttpContext
+control BasketRepository
+control DiscountProtoService
+
+Actor -> CartPage: open(cart?couponCode)
+activate Actor
+activate CartPage
+
+CartPage -> CartController: getBasket(query)
+activate CartController
+
+CartController -> GetBasketQueryHandler: getBasket(query)
+activate GetBasketQueryHandler
+
+GetBasketQueryHandler -> UserHttpContext: GetUserEmail()
+activate UserHttpContext
+UserHttpContext --> GetBasketQueryHandler: userEmail
+deactivate UserHttpContext
+
+GetBasketQueryHandler -> BasketRepository: GetBasketAsync(userEmail)
+activate BasketRepository
+BasketRepository --> GetBasketQueryHandler: Result(shoppingCart)
+deactivate BasketRepository
+
+alt no items in cart
+    GetBasketQueryHandler --> CartController: return GetBasketResponse(empty)
+    CartController --> CartPage: return GetBasketResponse(empty)
+    CartPage --> Actor: display(Empty cart)
+else has items
+    GetBasketQueryHandler -> GetBasketQueryHandler: FilterOutEventItems()
+
+    opt coupon code provided
+        GetBasketQueryHandler -> DiscountProtoService: GetCouponByCodeGrpc(couponCode)
+        activate DiscountProtoService
+        DiscountProtoService --> GetBasketQueryHandler: CouponModel | NotFound
+        deactivate DiscountProtoService
+
+        alt coupon not found
+            GetBasketQueryHandler --> CartController: return Errors.Discount.CouponNotFound
+            CartController --> CartPage: return Errors.Discount.CouponNotFound
+            CartPage --> Actor: message("Coupon not found")
+        else coupon available
+            GetBasketQueryHandler -> GetBasketQueryHandler: Select items where IsSelected == true
+            GetBasketQueryHandler -> GetBasketQueryHandler: Calculate totalCartValue
+            GetBasketQueryHandler -> GetBasketQueryHandler: Convert discount type
+            GetBasketQueryHandler -> GetBasketQueryHandler: Calculate calculatedDiscount
+            GetBasketQueryHandler -> GetBasketQueryHandler: Apply max discount cap
+            loop for each selected item
+                GetBasketQueryHandler -> GetBasketQueryHandler: Proportional item discount
+                GetBasketQueryHandler -> GetBasketQueryHandler: Create PromotionCoupon and ApplyCoupon(item)
+            end
+        end
+    end
+
+    GetBasketQueryHandler --> CartController: return GetBasketResponse(items, totalAmount)
+    deactivate GetBasketQueryHandler
+    CartController --> CartPage: return GetBasketResponse
+    deactivate CartController
+    CartPage --> Actor: display(Cart with totals)
+    deactivate CartPage
+    deactivate Actor
+end
+
+@enduml
+
