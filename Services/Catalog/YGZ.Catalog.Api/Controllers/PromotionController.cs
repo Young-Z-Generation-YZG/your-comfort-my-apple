@@ -33,7 +33,7 @@ public class PromotionController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("{eventId}")]
+    [HttpGet("events/{eventId}")]
     public async Task<IActionResult> GetEventById([FromRoute] string eventId, CancellationToken cancellationToken)
     {
         var query = new GetEventDetailsQuery { EventId = eventId };

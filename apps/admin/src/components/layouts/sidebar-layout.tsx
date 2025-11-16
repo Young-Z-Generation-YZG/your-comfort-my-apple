@@ -20,6 +20,9 @@ import {
    Box,
    Warehouse,
    Laptop,
+   TicketPercent,
+   Calendar,
+   Ticket,
 } from 'lucide-react';
 
 import {
@@ -38,9 +41,7 @@ import { MainNav } from './sidebar-navigation/main-nav';
 import { NavUser } from '@components/ui/nav-user';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TenantSwitcher } from '@components/ui/tenant-switcher';
-import usePagination from '~/src/hooks/use-pagination';
 import { useEffect, useMemo } from 'react';
-import useIdentityService from '~/src/hooks/api/use-identity-service';
 import useTenantService from '~/src/hooks/api/use-tenant-service';
 import { ERole } from '~/src/domain/enums/role.enum';
 import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
@@ -257,6 +258,31 @@ const superAdminSidebarData = [
             title: 'Orders List',
             url: '/dashboards/online/orders',
             icon: ScrollText,
+         },
+      ],
+   },
+   {
+      title: 'Categories',
+      url: '/dashboards/categories',
+      icon: Tag,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Promotion Management',
+      url: '/dashboards/promotion-management',
+      icon: TicketPercent,
+      isActive: true,
+      items: [
+         {
+            title: 'Events',
+            url: '/dashboards/promotion-management/events',
+            icon: Calendar,
+         },
+         {
+            title: 'Coupons',
+            url: '#',
+            icon: Ticket,
          },
       ],
    },
