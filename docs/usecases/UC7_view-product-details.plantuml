@@ -1,0 +1,70 @@
+@startuml UC7_view_product_details
+actor Actor
+boundary ProductDetailsPage
+control CatalogController
+control GetIphoneModelBySlugHandler
+control IphoneModelRepository
+control SkuRepository
+control BranchRepository
+database MongoDB
+
+Actor -> ProductDetailsPage: open(modelSlug)
+activate Actor
+activate ProductDetailsPage
+
+ProductDetailsPage -> CatalogController: getIphoneModelBySlug(query)
+activate CatalogController
+
+CatalogController -> GetIphoneModelBySlugHandler: getIphoneModelBySlug(query)
+activate GetIphoneModelBySlugHandler
+
+GetIphoneModelBySlugHandler -> IphoneModelRepository: GetByFilter(Slug == modelSlug)
+activate IphoneModelRepository
+IphoneModelRepository -> MongoDB: find One by Slug
+activate MongoDB
+MongoDB --> IphoneModelRepository: IphoneModel | null
+deactivate MongoDB
+IphoneModelRepository --> GetIphoneModelBySlugHandler: iphoneModel | null
+deactivate IphoneModelRepository
+
+alt model does not exist
+    GetIphoneModelBySlugHandler --> CatalogController: return Errors.Iphone.ModelDoesNotExist
+    CatalogController --> ProductDetailsPage: return Errors.Iphone.ModelDoesNotExist
+    ProductDetailsPage --> Actor: message("Product not found")
+else model exists
+    GetIphoneModelBySlugHandler -> SkuRepository: GetAll(ModelId == iphoneModel.Id)
+    activate SkuRepository
+    SkuRepository -> MongoDB: find SKUs by ModelId
+    activate MongoDB
+    MongoDB --> SkuRepository: List<SKU>
+    deactivate MongoDB
+    SkuRepository --> GetIphoneModelBySlugHandler: skus
+    deactivate SkuRepository
+
+    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: Group SKUs by BranchId
+
+    loop foreach BranchId in skusByBranch
+        GetIphoneModelBySlugHandler -> BranchRepository: GetById(branchId)
+        activate BranchRepository
+        BranchRepository -> MongoDB: find Branch by Id
+        activate MongoDB
+        MongoDB --> BranchRepository: Branch
+        deactivate MongoDB
+        BranchRepository --> GetIphoneModelBySlugHandler: branch
+        deactivate BranchRepository
+    end
+
+    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: ToResponse(model, skusByBranch)
+    GetIphoneModelBySlugHandler --> CatalogController: IphoneModelDetailsResponse
+    deactivate GetIphoneModelBySlugHandler
+
+    CatalogController --> ProductDetailsPage: IphoneModelDetailsResponse
+    deactivate CatalogController
+
+    ProductDetailsPage --> Actor: display(Product details with branches and SKUs)
+    deactivate ProductDetailsPage
+    deactivate Actor
+end
+
+@enduml
+
