@@ -1,0 +1,64 @@
+@startuml UC31_confirm_order
+actor Actor
+boundary OrderDetailsPage
+control OrderController
+control ConfirmOrderHandler
+control OrderRepository
+control CatalogProtoService
+
+Actor -> OrderDetailsPage: click Confirm(orderId)
+activate Actor
+activate OrderDetailsPage
+
+OrderDetailsPage -> OrderController: confirmOrder(request)
+activate OrderController
+
+OrderController -> ConfirmOrderHandler: confirmOrder(request)
+activate ConfirmOrderHandler
+
+ConfirmOrderHandler -> OrderRepository: GetById(orderId, includes: OrderItems)
+activate OrderRepository
+OrderRepository --> ConfirmOrderHandler: Order | null
+deactivate OrderRepository
+
+alt order does not exist
+    ConfirmOrderHandler --> OrderController: return Errors.Order.DoesNotExist
+    OrderController --> OrderDetailsPage: return Errors.Order.DoesNotExist
+    OrderDetailsPage --> Actor: message("Order not found")
+else order exists
+    loop for each item in order.OrderItems
+        ConfirmOrderHandler -> ConfirmOrderHandler: Determine PromotionType (COUPON|EVENT|UNKNOWN)
+        ConfirmOrderHandler -> CatalogProtoService: CheckInsufficientGrpc(modelId,\nnormalizedModel, normalizedStorage,\nnormalizedColor, quantity,\npromotionId, promotionTypeGrpc)
+        activate CatalogProtoService
+        CatalogProtoService --> ConfirmOrderHandler: IsSuccess
+        deactivate CatalogProtoService
+
+        alt insufficient stock
+            ConfirmOrderHandler --> OrderController: return Errors.Order.InsufficientStock
+            OrderController --> OrderDetailsPage: return Errors.Order.InsufficientStock
+            OrderDetailsPage --> Actor: message("Insufficient stock")
+        end
+    end
+
+    alt order status not PENDING
+        ConfirmOrderHandler --> OrderController: return Errors.Order.CannotConfirmOrder
+        OrderController --> OrderDetailsPage: return Errors.Order.CannotConfirmOrder
+        OrderDetailsPage --> Actor: message("Cannot confirm order")
+    else status PENDING
+        ConfirmOrderHandler -> ConfirmOrderHandler: SetConfirmed()
+        ConfirmOrderHandler -> OrderRepository: Update(order)
+        activate OrderRepository
+        OrderRepository --> ConfirmOrderHandler: Result(true)
+        deactivate OrderRepository
+        ConfirmOrderHandler --> OrderController: return true
+        deactivate ConfirmOrderHandler
+        OrderController --> OrderDetailsPage: return true
+        deactivate OrderController
+        OrderDetailsPage --> Actor: message("Order confirmed")
+        deactivate OrderDetailsPage
+        deactivate Actor
+    end
+end
+
+@enduml
+
