@@ -8,6 +8,7 @@ public static partial class Errors
 {
     public static class Keycloak
     {
+        public static Error InvalidRefreshToken = Error.BadRequest(code: "Keycloak.InvalidRefreshToken", message: "Invalid refresh token", serviceName: "KeycloakService");
         public static Error LoginFailed = Error.BadRequest(code: "Keycloak.Login", message: "Login failed", serviceName: "KeycloakService");
         public static Error UserAlreadyExist = Error.BadRequest(code: "Keycloak.UserAlreadyExist", message: "User already exist", serviceName: "KeycloakService");
         public static Error UserNotFound = Error.BadRequest(code: "Keycloak.UserNotFound", message: "User not found", serviceName: "KeycloakService");

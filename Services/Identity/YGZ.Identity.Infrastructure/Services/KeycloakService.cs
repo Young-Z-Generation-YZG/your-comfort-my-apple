@@ -132,7 +132,7 @@ public class KeycloakService : IKeycloakService
         return Errors.Keycloak.UserNotFound;
     }
 
-    public async Task<Result<string>> CreateKeycloakUserAsync(UserRepresentation userRepresentation)
+    public async Task<string> CreateKeycloakUserAsync(UserRepresentation userRepresentation)
     {
         var keycloakUser = userRepresentation;
 
@@ -159,33 +159,18 @@ public class KeycloakService : IKeycloakService
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
-                if (response.Headers.Contains("Location"))
-                {
-                    var locationHeader = response.Headers.GetValues("Location").First();
-                    var locationUrl = new Uri(locationHeader);
-                    var path = locationUrl.AbsolutePath;
-                    var parts = path.TrimStart('/').Split('/');
-                    int usersIndex = Array.IndexOf(parts, "users");
-                    if (usersIndex != -1 && usersIndex + 1 < parts.Length)
-                    {
-                        userId = parts[usersIndex + 1];
+                var locationHeader = response.Headers.GetValues("Location").First();
+                var locationUrl = new Uri(locationHeader);
+                var path = locationUrl.AbsolutePath;
+                var parts = path.TrimStart('/').Split('/');
+                int usersIndex = Array.IndexOf(parts, "users");
 
-                    }
-                    else
-                    {
-
-                        return Errors.Keycloak.CannotBeCreated;
-                    }
-                }
-                else
-                {
-
-                    return Errors.Keycloak.CannotBeCreated;
-                }
+                userId = parts[usersIndex + 1];
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to create keycloak user: {ErrorMessage}", ex.Message);
             throw;
         }
 
@@ -213,25 +198,25 @@ public class KeycloakService : IKeycloakService
             if (response.StatusCode != HttpStatusCode.NoContent)
             {
                 await DeleteKeycloakUserAsync(userId!);
-
-                return Errors.Keycloak.CannotAssignRole;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to assign role to keycloak user: {ErrorMessage}", ex.Message);
+            await DeleteKeycloakUserAsync(userId!);
             throw;
         }
 
         return userId!;
     }
 
-    public async Task<TokenResponse> GetKeycloakTokenPairAsync(LoginCommand request)
+    public async Task<TokenResponse> GetKeycloakTokenPairAsync(string emailOrUsername, string password)
     {
         var requestBody = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("grant_type", OpenIdConnectGrantTypes.Password),
-            new KeyValuePair<string, string>("username", request.Email),
-            new KeyValuePair<string, string>("password", request.Password),
+            new KeyValuePair<string, string>("username", emailOrUsername),
+            new KeyValuePair<string, string>("password", password),
             new KeyValuePair<string, string>("client_id", _nextjsClientId),
             new KeyValuePair<string, string>("client_secret", _nextjsClientSecret)
         });
@@ -246,15 +231,11 @@ public class KeycloakService : IKeycloakService
 
             var deserializedResp = System.Text.Json.JsonSerializer.Deserialize<TokenResponse>(responseJsonString);
 
-            if (deserializedResp == null)
-            {
-                throw new Exception("Failed to retrieve user token.");
-            }
-
-            return deserializedResp;
+            return deserializedResp!;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to get keycloak token pair: {ErrorMessage}", ex.Message);
             throw;
         }
     }
@@ -317,6 +298,7 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
+            _logger.LogError("Failed to get admin token response: {ErrorMessage}", ex.Message);
             throw;
         }
     }
@@ -398,7 +380,7 @@ public class KeycloakService : IKeycloakService
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 _logger.LogError("Failed to validate refresh token. Status: {StatusCode}, Error: {Error}", response.StatusCode, errorContent);
-                return Errors.Keycloak.InvalidCredentials;
+                return Errors.Keycloak.InvalidRefreshToken;
             }
 
             var introspectionResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
@@ -406,7 +388,7 @@ public class KeycloakService : IKeycloakService
             if (introspectionResponse == null)
             {
                 _logger.LogError("Invalid introspection response from Keycloak");
-                return Errors.Keycloak.InvalidCredentials;
+                return Errors.Keycloak.InvalidRefreshToken;
             }
 
             // Check if token is active
@@ -446,12 +428,12 @@ public class KeycloakService : IKeycloakService
             }
 
             _logger.LogWarning("Refresh token is not active or invalid");
-            return Errors.Keycloak.InvalidCredentials;
+            return Errors.Keycloak.InvalidRefreshToken;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occurred while validating refresh token");
-            return Errors.Keycloak.InvalidCredentials;
+            _logger.LogError("Exception occurred while validating refresh token: {ErrorMessage}", ex.Message);
+            throw;
         }
     }
 
@@ -510,7 +492,6 @@ public class KeycloakService : IKeycloakService
 
             if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NoContent)
             {
-                _logger.LogInformation("Successfully logged out user");
                 return true;
             }
 
@@ -521,8 +502,8 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occurred while logging out user");
-            return Errors.Keycloak.LogoutFailed;
+            _logger.LogError("Exception occurred while logging out user: {ErrorMessage}", ex.Message);
+            throw;
         }
     }
 
@@ -597,15 +578,15 @@ public class KeycloakService : IKeycloakService
             var loginRequest = new LoginCommand { Email = email, Password = currPassword };
             try
             {
-                var tokenResponse = await GetKeycloakTokenPairAsync(loginRequest);
+                var tokenResponse = await GetKeycloakTokenPairAsync(email, currPassword);
                 if (string.IsNullOrEmpty(tokenResponse.AccessToken))
                 {
                     return Errors.Keycloak.InvalidCredentials;
                 }
             }
-            catch
+            catch (Exception)
             {
-                return Errors.Keycloak.InvalidCredentials;
+                throw;
             }
 
             // Step 3: Get admin token

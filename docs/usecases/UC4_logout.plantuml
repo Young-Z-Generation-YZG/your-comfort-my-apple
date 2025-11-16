@@ -1,0 +1,48 @@
+@startuml UC4_logout
+actor Actor
+boundary HomePage
+control AuthController
+control LogoutHandler
+control KeycloakService
+
+Actor -> HomePage: click logout(refreshToken)
+activate Actor
+activate HomePage
+
+HomePage -> AuthController: logout(request)
+activate AuthController
+
+AuthController -> LogoutHandler: logout(request)
+activate LogoutHandler
+
+LogoutHandler -> KeycloakService: ValidateRefreshToken(refreshToken)
+activate KeycloakService
+KeycloakService --> LogoutHandler: Result(valid)
+deactivate KeycloakService
+
+alt invalid refresh token
+    LogoutHandler --> AuthController: return Errors.Keycloak.InvalidRefreshToken
+    AuthController --> HomePage: return Errors.Keycloak.InvalidRefreshToken
+    HomePage --> Actor: message("Invalid refresh token")
+else token valid
+    LogoutHandler -> KeycloakService: Logout(refreshToken)
+    activate KeycloakService
+    KeycloakService --> LogoutHandler: Result(result)
+    deactivate KeycloakService
+
+    alt logout failed
+        LogoutHandler --> AuthController: return Errors.Keycloak.LogoutFailed
+        AuthController --> HomePage: return Errors.Keycloak.LogoutFailed
+        HomePage --> Actor: message("Logout failed")
+    else logout succeeded
+        LogoutHandler --> AuthController: return true
+        deactivate LogoutHandler
+        AuthController --> HomePage: return true
+        deactivate AuthController
+        HomePage --> Actor: message("")
+        deactivate HomePage
+        deactivate Actor
+    end
+end
+
+@enduml

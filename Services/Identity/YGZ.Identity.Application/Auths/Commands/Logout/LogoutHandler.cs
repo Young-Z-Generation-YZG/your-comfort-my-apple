@@ -2,6 +2,7 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Services;
+using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Auths.Commands.Logout;
 
@@ -20,29 +21,25 @@ public class LogoutHandler : ICommandHandler<LogoutCommand, bool>
     {
         try
         {
-            // First validate the refresh token with Keycloak
             var validationResult = await _keycloakService.ValidateRefreshTokenAsync(request.RefreshToken);
             
-            if (validationResult.IsFailure)
+            if (validationResult.IsFailure && validationResult.Error == Errors.Keycloak.InvalidRefreshToken)
             {
-                return validationResult.Error;
+                return Errors.Keycloak.InvalidRefreshToken;
             }
 
-            // If validation passes, proceed with logout
-            var result = await _keycloakService.LogoutAsync(request.RefreshToken);
+            var logoutResult = await _keycloakService.LogoutAsync(request.RefreshToken);
 
-            if (result.IsFailure)
+            if (logoutResult.IsFailure && logoutResult.Error == Errors.Keycloak.LogoutFailed)
             {
-                return result.Error;
+                return Errors.Keycloak.LogoutFailed;
             }
 
-            _logger.LogInformation("User successfully logged out");
-
-            return result.Response;
+            return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred during logout");
+            _logger.LogError("Exception occurred while logging out user: {ErrorMessage}", ex.Message);
             throw;
         }
     }

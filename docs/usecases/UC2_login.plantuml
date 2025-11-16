@@ -1,4 +1,4 @@
-@startuml
+@startuml UC2_login
 actor Actor
 boundary HomePage
 boundary SignInPage
@@ -15,70 +15,50 @@ Actor -> SignInPage: input(email,password)
 activate Actor
 activate SignInPage
 
-SignInPage -> AuthController: login(dto)
+SignInPage -> AuthController: login(request)
 activate AuthController
 
-AuthController -> LoginHandler: login(dto)
+AuthController -> LoginHandler: login(request)
 activate LoginHandler
 
-LoginHandler -> IdentityService: LoginAsync(dto)
+LoginHandler -> IdentityService: Login(request)
 activate IdentityService
-IdentityService -> DB: validateCredentials(dto)
-activate DB
-DB --> IdentityService: Result(user)
-deactivate DB
 IdentityService --> LoginHandler: Result(user)
 deactivate IdentityService
 
-alt login failed
-    LoginHandler --> AuthController: return Error(message)
-    deactivate LoginHandler
-    AuthController --> SignInPage: return Error(message)
-    deactivate AuthController
+alt invalid credentials
+    LoginHandler --> AuthController: return Errors.User.InvalidCredentials
+    AuthController --> SignInPage: return Errors.User.InvalidCredentials
     SignInPage --> Actor: message("Invalid credentials")
-    deactivate SignInPage
-    deactivate Actor
 else login success
     alt email not confirmed
         LoginHandler -> OtpGenerator: GenerateOtp(6)
+        activate OtpGenerator
         OtpGenerator --> LoginHandler: otp
-
-        LoginHandler -> CachedRepository: SetAsync(email, otp, 5 minutes)
+        deactivate OtpGenerator
+        LoginHandler -> CachedRepository: Set(email, otp, 5 minutes)
+        activate CachedRepository
         CachedRepository --> LoginHandler: stored
-
-        LoginHandler -> IdentityService: GenerateEmailVerificationTokenAsync(email)
+        deactivate CachedRepository
+        LoginHandler -> IdentityService: GenerateEmailVerificationToken(userId)
         activate IdentityService
-        IdentityService -> DB: CreateEmailVerificationToken(email)
-        activate DB
-        DB --> IdentityService: Result(token)
-        deactivate DB
-        IdentityService --> LoginHandler: Result(tokenResult)
+        IdentityService --> LoginHandler: Result(token)
         deactivate IdentityService
-
-        alt token generation failed
-            LoginHandler --> AuthController: return tokenResult.Error
-            deactivate LoginHandler
-            AuthController --> SignInPage: return Error(message)
-            deactivate AuthController
-            SignInPage --> Actor: message("Verification unavailable")
-            deactivate SignInPage
-            deactivate Actor
+        alt token generation failed (user does not exist)
+            LoginHandler --> AuthController: return Errors.User.DoesNotExist
+            AuthController --> SignInPage: return Errors.User.DoesNotExist
+            SignInPage --> Actor: message("User does not exist")
         else token generated
-            LoginHandler -> EmailService: SendEmailAsync(emailCommand)
+            LoginHandler -> EmailService: SendEmail(emailCommand)
             activate EmailService
             EmailService --> LoginHandler: sent
             deactivate EmailService
-
-            LoginHandler --> AuthController: return EmailVerificationResponse(params, verificationType)
-            deactivate LoginHandler
-            AuthController --> SignInPage: return EmailVerificationResponse
-            deactivate AuthController
+            LoginHandler --> AuthController: return LoginResponse(params, verificationType)
+            AuthController --> SignInPage: return LoginResponse
             SignInPage --> Actor: message("Check your email to verify account")
-            deactivate SignInPage
-            deactivate Actor
         end
     else email confirmed
-        LoginHandler -> KeycloakService: GetKeycloakTokenPairAsync(dto)
+        LoginHandler -> KeycloakService: GetKeycloakTokenPair(email, password)
         activate KeycloakService
         KeycloakService --> LoginHandler: TokenPair(accessToken, refreshToken)
         deactivate KeycloakService
@@ -88,10 +68,10 @@ else login success
         AuthController --> SignInPage: return LoginResponse(tokens)
         deactivate AuthController
         SignInPage -> HomePage: navigate()
+        deactivate SignInPage
         activate HomePage
         HomePage --> Actor: display(HomePage)
         deactivate HomePage
-        deactivate SignInPage
         deactivate Actor
     end
 end

@@ -6,12 +6,12 @@ namespace YGZ.Identity.Application.Auths.Commands.Register;
 
 public sealed record RegisterCommand : ICommand<EmailVerificationResponse>
 {
-    required public string FirstName { get; set; }
-    required public string LastName { get; set; }
-    required public string Email { get; set; }
-    required public string Password { get; set; }
-    required public string ConfirmPassword { get; set; }
-    required public string PhoneNumber { get; set; }
-    required public string BirthDay { get; set; }
-    required public string Country { get; set; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+    public required string ConfirmPassword { get; init; }
+    public required string PhoneNumber { get; init; }
+    public required string BirthDay { get; init; }
+    public required string Country { get; init; }
 }

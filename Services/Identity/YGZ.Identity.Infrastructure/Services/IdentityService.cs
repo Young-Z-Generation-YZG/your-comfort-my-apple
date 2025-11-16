@@ -11,6 +11,7 @@ using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
+using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Infrastructure.Services;
 
@@ -50,8 +51,9 @@ public class IdentityService : IIdentityService
 
             return existingUser;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to find user: {ErrorMessage}", ex.Message);
             throw;
         }
     }
@@ -104,54 +106,55 @@ public class IdentityService : IIdentityService
 
             var result = await _userManager.CreateAsync(newUser);
 
-            if (!await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER))
+            if (!result.Succeeded)
             {
+                _logger.LogError("Failed to create user: {ErrorMessage}", newUser.Email);
                 return Errors.User.CannotBeCreated;
             }
 
-            // Add role "USER" to user
+            var checkUserRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER);
+
+            if (!checkUserRoleExist)
+            {
+                _logger.LogError("User role does not exist: {ErrorMessage}", AuthorizationConstants.Roles.USER);
+                await _userManager.DeleteAsync(newUser);
+                return Errors.User.CannotBeCreated;
+            }
+
             var roleResult = await _userManager.AddToRoleAsync(newUser, AuthorizationConstants.Roles.USER);
 
             if (!roleResult.Succeeded)
             {
-                return Errors.User.CannotBeCreated;
-            }
-
-            if (!result.Succeeded)
-            {
+                _logger.LogError("Failed to add role to user: {ErrorMessage}", AuthorizationConstants.Roles.USER);
+                await _userManager.DeleteAsync(newUser);
                 return Errors.User.CannotBeCreated;
             }
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to create user: {ErrorMessage}", ex.Message);
             throw;
         }
     }
 
-    public async Task<Result<User>> LoginAsync(LoginCommand request)
+    public async Task<Result<bool>> LoginAsync(User user, string password)
     {
         try
         {
-            var existingUser = await _userManager.FindByEmailAsync(request.Email);
-
-            if (existingUser is null)
-            {
-                return Errors.User.DoesNotExist;
-            }
-
-            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash!, request.Password);
+            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, password);
 
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
             {
-                return Errors.User.InvalidCredentials;
+                return false;
             }
 
-            return existingUser;
+            return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError("Failed to login: {ErrorMessage}", ex.Message);
             throw;
         }
     }
@@ -162,12 +165,12 @@ public class IdentityService : IIdentityService
         {
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (user is null)
-            {
-                return Errors.User.DoesNotExist;
-            }
+           if(user is null)
+           {
+            return Errors.User.DoesNotExist;
+           }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
 
             var encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 

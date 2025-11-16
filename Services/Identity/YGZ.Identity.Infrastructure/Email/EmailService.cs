@@ -113,10 +113,10 @@ public class EmailService : IEmailService
 
             _logger.LogInformation("Send email successfully!");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError($"Send email error! {e.Message}");
-            throw; // Optionally rethrow or handle differently based on requirements
+            _logger.LogError("Failed to send email: {ErrorMessage}", ex.Message);
+            throw;
         }
     }
 
