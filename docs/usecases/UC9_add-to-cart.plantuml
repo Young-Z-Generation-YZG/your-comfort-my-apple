@@ -1,0 +1,65 @@
+@startuml UC9_add_to_cart
+actor Actor
+boundary ProductDetailsPage
+control CartController
+control StoreBasketHandler
+control UserHttpContext
+control ModelSlugCache
+control DistributedCache
+control BasketRepository
+
+Actor -> ProductDetailsPage: addToCart(cartItems)
+activate Actor
+activate ProductDetailsPage
+
+ProductDetailsPage -> CartController: addToCart(command)
+activate CartController
+
+CartController -> StoreBasketHandler: storeBasket(command)
+activate StoreBasketHandler
+
+StoreBasketHandler -> UserHttpContext: GetUserEmail()
+activate UserHttpContext
+UserHttpContext --> StoreBasketHandler: userEmail
+deactivate UserHttpContext
+
+StoreBasketHandler -> StoreBasketHandler: ShoppingCartItemMapping(cartItems)
+
+loop for each item in cartItems
+    StoreBasketHandler -> DistributedCache: GetString(GetIphoneSkuPriceKey(model, storage, color))
+    activate DistributedCache
+    DistributedCache --> StoreBasketHandler: unitPrice
+    deactivate DistributedCache
+
+    StoreBasketHandler -> DistributedCache: GetString(GetDisplayImageUrlKey(modelId, color))
+    activate DistributedCache
+    DistributedCache --> StoreBasketHandler: displayImageUrl
+    deactivate DistributedCache
+
+    StoreBasketHandler -> ModelSlugCache: GetSlug(modelId)
+    activate ModelSlugCache
+    ModelSlugCache --> StoreBasketHandler: modelSlug
+    deactivate ModelSlugCache
+end
+
+StoreBasketHandler -> BasketRepository: StoreBasketAsync(shoppingCart)
+activate BasketRepository
+BasketRepository --> StoreBasketHandler: Result(result)
+deactivate BasketRepository
+
+alt store failed
+    StoreBasketHandler --> CartController: return Error(message)
+    CartController --> ProductDetailsPage: return Error(message)
+    ProductDetailsPage --> Actor: message("Failed to add to cart")
+else store succeeded
+    StoreBasketHandler --> CartController: return true
+    deactivate StoreBasketHandler
+    CartController --> ProductDetailsPage: return true
+    deactivate CartController
+    ProductDetailsPage --> Actor: message("Added to cart")
+    deactivate ProductDetailsPage
+    deactivate Actor
+end
+
+@enduml
+
