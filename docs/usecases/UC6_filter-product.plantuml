@@ -1,0 +1,61 @@
+@startuml UC6_filter-product
+actor Actor
+boundary ProductListPage
+control CatalogController
+control GetIphoneModelsHandler
+control MongoRepository
+database MongoDB
+
+Actor -> ProductListPage: open with filters(colors, storages, models,\nminPrice, maxPrice, priceSort, page, limit)
+activate Actor
+activate ProductListPage
+
+ProductListPage -> CatalogController: getIphoneModels(query)
+activate CatalogController
+
+CatalogController -> GetIphoneModelsHandler: getIphoneModels(query)
+activate GetIphoneModelsHandler
+
+GetIphoneModelsHandler -> GetIphoneModelsHandler: GetFilterDefinition(query)
+
+opt colors provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(colors)
+end
+opt storages provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(storages)
+end
+opt models provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(models)
+end
+opt minPrice provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter prices.unit_price >= minPrice
+end
+opt maxPrice provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter prices.unit_price <= maxPrice
+end
+opt priceSort provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: sort by prices.unit_price (ASC|DESC)
+end
+
+GetIphoneModelsHandler -> MongoRepository: GetAllAsync(page, limit, filter, null, ct)
+activate MongoRepository
+MongoRepository -> MongoDB: query(filter, sort, pagination)
+activate MongoDB
+MongoDB --> MongoRepository: (items, totalRecords, totalPages)
+deactivate MongoDB
+MongoRepository --> GetIphoneModelsHandler: (items, totalRecords, totalPages)
+deactivate MongoRepository
+
+GetIphoneModelsHandler -> GetIphoneModelsHandler: MapToResponse(...)
+GetIphoneModelsHandler --> CatalogController: PaginationResponse<IphoneModelResponse>
+deactivate GetIphoneModelsHandler
+
+CatalogController --> ProductListPage: PaginationResponse
+deactivate CatalogController
+
+ProductListPage --> Actor: display(Product list with pagination)
+deactivate ProductListPage
+deactivate Actor
+
+@enduml
+
