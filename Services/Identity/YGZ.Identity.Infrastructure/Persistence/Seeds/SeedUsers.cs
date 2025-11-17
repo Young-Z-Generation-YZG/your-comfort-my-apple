@@ -26,7 +26,7 @@ public static class SeedUsers
 
     public static IEnumerable<User> UsersTenantHCM_TD_KVC_1060
     {
-        get 
+        get
         {
             var admin1 = User.Create(
                guid: new Guid("0dbb05e1-97be-4a38-9bf0-478005b48b62"),
