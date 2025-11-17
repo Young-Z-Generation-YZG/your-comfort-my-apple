@@ -57,18 +57,19 @@ public class RevenuesByTenantsHandler : IQueryHandler<RevenuesByTenantsQuery, Re
             };
 
             // Get all orders matching the tenants
-            var result = await _repository.GetAllAsync(
+            var orders = await _repository.GetAllAsync(
                 filterExpression: filterExpression,
                 includeExpressions: includeExpressions,
                 cancellationToken: cancellationToken);
 
             // Group orders by tenant ID
-            var groupedOrders = result.items
-                .Where(order => order.TenantId != null && order.TenantId.Value != null && tenantList.Contains(order.TenantId.Value))
-                .GroupBy(order => order.TenantId!.Value!)
+            var groupedOrders = orders
+                .Select(order => new { Order = order, Tenant = order.TenantId?.Value })
+                .Where(x => x.Tenant is not null && tenantList.Contains(x.Tenant))
+                .GroupBy(x => x.Tenant!)
                 .ToDictionary(
                     g => g.Key,
-                    g => g.Select(order => order.ToResponse()).ToList()
+                    g => g.Select(x => x.Order.ToResponse()).ToList()
                 );
 
             // Ensure all requested tenants are in the dictionary (even if empty)
@@ -117,33 +118,6 @@ public class RevenuesByTenantsHandler : IQueryHandler<RevenuesByTenantsQuery, Re
             filterExpression = filterExpression.And(order => order.CreatedAt < endDateUtc);
         }
 
-        // Build OR expression for each tenant ID
-        // EF Core can translate this pattern better than Contains with nullable Value property
-        if (tenants.Count == 0)
-        {
-            return filterExpression;
-        }
-
-        // Start with first tenant
-        Expression<Func<Order, bool>> tenantFilter = BuildTenantFilter(tenants[0]);
-        
-        // Add remaining tenants with OR
-        for (int i = 1; i < tenants.Count; i++)
-        {
-            var currentFilter = BuildTenantFilter(tenants[i]);
-            tenantFilter = tenantFilter.Or(currentFilter);
-        }
-
-        filterExpression = filterExpression.And(tenantFilter);
-
         return filterExpression;
-    }
-
-    private static Expression<Func<Order, bool>> BuildTenantFilter(string tenantId)
-    {
-        // Create TenantId value object and compare using == operator
-        // EF Core should translate this through the value converter
-        var tenantIdValueObject = TenantId.Of(tenantId);
-        return order => order.TenantId == tenantIdValueObject;
     }
 }

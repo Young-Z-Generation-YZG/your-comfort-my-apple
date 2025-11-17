@@ -61,13 +61,13 @@ public class RevenuesByYearsHandler : IQueryHandler<RevenuesByYearsQuery, Revenu
             };
 
             // Get all orders matching the years
-            var result = await _repository.GetAllAsync(
+            var orders = await _repository.GetAllAsync(
                 filterExpression: filterExpression,
                 includeExpressions: includeExpressions,
                 cancellationToken: cancellationToken);
 
             // Group orders by year
-            var groupedOrders = result.items
+            var groupedOrders = orders
                 .GroupBy(order => order.CreatedAt.Year)
                 .Where(g => yearList.Contains(g.Key))
                 .ToDictionary(

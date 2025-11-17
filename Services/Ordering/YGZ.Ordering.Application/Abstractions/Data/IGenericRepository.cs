@@ -17,17 +17,9 @@ public interface IGenericRepository<TEntity, TId> where TEntity : class
                                                                               int? limit = null,
                                                                               CancellationToken? cancellationToken = null);
 
-    //Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression,
-    //                                                                           int? page,
-    //                                                                           int? limit,
-    //                                                                           bool tracked,
-    //                                                                           CancellationToken cancellationToken,
-    //                                                                           params Expression<Func<TEntity, object>>[] includes);
-
+    Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression = null,
+                                    Expression<Func<TEntity, object>>[]? includeExpressions = null,
+                                    CancellationToken? cancellationToken = null);
     Task<Result<bool>> AddAsync(TEntity entity, CancellationToken? cancellationToken);
-    // Task<Result<bool>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken);
     Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken? cancellationToken);
-    // Task<Result<bool>> RemoveAsync(TEntity entity, CancellationToken? cancellationToken);
-    // Task<Result<bool>> RemoveRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken);
-    // Task SaveChangesAsync();
 }

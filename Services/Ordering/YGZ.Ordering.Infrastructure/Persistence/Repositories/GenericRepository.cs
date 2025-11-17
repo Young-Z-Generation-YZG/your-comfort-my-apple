@@ -127,5 +127,32 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
     }
 
+    public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression = null,
+                                                 Expression<Func<TEntity, object>>[]? includeExpressions = null,
+                                                 CancellationToken? cancellationToken = null)
+    {
+        try
+        {
+            var query = _dbSet.AsNoTracking();
 
+            if (includeExpressions is not null)
+            {
+                foreach (var include in includeExpressions)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            if (filterExpression is not null)
+            {
+                query = query.Where(filterExpression);
+            }
+
+            return await query.ToListAsync(cancellationToken ?? CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

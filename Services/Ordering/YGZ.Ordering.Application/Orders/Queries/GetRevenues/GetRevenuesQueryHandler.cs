@@ -24,28 +24,20 @@ public class GetRevenuesQueryHandler : IQueryHandler<GetRevenuesQuery, List<Orde
 
     public async Task<Result<List<OrderDetailsResponse>>> Handle(GetRevenuesQuery request, CancellationToken cancellationToken)
     {
-        try
+
+        var filterExpression = BuildExpression(request);
+
+        var includeExpressions = new Expression<Func<Order, object>>[]
         {
-            var filterExpression = BuildExpression(request);
+            x => x.OrderItems
+        };
 
-            var includeExpressions = new Expression<Func<Order, object>>[]
-            {
-                x => x.OrderItems
-            };
+        var orders = await _repository.GetAllAsync(
+            filterExpression: filterExpression,
+            includeExpressions: includeExpressions,
+            cancellationToken: cancellationToken);
 
-            var result = await _repository.GetAllAsync(
-                filterExpression: filterExpression,
-                includeExpressions: includeExpressions,
-                cancellationToken: cancellationToken);
-
-            var response = result.items.Select(order => order.ToResponse()).ToList();
-
-            return response;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return orders.Select(order => order.ToResponse()).ToList();
     }
 
     private static Expression<Func<Order, bool>> BuildExpression(GetRevenuesQuery request)
