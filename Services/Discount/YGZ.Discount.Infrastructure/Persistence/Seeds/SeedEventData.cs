@@ -16,7 +16,7 @@ public static class SeedEventData
                     title: "Black Friday",
                     description: "Sale all item in shop with special price",
                     startDate: DateTime.UtcNow,
-                    endDate: DateTime.UtcNow.AddDays(10)
+                    endDate: DateTime.UtcNow.AddDays(30)
                 ),
             };
         }

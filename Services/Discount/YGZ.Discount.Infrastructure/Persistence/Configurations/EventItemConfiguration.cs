@@ -30,22 +30,23 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
         builder.Property(x => x.NormalizedModel).HasColumnOrder(7);
         builder.Property(x => x.ColorName).HasColumnOrder(8);
         builder.Property(x => x.NormalizedColor).HasColumnOrder(9);
-        builder.Property(x => x.ColorHaxCode).HasColumnOrder(10);
         builder.Property(x => x.StorageName).HasColumnOrder(11);
         builder.Property(x => x.NormalizedStorage).HasColumnOrder(12);
         builder.Property(x => x.ProductClassification).HasColumnOrder(13);
         builder.Property(x => x.ImageUrl).HasColumnOrder(14);
         builder.Property(x => x.DiscountType).HasColumnOrder(15);
         builder.Property(x => x.DiscountValue).HasColumnOrder(16);
-        builder.Property(x => x.OriginalPrice).HasColumnOrder(17);
-        builder.Property(x => x.Stock).HasColumnOrder(18);
-        builder.Property(x => x.Sold).HasColumnOrder(19);
-        builder.Property(x => x.CreatedAt).HasColumnOrder(20);
-        builder.Property(x => x.UpdatedAt).HasColumnOrder(21);
-        builder.Property(x => x.UpdatedBy).HasColumnOrder(22);
-        builder.Property(x => x.IsDeleted).HasColumnOrder(23);
-        builder.Property(x => x.DeletedAt).HasColumnOrder(24);
-        builder.Property(x => x.DeletedBy).HasColumnOrder(25);
+        builder.Property(x => x.DiscountAmount).HasColumnOrder(17);
+        builder.Property(x => x.OriginalPrice).HasColumnOrder(18);
+        builder.Property(x => x.FinalPrice).HasColumnOrder(19);
+        builder.Property(x => x.Stock).HasColumnOrder(20);
+        builder.Property(x => x.Sold).HasColumnOrder(21);
+        builder.Property(x => x.CreatedAt).HasColumnOrder(22);
+        builder.Property(x => x.UpdatedAt).HasColumnOrder(23);
+        builder.Property(x => x.UpdatedBy).HasColumnOrder(24);
+        builder.Property(x => x.IsDeleted).HasColumnOrder(25);
+        builder.Property(x => x.DeletedAt).HasColumnOrder(26);
+        builder.Property(x => x.DeletedBy).HasColumnOrder(27);
 
         // foreign key configuration - explicit relationship
         builder.HasOne<Event>()

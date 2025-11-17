@@ -235,7 +235,11 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         var eventItemModel = new EventItemModel
         {
-            Id = ei.Id?.ToString() ?? string.Empty,
+            Id = ei.Id,
+            EventId = ei.EventId ?? string.Empty,
+            SkuId = ei.SkuId ?? string.Empty,
+            TenantId = ei.TenantId ?? string.Empty,
+            BranchId = ei.BranchId ?? string.Empty,
             Model = new ModelValueObject
             {
                 Name = ei.ModelName ?? string.Empty,
@@ -245,7 +249,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             {
                 Name = ei.ColorName ?? string.Empty,
                 NormalizedName = ei.NormalizedColor ?? string.Empty,
-                HexCode = ei.ColorHexCode ?? string.Empty
+                HexCode = string.Empty
             },
             Storage = new StorageValueObject
             {
@@ -256,9 +260,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             ProductClassification = ConvertToEProductClassificationGrpc(ei.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(ei.DiscountType),
             DiscountValue = (double)ei.DiscountValue,
+            DiscountAmount = (double)ei.DiscountAmount,
             OriginalPrice = (double)ei.OriginalPrice,
+            FinalPrice = (double)ei.FinalPrice,
             Stock = ei.Stock,
-            Sold = ei.Sold
+            Sold = ei.Sold,
+            CreatedAt = ToTimestampUtc(ei.CreatedAt),
+            UpdatedAt = ToTimestampUtc(ei.UpdatedAt),
+            UpdatedBy = ei.UpdatedBy ?? string.Empty,
+            IsDeleted = ei.IsDeleted,
+            DeletedAt = ToTimestampUtc(ei.DeletedAt),
+            DeletedBy = ei.DeletedBy ?? string.Empty
         };
 
         return eventItemModel;
@@ -291,6 +303,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         return response;
     }
+    
     private static EventResponse MapEventResponse(DiscountContracts.EventResponse discountEvent)
     {
         var eventModel = new EventModel
@@ -450,9 +463,9 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         {
             Id = item.Id,
             EventId = item.EventId,
-            SkuId = string.Empty,
-            TenantId = string.Empty,
-            BranchId = string.Empty,
+            SkuId = item.SkuId ?? string.Empty,
+            TenantId = item.TenantId ?? string.Empty,
+            BranchId = item.BranchId ?? string.Empty,
             Model = new ModelValueObject
             {
                 Name = item.ModelName ?? string.Empty,
@@ -462,7 +475,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             {
                 Name = item.ColorName ?? string.Empty,
                 NormalizedName = item.NormalizedColor ?? string.Empty,
-                HexCode = item.ColorHexCode ?? string.Empty
+                HexCode = string.Empty
             },
             Storage = new StorageValueObject
             {
@@ -473,7 +486,9 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             ProductClassification = ConvertToEProductClassificationGrpc(item.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(item.DiscountType),
             DiscountValue = (double)item.DiscountValue,
+            DiscountAmount = (double)item.DiscountAmount,
             OriginalPrice = (double)item.OriginalPrice,
+            FinalPrice = (double)item.FinalPrice,
             Stock = item.Stock,
             Sold = item.Sold,
             CreatedAt = ToTimestampUtc(item.CreatedAt),

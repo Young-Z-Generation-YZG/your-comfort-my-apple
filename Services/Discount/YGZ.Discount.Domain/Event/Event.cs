@@ -29,15 +29,15 @@ public class Event : AggregateRoot<EventId>, IAuditable, ISoftDelete
 
     public static Event Create(EventId id,
                                string title,
-                               string? description,
+                               string description,
                                DateTime startDate,
                                DateTime endDate)
     {
         return new Event(id)
         {
             Title = title,
-            Description = description ?? String.Empty,
-            State = EEventState.INACTIVE,
+            Description = description,
+            State = EEventState.ACTIVE,
             StartDate = startDate,
             EndDate = endDate
         };

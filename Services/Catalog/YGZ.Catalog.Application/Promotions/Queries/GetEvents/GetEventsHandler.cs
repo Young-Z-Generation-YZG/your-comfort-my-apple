@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Discount.Grpc.Protos;
 using SharedEventItemResponse = YGZ.BuildingBlocks.Shared.Contracts.Discounts.EventItemResponse;
 using SharedEventResponse = YGZ.BuildingBlocks.Shared.Contracts.Discounts.EventResponse;
@@ -66,17 +67,21 @@ public class GetEventsHandler : IQueryHandler<GetEventsQuery, List<SharedEventRe
         {
             Id = grpcItem.Id,
             EventId = grpcItem.EventId,
+            SkuId = grpcItem.SkuId,
+            TenantId = grpcItem.TenantId,
+            BranchId = grpcItem.BranchId,
             ModelName = grpcItem.Model?.Name ?? string.Empty,
             NormalizedModel = grpcItem.Model?.NormalizedName ?? string.Empty,
             ColorName = grpcItem.Color?.Name ?? string.Empty,
             NormalizedColor = grpcItem.Color?.NormalizedName ?? string.Empty,
-            ColorHexCode = grpcItem.Color?.HexCode ?? string.Empty,
             StorageName = grpcItem.Storage?.Name ?? string.Empty,
             NormalizedStorage = grpcItem.Storage?.NormalizedName ?? string.Empty,
-            ProductClassification = grpcItem.ProductClassification.ToString(),
+            ProductClassification = ConvertProductClassificationGrpcToName(grpcItem.ProductClassification),
             ImageUrl = grpcItem.DisplayImageUrl,
-            DiscountType = grpcItem.DiscountType.ToString(),
+            DiscountType = ConvertDiscountTypeGrpcToName(grpcItem.DiscountType),
             DiscountValue = (decimal)(grpcItem.DiscountValue ?? 0),
+            DiscountAmount = (decimal)(grpcItem.DiscountAmount ?? 0),
+            FinalPrice = (decimal)(grpcItem.FinalPrice ?? 0),
             OriginalPrice = (decimal)(grpcItem.OriginalPrice ?? 0),
             Stock = grpcItem.Stock ?? 0,
             Sold = grpcItem.Sold ?? 0,
@@ -86,6 +91,30 @@ public class GetEventsHandler : IQueryHandler<GetEventsQuery, List<SharedEventRe
             IsDeleted = grpcItem.IsDeleted,
             DeletedAt = grpcItem.DeletedAt?.ToDateTime(),
             DeletedBy = grpcItem.DeletedBy
+        };
+    }
+
+    private static string ConvertProductClassificationGrpcToName(EProductClassificationGrpc classification)
+    {
+        return classification switch
+        {
+            EProductClassificationGrpc.ProductClassificationIphone => EProductClassification.IPHONE.Name,
+            EProductClassificationGrpc.ProductClassificationIpad => EProductClassification.IPAD.Name,
+            EProductClassificationGrpc.ProductClassificationMacbook => EProductClassification.MACBOOK.Name,
+            EProductClassificationGrpc.ProductClassificationWatch => EProductClassification.WATCH.Name,
+            EProductClassificationGrpc.ProductClassificationHeadphone => EProductClassification.HEADPHONE.Name,
+            EProductClassificationGrpc.ProductClassificationAccessory => EProductClassification.ACCESSORY.Name,
+            _ => EProductClassification.UNKNOWN.Name
+        };
+    }
+
+    private static string ConvertDiscountTypeGrpcToName(EDiscountTypeGrpc discountType)
+    {
+        return discountType switch
+        {
+            EDiscountTypeGrpc.DiscountTypePercentage => EDiscountType.PERCENTAGE.Name,
+            EDiscountTypeGrpc.DiscountTypeFixed => EDiscountType.FIXED_AMOUNT.Name,
+            _ => EDiscountType.UNKNOWN.Name
         };
     }
 }

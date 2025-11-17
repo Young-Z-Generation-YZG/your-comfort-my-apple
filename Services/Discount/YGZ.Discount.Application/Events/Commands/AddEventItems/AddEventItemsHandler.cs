@@ -1,7 +1,9 @@
 ﻿using Grpc.Core;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Api.Protos;
 using YGZ.Discount.Domain.Abstractions.Data;
@@ -17,13 +19,16 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
     private readonly ILogger<AddEventItemsHandler> _logger;
     private readonly IGenericRepository<Event, ValueObjects.EventId> _repository;
     private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
+    private readonly IDistributedCache _distributedCache;
 
     public AddEventItemsHandler(IGenericRepository<Event, ValueObjects.EventId> repository,
                                 CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient,
+                                IDistributedCache distributedCache,
                                 ILogger<AddEventItemsHandler> logger)
     {
         _repository = repository;
         _catalogProtoServiceClient = catalogProtoServiceClient;
+        _distributedCache = distributedCache;
         _logger = logger;
     }
 
@@ -78,22 +83,20 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
                 // Calculate original price from SKU unit price
                 var originalPrice = skuResponse.UnitPrice.HasValue ? (decimal)skuResponse.UnitPrice.Value : 0;
 
+                var imageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(skuResponse.ModelId, EColor.FromName(skuResponse.NormalizedColor)), cancellationToken);
+
                 // Create event item with data from SKU
                 var eventItem = EventItemEntity.Create(eventItemId: EventItemId.Create(),
                                                        eventId: eventId,
                                                        skuId: itemCmd.SkuId,
                                                        tenantId: skuResponse.TenantId,
                                                        branchId: skuResponse.BranchId,
-                                                       modelName: skuResponse.NormalizedModel, // Using normalized as fallback
-                                                       normalizedModel: skuResponse.NormalizedModel,
-                                                       colorName: skuResponse.NormalizedColor, // Using normalized as fallback
-                                                       normalizedColor: skuResponse.NormalizedColor,
-                                                       colorHaxCode: string.Empty, // Not available in SKU response
-                                                       storageName: skuResponse.NormalizedStorage, // Using normalized as fallback
-                                                       normalizedStorage: skuResponse.NormalizedStorage,
+                                                       iphoneModelEnum: EIphoneModel.FromName(skuResponse.NormalizedModel),
+                                                       colorEnum: EColor.FromName(skuResponse.NormalizedColor),
+                                                       storageEnum: EStorage.FromName(skuResponse.NormalizedStorage),
                                                        productClassification: productClassification,
                                                        discountType: discountType,
-                                                       imageUrl: string.Empty, // Not available in SKU response
+                                                       imageUrl: imageUrl ?? string.Empty,
                                                        discountValue: itemCmd.DiscountValue,
                                                        originalPrice: originalPrice,
                                                        stock: itemCmd.Stock);

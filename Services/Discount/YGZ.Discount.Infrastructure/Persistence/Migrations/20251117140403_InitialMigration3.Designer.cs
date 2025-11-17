@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using YGZ.Discount.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    partial class DiscountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251117140403_InitialMigration3")]
+    partial class InitialMigration3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,19 +117,15 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(22);
+                        .HasColumnOrder(20);
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(26);
+                        .HasColumnOrder(24);
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(27);
-
-                    b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("numeric")
-                        .HasColumnOrder(17);
+                        .HasColumnOrder(25);
 
                     b.Property<string>("DiscountType")
                         .IsRequired()
@@ -142,10 +141,6 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnOrder(2);
 
-                    b.Property<decimal>("FinalPrice")
-                        .HasColumnType("numeric")
-                        .HasColumnOrder(19);
-
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text")
@@ -153,7 +148,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
-                        .HasColumnOrder(25);
+                        .HasColumnOrder(23);
 
                     b.Property<string>("ModelName")
                         .HasColumnType("text")
@@ -176,7 +171,7 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("numeric")
-                        .HasColumnOrder(18);
+                        .HasColumnOrder(17);
 
                     b.Property<string>("ProductClassification")
                         .IsRequired()
@@ -191,11 +186,11 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("Sold")
                         .HasColumnType("integer")
-                        .HasColumnOrder(21);
+                        .HasColumnOrder(19);
 
                     b.Property<int>("Stock")
                         .HasColumnType("integer")
-                        .HasColumnOrder(20);
+                        .HasColumnOrder(18);
 
                     b.Property<string>("StorageName")
                         .HasColumnType("text")
@@ -208,11 +203,11 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnOrder(23);
+                        .HasColumnOrder(21);
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("text")
-                        .HasColumnOrder(24);
+                        .HasColumnOrder(22);
 
                     b.HasKey("Id");
 

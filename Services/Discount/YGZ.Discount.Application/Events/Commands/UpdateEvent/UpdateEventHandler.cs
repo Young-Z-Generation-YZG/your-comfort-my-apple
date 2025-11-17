@@ -117,6 +117,9 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                     // Convert enums
                     var productClassification = EProductClassification.FromName(skuResponse.ProductClassification, false);
                     var discountType = EDiscountType.FromName(itemCmd.DiscountType, false);
+                    var iphoneModelEnum = EIphoneModel.FromName(skuResponse.NormalizedModel);
+                    var colorEnum = EColor.FromName(skuResponse.NormalizedColor);
+                    var storageEnum = EStorage.FromName(skuResponse.NormalizedStorage);
 
                     // Check if event item with same SKU already exists
                     var existingItemBySku = eventEntity.EventItems.FirstOrDefault(ei => 
@@ -132,7 +135,9 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                     // Calculate original price from SKU unit price
                     var originalPrice = skuResponse.UnitPrice.HasValue ? (decimal)skuResponse.UnitPrice.Value : 0;
 
-                    var colorImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(skuResponse.ModelId, EColor.FromName(skuResponse.NormalizedColor)));
+                    var colorImageUrl = await _distributedCache.GetStringAsync(
+                        CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(skuResponse.ModelId, colorEnum),
+                        cancellationToken);
 
                     // Create event item with data from SKU
                     var eventItem = EventItemEntity.Create(eventItemId: ValueObjects.EventItemId.Create(),
@@ -140,13 +145,9 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                                                            skuId: itemCmd.SkuId,
                                                            tenantId: skuResponse.TenantId,
                                                            branchId: skuResponse.BranchId,
-                                                           modelName: skuResponse.NormalizedModel,
-                                                           normalizedModel: skuResponse.NormalizedModel,
-                                                           colorName: skuResponse.NormalizedColor,
-                                                           normalizedColor: skuResponse.NormalizedColor,
-                                                           colorHaxCode: string.Empty,
-                                                           storageName: skuResponse.NormalizedStorage,
-                                                           normalizedStorage: skuResponse.NormalizedStorage,
+                                                           iphoneModelEnum: iphoneModelEnum,
+                                                           colorEnum: colorEnum,
+                                                           storageEnum: storageEnum,
                                                            productClassification: productClassification,
                                                            discountType: discountType,
                                                            imageUrl: colorImageUrl ?? string.Empty,

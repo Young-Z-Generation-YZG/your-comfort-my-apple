@@ -93,15 +93,17 @@ message EventItemModel {
     EProductClassificationGrpc product_classification = 10;
     EDiscountTypeGrpc discount_type = 11;
     google.protobuf.DoubleValue discount_value = 12;
-    google.protobuf.DoubleValue original_price = 13;
-    google.protobuf.Int32Value stock = 14;
-    google.protobuf.Int32Value Sold = 15;
-    google.protobuf.Timestamp   created_at = 16;
-    google.protobuf.Timestamp   updated_at = 17;
-    google.protobuf.StringValue updated_by = 18;
-    bool                        is_deleted = 19;
-    google.protobuf.Timestamp   deleted_at = 20;
-    google.protobuf.StringValue deleted_by = 21;
+    google.protobuf.DoubleValue discount_amount = 13;
+    google.protobuf.DoubleValue original_price = 14;
+    google.protobuf.DoubleValue final_price = 15;
+    google.protobuf.Int32Value stock = 16;
+    google.protobuf.Int32Value Sold = 17;
+    google.protobuf.Timestamp   created_at = 18;
+    google.protobuf.Timestamp   updated_at = 19;
+    google.protobuf.StringValue updated_by = 20;
+    bool                        is_deleted = 21;
+    google.protobuf.Timestamp   deleted_at = 22;
+    google.protobuf.StringValue deleted_by = 23;
 }
 
 

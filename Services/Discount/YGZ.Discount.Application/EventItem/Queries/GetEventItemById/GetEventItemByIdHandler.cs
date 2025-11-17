@@ -28,22 +28,32 @@ public class GetEventItemByIdHandler : IQueryHandler<GetEventItemByIdQuery, Even
                .Where(ei => ei.Id == EventItemId.Of(Guid.Parse(request.EventItemId)))
                .Select(ei => new EventItemResponse
                {
-                   Id = ei.Id != null ? ei.Id.Value.ToString()! : string.Empty,
-                   EventId = ei.EventId != null ? ei.EventId.Value.ToString()! : string.Empty,
+                   Id = ei.Id.Value.ToString() ?? string.Empty,
+                   EventId = ei.EventId.Value.ToString() ?? string.Empty,
+                   SkuId = ei.SkuId,
+                   TenantId = ei.TenantId,
+                   BranchId = ei.BranchId,
                    ModelName = ei.ModelName,
                    NormalizedModel = ei.NormalizedModel,
                    ColorName = ei.ColorName,
                    NormalizedColor = ei.NormalizedColor,
-                   ColorHexCode = ei.ColorHaxCode,
                    StorageName = ei.StorageName,
                    NormalizedStorage = ei.NormalizedStorage,
-                   ImageUrl = ei.ImageUrl,
                    ProductClassification = ei.ProductClassification.Name,
+                   ImageUrl = ei.ImageUrl,
                    DiscountType = ei.DiscountType.Name,
                    DiscountValue = ei.DiscountValue,
+                   DiscountAmount = ei.DiscountAmount,
                    OriginalPrice = ei.OriginalPrice,
+                   FinalPrice = ei.FinalPrice,
                    Stock = ei.Stock,
-                   Sold = ei.Sold
+                   Sold = ei.Sold,
+                   CreatedAt = ei.CreatedAt,
+                   UpdatedAt = ei.UpdatedAt,
+                   UpdatedBy = ei.UpdatedBy,
+                   IsDeleted = ei.IsDeleted,
+                   DeletedAt = ei.DeletedAt,
+                   DeletedBy = ei.DeletedBy
                })
                .FirstOrDefaultAsync(cancellationToken);
 
