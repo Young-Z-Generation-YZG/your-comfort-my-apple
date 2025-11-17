@@ -303,4 +303,144 @@ public static class SeedUsers
             UserId = "e8549c53-dae7-5b8f-d8e3-c7d9e1b0f1b5" // STAFF 5
         }
     };
+
+    public static IEnumerable<User> UsersTenantHCM_Q9_LVV_123
+    {
+        get
+        {
+            var admin1 = User.Create(
+               guid: new Guid("2fdd27a3-b9da-5c5a-bd12-69a227d6ad84"),
+               email: "admin1@hcm-q9-lvv-123.com",
+               firstName: "ADMIN 1",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2004-09-17").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333594890",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            var staff1 = User.Create(
+               guid: new Guid("8ed66341-a463-6d4b-d78c-15b33999e3a2"),
+               email: "staff1@hcm-q9-lvv-123.com",
+               firstName: "STAFF 1",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2005-10-18").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333484890",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            var staff2 = User.Create(
+               guid: new Guid("8fc3d631-be48-6b56-069d-8bdd8cb14d576"),
+               email: "staff2@hcm-q9-lvv-123.com",
+               firstName: "STAFF 2",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2006-11-19").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333484891",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            var staff3 = User.Create(
+               guid: new Guid("7bbaef64-a466-6c8d-dd8d-5bfaabacddab"),
+               email: "staff3@hcm-q9-lvv-123.com",
+               firstName: "STAFF 3",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2007-12-20").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333484892",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            var staff4 = User.Create(
+               guid: new Guid("65d9c8fb-e86b-6fef-d8e7-9d8a1dca4d4d"),
+               email: "staff4@hcm-q9-lvv-123.com",
+               firstName: "STAFF 4",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2008-01-21").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333484893",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            var staff5 = User.Create(
+               guid: new Guid("f965ad64-ebf8-6c9a-e9f4-d8eaf2c1a2c6"),
+               email: "staff5@hcm-q9-lvv-123.com",
+               firstName: "STAFF 5",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2009-02-22").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333484894",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "VN",
+               emailConfirmed: true,
+               tenantId: TenantIds["HCM_Q9_LVV_123"],
+               branchId: BranchIds["HCM_Q9_LVV_123"],
+               tenantCode: null);
+
+            return new List<User>
+            {
+                admin1,
+                staff1,
+                staff2,
+                staff3,
+                staff4,
+                staff5
+            };
+        }
+    }
+
+    public static IEnumerable<IdentityUserRole<string>> UserRolesHCM_Q9_LVV_123 => new List<IdentityUserRole<string>>
+    {
+        new IdentityUserRole<string>
+        {
+            RoleId = "12d826a4-a9c0-471c-91f3-39b18993e0c1", // ADMIN
+            UserId = "2fdd27a3-b9da-5c5a-bd12-69a227d6ad84" // ADMIN 1
+        },
+        new IdentityUserRole<string>
+        {
+            RoleId = "12145c29-e918-4cee-b58c-e6fe2a66e560", // STAFF
+            UserId = "8ed66341-a463-6d4b-d78c-15b33999e3a2" // STAFF 1
+        },
+        new IdentityUserRole<string>
+        {
+            RoleId = "12145c29-e918-4cee-b58c-e6fe2a66e560", // STAFF
+            UserId = "8fc3d631-be48-6b56-069d-8bdd8cb14d576" // STAFF 2
+        },
+        new IdentityUserRole<string>
+        {
+            RoleId = "12145c29-e918-4cee-b58c-e6fe2a66e560", // STAFF
+            UserId = "7bbaef64-a466-6c8d-dd8d-5bfaabacddab" // STAFF 3
+        },
+        new IdentityUserRole<string>
+        {
+            RoleId = "12145c29-e918-4cee-b58c-e6fe2a66e560", // STAFF
+            UserId = "65d9c8fb-e86b-6fef-d8e7-9d8a1dca4d4d" // STAFF 4
+        },
+        new IdentityUserRole<string>
+        {
+            RoleId = "12145c29-e918-4cee-b58c-e6fe2a66e560", // STAFF
+            UserId = "f965ad64-ebf8-6c9a-e9f4-d8eaf2c1a2c6" // STAFF 5
+        }
+    };
 }
