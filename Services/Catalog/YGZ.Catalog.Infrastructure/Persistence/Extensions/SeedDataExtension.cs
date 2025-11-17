@@ -38,11 +38,7 @@ public static class SeedDataExtension
         await SeedCacheIphoneSkuPrices(iphoneSkuPriceRepository, distributedCache);
         await SeedCacheColorImages(iphoneModelRepository, distributedCache);
 
-
-
         await SeedTenantsAsync(tenantRepository);
-
-        //await SeedSkusAsync(skuRepository);
     }
 
     private static async Task SeedCategoriesAsync(IMongoRepository<Category, CategoryId> categoryRepository)
