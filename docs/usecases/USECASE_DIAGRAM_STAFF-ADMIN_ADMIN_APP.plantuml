@@ -1,0 +1,72 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam usecase {
+    BackgroundColor #F8F8F8
+    BorderColor #666666
+    ArrowColor #444444
+}
+
+actor "Staff" as staff #orange
+actor "Admin" as admin #salmon
+
+package "STAFF & ADMIN role & Admin App" {
+    usecase (UC36: View dashboard) as UC36
+    usecase (UC37: Filter revenue) as UC37
+
+    usecase (UC45: View events) as UC45
+    usecase (UC47: View event details) as UC47
+
+    usecase (UC49: View categories) as UC49
+    usecase (UC51: View category details) as UC51
+
+    usecase (UC53: View staffs) as UC53
+    usecase (UC54: Filter staff) as UC54
+    usecase (UC56: View staff details) as UC56
+    usecase (UC57: Update staff) as UC57
+
+    usecase (UC58: View products) as UC58
+    usecase (UC59: Filter product) as UC59
+    usecase (UC61: View product details) as UC61
+
+    usecase (UC63: View inventory) as UC63
+    usecase (UC64: Filter sku) as UC64
+
+    usecase (UC65: View customers) as UC65
+    usecase (UC66: Filter customer) as UC66
+    usecase (UC67: View customer details) as UC67
+
+    usecase (UC68: View orders) as UC68
+    usecase (UC69: Filter order) as UC69
+    usecase (UC70: View order details) as UC70
+}
+
+'=== Extends (<<extend>>) ===
+UC36 <.. UC37 : <<extend>>
+UC45 <.. UC47 : <<extend>>
+UC49 <.. UC51 : <<extend>>
+UC53 <.. UC54 : <<extend>>
+UC53 <.. UC56 : <<extend>>
+UC56 <.. UC57 : <<extend>>
+UC58 <.. UC59 : <<extend>>
+UC58 <.. UC61 : <<extend>>
+UC63 <.. UC64 : <<extend>>
+UC65 <.. UC66 : <<extend>>
+UC65 <.. UC67 : <<extend>>
+UC68 <.. UC69 : <<extend>>
+UC68 <.. UC70 : <<extend>>
+
+
+staff <|-- admin
+
+staff --> UC45
+staff --> UC49
+staff --> UC58
+staff --> UC63
+staff --> UC65
+staff --> UC68
+
+admin --> UC36
+admin --> UC53

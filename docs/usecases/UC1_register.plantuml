@@ -66,12 +66,9 @@ else user not found
             deactivate DB
             IdentityService --> RegisterHandler: Result(tokenResult)
             deactivate IdentityService
-            alt token generation failed
+            alt email verification token generation failed
                 RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
                 RegisterHandler -> IdentityService: DeleteUser(keycloakUserId)
-                activate IdentityService
-                IdentityService --> RegisterHandler: Result(deletedUser)
-                deactivate IdentityService
                 RegisterHandler --> AuthController: return Errors.User.FailedToRegister
                 AuthController --> SignUpPage: return Error(message)
                 SignUpPage --> Actor: message("Registration failed")
@@ -82,9 +79,6 @@ else user not found
                     EmailService --> RegisterHandler: exception
                     RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
                     RegisterHandler -> IdentityService: DeleteUser(keycloakUserId)
-                    activate IdentityService
-                    IdentityService --> RegisterHandler: Result(deletedUser)
-                    deactivate IdentityService
                     RegisterHandler --> AuthController: return Errors.User.FailedToRegister
                     AuthController --> SignUpPage: return Error(message)
                     SignUpPage --> Actor: message("Registration failed")
