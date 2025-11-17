@@ -103,10 +103,12 @@ user --> UC20
 
 'Note
 note "Extension point: user has checkout order with payment method COD" as N1
-note "Extension point: user has received order item successfully" as N2
+' note "Extension point: user has received order item successfully" as N2
 
 ' UC29 .. N1
 N1 .. UC31
 N1 .. UC32
 
-N2 .. UC33
+' N2 .. UC33
+
+note right of UC33: Extension point: user has received order item successfully.
