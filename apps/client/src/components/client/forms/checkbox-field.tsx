@@ -29,6 +29,7 @@ type CheckboxFieldProps<T extends FieldValues> = {
    disabled?: boolean;
    className?: string;
    checkboxClassName?: string;
+   onCheckedChange?: (checked: boolean) => void;
 };
 
 const CheckboxField = <T extends FieldValues>({
@@ -39,6 +40,7 @@ const CheckboxField = <T extends FieldValues>({
    disabled = false,
    className,
    checkboxClassName,
+   onCheckedChange,
 }: CheckboxFieldProps<T>) => {
    const {
       control,
@@ -85,7 +87,10 @@ const CheckboxField = <T extends FieldValues>({
                         <Checkbox
                            id={name}
                            checked={field.value}
-                           onCheckedChange={field.onChange}
+                           onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              onCheckedChange?.(checked === true);
+                           }}
                            disabled={disabled}
                            className={cn(checkboxClassName)}
                         />

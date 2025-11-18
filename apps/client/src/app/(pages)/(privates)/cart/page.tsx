@@ -3,7 +3,7 @@
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import Image from 'next/image';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import images from '@components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
@@ -17,7 +17,6 @@ import {
    AccordionContent,
 } from '@components/ui/accordion';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useCartForm } from './_hooks/useCartForm';
 import { usePromoCode } from './_hooks/usePromoCode';
 import CartItem from './_components/cart-item';
 import { useRouter } from 'next/navigation';
@@ -28,9 +27,12 @@ import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
 import useCartFormV2 from './_hooks/useCartFormV2';
+import { useDispatch } from 'react-redux';
+import { UpdateSelection } from '~/infrastructure/redux/features/cart.slice';
 
 const CartPage = () => {
    const router = useRouter();
+   const dispatch = useDispatch();
 
    const { isAuthenticated } = useAppSelector((state) => state.auth);
    const cartAppState = useAppSelector((state) => state.cart);
@@ -46,16 +48,17 @@ const CartPage = () => {
       isLoading,
    } = useBasketService();
 
-   const { storeBasketSync } = useCartSync();
+   useCartSync();
 
    // Promo code management
    const {
       promoCode,
       urlCouponCode,
-      handleApplyPromoCode,
+      handleApplyPromoCode: _handleApplyPromoCode,
       handlePromoCodeChange,
       handleRemovePromoCode,
    } = usePromoCode();
+   void _handleApplyPromoCode;
 
    useEffect(() => {
       const fetchBasket = async () => {
@@ -70,8 +73,6 @@ const CartPage = () => {
    }, [getBasketAsync, urlCouponCode, isAuthenticated]);
 
    const basketData = useMemo(() => {
-      console.log('getBasketState', getBasketState);
-
       if (getBasketState.isSuccess && getBasketState.data)
          return getBasketState.data as TCart;
 
@@ -82,22 +83,23 @@ const CartPage = () => {
       } as TCart;
    }, [getBasketState, cartAppState]);
 
-   console.log('basketData', basketData);
-
-   // Cart form management with auto-save
-   //  const { form, selectedItems, handleQuantityChange, handleRemoveItem } =
-   //     useCartForm({
-   //        basketData: basketData,
-   //        storeBasketAsync: storeBasketAsync,
-   //        storeBasketSync: storeBasketSync,
-   //        deleteBasket: () => Promise.resolve(true),
-   //     });
-
    const { form, cartItems, handleQuantityChange, handleRemoveItem } =
       useCartFormV2({
          basketData: basketData,
          storeBasketAsync: storeBasketAsync,
       });
+   const handleItemSelectionChange = (item: TCartItem, checked: boolean) => {
+      if (!item) {
+         return;
+      }
+
+      dispatch(
+         UpdateSelection({
+            ...item,
+            is_selected: checked,
+         }),
+      );
+   };
 
    const selectedItems = form
       .getValues('cart_items')
@@ -135,7 +137,6 @@ const CartPage = () => {
                      <FormProvider {...form}>
                         <form>
                            {basketData.cart_items.length > 0 &&
-                              // cartItems.length > 0 &&
                               basketData.cart_items.map(
                                  (item: TCartItem, index: number) => (
                                     <div
@@ -147,6 +148,12 @@ const CartPage = () => {
                                              name={`cart_items.${index}.is_selected`}
                                              form={form}
                                              checkboxClassName="h-5 w-5"
+                                             onCheckedChange={(checked) =>
+                                                handleItemSelectionChange(
+                                                   cartItems[index] || item,
+                                                   checked,
+                                                )
+                                             }
                                           />
                                        ) : null}
                                        <CartItem
@@ -317,7 +324,6 @@ const CartPage = () => {
                      }}
                   >
                      Checkout{' '}
-                     {/* {selectedItems.length > 0 && `(${selectedItems.length})`} */}
                   </Button>
                   <div className="w-full mt-5 flex flex-col gap-3 text-[12px] font-semibold tracking-[0.2px]">
                      <div className="w-full flex flex-row items-center">

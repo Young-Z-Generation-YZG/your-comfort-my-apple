@@ -41,10 +41,28 @@ const cartSlice = createSlice({
 
          console.log('CART APP STATE: UpdateQuantity', current(state));
       },
+      UpdateSelection: (state, action: PayloadAction<TCartItem>) => {
+         state.cart_items = state.cart_items.map((item) =>
+            item.sku_id === action.payload.sku_id &&
+            item.model.normalized_name ===
+               action.payload.model.normalized_name &&
+            item.color.normalized_name ===
+               action.payload.color.normalized_name &&
+            item.storage.normalized_name ===
+               action.payload.storage.normalized_name
+               ? { ...item, is_selected: action.payload.is_selected }
+               : item,
+         );
+      },
    },
 });
 
-export const { SyncCart, UpdateQuantity, AddNewCartItem, AddCartItems } =
-   cartSlice.actions;
+export const {
+   SyncCart,
+   UpdateQuantity,
+   AddNewCartItem,
+   AddCartItems,
+   UpdateSelection,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
