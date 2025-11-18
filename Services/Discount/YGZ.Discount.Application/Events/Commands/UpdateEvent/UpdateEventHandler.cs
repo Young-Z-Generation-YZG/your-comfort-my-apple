@@ -138,7 +138,6 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                     var colorImageUrl = await _distributedCache.GetStringAsync(
                         CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(skuResponse.ModelId, colorEnum),
                         cancellationToken);
-
                     // Create event item with data from SKU
                     var eventItem = EventItemEntity.Create(eventItemId: ValueObjects.EventItemId.Create(),
                                                            eventId: eventId,

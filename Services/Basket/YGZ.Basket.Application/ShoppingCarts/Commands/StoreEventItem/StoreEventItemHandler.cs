@@ -120,7 +120,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
         BuildingBlocks.Shared.Enums.EDiscountType discountTypeEnum = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
 
-        PromotionEvent promotionEvent = PromotionEvent.Create(eventId: "",
+        PromotionEvent promotionEvent = PromotionEvent.Create(eventId: eventItem.EventId,
                                                               eventItemId: eventItem.Id,
                                                               productUnitPrice: originalPrice,
                                                               discountType: discountTypeEnum,
@@ -132,15 +132,16 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
             PromotionEvent: promotionEvent
         );
 
-        decimal finalPrice;
-        if (eventItem.DiscountType == EDiscountTypeGrpc.DiscountTypePercentage)
-        {
-            finalPrice = originalPrice * (1 - discountValue);
-        }
-        else
-        {
-            finalPrice = originalPrice - discountValue;
-        }
+        //decimal finalPrice;
+        //if (eventItem.DiscountType == EDiscountTypeGrpc.DiscountTypePercentage)
+        //{
+        //    discountValue = discountValue / 100m;
+        //    finalPrice = originalPrice * (1 - discountValue);
+        //}
+        //else
+        //{
+        //    finalPrice = originalPrice - discountValue;
+        //}
 
         var quantity = 1; // Default quantity for event items
 

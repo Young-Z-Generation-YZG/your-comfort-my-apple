@@ -112,7 +112,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                     {
                         // For percentage: discount = totalCartValue * (discountValue)
                         // Note: discountValue should already be in decimal form (e.g., 0.1 for 10%)
-                        calculatedDiscount = totalCartValue * (decimal)(coupon.DiscountValue ?? 0);
+                        calculatedDiscount = totalCartValue * ((decimal)(coupon.DiscountValue ?? 0) / 100m);
                     }
                     else if (discountType == EDiscountType.FIXED_AMOUNT)
                     {

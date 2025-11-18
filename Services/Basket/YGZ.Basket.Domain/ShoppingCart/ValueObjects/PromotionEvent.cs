@@ -17,7 +17,7 @@ public class PromotionEvent
         {
             if (DiscountType == EDiscountType.PERCENTAGE.Name)
             {
-                return ProductUnitPrice * DiscountValue;
+                return ProductUnitPrice * (DiscountValue / 100m);
             }
             else
             {
