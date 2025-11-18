@@ -78,17 +78,18 @@ message SkuModel
     google.protobuf.StringValue normalized_model = 7;
     google.protobuf.StringValue normalized_storage = 8;
     google.protobuf.StringValue normalized_color = 9;
-    google.protobuf.DoubleValue unit_price = 10;
-    google.protobuf.Int32Value available_in_stock = 11;
-    google.protobuf.Int32Value total_sold = 12;
-    ESkuStateGrpc sku_state = 13;
-    google.protobuf.StringValue slug = 14;
-    google.protobuf.Timestamp   created_at = 15;
-    google.protobuf.Timestamp   updated_at = 16;
-    google.protobuf.StringValue updated_by = 17;
-    bool                        is_deleted = 18;
-    google.protobuf.Timestamp   deleted_at = 19;
-    google.protobuf.StringValue deleted_by = 20;
+    google.protobuf.StringValue color_hex_code = 10;
+    google.protobuf.DoubleValue unit_price = 11;
+    google.protobuf.Int32Value available_in_stock = 12;
+    google.protobuf.Int32Value total_sold = 13;
+    ESkuStateGrpc sku_state = 14;
+    google.protobuf.StringValue slug = 15;
+    google.protobuf.Timestamp   created_at = 16;
+    google.protobuf.Timestamp   updated_at = 17;
+    google.protobuf.StringValue updated_by = 18;
+    bool                        is_deleted = 19;
+    google.protobuf.Timestamp   deleted_at = 20;
+    google.protobuf.StringValue deleted_by = 21;
 }
 
 

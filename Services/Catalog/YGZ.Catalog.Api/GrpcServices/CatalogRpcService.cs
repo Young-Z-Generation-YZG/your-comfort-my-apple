@@ -5,7 +5,6 @@ using MediatR;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Api.Protos;
 using YGZ.Catalog.Application.Inventory.Commands.CheckInsufficientStock;
-using YGZ.Catalog.Application.Inventory.Commands.UpdateSkuCommand;
 using YGZ.Catalog.Application.Inventory.Queries.GetSkuById;
 using YGZ.Catalog.Application.Tenants.Queries.GetTenantById;
 using YGZ.Catalog.Domain.Core.Errors;
@@ -96,6 +95,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
             NormalizedModel = result.Response.Model.NormalizedName,
             NormalizedStorage = result.Response.Storage.NormalizedName,
             NormalizedColor = result.Response.Color.NormalizedName,
+            ColorHexCode = result.Response.Color.HexCode,
             UnitPrice = (double)result.Response.UnitPrice,
             AvailableInStock = result.Response.AvailableInStock,
             TotalSold = result.Response.TotalSold,
@@ -146,7 +146,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
     //             });
     //         }
     //     }
-           
+
     //     return new BooleanResponse { IsSuccess = result.Response };
     // }
 

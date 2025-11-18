@@ -39,7 +39,6 @@
 
   <ItemGroup>
     <Folder Include="ProductModels\Events\DomainEvents\" />
-    <Folder Include="Promotions\Events\" />
     <Folder Include="Reviews\Events\IntegationEvents\" />
   </ItemGroup>
 

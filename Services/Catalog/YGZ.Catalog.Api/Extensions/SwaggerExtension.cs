@@ -54,7 +54,7 @@ public static class SwaggerExtension
             settings.SchemaSettings.SchemaProcessors.Add(new CreateReviewRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateReviewRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreatePromotionEventRequestExample());
-            settings.SchemaSettings.SchemaProcessors.Add(new CreatePromotionGlobalRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new UpdateEvenRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateIphoneModelRequestExample());
 
