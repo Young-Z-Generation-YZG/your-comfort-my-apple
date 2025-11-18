@@ -25,7 +25,7 @@ public class SkuCode : ValueObject
             throw new ArgumentException("Invalid product classification, model, storage or color");
         }
 
-        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
+        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{colorEnum.Name}-{storageEnum.Name}");
     }
 
     public static SkuCode Of(string value)

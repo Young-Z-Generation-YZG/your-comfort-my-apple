@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePromotionService } from '~/src/hooks/api/use-promotion-service';
 import {
    ColumnDef,
@@ -31,6 +31,7 @@ import {
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import type { TEvent } from '~/src/infrastructure/services/promotion.service';
+import { useRouter } from 'next/navigation';
 
 type TEventRow = {
    id: string;
@@ -53,80 +54,91 @@ const formatDateTime = (value: string) => {
    }).format(d);
 };
 
-const columns: ColumnDef<TEventRow>[] = [
-   {
-      accessorKey: 'title',
-      header: ({ column }) => (
-         <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-         >
-            Title
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-         </Button>
-      ),
-      cell: ({ row }) => (
-         <div className="font-medium">{row.getValue('title')}</div>
-      ),
-   },
-   {
-      accessorKey: 'startDate',
-      header: 'Start Date',
-      cell: ({ row }) => (
-         <div className="text-muted-foreground">
-            {formatDateTime(row.getValue('startDate') as string)}
-         </div>
-      ),
-   },
-   {
-      accessorKey: 'endDate',
-      header: 'End Date',
-      cell: ({ row }) => (
-         <div className="text-muted-foreground">
-            {formatDateTime(row.getValue('endDate') as string)}
-         </div>
-      ),
-   },
-   {
-      accessorKey: 'items',
-      header: 'Event Items',
-      cell: ({ row }) => <div>{row.getValue('items') as number}</div>,
-   },
-   {
-      id: 'actions',
-      enableHiding: false,
-      cell: ({ row }) => {
-         const item = row.original;
-         return (
-            <DropdownMenu>
-               <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                     <span className="sr-only">Open menu</span>
-                     <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-               </DropdownMenuTrigger>
-               <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem
-                     onClick={() => navigator.clipboard.writeText(item.id)}
-                  >
-                     Copy Event ID
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>View details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">
-                     Delete
-                  </DropdownMenuItem>
-               </DropdownMenuContent>
-            </DropdownMenu>
-         );
-      },
-   },
-];
-
 const PromotionManagementEventsPage = () => {
+   const router = useRouter();
+
+   const columns: ColumnDef<TEventRow>[] = [
+      {
+         accessorKey: 'title',
+         header: ({ column }) => (
+            <Button
+               variant="ghost"
+               onClick={() =>
+                  column.toggleSorting(column.getIsSorted() === 'asc')
+               }
+            >
+               Title
+               <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+         ),
+         cell: ({ row }) => (
+            <div className="font-medium">{row.getValue('title')}</div>
+         ),
+      },
+      {
+         accessorKey: 'startDate',
+         header: 'Start Date',
+         cell: ({ row }) => (
+            <div className="text-muted-foreground">
+               {formatDateTime(row.getValue('startDate') as string)}
+            </div>
+         ),
+      },
+      {
+         accessorKey: 'endDate',
+         header: 'End Date',
+         cell: ({ row }) => (
+            <div className="text-muted-foreground">
+               {formatDateTime(row.getValue('endDate') as string)}
+            </div>
+         ),
+      },
+      {
+         accessorKey: 'items',
+         header: 'Event Items',
+         cell: ({ row }) => <div>{row.getValue('items') as number}</div>,
+      },
+      {
+         id: 'actions',
+         enableHiding: false,
+         cell: ({ row }) => {
+            const item = row.original;
+            return (
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                     </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                     <DropdownMenuItem
+                        onClick={() => navigator.clipboard.writeText(item.id)}
+                     >
+                        Copy Event ID
+                     </DropdownMenuItem>
+                     <DropdownMenuSeparator />
+                     <DropdownMenuItem
+                        onClick={() =>
+                           router.push(
+                              `/dashboards/promotion-management/events/${item.id}`,
+                           )
+                        }
+                     >
+                        View details
+                     </DropdownMenuItem>
+                     <DropdownMenuItem>Edit</DropdownMenuItem>
+                     <DropdownMenuSeparator />
+                     <DropdownMenuItem className="text-destructive">
+                        Delete
+                     </DropdownMenuItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            );
+         },
+      },
+   ];
    const { isLoading, getEventsAsync } = usePromotionService();
    const [data, setData] = useState<TEventRow[]>([]);
    const [error, setError] = useState<string | null>(null);

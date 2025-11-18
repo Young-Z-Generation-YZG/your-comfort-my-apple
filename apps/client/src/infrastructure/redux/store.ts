@@ -16,7 +16,6 @@ import appReducer from './features/app.slice';
 import cartReducer from './features/cart.slice';
 import searchReducer from './features/search.slice';
 import { categoryApi } from '~/infrastructure/services/category.service';
-import { promotionApi } from '~/infrastructure/services/promotion.service';
 import { authApi } from '~/infrastructure/services/auth.service';
 import { catalogApi } from '~/infrastructure/services/catalog.service';
 import { reviewApi } from '~/infrastructure/services/review.service';
@@ -26,6 +25,7 @@ import { orderingApi } from '~/infrastructure/services/ordering.service';
 import { productApi } from '~/infrastructure/services/product.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
+import { promotionApi } from '~/infrastructure/services/promotion.service';
 
 const storage = createPersistStorage();
 
