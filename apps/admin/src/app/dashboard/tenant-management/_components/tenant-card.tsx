@@ -4,7 +4,7 @@ import { Building2, Calendar, CheckCircle2, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { ETenantType } from '~/src/domain/enums/tenant-type.enum';
 import { cn } from '~/src/infrastructure/lib/utils';
-import { TTenantItem } from '../page';
+import { TTenant } from '~/src/infrastructure/services/tenant.service';
 
 const getTenantTypeStyle = (tenantType: string) => {
    switch (tenantType) {
@@ -39,7 +39,7 @@ const getTenantStateStyle = (tenantState: string) => {
    }
 };
 
-const TenantCard = ({ tenant }: { tenant: TTenantItem }) => {
+const TenantCard = ({ tenant }: { tenant: TTenant }) => {
    return (
       <div className="h-auto w-auto">
          <div className="p-4 rounded-xl border border-slate-200 shadow">
@@ -48,16 +48,16 @@ const TenantCard = ({ tenant }: { tenant: TTenantItem }) => {
                   <span
                      className={cn('p-3 rounded-lg', {
                         'bg-purple-100 dark:bg-purple-900/30':
-                           tenant.tenantType === ETenantType.WARE_HOUSE,
+                           tenant.tenant_type === ETenantType.WARE_HOUSE,
                         'bg-blue-100 dark:bg-blue-900/30':
-                           tenant.tenantType === ETenantType.BRANCH,
+                           tenant.tenant_type === ETenantType.BRANCH,
                      })}
                   >
-                     {tenant.tenantType === ETenantType.WARE_HOUSE && (
+                     {tenant.tenant_type === ETenantType.WARE_HOUSE && (
                         <Building2 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                      )}
 
-                     {tenant.tenantType === ETenantType.BRANCH && (
+                     {tenant.tenant_type === ETenantType.BRANCH && (
                         <MapPin className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                      )}
                   </span>
@@ -65,13 +65,13 @@ const TenantCard = ({ tenant }: { tenant: TTenantItem }) => {
                      <h3
                         className={cn(
                            'font-semibold text-lg leading-none',
-                           getTenantTypeTextStyle(tenant.tenantType),
+                           getTenantTypeTextStyle(tenant.tenant_type),
                         )}
                      >
                         {tenant.name}
                      </h3>
                      <p className="text-xs font-mono text-muted-foreground bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded w-fit">
-                        WARE_HOUSE
+                        {tenant.tenant_type}
                      </p>
                   </div>
                </div>
@@ -86,33 +86,33 @@ const TenantCard = ({ tenant }: { tenant: TTenantItem }) => {
                   <Badge
                      className={cn(
                         'border select-none text-xs font-medium flex items-center gap-1.5 py-1 px-2.5 rounded-lg',
-                        getTenantTypeStyle(tenant.tenantType),
+                        getTenantTypeStyle(tenant.tenant_type),
                      )}
                   >
-                     {tenant.tenantType === ETenantType.WARE_HOUSE && (
+                     {tenant.tenant_type === ETenantType.WARE_HOUSE && (
                         <Building2 className="h-3.5 w-3.5" />
                      )}
-                     {tenant.tenantType === ETenantType.BRANCH && (
+                     {tenant.tenant_type === ETenantType.BRANCH && (
                         <MapPin className="h-3.5 w-3.5" />
                      )}
-                     {tenant.tenantType}
+                     {tenant.tenant_type}
                   </Badge>
 
                   <Badge
                      className={cn(
                         'border select-none text-xs font-medium flex items-center gap-1.5 py-1 px-2.5 rounded-lg',
-                        getTenantStateStyle(tenant.tenantState),
+                        getTenantStateStyle(tenant.tenant_state),
                      )}
                   >
                      <CheckCircle2 className="h-3.5 w-3.5" />
-                     {tenant.tenantState}
+                     {tenant.tenant_state}
                   </Badge>
                </div>
 
                <div className="flex items-center text-xs text-muted-foreground pt-2 border-t border-slate-100 dark:border-slate-800">
                   <Calendar className="h-3.5 w-3.5 mr-1.5" />
                   Created{' '}
-                  {new Date(tenant.createdAt).toLocaleDateString('en-US', {
+                  {new Date(tenant.created_at).toLocaleDateString('en-US', {
                      year: 'numeric',
                      month: 'short',
                      day: 'numeric',

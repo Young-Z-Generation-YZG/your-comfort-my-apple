@@ -1,66 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-
-const fakeTenantsList = [
-   {
-      id: '664355f845e56534956be32b',
-      name: 'Ware house',
-      sub_domain: 'admin',
-      description: '',
-      tenant_type: 'WARE_HOUSE',
-      tenant_state: 'ACTIVE',
-      embedded_branch: {
-         id: '664357a235e84033bbd0e6b6',
-         tenant_id: '664355f845e56534956be32b',
-         name: 'Ware house branch',
-         address: 'Ware house address',
-         description: null,
-         manager: null,
-         created_at: '2025-11-09T17:21:33.829Z',
-         updated_at: '2025-11-09T17:21:33.829Z',
-         updated_by: '',
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: '',
-      },
-      created_at: '2025-11-09T17:21:33.83Z',
-      updated_at: '2025-11-09T17:21:33.83Z',
-      updated_by: '',
-      is_deleted: false,
-      deleted_at: null,
-      deleted_by: '',
-   },
-   {
-      id: '690e034dff79797b05b3bc89',
-      name: 'HCM TD KVC 1060',
-      sub_domain: 'hcm-td-kvc-1060',
-      description: '',
-      tenant_type: 'BRANCH',
-      tenant_state: 'ACTIVE',
-      embedded_branch: {
-         id: '690e034dff79797b05b3bc88',
-         tenant_id: '690e034dff79797b05b3bc89',
-         name: 'HCM_TD_KVC_1060',
-         address: 'Số 1060, Kha Vạn Cân, Linh Chiểu, TD',
-         description: null,
-         manager: null,
-         created_at: '2025-11-09T17:21:33.83Z',
-         updated_at: '2025-11-09T17:21:33.83Z',
-         updated_by: '',
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: '',
-      },
-      created_at: '2025-11-09T17:21:33.83Z',
-      updated_at: '2025-11-09T17:21:33.83Z',
-      updated_by: '',
-      is_deleted: false,
-      deleted_at: null,
-      deleted_by: '',
-   },
-];
 
 export type TTenant = {
    id: string;
@@ -92,6 +32,15 @@ export type TBranch = {
    deleted_at: string | null;
    deleted_by: string | null;
 };
+
+export interface ICreateTenantPayload {
+   name: string;
+   sub_domain: string;
+   branch_address: string;
+   tenant_type: string;
+   tenant_description: string;
+   branch_description: string;
+}
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('catalog-services')(args, api, extraOptions);
@@ -128,7 +77,21 @@ export const tenantApi = createApi({
          },
          providesTags: ['Tenants'],
       }),
+      createTenant: builder.mutation<boolean, ICreateTenantPayload>({
+         query: (payload) => {
+            return {
+               url: '/api/v1/tenants',
+               method: 'POST',
+               body: payload,
+            };
+         },
+         invalidatesTags: ['Tenants'],
+      }),
    }),
 });
 
-export const { useLazyGetTenantsQuery, useLazyGetTenantByIdQuery } = tenantApi;
+export const {
+   useLazyGetTenantsQuery,
+   useLazyGetTenantByIdQuery,
+   useCreateTenantMutation,
+} = tenantApi;
