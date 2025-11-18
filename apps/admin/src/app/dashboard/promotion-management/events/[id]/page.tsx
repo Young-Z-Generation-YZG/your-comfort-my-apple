@@ -190,6 +190,15 @@ const PromotionEventDetailPage = () => {
                <Button variant="outline" onClick={() => router.back()}>
                   Back
                </Button>
+               <Button
+                  onClick={() =>
+                     router.push(
+                        `/dashboard/promotion-management/events/${params?.id}/update`,
+                     )
+                  }
+               >
+                  Edit Event
+               </Button>
             </div>
          </div>
 

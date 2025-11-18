@@ -128,7 +128,15 @@ const PromotionManagementEventsPage = () => {
                      >
                         View details
                      </DropdownMenuItem>
-                     <DropdownMenuItem>Edit</DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() =>
+                           router.push(
+                              `/dashboard/promotion-management/events/${item.id}/update`,
+                           )
+                        }
+                     >
+                        Edit
+                     </DropdownMenuItem>
                      <DropdownMenuSeparator />
                      <DropdownMenuItem className="text-destructive">
                         Delete
