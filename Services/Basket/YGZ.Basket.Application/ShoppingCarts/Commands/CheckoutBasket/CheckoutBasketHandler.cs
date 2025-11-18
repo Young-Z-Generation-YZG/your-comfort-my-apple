@@ -231,7 +231,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             {
                 OrderType = "VNPAY_CHECKOUT",
                 OrderDescription = $"ORDER_ID={orderId}",
-                Amount = result.Response.TotalAmount * 25000,
+                Amount = checkoutShoppingCart.TotalAmount * 25000,
                 Name = request.ShippingAddress.ContactName,
             };
 
@@ -255,7 +255,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 FullName = $"{request.ShippingAddress.ContactName}",
                 OrderId = $"ORDER_ID={orderId}",
                 OrderInfo = "MOMO_CHECKOUT",
-                Amount = (double)10 * 25000,
+                Amount = (double)checkoutShoppingCart.TotalAmount * 25000,
             });
 
             if (momoPaymentUrl?.ErrorCode != 0)

@@ -20,12 +20,12 @@ public class SkuCode : ValueObject
         EStorage.TryFromName(storage, out var storageEnum);
         EColor.TryFromName(SnakeCaseSerializer.Serialize(color).ToUpper(), out var colorEnum);
 
-        if (productClassificationEnum is null || modelEnum is null || storageEnum is null || colorEnum is null)
-        {
-            throw new ArgumentException("Invalid product classification, model, storage or color");
-        }
+        //if (productClassificationEnum is null || modelEnum is null || storageEnum is null || colorEnum is null)
+        //{
+        //    throw new ArgumentException("Invalid product classification, model, storage or color");
+        //}
 
-        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{colorEnum.Name}-{storageEnum.Name}");
+        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
     }
 
     public static SkuCode Of(string value)

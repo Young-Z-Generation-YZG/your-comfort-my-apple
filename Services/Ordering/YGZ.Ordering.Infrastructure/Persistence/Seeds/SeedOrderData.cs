@@ -31,6 +31,12 @@ public static class SeedOrderData
                 "690e034dff79797b05b3bc89" // HCM TD KVC 1060
             };
 
+    public static IEnumerable<string> BranchIds => new List<string>
+            {
+                "664357a235e84033bbd0e6b6", // Ware house
+                "690e034dff79797b05b3bc88" // HCM TD KVC 1060
+            };
+
     public static IEnumerable<string> SkuIdsInHCMTDKVC1060 => new List<string>
     {
         "691364b22451d4a9c6ca67db", // IPHONE-IPHONE_15-128GB-BLUE
@@ -43,6 +49,7 @@ public static class SeedOrderData
             var listUserIds = UserIds.ToList();
             var listShippingAddresses = ShippingAddresses.ToList();
             var listTenantId = TenantIds.ToList();
+            var listBranchIds = BranchIds.ToList();
             var iPhone15ModelsList = iPhone15Models.ToList();
             var iPhone15ColorsList = iPhone15Colors.ToList();
             var iPhone16ModelsList = iPhone16Models.ToList();
@@ -190,7 +197,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -214,7 +221,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -238,7 +245,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -262,7 +269,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -286,7 +293,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-PINK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -310,7 +317,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-PINK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -334,7 +341,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-PINK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -358,7 +365,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-PINK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -382,7 +389,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-YELLOW-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -406,7 +413,7 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-YELLOW-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
                                  skuId: listSkuIdsInWarehouseList[0],
                                  modelId: ModelIds["IPHONE_15"],
@@ -430,9 +437,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-YELLOW-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[2],
@@ -454,9 +461,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-YELLOW-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[2],
@@ -478,9 +485,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-GREEN-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[3],
@@ -502,9 +509,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-GREEN-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[3],
@@ -526,9 +533,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-GREEN-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[3],
@@ -550,9 +557,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-GREEN-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[3],
@@ -574,9 +581,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[4],
@@ -598,9 +605,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[4],
@@ -622,9 +629,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[4],
@@ -646,9 +653,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[0],
                                  colorName: iPhone15ColorsList[4],
@@ -670,9 +677,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[0],
@@ -694,9 +701,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[0],
@@ -718,9 +725,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[0],
@@ -742,9 +749,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[0],
@@ -766,9 +773,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-PINK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[1],
@@ -790,9 +797,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-PINK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[1],
@@ -814,9 +821,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-PINK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[1],
@@ -838,9 +845,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-PINK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[1],
@@ -862,9 +869,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-YELLOW-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[2],
@@ -886,9 +893,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-YELLOW-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[2],
@@ -910,9 +917,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-YELLOW-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[2],
@@ -934,9 +941,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-YELLOW-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[2],
@@ -958,9 +965,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-GREEN-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[3],
@@ -982,9 +989,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-GREEN-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[3],
@@ -1006,9 +1013,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-GREEN-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[3],
@@ -1030,9 +1037,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-GREEN-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[3],
@@ -1054,9 +1061,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[4],
@@ -1078,9 +1085,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[4],
@@ -1102,9 +1109,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[4],
@@ -1126,9 +1133,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_15_PLUS-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_15"],
                                  modelName: iPhone15ModelsList[1],
                                  colorName: iPhone15ColorsList[4],
@@ -1152,9 +1159,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-ULTRAMARINE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[0],
@@ -1176,9 +1183,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-ULTRAMARINE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[0],
@@ -1200,9 +1207,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-ULTRAMARINE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[0],
@@ -1224,9 +1231,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-ULTRAMARINE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[0],
@@ -1248,9 +1255,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-TEAL-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[1],
@@ -1272,9 +1279,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-TEAL-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[1],
@@ -1296,9 +1303,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-TEAL-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[1],
@@ -1320,9 +1327,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-TEAL-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[1],
@@ -1344,9 +1351,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-PINK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[2],
@@ -1368,9 +1375,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-PINK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[2],
@@ -1392,9 +1399,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-PINK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[2],
@@ -1416,9 +1423,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-PINK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[2],
@@ -1440,9 +1447,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-WHITE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[3],
@@ -1464,9 +1471,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-WHITE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[3],
@@ -1488,9 +1495,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-WHITE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[3],
@@ -1512,9 +1519,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-WHITE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[3],
@@ -1536,9 +1543,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[4],
@@ -1560,9 +1567,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[4],
@@ -1584,9 +1591,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[4],
@@ -1608,9 +1615,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[0],
                                  colorName: iPhone16ColorsList[4],
@@ -1632,9 +1639,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-ULTRAMARINE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[0],
@@ -1656,9 +1663,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-ULTRAMARINE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[0],
@@ -1680,9 +1687,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-ULTRAMARINE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[0],
@@ -1704,9 +1711,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-ULTRAMARINE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[0],
@@ -1728,9 +1735,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-TEAL-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[1],
@@ -1752,9 +1759,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-TEAL-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[1],
@@ -1776,9 +1783,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-TEAL-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[1],
@@ -1800,9 +1807,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-TEAL-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[1],
@@ -1824,9 +1831,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-PINK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[2],
@@ -1848,9 +1855,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-PINK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[2],
@@ -1872,9 +1879,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-PINK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[2],
@@ -1896,9 +1903,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-PINK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[2],
@@ -1920,9 +1927,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-WHITE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[3],
@@ -1944,9 +1951,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-WHITE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[3],
@@ -1968,9 +1975,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-WHITE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[3],
@@ -1992,9 +1999,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-WHITE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[3],
@@ -2016,9 +2023,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[4],
@@ -2040,9 +2047,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[4],
@@ -2064,9 +2071,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[4],
@@ -2088,9 +2095,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16_PLUS-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16"],
                                  modelName: iPhone16ModelsList[1],
                                  colorName: iPhone16ColorsList[4],
@@ -2114,9 +2121,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[0],
@@ -2138,9 +2145,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[0],
@@ -2162,9 +2169,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[0],
@@ -2186,9 +2193,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-WHITE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[0],
@@ -2210,9 +2217,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[1],
@@ -2234,9 +2241,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[1],
@@ -2258,9 +2265,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[1],
@@ -2282,9 +2289,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_16E-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_16E"],
                                  modelName: iPhone16EModelsList[0],
                                  colorName: iPhone16EColorsList[1],
@@ -2308,9 +2315,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-LAVENDER-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[0],
@@ -2332,9 +2339,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-LAVENDER-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[0],
@@ -2356,9 +2363,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-LAVENDER-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[0],
@@ -2380,9 +2387,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-LAVENDER-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[0],
@@ -2404,9 +2411,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-SAGE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[1],
@@ -2428,9 +2435,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-SAGE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[1],
@@ -2452,9 +2459,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-SAGE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[1],
@@ -2476,9 +2483,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-SAGE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[1],
@@ -2500,9 +2507,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-MIST_BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[2],
@@ -2524,9 +2531,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-MIST_BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[2],
@@ -2548,9 +2555,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-MIST_BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[2],
@@ -2572,9 +2579,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-MIST_BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[2],
@@ -2596,9 +2603,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-WHITE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[3],
@@ -2620,9 +2627,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-WHITE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[3],
@@ -2644,9 +2651,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-WHITE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[3],
@@ -2668,9 +2675,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-WHITE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[3],
@@ -2692,9 +2699,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[4],
@@ -2716,9 +2723,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[4],
@@ -2740,9 +2747,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[4],
@@ -2764,9 +2771,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17-BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17"],
                                  modelName: iPhone17ModelsList[0],
                                  colorName: iPhone17ColorsList[4],
@@ -2791,9 +2798,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[0],
@@ -2815,9 +2822,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[0],
@@ -2839,9 +2846,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[0],
@@ -2863,9 +2870,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-SILVER-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[0],
@@ -2887,9 +2894,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[1],
@@ -2911,9 +2918,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[1],
@@ -2935,9 +2942,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[1],
@@ -2959,9 +2966,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-COSMIC_ORANGE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[1],
@@ -2983,9 +2990,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[2],
@@ -3007,9 +3014,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[2],
@@ -3031,9 +3038,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[2],
@@ -3055,9 +3062,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO-DEEP_BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[0],
                                  colorName: iPhone17ProColorsList[2],
@@ -3079,9 +3086,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
@@ -3103,9 +3110,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
@@ -3127,9 +3134,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
@@ -3151,9 +3158,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-SILVER-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[0],
@@ -3175,9 +3182,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
@@ -3199,9 +3206,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
@@ -3223,9 +3230,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
@@ -3247,9 +3254,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-COSMIC_ORANGE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[1],
@@ -3271,9 +3278,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
@@ -3295,9 +3302,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
@@ -3319,9 +3326,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
@@ -3343,9 +3350,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_PRO_MAX-DEEP_BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_PRO"],
                                  modelName: iPhone17ProModelsList[1],
                                  colorName: iPhone17ProColorsList[2],
@@ -3369,9 +3376,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SKY_BLUE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[0],
@@ -3393,9 +3400,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SKY_BLUE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[0],
@@ -3417,9 +3424,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SKY_BLUE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[0],
@@ -3441,9 +3448,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SKY_BLUE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[0],
@@ -3465,9 +3472,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-LIGHT_GOLD-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[1],
@@ -3489,9 +3496,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-LIGHT_GOLD-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[1],
@@ -3513,9 +3520,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-LIGHT_GOLD-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[1],
@@ -3537,9 +3544,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-LIGHT_GOLD-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[1],
@@ -3561,9 +3568,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-CLOUD_WHITE-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[2],
@@ -3585,9 +3592,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-CLOUD_WHITE-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[2],
@@ -3609,9 +3616,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-CLOUD_WHITE-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[2],
@@ -3633,9 +3640,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-CLOUD_WHITE-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[2],
@@ -3657,9 +3664,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SPACE_BLACK-128GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[3],
@@ -3681,9 +3688,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SPACE_BLACK-256GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[3],
@@ -3705,9 +3712,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SPACE_BLACK-512GB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[3],
@@ -3729,9 +3736,9 @@ public static class SeedOrderData
             {
                 OrderItem.Create(orderItemId: OrderItemId.Create(), // IPHONE-IPHONE_17_AIR-SPACE_BLACK-1TB
                                  tenantId: TenantId.Of(listTenantId[0]),
-                                 branchId: null,
+                                 branchId: BranchId.Of(listBranchIds[0]),
                                  orderId: OrderId.Create(),
-                                 skuId: Guid.NewGuid().ToString("N"),
+                                 skuId: "SEED_DATA",
                                  modelId: ModelIds["IPHONE_17_AIR"],
                                  modelName: iPhone17AirModelsList[0],
                                  colorName: iPhone17AirColorsList[3],
@@ -3769,7 +3776,7 @@ public static class SeedOrderData
             // 40 orders of iPhone 15
             var order1 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3788,7 +3795,7 @@ public static class SeedOrderData
 
             var order2 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3807,7 +3814,7 @@ public static class SeedOrderData
 
             var order3 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3826,7 +3833,7 @@ public static class SeedOrderData
 
             var order4 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3845,7 +3852,7 @@ public static class SeedOrderData
 
             var order5 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3864,7 +3871,7 @@ public static class SeedOrderData
 
             var order6 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3883,7 +3890,7 @@ public static class SeedOrderData
 
             var order7 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3902,7 +3909,7 @@ public static class SeedOrderData
 
             var order8 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3921,7 +3928,7 @@ public static class SeedOrderData
 
             var order9 = Order.Create(orderId: OrderId.Create(),
                                       tenantId: TenantId.Of(listTenantId[0]),
-                                      branchId: null,
+                                      branchId: BranchId.Of(listBranchIds[0]),
                                       customerId: listUserIds[0],
                                       customerPublicKey: null,
                                       tx: null,
@@ -3940,7 +3947,7 @@ public static class SeedOrderData
 
             var order10 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -3959,7 +3966,7 @@ public static class SeedOrderData
 
             var order11 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -3978,7 +3985,7 @@ public static class SeedOrderData
 
             var order12 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -3997,7 +4004,7 @@ public static class SeedOrderData
 
             var order13 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4016,7 +4023,7 @@ public static class SeedOrderData
 
             var order14 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4035,7 +4042,7 @@ public static class SeedOrderData
 
             var order15 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4054,7 +4061,7 @@ public static class SeedOrderData
 
             var order16 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4073,7 +4080,7 @@ public static class SeedOrderData
 
             var order17 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4092,7 +4099,7 @@ public static class SeedOrderData
 
             var order18 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4111,7 +4118,7 @@ public static class SeedOrderData
 
             var order19 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4130,7 +4137,7 @@ public static class SeedOrderData
 
             var order20 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4149,7 +4156,7 @@ public static class SeedOrderData
 
             var order21 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4168,7 +4175,7 @@ public static class SeedOrderData
 
             var order22 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4187,7 +4194,7 @@ public static class SeedOrderData
 
             var order23 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4206,7 +4213,7 @@ public static class SeedOrderData
 
             var order24 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4225,7 +4232,7 @@ public static class SeedOrderData
 
             var order25 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4244,7 +4251,7 @@ public static class SeedOrderData
 
             var order26 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4263,7 +4270,7 @@ public static class SeedOrderData
 
             var order27 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4282,7 +4289,7 @@ public static class SeedOrderData
 
             var order28 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4301,7 +4308,7 @@ public static class SeedOrderData
 
             var order29 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4320,7 +4327,7 @@ public static class SeedOrderData
 
             var order30 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4339,7 +4346,7 @@ public static class SeedOrderData
 
             var order31 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4358,7 +4365,7 @@ public static class SeedOrderData
 
             var order32 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4377,7 +4384,7 @@ public static class SeedOrderData
 
             var order33 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4396,7 +4403,7 @@ public static class SeedOrderData
 
             var order34 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4415,7 +4422,7 @@ public static class SeedOrderData
 
             var order35 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4434,7 +4441,7 @@ public static class SeedOrderData
 
             var order36 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4453,7 +4460,7 @@ public static class SeedOrderData
 
             var order37 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4472,7 +4479,7 @@ public static class SeedOrderData
 
             var order38 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4491,7 +4498,7 @@ public static class SeedOrderData
 
             var order39 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4510,7 +4517,7 @@ public static class SeedOrderData
 
             var order40 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4533,7 +4540,7 @@ public static class SeedOrderData
             // 40 orders of iPhone 16
             var order41 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4552,7 +4559,7 @@ public static class SeedOrderData
 
             var order42 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4571,7 +4578,7 @@ public static class SeedOrderData
 
             var order43 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4590,7 +4597,7 @@ public static class SeedOrderData
 
             var order44 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4609,7 +4616,7 @@ public static class SeedOrderData
 
             var order45 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4628,7 +4635,7 @@ public static class SeedOrderData
 
             var order46 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4647,7 +4654,7 @@ public static class SeedOrderData
 
             var order47 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4666,7 +4673,7 @@ public static class SeedOrderData
 
             var order48 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4685,7 +4692,7 @@ public static class SeedOrderData
 
             var order49 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4704,7 +4711,7 @@ public static class SeedOrderData
 
             var order50 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4723,7 +4730,7 @@ public static class SeedOrderData
 
             var order51 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4742,7 +4749,7 @@ public static class SeedOrderData
 
             var order52 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4761,7 +4768,7 @@ public static class SeedOrderData
 
             var order53 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4780,7 +4787,7 @@ public static class SeedOrderData
 
             var order54 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4799,7 +4806,7 @@ public static class SeedOrderData
 
             var order55 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4818,7 +4825,7 @@ public static class SeedOrderData
 
             var order56 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4837,7 +4844,7 @@ public static class SeedOrderData
 
             var order57 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4856,7 +4863,7 @@ public static class SeedOrderData
 
             var order58 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4875,7 +4882,7 @@ public static class SeedOrderData
 
             var order59 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4894,7 +4901,7 @@ public static class SeedOrderData
 
             var order60 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4913,7 +4920,7 @@ public static class SeedOrderData
 
             var order61 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4932,7 +4939,7 @@ public static class SeedOrderData
 
             var order62 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4951,7 +4958,7 @@ public static class SeedOrderData
 
             var order63 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4970,7 +4977,7 @@ public static class SeedOrderData
 
             var order64 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -4989,7 +4996,7 @@ public static class SeedOrderData
 
             var order65 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5008,7 +5015,7 @@ public static class SeedOrderData
 
             var order66 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5027,7 +5034,7 @@ public static class SeedOrderData
 
             var order67 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5046,7 +5053,7 @@ public static class SeedOrderData
 
             var order68 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5065,7 +5072,7 @@ public static class SeedOrderData
 
             var order69 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5084,7 +5091,7 @@ public static class SeedOrderData
 
             var order70 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5103,7 +5110,7 @@ public static class SeedOrderData
 
             var order71 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5122,7 +5129,7 @@ public static class SeedOrderData
 
             var order72 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5141,7 +5148,7 @@ public static class SeedOrderData
 
             var order73 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5160,7 +5167,7 @@ public static class SeedOrderData
 
             var order74 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5179,7 +5186,7 @@ public static class SeedOrderData
 
             var order75 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5198,7 +5205,7 @@ public static class SeedOrderData
 
             var order76 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5217,7 +5224,7 @@ public static class SeedOrderData
 
             var order77 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5236,7 +5243,7 @@ public static class SeedOrderData
 
             var order78 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5255,7 +5262,7 @@ public static class SeedOrderData
 
             var order79 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5274,7 +5281,7 @@ public static class SeedOrderData
 
             var order80 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5295,7 +5302,7 @@ public static class SeedOrderData
             // 8 orders of iPhone 16e
             var order81 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5314,7 +5321,7 @@ public static class SeedOrderData
 
             var order82 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5333,7 +5340,7 @@ public static class SeedOrderData
 
             var order83 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5352,7 +5359,7 @@ public static class SeedOrderData
 
             var order84 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5371,7 +5378,7 @@ public static class SeedOrderData
 
             var order85 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5390,7 +5397,7 @@ public static class SeedOrderData
 
             var order86 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5409,7 +5416,7 @@ public static class SeedOrderData
 
             var order87 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5428,7 +5435,7 @@ public static class SeedOrderData
 
             var order88 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5449,7 +5456,7 @@ public static class SeedOrderData
             // 20 orders of iPhone 17
             var order89 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5468,7 +5475,7 @@ public static class SeedOrderData
 
             var order90 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5487,7 +5494,7 @@ public static class SeedOrderData
 
             var order91 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5506,7 +5513,7 @@ public static class SeedOrderData
 
             var order92 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5525,7 +5532,7 @@ public static class SeedOrderData
 
             var order93 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5544,7 +5551,7 @@ public static class SeedOrderData
 
             var order94 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5563,7 +5570,7 @@ public static class SeedOrderData
 
             var order95 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5582,7 +5589,7 @@ public static class SeedOrderData
 
             var order96 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5601,7 +5608,7 @@ public static class SeedOrderData
 
             var order97 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5620,7 +5627,7 @@ public static class SeedOrderData
 
             var order98 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5639,7 +5646,7 @@ public static class SeedOrderData
 
             var order99 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5658,7 +5665,7 @@ public static class SeedOrderData
 
             var order100 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5677,7 +5684,7 @@ public static class SeedOrderData
 
             var order101 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5696,7 +5703,7 @@ public static class SeedOrderData
 
             var order102 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5715,7 +5722,7 @@ public static class SeedOrderData
 
             var order103 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5734,7 +5741,7 @@ public static class SeedOrderData
 
             var order104 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5753,7 +5760,7 @@ public static class SeedOrderData
 
             var order105 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5772,7 +5779,7 @@ public static class SeedOrderData
 
             var order106 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5791,7 +5798,7 @@ public static class SeedOrderData
 
             var order107 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5810,7 +5817,7 @@ public static class SeedOrderData
 
             var order108 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5831,7 +5838,7 @@ public static class SeedOrderData
             // 24 orders of iPhone 17 Pro
             var order109 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5850,7 +5857,7 @@ public static class SeedOrderData
 
             var order110 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5869,7 +5876,7 @@ public static class SeedOrderData
 
             var order111 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5888,7 +5895,7 @@ public static class SeedOrderData
 
             var order112 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5907,7 +5914,7 @@ public static class SeedOrderData
 
             var order113 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5926,7 +5933,7 @@ public static class SeedOrderData
 
             var order114 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5945,7 +5952,7 @@ public static class SeedOrderData
 
             var order115 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5964,7 +5971,7 @@ public static class SeedOrderData
 
             var order116 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -5983,7 +5990,7 @@ public static class SeedOrderData
 
             var order117 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6002,7 +6009,7 @@ public static class SeedOrderData
 
             var order118 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6021,7 +6028,7 @@ public static class SeedOrderData
 
             var order119 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6040,7 +6047,7 @@ public static class SeedOrderData
 
             var order120 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6059,7 +6066,7 @@ public static class SeedOrderData
 
             var order121 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6078,7 +6085,7 @@ public static class SeedOrderData
 
             var order122 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6097,7 +6104,7 @@ public static class SeedOrderData
 
             var order123 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6116,7 +6123,7 @@ public static class SeedOrderData
 
             var order124 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6135,7 +6142,7 @@ public static class SeedOrderData
 
             var order125 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6154,7 +6161,7 @@ public static class SeedOrderData
 
             var order126 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6173,7 +6180,7 @@ public static class SeedOrderData
 
             var order127 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6192,7 +6199,7 @@ public static class SeedOrderData
 
             var order128 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6211,7 +6218,7 @@ public static class SeedOrderData
 
             var order129 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6230,7 +6237,7 @@ public static class SeedOrderData
 
             var order130 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6249,7 +6256,7 @@ public static class SeedOrderData
 
             var order131 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6268,7 +6275,7 @@ public static class SeedOrderData
 
             var order132 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6289,7 +6296,7 @@ public static class SeedOrderData
             // 16 orders of iPhone 17 Air
             var order133 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6308,7 +6315,7 @@ public static class SeedOrderData
 
             var order134 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6327,7 +6334,7 @@ public static class SeedOrderData
 
             var order135 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6346,7 +6353,7 @@ public static class SeedOrderData
 
             var order136 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6365,7 +6372,7 @@ public static class SeedOrderData
 
             var order137 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6384,7 +6391,7 @@ public static class SeedOrderData
 
             var order138 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6403,7 +6410,7 @@ public static class SeedOrderData
 
             var order139 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6422,7 +6429,7 @@ public static class SeedOrderData
 
             var order140 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6441,7 +6448,7 @@ public static class SeedOrderData
 
             var order141 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6460,7 +6467,7 @@ public static class SeedOrderData
 
             var order142 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6479,7 +6486,7 @@ public static class SeedOrderData
 
             var order143 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6498,7 +6505,7 @@ public static class SeedOrderData
 
             var order144 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6517,7 +6524,7 @@ public static class SeedOrderData
 
             var order145 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6536,7 +6543,7 @@ public static class SeedOrderData
 
             var order146 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6555,7 +6562,7 @@ public static class SeedOrderData
 
             var order147 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,
@@ -6574,7 +6581,7 @@ public static class SeedOrderData
 
             var order148 = Order.Create(orderId: OrderId.Create(),
                                        tenantId: TenantId.Of(listTenantId[0]),
-                                       branchId: null,
+                                       branchId: BranchId.Of(listBranchIds[0]),
                                        customerId: listUserIds[0],
                                        customerPublicKey: null,
                                        tx: null,

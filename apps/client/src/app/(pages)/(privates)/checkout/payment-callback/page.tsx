@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import {
    MomoIpnFormType,
    MomoIpnResolver,
@@ -13,6 +13,8 @@ import SuccessResult from './_components/success-result';
 import FailureResult from './_components/failure-result';
 import { useForm } from 'react-hook-form';
 import useOrderingService from '@components/hooks/api/use-ordering-service';
+import { useDispatch } from 'react-redux';
+import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 
 const fakeData = {
    tenant_id: null,
@@ -121,6 +123,8 @@ const PaymentCallbackPage = () => {
       isLoading,
    } = useOrderingService();
 
+   const dispatch = useDispatch();
+
    const vnpayForm = useForm<VnpayIpnFormType>({
       resolver: VnpayIpnResolver,
       defaultValues: {
@@ -228,6 +232,10 @@ const PaymentCallbackPage = () => {
 
       hasCalledApi.current = true;
    }, []);
+
+   useEffect(() => {
+      dispatch(CleanSelectedItems());
+   }, [dispatch]);
 
    return (
       <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">

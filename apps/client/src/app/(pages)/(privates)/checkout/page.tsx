@@ -192,6 +192,8 @@ const CheckoutPage = () => {
       return [];
    }, [getAddressesState]);
 
+   console.log('appliedCouponFromQuery', appliedCouponFromQuery);
+
    const form = useForm<CheckoutFormType>({
       resolver: CheckoutResolver,
       defaultValues: {
@@ -204,7 +206,7 @@ const CheckoutPage = () => {
             country: '',
          },
          payment_method: undefined,
-         discount_code: null,
+         discount_code: appliedCouponFromQuery || null,
       },
    });
 
@@ -271,6 +273,12 @@ const CheckoutPage = () => {
          }
       }
    };
+
+   useEffect(() => {
+      if (appliedCouponFromQuery) {
+         form.setValue('discount_code', appliedCouponFromQuery);
+      }
+   }, [appliedCouponFromQuery, form]);
 
    return (
       <div

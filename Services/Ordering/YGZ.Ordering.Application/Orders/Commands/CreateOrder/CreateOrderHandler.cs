@@ -53,34 +53,35 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     discountAmount: request.Promotion?.DiscountAmount,
                                     totalAmount: request.TotalAmount);
 
-        if (paymentMethodEnum == EPaymentMethod.SOLANA) {
+        if (paymentMethodEnum == EPaymentMethod.SOLANA)
+        {
             newOrder.SetPaid();
         }
 
-            foreach (var orderItem in request.OrderItems)
-            {
-                var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
-                                                    tenantId: null,
-                                                    branchId: null,
-                                                    orderId: newOrder.Id,
-                                                    skuId: orderItem.SkuId,
-                                                    modelId: orderItem.ModelId,
-                                                    modelName: orderItem.NormalizedModel,
-                                                    colorName: orderItem.NormalizedColor,
-                                                    storageName: orderItem.NormalizedStorage,
-                                                    unitPrice: orderItem.UnitPrice,
-                                                    displayImageUrl: orderItem.DisplayImageUrl,
-                                                    modelSlug: orderItem.ModelSlug,
-                                                    quantity: orderItem.Quantity,
-                                                    promotionId: orderItem.Promotion?.PromotionId,
-                                                    promotionType: orderItem.Promotion?.PromotionType,
-                                                    discountType: orderItem.Promotion?.DiscountType,
-                                                    discountValue: orderItem.Promotion?.DiscountValue,
-                                                    discountAmount: orderItem.Promotion?.DiscountAmount,
-                                                    isReviewed: false);
+        foreach (var orderItem in request.OrderItems)
+        {
+            var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
+                                                tenantId: TenantId.Of("664355f845e56534956be32b"),
+                                                branchId: BranchId.Of("664357a235e84033bbd0e6b6"),
+                                                orderId: newOrder.Id,
+                                                skuId: orderItem.SkuId,
+                                                modelId: orderItem.ModelId,
+                                                modelName: orderItem.NormalizedModel,
+                                                colorName: orderItem.NormalizedColor,
+                                                storageName: orderItem.NormalizedStorage,
+                                                unitPrice: orderItem.UnitPrice,
+                                                displayImageUrl: orderItem.DisplayImageUrl,
+                                                modelSlug: orderItem.ModelSlug,
+                                                quantity: orderItem.Quantity,
+                                                promotionId: orderItem.Promotion?.PromotionId,
+                                                promotionType: orderItem.Promotion?.PromotionType,
+                                                discountType: orderItem.Promotion?.DiscountType,
+                                                discountValue: orderItem.Promotion?.DiscountValue,
+                                                discountAmount: orderItem.Promotion?.DiscountAmount,
+                                                isReviewed: false);
 
-                newOrder.AddOrderItem(newOrderItem);
-            }
+            newOrder.AddOrderItem(newOrderItem);
+        }
 
 
         var result = await _repository.AddAsync(newOrder, cancellationToken);

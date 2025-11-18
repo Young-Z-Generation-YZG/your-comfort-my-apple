@@ -54,11 +54,10 @@ const CartPage = () => {
    const {
       promoCode,
       urlCouponCode,
-      handleApplyPromoCode: _handleApplyPromoCode,
+      handleApplyPromoCode,
       handlePromoCodeChange,
       handleRemovePromoCode,
    } = usePromoCode();
-   void _handleApplyPromoCode;
 
    useEffect(() => {
       const fetchBasket = async () => {
@@ -111,11 +110,19 @@ const CartPage = () => {
 
    // Validate and apply promo code (only when items are selected)
    const handleValidatedApplyPromoCode = () => {
-      // if (selectedItems.length === 0) {
-      //    return;
-      // }
-      // handleApplyPromoCode();
+      if (!isAuthenticated) {
+         return;
+      }
+
+      if (!promoCode.trim() || selectedItems.length === 0) {
+         return;
+      }
+
+      handleApplyPromoCode();
    };
+
+   console.log('isAuthenticated', isAuthenticated);
+   console.log('isLoading', isLoading);
 
    return (
       <div
@@ -217,10 +224,10 @@ const CartPage = () => {
                         className="w-[80px] h-fit rounded-full text-[14px] font-medium tracking-[0.2px] transition-all duration-200 ease-in-out"
                         onClick={handleValidatedApplyPromoCode}
                         disabled={
-                           isAuthenticated ||
+                           !isAuthenticated ||
                            isLoading ||
                            !promoCode.trim() ||
-                           cartItems.length === 0
+                           selectedItems.length === 0
                         }
                      >
                         Apply

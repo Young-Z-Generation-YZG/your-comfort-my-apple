@@ -54,6 +54,11 @@ const cartSlice = createSlice({
                : item,
          );
       },
+      CleanSelectedItems: (state) => {
+         state.cart_items = state.cart_items.filter(
+            (item) => !item.is_selected,
+         );
+      },
    },
 });
 
@@ -63,6 +68,7 @@ export const {
    AddNewCartItem,
    AddCartItems,
    UpdateSelection,
+   CleanSelectedItems,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
