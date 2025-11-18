@@ -3,42 +3,42 @@ using System.Text.Json.Serialization;
 
 namespace YGZ.Catalog.Api.Contracts.PromotionRequest;
 
-public sealed record UpdateEvenRequest
+public sealed record UpdateEventRequest
 {
     [JsonPropertyName("title")]
-    public string? Title { get; set; }
+    public string? Title { get; init; }
 
     [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; init; }
 
     [JsonPropertyName("start_date")]
-    public DateTime? StartDate { get; set; }
+    public DateTime? StartDate { get; init; }
 
     [JsonPropertyName("end_date")]
-    public DateTime? EndDate { get; set; }
+    public DateTime? EndDate { get; init; }
 
     [JsonPropertyName("add_event_items")]
-    public List<UpdateEventItemRequest>? AddEventItems { get; set; }
+    public List<UpdateEventItemRequest>? AddEventItems { get; init; }
 
     [JsonPropertyName("remove_event_item_ids")]
-    public List<string>? RemoveEventItemIds { get; set; }
+    public List<string>? RemoveEventItemIds { get; init; }
 }
 
 public sealed record UpdateEventItemRequest
 {
     [Required]
     [JsonPropertyName("sku_id")]
-    required public string SkuId { get; set; }
+    public required string SkuId { get; init; }
 
     [Required]
     [JsonPropertyName("discount_type")]
-    required public string DiscountType { get; set; }
+    public required string DiscountType { get; init; }
 
     [Required]
     [JsonPropertyName("discount_value")]
-    required public decimal DiscountValue { get; set; }
+    public required decimal DiscountValue { get; init; }
 
     [Required]
     [JsonPropertyName("stock")]
-    required public int Stock { get; set; }
+    public required int Stock { get; init; }
 }

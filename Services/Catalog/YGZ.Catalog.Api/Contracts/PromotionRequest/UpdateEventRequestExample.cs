@@ -2,11 +2,11 @@
 
 namespace YGZ.Catalog.Api.Contracts.PromotionRequest;
 
-public class UpdateEvenRequestExample : ISchemaProcessor
+public class UpdateEventRequestExample : ISchemaProcessor
 {
     public void Process(SchemaProcessorContext context)
     {
-        if (context.ContextualType.Type == typeof(UpdateEvenRequest))
+        if (context.ContextualType.Type == typeof(UpdateEventRequest))
         {
             var schema = context.Schema;
 

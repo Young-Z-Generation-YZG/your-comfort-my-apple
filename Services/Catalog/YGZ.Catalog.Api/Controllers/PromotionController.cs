@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.PromotionRequest;
+using YGZ.Catalog.Application.Promotions.Events.CreateEvent;
 using YGZ.Catalog.Application.Promotions.Events.UpdateEvent;
 using YGZ.Catalog.Application.Promotions.Queries.GetEventDetails;
 using YGZ.Catalog.Application.Promotions.Queries.GetEvents;
@@ -48,9 +49,24 @@ public class PromotionController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    [HttpPost("events")]
+    public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = new CreateEventCommand
+        {
+            Title = request.Title,
+            Description = request.Description,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
+        };
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 
     [HttpPatch("events/{eventId}")]
-    public async Task<IActionResult> UpdateEvent([FromRoute] string eventId, [FromBody] UpdateEvenRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateEvent([FromRoute] string eventId, [FromBody] UpdateEventRequest request, CancellationToken cancellationToken)
     {
         var cmd = new UpdateEventCommand
         {
