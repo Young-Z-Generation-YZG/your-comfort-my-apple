@@ -19,7 +19,7 @@ import {
    TableRow,
 } from '@components/ui/table';
 import { Button } from '@components/ui/button';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Plus } from 'lucide-react';
 import { LoadingOverlay } from '@components/loading-overlay';
 import { cn } from '~/src/infrastructure/lib/utils';
 import {
@@ -185,6 +185,14 @@ const PromotionManagementEventsPage = () => {
                   Manage promotion events and items
                </p>
             </div>
+            <Button
+               onClick={() =>
+                  router.push('/dashboard/promotion-management/events/create')
+               }
+            >
+               <Plus className="mr-2 h-4 w-4" />
+               Create Event
+            </Button>
          </div>
          {error && <div className="mb-3 text-sm text-red-600">{error}</div>}
          <LoadingOverlay isLoading={isLoading}>

@@ -54,6 +54,29 @@ export type TEvent = {
    deleted_by: string | null;
 };
 
+export interface ICreateEventPayload {
+   title: string;
+   description: string;
+   start_date: string;
+   end_date: string;
+}
+
+export interface IUpdateEventPayload {
+   title?: string | null;
+   description?: string | null;
+   start_date?: string | null;
+   end_date?: string | null;
+   add_event_items?:
+      | {
+           sku_id: string;
+           discount_type: string;
+           discount_value: number;
+           stock: number;
+        }[]
+      | null;
+   remove_event_item_ids?: string[] | null;
+}
+
 export const promotionApi = createApi({
    reducerPath: 'promotion-api',
    tagTypes: ['Promotions'],
@@ -67,8 +90,31 @@ export const promotionApi = createApi({
          query: (eventId) => `/api/v1/promotions/events/${eventId}`,
          providesTags: ['Promotions'],
       }),
+      createEvent: builder.mutation<boolean, ICreateEventPayload>({
+         query: (payload) => ({
+            url: '/api/v1/promotions/events',
+            method: 'POST',
+            body: payload,
+         }),
+         invalidatesTags: ['Promotions'],
+      }),
+      updateEvent: builder.mutation<
+         boolean,
+         { eventId: string; payload: IUpdateEventPayload }
+      >({
+         query: ({ eventId, payload }) => ({
+            url: `/api/v1/promotions/events/${eventId}`,
+            method: 'PATCH',
+            body: payload,
+         }),
+         invalidatesTags: ['Promotions'],
+      }),
    }),
 });
 
-export const { useLazyGetEventsQuery, useLazyGetEventDetailsQuery } =
-   promotionApi;
+export const {
+   useLazyGetEventsQuery,
+   useLazyGetEventDetailsQuery,
+   useCreateEventMutation,
+   useUpdateEventMutation,
+} = promotionApi;
