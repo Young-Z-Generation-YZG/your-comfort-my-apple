@@ -6,7 +6,7 @@ import useAuthService from '~/src/hooks/api/use-auth-service';
 const AUTH_PAGES = ['/auth/sign-in'];
 
 const DEFAULT_AUTH_REDIRECT = '/auth/sign-in';
-const DEFAULT_HOME_REDIRECT = '/dashboards';
+const DEFAULT_HOME_REDIRECT = '/dashboard';
 
 type WithAuthOptions = {
    authRedirect?: string;

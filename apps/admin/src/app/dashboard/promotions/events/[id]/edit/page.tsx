@@ -61,7 +61,7 @@ const EditEventPage = () => {
                   <div className="flex items-center gap-2">
                      <Button variant="ghost" size="icon" asChild>
                         <Link
-                           href={`/dashboards/promotions/events/${mockData.promotion_event_id}`}
+                           href={`/dashboard/promotions/events/${mockData.promotion_event_id}`}
                         >
                            <ArrowLeft className="h-4 w-4" />
                         </Link>

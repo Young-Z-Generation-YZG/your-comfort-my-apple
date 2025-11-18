@@ -185,7 +185,7 @@ const PromotionEventPage = () => {
                      </div>
 
                      <Button>
-                        <Link href="/dashboards/promotions/events/create">
+                        <Link href="/dashboard/promotions/events/create">
                            <Plus className="mr-2 h-4 w-4" />
                            New Event
                         </Link>
@@ -341,7 +341,7 @@ const PromotionEventPage = () => {
                                                    </DropdownMenuLabel>
                                                    {/* <DropdownMenuItem asChild>
                                                       <Link
-                                                         href={`/dashboards/promotions/events/${event.promotion_event_id}`}
+                                                         href={`/dashboard/promotions/events/${event.promotion_event_id}`}
                                                       >
                                                          View details
                                                       </Link>
@@ -349,7 +349,7 @@ const PromotionEventPage = () => {
                                                    <DropdownMenuSeparator />
                                                    <DropdownMenuItem asChild>
                                                       <Link
-                                                         href={`/dashboards/promotions/events/${event.promotion_event_id}/edit`}
+                                                         href={`/dashboard/promotions/events/${event.promotion_event_id}/edit`}
                                                       >
                                                          <Edit className="mr-2 h-4 w-4" />
                                                          Edit

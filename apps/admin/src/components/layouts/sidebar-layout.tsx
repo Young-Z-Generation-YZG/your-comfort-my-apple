@@ -75,43 +75,43 @@ const data = {
    navMain: [
       {
          title: 'Online Shop',
-         url: '/dashboards/online/orders',
+         url: '/dashboard/online/orders',
          icon: ScrollText,
          isActive: true,
          items: [
             {
                title: 'Orders List',
-               url: '/dashboards/online/orders',
+               url: '/dashboard/online/orders',
                icon: ScrollText,
             },
          ],
       },
       {
          title: 'Tenant Management',
-         url: '/dashboards/tenant-management',
+         url: '/dashboard/tenant-management',
          icon: Building2,
          isActive: true,
          items: [
             {
                title: 'iPhone',
-               url: '/dashboards/tenant-management/iphone',
+               url: '/dashboard/tenant-management/iphone',
                icon: Box,
             },
             {
                title: 'Mac',
-               url: '/dashboards/tenant-management/mac',
+               url: '/dashboard/tenant-management/mac',
                icon: Laptop,
             },
             {
                title: 'Skus',
-               url: '/dashboards/tenant-management/skus',
+               url: '/dashboard/tenant-management/skus',
                icon: Tag,
             },
          ],
       },
       {
          title: 'Warehouses',
-         url: '/dashboards/warehouses',
+         url: '/dashboard/warehouses',
          icon: Warehouse,
          isActive: true,
          items: [],
@@ -124,19 +124,19 @@ const data = {
       //      items: [
       //         // {
       //         //    title: 'Analytics',
-      //         //    url: '/dashboards/products/analytics',
+      //         //    url: '/dashboard/products/analytics',
       //         // },
       //         {
       //            title: 'Model Management',
-      //            url: '/dashboards/iphone/models',
+      //            url: '/dashboard/iphone/models',
       //            items: [
       //               {
       //                  title: 'iPhone 15',
-      //                  url: '/dashboards/iphone/models/iphone-14-pro',
+      //                  url: '/dashboard/iphone/models/iphone-14-pro',
       //               },
       //               {
       //                  title: 'iPhone 16e',
-      //                  url: '/dashboards/iphone/models/iphone-14-pro-max',
+      //                  url: '/dashboard/iphone/models/iphone-14-pro-max',
       //               },
       //            ],
       //         },
@@ -154,33 +154,33 @@ const data = {
       //         // },
       //         {
       //            title: 'Promotion Events',
-      //            url: '/dashboards/promotions/events',
+      //            url: '/dashboard/promotions/events',
       //         },
       //         {
       //            title: 'Promotion iPhone',
-      //            url: '/dashboards/promotions/items',
+      //            url: '/dashboard/promotions/items',
       //         },
       //         {
       //            title: 'Promotion Coupon',
-      //            url: '/dashboards/promotions/coupons',
+      //            url: '/dashboard/promotions/coupons',
       //         },
       //      ],
       //   },
       {
          title: 'HRM',
-         url: '/dashboards/hrm',
+         url: '/dashboard/hrm',
          icon: Users,
          isActive: true,
       },
       {
          title: 'Customer Management',
-         url: '/dashboards/customer-management',
+         url: '/dashboard/customer-management',
          icon: UsersRound,
          isActive: true,
       },
       {
          title: 'Order Management',
-         url: '/dashboards/orders',
+         url: '/dashboard/orders',
          icon: ScrollText,
          isActive: true,
          items: [
@@ -204,20 +204,20 @@ const data = {
          icon: Send,
       },
    ],
-   dashboards: [
+   dashboard: [
       {
          name: 'Revenue Analytics',
-         url: '/dashboards/revenue-analytics',
+         url: '/dashboard/revenue-analytics',
          icon: ChartNoAxesCombined,
       },
       //   {
       //      name: 'User Reports',
-      //      url: '/dashboards/user-reports',
+      //      url: '/dashboard/user-reports',
       //      icon: UsersRound,
       //   },
       //   {
       //      name: "User'agent Reports",
-      //      url: '/dashboards/user-agent-reports',
+      //      url: '/dashboard/user-agent-reports',
       //      icon: MonitorSmartphone,
       //   },
    ],
@@ -243,40 +243,40 @@ const data = {
 const superAdminSidebarData = [
    {
       title: 'Tenant Management',
-      url: '/dashboards/tenant-management',
+      url: '/dashboard/tenant-management',
       icon: Building2,
       isActive: true,
       items: [],
    },
    {
       title: 'Online Shop',
-      url: '/dashboards/online/orders',
+      url: '/dashboard/online/orders',
       icon: ScrollText,
       isActive: true,
       items: [
          {
             title: 'Orders List',
-            url: '/dashboards/online/orders',
+            url: '/dashboard/online/orders',
             icon: ScrollText,
          },
       ],
    },
    {
       title: 'Categories',
-      url: '/dashboards/categories',
+      url: '/dashboard/categories',
       icon: Tag,
       isActive: true,
       items: [],
    },
    {
       title: 'Promotion Management',
-      url: '/dashboards/promotion-management',
+      url: '/dashboard/promotion-management',
       icon: TicketPercent,
       isActive: true,
       items: [
          {
             title: 'Events',
-            url: '/dashboards/promotion-management/events',
+            url: '/dashboard/promotion-management/events',
             icon: Calendar,
          },
          {
@@ -288,13 +288,13 @@ const superAdminSidebarData = [
    },
    {
       title: 'Product Management',
-      url: '/dashboards/product-management',
+      url: '/dashboard/product-management',
       icon: Building2,
       isActive: true,
       items: [
          {
             title: 'iPhone',
-            url: '/dashboards/product-management/iphone',
+            url: '/dashboard/product-management/iphone',
             icon: Box,
          },
          {
@@ -306,26 +306,26 @@ const superAdminSidebarData = [
    },
    {
       title: 'Warehouses',
-      url: '/dashboards/warehouses',
+      url: '/dashboard/warehouses',
       icon: Warehouse,
       isActive: true,
       items: [],
    },
    {
       title: 'HRM',
-      url: '/dashboards/hrm',
+      url: '/dashboard/hrm',
       icon: Users,
       isActive: true,
    },
    {
       title: 'Customer Management',
-      url: '/dashboards/customer-management',
+      url: '/dashboard/customer-management',
       icon: UsersRound,
       isActive: true,
    },
    {
       title: 'Order Management',
-      url: '/dashboards/orders',
+      url: '/dashboard/orders',
       icon: ScrollText,
       isActive: true,
       items: [
@@ -341,13 +341,13 @@ const superAdminSidebarData = [
 const adminSidebarData = [
    {
       title: 'Product Management',
-      url: '/dashboards/product-management',
+      url: '/dashboard/product-management',
       icon: Building2,
       isActive: true,
       items: [
          {
             title: 'iPhone',
-            url: '/dashboards/product-management/iphone',
+            url: '/dashboard/product-management/iphone',
             icon: Box,
          },
          {
@@ -366,7 +366,7 @@ const adminSidebarData = [
    },
    {
       title: 'Branch HRM',
-      url: '/dashboards/hrm',
+      url: '/dashboard/hrm',
       icon: Users,
       isActive: true,
    },
@@ -446,7 +446,7 @@ export function SidebarLayout({
             </SidebarMenu>
          </SidebarHeader>
          <SidebarContent>
-            <DashboardNav dashboards={data.dashboards} />
+            <DashboardNav dashboard={data.dashboard} />
             <MainNav items={sidebarData} />
             {/* <NavEmployees employees={data.employees} /> */}
             {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}

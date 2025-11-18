@@ -292,7 +292,7 @@ const IPhoneModelsPage = () => {
                         </p>
                      </div>
                      <Button asChild className="rounded-full">
-                        <Link href="/dashboards/iphone/models/create">
+                        <Link href="/dashboard/iphone/models/create">
                            <Plus className="mr-2 h-4 w-4" />
                            Add iPhone
                         </Link>

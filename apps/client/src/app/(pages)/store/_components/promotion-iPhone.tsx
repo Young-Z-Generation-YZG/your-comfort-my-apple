@@ -3,56 +3,7 @@ import CardWrapper from './card-wrapper';
 import NextImage from 'next/image';
 import { Button } from '@components/ui/button';
 import { Badge } from '@components/ui/badge';
-import { TEventItem } from '../page';
-
-const fakeData = [
-   {
-      event_product_sku_id: '04edf970-b569-44ac-a116-9847731929ab',
-      model_id: '68e403d5617b27ad030bf28f',
-      category: {
-         id: '68e3fc0c240062be872a0379',
-         name: 'iPhone',
-         description: 'iPhone categories.',
-         order: 0,
-         slug: 'iphone',
-         parent_id: null,
-         created_at: '2025-10-07T09:56:06.1838202+07:00',
-         updated_at: '2025-10-07T09:56:06.1838619+07:00',
-         modified_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      model: {
-         name: 'iPhone 15',
-         normalized_name: 'IPHONE_15',
-         order: 0,
-      },
-      color: {
-         name: 'Blue',
-         normalized_name: 'BLUE',
-         hex_code: '#D5DDDF',
-         showcase_image_id:
-            'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-         order: 0,
-      },
-      storage: {
-         name: '128GB',
-         normalized_name: '128GB',
-         order: 0,
-      },
-      original_price: 1300,
-      discount_type: 'PERCENTAGE',
-      discount_value: 0.1,
-      discount_amount: 130,
-      final_price: 1170,
-      stock: 10,
-      sold: 5,
-      image_url:
-         'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-      model_slug: 'iphone-15',
-   },
-];
+import { TEventItem } from '~/infrastructure/services/promotion.service';
 
 interface PromotionIPhoneProps {
    item: TEventItem;
@@ -61,9 +12,6 @@ interface PromotionIPhoneProps {
 }
 
 const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
-   // Calculate discount percentage
-   const discountPercentage = Math.round(item.discount_value * 100);
-
    // Calculate progress bar values
    const totalAvailable = item.stock + item.sold;
    const soldPercentage = (item.sold / totalAvailable) * 100;
@@ -74,7 +22,7 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
             <div className="w-full overflow-hidden relative h-[300px]">
                <NextImage
                   src={item.image_url}
-                  alt={`${item.model.name} ${item.color.name}`}
+                  alt={`${item.model_name} ${item.color_name}`}
                   width={Math.round((1000 * 16) / 9)}
                   height={1000}
                   className="absolute top-0 left-0 w-full h-full object-cover"
@@ -84,7 +32,7 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
                   variant="destructive"
                   className="absolute top-4 right-4 text-base px-3 py-1"
                >
-                  -{discountPercentage}% OFF
+                  -{item.discount_value}% OFF
                </Badge>
             </div>
 
@@ -94,13 +42,13 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
                   className={cn(
                      'h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector ring-offset-white',
                   )}
-                  style={{ backgroundColor: item.color.hex_code }}
+                  style={{ backgroundColor: item.color_hex_code }}
                ></span>
             </div>
 
             <div className="p-6">
                <h3 className="mb-4 text-2xl font-semibold">
-                  {item.model.name} {item.color.name} {item.storage.name}
+                  {item.model_name} {item.color_name} {item.storage_name}
                </h3>
 
                <div className="flex items-end gap-2">
@@ -115,7 +63,8 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
                </div>
 
                <p className="mt-1 text-sm text-gray-500 font-SFProText">
-                  Save <strong>{discountPercentage}%</strong> for a limited time
+                  Save <strong>{item.discount_value}%</strong> for a limited
+                  time
                </p>
 
                {/* Progress Bar - Stock vs Sold */}

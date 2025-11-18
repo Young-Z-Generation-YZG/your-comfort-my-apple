@@ -8,9 +8,9 @@ public class RevenuesRequestExample : IOperationProcessor
 {
     public bool Process(OperationProcessorContext context)
     {
-        // Check if this is the Revenues method in DashboardController
+        // Check if this is the GetRevenues method in DashboardController
         if (context.ControllerType == typeof(DashboardController) &&
-            context.MethodInfo.Name == "Revenues")
+            context.MethodInfo.Name == "GetRevenues")
         {
             var operation = context.OperationDescription.Operation;
 

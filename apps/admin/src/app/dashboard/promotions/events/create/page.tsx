@@ -12,7 +12,7 @@ import {
 import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import PromotionEventForm from '~/src/app/dashboards/promotions/_components/_form/promotion-event-form';
+import PromotionEventForm from '~/src/app/dashboard/promotions/_components/_form/promotion-event-form';
 
 const CreateEventPage = () => {
    return (
@@ -29,7 +29,7 @@ const CreateEventPage = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
          >
             <Button variant="ghost" size="icon" asChild>
-               <Link href="/dashboards/promotions/events">
+               <Link href="/dashboard/promotions/events">
                   <ArrowLeft className="h-4 w-4" />
                </Link>
             </Button>

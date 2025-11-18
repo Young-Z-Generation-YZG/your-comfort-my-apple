@@ -17,6 +17,9 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
 export type TEventItem = {
    id: string;
    event_id: string;
+   sku_id: string;
+   tenant_id: string;
+   branch_id: string;
    model_name: string;
    normalized_model: string;
    color_name: string;
@@ -28,7 +31,9 @@ export type TEventItem = {
    image_url: string;
    discount_type: string;
    discount_value: number;
+   discount_amount: number;
    original_price: number;
+   final_price: number;
    stock: number;
    sold: number;
    created_at: string;

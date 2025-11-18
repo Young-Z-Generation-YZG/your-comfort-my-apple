@@ -122,7 +122,7 @@ const PromotionManagementEventsPage = () => {
                      <DropdownMenuItem
                         onClick={() =>
                            router.push(
-                              `/dashboards/promotion-management/events/${item.id}`,
+                              `/dashboard/promotion-management/events/${item.id}`,
                            )
                         }
                      >

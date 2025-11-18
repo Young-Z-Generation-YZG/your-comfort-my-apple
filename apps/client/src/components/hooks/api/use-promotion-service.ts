@@ -1,40 +1,41 @@
 import { useCallback, useMemo } from 'react';
-import { useLazyGetEventWithItemsQuery } from '~/infrastructure/services/promotion.service';
+import { useLazyGetEventDetailsQuery } from '~/infrastructure/services/promotion.service';
 
 const usePromotionService = () => {
-   const [getEventWithItemsTrigger, getEventWithItemsState] =
-      useLazyGetEventWithItemsQuery();
+   const [getEventDetailsTrigger, getEventDetailsState] =
+      useLazyGetEventDetailsQuery();
 
-   const getEventWithItemsAsync = useCallback(async () => {
-      try {
-         const result = await getEventWithItemsTrigger().unwrap();
-         return {
-            isSuccess: true,
-            isError: false,
-            data: result,
-            error: null,
-         };
-      } catch (error) {
-         return {
-            isSuccess: false,
-            isError: true,
-            data: null,
-            error,
-         };
-      }
-   }, [getEventWithItemsTrigger]);
+   const getEventDetailsAsync = useCallback(
+      async (eventId: string) => {
+         try {
+            const result = await getEventDetailsTrigger(eventId).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getEventDetailsTrigger],
+   );
 
    const isLoading = useMemo(() => {
-      return (
-         getEventWithItemsState.isLoading || getEventWithItemsState.isFetching
-      );
-   }, [getEventWithItemsState.isLoading, getEventWithItemsState.isFetching]);
+      return getEventDetailsState.isLoading || getEventDetailsState.isFetching;
+   }, [getEventDetailsState.isLoading, getEventDetailsState.isFetching]);
 
    return {
       isLoading,
-      getEventWithItemsState,
+      getEventDetailsState,
 
-      getEventWithItemsAsync,
+      getEventDetailsAsync,
    };
 };
 

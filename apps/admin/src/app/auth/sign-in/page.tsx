@@ -131,8 +131,8 @@ const SignInPage = () => {
                   })
                   .finally(() => {
                      // Navigate to revenue analytics dashboard after identity fetch
-                     console.log('Navigating to /dashboards/revenue-analytics');
-                     window.location.href = '/dashboards/revenue-analytics';
+                     console.log('Navigating to /dashboard/revenue-analytics');
+                     window.location.href = '/dashboard/revenue-analytics';
                   });
             } else if (status === 'AUTH_FAILED') {
                setIsKeycloakLoading(false);
@@ -182,7 +182,7 @@ const SignInPage = () => {
    //                });
 
    //                setTimeout(() => {
-   //                   window.location.href = '/dashboards';
+   //                   window.location.href = '/dashboard';
    //                }, 1000);
    //             } else if (status === 'AUTH_FAILED') {
    //                setTimeout(() => {

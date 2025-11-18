@@ -97,7 +97,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
             transition={{ duration: 0.5, delay: 0.2 }}
          >
             <Button variant="ghost" size="icon" asChild>
-               <Link href={`/dashboards/promotions/events`}>
+               <Link href={`/dashboard/promotions/events`}>
                   <ArrowLeft className="h-4 w-4" />
                </Link>
             </Button>
@@ -118,7 +118,7 @@ const EventDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
                </div>
             </div>
             <Link
-               href={`/dashboards/promotions/events/${mockData.promotion_event_id}/edit`}
+               href={`/dashboard/promotions/events/${mockData.promotion_event_id}/edit`}
             >
                <Edit className="mr-2 h-4 w-4" />
                Edit

@@ -26,9 +26,9 @@ import {
 } from '@components/ui/sidebar';
 
 export function DashboardNav({
-   dashboards,
+   dashboard,
 }: {
-   dashboards: {
+   dashboard: {
       name: string;
       url: string;
       icon: LucideIcon;
@@ -40,7 +40,7 @@ export function DashboardNav({
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
          <SidebarGroupLabel>Dashboard Views</SidebarGroupLabel>
          <SidebarMenu>
-            {dashboards.map((item) => (
+            {dashboard.map((item) => (
                <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
                      <a href={item.url}>

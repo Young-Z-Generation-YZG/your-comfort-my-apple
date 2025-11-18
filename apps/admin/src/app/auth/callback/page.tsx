@@ -65,7 +65,7 @@ const AuthCallbackPage = () => {
             }, 500);
          } else {
             // Full-page redirect flow: Redirect to dashboard
-            window.location.href = '/dashboards';
+            window.location.href = '/dashboard';
          }
       } else if (isError && error) {
          if (window.opener) {

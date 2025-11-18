@@ -196,7 +196,7 @@ const OrdersList = () => {
                                  className="w-full"
                                  onValueChange={(value) => {
                                     router.push(
-                                       urlSerializer(`/dashboards/orders`, {
+                                       urlSerializer(`/dashboard/orders`, {
                                           ...cleanParams,
                                           _page: 1,
                                           _orderStatus: value,
@@ -204,7 +204,7 @@ const OrdersList = () => {
                                     );
 
                                     // router.push(
-                                    //    `/dashboards/orders?_page=1&_limit=${itemsPerPage}&_orderStatus=${value}`,
+                                    //    `/dashboard/orders?_page=1&_limit=${itemsPerPage}&_orderStatus=${value}`,
                                     // );
                                  }}
                               >
@@ -336,7 +336,7 @@ const OrdersList = () => {
                                           </TableCell>
                                           <TableCell className="text-right">
                                              <Link
-                                                href={`/dashboards/orders/${order.order_id}`}
+                                                href={`/dashboard/orders/${order.order_id}`}
                                              >
                                                 <Button
                                                    variant="ghost"
@@ -385,7 +385,7 @@ const OrdersList = () => {
 
                                           router.push(
                                              urlSerializer(
-                                                '/dashboards/orders',
+                                                '/dashboard/orders',
                                                 {
                                                    ...params,
                                                 },
@@ -410,7 +410,7 @@ const OrdersList = () => {
 
                                           router.push(
                                              urlSerializer(
-                                                '/dashboards/orders',
+                                                '/dashboard/orders',
                                                 {
                                                    ...params,
                                                 },
@@ -453,7 +453,7 @@ const OrdersList = () => {
 
                                           router.push(
                                              urlSerializer(
-                                                '/dashboards/orders',
+                                                '/dashboard/orders',
                                                 {
                                                    ...params,
                                                 },
@@ -481,7 +481,7 @@ const OrdersList = () => {
 
                                           router.push(
                                              urlSerializer(
-                                                '/dashboards/orders',
+                                                '/dashboard/orders',
                                                 {
                                                    ...params,
                                                 },
