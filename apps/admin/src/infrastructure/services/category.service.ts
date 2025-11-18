@@ -67,6 +67,12 @@ export type TCategoryItem = {
    deleted_by: string | null;
 };
 
+export interface ICreateCategoryPayload {
+   name: string;
+   description: string;
+   parent_id: string;
+}
+
 export const categoryApi = createApi({
    reducerPath: 'category-api',
    tagTypes: ['Categories'],
@@ -80,8 +86,19 @@ export const categoryApi = createApi({
          query: (categoryId) => `/api/v1/categories/${categoryId}`,
          providesTags: ['Categories'],
       }),
+      createCategory: builder.mutation<boolean, ICreateCategoryPayload>({
+         query: (payload) => ({
+            url: '/api/v1/categories',
+            method: 'POST',
+            body: payload,
+         }),
+         invalidatesTags: ['Categories'],
+      }),
    }),
 });
 
-export const { useLazyGetCategoriesQuery, useLazyGetCategoryDetailsQuery } =
-   categoryApi;
+export const {
+   useLazyGetCategoriesQuery,
+   useLazyGetCategoryDetailsQuery,
+   useCreateCategoryMutation,
+} = categoryApi;
