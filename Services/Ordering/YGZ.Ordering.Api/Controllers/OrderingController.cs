@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Api.Contracts;
+using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
+using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
@@ -63,25 +65,25 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    // [HttpPatch("{orderId}/status/confirm")]
-    // public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
-    // {
-    //     var cmd = new ConfirmOrderCommand(orderId);
+    [HttpPatch("{orderId}/status/confirm")]
+    public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    {
+        var cmd = new ConfirmOrderCommand(orderId);
 
-    //     var result = await _sender.Send(cmd, cancellationToken);
+        var result = await _sender.Send(cmd, cancellationToken);
 
-    //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    // }
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 
-    // [HttpPatch("{orderId}/status/cancel")]
-    // public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
-    // {
-    //     var cmd = new CancelOrderCommand(orderId);
+    [HttpPatch("{orderId}/status/cancel")]
+    public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    {
+        var cmd = new CancelOrderCommand(orderId);
 
-    //     var result = await _sender.Send(cmd, cancellationToken);
+        var result = await _sender.Send(cmd, cancellationToken);
 
-    //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    // }
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
 
     [HttpPatch("online/{OrderId}/status")]
     public async Task<IActionResult> UpdateOrderStatus([FromRoute] string OrderId, [FromBody] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
