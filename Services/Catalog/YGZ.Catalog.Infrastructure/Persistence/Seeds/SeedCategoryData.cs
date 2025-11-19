@@ -12,11 +12,11 @@ public static class SeedCategoryData
         {
             return new List<Category>
             {
-                //Category.Create(id: CategoryId.Of("67dc43ee9b19c6773e9cec55"), name: "Mac", description: "Mac categories.", order: 0, parentId: null),
-                //Category.Create(id: CategoryId.Of("67dc4708a9ee0a5e6fbafdaa"), name: "iPad", description: "iPad categories.", order: 1, parentId: null),
-                Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null),
-                //Category.Create(id: CategoryId.Of("67dc470ca9ee0a5e6fbafdac"), name: "Watch", description: "Watch categories.", order: 3, parentId: null),
-                //Category.Create(id: CategoryId.Of("67dc470ea9ee0a5e6fbafdad"), name: "HeadPhones", description: "HeadPhones categories.", order: 4, parentId: null),
+                // Category.Create(id: CategoryId.Of("67dc43ee9b19c6773e9cec55"), name: "Mac", description: "Mac categories.", order: 0, parentId: null),
+                // Category.Create(id: CategoryId.Of("67dc4708a9ee0a5e6fbafdaa"), name: "iPad", description: "iPad categories.", order: 1, parentId: null),
+                Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null),
+                // Category.Create(id: CategoryId.Of("67dc470ca9ee0a5e6fbafdac"), name: "Watch", description: "Watch categories.", order: 3, parentId: null),
+                // Category.Create(id: CategoryId.Of("67dc470ea9ee0a5e6fbafdad"), name: "HeadPhones", description: "HeadPhones categories.", order: 4, parentId: null),
 
                 //Category.Create(id: CategoryId.Of("67dc43ee9b19c6773e9cec41"), name: "MacBook Air", description: "MacBookAir category.", order: 0, parentId: CategoryId.Of("67dc43ee9b19c6773e9cec55")),
                 //Category.Create(id: CategoryId.Of("68dc43ee9b19c6773e9cec42"), name: "MacBook Pro", description: "MacBook Pro category.", order: 1, parentId: CategoryId.Of("67dc43ee9b19c6773e9cec55")),

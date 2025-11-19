@@ -114,7 +114,10 @@ public static class SeedDataExtension
 
         foreach (var iphoneSkuPrice in iphoneSkuPrices)
         {
-            await distributedCache.SetStringAsync(iphoneSkuPrice.CachedKey, iphoneSkuPrice.UnitPrice.ToString());
+            await distributedCache.SetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: EIphoneModel.FromName(iphoneSkuPrice.Model.NormalizedName),
+                                                                                                              colorEnum: EColor.FromName(iphoneSkuPrice.Color.NormalizedName),
+                                                                                                              storageEnum: EStorage.FromName(iphoneSkuPrice.Storage.NormalizedName)), 
+                                                                                                              iphoneSkuPrice.UnitPrice.ToString());
         }
     }
 

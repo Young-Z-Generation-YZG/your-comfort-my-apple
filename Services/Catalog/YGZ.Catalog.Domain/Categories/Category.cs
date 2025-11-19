@@ -19,6 +19,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     [BsonElement("name")]
     public required string Name { get; set; }
 
+    [BsonElement("parent_id")]
+    public string? ParentId { get; set; }
+
     [BsonElement("parent_category")]
     public Category? ParentCategory { get; set; }
 
@@ -53,11 +56,12 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
     public string? DeletedBy { get; set; } = null;
 
 
-    public static Category Create(CategoryId id, string name, string? description, int order, Category? parentCategory)
+    public static Category Create(CategoryId id, string name, string? description, int order, string? parentId, Category? parentCategory)
     {
         return new Category(id)
         {
             Name = name,
+            ParentId = parentId,
             ParentCategory = parentCategory,
             Description = description,
             Slug = Slug.Create(name),
@@ -65,8 +69,9 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
         };
     }
 
-    public void Update(string? name, string? description, int? order, Category? parentCategory, List<Category>? subCategories)
+    public void Update(string? name, string? description, int? order, string? parentId, Category? parentCategory, List<Category>? subCategories)
     {
+        this.ParentId = parentId ?? this.ParentId;
         this.Name = name ?? this.Name;
         this.Description = description ?? this.Description;
         this.Order = order.HasValue ? order.Value : this.Order;
@@ -82,6 +87,7 @@ public class Category : Entity<CategoryId>, IAuditable, ISoftDelete
         return new CategoryResponse
         {
             Id = Id.Value!,
+            ParentId = ParentId,
             Name = Name,
             Description = Description,
             Order = Order,

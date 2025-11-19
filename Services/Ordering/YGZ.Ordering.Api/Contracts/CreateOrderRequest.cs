@@ -11,26 +11,20 @@ namespace YGZ.Ordering.Api.Contracts;
 public sealed record CreateOrderRequest
 {
     [Required]
-    //[JsonPropertyName("orders")]
     public List<OrderItemRequest> Orders { get; set; }
 
     [Required]
-    //[JsonPropertyName("shipping_address")]
     public ShippingAddressRequest ShippingAddress { get; set; }
 
     [Required]
-    //[JsonPropertyName("payment_method")]
     public string PaymentMethod { get; set; }
 
     [Required]
-    //[JsonPropertyName("discount_amount")]
     public decimal DiscountAmount { get; set; }
 
     [Required]
-    //[JsonPropertyName("sub_total")]
     public decimal SubTotalAmount { get; set; }
 
     [Required]
-    //[JsonPropertyName("total")]
     public decimal TotalAmount { get; set; }
 }

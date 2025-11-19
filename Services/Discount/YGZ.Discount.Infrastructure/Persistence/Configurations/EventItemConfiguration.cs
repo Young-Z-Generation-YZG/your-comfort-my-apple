@@ -30,6 +30,7 @@ public class EventItemConfiguration : IEntityTypeConfiguration<EventItem>
         builder.Property(x => x.NormalizedModel).HasColumnOrder(7);
         builder.Property(x => x.ColorName).HasColumnOrder(8);
         builder.Property(x => x.NormalizedColor).HasColumnOrder(9);
+        builder.Property(x => x.ColorHexCode).HasColumnOrder(10);
         builder.Property(x => x.StorageName).HasColumnOrder(11);
         builder.Property(x => x.NormalizedStorage).HasColumnOrder(12);
         builder.Property(x => x.ProductClassification).HasColumnOrder(13);

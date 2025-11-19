@@ -149,6 +149,7 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                                                            storageEnum: storageEnum,
                                                            productClassification: productClassification,
                                                            discountType: discountType,
+                                                           colorHexCode: skuResponse.ColorHexCode,
                                                            imageUrl: colorImageUrl ?? string.Empty,
                                                            discountValue: itemCmd.DiscountValue,
                                                            originalPrice: originalPrice,

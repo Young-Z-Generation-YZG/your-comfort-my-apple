@@ -105,9 +105,9 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
         var color = Color.Create(eventItem.Color.NormalizedName);
         var storage = Storage.Create(eventItem.Storage.NormalizedName);
 
-        var skuPriceCacheKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(EIphoneModel.FromName(eventItem.Model.NormalizedName),
-                                                                                        EStorage.FromName(eventItem.Storage.NormalizedName),
-                                                                                        EColor.FromName(eventItem.Color.NormalizedName));
+        var skuPriceCacheKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: EIphoneModel.FromName(eventItem.Model.NormalizedName),
+                                                                                           colorEnum: EColor.FromName(eventItem.Color.NormalizedName),
+                                                                                           storageEnum: EStorage.FromName(eventItem.Storage.NormalizedName));
         var modelSlugCache = ModelSlugCache.Of("");
 
         var unitPrice = await _distributedCache.GetStringAsync(skuPriceCacheKey);

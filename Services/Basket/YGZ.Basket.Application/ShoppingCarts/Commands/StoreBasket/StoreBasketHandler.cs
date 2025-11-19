@@ -73,8 +73,11 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
             EIphoneModel.TryFromName(model.NormalizedName, out var modelEnum);
             EStorage.TryFromName(storage.NormalizedName, out var storageEnum);
 
-            var unitPrice = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum, storageEnum, colorEnum));
-            var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(item.ModelId, colorEnum));
+            var unitPrice = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: modelEnum,
+                                                                                                                               colorEnum: colorEnum,
+                                                                                                                               storageEnum: storageEnum));
+            var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(modelId: item.ModelId,
+                                                                                                                                      colorEnum: colorEnum));
             var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
 
 

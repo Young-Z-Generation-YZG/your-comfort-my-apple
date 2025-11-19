@@ -96,6 +96,7 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
                                                        storageEnum: EStorage.FromName(skuResponse.NormalizedStorage),
                                                        productClassification: productClassification,
                                                        discountType: discountType,
+                                                       colorHexCode: skuResponse.ColorHexCode,
                                                        imageUrl: imageUrl ?? string.Empty,
                                                        discountValue: itemCmd.DiscountValue,
                                                        originalPrice: originalPrice,

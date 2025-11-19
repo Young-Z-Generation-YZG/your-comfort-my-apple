@@ -28,19 +28,18 @@ public static class SeedOrderData
     public static IEnumerable<string> TenantIds => new List<string>
             {
                 "664355f845e56534956be32b", // Ware house
-                "690e034dff79797b05b3bc89" // HCM TD KVC 1060
+                "690e034dff79797b05b3bc89", // HCM_TD_KVC_1060
+                "690e034dff79797b05b3bc12", // HCM_Q1_CMT8_92
+                "690e034dff79797b05b3bc13", // HCM_Q9_LVV_33
             };
 
     public static IEnumerable<string> BranchIds => new List<string>
             {
                 "664357a235e84033bbd0e6b6", // Ware house
-                "690e034dff79797b05b3bc88" // HCM TD KVC 1060
+                "690e034dff79797b05b3bc88", // HCM_TD_KVC_1060
+                "690e034dff79797b05b3bc12", // HCM_Q1_CMT8_92
+                "690e034dff79797b05b3bc13", // HCM_Q9_LVV_33
             };
-
-    public static IEnumerable<string> SkuIdsInHCMTDKVC1060 => new List<string>
-    {
-        "691364b22451d4a9c6ca67db", // IPHONE-IPHONE_15-128GB-BLUE
-    };
 
     public static IEnumerable<Order> Orders
     {
@@ -67,8 +66,8 @@ public static class SeedOrderData
             var modelSlugs = ModelSlugs.ToList();
 
             Dictionary<string, string> BuildDisplayImageUrls(List<string> modelNames,
-                                                             List<string> storageOptions,
                                                              List<string> colorOptions,
+                                                             List<string> storageOptions,
                                                              Dictionary<string, string> colorImageUrls)
             {
                 var dictionary = new Dictionary<string, string>();
@@ -81,7 +80,7 @@ public static class SeedOrderData
                         {
                             if (colorImageUrls.TryGetValue(color, out var imageUrl))
                             {
-                                var key = $"{model}-{storage}-{color}";
+                                var key = $"{model}-{color}-{storage}";
                                 dictionary[key] = imageUrl;
                             }
                         }
@@ -145,7 +144,7 @@ public static class SeedOrderData
             var iphone15ModelNames = new List<string> { "IPHONE_15", "IPHONE_15_PLUS" };
             var iphone15Storages = StoragesList.Take(4).ToList(); // first four storages
             var iphone15Colors = iPhone15ColorsList.Take(5).ToList(); // first five colors
-            iphone15displayImageUrls = BuildDisplayImageUrls(iphone15ModelNames, iphone15Storages, iphone15Colors, iphone15ColorImageUrls);
+            iphone15displayImageUrls = BuildDisplayImageUrls(iphone15ModelNames, iphone15Colors, iphone15Storages, iphone15ColorImageUrls);
 
             var iphone16displayImageUrls = BuildDisplayImageUrls(iPhone16ModelsList, StoragesList, iPhone16ColorsList, iphone16ColorImageUrls);
             var iphone16EDisplayImageUrls = BuildDisplayImageUrls(iPhone16EModelsList, StoragesList, iPhone16EColorsList, iphone16EColorImageUrls);
@@ -155,7 +154,7 @@ public static class SeedOrderData
 
             string GetDisplayImageUrl(string model, string color, string storage)
             {
-                var key = $"{model}-{storage}-{color}";
+                var key = $"{model}-{color}-{storage}";
 
                 if (model.StartsWith("IPHONE_15") && iphone15displayImageUrls.TryGetValue(key, out var url15))
                 {
@@ -7127,7 +7126,7 @@ public static class SeedOrderData
         // May25 - Peak and decline pattern
         { "97_2025", CreateNaturalDateTime(2025, 5, 1, 15, 18, 44) }, // May 1 - Thursday afternoon
         { "98_2025", CreateNaturalDateTime(2025, 5, 2, 10, 57, 32) }, // May 2 - Friday morning
-        { "99_0025", CreateNaturalDateTime(2025, 5, 3, 17, 29, 19) }, // May 3 - Saturday afternoon
+        { "99_2025", CreateNaturalDateTime(2025, 5, 3, 17, 29, 19) }, // May 3 - Saturday afternoon
         { "100_2025", CreateNaturalDateTime(2025, 5, 4, 13, 41, 56) }, // May 4 - Sunday afternoon
         { "101_2025", CreateNaturalDateTime(2025, 5, 5, 9, 15, 28) }, // May 5 - Monday morning
         { "102_2025", CreateNaturalDateTime(2025, 5, 5, 16, 48, 7) }, // May 5 - Monday afternoon (2nd order - PEAK)

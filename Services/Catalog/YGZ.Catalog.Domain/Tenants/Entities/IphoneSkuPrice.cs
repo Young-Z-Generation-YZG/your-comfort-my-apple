@@ -19,15 +19,6 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
     [BsonElement("model_id")]
     public required ModelId ModelId { get; init; }
 
-    [BsonElement("unique_query")]
-    public string UniqueQuery
-    {
-        get
-        {
-            return $"{Model.NormalizedName}_{Storage.NormalizedName}_{Color.NormalizedName}";
-        }
-    }
-
     [BsonElement("model")]
     public required Model Model { get; init; }
 
@@ -46,9 +37,9 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
     {
         get
         {
-            var cachedKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelName: EIphoneModel.FromName(Model.NormalizedName),
-                                                                                        storageName: EStorage.FromName(Storage.NormalizedName),
-                                                                                        colorName: EColor.FromName(Color.NormalizedName));
+            var cachedKey = CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: EIphoneModel.FromName(Model.NormalizedName),
+                                                                                        colorEnum: EColor.FromName(Color.NormalizedName),
+                                                                                        storageEnum: EStorage.FromName(Storage.NormalizedName));
 
             return cachedKey;
         }
@@ -90,7 +81,6 @@ public class IphoneSkuPrice : Entity<SkuPriceId>, IAuditable, ISoftDelete
         {
             Id = Id.Value!,
             ModelId = ModelId.Value!,
-            UniqueQuery = UniqueQuery,
             Model = Model.ToResponse(),
             Color = Color.ToResponse(),
             Storage = Storage.ToResponse(),

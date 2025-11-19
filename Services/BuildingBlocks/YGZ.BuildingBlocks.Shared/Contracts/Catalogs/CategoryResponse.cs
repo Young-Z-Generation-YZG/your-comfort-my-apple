@@ -9,6 +9,7 @@ namespace YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 public sealed record CategoryResponse
 {
     public required string Id { get; init; }
+    public string? ParentId { get; init; } = null;
     public required string Name { get; init; }
     public string? Description { get; init; } = null;
     public required int Order { get; init; }

@@ -13,19 +13,19 @@ public class SkuCode : ValueObject
         Value = value;
     }
 
-    public static SkuCode Create(string productClassification, string model, string storage, string color)
+    public static SkuCode Create(string productClassification, string model, string color, string storage)
     {
         EProductClassification.TryFromName(productClassification, out var productClassificationEnum);
         EIphoneModel.TryFromName(SnakeCaseSerializer.Serialize(model).ToUpper(), out var modelEnum);
         EStorage.TryFromName(storage, out var storageEnum);
         EColor.TryFromName(SnakeCaseSerializer.Serialize(color).ToUpper(), out var colorEnum);
 
-        //if (productClassificationEnum is null || modelEnum is null || storageEnum is null || colorEnum is null)
-        //{
-        //    throw new ArgumentException("Invalid product classification, model, storage or color");
-        //}
+        if (productClassificationEnum is null || modelEnum is null || colorEnum is null || storageEnum is null)
+        {
+            throw new ArgumentException("Invalid product classification, model, color or storage");
+        }
 
-        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{storageEnum.Name}-{colorEnum.Name}");
+        return new SkuCode($"{productClassificationEnum.Name}-{modelEnum.Name}-{colorEnum.Name}-{storageEnum.Name}");
     }
 
     public static SkuCode Of(string value)

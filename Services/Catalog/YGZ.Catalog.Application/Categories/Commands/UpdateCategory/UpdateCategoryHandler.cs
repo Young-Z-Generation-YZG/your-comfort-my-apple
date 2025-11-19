@@ -14,7 +14,7 @@ public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand, bool
     private readonly IMongoRepository<Category, CategoryId> _mongoRepository;
 
     public UpdateCategoryHandler(ILogger<UpdateCategoryHandler> logger, IMongoRepository<Category, CategoryId> mongoRepository)
-    {
+{
         _logger = logger;
         _mongoRepository = mongoRepository;
     }
@@ -43,6 +43,7 @@ public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand, bool
         existingCategory.Update(request.Name,
                                 request.Description,
                                 request.Order,
+                                parentId: request.ParentCategoryId,
                                 parentCategory.Response,
                                 subCategories.Response);
 

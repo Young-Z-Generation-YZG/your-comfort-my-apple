@@ -1,10 +1,10 @@
-﻿
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Ordering.Application.Abstractions.Data;
+using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
@@ -26,31 +26,37 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
 
     public async Task<Result<bool>> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        //var orderId = OrderId.Of(request.OrderId);
+        var orderId = OrderId.Of(request.OrderId);
 
-        //var order = await _orderRepository.GetOrderByIdWithInclude(orderId, (x) => x.OrderItems, cancellationToken: cancellationToken);
+        var order = await _repository.GetByIdAsync(orderId, cancellationToken: cancellationToken);
 
-        //if (order is null)
-        //{
-        //    return Errors.Order.DoesNotExist;
-        //}
+        if (order is null)
+        {
+            return Errors.Order.DoesNotExist;
+        }
 
-        //switch (request.UpdateStatus)
-        //{
-        //    case nameof(OrderStatus.PREPARING):
-        //    order.Prepare();
-        //    break;
-        //    case nameof(OrderStatus.DELIVERING):
-        //    order.Deliver();
-        //    break;
-        //    case nameof(OrderStatus.DELIVERED):
-        //    order.Delivered();
-        //    break;
-        //    default:
-        //    return Errors.Order.InvalidOrderStatus;
-        //}
+        if (!EOrderStatus.TryFromName(request.UpdateStatus, true, out var newStatus))
+        {
+            return Errors.Order.InvalidOrderStatus;
+        }
 
-        //return await _orderRepository.UpdateAsync(order, cancellationToken);
+        switch (newStatus)
+        {
+            case var status when status == EOrderStatus.PREPARING:
+            order.SetPreparing();
+            break;
+            case var status when status == EOrderStatus.DELIVERING:
+            order.SetDelivering();
+            break;
+            case var status when status == EOrderStatus.DELIVERED:
+            order.SetDelivered();
+            break;
+            default:
+            return Errors.Order.InvalidOrderStatus;
+        }
+
+        order.UpdatedBy = _userContext.GetUserId();
+
+        return await _repository.UpdateAsync(order, cancellationToken);
     }
 }

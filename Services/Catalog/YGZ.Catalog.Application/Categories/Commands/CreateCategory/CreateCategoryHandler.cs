@@ -30,10 +30,11 @@ public class CreateCategoryHandler : ICommandHandler<CreateCategoryCommand, bool
         }
 
         Category newCategory = Category.Create(CategoryId.Create(),
+                                               parentId: request.ParentId,
                                                name: request.Name,
                                                description: request.Description,
-                                               request.Order,
-                                               parentCategory);
+                                               order: request.Order,
+                                               parentCategory: parentCategory);
 
         await _repository.InsertOneAsync(newCategory);
 

@@ -19,6 +19,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     public required string NormalizedModel { get; init; }
     public string? ColorName { get; private set; }
     public required string NormalizedColor { get; init; }
+    public required string ColorHexCode { get; init; }
     public string? StorageName { get; private set; }
     public required string NormalizedStorage { get; init; }
     public required EProductClassification ProductClassification { get; init; }
@@ -48,6 +49,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
                                    EStorage storageEnum,
                                    EProductClassification productClassification,
                                    EDiscountType discountType,
+                                   string colorHexCode,
                                    string imageUrl,
                                    decimal discountValue,
                                    decimal originalPrice,
@@ -63,6 +65,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
             NormalizedModel = iphoneModelEnum.Name,
             ColorName = FormatColorName(colorEnum.Name),
             NormalizedColor = colorEnum.Name,
+            ColorHexCode = colorHexCode,
             StorageName = FormatStorageName(storageEnum.Name),
             NormalizedStorage = storageEnum.Name,
             ProductClassification = productClassification,

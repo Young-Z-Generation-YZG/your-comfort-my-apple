@@ -73,7 +73,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             DiscountValue = discountValue,
             DiscountAmount = discountAmount,
             TotalAmount = totalAmount ?? 0,
-            CreatedAt = createdAt ?? DateTime.UtcNow
+            CreatedAt = createdAt ??= DateTime.UtcNow
         };
 
         //order.AddDomainEvent(new OrderCreatedDomainEvent(order));

@@ -64,7 +64,7 @@ const RevenueOrdersChart = () => {
    // Filter states for Chart 1
    const [range, setRange] = useState<DateRange | undefined>(undefined);
    const [filterMetric, setFilterMetric] = useState<FilterMetric>('both');
-   const [groupBy, setGroupBy] = useState<GroupBy>('date');
+   const [groupBy, setGroupBy] = useState<GroupBy>('month');
    const [isFiltered, setIsFiltered] = useState(false);
 
    const { getRevenuesAsync, getRevenuesState } = useOrderingService();

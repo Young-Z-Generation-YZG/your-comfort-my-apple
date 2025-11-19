@@ -19,20 +19,17 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
     private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
     private readonly IMongoRepository<IphoneSkuPrice, SkuPriceId> _iphoneSkuPriceRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
-    private readonly IDistributedCache _distributedCache;
 
     public TenantCreatedDomainEventHandler(ILogger<TenantCreatedDomainEventHandler> logger,
                                            IMongoRepository<SKU, SkuId> skuRepository,
                                            IMongoRepository<IphoneModel, ModelId> iphoneModelRepository,
                                            IMongoRepository<Branch, BranchId> branchRepository,
-                                           IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository,
-                                           IDistributedCache distributedCache)
+                                           IMongoRepository<IphoneSkuPrice, SkuPriceId> iphoneSkuPriceRepository)
     {
         _logger = logger;
         _skuRepository = skuRepository;
         _iphoneModelRepository = iphoneModelRepository;
         _branchRepository = branchRepository;
-        _distributedCache = distributedCache;
         _iphoneSkuPriceRepository = iphoneSkuPriceRepository;
     }
 
@@ -59,7 +56,10 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                                              modelId: model.Id,
                                              tenantId: notification.Tenant.Id,
                                              branchId: notification.Branch.Id,
-                                             skuCode: SkuCode.Create(EProductClassification.IPHONE.Name, modelItem.Name, storageItem.Name, colorItem.Name),
+                                             skuCode: SkuCode.Create(productClassification: EProductClassification.IPHONE.Name,
+                                                                     model: modelItem.Name,
+                                                                     color: colorItem.Name,
+                                                                     storage: storageItem.Name),
                                              productClassification: EProductClassification.IPHONE,
                                              model: modelItem,
                                              color: colorItem,

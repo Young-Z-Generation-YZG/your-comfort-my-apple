@@ -13,7 +13,7 @@ public static class SeedIphoneModel
     {
         get
         {
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             Model IPHONE_15 = Model.Create("iPhone 15", 0);
             Model IPHONE_15_PLUS = Model.Create("iPhone 15 Plus", 1);
@@ -396,7 +396,7 @@ public static class SeedIphoneModel
 
 
             // Seed iPhone category
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             // Seed Iphone 16 model
             var IPHONE_16_16_PLUS_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("6643543d0087aa09993f5b14"),
@@ -523,7 +523,7 @@ public static class SeedIphoneModel
             prices.Add(SkuPriceList.Create(skus[7].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[1].NormalizedName, storagesInPrices[3].NormalizedName, 1600));
 
             // Seed iPhone category
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             // Seed iPhone 16 E model
             var IPHONE_16_E_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("6643543e0087aa09993f5b15"),
@@ -684,7 +684,7 @@ public static class SeedIphoneModel
             prices.Add(SkuPriceList.Create(skus[19].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[4].NormalizedName, storagesInPrices[3].NormalizedName, 1800));
 
             // Seed iPhone category
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             // Seed iPhone 17 model
             var IPHONE_17_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("6643543f0087aa09993f5b16"),
@@ -852,7 +852,7 @@ public static class SeedIphoneModel
             prices.Add(SkuPriceList.Create(skus[23].Value!, modelsInPrices[1].NormalizedName, colorsInPrices[2].NormalizedName, storagesInPrices[3].NormalizedName, 2100));
 
             // Seed iPhone category
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             // Seed iPhone 17 Pro model
             var IPHONE_17_PRO_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("664354400087aa09993f5b17"),
@@ -1001,7 +1001,7 @@ public static class SeedIphoneModel
             prices.Add(SkuPriceList.Create(skus[15].Value!, modelsInPrices[0].NormalizedName, colorsInPrices[3].NormalizedName, storagesInPrices[3].NormalizedName, 1500));
 
             // Seed iPhone category
-            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentCategory: null);
+            Category IPHONE_CATEGORY = Category.Create(id: CategoryId.Of("67dc470aa9ee0a5e6fbafdab"), name: "iPhone", description: "iPhone categories.", order: 2, parentId: null, parentCategory: null);
 
             // Seed iPhone 17 Air model
             var IPHONE_17_AIR_MODEL = IphoneModel.Create(iPhoneModelId: ModelId.Of("664354410087aa09993f5b18"),

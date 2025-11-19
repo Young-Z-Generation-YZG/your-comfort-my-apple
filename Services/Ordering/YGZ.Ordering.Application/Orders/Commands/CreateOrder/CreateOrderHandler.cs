@@ -53,7 +53,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     discountAmount: request.Promotion?.DiscountAmount,
                                     totalAmount: request.TotalAmount);
 
-        if (paymentMethodEnum == EPaymentMethod.SOLANA)
+        if (paymentMethodEnum.Name == EPaymentMethod.SOLANA.Name)
         {
             newOrder.SetPaid();
         }

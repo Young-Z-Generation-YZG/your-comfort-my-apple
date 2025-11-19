@@ -65,34 +65,30 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpPatch("{orderId}/status/confirm")]
-    public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
-    {
-        var cmd = new ConfirmOrderCommand(orderId);
+    // [HttpPatch("{orderId}/status/confirm")]
+    // public async Task<IActionResult> ConfirmOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    // {
+    //     var cmd = new ConfirmOrderCommand(orderId);
 
-        var result = await _sender.Send(cmd, cancellationToken);
+    //     var result = await _sender.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
+    //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    // }
 
-    [HttpPatch("{orderId}/status/cancel")]
-    public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
-    {
-        var cmd = new CancelOrderCommand(orderId);
+    // [HttpPatch("{orderId}/status/cancel")]
+    // public async Task<IActionResult> CancelOrder([FromRoute] string orderId, CancellationToken cancellationToken)
+    // {
+    //     var cmd = new CancelOrderCommand(orderId);
 
-        var result = await _sender.Send(cmd, cancellationToken);
+    //     var result = await _sender.Send(cmd, cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
+    //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    // }
 
     [HttpPatch("admin/{orderId}/status")]
-    public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromQuery] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromBody] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
-        var cmd = new UpdateOrderStatusCommand
-        {
-            OrderId = orderId,
-            UpdateStatus = request._updateStatus
-        };
+        var cmd = _mapper.Map<UpdateOrderStatusCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
 
