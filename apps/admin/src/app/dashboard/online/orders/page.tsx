@@ -2,7 +2,7 @@
 
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import usePagination from '~/src/hooks/use-pagination';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
    ColumnDef,
    ColumnFiltersState,
@@ -60,11 +60,9 @@ import {
    SelectItem,
 } from '@components/ui/select';
 import { LoadingOverlay } from '@components/loading-overlay';
-import useCustomFilters from '~/src/hooks/use-filter';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
-import { useDispatch } from 'react-redux';
-import { orderingApi } from '~/src/infrastructure/services/order.service';
+import { useRouter } from 'next/navigation';
 
 const fakeData = {
    total_records: 7,
@@ -706,8 +704,9 @@ const columns: ColumnDef<TOrderItem>[] = [
    {
       id: 'actions',
       enableHiding: false,
-      cell: ({ row }) => {
+      cell: ({ row, table }) => {
          const order = row.original;
+         const onViewDetails = (table.options.meta as any)?.onViewDetails;
 
          return (
             <DropdownMenu>
@@ -727,7 +726,11 @@ const columns: ColumnDef<TOrderItem>[] = [
                      Copy order ID
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>View details</DropdownMenuItem>
+                  <DropdownMenuItem
+                     onClick={() => onViewDetails?.(order.order_id)}
+                  >
+                     View details
+                  </DropdownMenuItem>
                   <DropdownMenuItem>View customer</DropdownMenuItem>
                   <DropdownMenuItem>Update status</DropdownMenuItem>
                </DropdownMenuContent>
@@ -754,15 +757,12 @@ const OnlineOrdersPage = () => {
    const [showOrderCodeSearch, setShowOrderCodeSearch] = useState(false);
    const [showCustomerEmailSearch, setShowCustomerEmailSearch] =
       useState(false);
-   const [selectedStatuses, setSelectedStatuses] = useState<EOrderStatus[]>([]);
-
-   const isFirstFetch = useRef(false);
 
    //    App state
    const { tenantId } = useAppSelector((state) => state.tenant);
    const { impersonatedUser } = useAppSelector((state) => state.auth);
 
-   const dispatch = useDispatch();
+   const router = useRouter();
 
    const { getOrdersByAdminAsync, getOrdersByAdminState, isLoading } =
       useOrderingService();
@@ -777,8 +777,6 @@ const OnlineOrdersPage = () => {
    const {
       currentPage,
       totalPages,
-      pageSize,
-      totalRecords,
       isLastPage,
       isFirstPage,
       isNextPage,
@@ -807,7 +805,11 @@ const OnlineOrdersPage = () => {
 
    useEffect(() => {
       const fetchOrders = async () => {
-         await getOrdersByAdminAsync(filters);
+         await getOrdersByAdminAsync({
+            _page: filters._page ?? undefined,
+            _limit: filters._limit ?? undefined,
+            _orderStatus: filters._orderStatus ?? undefined,
+         });
       };
 
       fetchOrders();
@@ -838,6 +840,8 @@ const OnlineOrdersPage = () => {
          setShowOrderCodeSearch,
          showCustomerEmailSearch,
          setShowCustomerEmailSearch,
+         onViewDetails: (orderId: string) =>
+            router.push(`/dashboard/online/orders/${orderId}/details`),
       },
    });
 
@@ -1300,7 +1304,11 @@ const OnlineOrdersPage = () => {
                      <Select
                         value={filters._limit?.toString() || '10'}
                         onValueChange={(value) => {
-                           //    setFilters({ _limit: Number(value) });
+                           setFilters((prev) => ({
+                              ...prev,
+                              _limit: Number(value),
+                              _page: 1,
+                           }));
                         }}
                      >
                         <SelectTrigger className="w-auto h-9">
@@ -1329,7 +1337,10 @@ const OnlineOrdersPage = () => {
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => {
-                           //    setFilters({ _page: 1 });
+                           setFilters((prev) => ({
+                              ...prev,
+                              _page: 1,
+                           }));
                         }}
                         disabled={isFirstPage}
                      >
@@ -1343,7 +1354,10 @@ const OnlineOrdersPage = () => {
                         className="h-9 w-9"
                         onClick={() => {
                            if (currentPage > 1) {
-                              //   setFilters({ _page: currentPage - 1 });
+                              setFilters((prev) => ({
+                                 ...prev,
+                                 _page: currentPage - 1,
+                              }));
                            }
                         }}
                         disabled={!isPrevPage}
@@ -1378,7 +1392,10 @@ const OnlineOrdersPage = () => {
                                        'bg-black text-white hover:bg-black/90',
                                  )}
                                  onClick={() => {
-                                    // setFilters({ _page: page as number });
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _page: page as number,
+                                    }));
                                  }}
                               >
                                  {page as number}
@@ -1394,7 +1411,10 @@ const OnlineOrdersPage = () => {
                         className="h-9 w-9"
                         onClick={() => {
                            if (currentPage < totalPages) {
-                              //   setFilters({ _page: currentPage + 1 });
+                              setFilters((prev) => ({
+                                 ...prev,
+                                 _page: currentPage + 1,
+                              }));
                            }
                         }}
                         disabled={!isNextPage}
@@ -1408,7 +1428,10 @@ const OnlineOrdersPage = () => {
                         size="icon"
                         className="h-9 w-9"
                         onClick={() => {
-                           //    setFilters({ _page: totalPages });
+                           setFilters((prev) => ({
+                              ...prev,
+                              _page: totalPages,
+                           }));
                         }}
                         disabled={isLastPage}
                      >

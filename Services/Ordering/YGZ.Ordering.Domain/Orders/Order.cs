@@ -135,6 +135,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException($"Order is not in status {EOrderStatus.PREPARING.Name}");
         }
+
+        OrderStatus = EOrderStatus.DELIVERING;
     }
 
     public void SetDelivered()
@@ -143,6 +145,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException($"Order is not in status {EOrderStatus.DELIVERING.Name}");
         }
+
+        OrderStatus = EOrderStatus.DELIVERED;
 
         this.AddDomainEvent(new OrderDeliveredDomainEvent(this));
     }

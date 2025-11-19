@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using YGZ.BuildingBlocks.Shared.Utils;
-
+﻿using System.Text.Json.Serialization;
 
 namespace YGZ.Ordering.Api.Contracts;
 
-[JsonConverter(typeof(SnakeCaseJsonSerializer))]
-public sealed record UpdateOrderStatusRequest()
+public sealed record UpdateOrderStatusRequest
 {
-    [Required]
+    [JsonPropertyName("update_status")]
     public required string UpdateStatus { get; init; }
 }

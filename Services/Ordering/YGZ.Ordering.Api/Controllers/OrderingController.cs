@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Api.Contracts;
-using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
-using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
@@ -85,10 +83,14 @@ public class OrderingController : ApiController
     //     return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     // }
 
-    [HttpPatch("admin/{orderId}/status")]
-    public async Task<IActionResult> UpdateOrderStatus([FromRoute] string orderId, [FromBody] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
+    [HttpPatch("online/{OrderId}/status")]
+    public async Task<IActionResult> UpdateOrderStatus([FromRoute] string OrderId, [FromBody] UpdateOrderStatusRequest request, CancellationToken cancellationToken)
     {
-        var cmd = _mapper.Map<UpdateOrderStatusCommand>(request);
+        var cmd = new UpdateOrderStatusCommand
+        {
+            OrderId = OrderId,
+            UpdateStatus = request.UpdateStatus
+        };
 
         var result = await _sender.Send(cmd, cancellationToken);
 

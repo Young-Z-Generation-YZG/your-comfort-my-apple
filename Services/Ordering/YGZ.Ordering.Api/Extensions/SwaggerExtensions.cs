@@ -3,9 +3,9 @@ using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.Processors.Security;
-using NSwag;
 using YGZ.Ordering.Api.Contracts;
 
 namespace YGZ.Ordering.Api.Extensions;
