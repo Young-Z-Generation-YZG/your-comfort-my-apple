@@ -39,6 +39,8 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
         var paymentMethod = EPaymentMethod.TryFromName(request.PaymentMethod, out var paymentMethodEnum);
 
         var newOrder = Order.Create(orderId: OrderId.Of(request.OrderId),
+                                    tenantId: TenantId.Of(request.TenantId),
+                                    branchId: BranchId.Of(request.BranchId),
                                     customerId: UserId.Of(request.CustomerId),
                                     customerPublicKey: request.CustomerPublicKey,
                                     tx: request.Tx,
@@ -49,9 +51,7 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                     promotionId: request.Promotion?.PromotionId,
                                     promotionType: request.Promotion?.PromotionType,
                                     discountType: request.Promotion?.DiscountType,
-                                    discountValue: request.Promotion?.DiscountValue,
-                                    discountAmount: request.Promotion?.DiscountAmount,
-                                    totalAmount: request.TotalAmount);
+                                    discountValue: request.Promotion?.DiscountValue);
 
         if (paymentMethodEnum.Name == EPaymentMethod.SOLANA.Name)
         {
@@ -61,8 +61,8 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
         foreach (var orderItem in request.OrderItems)
         {
             var newOrderItem = OrderItem.Create(orderItemId: OrderItemId.Create(),
-                                                tenantId: TenantId.Of("664355f845e56534956be32b"),
-                                                branchId: BranchId.Of("664357a235e84033bbd0e6b6"),
+                                                tenantId: TenantId.Of(request.TenantId),
+                                                branchId: BranchId.Of(request.BranchId),
                                                 orderId: newOrder.Id,
                                                 skuId: orderItem.SkuId,
                                                 modelId: orderItem.ModelId,
@@ -77,7 +77,6 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
                                                 promotionType: orderItem.Promotion?.PromotionType,
                                                 discountType: orderItem.Promotion?.DiscountType,
                                                 discountValue: orderItem.Promotion?.DiscountValue,
-                                                discountAmount: orderItem.Promotion?.DiscountAmount,
                                                 isReviewed: false);
 
             newOrder.AddOrderItem(newOrderItem);

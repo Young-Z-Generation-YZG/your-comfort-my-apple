@@ -25,12 +25,13 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public required ShippingAddress ShippingAddress { get; init; }
     private readonly List<OrderItem> _orderItems = new();
     public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
+    public decimal SubTotalAmount { get; private set; }
     public string? PromotionId { get; init; }
     public string? PromotionType { get; init; }
     public string? DiscountType { get; init; }
     public decimal? DiscountValue { get; init; }
-    public decimal? DiscountAmount { get; init; }
-    public decimal TotalAmount { get; set; } = 0;
+    public decimal? DiscountAmount { get; private set; }
+    public decimal TotalAmount { get; private set; }
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; set; } = null;
@@ -50,8 +51,6 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
                                string? promotionType,
                                string? discountType,
                                decimal? discountValue,
-                               decimal? discountAmount,
-                               decimal? totalAmount = 0,
                                TenantId? tenantId = null,
                                BranchId? branchId = null,
                                DateTime? createdAt = null)
@@ -71,8 +70,6 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             PromotionType = promotionType,
             DiscountType = discountType,
             DiscountValue = discountValue,
-            DiscountAmount = discountAmount,
-            TotalAmount = totalAmount ?? 0,
             CreatedAt = createdAt ??= DateTime.UtcNow
         };
 
@@ -84,6 +81,14 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
     public void AddOrderItem(OrderItem orderItem)
     {
         _orderItems.Add(orderItem);
+        RecalculateTotals();
+    }
+
+    public void RecalculateTotals()
+    {
+        SubTotalAmount = CalculateSubTotalAmount();
+        DiscountAmount = CalculateDiscountAmount();
+        TotalAmount = CalculateTotalAmount();
     }
 
     public void SetPaid()
@@ -149,6 +154,28 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
         OrderStatus = EOrderStatus.DELIVERED;
 
         this.AddDomainEvent(new OrderDeliveredDomainEvent(this));
+    }
+
+    private decimal CalculateSubTotalAmount()
+    {
+        return OrderItems.Sum(item => item.SubTotalAmount);
+    }
+
+    private decimal CalculateDiscountAmount()
+    {
+        return OrderItems.Sum(item => item.DiscountAmount ?? 0);
+    }
+
+    private decimal CalculateTotalAmount()
+    {
+        if (DiscountAmount.HasValue)
+        {
+            return SubTotalAmount - DiscountAmount.Value;
+        }
+        else
+        {
+            return SubTotalAmount;
+        }
     }
 
     public OrderDetailsResponse ToResponse()

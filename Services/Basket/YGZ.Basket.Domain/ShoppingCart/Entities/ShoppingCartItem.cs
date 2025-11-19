@@ -13,35 +13,16 @@ public class ShoppingCartItem
     public required string ModelId { get; init; }
     public required string SkuId { get; init; }
     public required string ProductName { get; init; }
+    public required string DisplayImageUrl { get; init; }
     public required Model Model { get; init; }
     public required Color Color { get; init; }
     public required Storage Storage { get; init; }
-    public required string DisplayImageUrl { get; init; }
-    public required decimal UnitPrice { get; init; }
-    public Promotion? Promotion { get; set; }
     public required int Quantity { get; init; }
-    public decimal SubTotalAmount
-    {
-        get
-        {
-            if (Promotion is not null)
-            {
-                if (Promotion.PromotionCoupon is not null)
-                {
-                    // FinalPrice is per unit, multiply by quantity for subtotal
-                    return Promotion.PromotionCoupon.FinalPrice * Quantity;
-                }
-
-                if (Promotion.PromotionEvent is not null)
-                {
-                    // FinalPrice is per unit, multiply by quantity for subtotal
-                    return Promotion.PromotionEvent.FinalPrice * Quantity;
-                }
-            }
-            
-            return UnitPrice * Quantity;
-        }
-    }
+    public required decimal UnitPrice { get; init; }
+    public decimal SubTotalAmount => UnitPrice * Quantity;
+    public Promotion? Promotion { get; set; }
+    public decimal? DiscountAmount { get; set; }
+    public decimal TotalAmount => SubTotalAmount - (DiscountAmount ?? 0);
     public required string ModelSlug { get; init; }
     public required int Order { get; init; }
 
@@ -95,6 +76,8 @@ public class ShoppingCartItem
             Quantity = Quantity,
             SubTotalAmount = SubTotalAmount,
             Promotion = Promotion?.ToResponse(),
+            DiscountAmount = DiscountAmount,
+            TotalAmount = TotalAmount,
             Index = Order
         };
     }

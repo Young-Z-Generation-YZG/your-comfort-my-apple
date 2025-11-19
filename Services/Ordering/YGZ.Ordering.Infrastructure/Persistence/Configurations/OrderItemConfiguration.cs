@@ -80,6 +80,14 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .HasPrecision(18, 2)
             .IsRequired();
 
+        builder.Property(oi => oi.DiscountAmount)
+            .HasPrecision(18, 2)
+            .IsRequired(false);
+
+        builder.Property(oi => oi.TotalAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
         builder.Property(oi => oi.IsReviewed)
             .HasDefaultValue(false);
 
@@ -96,10 +104,6 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .IsRequired(false);
 
         builder.Property(oi => oi.DiscountValue)
-            .HasPrecision(18, 2)
-            .IsRequired(false);
-
-        builder.Property(oi => oi.DiscountAmount)
             .HasPrecision(18, 2)
             .IsRequired(false);
 

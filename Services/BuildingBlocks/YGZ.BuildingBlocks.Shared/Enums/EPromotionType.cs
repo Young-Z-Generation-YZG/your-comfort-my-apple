@@ -8,5 +8,5 @@ public class EPromotionType : SmartEnum<EPromotionType>
 
     public static readonly EPromotionType UNKNOWN = new(nameof(UNKNOWN), 0);
     public static readonly EPromotionType COUPON = new(nameof(COUPON), 0);
-    public static readonly EPromotionType EVENT = new(nameof(EVENT), 0);
+    public static readonly EPromotionType EVENT_ITEM = new(nameof(EVENT_ITEM), 0);
 }

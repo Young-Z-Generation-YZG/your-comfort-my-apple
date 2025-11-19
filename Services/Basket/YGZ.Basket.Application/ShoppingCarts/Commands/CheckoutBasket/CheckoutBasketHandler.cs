@@ -24,6 +24,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
     private readonly IUserHttpContext _userContext;
+    private readonly ITenantHttpContext _tenantContext;
     private readonly IVnpayProvider _vnpayProvider;
     private readonly IMomoProvider _momoProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -31,6 +32,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     public CheckoutBasketHandler(IBasketRepository basketRepository,
                                  IPublishEndpoint publishEndpoint,
                                  IUserHttpContext userContext,
+                                 ITenantHttpContext tenantContext,
                                  DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
                                  IVnpayProvider vnpayProvider,
                                  IHttpContextAccessor httpContextAccessor,
@@ -39,6 +41,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         _basketRepository = basketRepository;
         _publishIntegrationEvent = publishEndpoint;
         _userContext = userContext;
+        _tenantContext = tenantContext;
         _discountProtoServiceClient = discountProtoServiceClient;
         _vnpayProvider = vnpayProvider;
         _httpContextAccessor = httpContextAccessor;
@@ -49,6 +52,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     {
         var userEmail = _userContext.GetUserEmail();
         var userId = _userContext.GetUserId();
+        var tenantId = _tenantContext.GetTenantId() ?? "664357a235e84033bbd0e6b6";
+        var branchId = _tenantContext.GetBranchId() ?? "664355f845e56534956be32b";
 
         var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 
@@ -83,11 +88,14 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         {
             checkoutShoppingCart = shoppingCart.FilterEventItems();
 
-            cartPromotionId = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.EventItemId;
-            cartPromotionType = EPromotionType.EVENT.Name;
+            cartPromotionId = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.PromotionId;
+            cartPromotionType = EPromotionType.EVENT_ITEM.Name;
             cartDiscountType = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountType;
             cartDiscountValue = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountValue;
-            cartDiscountAmount = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountAmount;
+            // Calculate total discount amount from cart items for event promotions
+            cartDiscountAmount = checkoutShoppingCart.CartItems
+                .Where(item => item.Promotion?.PromotionEvent != null)
+                .Sum(item => item.DiscountAmount ?? 0);
         }
         else
         {
@@ -124,61 +132,74 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
                     if (selectedItems.Any())
                     {
-                        // Step 1: Calculate total cart value for selected items
-                        decimal totalCartValue = selectedItems.Sum(item => item.UnitPrice * item.Quantity);
+                        // Convert CartItems to EfficientCart format
+                        var efficientCartItems = selectedItems.Select((item, index) => new EfficientCartItem
+                        {
+                            UniqueString = $"item_{index}_{item.GetHashCode()}",
+                            OriginalPrice = item.UnitPrice,
+                            Quantity = item.Quantity,
+                            PromotionId = item.Promotion?.PromotionCoupon?.PromotionId,
+                            PromotionType = item.Promotion?.PromotionCoupon != null ? EPromotionType.COUPON.Name : null,
+                            DiscountType = null,
+                            DiscountValue = null,
+                            DiscountAmount = null
+                        }).ToList();
 
-                        // Step 2: Calculate discount amount
+                        var beforeCart = new EfficientCart
+                        {
+                            CartItems = efficientCartItems,
+                            PromotionId = coupon.Id,
+                            PromotionType = EPromotionType.COUPON.Name,
+                            DiscountType = null,
+                            DiscountValue = null,
+                            DiscountAmount = null,
+                            MaxDiscountAmount = null
+                        };
+
+                        // Use CalculateEfficientCart to calculate discounts
                         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
-                        decimal calculatedDiscount = 0;
+                        var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
+                        var discountValue = (decimal)(coupon.DiscountValue ?? 0);
+                        var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
-                        if (discountType == EDiscountType.PERCENTAGE)
-                        {
-                            // For percentage: discount = totalCartValue * (discountValue)
-                            // Note: discountValue should already be in decimal form (e.g., 0.1 for 10%)
-                            calculatedDiscount = totalCartValue * ((decimal)(coupon.DiscountValue ?? 0) / 100m);
-                        }
-                        else if (discountType == EDiscountType.FIXED_AMOUNT)
-                        {
-                            calculatedDiscount = (decimal)(coupon.DiscountValue ?? 0);
-                        }
-
-                        // Step 3: Apply maximum discount cap
-                        decimal actualTotalDiscount = coupon.MaxDiscountAmount.HasValue && coupon.MaxDiscountAmount > 0
-                            ? Math.Min(calculatedDiscount, (decimal)coupon.MaxDiscountAmount)
-                            : calculatedDiscount;
+                        var afterCart = CalculatePrice.CalculateEfficientCart(
+                            beforeCart: beforeCart,
+                            discountType: discountTypeName,
+                            discountValue: discountValue,
+                            maxDiscountAmount: maxDiscountAmount);
 
                         // Store cart-level promotion data for integration event
                         cartPromotionId = coupon.Id;
                         cartPromotionType = EPromotionType.COUPON.Name;
-                        cartDiscountType = discountType.Name;
-                        cartDiscountValue = (decimal)(coupon.DiscountValue ?? 0);
-                        cartDiscountAmount = actualTotalDiscount;
+                        cartDiscountType = discountTypeName;
+                        cartDiscountValue = discountValue;
+                        cartDiscountAmount = afterCart.DiscountAmount;
 
-                        // Step 4: Distribute discount proportionally to each selected item
-                        foreach (var item in selectedItems)
+                        // Update ShoppingCart discount properties
+                        checkoutShoppingCart.DiscountType = discountTypeName;
+                        checkoutShoppingCart.DiscountValue = discountValue;
+                        checkoutShoppingCart.DiscountAmount = afterCart.DiscountAmount;
+                        checkoutShoppingCart.MaxDiscountAmount = maxDiscountAmount;
+                        checkoutShoppingCart.PromotionId = coupon.Id;
+                        checkoutShoppingCart.PromotionType = EPromotionType.COUPON.Name;
+
+                        // Map calculated discounts back to CartItems and apply coupons
+                        for (int i = 0; i < selectedItems.Count; i++)
                         {
-                            decimal itemSubtotal = item.UnitPrice * item.Quantity;
-                            decimal itemProportion = totalCartValue > 0 ? itemSubtotal / totalCartValue : 0;
-                            decimal itemTotalDiscount = actualTotalDiscount * itemProportion;
-
-                            // Calculate discount per unit
-                            decimal discountPerUnit = item.Quantity > 0 ? itemTotalDiscount / item.Quantity : 0;
-
-                            // Calculate the effective discount value for this item
-                            // This represents what percentage or amount was actually applied per unit
-                            decimal effectiveDiscountValue = item.UnitPrice > 0
-                                ? discountPerUnit / item.UnitPrice
-                                : 0;
+                            var cartItem = selectedItems[i];
+                            var efficientItem = afterCart.CartItems[i];
 
                             PromotionCoupon promotionCoupon = PromotionCoupon.Create(
-                                couponId: coupon.Id,
-                                productUnitPrice: item.UnitPrice,
-                                discountType: discountType,
-                                discountValue: effectiveDiscountValue, // Effective discount rate per unit
-                                discountAmount: discountPerUnit // Actual discount amount per unit
+                                promotionId: coupon.Id,
+                                promotionType: EPromotionType.COUPON.Name,
+                                discountType: discountType ?? EDiscountType.UNKNOWN,
+                                discountValue: efficientItem.DiscountValue ?? 0
                             );
 
-                            item.ApplyCoupon(promotionCoupon);
+                            cartItem.ApplyCoupon(promotionCoupon);
+                            
+                            // Update cart item discount amount
+                            cartItem.DiscountAmount = efficientItem.DiscountAmount;
                         }
                     }
                 }
@@ -195,6 +216,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         var integrationEventMessage = new BasketCheckoutIntegrationEvent
         {
             OrderId = orderId,
+            TenantId = tenantId,
+            BranchId = branchId,
             CustomerId = userId,
             CustomerEmail = userEmail,
             CustomerPublicKey = null,

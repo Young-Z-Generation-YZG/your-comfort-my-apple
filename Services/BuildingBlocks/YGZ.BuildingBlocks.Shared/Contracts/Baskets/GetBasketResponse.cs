@@ -11,7 +11,14 @@ public sealed record GetBasketResponse()
 {
     public required string UserEmail { get; init; }
     public required List<CartItemResponse> CartItems { get; init; }
-    public required decimal TotalAmount { get; init; }
+    public decimal SubTotalAmount { get; init; }
+    public string? PromotionId { get; init; }
+    public string? PromotionType { get; init; }
+    public string? DiscountType { get; init; }
+    public decimal? DiscountValue { get; init; }
+    public decimal? DiscountAmount { get; init; }
+    public decimal? MaxDiscountAmount { get; init; }
+    public decimal TotalAmount { get; init; }
 }
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
@@ -29,6 +36,8 @@ public sealed record CartItemResponse()
     public required int Quantity { get; init; }
     public required decimal SubTotalAmount { get; init; }
     public PromotionResponse? Promotion { get; init; }
+    public  decimal? DiscountAmount { get; init; }
+    public required decimal TotalAmount { get; init; }
     public required int Index { get; init; }
 }
 
@@ -37,11 +46,8 @@ public sealed record PromotionResponse()
 {
     public required string PromotionId { get; init; }
     public required string PromotionType { get; init; }
-    public required decimal ProductUnitPrice { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
-    public required decimal DiscountAmount { get; init; }
-    public required decimal FinalPrice { get; init; }
 }
 
 

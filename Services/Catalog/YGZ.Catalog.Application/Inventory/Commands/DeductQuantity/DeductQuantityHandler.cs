@@ -38,7 +38,7 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
             }
 
 
-            if (orderItem.PromotionType == EPromotionType.EVENT.Name)
+            if (orderItem.PromotionType == EPromotionType.EVENT_ITEM.Name)
             {
                 sku.DeductReservedQuantity(orderItem.Quantity);
             }

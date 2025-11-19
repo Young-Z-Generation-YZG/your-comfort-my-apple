@@ -6,42 +6,18 @@ namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 
 public class PromotionEvent
 {
-    public required string EventId { get; init; }
-    public required string EventItemId { get; init; }
-    public required decimal ProductUnitPrice { get; init; }
+    public required string PromotionId { get; init; }
+    public required string PromotionType { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
-    public decimal DiscountAmount
-    {
-        get
-        {
-            if (DiscountType == EDiscountType.PERCENTAGE.Name)
-            {
-                return ProductUnitPrice * (DiscountValue / 100m);
-            }
-            else
-            {
-                return DiscountValue;
-            }
-        }
-    }
 
-    public decimal FinalPrice
-    {
-        get
-        {
-            return ProductUnitPrice - DiscountAmount;
-        }
-    }
-
-    public static PromotionEvent Create(string eventId, string eventItemId, decimal productUnitPrice, EDiscountType discountType, decimal discountValue)
+    public static PromotionEvent Create(string promotionId, string promotionType, EDiscountType discountType, decimal discountValue)
     {
         return new PromotionEvent
         {
-            EventId = eventId,
-            EventItemId = eventItemId,
+            PromotionId = promotionId,
+            PromotionType = promotionType,
             DiscountType = discountType.Name,
-            ProductUnitPrice = productUnitPrice,
             DiscountValue = discountValue,
         };
     }
@@ -50,13 +26,10 @@ public class PromotionEvent
     {
         return new PromotionResponse
         {
-            PromotionId = EventItemId,
-            PromotionType = EPromotionType.EVENT.Name,
-            ProductUnitPrice = ProductUnitPrice,
+            PromotionId = PromotionId,
+            PromotionType = EPromotionType.EVENT_ITEM.Name,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
-            DiscountAmount = DiscountAmount,
-            FinalPrice = FinalPrice,
         };
     }
 
@@ -64,12 +37,10 @@ public class PromotionEvent
     {
         return new PromotionIntegrationEvent
         {
-            PromotionId = EventItemId,
-            PromotionType = EPromotionType.EVENT.Name,
+            PromotionId = PromotionId,
+            PromotionType = EPromotionType.EVENT_ITEM.Name,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
-            DiscountAmount = DiscountAmount,
-            FinalPrice = FinalPrice,
         };
     }
 }

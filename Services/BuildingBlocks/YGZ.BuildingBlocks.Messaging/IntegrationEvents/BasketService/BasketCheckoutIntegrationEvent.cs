@@ -6,6 +6,8 @@ namespace YGZ.BuildingBlocks.Messaging.IntegrationEvents.BasketService;
 public record BasketCheckoutIntegrationEvent : IntegrationEvent
 {
     public required Guid OrderId { get; init; }
+    public required string TenantId { get; init; }
+    public required string BranchId { get; init; }
     public required string CustomerId { get; init; }
     public required string CustomerEmail { get; init; }
     public string? CustomerPublicKey { get; init; }
@@ -54,7 +56,5 @@ public record PromotionIntegrationEvent
     public required string PromotionType { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
-    public required decimal DiscountAmount { get; init; }
-    public required decimal FinalPrice { get; init; }
 
 }

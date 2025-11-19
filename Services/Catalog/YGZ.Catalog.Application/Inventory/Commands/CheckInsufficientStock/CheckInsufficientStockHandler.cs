@@ -38,7 +38,7 @@ public class CheckInsufficientStockHandler : ICommandHandler<CheckInsufficientSt
         }
 
         // For EVENT promotions, also check reserved quantity
-        if (request.PromotionType == EPromotionType.EVENT)
+        if (request.PromotionType == EPromotionType.EVENT_ITEM)
         {
             if (sku.ReservedForEvent is null)
             {

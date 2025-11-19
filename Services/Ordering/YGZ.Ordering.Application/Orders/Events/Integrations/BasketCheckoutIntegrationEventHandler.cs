@@ -59,8 +59,6 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
                 PromotionType = item.Promotion.PromotionType,
                 DiscountType = item.Promotion.DiscountType,
                 DiscountValue = item.Promotion.DiscountValue,
-                DiscountAmount = item.Promotion.DiscountAmount,
-                FinalPrice = item.Promotion.FinalPrice
             } : null
         }).ToList();
 
@@ -77,6 +75,8 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
         {
             OrderId = context.OrderId,
             CustomerId = context.CustomerId,
+            TenantId = context.TenantId,
+            BranchId = context.BranchId,
             CustomerPublicKey = context.CustomerPublicKey,
             Tx = context.Tx,
             CustomerEmail = context.CustomerEmail,

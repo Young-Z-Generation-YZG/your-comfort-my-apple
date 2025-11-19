@@ -6,30 +6,19 @@ namespace YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 
 public class PromotionCoupon
 {
-    public required string CouponId { get; init; }
-    public required decimal ProductUnitPrice { get; init; }
+    public required string PromotionId { get; init; }
+    public required string PromotionType { get; init; }
     public required string DiscountType { get; init; }
     public required decimal DiscountValue { get; init; }
-    public required decimal DiscountAmount { get; init; }
-    public decimal FinalPrice
-    {
-        get
-        {
-            // Use the pre-calculated DiscountAmount instead of recalculating
-            // This ensures we use the proportionally distributed discount
-            return ProductUnitPrice - DiscountAmount;
-        }
-    }
 
-    public static PromotionCoupon Create(string couponId, decimal productUnitPrice, EDiscountType discountType, decimal discountValue, decimal discountAmount)
+    public static PromotionCoupon Create(string promotionId, string promotionType, EDiscountType discountType, decimal discountValue)
     {
         return new PromotionCoupon
         {
-            CouponId = couponId,
-            ProductUnitPrice = productUnitPrice,
+            PromotionId = promotionId,
+            PromotionType = promotionType,
             DiscountType = discountType.Name,
             DiscountValue = discountValue,
-            DiscountAmount = discountAmount,
         };
     }
 
@@ -37,13 +26,10 @@ public class PromotionCoupon
     {
         return new PromotionResponse
         {
-            PromotionId = CouponId,
+            PromotionId = PromotionId,
             PromotionType = EPromotionType.COUPON.Name,
-            ProductUnitPrice = ProductUnitPrice,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
-            DiscountAmount = DiscountAmount,
-            FinalPrice = FinalPrice,
         };
     }
 
@@ -51,12 +37,10 @@ public class PromotionCoupon
     {
         return new PromotionIntegrationEvent
         {
-            PromotionId = CouponId,
-            PromotionType = EPromotionType.COUPON.Name,
+            PromotionId = PromotionId,
+            PromotionType = PromotionType,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
-            DiscountAmount = DiscountAmount,
-            FinalPrice = FinalPrice,
         };
     }
 }

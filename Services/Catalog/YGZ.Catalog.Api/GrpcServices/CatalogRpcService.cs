@@ -120,7 +120,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
     //        PromotionType = request.PromotionType switch
     //        {
     //         EPromotionTypeGrpc.PromotionTypeCoupon => EPromotionType.COUPON.Name,
-    //         EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT.Name,
+    //         EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT_ITEM.Name,
     //         _ => EPromotionType.UNKNOWN.Name
     //        }
     //     };
@@ -155,7 +155,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
         var promotionType = request.PromotionType switch
         {
             EPromotionTypeGrpc.PromotionTypeCoupon => EPromotionType.COUPON,
-            EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT,
+            EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT_ITEM,
             _ => EPromotionType.UNKNOWN
         };
 

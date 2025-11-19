@@ -73,11 +73,8 @@ public class Promotion : ValueObject
         {
             PromotionId = PromotionId,
             PromotionType = PromotionType,
-            ProductUnitPrice = ProductUnitPrice,
             DiscountType = DiscountType,
             DiscountValue = DiscountValue,
-            DiscountAmount = DiscountAmount,
-            FinalPrice = FinalPrice,
         };
     }
 }

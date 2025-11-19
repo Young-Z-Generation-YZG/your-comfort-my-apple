@@ -8,7 +8,14 @@ public class ShoppingCart
 {
     required public string UserEmail { get; set; }
     public List<ShoppingCartItem> CartItems { get; set; } = new();
-    public decimal TotalAmount => CartItems.Where(x => x.IsSelected).Sum(x => x.SubTotalAmount);
+    public decimal SubTotalAmount => CartItems.Sum(item => item.SubTotalAmount);
+    public string? PromotionId { get; set; }
+    public string? PromotionType { get; set; }
+    public string? DiscountType { get; set; }
+    public decimal? DiscountValue { get; set; }
+    public decimal? DiscountAmount { get; set; }
+    public decimal? MaxDiscountAmount { get; set; }
+    public decimal TotalAmount => SubTotalAmount - (DiscountAmount ?? 0);
 
     public static ShoppingCart Create(string userEmail, List<ShoppingCartItem> cartItems)
     {

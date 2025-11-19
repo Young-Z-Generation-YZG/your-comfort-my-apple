@@ -116,9 +116,17 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasPrecision(18, 2)
             .IsRequired(false);
 
+        builder.Property(o => o.SubTotalAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
         builder.Property(o => o.DiscountAmount)
             .HasPrecision(18, 2)
             .IsRequired(false);
+
+        builder.Property(o => o.TotalAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
 
         var navigation = builder.Metadata.FindNavigation(nameof(Order.OrderItems));
         navigation?.SetPropertyAccessMode(PropertyAccessMode.Field);

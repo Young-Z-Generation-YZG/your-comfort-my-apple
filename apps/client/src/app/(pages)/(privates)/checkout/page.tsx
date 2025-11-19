@@ -37,6 +37,8 @@ import BlockchainPaymentModel from './_components/blockchain-payment-model';
 import { EPaymentType } from '~/domain/enums/payment-type.enum';
 import { useSolana } from '@components/providers/solana-provider';
 import { toast } from 'sonner';
+import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
+import { useDispatch } from 'react-redux';
 
 const fakeData = [
    {
@@ -152,6 +154,8 @@ const CheckoutPage = () => {
       useState(false);
 
    const { isConnected } = useSolana();
+
+   const dispatch = useDispatch();
 
    const handleClosePaymentModal = () => {
       setDisplayPaymentBlockchainModel(false);
@@ -271,6 +275,8 @@ const CheckoutPage = () => {
                   .order_details_redirect_url,
             );
          }
+
+         dispatch(CleanSelectedItems());
       }
    };
 

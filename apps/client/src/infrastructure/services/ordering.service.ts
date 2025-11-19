@@ -88,7 +88,7 @@ export const orderingApi = createApi({
             method: 'GET',
          }),
       }),
-      getOrderDetails: builder.query<any, string>({
+      getOrderDetails: builder.query<TOrder, string>({
          query: (orderId) => ({
             url: `/api/v1/orders/${orderId}`,
             method: 'GET',

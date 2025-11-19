@@ -3,7 +3,7 @@
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
-using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -25,26 +25,13 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
     public required string DisplayImageUrl { get; init; }
     public required string ModelSlug { get; init; }
     public required int Quantity { get; init; }
+    public decimal SubTotalAmount { get; private set; }
     public string? PromotionId { get; init; }
     public string? PromotionType { get; init; }
     public string? DiscountType { get; init; }
     public decimal? DiscountValue { get; init; }
-    public decimal? DiscountAmount { get; init; }
-    public decimal SubTotalAmount
-    {
-        get
-        {
-            if (DiscountType == EDiscountType.PERCENTAGE.Name)
-            {
-                return UnitPrice - (UnitPrice * (decimal)(DiscountValue ?? 0));
-            }
-            else
-            {
-                return UnitPrice - (decimal)(DiscountValue ?? 0);
-            }
-        }
-        set { }
-    }
+    public decimal? DiscountAmount { get; private set; }
+    public decimal TotalAmount { get; private set; }
     public bool IsReviewed { get; private set; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
@@ -70,13 +57,12 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
                                    string? promotionType,
                                    string? discountType,
                                    decimal? discountValue,
-                                   decimal? discountAmount,
                                    bool isReviewed,
                                    DateTime? createdAt = null)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(quantity, 1);
 
-        return new OrderItem(orderItemId)
+        var orderItem = new OrderItem(orderItemId)
         {
             TenantId = tenantId,
             BranchId = branchId,
@@ -94,15 +80,42 @@ public class OrderItem : Entity<OrderItemId>, IAuditable, ISoftDelete
             PromotionType = promotionType,
             DiscountType = discountType,
             DiscountValue = discountValue,
-            DiscountAmount = discountAmount,
             IsReviewed = isReviewed,
             CreatedAt = createdAt ?? DateTime.UtcNow
         };
+
+        // Calculate and set amounts
+        orderItem.CalculateAmounts();
+
+        return orderItem;
     }
 
     public void SetIsReviewed(bool isReviewed)
     {
         this.IsReviewed = isReviewed;
+    }
+
+    internal void CalculateAmounts()
+    {
+        // Calculate subtotal (unit price * quantity)
+        SubTotalAmount = CalculatePrice.CalculateSubTotalAmount(UnitPrice, Quantity);
+
+        // Calculate discount amount (if promotion exists)
+        if (PromotionId is not null && !string.IsNullOrWhiteSpace(DiscountType) && DiscountValue.HasValue)
+        {
+            var totalPrice = CalculatePrice.CalculateSubTotalAmount(UnitPrice, Quantity);
+            var discountedPrice = CalculatePrice.CalculateDiscountAmount(UnitPrice, DiscountType, DiscountValue.Value, Quantity);
+            DiscountAmount = totalPrice - discountedPrice;
+        }
+        else
+        {
+            DiscountAmount = null;
+        }
+
+        // Calculate total amount (subtotal - discount)
+        TotalAmount = DiscountAmount.HasValue
+            ? SubTotalAmount - DiscountAmount.Value
+            : SubTotalAmount;
     }
 
     public OrderItemResponse ToResponse()

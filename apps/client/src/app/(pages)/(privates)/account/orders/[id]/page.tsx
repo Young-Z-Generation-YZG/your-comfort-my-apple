@@ -522,9 +522,9 @@ export default function OrderDetails() {
                                              </p>
                                              <p className="text-sm font-medium text-gray-900">
                                                 $
-                                                {item.discount_amount?.toFixed(
+                                                {item.sub_total_amount.toFixed(
                                                    2,
-                                                ) || item.unit_price.toFixed(2)}
+                                                )}
                                              </p>
                                           </div>
 
@@ -634,7 +634,10 @@ export default function OrderDetails() {
                               Discount
                            </span>
                            <span className="text-sm font-medium">
-                              ${(0.12).toFixed(2)}
+                              $
+                              {(
+                                 getOrderDetailsState.data?.discount_amount ?? 0
+                              ).toFixed(2)}
                            </span>
                         </div>
                         <Separator />

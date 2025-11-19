@@ -2,7 +2,7 @@
 
 public interface ITenantHttpContext
 {
-    string GetTenantId();
+    string? GetTenantId();
     string GetTenantCode();
-    string GetBranchId();
+    string? GetBranchId();
 }
