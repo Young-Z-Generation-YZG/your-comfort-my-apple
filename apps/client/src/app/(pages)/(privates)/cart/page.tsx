@@ -22,7 +22,7 @@ import CartItem from './_components/cart-item';
 import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
 import useBasketService from '@components/hooks/api/use-basket-service';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
@@ -86,7 +86,23 @@ const CartPage = () => {
       useCartFormV2({
          basketData: basketData,
          storeBasketAsync: storeBasketAsync,
+         deleteBasketAsync: deleteBasketAsync,
       });
+
+   useEffect(() => {
+      form.reset({
+         cart_items: basketData.cart_items.map((item) => ({
+            is_selected: item.is_selected,
+            model_id: item.model_id,
+            sku_id: item.sku_id,
+            color: item.color,
+            model: item.model,
+            storage: item.storage,
+            quantity: item.quantity,
+         })),
+      });
+   }, [basketData, form]);
+
    const handleItemSelectionChange = (item: TCartItem, checked: boolean) => {
       if (!item) {
          return;
@@ -103,10 +119,6 @@ const CartPage = () => {
    const selectedItems = form
       .getValues('cart_items')
       .filter((item) => item.is_selected);
-
-   console.log('form 2', form.getValues());
-
-   console.log('cartItems 2', cartItems);
 
    // Validate and apply promo code (only when items are selected)
    const handleValidatedApplyPromoCode = () => {

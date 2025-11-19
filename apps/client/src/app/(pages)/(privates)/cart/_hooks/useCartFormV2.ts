@@ -53,9 +53,19 @@ interface UseCartFormProps {
       data: boolean | null;
       error: unknown;
    }>;
+   deleteBasketAsync?: () => Promise<{
+      isSuccess: boolean;
+      isError: boolean;
+      data: boolean | null;
+      error: unknown;
+   }>;
 }
 
-const useCartFormV2 = ({ basketData, storeBasketAsync }: UseCartFormProps) => {
+const useCartFormV2 = ({
+   basketData,
+   storeBasketAsync,
+   deleteBasketAsync,
+}: UseCartFormProps) => {
    const [cartItems, setCartItems] = useState<TCartItem[]>([]);
 
    const cartItemState = useAppSelector((state) => state.cart.cart_items);
@@ -118,9 +128,12 @@ const useCartFormV2 = ({ basketData, storeBasketAsync }: UseCartFormProps) => {
    const handleRemoveItem = useCallback(
       (index: number) => {
          const currentItems = form.getValues('cart_items');
+
          if (!currentItems || !currentItems[index]) {
             return;
          }
+
+         console.log('test 1');
 
          const targetItem = currentItems[index];
          const updatedFormItems = currentItems.filter((_, i) => i !== index);
@@ -140,8 +153,16 @@ const useCartFormV2 = ({ basketData, storeBasketAsync }: UseCartFormProps) => {
          );
 
          dispatch(AddCartItems(updatedCartItems as TCartItem[]));
+
+         const deleteBasket = async () => {
+            if (deleteBasketAsync) {
+               await deleteBasketAsync();
+            }
+         };
+
+         deleteBasket();
       },
-      [cartItemState, dispatch, form],
+      [cartItemState, dispatch, form, deleteBasketAsync],
    );
 
    // Update cartItems state when watched values change
@@ -166,23 +187,6 @@ const useCartFormV2 = ({ basketData, storeBasketAsync }: UseCartFormProps) => {
       );
 
       if (hasSelectionChanged && prevCartItemsRef.current.length > 0) {
-         // Update Redux state
-         //  const updatedCartItems = cartItemState.map((item) => {
-         //     const formItem = watchedCartItems.find(
-         //        (formItem) =>
-         //           formItem.model_id === item.model_id &&
-         //           formItem.color.normalized_name ===
-         //              item.color.normalized_name &&
-         //           formItem.storage.normalized_name ===
-         //              item.storage.normalized_name,
-         //     );
-         //     return formItem
-         //        ? { ...item, is_selected: formItem.is_selected }
-         //        : item;
-         //  });
-
-         //  dispatch(AddCartItems(updatedCartItems as TCartItem[]));
-
          // Call storeBasket API
          const payload: TStoreBasketPayload = {
             cart_items: watchedCartItems.map((item) => ({
