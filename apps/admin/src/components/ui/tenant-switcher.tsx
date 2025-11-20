@@ -69,43 +69,43 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
    const handleSelectTenant = (tenant: TTenant) => {
       setSelectedTenant(tenant);
       setSearchQuery('');
-      dispatch(
-         setTenant({
-            tenantId: tenant.id,
-            tenantSubDomain: tenant.sub_domain,
-            tenantName: tenant.name,
-         }),
-      );
+      //   dispatch(
+      //      setTenant({
+      //         tenantId: tenant.id,
+      //         tenantSubDomain: tenant.sub_domain,
+      //         tenantName: tenant.name,
+      //      }),
+      //   );
    };
 
-   useEffect(() => {
-      const fetchIdentity = async () => {
-         const identityResult = await getIdentityAsync();
+   //    useEffect(() => {
+   //       const fetchIdentity = async () => {
+   //          const identityResult = await getIdentityAsync();
 
-         if (identityResult.isSuccess && identityResult.data) {
-            dispatch(
-               setRoles({
-                  currentUser: {
-                     roles: null,
-                  },
-                  impersonatedUser: {
-                     roles: identityResult.data.roles,
-                  },
-               }),
-            );
+   //          if (identityResult.isSuccess && identityResult.data) {
+   //             dispatch(
+   //                setRoles({
+   //                   currentUser: {
+   //                      roles: null,
+   //                   },
+   //                   impersonatedUser: {
+   //                      roles: identityResult.data.roles,
+   //                   },
+   //                }),
+   //             );
 
-            dispatch(
-               setTenant({
-                  tenantId: identityResult.data.tenant_id,
-               }),
-            );
-         }
-      };
+   //             dispatch(
+   //                setTenant({
+   //                   tenantId: identityResult.data.tenant_id,
+   //                }),
+   //             );
+   //          }
+   //       };
 
-      if (impersonatedUser) {
-         fetchIdentity();
-      }
-   }, [impersonatedUser, getIdentityAsync, dispatch]);
+   //       if (impersonatedUser) {
+   //          fetchIdentity();
+   //       }
+   //    }, [impersonatedUser, getIdentityAsync, dispatch]);
 
    useEffect(() => {
       if (tenants.length === 0) return;

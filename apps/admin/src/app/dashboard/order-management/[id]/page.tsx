@@ -134,8 +134,6 @@ const OrderDetails = () => {
    };
 
    const handleUpdateStatus = async (data: UpdateOrderStatusFormType) => {
-      console.log('data', data);
-
       if (
          form.formState.errors.update_status &&
          form.formState.errors.order_id
@@ -519,16 +517,6 @@ const OrderDetails = () => {
                                     className="w-full"
                                     disabled={AvailableUpdateStatus() === null}
                                     onClick={() => {
-                                       console.log(
-                                          'form',
-                                          form.getValues('order_id'),
-                                       );
-
-                                       console.log(
-                                          'form',
-                                          form.getValues('update_status'),
-                                       );
-
                                        form.handleSubmit(handleUpdateStatus)();
                                     }}
                                  >

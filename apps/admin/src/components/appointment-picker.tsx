@@ -34,9 +34,6 @@ const AppointmentPicker = ({
    const [isFirstOpen, setIsFirstOpen] = useState(true);
    const defaultFocusRef = useRef<string | null>(null);
 
-   console.log('startTime', startTime);
-   console.log('endTime', endTime);
-
    const parseTimeString = (timeStr: string) => {
       const [time, period] = timeStr.split(' ');
       const [hours, minutes] = time.split(':').map(Number);

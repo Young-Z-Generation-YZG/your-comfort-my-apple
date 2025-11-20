@@ -160,12 +160,7 @@ const CreateModelPage = () => {
       },
    });
 
-   console.log('Error: ', form.formState.errors);
-   console.log('Value: ', form.getValues());
-
-   const onSubmit = async (data: TCreateModelSchema) => {
-      console.log('TCreateModelSchema', data);
-   };
+   const onSubmit = async (data: TCreateModelSchema) => {};
 
    const renderModels = () => {
       const models = form.watch('models').sort((a, b) => {

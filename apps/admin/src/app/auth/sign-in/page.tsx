@@ -114,26 +114,26 @@ const SignInPage = () => {
                });
 
                // Fetch identity to get roles, then navigate
-               getIdentityAsync()
-                  .then((identityResult) => {
-                     if (identityResult.isSuccess && identityResult.data) {
-                        dispatch(
-                           setRoles({
-                              currentUser: {
-                                 roles: identityResult.data.roles,
-                              },
-                              impersonatedUser: {
-                                 roles: null,
-                              },
-                           }),
-                        );
-                     }
-                  })
-                  .finally(() => {
-                     // Navigate to revenue analytics dashboard after identity fetch
-                     console.log('Navigating to /dashboard/revenue-analytics');
-                     window.location.href = '/dashboard/revenue-analytics';
-                  });
+               //    getIdentityAsync()
+               //       .then((identityResult) => {
+               //          if (identityResult.isSuccess && identityResult.data) {
+               //             dispatch(
+               //                setRoles({
+               //                   currentUser: {
+               //                      roles: identityResult.data.roles,
+               //                   },
+               //                   impersonatedUser: {
+               //                      roles: null,
+               //                   },
+               //                }),
+               //             );
+               //          }
+               //       })
+               //       .finally(() => {
+               //          // Navigate to revenue analytics dashboard after identity fetch
+               //          console.log('Navigating to /dashboard/revenue-analytics');
+               //          window.location.href = '/dashboard/revenue-analytics';
+               //       });
             } else if (status === 'AUTH_FAILED') {
                setIsKeycloakLoading(false);
                toast({
@@ -278,33 +278,9 @@ const SignInPage = () => {
                   <div className="">
                      <Form {...form}>
                         <form
-                           onSubmit={form.handleSubmit(
-                              async (data: TLoginForm) => {
-                                 const result = await loginAsync(data);
-
-                                 if (result.isSuccess && result.data) {
-                                    const identityResult =
-                                       await getIdentityAsync();
-
-                                    if (
-                                       identityResult.isSuccess &&
-                                       identityResult.data
-                                    ) {
-                                       dispatch(
-                                          setRoles({
-                                             currentUser: {
-                                                roles: identityResult.data
-                                                   .roles,
-                                             },
-                                             impersonatedUser: {
-                                                roles: null,
-                                             },
-                                          }),
-                                       );
-                                    }
-                                 }
-                              },
-                           )}
+                           onSubmit={form.handleSubmit((data: TLoginForm) => {
+                              loginAsync(data);
+                           })}
                            className="flex flex-col gap-5"
                         >
                            <div className="flex flex-col gap-2">

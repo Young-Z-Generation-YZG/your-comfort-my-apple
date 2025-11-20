@@ -7,9 +7,14 @@ import {
    useImpersonateUserMutation,
 } from '~/src/infrastructure/services/keycloak.service';
 import { useDispatch } from 'react-redux';
-import { setImpersonatedUser } from '~/src/infrastructure/redux/features/auth.slice';
+import {
+   setCurrentUserKey,
+   setIdentity,
+   setImpersonatedUser,
+   setRoles,
+} from '~/src/infrastructure/redux/features/auth.slice';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
-import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
+import useAuthService from './use-auth-service';
 
 const useKeycloakService = () => {
    const [authorizationCodeMutation, authorizationCodeMutationState] =
@@ -17,11 +22,11 @@ const useKeycloakService = () => {
    const [impersonateUserMutation, impersonateUserMutationState] =
       useImpersonateUserMutation();
 
+   const { getIdentityAsync } = useAuthService();
+
    const dispatch = useDispatch();
 
-   const { currentUser, impersonatedUser } = useAppSelector(
-      (state: RootState) => state.auth,
-   );
+   const { currentUser } = useAppSelector((state: RootState) => state.auth);
 
    useCheckApiError([
       {
@@ -54,23 +59,72 @@ const useKeycloakService = () => {
    const impersonateUserAsync = useCallback(
       async (userId: string) => {
          try {
-            dispatch(
-               setImpersonatedUser({
-                  impersonatedUser: {
-                     userId: userId,
-                  },
-               }),
-            );
-
+            // If selecting current user, stop impersonation without API call
             if (userId === currentUser?.userId) {
+               // First switch back to current user (this changes the token used in API calls)
+               dispatch(setCurrentUserKey('currentUser'));
                dispatch(
-                  setTenant({
-                     tenantId: null,
+                  setImpersonatedUser({
+                     impersonatedUser: null,
+                  }),
+               );
+
+               // Now fetch identity using current user's token to get roles
+               const identityResult = await getIdentityAsync();
+
+               // Update roles for current user if identity fetch succeeded
+               if (identityResult.isSuccess && identityResult.data) {
+                  dispatch(
+                     setRoles({
+                        currentUser: {
+                           roles: identityResult.data.roles || null,
+                        },
+                        impersonatedUser: null,
+                     }),
+                  );
+               }
+
+               return {
+                  isSuccess: true,
+                  isError: false,
+                  data: null,
+                  error: null,
+               };
+            }
+
+            // Start impersonating new user
+            dispatch(setCurrentUserKey('impersonatedUser'));
+
+            // Call API to get impersonation tokens
+            const result = await impersonateUserMutation(userId).unwrap();
+
+            // Fetch identity for the impersonated user
+            const identityResult = await getIdentityAsync();
+
+            if (identityResult.isSuccess && identityResult.data) {
+               // Store identity data
+               dispatch(
+                  setIdentity({
+                     currentUser: null,
+                     impersonatedUser: {
+                        userId: identityResult.data.id,
+                        tenantId: identityResult.data.tenant_id,
+                        branchId: identityResult.data.branch_id,
+                        tenantSubDomain: identityResult.data.tenant_sub_domain,
+                     },
+                  }),
+               );
+
+               // Store roles for the impersonated user
+               dispatch(
+                  setRoles({
+                     currentUser: null,
+                     impersonatedUser: {
+                        roles: identityResult.data.roles || null,
+                     },
                   }),
                );
             }
-
-            const result = await impersonateUserMutation(userId).unwrap();
 
             return {
                isSuccess: true,
@@ -79,10 +133,17 @@ const useKeycloakService = () => {
                error: null,
             };
          } catch (error) {
+            // On error, revert to current user
+            dispatch(setCurrentUserKey('currentUser'));
+            dispatch(
+               setImpersonatedUser({
+                  impersonatedUser: null,
+               }),
+            );
             return { isSuccess: false, isError: true, data: null, error };
          }
       },
-      [impersonateUserMutation, dispatch, currentUser],
+      [impersonateUserMutation, dispatch, currentUser, getIdentityAsync],
    );
 
    // centrally track the loading state

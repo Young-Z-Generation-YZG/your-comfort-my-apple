@@ -124,8 +124,6 @@ export function ActionNav() {
          : [];
    }, [getListUsersState.isSuccess, getListUsersState.data]);
 
-   console.log(staffItems);
-
    const roles = useMemo(
       () => currentUser?.roles || impersonatedUser?.roles || [],
       [currentUser, impersonatedUser],

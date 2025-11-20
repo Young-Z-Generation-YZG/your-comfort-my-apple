@@ -1,6 +1,5 @@
 import {
    createApi,
-   fetchBaseQuery,
    FetchBaseQueryError,
    FetchBaseQueryMeta,
    QueryReturnValue,
@@ -13,53 +12,61 @@ import {
 import { RootState } from '../redux/store';
 import { baseQuery } from './base-query';
 import { setTenant } from '../redux/features/tenant.slice';
-import envConfig from '../config/env.config';
 
-// const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-//    const result = await baseQuery('identity-services')(args, api, extraOptions);
+const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+   const result = await baseQuery('identity-services')(args, api, extraOptions);
 
-//    // Check if we received a 401 Unauthorized response
-//    if (result.error && result.error.status === 401) {
-//       // Dispatch logout action to clear auth state
-//       api.dispatch(setLogout());
-//    }
+   // Check if we received a 401 Unauthorized response
+   if (result.error && result.error.status === 401) {
+      // Dispatch logout action to clear auth state
+      api.dispatch(setLogout());
+   }
 
-//    return result;
-// };
+   return result;
+};
+
+export type TLoginResponse = {
+   user_email: string;
+   username: string;
+   access_token: string | null;
+   refresh_token: string | null;
+   access_token_expires_in: number | null;
+   refresh_token_expires_in: number | null;
+   verification_type: string;
+   params: object | null;
+};
+
+export type TGetIdentityResponse = {
+   id: string;
+   tenant_id: string | null;
+   branch_id: string | null;
+   tenant_sub_domain: string | null;
+   username: string;
+   email: string;
+   email_confirmed: boolean;
+   phone_number: string | null;
+   roles: string[];
+};
+
+export interface ILoginPayload {
+   email: string;
+   password: string;
+}
 
 export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
-   baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'identity-services',
-      prepareHeaders: (headers, { getState }) => {
-         const authAppState = (getState() as RootState).auth;
-
-         const token = authAppState.useRefreshToken
-            ? authAppState.currentUser?.refreshToken
-            : authAppState.currentUser?.accessToken;
-
-         console.log('token', token);
-
-         if (token) {
-            headers.set('Authorization', `Bearer ${token}`);
-         }
-
-         headers.set('ngrok-skip-browser-warning', 'true');
-
-         return headers;
-      },
-   }),
+   baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getIdentity: builder.query<any, any>({
+      getIdentity: builder.query<TGetIdentityResponse, void>({
          query: () => ({
             url: '/api/v1/auth/me',
             method: 'GET',
          }),
          providesTags: ['auth'],
       }),
-      login: builder.mutation({
-         query: (payload: any) => ({
+      login: builder.mutation<TLoginResponse, ILoginPayload>({
+         query: (payload: ILoginPayload) => ({
             url: '/api/v1/auth/login',
             method: 'POST',
             body: payload,
@@ -71,7 +78,7 @@ export const authApi = createApi({
                dispatch(
                   setLogin({
                      currentUser: {
-                        userId: 'be0cd669-237a-484d-b3cf-793e0ad1b0ea',
+                        userId: 'ADMIN_SUPER',
                         userEmail: data.user_email,
                         username: data.username,
                         accessToken: data.access_token,
@@ -93,8 +100,6 @@ export const authApi = createApi({
          queryFn: async (_, { getState }, __, baseQuery) => {
             const refreshToken = (getState() as RootState).auth.currentUser
                ?.refreshToken;
-
-            console.log('refreshToken', refreshToken);
 
             await baseQuery({
                url: '/api/v1/auth/logout',

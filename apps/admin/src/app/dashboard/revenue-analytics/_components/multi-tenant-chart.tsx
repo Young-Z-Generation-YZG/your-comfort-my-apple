@@ -83,15 +83,12 @@ const MultiTenantChart = () => {
    // Process tenant comparison data for Chart 3
    const tenantComparisonData = useMemo(() => {
       const revenuesByTenants = getRevenuesByTenantsState.data?.groups || {};
-      console.log('revenuesByTenants', revenuesByTenants);
       const monthMap = new Map<string, Record<string, number>>();
 
       // Get selected tenant IDs
       const selectedTenantIds = Object.entries(selectedTenants)
          .filter(([, selected]) => selected)
          .map(([tenantId]) => tenantId);
-
-      console.log('selectedTenantIds', selectedTenantIds);
 
       // Month order for initialization
       const monthOrder = [
@@ -120,11 +117,6 @@ const MultiTenantChart = () => {
 
       // Process each selected tenant and update revenue values
       selectedTenantIds.forEach((tenantId) => {
-         console.log(
-            'revenuesByTenants[tenantId]',
-            revenuesByTenants[tenantId],
-         );
-
          if (revenuesByTenants[tenantId]) {
             revenuesByTenants[tenantId].forEach((order) => {
                if (order.status === 'DELIVERED') {
@@ -142,8 +134,6 @@ const MultiTenantChart = () => {
             });
          }
       });
-
-      console.log('monthMap', monthMap);
 
       // Convert to array and sort by month order
       // Ensure all selected tenant IDs are present in every month's data
@@ -166,12 +156,8 @@ const MultiTenantChart = () => {
             return rest;
          });
 
-      console.log('multi-tenant chartData', chartData);
-
       return chartData;
    }, [getRevenuesByTenantsState.data, selectedTenants]);
-
-   console.log('tenantComparisonData', tenantComparisonData);
 
    useEffect(() => {
       // Fetch tenants list

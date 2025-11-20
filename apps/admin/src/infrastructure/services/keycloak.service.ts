@@ -29,8 +29,6 @@ export const keycloakApi = createApi({
             }
          }
 
-         console.log('accessToken 2', accessToken);
-
          if (accessToken) {
             headers.set('Authorization', `Bearer ${accessToken}`);
          }
@@ -75,22 +73,13 @@ export const keycloakApi = createApi({
             method: 'POST',
             body: { user_id: userId },
          }),
-         async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
+         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
             try {
-               const { currentUser, impersonatedUser } = (
-                  getState() as RootState
-               ).auth;
-
                dispatch(setIsLoading(true));
 
                const { data } = await queryFulfilled;
 
                dispatch(setIsLoading(false));
-
-               // Get current user's ID from state
-               const impersonatedUserId =
-                  (getState() as RootState).auth.impersonatedUser?.userId ??
-                  null;
 
                if (data.access_token) {
                   dispatch(setIsImpersonating(true));
@@ -98,7 +87,7 @@ export const keycloakApi = createApi({
                   dispatch(
                      setImpersonatedUser({
                         impersonatedUser: {
-                           userId: impersonatedUserId,
+                           userId: arg, // Use the userId argument passed to the mutation
                            userEmail: data.user_email,
                            username: data.username,
                            accessToken: data.access_token,
@@ -108,6 +97,7 @@ export const keycloakApi = createApi({
                   );
                }
             } catch (error: unknown) {
+               dispatch(setIsLoading(false));
                throw error;
             }
          },

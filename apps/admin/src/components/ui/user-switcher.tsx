@@ -27,70 +27,46 @@ const UserSwitcher = ({ users }: { users: TUser[] }) => {
 
    const { impersonateUserAsync } = useKeycloakService();
 
+   // Initialize selectedUser based on impersonatedUser or currentUser
    useEffect(() => {
-      if (users.length > 0) {
-         if (impersonatedUser?.userId) {
-            const foundUser = users.find(
-               (user: TUser) => user.id === impersonatedUser?.userId,
-            );
+      if (users.length === 0) return;
 
-            if (foundUser) {
-               setSelectedUser(foundUser);
-            }
-         } else {
-            const foundUser = users.find(
-               (user: TUser) => user.id === currentUser?.userId,
-            );
+      const activeUserId = impersonatedUser?.userId || currentUser?.userId;
+      if (!activeUserId) return;
 
-            if (foundUser) {
-               setSelectedUser(foundUser);
-            }
-         }
+      const foundUser = users.find((user: TUser) => user.id === activeUserId);
+      if (foundUser && foundUser.id !== selectedUser?.id) {
+         setSelectedUser(foundUser);
       }
-   }, [users, currentUser, impersonatedUser]);
+   }, [users, currentUser?.userId, impersonatedUser?.userId, selectedUser?.id]);
 
-   const filteredUsers = useMemo(() => {
-      if (!searchQuery) return users;
+   const filteredUsersByEmail = useMemo(() => {
+      if (!searchQuery.trim().length) return users;
 
+      const query = searchQuery.trim().toLowerCase();
       return users.filter(
          (user) =>
-            user.user_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+            user.user_name.toLowerCase().includes(query) ||
+            user.email.toLowerCase().includes(query),
       );
    }, [users, searchQuery]);
 
    const handleSelectUser = async (user: TUser) => {
+      // Prevent unnecessary calls if selecting the same user
+      if (user.id === selectedUser?.id) {
+         setSearchQuery('');
+         return;
+      }
+
       setSelectedUser(user);
       setSearchQuery('');
-
       await impersonateUserAsync(user.id);
    };
 
    const getInitials = (firstName: string, lastName: string) => {
+      if (!firstName || !lastName) return '';
       return (firstName[0] + lastName[0]).toUpperCase();
    };
-
-   useEffect(() => {
-      if (users.length === 0) return;
-
-      if (impersonatedUser) {
-         const foundUser = users.find(
-            (user: TUser) => user.id === impersonatedUser?.userId,
-         );
-
-         if (foundUser) {
-            setSelectedUser(foundUser);
-         }
-      } else {
-         const foundUser = users.find(
-            (user: TUser) => user.id === currentUser?.userId,
-         );
-
-         if (foundUser) {
-            setSelectedUser(foundUser);
-         }
-      }
-   }, [users, currentUser, impersonatedUser]);
 
    // Don't render if no user selected or users not loaded
    if (!selectedUser || users.length === 0) {
@@ -148,12 +124,12 @@ const UserSwitcher = ({ users }: { users: TUser[] }) => {
                />
             </div>
             <div className="max-h-[300px] overflow-y-auto p-1">
-               {filteredUsers.length === 0 ? (
+               {filteredUsersByEmail.length === 0 ? (
                   <div className="py-6 text-center text-sm text-muted-foreground">
                      No user found.
                   </div>
                ) : (
-                  filteredUsers.map((user) => {
+                  filteredUsersByEmail.map((user) => {
                      const isActive = selectedUser?.id === user.id;
 
                      return (

@@ -162,8 +162,6 @@ const YearOverYearChart = () => {
             return rest;
          });
 
-      console.log('year-over-year chartData', chartData);
-
       return chartData;
    }, [getRevenuesByYearsState.data, selectedYears]);
 

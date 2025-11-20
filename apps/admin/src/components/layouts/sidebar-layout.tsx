@@ -394,18 +394,20 @@ const adminSidebarData = [
 export function SidebarLayout({
    ...props
 }: React.ComponentProps<typeof Sidebar>) {
-   const { currentUser, impersonatedUser } = useAppSelector(
+   const { currentUser, impersonatedUser, currentUserKey } = useAppSelector(
       (state) => state.auth,
    );
 
    const dispatch = useDispatch();
-
-   const roles = useMemo(
-      () => currentUser?.roles || impersonatedUser?.roles || [],
-      [currentUser, impersonatedUser],
-   );
-
    const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
+
+   // Get roles directly from Redux state (stored when switching users)
+   // Use currentUserKey to determine which user's roles to use
+   const roles = useMemo(() => {
+      const activeUser =
+         currentUserKey === 'impersonatedUser' ? impersonatedUser : currentUser;
+      return activeUser?.roles || [];
+   }, [currentUserKey, currentUser, impersonatedUser]);
 
    const tenantItems = useMemo(() => {
       return getTenantsState.isSuccess && getTenantsState.data
@@ -413,28 +415,30 @@ export function SidebarLayout({
          : [];
    }, [getTenantsState.isSuccess, getTenantsState.data]);
 
+   // Fetch tenants only for super admin
    useEffect(() => {
-      const fetchTenants = async () => {
-         await getTenantsAsync();
-      };
       if (roles.includes(ERole.ADMIN_SUPER)) {
-         fetchTenants();
+         getTenantsAsync();
       }
    }, [getTenantsAsync, roles]);
 
+   // Update global loading state
    useEffect(() => {
       dispatch(setIsLoading(isLoading));
    }, [isLoading, dispatch]);
 
+   // Determine sidebar data based on roles
    const sidebarData = useMemo(() => {
-      if (
-         roles.includes(ERole.ADMIN_SUPER) &&
-         !impersonatedUser?.roles?.includes(ERole.ADMIN)
-      ) {
+      const isSuperAdmin = roles.includes(ERole.ADMIN_SUPER);
+      const isImpersonatingAdmin = impersonatedUser?.roles?.includes(
+         ERole.ADMIN,
+      );
+
+      if (isSuperAdmin && !isImpersonatingAdmin) {
          return superAdminSidebarData;
       }
       return adminSidebarData;
-   }, [roles, impersonatedUser]);
+   }, [roles, impersonatedUser?.roles]);
 
    return (
       <Sidebar variant="inset" {...props}>

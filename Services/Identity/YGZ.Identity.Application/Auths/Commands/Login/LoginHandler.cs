@@ -77,7 +77,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
             }
 
             string emailVerificationToken = emailVerificationTokenResult.Response!;
-            
+
             var command = new EmailCommand(
                         ReceiverEmail: request.Email,
                         Subject: "YGZ Zone Email Verification",
@@ -91,7 +91,8 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
                         Attachments: null
             );
 
-            try {
+            try
+            {
                 await _emailService.SendEmailAsync(command).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -122,7 +123,7 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
         }
 
         var tokenPair = await _keycloakService.GetKeycloakTokenPairAsync(request.Email, request.Password);
-        
+
         var loginResponse = new LoginResponse
         {
             UserEmail = user.Email!,

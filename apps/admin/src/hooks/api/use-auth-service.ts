@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import {
+   ILoginPayload,
    useLazyGetIdentityQuery,
    useLoginMutation,
    useLogoutMutation,
@@ -8,7 +9,12 @@ import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { toast } from 'sonner';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
 import { useRouter } from 'next/navigation';
-import { setUseRefreshToken } from '~/src/infrastructure/redux/features/auth.slice';
+import {
+   setIdentity,
+   setLogin,
+   setRoles,
+   setUseRefreshToken,
+} from '~/src/infrastructure/redux/features/auth.slice';
 import { useDispatch } from 'react-redux';
 
 const useAuthService = () => {
@@ -31,9 +37,36 @@ const useAuthService = () => {
    }, [authAppState]);
 
    const loginAsync = useCallback(
-      async (data: any) => {
+      async (data: ILoginPayload) => {
          try {
             const result = await loginMutation(data).unwrap();
+
+            if (result) {
+               const identityResult = await getIdentityTrigger().unwrap();
+
+               if (identityResult) {
+                  dispatch(
+                     setRoles({
+                        currentUser: {
+                           roles: identityResult.roles,
+                        },
+                        impersonatedUser: null,
+                     }),
+                  );
+                  dispatch(
+                     setIdentity({
+                        currentUser: {
+                           userId: identityResult.id,
+                           tenantId: identityResult.tenant_id,
+                           branchId: identityResult.branch_id,
+                           tenantSubDomain: identityResult.tenant_sub_domain,
+                        },
+                        impersonatedUser: null,
+                     }),
+                  );
+               }
+            }
+
             return {
                isSuccess: true,
                isError: false,
@@ -44,7 +77,7 @@ const useAuthService = () => {
             return { isSuccess: false, isError: true, data: null, error };
          }
       },
-      [loginMutation],
+      [loginMutation, getIdentityTrigger, dispatch],
    );
 
    const logoutAsync = useCallback(async () => {
@@ -63,7 +96,7 @@ const useAuthService = () => {
 
    const getIdentityAsync = useCallback(async () => {
       try {
-         const result = await getIdentityTrigger({}).unwrap();
+         const result = await getIdentityTrigger().unwrap();
          return { isSuccess: true, isError: false, data: result, error: null };
       } catch (error) {
          return { isSuccess: false, isError: true, data: null, error };

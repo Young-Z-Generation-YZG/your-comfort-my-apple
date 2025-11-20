@@ -14,21 +14,28 @@ public class GetIdentityHandler : IQueryHandler<GetIdentityQuery, GetIdentityRes
     private readonly IUserHttpContext _userHttpContext;
     private readonly IUserRepository _repository;
     private readonly IIdentityService _identityService;
+    private readonly ITenantHttpContext _tenantHttpContext;
 
     public GetIdentityHandler(ILogger<GetIdentityHandler> logger,
                         IUserHttpContext userHttpContext,
                         IUserRepository repository,
-                        IIdentityService identityService)
+                        IIdentityService identityService,
+                        ITenantHttpContext tenantHttpContext)
     {
         _logger = logger;
         _userHttpContext = userHttpContext;
         _repository = repository;
         _identityService = identityService;
+        _tenantHttpContext = tenantHttpContext;
     }
 
     public async Task<Result<GetIdentityResponse>> Handle(GetIdentityQuery request, CancellationToken cancellationToken)
     {
         var userEmail = _userHttpContext.GetUserEmail();
+        var tenantId = _tenantHttpContext.GetTenantId();
+        var branchId = _tenantHttpContext.GetBranchId();
+
+
         // Use FindUserAsyncIgnoreFilters to bypass tenant filtering for /me endpoint
         var userResult = await _identityService.FindUserAsyncIgnoreFilters(userEmail);
 
@@ -49,9 +56,9 @@ public class GetIdentityHandler : IQueryHandler<GetIdentityQuery, GetIdentityRes
         var response = new GetIdentityResponse
         {
             Id = user.Id,
-            TenantId = user.TenantId,
-            BranchId = user.BranchId,
-            TenantSubDomain = null,
+            TenantId = tenantId ?? user.TenantId,
+            BranchId = branchId ?? user.BranchId,
+            TenantSubDomain = "Not Available",
             Username = user.UserName ?? string.Empty,
             Email = user.Email!,
             EmailConfirmed = user.EmailConfirmed,
