@@ -63,6 +63,7 @@ public class RevenuesByYearsHandler : IQueryHandler<RevenuesByYearsQuery, Revenu
             // Get all orders matching the years
             var orders = await _repository.GetAllAsync(
                 filterExpression: filterExpression,
+                orderBy: null,
                 includeExpressions: includeExpressions,
                 cancellationToken: cancellationToken);
 

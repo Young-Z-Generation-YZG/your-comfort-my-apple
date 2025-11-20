@@ -24,6 +24,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
     virtual public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression = null,
                                                                                            Expression<Func<TEntity, object>>[]? includeExpressions = null,
+                                                                                           Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
                                                                                            int? page = null,
                                                                                            int? limit = null,
                                                                                            CancellationToken? cancellationToken = null)
@@ -45,6 +46,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         if (filterExpression is not null)
         {
             query = query.Where(filterExpression);
+        }
+
+        if (orderBy is not null)
+        {
+            query = orderBy(query);
         }
 
         var totalRecords = await query.CountAsync(cancellationToken ?? CancellationToken.None);
@@ -129,6 +135,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
     public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filterExpression = null,
                                                  Expression<Func<TEntity, object>>[]? includeExpressions = null,
+                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
                                                  CancellationToken? cancellationToken = null)
     {
         try
@@ -146,6 +153,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
             if (filterExpression is not null)
             {
                 query = query.Where(filterExpression);
+            }
+
+            if (orderBy is not null)
+            {
+                query = orderBy(query);
             }
 
             return await query.ToListAsync(cancellationToken ?? CancellationToken.None);

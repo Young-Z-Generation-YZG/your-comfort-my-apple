@@ -56,16 +56,13 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
             var promotionTypeGrpc = promotionType.Name switch
             {
                 "COUPON" => EPromotionTypeGrpc.PromotionTypeCoupon,
-                "EVENT" => EPromotionTypeGrpc.PromotionTypeEvent,
+                "EVENT_ITEM" => EPromotionTypeGrpc.PromotionTypeEventItem,
                 _ => EPromotionTypeGrpc.PromotionTypeUnknown
             };
 
             var result = await _catalogProtoServiceClient.CheckInsufficientGrpcAsync(new CheckInsufficientRequest
             {
-                ModelId = item.ModelId,
-                NormalizedModel = item.ModelName,
-                NormalizedStorage = item.StorageName,
-                NormalizedColor = item.ColorName,
+                SkuId = item.SkuId,
                 Quantity = item.Quantity,
                 PromotionId = item.PromotionId ?? string.Empty,
                 PromotionType = promotionTypeGrpc

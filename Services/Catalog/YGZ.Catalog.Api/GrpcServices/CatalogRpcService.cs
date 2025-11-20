@@ -155,16 +155,13 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
         var promotionType = request.PromotionType switch
         {
             EPromotionTypeGrpc.PromotionTypeCoupon => EPromotionType.COUPON,
-            EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT_ITEM,
+            EPromotionTypeGrpc.PromotionTypeEventItem => EPromotionType.EVENT_ITEM,
             _ => EPromotionType.UNKNOWN
         };
 
         var command = new CheckInsufficientStockCommand
         {
-            ModelId = request.ModelId,
-            NormalizedModel = request.NormalizedModel,
-            NormalizedStorage = request.NormalizedStorage,
-            NormalizedColor = request.NormalizedColor,
+            SkuId = request.SkuId,
             Quantity = request.Quantity.HasValue ? request.Quantity.Value : 0,
             PromotionId = request.PromotionId,
             PromotionType = promotionType

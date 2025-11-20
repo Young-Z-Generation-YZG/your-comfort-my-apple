@@ -35,6 +35,7 @@ public class GetRevenuesQueryHandler : IQueryHandler<GetRevenuesQuery, List<Orde
         var orders = await _repository.GetAllAsync(
             filterExpression: filterExpression,
             includeExpressions: includeExpressions,
+            orderBy: null,
             cancellationToken: cancellationToken);
 
         return orders.Select(order => order.ToResponse()).ToList();

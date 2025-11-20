@@ -39,6 +39,7 @@ import { useSolana } from '@components/providers/solana-provider';
 import { toast } from 'sonner';
 import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 import { useDispatch } from 'react-redux';
+import { TCheckoutBasketItem } from '~/infrastructure/services/basket.service';
 
 const fakeData = [
    {
@@ -53,50 +54,6 @@ const fakeData = [
       is_default: true,
    },
 ];
-
-const fakeCheckoutCart = {
-   user_email: 'user@gmail.com',
-   cart_items: [
-      {
-         is_selected: true,
-         model_id: '664351e90087aa09993f5ae7',
-         product_name: 'iPhone 15 128GB BLUE',
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '',
-            showcase_image_id: '',
-            order: 0,
-         },
-         model: {
-            name: 'iPhone 15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1000,
-         quantity: 2,
-         sub_total_amount: 1800.0,
-         promotion: {
-            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-            promotion_type: 'COUPON',
-            product_unit_price: 1000,
-            discount_type: 'PERCENTAGE',
-            discount_value: 0.1,
-            discount_amount: 100.0,
-            final_price: 900.0,
-         },
-         index: 1,
-      },
-   ],
-   total_amount: 1800.0,
-};
 
 const fakeCheckoutResponse = {
    order_id: 'b384e952-bb28-4f97-8e04-f2f055481d77',
@@ -139,8 +96,6 @@ const fakeCheckoutResponse = {
 export type TCheckoutResponse = typeof fakeCheckoutResponse;
 
 export type TAddressItem = (typeof fakeData)[number];
-export type TCheckoutCart = typeof fakeCheckoutCart;
-export type TCheckoutItem = (typeof fakeCheckoutCart.cart_items)[number];
 
 const CheckoutPage = () => {
    const router = useRouter();
@@ -195,8 +150,6 @@ const CheckoutPage = () => {
 
       return [];
    }, [getAddressesState]);
-
-   console.log('appliedCouponFromQuery', appliedCouponFromQuery);
 
    const form = useForm<CheckoutFormType>({
       resolver: CheckoutResolver,
@@ -300,9 +253,7 @@ const CheckoutPage = () => {
                isOpen={displayPaymentBlockchainModel}
                onClose={handleClosePaymentModal}
                amount={
-                  (
-                     getCheckoutItemsState.data as unknown as TCheckoutCart
-                  )?.total_amount?.toFixed(2) || '0.00'
+                  getCheckoutItemsState.data?.total_amount?.toFixed(2) || '0.00'
                }
             />
          )}
@@ -558,21 +509,21 @@ const CheckoutPage = () => {
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
                         {getCheckoutItemsState.data &&
-                        (getCheckoutItemsState.data as unknown as TCheckoutCart)
-                           .cart_items.length > 0
-                           ? (
-                                getCheckoutItemsState.data as unknown as TCheckoutCart
-                             ).cart_items.map(
-                                (item: TCheckoutItem, index: number) => {
-                                   return (
-                                      <CheckoutItem
-                                         key={index}
-                                         item={item as unknown as TCheckoutItem}
-                                      />
-                                   );
-                                },
-                             )
-                           : null}
+                        getCheckoutItemsState.data.cart_items.length > 0 ? (
+                           getCheckoutItemsState.data.cart_items.map(
+                              (item: TCheckoutBasketItem, index: number) => {
+                                 return (
+                                    <CheckoutItem key={index} item={item} />
+                                 );
+                              },
+                           )
+                        ) : (
+                           <div className="w-full flex flex-col justify-start items-center">
+                              <div className="text-[14px] font-light tracking-[0.2px] font-SFProText">
+                                 No items in your cart
+                              </div>
+                           </div>
+                        )}
                      </div>
                   </div>
                   <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">
@@ -585,14 +536,13 @@ const CheckoutPage = () => {
                            <div className="font-semibold">
                               $
                               {getCheckoutItemsState.data &&
-                              (
-                                 getCheckoutItemsState.data as unknown as TCheckoutCart
-                              ).cart_items.length > 0
-                                 ? (
-                                      getCheckoutItemsState.data as unknown as TCheckoutCart
-                                   ).cart_items
+                              getCheckoutItemsState.data.cart_items.length > 0
+                                 ? getCheckoutItemsState.data.cart_items
                                       .reduce(
-                                         (acc: number, item: TCheckoutItem) =>
+                                         (
+                                            acc: number,
+                                            item: TCheckoutBasketItem,
+                                         ) =>
                                             acc +
                                             item.unit_price * item.quantity,
                                          0,
@@ -617,20 +567,16 @@ const CheckoutPage = () => {
                                     <div className="font-semibold">
                                        - $
                                        {getCheckoutItemsState.data &&
-                                       (
-                                          getCheckoutItemsState.data as unknown as TCheckoutCart
-                                       ).cart_items.length > 0
-                                          ? (
-                                               getCheckoutItemsState.data as unknown as TCheckoutCart
-                                            ).cart_items
+                                       getCheckoutItemsState.data.cart_items
+                                          .length > 0
+                                          ? getCheckoutItemsState.data.cart_items
                                                .reduce(
                                                   (
                                                      acc: number,
-                                                     item: TCheckoutItem,
+                                                     item: TCheckoutBasketItem,
                                                   ) =>
                                                      acc +
-                                                     (item.promotion
-                                                        ?.discount_amount ??
+                                                     (item.discount_amount ??
                                                         0) *
                                                         item.quantity,
                                                   0,
@@ -650,12 +596,10 @@ const CheckoutPage = () => {
                         <div className="">
                            $
                            {getCheckoutItemsState.data &&
-                           (
-                              getCheckoutItemsState.data as unknown as TCheckoutCart
-                           ).cart_items.length > 0
-                              ? (
-                                   getCheckoutItemsState.data as unknown as TCheckoutCart
-                                ).total_amount.toFixed(2)
+                           getCheckoutItemsState.data.cart_items.length > 0
+                              ? getCheckoutItemsState.data.total_amount.toFixed(
+                                   2,
+                                )
                               : '0.00'}
                         </div>
                      </div>

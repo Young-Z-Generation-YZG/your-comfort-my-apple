@@ -65,6 +65,11 @@ export type TOrderItem = {
    deleted_by: string | null;
 };
 
+export interface IBaseQueryParams {
+   _page?: number;
+   _limit?: number;
+}
+
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('ordering-services')(args, api, extraOptions);
 
@@ -82,10 +87,11 @@ export const orderingApi = createApi({
    tagTypes: ['Orders'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getOrders: builder.query<PaginationResponse<TOrder>, void>({
-         query: () => ({
+      getOrders: builder.query<PaginationResponse<TOrder>, IBaseQueryParams>({
+         query: (params?: IBaseQueryParams | null) => ({
             url: '/api/v1/orders',
             method: 'GET',
+            params: params ?? {},
          }),
       }),
       getOrderDetails: builder.query<TOrder, string>({

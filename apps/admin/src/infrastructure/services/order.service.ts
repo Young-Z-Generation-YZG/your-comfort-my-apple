@@ -13,16 +13,6 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    return result;
 };
 
-export type TShippingAddress = {
-   contact_name: string;
-   contact_email: string;
-   contact_phone_number: string;
-   contact_address_line: string;
-   contact_district: string;
-   contact_province: string;
-   contact_country: string;
-};
-
 export type TOrderItem = {
    order_item_id: string;
    order_id: string;
@@ -54,7 +44,15 @@ export type TOrder = {
    order_code: string;
    status: string;
    payment_method: string;
-   shipping_address: TShippingAddress;
+   shipping_address: {
+      contact_name: string;
+      contact_email: string;
+      contact_phone_number: string;
+      contact_address_line: string;
+      contact_district: string;
+      contact_province: string;
+      contact_country: string;
+   };
    order_items: TOrderItem[];
    promotion_id: null;
    promotion_type: string | null;

@@ -13,15 +13,8 @@ import {
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
-import { useDispatch } from 'react-redux';
-import { SyncCart } from '~/infrastructure/redux/features/cart.slice';
-import { useAppSelector } from '~/infrastructure/redux/store';
 
 const useBasketService = () => {
-   const dispatch = useDispatch();
-
-   const cartAppState = useAppSelector((state) => state.cart);
-
    const [getBasketQueryTrigger, getBasketQueryState] = useLazyGetBasketQuery();
    const [getCheckoutItemsQueryTrigger, getCheckoutItemsQueryState] =
       useLazyGetCheckoutItemsQuery();

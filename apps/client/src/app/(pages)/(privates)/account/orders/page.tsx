@@ -18,23 +18,16 @@ import {
    TableRow,
 } from '@components/ui/table';
 import { Badge } from '@components/ui/badge';
-import {
-   Search,
-   ChevronRight,
-   ChevronsRight,
-   ChevronLeft,
-   ChevronsLeft,
-   Ellipsis,
-} from 'lucide-react';
+import { Search, ChevronRight, Ellipsis } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@components/ui/button';
 import { useRouter } from 'next/navigation';
 import { cn } from '~/infrastructure/lib/utils';
-import usePagination from '@components/hooks/use-pagination';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
 import useOrderingService from '@components/hooks/api/use-ordering-service';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { TOrder } from '~/infrastructure/services/ordering.service';
+import useFilters from '~/app/(pages)/shop/_hooks/use-filter';
 
 const getHoverStatusColor = (status: string) => {
    switch (status) {
@@ -98,49 +91,151 @@ const getStatusColor = (status: string) => {
    }
 };
 
+export type TOrderFilter = {
+   _page?: number | null;
+   _limit?: number | null;
+};
+
+const MAX_VISIBLE_ITEM_LEFT = 2; // Number of pages to show on the LEFT side of "..."
+const MAX_VISIBLE_ITEM_RIGHT = 2; // Number of pages to show on the RIGHT side of "..."
+
 const OrderPage = () => {
    const router = useRouter();
 
    const { getOrdersAsync, getOrdersState, isLoading } = useOrderingService();
 
-   useEffect(() => {
-      const fetchOrders = async () => {
-         const result = await getOrdersAsync();
-         if (result.isSuccess) {
-            console.log(result.data);
-         }
-      };
-      fetchOrders();
-   }, [getOrdersAsync]);
+   const { filters, setFilters } = useFilters<TOrderFilter>({
+      _page: 'number',
+      _limit: 'number',
+   });
 
-   const {
-      currentPage,
-      totalPages,
-      pageSize,
-      totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getOrdersState.data && getOrdersState.data.items.length > 0
-         ? getOrdersState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
+   useEffect(() => {
+      getOrdersAsync({
+         _page: filters._page ?? undefined,
+         _limit: filters._limit ?? undefined,
+      });
+   }, [filters, getOrdersAsync]);
+
+   //  const {
+   //     currentPage,
+   //     totalPages,
+   //     pageSize,
+   //     totalRecords,
+   //     isLastPage,
+   //     isFirstPage,
+   //     isNextPage,
+   //     isPrevPage,
+   //     paginationItems,
+   //     getPageNumbers,
+   //  } = usePagination(
+   //     getOrdersState.data && getOrdersState.data.items.length > 0
+   //        ? getOrdersState.data
+   //        : {
+   //             total_records: 0,
+   //             total_pages: 0,
+   //             page_size: 0,
+   //             current_page: 0,
+   //             items: [],
+   //             links: {
+   //                first: null,
+   //                last: null,
+   //                prev: null,
+   //                next: null,
+   //             },
+   //          },
+   //  );
+
+   const getPaginationItems = useCallback(() => {
+      const items: Array<{
+         type: 'nav' | 'page' | 'ellipsis';
+         label: string;
+         value: number | null;
+         disabled?: boolean;
+      }> = [];
+
+      const totalPages = getOrdersState.data?.total_pages || 0;
+      const currentPage = getOrdersState.data?.current_page || 1;
+
+      if (totalPages === 0) return items;
+
+      const isFirstPage = currentPage === 1;
+      const isLastPage = currentPage === totalPages;
+
+      // First page button
+      items.push({
+         type: 'nav',
+         label: '<<',
+         value: 1,
+         disabled: isFirstPage,
+      });
+
+      // Previous page button
+      items.push({
+         type: 'nav',
+         label: '<',
+         value: currentPage > 1 ? currentPage - 1 : null,
+         disabled: isFirstPage,
+      });
+
+      // Page numbers - MAX_VISIBLE_ITEM_LEFT = pages on LEFT of "...", MAX_VISIBLE_ITEM_RIGHT = pages on RIGHT of "..."
+      const pagesToShow = new Set<number>();
+
+      // Show first MAX_VISIBLE_ITEM_LEFT + 1 pages (including page 1, so if LEFT=2, show 1,2,3)
+      const leftEndPage = Math.min(MAX_VISIBLE_ITEM_LEFT + 1, totalPages);
+      for (let i = 1; i <= leftEndPage; i++) {
+         pagesToShow.add(i);
+      }
+
+      // Show last MAX_VISIBLE_ITEM_RIGHT + 1 pages (including last page, so if RIGHT=2, show 33,34,35 for totalPages=35)
+      const rightStartPage = Math.max(1, totalPages - MAX_VISIBLE_ITEM_RIGHT);
+      for (let i = rightStartPage; i <= totalPages; i++) {
+         pagesToShow.add(i);
+      }
+
+      // Always include current page if it's not already in the visible range
+      pagesToShow.add(currentPage);
+
+      // Sort pages
+      const sortedPages = Array.from(pagesToShow).sort((a, b) => a - b);
+
+      // Build page items with ellipsis
+      for (let i = 0; i < sortedPages.length; i++) {
+         const page = sortedPages[i];
+
+         // Add ellipsis if there's a gap before this page
+         if (i > 0 && sortedPages[i - 1] < page - 1) {
+            items.push({
+               type: 'ellipsis',
+               label: '...',
+               value: null,
+            });
+         }
+
+         items.push({
+            type: 'page',
+            label: `${page}`,
+            value: page,
+         });
+      }
+
+      // Next page button
+      items.push({
+         type: 'nav',
+         label: '>',
+         value: currentPage < totalPages ? currentPage + 1 : null,
+         disabled: isLastPage,
+      });
+
+      // Last page button
+      items.push({
+         type: 'nav',
+         label: '>>',
+         value: totalPages,
+         disabled: isLastPage,
+      });
+
+      return items;
+   }, [getOrdersState.data]);
 
    return (
       <CardContext className="px-0 py-0">
@@ -159,12 +254,12 @@ const OrderPage = () => {
                         Manage your orders and track their status in one place.
                      </p>
                   </div>
-                  {totalRecords > 0 && (
+                  {/* {totalRecords > 0 && (
                      <div className="text-sm text-gray-500">
                         {totalRecords} {totalRecords === 1 ? 'order' : 'orders'}{' '}
                         found
                      </div>
-                  )}
+                  )} */}
                </div>
             </motion.div>
 
@@ -234,7 +329,8 @@ const OrderPage = () => {
                         Loading your orders...
                      </p>
                   </div>
-               ) : paginationItems.length > 0 ? (
+               ) : getOrdersState.data?.items &&
+                 getOrdersState.data?.items.length > 0 ? (
                   <div className="overflow-x-auto">
                      <Table>
                         <TableHeader>
@@ -257,7 +353,7 @@ const OrderPage = () => {
                         </TableHeader>
                         <TableBody>
                            <AnimatePresence>
-                              {paginationItems.map(
+                              {getOrdersState.data?.items.map(
                                  (order: TOrder, index: number) => {
                                     const status =
                                        order.status ==
@@ -356,84 +452,48 @@ const OrderPage = () => {
                )}
 
                {/* Pagination Controls */}
-               {totalPages >= 1 && (
+               {getOrdersState.data && getOrdersState.data.total_pages > 0 && (
                   <div className="flex items-center gap-2 justify-end mr-5 py-5">
-                     {/* First Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {}}
-                        disabled={isFirstPage}
-                     >
-                        <ChevronsLeft className="h-4 w-4" />
-                     </Button>
-
-                     {/* Previous Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {}}
-                        disabled={!isPrevPage}
-                     >
-                        <ChevronLeft className="h-4 w-4" />
-                     </Button>
-
-                     {/* Page Numbers */}
-                     <div className="flex items-center gap-1">
-                        {getPageNumbers().map((page, index) => {
-                           if (page === '...') {
-                              return (
-                                 <span
-                                    key={`ellipsis-${index}`}
-                                    className="px-2 text-gray-400"
-                                 >
-                                    <Ellipsis className="h-4 w-4" />
-                                 </span>
-                              );
-                           }
-
+                     {getPaginationItems().map((item, index) => {
+                        if (item.type === 'ellipsis') {
                            return (
-                              <Button
-                                 key={index}
-                                 variant={
-                                    currentPage === page ? 'default' : 'outline'
-                                 }
-                                 size="icon"
-                                 className={cn(
-                                    'h-9 w-9',
-                                    currentPage === page &&
-                                       'bg-black text-white hover:bg-black/90',
-                                 )}
+                              <span
+                                 key={`ellipsis-${index}`}
+                                 className="px-2 text-gray-400 flex items-center"
                               >
-                                 {page as number}
-                              </Button>
+                                 <Ellipsis className="h-4 w-4" />
+                              </span>
                            );
-                        })}
-                     </div>
+                        }
 
-                     {/* Next Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {}}
-                        disabled={!isNextPage}
-                     >
-                        <ChevronRight className="h-4 w-4" />
-                     </Button>
+                        const isCurrentPage =
+                           item.type === 'page' &&
+                           item.value ===
+                              (getOrdersState.data?.current_page || 1);
 
-                     {/* Last Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {}}
-                        disabled={isLastPage}
-                     >
-                        <ChevronsRight className="h-4 w-4" />
-                     </Button>
+                        return (
+                           <Button
+                              key={`${item.type}-${item.label}-${index}`}
+                              variant={isCurrentPage ? 'default' : 'outline'}
+                              size="sm"
+                              disabled={item.disabled || item.value === null}
+                              onClick={() => {
+                                 if (item.value !== null && !item.disabled) {
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _page: item.value!,
+                                    }));
+                                 }
+                              }}
+                              className={cn(
+                                 isCurrentPage &&
+                                    'bg-black text-white hover:bg-black/90',
+                              )}
+                           >
+                              {item.label}
+                           </Button>
+                        );
+                     })}
                   </div>
                )}
             </motion.div>

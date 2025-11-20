@@ -237,7 +237,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 DiscountType = cartDiscountType,
                 DiscountValue = cartDiscountValue,
                 DiscountAmount = cartDiscountAmount,
-                TotalAmount = checkoutShoppingCart.TotalAmount
+                TotalAmount = shoppingCart.TotalAmount
             }
         };
 

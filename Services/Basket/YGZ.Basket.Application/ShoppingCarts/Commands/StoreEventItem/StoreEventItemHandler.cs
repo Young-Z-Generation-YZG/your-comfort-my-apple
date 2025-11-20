@@ -82,6 +82,12 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
             ShoppingCartItem cartItem = await ShoppingCartItemMapping(eventItem);
             shoppingCart.CartItems.Add(cartItem);
 
+            shoppingCart.PromotionId = cartItem.Promotion?.PromotionEvent.PromotionId;
+            shoppingCart.DiscountType = cartItem.Promotion?.PromotionEvent.DiscountType;
+            shoppingCart.DiscountAmount = cartItem.DiscountAmount;
+            shoppingCart.DiscountValue = cartItem.Promotion?.PromotionEvent.DiscountValue;
+            shoppingCart.MaxDiscountAmount = null;
+
             var storeResult = await _basketRepository.StoreBasketAsync(shoppingCart, cancellationToken);
 
             if (storeResult.IsFailure)
@@ -135,6 +141,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
         var quantity = 1;
 
+
         var shoppingCartItem = ShoppingCartItem.Create(
             isSelected: true,
             modelId: "missing model id",
@@ -150,6 +157,8 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
             modelSlug: modelSlug ?? string.Empty,
             order: 1
         );
+
+        shoppingCartItem.DiscountAmount = eventItem.DiscountAmount.HasValue ? (decimal)eventItem.DiscountAmount.Value : 0;
 
         return shoppingCartItem;
     }

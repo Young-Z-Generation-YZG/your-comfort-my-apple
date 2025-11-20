@@ -4,7 +4,6 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Utils;
-using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
@@ -59,6 +58,7 @@ public class RevenuesByTenantsHandler : IQueryHandler<RevenuesByTenantsQuery, Re
             // Get all orders matching the tenants
             var orders = await _repository.GetAllAsync(
                 filterExpression: filterExpression,
+                orderBy: null,
                 includeExpressions: includeExpressions,
                 cancellationToken: cancellationToken);
 

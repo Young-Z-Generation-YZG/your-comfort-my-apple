@@ -40,7 +40,7 @@ enum EPromotionTypeGrpc
 {
     PROMOTION_TYPE_UNKNOWN = 0;
     PROMOTION_TYPE_COUPON = 1;
-    PROMOTION_TYPE_EVENT = 2;
+    PROMOTION_TYPE_EVENT_ITEM = 2;
 }
 
 service CatalogProtoService {
@@ -109,13 +109,10 @@ message CheckTenantExistRequest {
 }
 
 message CheckInsufficientRequest {
-    google.protobuf.StringValue model_id = 1;
-    google.protobuf.StringValue normalized_model = 2;
-    google.protobuf.StringValue normalized_storage = 3;
-    google.protobuf.StringValue normalized_color = 4;
-    google.protobuf.Int32Value quantity = 5;
-    google.protobuf.StringValue promotion_id = 6;
-    EPromotionTypeGrpc promotion_type = 7;
+    google.protobuf.StringValue sku_id = 1;
+    google.protobuf.Int32Value quantity = 2;
+    google.protobuf.StringValue promotion_id = 3;
+    EPromotionTypeGrpc promotion_type = 4;
 }
 
 

@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useCheckApiError } from '@components/hooks/use-check-error';
 import {
+   IBaseQueryParams,
    useCancelOrderMutation,
    useConfirmOrderMutation,
    useLazyGetOrderDetailsQuery,
@@ -63,19 +64,22 @@ const useOrderingService = () => {
       [getOrderDetailsTrigger],
    );
 
-   const getOrdersAsync = useCallback(async () => {
-      try {
-         const result = await getOrdersTrigger().unwrap();
-         return {
-            isSuccess: true,
-            isError: false,
-            data: result,
-            error: null,
-         };
-      } catch (error) {
-         return { isSuccess: false, isError: true, data: null, error };
-      }
-   }, [getOrdersTrigger]);
+   const getOrdersAsync = useCallback(
+      async (params?: IBaseQueryParams | null) => {
+         try {
+            const result = await getOrdersTrigger(params ?? {}).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [getOrdersTrigger],
+   );
 
    const confirmOrderAsync = useCallback(
       async (orderId: string) => {

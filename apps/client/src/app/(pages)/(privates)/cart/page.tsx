@@ -22,7 +22,7 @@ import CartItem from './_components/cart-item';
 import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
 import useBasketService from '@components/hooks/api/use-basket-service';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
@@ -277,9 +277,7 @@ const CartPage = () => {
                         <div className="font-semibold">
                            $
                            {getBasketState.data
-                              ? (
-                                   getBasketState.data as unknown as TCart
-                                ).total_amount.toFixed(2)
+                              ? getBasketState.data.sub_total_amount.toFixed(2)
                               : '0.00'}
                         </div>
                      </div>
@@ -300,12 +298,7 @@ const CartPage = () => {
                                     )?.cart_items
                                        .reduce(
                                           (acc: number, item: TCartItem) =>
-                                             acc +
-                                             ((item as unknown as TCartItem)
-                                                .promotion?.discount_amount ??
-                                                0) *
-                                                (item as unknown as TCartItem)
-                                                   .quantity,
+                                             acc + (item.discount_amount ?? 0),
                                           0,
                                        )
                                        .toFixed(2)}

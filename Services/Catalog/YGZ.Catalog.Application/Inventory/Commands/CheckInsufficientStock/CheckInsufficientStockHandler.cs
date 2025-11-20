@@ -24,11 +24,7 @@ public class CheckInsufficientStockHandler : ICommandHandler<CheckInsufficientSt
 
     public async Task<Result<bool>> Handle(CheckInsufficientStockCommand request, CancellationToken cancellationToken)
     {
-        var filter = Builders<SKU>.Filter.And(
-            Builders<SKU>.Filter.Eq("model_id", new ObjectId(request.ModelId)),
-            Builders<SKU>.Filter.Eq("model.normalized_name", request.NormalizedModel),
-            Builders<SKU>.Filter.Eq("storage.normalized_name", request.NormalizedStorage),
-            Builders<SKU>.Filter.Eq("color.normalized_name", request.NormalizedColor));
+        var filter = Builders<SKU>.Filter.And(Builders<SKU>.Filter.Eq("_id", new ObjectId(request.SkuId)));
 
         var sku = await _repository.GetByFilterAsync(filter, cancellationToken);
 

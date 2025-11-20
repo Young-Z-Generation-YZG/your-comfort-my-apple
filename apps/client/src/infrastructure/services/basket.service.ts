@@ -4,6 +4,7 @@ import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
+import { TColor, TModel, TStorage } from './catalog.service';
 
 const baseQueryHandler = async (
    args: string | FetchArgs,
@@ -30,54 +31,16 @@ const baseQueryHandler = async (
    return result;
 };
 
-const fakeGetBasketResponse = {
-   user_email: 'lov3rinve146@gmail.com',
-   cart_items: [
-      {
-         is_selected: true,
-         model_id: '664351e90087aa09993f5ae7',
-         sku_id: '664351e90087aa09993f5ae7',
-         product_name: 'iPhone 15 128GB Blue',
-         color: {
-            name: 'Blue',
-            normalized_name: 'BLUE',
-            hex_code: '',
-            showcase_image_id: '',
-            order: 0,
-         },
-         model: {
-            name: 'iPhone 15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1000,
-         promotion: {
-            promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-            promotion_type: 'COUPON',
-            product_unit_price: 1000,
-            discount_type: 'PERCENTAGE',
-            discount_value: 0.1,
-            discount_amount: 100.0,
-            final_price: 900.0,
-         },
-         quantity: 1,
-         sub_total_amount: 1000,
-         index: 1,
-      },
-   ],
-   total_amount: 1000,
-};
-
 export type TCart = {
    user_email: string;
    cart_items: TCartItem[];
+   sub_total_amount: number;
+   promotion_id: string;
+   promotion_type: string;
+   discount_type: string;
+   discount_value: number;
+   discount_amount: number;
+   max_discount_amount: number | null;
    total_amount: number;
 };
 
@@ -86,36 +49,16 @@ export type TCartItem = {
    model_id: string;
    sku_id: string;
    product_name: string;
-   color: {
-      name: string;
-      normalized_name: string;
-      hex_code: string;
-      showcase_image_id: string;
-      order: number;
-   };
-   model: {
-      name: string;
-      normalized_name: string;
-      order: number;
-   };
-   storage: {
-      name: string;
-      normalized_name: string;
-      order: number;
-   };
+   color: TColor;
+   model: TModel;
+   storage: TStorage;
    display_image_url: string;
    unit_price: number;
-   promotion: {
-      promotion_id: string;
-      promotion_type: string;
-      product_unit_price: number;
-      discount_type: string;
-      discount_value: number;
-      discount_amount: number;
-      final_price: number;
-   } | null;
    quantity: number;
    sub_total_amount: number;
+   promotion: TPromotion | null;
+   discount_amount: number;
+   total_amount: number;
    index: number;
 };
 
@@ -141,11 +84,64 @@ export type TStoreBasketItem = {
    quantity: number;
 };
 
-const storeEventItemPayloadExample = {
-   event_item_id: '04edf970-b569-44ac-a116-9847731929ab',
+export interface IStoreEventItemPayload {
+   event_item_id: string;
+}
+
+export type TUSerInfo = {
+   email: string;
+   first_name: string;
+   last_name: string;
+   phone_number: string;
+   birth_date: string;
+   image_id: string;
+   image_url: string;
+   default_address_label: string;
+   default_contact_name: string;
+   default_contact_phone_number: string;
+   default_address_line: string;
+   default_address_district: string;
+   default_address_province: string;
+   default_address_country: string;
 };
 
-export type TStoreEventItemPayload = typeof storeEventItemPayloadExample;
+export type TPromotion = {
+   promotion_id: string;
+   promotion_type: string;
+   discount_type: string;
+   discount_value: number;
+};
+
+export type TCheckoutBasketItem = {
+   is_selected: boolean;
+   model_id: string;
+   sku_id: string;
+   product_name: string;
+   color: TColor;
+   model: TModel;
+   storage: TStorage;
+   display_image_url: string;
+   unit_price: number;
+   quantity: number;
+   sub_total_amount: number;
+   promotion: TPromotion | null;
+   discount_amount: number;
+   total_amount: number;
+   index: number;
+};
+
+export type TCheckoutBasket = {
+   user_email: string;
+   cart_items: TCheckoutBasketItem[];
+   sub_total_amount: number;
+   promotion_id: string;
+   promotion_type: string;
+   discount_type: string;
+   discount_value: number;
+   discount_amount: number;
+   max_discount_amount: number | null;
+   total_amount: number;
+};
 
 export const basketApi = createApi({
    reducerPath: 'basket-api',
@@ -160,8 +156,8 @@ export const basketApi = createApi({
          }),
          invalidatesTags: ['Baskets'],
       }),
-      storeEventItem: builder.mutation<boolean, TStoreEventItemPayload>({
-         query: (payload: TStoreEventItemPayload) => ({
+      storeEventItem: builder.mutation<boolean, IStoreEventItemPayload>({
+         query: (payload: IStoreEventItemPayload) => ({
             url: `/api/v1/baskets/event-item`,
             method: 'POST',
             body: payload,
@@ -173,7 +169,7 @@ export const basketApi = createApi({
             createQueryEncodedUrl('/api/v1/baskets', queries as object),
          providesTags: ['Baskets'],
       }),
-      getCheckoutItems: builder.query<TCart, unknown>({
+      getCheckoutItems: builder.query<TCheckoutBasket, unknown>({
          query: (queries: unknown) =>
             createQueryEncodedUrl(
                '/api/v1/baskets/checkout-items',

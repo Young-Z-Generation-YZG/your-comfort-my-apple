@@ -1,11 +1,11 @@
 'use client';
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import { TCheckoutItem } from '../page';
 import NextImage from 'next/image';
+import { TCheckoutBasketItem } from '~/infrastructure/services/basket.service';
 
 interface CheckoutItemProps {
-   item: TCheckoutItem;
+   item: TCheckoutBasketItem;
 }
 
 const CheckoutItem = ({ item }: CheckoutItemProps) => {
@@ -42,8 +42,7 @@ const CheckoutItem = ({ item }: CheckoutItemProps) => {
                {item.promotion && (
                   <div className="">
                      <span className="font-semibold mt-1 text-sm inline-block text-red-500">
-                        ${item.promotion?.final_price.toFixed(2)} x{' '}
-                        {item.quantity}
+                        ${item.total_amount.toFixed(2)} x {item.quantity}
                      </span>
                      <span className="font-semibold mt-1 text-xs inline-block text-[#A0A0A0] line-through ml-2">
                         ${item.unit_price.toFixed(2)}

@@ -81,10 +81,7 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
             cartPromotionType = EPromotionType.EVENT_ITEM.Name;
             cartDiscountType = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountType;
             cartDiscountValue = checkoutShoppingCart.CartItems.First().Promotion?.PromotionEvent?.DiscountValue;
-            // Calculate total discount amount from cart items for event promotions
-            cartDiscountAmount = checkoutShoppingCart.CartItems
-                .Where(item => item.Promotion?.PromotionEvent != null)
-                .Sum(item => item.DiscountAmount ?? 0);
+            cartDiscountAmount = shoppingCart.DiscountAmount;
         }
         else
         {

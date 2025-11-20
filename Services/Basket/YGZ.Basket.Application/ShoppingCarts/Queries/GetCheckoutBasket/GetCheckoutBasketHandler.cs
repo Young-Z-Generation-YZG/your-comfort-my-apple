@@ -75,11 +75,9 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 PromotionType = EPromotionType.EVENT_ITEM.Name,
                 DiscountType = eventPromotion?.DiscountType,
                 DiscountValue = eventPromotion?.DiscountValue,
-                DiscountAmount = FilterEventItemsShoppingCart.CartItems
-                    .Where(item => item.Promotion?.PromotionEvent != null)
-                    .Sum(item => item.DiscountAmount ?? 0),
+                DiscountAmount = shoppingCart.DiscountAmount,
                 MaxDiscountAmount = null,
-                TotalAmount = FilterEventItemsShoppingCart.TotalAmount
+                TotalAmount = shoppingCart.TotalAmount
             };
         }
 

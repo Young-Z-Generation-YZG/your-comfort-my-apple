@@ -36,7 +36,10 @@ public class GetOrdersByAdminHandler : IQueryHandler<GetOrdersByAdminQuery, Pagi
             x => x.OrderItems
         };
 
+        Func<IQueryable<Order>, IOrderedQueryable<Order>> orderByCreatedAtAsc = query => query.OrderByDescending(order => order.CreatedAt);
+
         var result = await _repository.GetAllAsync(filterExpression: filterExpression,
+                                                   orderBy: orderByCreatedAtAsc,
                                                    page: request._page,
                                                    limit: request._limit,
                                                    includeExpressions: includeExpressions,
