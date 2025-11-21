@@ -64,6 +64,7 @@ import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import { TOrder } from '~/src/infrastructure/services/order.service';
+import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 
 const getStatusStyle = (status: string) => {
    switch (status) {
@@ -446,50 +447,32 @@ const OnlineOrdersPage = () => {
       _orderStatus: { array: 'string' },
       _customerEmail: 'string',
    });
-
-   const {
-      currentPage,
-      totalPages,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getOrdersByAdminState.isSuccess &&
-         getOrdersByAdminState.data &&
-         getOrdersByAdminState.data.items.length > 0
-         ? getOrdersByAdminState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
+   const { getPaginationItems } = usePaginationV2(
+      getOrdersByAdminState.data ?? {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 0,
+         current_page: 0,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      },
    );
 
    useEffect(() => {
-      const fetchOrders = async () => {
-         await getOrdersByAdminAsync({
-            _page: filters._page ?? undefined,
-            _limit: filters._limit ?? undefined,
-            _orderStatus: filters._orderStatus ?? undefined,
-         });
-      };
-
-      fetchOrders();
+      getOrdersByAdminAsync({
+         _page: filters._page ?? undefined,
+         _limit: filters._limit ?? undefined,
+         _orderStatus: filters._orderStatus ?? undefined,
+      });
    }, [filters, getOrdersByAdminAsync, tenantId, impersonatedUser]);
 
    const table = useReactTable({
-      data: paginationItems,
+      data: getOrdersByAdminState.data?.items ?? [],
       columns: columns,
       onSortingChange: setSorting,
       onColumnFiltersChange: setColumnFilters,
@@ -971,148 +954,52 @@ const OnlineOrdersPage = () => {
             </div>
 
             {/* Pagination Controls */}
-            {totalPages >= 1 && (
-               <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                     <Select
-                        value={filters._limit?.toString() || '10'}
-                        onValueChange={(value) => {
-                           setFilters((prev) => ({
-                              ...prev,
-                              _limit: Number(value),
-                              _page: 1,
-                           }));
-                        }}
-                     >
-                        <SelectTrigger className="w-auto h-9">
-                           <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectGroup>
-                              <SelectItem value="10">10 / page</SelectItem>
-                              <SelectItem value="20">20 / page</SelectItem>
-                              <SelectItem value="50">30 / page</SelectItem>
-                           </SelectGroup>
-                        </SelectContent>
-                     </Select>
-
-                     <div className="text-muted-foreground flex-1 text-sm">
-                        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-                        {table.getFilteredRowModel().rows.length} row(s)
-                        selected.
-                     </div>
-                  </div>
-
+            {/* Pagination Controls */}
+            {getOrdersByAdminState.data &&
+               getOrdersByAdminState.data.total_pages > 0 && (
                   <div className="flex items-center gap-2 justify-end mr-5 py-5">
-                     {/* First Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {
-                           setFilters((prev) => ({
-                              ...prev,
-                              _page: 1,
-                           }));
-                        }}
-                        disabled={isFirstPage}
-                     >
-                        <ChevronsLeft className="h-4 w-4" />
-                     </Button>
-
-                     {/* Previous Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {
-                           if (currentPage > 1) {
-                              setFilters((prev) => ({
-                                 ...prev,
-                                 _page: currentPage - 1,
-                              }));
-                           }
-                        }}
-                        disabled={!isPrevPage}
-                     >
-                        <ChevronLeft className="h-4 w-4" />
-                     </Button>
-
-                     {/* Page Numbers */}
-                     <div className="flex items-center gap-1">
-                        {getPageNumbers().map((page, index) => {
-                           if (page === '...') {
-                              return (
-                                 <span
-                                    key={`ellipsis-${index}`}
-                                    className="px-2 text-gray-400"
-                                 >
-                                    <Ellipsis className="h-4 w-4" />
-                                 </span>
-                              );
-                           }
-
+                     {getPaginationItems().map((item, index) => {
+                        if (item.type === 'ellipsis') {
                            return (
-                              <Button
-                                 key={index}
-                                 variant={
-                                    currentPage === page ? 'default' : 'outline'
-                                 }
-                                 size="icon"
-                                 className={cn(
-                                    'h-9 w-9',
-                                    currentPage === page &&
-                                       'bg-black text-white hover:bg-black/90',
-                                 )}
-                                 onClick={() => {
+                              <span
+                                 key={`ellipsis-${index}`}
+                                 className="px-2 text-gray-400 flex items-center"
+                              >
+                                 <Ellipsis className="h-4 w-4" />
+                              </span>
+                           );
+                        }
+
+                        const isCurrentPage =
+                           item.type === 'page' &&
+                           item.value ===
+                              (getOrdersByAdminState.data?.current_page || 1);
+
+                        return (
+                           <Button
+                              key={`${item.type}-${item.label}-${index}`}
+                              variant={isCurrentPage ? 'default' : 'outline'}
+                              size="sm"
+                              disabled={item.disabled || item.value === null}
+                              onClick={() => {
+                                 if (item.value !== null && !item.disabled) {
                                     setFilters((prev) => ({
                                        ...prev,
-                                       _page: page as number,
+                                       _page: item.value!,
                                     }));
-                                 }}
-                              >
-                                 {page as number}
-                              </Button>
-                           );
-                        })}
-                     </div>
-
-                     {/* Next Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {
-                           if (currentPage < totalPages) {
-                              setFilters((prev) => ({
-                                 ...prev,
-                                 _page: currentPage + 1,
-                              }));
-                           }
-                        }}
-                        disabled={!isNextPage}
-                     >
-                        <ChevronRight className="h-4 w-4" />
-                     </Button>
-
-                     {/* Last Page */}
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-9 w-9"
-                        onClick={() => {
-                           setFilters((prev) => ({
-                              ...prev,
-                              _page: totalPages,
-                           }));
-                        }}
-                        disabled={isLastPage}
-                     >
-                        <ChevronsRight className="h-4 w-4" />
-                     </Button>
+                                 }
+                              }}
+                              className={cn(
+                                 isCurrentPage &&
+                                    'bg-black text-white hover:bg-black/90',
+                              )}
+                           >
+                              {item.label}
+                           </Button>
+                        );
+                     })}
                   </div>
-               </div>
-            )}
+               )}
          </LoadingOverlay>
       </div>
    );

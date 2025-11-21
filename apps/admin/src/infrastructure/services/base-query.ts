@@ -20,19 +20,13 @@ export const baseQuery = (service: string) =>
             headers.set('Authorization', `Bearer ${accessToken}`);
          }
 
-         //  const { tenantId } = (getState() as RootState).tenant;
+         const { tenantId } = (getState() as RootState).tenant;
 
-         //  // Use impersonated user token if available, otherwise current user
-         //  const accessToken =
-         //     impersonatedUser?.accessToken || currentUser?.accessToken;
+         console.log('TENANT ID: ', tenantId);
 
-         //  if (accessToken) {
-         //     headers.set('Authorization', `Bearer ${accessToken}`);
-         //  }
-
-         //  if (tenantId) {
-         //     headers.set('X-TenantId', tenantId);
-         //  }
+         if (tenantId) {
+            headers.set('X-TenantId', tenantId);
+         }
 
          headers.set('ngrok-skip-browser-warning', 'true');
 

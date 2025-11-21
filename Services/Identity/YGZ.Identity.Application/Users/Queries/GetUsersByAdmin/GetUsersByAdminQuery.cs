@@ -6,6 +6,7 @@ namespace YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 
 public sealed record GetUsersByAdminQuery : IQuery<PaginationResponse<UserResponse>>
 {
+    public string? TenantId { get; init; }
     public int? Page { get; init; }
     public int? Limit { get; init; }
     public string? Email { get; init; }

@@ -21,7 +21,7 @@ const useIdentityService = () => {
             // Merge custom option into params
             const queryParams = {
                ...params,
-               __useSuperAdminToken: options?.useSuperAdminToken || false,
+               //    __useSuperAdminToken: options?.useSuperAdminToken || false,
             };
 
             // Call RTK Query trigger with merged params

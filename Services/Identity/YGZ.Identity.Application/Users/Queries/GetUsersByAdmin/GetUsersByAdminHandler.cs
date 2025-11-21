@@ -1,9 +1,11 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Identity;
 using YGZ.BuildingBlocks.Shared.Utils;
@@ -34,25 +36,73 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
 
     public async Task<Result<PaginationResponse<UserResponse>>> Handle(GetUsersByAdminQuery request, CancellationToken cancellationToken)
     {
+        var userRolesFromContext = _userHttpContext.GetUserRoles();
+        var isAdminSuper = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_SUPER);
+        var tenantIdFromHeader = request.TenantId;
+        var tenantIdFromContext = _tenantHttpContext.GetTenantId();
+        
         try
         {
-            var filterExpression = BuildExpression(request);
+            var dbContext = _identityDbContext.GetDbContext();
+            var userRoles = dbContext.Set<IdentityUserRole<string>>();
+            var roles = dbContext.Set<IdentityRole>();
 
+            IQueryable<User> query = _userDbSet
+                .AsNoTracking()
+                .Include(x => x.Profile);
+
+            Expression<Func<User, bool>> filterExpression;
+
+            if (isAdminSuper)
+            {
+                query = query.IgnoreQueryFilters();
+
+                // Exclude users with "ADMIN_SUPER" and "USER" roles
+                query = query.Where(user => !userRoles
+                    .Join(roles,
+                        userRole => userRole.RoleId,
+                        role => role.Id,
+                        (userRole, role) => new { userRole.UserId, role.Name })
+                    .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.USER))
+                    .Any());
+
+                filterExpression = BuildExpression(request, tenantIdFromHeader);
+            }
+            else
+            {
+                query = query.Where(user => userRoles
+                    .Join(roles,
+                        userRole => userRole.RoleId,
+                        role => role.Id,
+                        (userRole, role) => new { userRole.UserId, role.Name })
+                    .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.ADMIN || x.Name == AuthorizationConstants.Roles.STAFF))
+                    .Any());
+
+                filterExpression = BuildExpression(request, tenantIdFromContext);
+            }
+
+            if (filterExpression != null)
+            {
+                query = query.Where(filterExpression);
+            }
+
+            // Apply sorting by CreatedAt DESC
+            query = query.OrderByDescending(user => user.CreatedAt);
+
+            // Calculate pagination
             var currentPage = request.Page ?? 1;
             var pageSize = request.Limit ?? 10;
-
-            var query = _userDbSet.AsNoTracking()
-                .Where(filterExpression)
-                .Include(x => x.Profile);
 
             var totalRecords = await query.CountAsync(cancellationToken);
             var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
+            // Apply pagination
             var users = await query
                 .Skip((currentPage - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
+            // Map to response
             var userResponses = users.Select(user => user.ToResponse()).ToList();
 
             var response = MapToResponse(userResponses, totalRecords, totalPages, request);
@@ -65,9 +115,14 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
         }
     }
 
-    private static Expression<Func<User, bool>> BuildExpression(GetUsersByAdminQuery request)
+    private static Expression<Func<User, bool>> BuildExpression(GetUsersByAdminQuery request, string tenantId)
     {
         var filterExpression = ExpressionBuilder.New<User>();
+
+        if (!string.IsNullOrWhiteSpace(tenantId))
+        {
+            filterExpression = filterExpression.And(user => user.TenantId == tenantId);
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Email))
         {

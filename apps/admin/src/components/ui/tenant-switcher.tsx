@@ -24,20 +24,22 @@ import { useDispatch } from 'react-redux';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
-import useAuthService from '~/src/hooks/api/use-auth-service';
-import { setRoles } from '~/src/infrastructure/redux/features/auth.slice';
 import { TTenant } from '~/src/infrastructure/services/tenant.service';
 
-const DEFAULT_TENANT_ID = '664355f845e56534956be32b';
-
 export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
-   const { tenantId } = useAppSelector((state) => state.tenant);
    const [selectedTenant, setSelectedTenant] = useState<TTenant | null>(null);
    const [searchQuery, setSearchQuery] = useState('');
 
    const { currentUser, impersonatedUser } = useAppSelector(
       (state) => state.auth,
    );
+   const { tenantId: currentTenantId } = useAppSelector(
+      (state) => state.tenant,
+   );
+
+   const DEFAULT_TENANT_ID = useMemo(() => {
+      return currentUser?.tenantId || null;
+   }, [currentUser?.tenantId]);
 
    const dispatch = useDispatch();
 
@@ -45,10 +47,6 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       () => currentUser?.roles || impersonatedUser?.roles || [],
       [currentUser, impersonatedUser],
    );
-
-   const defaultTenant = useMemo(() => {
-      return tenants.find((t) => t.id === DEFAULT_TENANT_ID) || null;
-   }, [tenants]);
 
    // Check if user has permission to switch tenants
    const canSwitchTenants = useMemo(
@@ -64,61 +62,49 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       );
    }, [tenants, searchQuery]);
 
-   const { getIdentityAsync } = useAuthService();
-
    const handleSelectTenant = (tenant: TTenant) => {
       setSelectedTenant(tenant);
       setSearchQuery('');
-      //   dispatch(
-      //      setTenant({
-      //         tenantId: tenant.id,
-      //         tenantSubDomain: tenant.sub_domain,
-      //         tenantName: tenant.name,
-      //      }),
-      //   );
+
+      const isDefaultTenant = tenant.id === DEFAULT_TENANT_ID;
+      const tenantPayload = {
+         tenantId: isDefaultTenant ? null : tenant.id,
+         branchId: isDefaultTenant
+            ? null
+            : (tenant.embedded_branch?.id ?? null),
+         tenantSubDomain: isDefaultTenant ? null : tenant.sub_domain,
+      };
+
+      dispatch(setTenant(tenantPayload));
    };
 
-   //    useEffect(() => {
-   //       const fetchIdentity = async () => {
-   //          const identityResult = await getIdentityAsync();
-
-   //          if (identityResult.isSuccess && identityResult.data) {
-   //             dispatch(
-   //                setRoles({
-   //                   currentUser: {
-   //                      roles: null,
-   //                   },
-   //                   impersonatedUser: {
-   //                      roles: identityResult.data.roles,
-   //                   },
-   //                }),
-   //             );
-
-   //             dispatch(
-   //                setTenant({
-   //                   tenantId: identityResult.data.tenant_id,
-   //                }),
-   //             );
-   //          }
-   //       };
-
-   //       if (impersonatedUser) {
-   //          fetchIdentity();
-   //       }
-   //    }, [impersonatedUser, getIdentityAsync, dispatch]);
-
+   // Default selected tenant
    useEffect(() => {
       if (tenants.length === 0) return;
 
-      if (tenantId || defaultTenant) {
-         setSelectedTenant(
-            tenants.find((t) => t.id === tenantId) || defaultTenant || null,
-         );
+      if (currentTenantId) {
+         const currentTenant = tenants.find((t) => t.id === currentTenantId);
+         if (currentTenant) {
+            setSelectedTenant(currentTenant);
+         }
+
+         return;
       }
-   }, [tenants, tenantId, setSelectedTenant, defaultTenant]);
+
+      const defaultTenant =
+         tenants.find((t) => t.id === currentUser?.tenantId) || null;
+
+      if (defaultTenant) {
+         setSelectedTenant(defaultTenant);
+      }
+   }, [currentUser?.tenantId, tenants, currentTenantId]);
 
    // Don't render if no tenants available
-   if (!selectedTenant || tenants.length === 0) {
+   if (
+      !selectedTenant ||
+      tenants.length === 0 ||
+      (currentTenantId && impersonatedUser)
+   ) {
       return null;
    }
 
@@ -168,31 +154,33 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
                               No tenant found.
                            </div>
                         ) : (
-                           filteredTenants.map((tenant) => (
-                              <DropdownMenuItem
-                                 key={tenant.id}
-                                 onSelect={() => handleSelectTenant(tenant)}
-                                 className="flex items-center gap-2"
-                                 disabled={
-                                    tenant.id === tenantId ||
-                                    tenant.id === defaultTenant?.id
-                                 }
-                              >
-                                 <div className="flex flex-col flex-1">
-                                    <span className="font-medium">
-                                       {tenant.name}
-                                    </span>
-                                    {tenant.embedded_branch.address && (
-                                       <span className="text-xs text-muted-foreground">
-                                          {tenant.embedded_branch.address}
+                           filteredTenants.map((tenant) => {
+                              const isSelected =
+                                 tenant.id === selectedTenant?.id;
+
+                              return (
+                                 <DropdownMenuItem
+                                    key={tenant.id}
+                                    onSelect={() => handleSelectTenant(tenant)}
+                                    className="flex items-center gap-2"
+                                    disabled={isSelected}
+                                 >
+                                    <div className="flex flex-col flex-1">
+                                       <span className="font-medium">
+                                          {tenant.name}
                                        </span>
+                                       {tenant.embedded_branch?.address && (
+                                          <span className="text-xs text-muted-foreground">
+                                             {tenant.embedded_branch.address}
+                                          </span>
+                                       )}
+                                    </div>
+                                    {isSelected && (
+                                       <Check className="ml-auto" />
                                     )}
-                                 </div>
-                                 {tenant.id === selectedTenant.id && (
-                                    <Check className="ml-auto" />
-                                 )}
-                              </DropdownMenuItem>
-                           ))
+                                 </DropdownMenuItem>
+                              );
+                           })
                         )}
                      </div>
                   </DropdownMenuContent>

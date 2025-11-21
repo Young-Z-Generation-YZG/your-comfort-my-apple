@@ -62,7 +62,7 @@ export const identityApi = createApi({
             url: '/api/v1/users/admin',
             method: 'GET',
             params,
-            __useSuperAdminToken: params.__useSuperAdminToken,
+            // __useSuperAdminToken: params.__useSuperAdminToken,
          }),
          providesTags: ['Users'],
       }),

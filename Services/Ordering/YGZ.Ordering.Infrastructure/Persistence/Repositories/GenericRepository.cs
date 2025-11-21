@@ -48,9 +48,22 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
             query = query.Where(filterExpression);
         }
 
+        // Apply default sorting by CreatedAt DESC if no orderBy is provided
         if (orderBy is not null)
         {
             query = orderBy(query);
+        }
+        else
+        {
+            // Default sort by CreatedAt DESC if entity has CreatedAt property
+            var createdAtProperty = typeof(TEntity).GetProperty("CreatedAt");
+            if (createdAtProperty is not null && createdAtProperty.PropertyType == typeof(DateTime))
+            {
+                var parameter = System.Linq.Expressions.Expression.Parameter(typeof(TEntity), "x");
+                var property = System.Linq.Expressions.Expression.Property(parameter, createdAtProperty);
+                var lambda = System.Linq.Expressions.Expression.Lambda<Func<TEntity, DateTime>>(property, parameter);
+                query = query.OrderByDescending(lambda);
+            }
         }
 
         var totalRecords = await query.CountAsync(cancellationToken ?? CancellationToken.None);
@@ -155,9 +168,22 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
                 query = query.Where(filterExpression);
             }
 
+            // Apply default sorting by CreatedAt DESC if no orderBy is provided
             if (orderBy is not null)
             {
                 query = orderBy(query);
+            }
+            else
+            {
+                // Default sort by CreatedAt DESC if entity has CreatedAt property
+                var createdAtProperty = typeof(TEntity).GetProperty("CreatedAt");
+                if (createdAtProperty is not null && createdAtProperty.PropertyType == typeof(DateTime))
+                {
+                    var parameter = System.Linq.Expressions.Expression.Parameter(typeof(TEntity), "x");
+                    var property = System.Linq.Expressions.Expression.Property(parameter, createdAtProperty);
+                    var lambda = System.Linq.Expressions.Expression.Lambda<Func<TEntity, DateTime>>(property, parameter);
+                    query = query.OrderByDescending(lambda);
+                }
             }
 
             return await query.ToListAsync(cancellationToken ?? CancellationToken.None);

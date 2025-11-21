@@ -52,6 +52,7 @@ public class UserController : ApiController
 
         var query = new GetUsersByAdminQuery
         {
+            TenantId = tenantId,
             Page = request._page,
             Limit = request._limit,
             Email = request._email,

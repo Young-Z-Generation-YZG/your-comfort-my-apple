@@ -15,6 +15,7 @@ import {
 } from '~/src/infrastructure/redux/features/auth.slice';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
 import useAuthService from './use-auth-service';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 
 const useKeycloakService = () => {
    const [authorizationCodeMutation, authorizationCodeMutationState] =
@@ -66,6 +67,13 @@ const useKeycloakService = () => {
                dispatch(
                   setImpersonatedUser({
                      impersonatedUser: null,
+                  }),
+               );
+               dispatch(
+                  setTenant({
+                     tenantId: null,
+                     branchId: null,
+                     tenantSubDomain: null,
                   }),
                );
 
@@ -122,6 +130,15 @@ const useKeycloakService = () => {
                      impersonatedUser: {
                         roles: identityResult.data.roles || null,
                      },
+                  }),
+               );
+
+               dispatch(
+                  setTenant({
+                     tenantId: identityResult.data.tenant_id || null,
+                     branchId: identityResult.data.branch_id || null,
+                     tenantSubDomain:
+                        identityResult.data.tenant_sub_domain || null,
                   }),
                );
             }

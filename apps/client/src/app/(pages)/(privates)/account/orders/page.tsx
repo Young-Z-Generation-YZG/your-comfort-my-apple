@@ -116,35 +116,6 @@ const OrderPage = () => {
       });
    }, [filters, getOrdersAsync]);
 
-   //  const {
-   //     currentPage,
-   //     totalPages,
-   //     pageSize,
-   //     totalRecords,
-   //     isLastPage,
-   //     isFirstPage,
-   //     isNextPage,
-   //     isPrevPage,
-   //     paginationItems,
-   //     getPageNumbers,
-   //  } = usePagination(
-   //     getOrdersState.data && getOrdersState.data.items.length > 0
-   //        ? getOrdersState.data
-   //        : {
-   //             total_records: 0,
-   //             total_pages: 0,
-   //             page_size: 0,
-   //             current_page: 0,
-   //             items: [],
-   //             links: {
-   //                first: null,
-   //                last: null,
-   //                prev: null,
-   //                next: null,
-   //             },
-   //          },
-   //  );
-
    const getPaginationItems = useCallback(() => {
       const items: Array<{
          type: 'nav' | 'page' | 'ellipsis';
@@ -177,45 +148,69 @@ const OrderPage = () => {
          disabled: isFirstPage,
       });
 
-      // Page numbers - MAX_VISIBLE_ITEM_LEFT = pages on LEFT of "...", MAX_VISIBLE_ITEM_RIGHT = pages on RIGHT of "..."
-      const pagesToShow = new Set<number>();
+      // Page numbers - custom logic to group left cluster, current cluster, and trailing cluster
+      const addedPages = new Set<number>();
+      const frontPages: number[] = [];
+      const pushFrontPage = (page: number) => {
+         if (page < 1 || page > totalPages) return;
+         if (page >= currentPage) return;
+         if (frontPages.length >= MAX_VISIBLE_ITEM_LEFT) return;
+         if (addedPages.has(page)) return;
+         frontPages.push(page);
+         addedPages.add(page);
+      };
 
-      // Show first MAX_VISIBLE_ITEM_LEFT + 1 pages (including page 1, so if LEFT=2, show 1,2,3)
-      const leftEndPage = Math.min(MAX_VISIBLE_ITEM_LEFT + 1, totalPages);
-      for (let i = 1; i <= leftEndPage; i++) {
-         pagesToShow.add(i);
+      const rawSegmentIndex =
+         Math.floor((currentPage - 1) / MAX_VISIBLE_ITEM_LEFT) - 1;
+      const segmentIndex = Math.max(0, rawSegmentIndex);
+      const leftStartPage = segmentIndex * MAX_VISIBLE_ITEM_LEFT + 1;
+
+      for (let page = leftStartPage; page < currentPage; page++) {
+         pushFrontPage(page);
       }
 
-      // Show last MAX_VISIBLE_ITEM_RIGHT + 1 pages (including last page, so if RIGHT=2, show 33,34,35 for totalPages=35)
-      const rightStartPage = Math.max(1, totalPages - MAX_VISIBLE_ITEM_RIGHT);
-      for (let i = rightStartPage; i <= totalPages; i++) {
-         pagesToShow.add(i);
-      }
-
-      // Always include current page if it's not already in the visible range
-      pagesToShow.add(currentPage);
-
-      // Sort pages
-      const sortedPages = Array.from(pagesToShow).sort((a, b) => a - b);
-
-      // Build page items with ellipsis
-      for (let i = 0; i < sortedPages.length; i++) {
-         const page = sortedPages[i];
-
-         // Add ellipsis if there's a gap before this page
-         if (i > 0 && sortedPages[i - 1] < page - 1) {
-            items.push({
-               type: 'ellipsis',
-               label: '...',
-               value: null,
-            });
-         }
-
+      frontPages.forEach((page) => {
          items.push({
             type: 'page',
             label: `${page}`,
             value: page,
          });
+      });
+
+      const centerEndPage = Math.min(
+         totalPages,
+         currentPage + MAX_VISIBLE_ITEM_LEFT,
+      );
+      for (let page = currentPage; page <= centerEndPage; page++) {
+         if (addedPages.has(page)) continue;
+         items.push({
+            type: 'page',
+            label: `${page}`,
+            value: page,
+         });
+         addedPages.add(page);
+      }
+
+      const lastFrontPage =
+         addedPages.size > 0 ? Math.max(...Array.from(addedPages)) : 0;
+
+      // Show last MAX_VISIBLE_ITEM_RIGHT + 1 pages (including last page, so if RIGHT=2, show 33,34,35 for totalPages=35)
+      const rightStartPage = Math.max(1, totalPages - MAX_VISIBLE_ITEM_RIGHT);
+      if (rightStartPage > lastFrontPage + 1) {
+         items.push({
+            type: 'ellipsis',
+            label: '...',
+            value: null,
+         });
+      }
+      for (let page = rightStartPage; page <= totalPages; page++) {
+         if (addedPages.has(page)) continue;
+         items.push({
+            type: 'page',
+            label: `${page}`,
+            value: page,
+         });
+         addedPages.add(page);
       }
 
       // Next page button
