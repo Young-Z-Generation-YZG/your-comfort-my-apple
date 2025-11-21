@@ -4,7 +4,18 @@ import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-re
 const MAX_VISIBLE_ITEM_LEFT = 2; // Number of pages to show on the LEFT side of "..."
 const MAX_VISIBLE_ITEM_RIGHT = 2; // Number of pages to show on the RIGHT side of "..."
 
-const usePaginationV2 = (paginationData: PaginationResponse<any>) => {
+type UsePaginationV2Options = {
+   pageSizeOverride?: number | null;
+   currentPageOverride?: number | null;
+   fallbackPageSize?: number;
+};
+
+const DEFAULT_FALLBACK_PAGE_SIZE = 10;
+
+const usePaginationV2 = (
+   paginationData: PaginationResponse<any>,
+   options?: UsePaginationV2Options,
+) => {
    const getPaginationItems = useCallback(() => {
       const items: Array<{
          type: 'nav' | 'page' | 'ellipsis';
@@ -121,7 +132,37 @@ const usePaginationV2 = (paginationData: PaginationResponse<any>) => {
       return items;
    }, [paginationData]);
 
+   const fallbackPageSize =
+      options?.fallbackPageSize ?? DEFAULT_FALLBACK_PAGE_SIZE;
+
+   const resolvedPageSize =
+      options?.pageSizeOverride ?? paginationData.page_size ?? fallbackPageSize;
+
+   const resolvedCurrentPage =
+      options?.currentPageOverride ?? paginationData.current_page ?? 1;
+
+   const resolvedTotalRecords = paginationData.total_records ?? 0;
+
+   const safePageSize =
+      resolvedPageSize > 0 ? resolvedPageSize : fallbackPageSize;
+   const safeCurrentPage = Math.max(1, resolvedCurrentPage);
+
+   const hasRecords = resolvedTotalRecords > 0 && safePageSize > 0;
+   const firstItemIndex = hasRecords
+      ? (safeCurrentPage - 1) * safePageSize + 1
+      : 0;
+   const lastItemIndex = hasRecords
+      ? Math.min(safeCurrentPage * safePageSize, resolvedTotalRecords)
+      : 0;
+
    return {
+      currentPage: safeCurrentPage,
+      totalPages: paginationData.total_pages,
+      pageSize: safePageSize,
+      totalRecords: resolvedTotalRecords,
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue: String(safePageSize),
       getPaginationItems,
    };
 };

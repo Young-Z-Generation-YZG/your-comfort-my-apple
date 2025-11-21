@@ -49,13 +49,13 @@ public class IdentityDbContext : IdentityDbContext<User>
 
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // Apply tenant filters dynamically - they will access CurrentTenantId at query time
-        builder.Entity<User>().HasQueryFilter(u => CurrentTenantId == null || u.TenantId == CurrentTenantId);
+        // Apply tenant filters dynamically - directly access _tenantHttpContext to ensure evaluation at query time
+        builder.Entity<User>().HasQueryFilter(u => _tenantHttpContext.GetTenantId() == null || u.TenantId == _tenantHttpContext.GetTenantId());
 
         // Filter Profile entities through User relationship
-        builder.Entity<Profile>().HasQueryFilter(p => CurrentTenantId == null || (p.User != null && p.User.TenantId == CurrentTenantId));
+        builder.Entity<Profile>().HasQueryFilter(p => _tenantHttpContext.GetTenantId() == null || (p.User != null && p.User.TenantId == _tenantHttpContext.GetTenantId()));
 
         // Filter ShippingAddress entities through User relationship
-        builder.Entity<ShippingAddress>().HasQueryFilter(s => CurrentTenantId == null || (s.User != null && s.User.TenantId == CurrentTenantId));
+        builder.Entity<ShippingAddress>().HasQueryFilter(s => _tenantHttpContext.GetTenantId() == null || (s.User != null && s.User.TenantId == _tenantHttpContext.GetTenantId()));
     }
 }

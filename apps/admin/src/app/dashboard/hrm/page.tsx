@@ -40,14 +40,9 @@ import {
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import { useEffect, useState } from 'react';
-import usePagination from '~/src/hooks/use-pagination';
 import {
    ArrowUpDown,
    ChevronDown,
-   ChevronLeft,
-   ChevronRight,
-   ChevronsLeft,
-   ChevronsRight,
    Ellipsis,
    MoreHorizontal,
 } from 'lucide-react';
@@ -55,6 +50,8 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { TUser } from '~/src/infrastructure/services/identity.service';
+import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 
 // Helper function to get gender badge styles
 const getGenderStyle = (gender: string) => {
@@ -70,235 +67,12 @@ const getGenderStyle = (gender: string) => {
    }
 };
 
-const fakeData = {
-   total_records: 6,
-   total_pages: 1,
-   page_size: 10,
-   current_page: 1,
-   items: [
-      {
-         id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'user@gmail.com',
-         normalized_user_name: 'USER@GMAIL.COM',
-         email: 'user@gmail.com',
-         normalized_email: 'USER@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0333284890',
-         profile: {
-            id: '422452ca-6ac1-4fac-8d37-8f59c5305d63',
-            user_id: 'c3127b01-9101-4713-8e18-ae1f8f9ffd01',
-            first_name: 'USER',
-            last_name: 'USER',
-            birth_day: '2006-11-19T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T09:33:04.828081Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         id: 'e79d0b6f-af5a-4162-a6fd-8194d5a5f616',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'staff@gmail.com',
-         normalized_user_name: 'STAFF@GMAIL.COM',
-         email: 'staff@gmail.com',
-         normalized_email: 'STAFF@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0333284890',
-         profile: {
-            id: '573ff10d-f412-4291-b6d8-89594fc7c0fd',
-            user_id: 'e79d0b6f-af5a-4162-a6fd-8194d5a5f616',
-            first_name: 'STAFF',
-            last_name: 'USER',
-            birth_day: '2005-10-18T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T09:33:05.487937Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         id: '65dad719-7368-4d9f-b623-f308299e9575',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'admin@gmail.com',
-         normalized_user_name: 'ADMIN@GMAIL.COM',
-         email: 'admin@gmail.com',
-         normalized_email: 'ADMIN@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0333284890',
-         profile: {
-            id: 'e5676437-47bd-47ad-b5f9-21f7278c061f',
-            user_id: '65dad719-7368-4d9f-b623-f308299e9575',
-            first_name: 'ADMIN',
-            last_name: 'USER',
-            birth_day: '2004-09-17T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T09:33:05.834715Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         id: 'be0cd669-237a-484d-b3cf-793e0ad1b0ea',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'adminsuper@gmail.com',
-         normalized_user_name: 'ADMINSUPER@GMAIL.COM',
-         email: 'adminsuper@gmail.com',
-         normalized_email: 'ADMINSUPER@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0333284890',
-         profile: {
-            id: '79ce1c51-a7f5-47df-9c51-d3797dbc4818',
-            user_id: 'be0cd669-237a-484d-b3cf-793e0ad1b0ea',
-            first_name: 'ADMIN SUPER',
-            last_name: 'USER',
-            birth_day: '2003-08-16T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T09:33:06.084494Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         id: '8d8059c4-38b8-4f62-a776-4527e059b14a',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'foobar@gmail.com',
-         normalized_user_name: 'FOOBAR@GMAIL.COM',
-         email: 'foobar@gmail.com',
-         normalized_email: 'FOOBAR@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0333284890',
-         profile: {
-            id: 'd46461c7-e1f0-4784-b729-f421bc17eb04',
-            user_id: '8d8059c4-38b8-4f62-a776-4527e059b14a',
-            first_name: 'FOO',
-            last_name: 'BAR',
-            birth_day: '2007-12-20T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T09:33:06.271631Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-      {
-         id: '7ecf88f8-3e55-40cc-92d0-5d3a5a5e228f',
-         tenant_id: null,
-         branch_id: null,
-         tenant_code: null,
-         user_name: 'lov3rinve146@gmail.com',
-         normalized_user_name: 'LOV3RINVE146@GMAIL.COM',
-         email: 'lov3rinve146@gmail.com',
-         normalized_email: 'LOV3RINVE146@GMAIL.COM',
-         email_confirmed: true,
-         phone_number: '0123456789',
-         profile: {
-            id: '943788f8-298e-4fba-9c6e-1b322719671b',
-            user_id: '7ecf88f8-3e55-40cc-92d0-5d3a5a5e228f',
-            first_name: 'Bach',
-            last_name: 'Le',
-            birth_day: '2003-08-16T00:00:00Z',
-            gender: 'OTHER',
-            image_id: '',
-            image_url: '',
-            created_at: '0001-01-01T00:00:00',
-            updated_at: '2025-10-27T14:34:18.202777Z',
-            updated_by: null,
-            is_deleted: false,
-            deleted_at: null,
-            deleted_by: null,
-         },
-         created_at: '0001-01-01T00:00:00',
-         updated_at: '0001-01-01T00:00:00',
-         updated_by: null,
-         is_deleted: false,
-         deleted_at: null,
-         deleted_by: null,
-      },
-   ],
-   links: {
-      first: '?_page=1&_limit=10',
-      prev: null,
-      next: null,
-      last: '?_page=1&_limit=10',
-   },
-};
-
-export type TUser = (typeof fakeData.items)[number];
-
 type TUserFilter = {
    _page?: number | null;
    _limit?: number | null;
-   _email?: string | null;
-   _firstName?: string | null;
-   _lastName?: string | null;
-   _phoneNumber?: string | null;
 };
+
+const PAGE_LIMIT_OPTIONS = [10, 20, 50];
 
 const columns: ColumnDef<TUser>[] = [
    {
@@ -420,62 +194,58 @@ const columns: ColumnDef<TUser>[] = [
 ];
 
 const HRMPage = () => {
-   const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
-      useIdentityService();
-
-   const { filters, setFilters } = useFilters<TUserFilter>({
-      _page: 'number',
-      _limit: 'number',
-      _email: 'string',
-      _firstName: 'string',
-      _lastName: 'string',
-      _phoneNumber: 'string',
-   });
-
    const [sorting, setSorting] = useState<SortingState>([]);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
       {},
    );
    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
+   // API
+   const { getUsersByAdminAsync, getUsersByAdminState, isLoading } =
+      useIdentityService();
+
    //    App state
    const { tenantId } = useAppSelector((state) => state.tenant);
    const { impersonatedUser } = useAppSelector((state) => state.auth);
 
+   const { filters, setFilters } = useFilters<TUserFilter>({
+      _page: 'number',
+      _limit: 'number',
+   });
+
    const {
+      getPaginationItems,
       currentPage,
-      totalPages,
       pageSize,
       totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getUsersByAdminState.isSuccess &&
-         getUsersByAdminState.data &&
-         getUsersByAdminState.data.items.length > 0
-         ? getUsersByAdminState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue,
+   } = usePaginationV2(
+      getUsersByAdminState.data ?? {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 0,
+         current_page: 0,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      },
+      {
+         pageSizeOverride: filters._limit ?? null,
+         currentPageOverride: filters._page ?? null,
+         fallbackPageSize: PAGE_LIMIT_OPTIONS[0],
+      },
    );
+   const paginationItems = getPaginationItems();
 
    // Setup table
    const table = useReactTable({
-      data: paginationItems,
+      data: getUsersByAdminState.data?.items ?? [],
       columns,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -488,7 +258,7 @@ const HRMPage = () => {
          rowSelection,
       },
       manualPagination: true,
-      pageCount: totalPages,
+      pageCount: getUsersByAdminState.data?.total_pages ?? 0,
    });
 
    useEffect(() => {
@@ -606,142 +376,100 @@ const HRMPage = () => {
                   </Table>
                </div>
 
-               {/* Pagination */}
-               {totalPages >= 1 && (
-                  <div className="flex items-center justify-between px-4 py-4 border-t">
-                     <div className="flex items-center gap-2">
+               <div className="flex gap-4 justify-between px-4 py-2 border-t">
+                  <div className="flex items-center justify-between gap-4">
+                     {/* Items per page selection */}
+                     <div className="flex gap-1">
                         <Select
-                           value={filters._limit?.toString() || '10'}
+                           value={limitSelectValue}
                            onValueChange={(value) => {
                               setFilters({ _limit: Number(value), _page: 1 });
                            }}
                         >
-                           <SelectTrigger className="w-auto h-9">
-                              <SelectValue />
+                           <SelectTrigger className="w-[140px] h-9">
+                              <SelectValue placeholder="Select limit" />
                            </SelectTrigger>
                            <SelectContent>
                               <SelectGroup>
-                                 <SelectItem value="10">10 / page</SelectItem>
-                                 <SelectItem value="20">20 / page</SelectItem>
-                                 <SelectItem value="50">50 / page</SelectItem>
+                                 {PAGE_LIMIT_OPTIONS.map((limit) => (
+                                    <SelectItem
+                                       key={limit}
+                                       value={limit.toString()}
+                                    >
+                                       {limit} / page
+                                    </SelectItem>
+                                 ))}
                               </SelectGroup>
                            </SelectContent>
                         </Select>
-
-                        <div className="text-muted-foreground text-sm">
-                           Showing{' '}
-                           <span className="font-medium">
-                              {paginationItems.length > 0
-                                 ? (currentPage - 1) * pageSize + 1
-                                 : 0}
-                           </span>{' '}
-                           to{' '}
-                           <span className="font-medium">
-                              {Math.min(currentPage * pageSize, totalRecords)}
-                           </span>{' '}
-                           of{' '}
-                           <span className="font-medium">{totalRecords}</span>{' '}
-                           users
-                        </div>
                      </div>
 
-                     <div className="flex items-center gap-2">
-                        {/* First Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              setFilters({ _page: 1 });
-                           }}
-                           disabled={isFirstPage}
-                        >
-                           <ChevronsLeft className="h-4 w-4" />
-                        </Button>
-
-                        {/* Previous Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              if (currentPage > 1) {
-                                 setFilters({ _page: currentPage - 1 });
-                              }
-                           }}
-                           disabled={!isPrevPage}
-                        >
-                           <ChevronLeft className="h-4 w-4" />
-                        </Button>
-
-                        {/* Page Numbers */}
-                        <div className="flex items-center gap-1">
-                           {getPageNumbers().map((page, index) => {
-                              if (page === '...') {
-                                 return (
-                                    <span
-                                       key={`ellipsis-${index}`}
-                                       className="px-2 text-gray-400"
-                                    >
-                                       <Ellipsis className="h-4 w-4" />
-                                    </span>
-                                 );
-                              }
-
-                              return (
-                                 <Button
-                                    key={index}
-                                    variant={
-                                       currentPage === page
-                                          ? 'default'
-                                          : 'outline'
-                                    }
-                                    size="icon"
-                                    className={cn(
-                                       'h-9 w-9',
-                                       currentPage === page &&
-                                          'bg-black text-white hover:bg-black/90',
-                                    )}
-                                    onClick={() => {
-                                       setFilters({ _page: page as number });
-                                    }}
-                                 >
-                                    {page as number}
-                                 </Button>
-                              );
-                           })}
-                        </div>
-
-                        {/* Next Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              if (currentPage < totalPages) {
-                                 setFilters({ _page: currentPage + 1 });
-                              }
-                           }}
-                           disabled={!isNextPage}
-                        >
-                           <ChevronRight className="h-4 w-4" />
-                        </Button>
-
-                        {/* Last Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              setFilters({ _page: totalPages });
-                           }}
-                           disabled={isLastPage}
-                        >
-                           <ChevronsRight className="h-4 w-4" />
-                        </Button>
+                     <div className="text-muted-foreground text-sm">
+                        Showing{' '}
+                        <span className="font-medium">{firstItemIndex}</span> to{' '}
+                        <span className="font-medium">{lastItemIndex}</span> of{' '}
+                        <span className="font-medium">{totalRecords}</span>{' '}
+                        users
                      </div>
                   </div>
-               )}
+
+                  <div className="flex justify-end">
+                     {/* Pagination Controls */}
+                     {getUsersByAdminState.data &&
+                        getUsersByAdminState.data.total_pages > 0 && (
+                           <div className="flex items-center gap-2 justify-end mr-5 py-5">
+                              {paginationItems.map((item, index) => {
+                                 if (item.type === 'ellipsis') {
+                                    return (
+                                       <span
+                                          key={`ellipsis-${index}`}
+                                          className="px-2 text-gray-400 flex items-center"
+                                       >
+                                          <Ellipsis className="h-4 w-4" />
+                                       </span>
+                                    );
+                                 }
+
+                                 const isCurrentPage =
+                                    item.type === 'page' &&
+                                    item.value ===
+                                       (getUsersByAdminState.data
+                                          ?.current_page || 1);
+
+                                 return (
+                                    <Button
+                                       key={`${item.type}-${item.label}-${index}`}
+                                       variant={
+                                          isCurrentPage ? 'default' : 'outline'
+                                       }
+                                       size="sm"
+                                       disabled={
+                                          item.disabled || item.value === null
+                                       }
+                                       onClick={() => {
+                                          if (
+                                             item.value !== null &&
+                                             !item.disabled
+                                          ) {
+                                             setFilters((prev) => ({
+                                                ...prev,
+                                                _page: item.value!,
+                                             }));
+                                          }
+                                       }}
+                                       className={cn(
+                                          isCurrentPage &&
+                                             'bg-black text-white hover:bg-black/90',
+                                       )}
+                                    >
+                                       {item.label}
+                                    </Button>
+                                 );
+                              })}
+                           </div>
+                        )}
+                  </div>
+               </div>
             </div>
          </LoadingOverlay>
       </div>

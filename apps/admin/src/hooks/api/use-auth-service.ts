@@ -16,6 +16,8 @@ import {
    setUseRefreshToken,
 } from '~/src/infrastructure/redux/features/auth.slice';
 import { useDispatch } from 'react-redux';
+import { ERole } from '~/src/domain/enums/role.enum';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 
 const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
@@ -64,6 +66,16 @@ const useAuthService = () => {
                         impersonatedUser: null,
                      }),
                   );
+
+                  if (!identityResult.roles.includes(ERole.ADMIN_SUPER)) {
+                     dispatch(
+                        setTenant({
+                           tenantId: identityResult.tenant_id,
+                           branchId: identityResult.branch_id,
+                           tenantSubDomain: identityResult.tenant_sub_domain,
+                        }),
+                     );
+                  }
                }
             }
 

@@ -447,6 +447,7 @@ const OnlineOrdersPage = () => {
       _orderStatus: { array: 'string' },
       _customerEmail: 'string',
    });
+
    const { getPaginationItems } = usePaginationV2(
       getOrdersByAdminState.data ?? {
          total_records: 0,
@@ -953,7 +954,6 @@ const OnlineOrdersPage = () => {
                </Table>
             </div>
 
-            {/* Pagination Controls */}
             {/* Pagination Controls */}
             {getOrdersByAdminState.data &&
                getOrdersByAdminState.data.total_pages > 0 && (

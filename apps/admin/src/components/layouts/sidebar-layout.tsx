@@ -262,31 +262,6 @@ const superAdminSidebarData = [
       ],
    },
    {
-      title: 'Categories',
-      url: '/dashboard/categories',
-      icon: Tag,
-      isActive: true,
-      items: [],
-   },
-   {
-      title: 'Promotion Management',
-      url: '/dashboard/promotion-management',
-      icon: TicketPercent,
-      isActive: true,
-      items: [
-         {
-            title: 'Events',
-            url: '/dashboard/promotion-management/events',
-            icon: Calendar,
-         },
-         {
-            title: 'Coupons',
-            url: '#',
-            icon: Ticket,
-         },
-      ],
-   },
-   {
       title: 'Product Management',
       url: '/dashboard/product-management',
       icon: Building2,
@@ -310,6 +285,31 @@ const superAdminSidebarData = [
       icon: Warehouse,
       isActive: true,
       items: [],
+   },
+   {
+      title: 'Categories',
+      url: '/dashboard/categories',
+      icon: Tag,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Promotion Management',
+      url: '/dashboard/promotion-management',
+      icon: TicketPercent,
+      isActive: true,
+      items: [
+         {
+            title: 'Events',
+            url: '/dashboard/promotion-management/events',
+            icon: Calendar,
+         },
+         {
+            title: 'Coupons',
+            url: '#',
+            icon: Ticket,
+         },
+      ],
    },
    {
       title: 'HRM',
@@ -365,10 +365,108 @@ const adminSidebarData = [
       items: [],
    },
    {
+      title: 'Categories',
+      url: '/dashboard/categories',
+      icon: Tag,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Promotion Management',
+      url: '/dashboard/promotion-management',
+      icon: TicketPercent,
+      isActive: true,
+      items: [
+         {
+            title: 'Events',
+            url: '/dashboard/promotion-management/events',
+            icon: Calendar,
+         },
+         {
+            title: 'Coupons',
+            url: '#',
+            icon: Ticket,
+         },
+      ],
+   },
+
+   {
       title: 'Branch HRM',
       url: '/dashboard/hrm',
       icon: Users,
       isActive: true,
+   },
+   {
+      title: 'Customer Management',
+      url: '#',
+      icon: UsersRound,
+      isActive: true,
+   },
+   {
+      title: 'Order Management',
+      url: '#',
+      icon: ScrollText,
+      isActive: true,
+      items: [
+         {
+            title: 'Orders List',
+            url: '#',
+            icon: ScrollText,
+         },
+      ],
+   },
+];
+
+const staffSidebarData = [
+   {
+      title: 'Product Management',
+      url: '/dashboard/product-management',
+      icon: Building2,
+      isActive: true,
+      items: [
+         {
+            title: 'iPhone',
+            url: '/dashboard/product-management/iphone',
+            icon: Box,
+         },
+         {
+            title: 'Mac',
+            url: '#',
+            icon: Laptop,
+         },
+      ],
+   },
+   {
+      title: 'Inventory Management',
+      url: '#',
+      icon: Warehouse,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Categories',
+      url: '/dashboard/categories',
+      icon: Tag,
+      isActive: true,
+      items: [],
+   },
+   {
+      title: 'Promotion Management',
+      url: '/dashboard/promotion-management',
+      icon: TicketPercent,
+      isActive: true,
+      items: [
+         {
+            title: 'Events',
+            url: '/dashboard/promotion-management/events',
+            icon: Calendar,
+         },
+         {
+            title: 'Coupons',
+            url: '#',
+            icon: Ticket,
+         },
+      ],
    },
    {
       title: 'Customer Management',
