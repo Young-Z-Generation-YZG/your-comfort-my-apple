@@ -8,6 +8,7 @@ import {
    useLazyGetRevenuesByTenantsQuery,
    useUpdateOnlineOrderStatusMutation,
    IUpdateOnlineOrderStatusPayload,
+   useLazyGetOrdersQuery,
 } from '~/src/infrastructure/services/order.service';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
 
@@ -21,6 +22,7 @@ const useOrderingService = () => {
       useLazyGetRevenuesByYearsQuery();
    const [getRevenuesByTenantsTrigger, revenuesByTenantsQueryState] =
       useLazyGetRevenuesByTenantsQuery();
+   const [getOrdersTrigger, ordersQueryState] = useLazyGetOrdersQuery();
 
    const [updateOnlineOrderStatusTrigger, updateOnlineOrderStatusQueryState] =
       useUpdateOnlineOrderStatusMutation();
@@ -49,6 +51,23 @@ const useOrderingService = () => {
          }
       },
       [getOrderDetailsTrigger],
+   );
+
+   const getOrdersAsync = useCallback(
+      async (params: IBaseQueryParams) => {
+         try {
+            const result = await getOrdersTrigger(params).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [getOrdersTrigger],
    );
 
    const getOrdersByAdminAsync = useCallback(
@@ -152,7 +171,9 @@ const useOrderingService = () => {
          revenuesByYearsQueryState.isFetching ||
          revenuesByTenantsQueryState.isLoading ||
          revenuesByTenantsQueryState.isFetching ||
-         updateOnlineOrderStatusQueryState.isLoading
+         updateOnlineOrderStatusQueryState.isLoading ||
+         ordersQueryState.isLoading ||
+         ordersQueryState.isFetching
       );
    }, [
       orderDetailsQueryState.isLoading,
@@ -166,6 +187,8 @@ const useOrderingService = () => {
       revenuesByTenantsQueryState.isLoading,
       revenuesByTenantsQueryState.isFetching,
       updateOnlineOrderStatusQueryState.isLoading,
+      ordersQueryState.isLoading,
+      ordersQueryState.isFetching,
    ]);
 
    return {
@@ -176,6 +199,7 @@ const useOrderingService = () => {
       getRevenuesByYearsState: revenuesByYearsQueryState,
       getRevenuesByTenantsState: revenuesByTenantsQueryState,
       updateOnlineOrderStatusState: updateOnlineOrderStatusQueryState,
+      getOrdersState: ordersQueryState,
 
       // Actions
       getOrderDetailsAsync,
@@ -184,6 +208,7 @@ const useOrderingService = () => {
       getRevenuesByYearsAsync,
       getRevenuesByTenantsAsync,
       updateOnlineOrderStatusAsync,
+      getOrdersAsync,
 
       // Loading
       isLoading,

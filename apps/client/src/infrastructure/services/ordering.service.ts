@@ -89,7 +89,7 @@ export const orderingApi = createApi({
    endpoints: (builder) => ({
       getOrders: builder.query<PaginationResponse<TOrder>, IBaseQueryParams>({
          query: (params?: IBaseQueryParams | null) => ({
-            url: '/api/v1/orders',
+            url: '/api/v1/orders/users',
             method: 'GET',
             params: params ?? {},
          }),

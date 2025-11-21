@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import {
    useLazyGetListUsersQuery,
    useLazyGetUsersByAdminQuery,
+   useLazyGetUsersQuery,
 } from '~/src/infrastructure/services/identity.service';
 
 const useIdentityService = () => {
@@ -12,8 +13,31 @@ const useIdentityService = () => {
       useLazyGetUsersByAdminQuery();
    const [getListUsersTrigger, getListUsersQueryState] =
       useLazyGetListUsersQuery();
+   const [getUsersTrigger, getUsersQueryState] = useLazyGetUsersQuery();
 
    useCheckApiError([]);
+
+   const getUsersAsync = useCallback(
+      async (params: any) => {
+         try {
+            const result = await getUsersTrigger(params).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getUsersTrigger],
+   );
 
    const getUsersByAdminAsync = useCallback(
       async (params: any, options?: { useSuperAdminToken?: boolean }) => {
@@ -74,13 +98,17 @@ const useIdentityService = () => {
          getUsersByAdminQueryState.isLoading ||
          getUsersByAdminQueryState.isFetching ||
          getListUsersQueryState.isLoading ||
-         getListUsersQueryState.isFetching
+         getListUsersQueryState.isFetching ||
+         getUsersQueryState.isLoading ||
+         getUsersQueryState.isFetching
       );
    }, [
       getUsersByAdminQueryState.isLoading,
       getUsersByAdminQueryState.isFetching,
       getListUsersQueryState.isLoading,
       getListUsersQueryState.isFetching,
+      getUsersQueryState.isLoading,
+      getUsersQueryState.isFetching,
    ]);
 
    return {
@@ -88,10 +116,12 @@ const useIdentityService = () => {
       isLoading,
       getUsersByAdminState: getUsersByAdminQueryState,
       getListUsersState: getListUsersQueryState,
+      getUsersState: getUsersQueryState,
 
       // actions
       getUsersByAdminAsync,
       getListUsersAsync,
+      getUsersAsync,
    };
 };
 

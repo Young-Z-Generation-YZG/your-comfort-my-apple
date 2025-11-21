@@ -621,9 +621,9 @@ const RevenueAnalytics = () => {
          <div>
             <RevenueOrdersChart />
 
-            {/* <YearOverYearChart /> */}
+            <YearOverYearChart />
 
-            {/* <MultiTenantChart /> */}
+            <MultiTenantChart />
          </div>
       </div>
    );

@@ -215,8 +215,6 @@ const HRMPage = () => {
 
    const {
       getPaginationItems,
-      currentPage,
-      pageSize,
       totalRecords,
       firstItemIndex,
       lastItemIndex,

@@ -19,6 +19,7 @@ using YGZ.Identity.Application.Users.Commands.UpdateProfile;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetListUsers;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
+using YGZ.Identity.Application.Users.Queries.GetUsers;
 using YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
@@ -53,6 +54,24 @@ public class UserController : ApiController
         var query = new GetUsersByAdminQuery
         {
             TenantId = tenantId,
+            Page = request._page,
+            Limit = request._limit,
+            Email = request._email,
+            FirstName = request._firstName,
+            LastName = request._lastName,
+            PhoneNumber = request._phoneNumber
+        };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("")]
+    public async Task<IActionResult> GetUsers([FromQuery] GetUsersRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetUsersQuery
+        {
             Page = request._page,
             Limit = request._limit,
             Email = request._email,

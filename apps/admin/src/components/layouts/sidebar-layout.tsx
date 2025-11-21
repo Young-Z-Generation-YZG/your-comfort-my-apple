@@ -325,13 +325,13 @@ const superAdminSidebarData = [
    },
    {
       title: 'Order Management',
-      url: '/dashboard/orders',
+      url: '/dashboard/order-management',
       icon: ScrollText,
       isActive: true,
       items: [
          {
             title: 'Orders List',
-            url: '#',
+            url: '/dashboard/order-management',
             icon: ScrollText,
          },
       ],
@@ -404,13 +404,13 @@ const adminSidebarData = [
    },
    {
       title: 'Order Management',
-      url: '#',
+      url: '/dashboard/order-management',
       icon: ScrollText,
       isActive: true,
       items: [
          {
             title: 'Orders List',
-            url: '#',
+            url: '/dashboard/order-management',
             icon: ScrollText,
          },
       ],

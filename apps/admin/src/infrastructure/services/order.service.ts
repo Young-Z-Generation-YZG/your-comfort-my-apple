@@ -88,7 +88,18 @@ export const orderingApi = createApi({
          IBaseQueryParams
       >({
          query: (params: IBaseQueryParams) => ({
-            url: '/api/v1/orders/admin',
+            url: '/api/v1/orders/online',
+            method: 'GET',
+            params: {
+               _page: params._page ?? 1,
+               _limit: params._limit ?? 10,
+               ...params,
+            },
+         }),
+      }),
+      getOrders: builder.query<PaginationResponse<TOrder>, IBaseQueryParams>({
+         query: (params: IBaseQueryParams) => ({
+            url: '/api/v1/orders',
             method: 'GET',
             params: {
                _page: params._page ?? 1,
@@ -161,4 +172,5 @@ export const {
    useLazyGetRevenuesByYearsQuery,
    useLazyGetRevenuesByTenantsQuery,
    useUpdateOnlineOrderStatusMutation,
+   useLazyGetOrdersQuery,
 } = orderingApi;

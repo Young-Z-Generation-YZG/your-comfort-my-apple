@@ -57,12 +57,20 @@ export const identityApi = createApi({
    tagTypes: ['Users'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getUsersByAdmin: builder.query<PaginationResponse<any>, any>({
+      getUsersByAdmin: builder.query<PaginationResponse<TUser>, any>({
          query: (params: any) => ({
             url: '/api/v1/users/admin',
             method: 'GET',
             params,
             // __useSuperAdminToken: params.__useSuperAdminToken,
+         }),
+         providesTags: ['Users'],
+      }),
+      getUsers: builder.query<PaginationResponse<TUser>, any>({
+         query: (params: any) => ({
+            url: '/api/v1/users',
+            method: 'GET',
+            params,
          }),
          providesTags: ['Users'],
       }),
@@ -79,5 +87,8 @@ export const identityApi = createApi({
    }),
 });
 
-export const { useLazyGetUsersByAdminQuery, useLazyGetListUsersQuery } =
-   identityApi;
+export const {
+   useLazyGetUsersByAdminQuery,
+   useLazyGetListUsersQuery,
+   useLazyGetUsersQuery,
+} = identityApi;

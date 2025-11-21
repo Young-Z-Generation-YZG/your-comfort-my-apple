@@ -9,6 +9,7 @@ using YGZ.Ordering.Api.Contracts;
 using YGZ.Ordering.Application.Orders.Commands.CancelOrder;
 using YGZ.Ordering.Application.Orders.Commands.ConfirmOrder;
 using YGZ.Ordering.Application.Orders.Commands.UpdateOrderStatus;
+using YGZ.Ordering.Application.Orders.Queries.GetOnlineOrders;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
@@ -33,9 +34,19 @@ public class OrderingController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet("admin")]
+    [HttpGet("online")]
     [Authorize(Policy = Policies.R__ADMIN_SUPER___RS__ALL)]
     [ProtectedResource(Resources.RESOURCE_ORDERS, Scopes.ALL)]
+    public async Task<IActionResult> GetOnlineOrders([FromQuery] GetOrdersRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetOnlineOrdersQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("")]
     public async Task<IActionResult> GetAllOrders([FromQuery] GetOrdersRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByAdminQuery>(request);
@@ -45,7 +56,7 @@ public class OrderingController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet()]
+    [HttpGet("users")]
     public async Task<IActionResult> GetUserOrders([FromQuery] GetOrdersPaginationRequest request, CancellationToken cancellationToken)
     {
         var query = _mapper.Map<GetOrdersByUserQuery>(request);

@@ -25,14 +25,22 @@ import {
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
-import useFilter from '../_hooks/use-filter';
 import usePagination from '@components/hooks/use-pagination';
 import SuggestionProducts from './_components/suggestion-products';
 import { TGetIphoneModelsFilter } from '~/infrastructure/services/catalog.service';
+import useFilters from '@components/hooks/use-filter';
 
 const IphoneShopPage = () => {
-   const { filters, setFilters, clearFilters, activeFilterCount } =
-      useFilter<TGetIphoneModelsFilter>();
+   const { filters, setFilters } = useFilters<TGetIphoneModelsFilter>({
+      _page: 'number',
+      _limit: 'number',
+      _colors: { array: 'string' },
+      _storages: { array: 'string' },
+      _models: { array: 'string' },
+      _minPrice: 'number',
+      _maxPrice: 'number',
+      _priceSort: 'string',
+   });
 
    const { getIphoneModelsState, getIphoneModelsAsync, isLoading } =
       useCatalogService();
@@ -105,8 +113,10 @@ const IphoneShopPage = () => {
                      <FaFilter />
                      <div>
                         Filters
-                        {activeFilterCount > 0 && (
-                           <span className="ml-1">({activeFilterCount})</span>
+                        {Object.keys(filters).length > 0 && (
+                           <span className="ml-1">
+                              ({Object.keys(filters).length})
+                           </span>
                         )}
                      </div>
                   </div>
@@ -116,10 +126,10 @@ const IphoneShopPage = () => {
                         {totalRecords === 1 ? 'Result' : 'Results'}
                      </div>
                   </div>
-                  {activeFilterCount > 0 && (
+                  {Object.keys(filters).length > 0 && (
                      <div className="flex flex-row items-center">
                         <Button
-                           onClick={() => clearFilters()}
+                           onClick={() => setFilters({})}
                            className="h-[22.5px] p-0 text-[15px] font-semibold border-b border-[#000] hover:text-blue-600 rounded-none bg-transparent text-black hover:bg-transparent hover:border-b-blue-500/50 transition-colors"
                         >
                            Clear Filters
