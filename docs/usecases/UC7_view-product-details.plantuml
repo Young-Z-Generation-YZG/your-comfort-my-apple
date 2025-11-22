@@ -8,60 +8,56 @@ control SkuRepository
 control BranchRepository
 database MongoDB
 
-Actor -> ProductDetailsPage: open(modelSlug)
+Actor -> ProductDetailsPage: 1. clickOnItem(slug)
 activate Actor
 activate ProductDetailsPage
 
-ProductDetailsPage -> CatalogController: getIphoneModelBySlug(query)
+ProductDetailsPage -> CatalogController: 2. getProductModelBySlug(slug)
 activate CatalogController
 
-CatalogController -> GetIphoneModelBySlugHandler: getIphoneModelBySlug(query)
+CatalogController -> GetIphoneModelBySlugHandler: 3. getProductModelBySlug(slug)
 activate GetIphoneModelBySlugHandler
 
-GetIphoneModelBySlugHandler -> IphoneModelRepository: GetByFilter(Slug == modelSlug)
+GetIphoneModelBySlugHandler -> IphoneModelRepository: 4. getByFilter(Slug)
 activate IphoneModelRepository
-IphoneModelRepository -> MongoDB: find One by Slug
+IphoneModelRepository -> MongoDB: 5. find(Slug)
 activate MongoDB
-MongoDB --> IphoneModelRepository: IphoneModel | null
+MongoDB --> IphoneModelRepository: 6. return(productModel)
 deactivate MongoDB
-IphoneModelRepository --> GetIphoneModelBySlugHandler: iphoneModel | null
+IphoneModelRepository --> GetIphoneModelBySlugHandler: 7. return(productModel)
 deactivate IphoneModelRepository
 
-alt model does not exist
-    GetIphoneModelBySlugHandler --> CatalogController: return Errors.Iphone.ModelDoesNotExist
-    CatalogController --> ProductDetailsPage: return Errors.Iphone.ModelDoesNotExist
-    ProductDetailsPage --> Actor: message("Product not found")
-else model exists
-    GetIphoneModelBySlugHandler -> SkuRepository: GetAll(ModelId == iphoneModel.Id)
+alt product exists
+    GetIphoneModelBySlugHandler -> SkuRepository: 8. GetAll(productModel.Id)
     activate SkuRepository
-    SkuRepository -> MongoDB: find SKUs by ModelId
+    SkuRepository -> MongoDB: 9. find(productModel.Id)
     activate MongoDB
-    MongoDB --> SkuRepository: List<SKU>
+    MongoDB --> SkuRepository: 10. return(skus)
     deactivate MongoDB
-    SkuRepository --> GetIphoneModelBySlugHandler: skus
+    SkuRepository --> GetIphoneModelBySlugHandler: 11. return(skus)
     deactivate SkuRepository
-
-    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: Group SKUs by BranchId
-
+    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: 12. Group SKUs by BranchId
     loop foreach BranchId in skusByBranch
-        GetIphoneModelBySlugHandler -> BranchRepository: GetById(branchId)
+        GetIphoneModelBySlugHandler -> BranchRepository: 13. GetById(branchId)
         activate BranchRepository
-        BranchRepository -> MongoDB: find Branch by Id
+        BranchRepository -> MongoDB: 14. getById(branchId)
         activate MongoDB
-        MongoDB --> BranchRepository: Branch
+        MongoDB --> BranchRepository: 15. return(branch)
         deactivate MongoDB
-        BranchRepository --> GetIphoneModelBySlugHandler: branch
+        BranchRepository --> GetIphoneModelBySlugHandler: 16. return(branch)
         deactivate BranchRepository
     end
-
-    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: ToResponse(model, skusByBranch)
-    GetIphoneModelBySlugHandler --> CatalogController: IphoneModelDetailsResponse
+    
+    GetIphoneModelBySlugHandler -> GetIphoneModelBySlugHandler: 17. ToResponse(model, skusByBranch)
+    GetIphoneModelBySlugHandler --> CatalogController: 18. return(IphoneModelDetailsResponse)
+    CatalogController --> ProductDetailsPage: 19. return(IphoneModelDetailsResponse)
+    ProductDetailsPage --> Actor: 20. display("Product details with branches and SKUs")
+else product does not exist
+    GetIphoneModelBySlugHandler --> CatalogController: 7.1 return Errors.Product.NotFound
     deactivate GetIphoneModelBySlugHandler
-
-    CatalogController --> ProductDetailsPage: IphoneModelDetailsResponse
+    CatalogController --> ProductDetailsPage: 7.2 return Errors.Product.NotFound
     deactivate CatalogController
-
-    ProductDetailsPage --> Actor: display(Product details with branches and SKUs)
+    ProductDetailsPage --> Actor: 7.3 display("Product not found")
     deactivate ProductDetailsPage
     deactivate Actor
 end

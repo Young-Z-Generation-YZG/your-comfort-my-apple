@@ -23,32 +23,33 @@ package "Client App" {
     usecase (UC7: View product details) as UC7
     usecase (UC8: Search product) as UC8
     usecase (UC9: Add to cart) as UC9
-    usecase (UC10: View cart) as UC10
-    usecase (UC11: Update item quantity) as UC11
-    usecase (UC12: Remove item) as UC12
-    usecase (UC13: Clear cart) as UC13
-    usecase (UC14: Apply coupon) as UC14
-    usecase (UC15: Checkout) as UC15
-    usecase (UC16: Payment with COD) as UC16
-    usecase (UC17: Payment with Vnpay) as UC17
-    usecase (UC18: Payment with Momo) as UC18
-    usecase (UC19: Payment with Blockchain SOL) as UC19
-    usecase (UC20: View account) as UC20
-    usecase (UC21: Update profile) as UC21
-    usecase (UC22: Change password) as UC22
-    usecase (UC23: View shipping addresses) as UC23
-    usecase (UC24: View address details) as UC24
-    usecase (UC25: Set default address) as UC25
-    usecase (UC26: Add address) as UC26
-    usecase (UC27: Update address) as UC27
-    usecase (UC28: Delete address) as UC28
-    usecase (UC29: View orders) as UC29
-    usecase (UC30: View order details) as UC30
-    usecase (UC31: Confirm order) as UC31
-    usecase (UC32: Cancel order) as UC32
-    usecase (UC33: Write review) as UC33
-    usecase (UC34: Update review) as UC34
-    usecase (UC35: Delete review) as UC35
+    usecase (UC10: manage cart) as UC10
+    ' usecase (UC10: View cart) as UC10 (OLD)
+    ' usecase (UC11: Update item quantity) as UC11
+    ' usecase (UC12: Remove item) as UC12
+    ' usecase (UC13: Clear cart) as UC13
+    usecase (UC11: Apply coupon) as UC11
+    usecase (UC12: Checkout) as UC12
+    usecase (UC13: Payment with COD) as UC13
+    usecase (UC14: Payment with Vnpay) as UC14
+    usecase (UC15: Payment with Momo) as UC15
+    usecase (UC16: Payment with Blockchain) as UC16
+    usecase (UC17: View account) as UC17
+    usecase (UC18: Update profile) as UC18
+    usecase (UC19: Change password) as UC19
+    usecase (UC20: View shipping addresses) as UC20
+    ' usecase (UC24: View address details) as UC24
+    usecase (UC21: Set default address) as UC21
+    usecase (UC22: Add address) as UC22
+    usecase (UC23: Update address) as UC23
+    usecase (UC24: Delete address) as UC24
+    usecase (UC25: View orders) as UC25
+    usecase (UC26: View order details) as UC26
+    usecase (UC27: Confirm order) as UC27
+    usecase (UC28: Cancel order) as UC28
+    usecase (UC29: Write review item) as UC29
+    usecase (UC30: Update review item) as UC30
+    usecase (UC31: Delete review item) as UC31
 }
 
 '=== Extends (<<extend>>) ===
@@ -57,33 +58,33 @@ UC5 <.. UC6 : <<extend>>
 UC5 <.. UC7 : <<extend>>
 UC8 <.. UC7 : <<extend>>
 UC7 <.. UC9 : <<extend>>
+' UC10 <.. UC11 : <<extend>>
+' UC10 <.. UC12 : <<extend>>
+' UC10 <.. UC13 : <<extend>>
 UC10 <.. UC11 : <<extend>>
 UC10 <.. UC12 : <<extend>>
-UC10 <.. UC13 : <<extend>>
-UC10 <.. UC14 : <<extend>>
-UC10 <.. UC15 : <<extend>>
-UC15 <.. UC16 : <<extend>>
-UC15 <.. UC17 : <<extend>>
-UC15 <.. UC18 : <<extend>>
-UC15 <.. UC19 : <<extend>>
+UC12 <.. UC13 : <<extend>>
+UC12 <.. UC14 : <<extend>>
+UC12 <.. UC15 : <<extend>>
+UC12 <.. UC16 : <<extend>>
+UC17 <.. UC18 : <<extend>>
+UC17 <.. UC19 : <<extend>>
+UC17 <.. UC20 : <<extend>>
+UC17 <.. UC25 : <<extend>>
+
+' UC20 <.. UC24 : <<extend>>
 UC20 <.. UC21 : <<extend>>
 UC20 <.. UC22 : <<extend>>
 UC20 <.. UC23 : <<extend>>
-UC20 <.. UC29 : <<extend>>
-
-UC23 <.. UC24 : <<extend>>
-UC23 <.. UC25 : <<extend>>
-UC23 <.. UC26 : <<extend>>
-UC24 <.. UC27 : <<extend>>
-UC24 <.. UC28 : <<extend>>
+UC20 <.. UC24 : <<extend>>
 
 
-UC29 <.. UC30 : <<extend>>
-UC29 <.. UC31 : <<extend>>
-UC29 <.. UC32 : <<extend>>
-UC29 <.. UC33 : <<extend>>
-UC29 <.. UC34 : <<extend>>
-UC29 <.. UC35 : <<extend>>
+UC25 <.. UC26 : <<extend>>
+UC26 <.. UC27 : <<extend>>
+UC26 <.. UC28 : <<extend>>
+UC26 <.. UC29 : <<extend>>
+UC26 <.. UC30 : <<extend>>
+UC26 <.. UC31 : <<extend>>
 
 '=== Guest & User associations ===
 guest --> UC1 
@@ -97,18 +98,20 @@ user --> UC4
 user --> UC5
 user --> UC8
 user --> UC10
-user --> UC20
+user --> UC17
 
 
 
 'Note
 note "Extension point: user has checkout order with payment method COD" as N1
+note "Extension point: user has reviewed item in order" as N2
 ' note "Extension point: user has received order item successfully" as N2
 
-' UC29 .. N1
-N1 .. UC31
-N1 .. UC32
+' UC25 .. N1
+N1 .. UC27
+N1 .. UC28
 
-' N2 .. UC33
+N2 .. UC30
+N2 .. UC31
 
-note right of UC33: Extension point: user has received order item successfully.
+note right of UC29: Extension point: user has received order item successfully (status: DELIVERED).

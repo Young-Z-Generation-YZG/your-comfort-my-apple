@@ -10,91 +10,91 @@ control CachedRepository
 control EmailService
 database DB
 
-Actor -> SignUpPage: input(email, password, \nconfirm_password, \nfirst_name, last_name, \nphone_number, birth_day, country)
+Actor -> SignUpPage: 1. input(email, password, \nconfirm_password, \nfirst_name, last_name, \nphone_number, birth_day, country)
 activate Actor
 activate SignUpPage
-SignUpPage -> AuthController: register(request)
+SignUpPage -> AuthController: 2. register(request)
 activate AuthController
-AuthController -> RegisterHandler: register(request)
+AuthController -> RegisterHandler: 3. register(request)
 activate RegisterHandler
-RegisterHandler -> IdentityService: FindUserByEmail(email)
+RegisterHandler -> IdentityService: 4. FindUserByEmail(email)
 activate IdentityService
-IdentityService --> RegisterHandler: Result(user)
+IdentityService --> RegisterHandler: 5. return Result(user)
 deactivate IdentityService
 alt user already exists
-    RegisterHandler --> AuthController: return Errors.User.AlreadyExists
-    AuthController --> SignUpPage: return Error(message)
-    SignUpPage --> Actor: message("Email already exists")
+    RegisterHandler --> AuthController: 5.1 return Errors.User.AlreadyExists
+    AuthController --> SignUpPage: 5.2 return Error(message)
+    SignUpPage --> Actor: 5.3 message("Email already exists")
 else user not found
-    RegisterHandler -> KeycloakService: CreateKeycloakUser(userRepresentation)
+    RegisterHandler -> KeycloakService: 6. CreateKeycloakUser(userRepresentation)
     activate KeycloakService
-    KeycloakService --> RegisterHandler: Result(keycloakUserId)
+    KeycloakService --> RegisterHandler: 7. return Result(keycloakUserId)
     deactivate KeycloakService
-    alt keycloak user creation failed
-        RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
-        RegisterHandler --> AuthController: return Errors.User.FailedToRegister
-        AuthController --> SignUpPage: return Error(message)
-        SignUpPage --> Actor: message("Failed to register")
-    else keycloak user created
-        RegisterHandler -> IdentityService: CreateUser(request, keycloakUserId)
+    alt keycloak user created
+        RegisterHandler -> IdentityService: 8. CreateUser(request, keycloakUserId)
         activate IdentityService
-        IdentityService -> DB: SaveUser(user)
+        IdentityService -> DB: 9. SaveUser(user)
         activate DB
-        DB --> IdentityService: Result(userRecord)
+        DB --> IdentityService: 10. return Result(userRecord)
         deactivate DB
-        IdentityService --> RegisterHandler: Result(createResult)
+        IdentityService --> RegisterHandler: 11. return Result(createResult)
         deactivate IdentityService
-        alt identity user creation failed
-            RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
-            RegisterHandler --> AuthController: return Errors.User.FailedToRegister
-            AuthController --> SignUpPage: return Error(message)
-            SignUpPage --> Actor: message("Failed to register")
-        else identity user created
-            RegisterHandler -> OtpGenerator: GenerateOtp(6)
+        alt identity user created
+            RegisterHandler -> OtpGenerator: 12. GenerateOtp(6)
             activate OtpGenerator
-            OtpGenerator --> RegisterHandler: otp
+            OtpGenerator --> RegisterHandler: 13. return otp
             deactivate OtpGenerator
-            RegisterHandler -> CachedRepository: Set(email, otp, 5 minutes)
+            RegisterHandler -> CachedRepository: 14. Set(email, otp, 5 minutes)
             activate CachedRepository
-            CachedRepository --> RegisterHandler: stored
+            CachedRepository --> RegisterHandler: 15. return stored
             deactivate CachedRepository
-            RegisterHandler -> IdentityService: GenerateEmailVerificationToken(keycloakUserId)
+            RegisterHandler -> IdentityService: 16. GenerateEmailVerificationToken(keycloakUserId)
             activate IdentityService
-            IdentityService -> DB: CreateEmailVerificationToken(keycloakUserId)
+            IdentityService -> DB: 17. CreateEmailVerificationToken(keycloakUserId)
             activate DB
-            DB --> IdentityService: Result(token)
+            DB --> IdentityService: 18. return Result(token)
             deactivate DB
-            IdentityService --> RegisterHandler: Result(tokenResult)
+            IdentityService --> RegisterHandler: 19. return Result(tokenResult)
             deactivate IdentityService
-            alt email verification token generation failed
-                RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
-                RegisterHandler -> IdentityService: DeleteUser(keycloakUserId)
-                RegisterHandler --> AuthController: return Errors.User.FailedToRegister
-                AuthController --> SignUpPage: return Error(message)
-                SignUpPage --> Actor: message("Registration failed")
-            else token generated
-                RegisterHandler -> EmailService: SendEmail(emailCommand)
+            alt token generated
+                RegisterHandler -> EmailService: 20. SendEmail(emailCommand)
                 activate EmailService
-                alt email sending failed
-                    EmailService --> RegisterHandler: exception
-                    RegisterHandler -> KeycloakService: DeleteKeycloakUser(keycloakUserId)
-                    RegisterHandler -> IdentityService: DeleteUser(keycloakUserId)
-                    RegisterHandler --> AuthController: return Errors.User.FailedToRegister
-                    AuthController --> SignUpPage: return Error(message)
-                    SignUpPage --> Actor: message("Registration failed")
-                else email sent
-                    EmailService --> RegisterHandler: sent
+                alt email sent
+                    EmailService --> RegisterHandler: 21. return sent
                     deactivate EmailService
-                    RegisterHandler --> AuthController: return EmailVerificationResponse(params, verificationType, ttl)
-                    deactivate RegisterHandler
-                    AuthController --> SignUpPage: return EmailVerificationResponse
-                    deactivate AuthController
-                    SignUpPage --> Actor: message("Check your \nemail to verify account")
-                    deactivate SignUpPage
-                    deactivate Actor
+                    RegisterHandler --> AuthController: 22. return EmailVerificationResponse(params, verificationType, ttl)
+                    AuthController --> SignUpPage: 23. return EmailVerificationResponse
+                    SignUpPage --> Actor: 24. message("Check your \nemail to verify account")
+                else email sending failed
+                    EmailService --> RegisterHandler: 21.1 return exception
+                    RegisterHandler -> KeycloakService: 21.2 DeleteKeycloakUser(keycloakUserId)
+                    RegisterHandler -> IdentityService: 21.3 DeleteUser(keycloakUserId)
+                    RegisterHandler --> AuthController: 21.4 return Errors.User.FailedToRegister
+                    AuthController --> SignUpPage: 21.5 return Error(message)
+                    SignUpPage --> Actor: 21.6 message("Registration failed")
                 end
+            else email verification token generation failed
+                RegisterHandler -> KeycloakService: 19.1 DeleteKeycloakUser(keycloakUserId)
+                RegisterHandler -> IdentityService: 19.2 DeleteUser(keycloakUserId)
+                RegisterHandler --> AuthController: 19.3 return Errors.User.FailedToRegister
+                AuthController --> SignUpPage: 19.4 return Error(message)
+                SignUpPage --> Actor: 19.5 message("Registration failed")
             end
+        else identity user creation failed
+            RegisterHandler -> KeycloakService: 11.1 DeleteKeycloakUser(keycloakUserId)
+            RegisterHandler --> AuthController: 11.2 return Errors.User.FailedToRegister
+            AuthController --> SignUpPage: 11.3 return Error(message)
+            SignUpPage --> Actor: 11.4 message("Failed to register")
         end
+    else keycloak user creation failed
+        RegisterHandler -> KeycloakService: 7.1 DeleteKeycloakUser(keycloakUserId)
+        RegisterHandler --> AuthController: 7.2 return Errors.User.FailedToRegister
+        deactivate RegisterHandler
+        AuthController --> SignUpPage: 7.3 return Error(message)
+        deactivate AuthController
+        SignUpPage --> Actor: 7.4 message("Failed to register")
+        deactivate SignUpPage
+        deactivate Actor
     end
 end
 

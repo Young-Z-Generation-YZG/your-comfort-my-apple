@@ -14,58 +14,61 @@ actor "Admin Super" as super #red
 
 '=== Packages ===
 package "SUPER_ADMIN role & Admin App" {
-    usecase (UC36: View dashboard) as UC36
-    usecase (UC37: Filter revenue) as UC37
+    usecase (UC32: View dashboard) as UC32
+    usecase (UC33: Filter revenue) as UC33
 
-    usecase (UC38: View online orders) as UC38
-    usecase (UC39: View online order details) as UC39
-    usecase (UC40: update online order status) as UC40
+    usecase (UC34: View online orders) as UC34
+    usecase (UC35: View online order details) as UC35
+    usecase (UC36: update online order status) as UC36
 
-    usecase (UC41: View tenants) as UC41
-    usecase (UC42: Create tenant) as UC42
-    usecase (UC43: View tenant details) as UC43
-    usecase (UC44: Update tenant) as UC44
+    usecase (UC37: View tenants) as UC37
+    usecase (UC38: Create tenant) as UC38
+    usecase (UC39: View tenant details) as UC39
+    usecase (UC40: Update tenant) as UC40
 
-    usecase (UC45: View events) as UC45
-    usecase (UC46: Create event) as UC46
-    usecase (UC47: View event details) as UC47
-    usecase (UC48: Update event) as UC48
+    usecase (UC41: View events) as UC41
+    usecase (UC42: Create event) as UC42
+    usecase (UC43: View event details) as UC43
+    usecase (UC44: Update event) as UC44
 
-    usecase (UC49: View categories) as UC49
-    usecase (UC50: Create category) as UC50
-    usecase (UC51: View category details) as UC51
-    usecase (UC52: Update category) as UC52
+    usecase (UC45: View categories) as UC45
+    usecase (UC46: Create category) as UC46
+    usecase (UC47: View category details) as UC47
+    usecase (UC48: Update category) as UC48
 
-    usecase (UC53: View staffs) as UC53
-    usecase (UC54: Filter staff) as UC54
-    usecase (UC55: Create staff) as UC55
-    usecase (UC56: View staff details) as UC56
-    usecase (UC57: Update staff) as UC57
+    usecase (UC49: View staffs) as UC49
+    usecase (UC50: Filter staff) as UC50
+    usecase (UC51: Add staff) as UC51
+    usecase (UC52: View staff details) as UC52
+    usecase (UC53: Update staff) as UC53
 
-    usecase (UC58: View products) as UC58
-    usecase (UC59: Filter product) as UC59
-    usecase (UC60: Create product) as UC60
-    usecase (UC61: View product details) as UC61
-    usecase (UC62: Update product) as UC62
+    usecase (UC54: View products) as UC54
+    usecase (UC55: Filter product) as UC55
+    usecase (UC56: Create product) as UC56
+    usecase (UC57: View product details) as UC57
+    usecase (UC58: Update product) as UC58
 
-    usecase (UC63: View inventory) as UC63
-    usecase (UC64: Filter sku) as UC64
+    usecase (UC59: View inventory) as UC59
+    usecase (UC60: Filter sku) as UC60
 
-    usecase (UC65: View customers) as UC65
-    usecase (UC66: Filter customer) as UC66
-    usecase (UC67: View customer details) as UC67
+    usecase (UC61: View customers) as UC61
+    usecase (UC62: Filter customer) as UC62
+    usecase (UC63: View customer details) as UC63
 
-    usecase (UC68: View orders) as UC68
-    usecase (UC69: Filter order) as UC69
-    usecase (UC70: View order details) as UC70
+    usecase (UC64: View orders) as UC64
+    usecase (UC65: Filter order) as UC65
+    usecase (UC66: View order details) as UC66
 
-    usecase (UC71: Impersonate staff) as UC71
-    usecase (UC72: Switching tenant) as UC72
+    usecase (UC67: Impersonate staff) as UC67
+    usecase (UC68: Switch tenant) as UC68
 }
 
 '=== Extends (<<extend>>) ===
-UC36 <.. UC37 : <<extend>>
-UC38 <.. UC39 : <<extend>>
+UC32 <.. UC33 : <<extend>>
+UC34 <.. UC35 : <<extend>>
+UC35 <.. UC36 : <<extend>>
+UC37 <.. UC38 : <<extend>>
+UC37 <.. UC39 : <<extend>>
 UC39 <.. UC40 : <<extend>>
 UC41 <.. UC42 : <<extend>>
 UC41 <.. UC43 : <<extend>>
@@ -75,30 +78,27 @@ UC45 <.. UC47 : <<extend>>
 UC47 <.. UC48 : <<extend>>
 UC49 <.. UC50 : <<extend>>
 UC49 <.. UC51 : <<extend>>
-UC51 <.. UC52 : <<extend>>
-UC53 <.. UC54 : <<extend>>
-UC53 <.. UC55 : <<extend>>
-UC53 <.. UC56 : <<extend>>
-UC56 <.. UC57 : <<extend>>
-UC58 <.. UC59 : <<extend>>
-UC58 <.. UC60 : <<extend>>
-UC58 <.. UC61 : <<extend>>
+UC49 <.. UC52 : <<extend>>
+UC52 <.. UC53 : <<extend>>
+UC54 <.. UC55 : <<extend>>
+UC54 <.. UC56 : <<extend>>
+UC54 <.. UC57 : <<extend>>
+UC57 <.. UC58 : <<extend>>
+UC59 <.. UC60 : <<extend>>
 UC61 <.. UC62 : <<extend>>
-UC63 <.. UC64 : <<extend>>
-UC65 <.. UC66 : <<extend>>
-UC65 <.. UC67 : <<extend>>
-UC68 <.. UC69 : <<extend>>
-UC68 <.. UC70 : <<extend>>
+UC61 <.. UC63 : <<extend>>
+UC64 <.. UC65 : <<extend>>
+UC64 <.. UC66 : <<extend>>
 
 
-super --> UC36
+super --> UC32
+super --> UC37
 super --> UC41
 super --> UC45
 super --> UC49
-super --> UC53
-super --> UC58
-super --> UC63
-super --> UC65
+super --> UC54
+super --> UC59
+super --> UC61
+super --> UC64
+super --> UC67
 super --> UC68
-super --> UC71
-super --> UC72
