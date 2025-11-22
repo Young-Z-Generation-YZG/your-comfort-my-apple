@@ -1,6 +1,7 @@
 @startuml UC10_manage_cart
 actor Actor
 boundary CartPage
+boundary CheckoutPage
 control CartController
 control GetBasketQueryHandler
 control UserHttpContext
@@ -61,15 +62,25 @@ alt has items
 
     GetBasketQueryHandler -> GetBasketQueryHandler: 21. ToResponse(shoppingCart)
     GetBasketQueryHandler --> CartController: 22. return GetBasketResponse(items, totalAmount, discountAmount)
-    deactivate GetBasketQueryHandler
     CartController --> CartPage: 23. return GetBasketResponse
-    deactivate CartController
     CartPage --> Actor: 24. display(Cart with totals)
-    deactivate CartPage
-    deactivate Actor
+    opt update quantity
+        Actor -> CartPage: 25. updateQuantity(index, quantity)
+        ref over CartPage: sd: thêm vào giỏ hàng
+    end
+
+    opt process to checkout
+        Actor -> CartPage: 26. clickOnCheckout()
+        CartPage -> CheckoutPage: 27. navigate()
+        activate CheckoutPage
+        deactivate CheckoutPage
+        ref over CheckoutPage: sd: thanh toán
+    end
 else no items in cart
     GetBasketQueryHandler --> CartController: 9.1 return GetBasketResponse(empty)
+    deactivate GetBasketQueryHandler
     CartController --> CartPage: 9.2 return GetBasketResponse(empty)
+    deactivate CartController
     CartPage --> Actor: 9.3 display(Empty cart)
     deactivate CartPage
     deactivate Actor
