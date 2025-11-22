@@ -52,6 +52,11 @@ alt product exists
     GetIphoneModelBySlugHandler --> CatalogController: 18. return(IphoneModelDetailsResponse)
     CatalogController --> ProductDetailsPage: 19. return(IphoneModelDetailsResponse)
     ProductDetailsPage --> Actor: 20. display("Product details with branches and SKUs")
+
+    opt add to cart
+        Actor -> ProductDetailsPage: 21. clickOnAddToCart()
+        ref over ProductDetailsPage: sd: thêm vào giỏ hàng
+    end
 else product does not exist
     GetIphoneModelBySlugHandler --> CatalogController: 7.1 return Errors.Product.NotFound
     deactivate GetIphoneModelBySlugHandler
