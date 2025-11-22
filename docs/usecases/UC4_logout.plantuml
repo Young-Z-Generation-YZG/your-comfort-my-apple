@@ -4,45 +4,51 @@ boundary HomePage
 control AuthController
 control LogoutHandler
 control KeycloakService
+database DB
 
-Actor -> HomePage: click logout(refreshToken)
+Actor -> HomePage: 1. click logout(refreshToken)
 activate Actor
 activate HomePage
 
-HomePage -> AuthController: logout(request)
+HomePage -> AuthController: 2. logout(request)
 activate AuthController
 
-AuthController -> LogoutHandler: logout(request)
+AuthController -> LogoutHandler: 3. logout(request)
 activate LogoutHandler
-
-LogoutHandler -> KeycloakService: ValidateRefreshToken(refreshToken)
+LogoutHandler -> KeycloakService: 4. ValidateRefreshTokenAsync(refreshToken)
 activate KeycloakService
-KeycloakService --> LogoutHandler: Result(valid)
+KeycloakService -> DB: 5. ValidateToken(refreshToken)
+activate DB
+DB --> KeycloakService: 6. return(tokenInfo)
+deactivate DB
+KeycloakService --> LogoutHandler: 7. return Result(valid)
 deactivate KeycloakService
-
-alt invalid refresh token
-    LogoutHandler --> AuthController: return Errors.Keycloak.InvalidRefreshToken
-    AuthController --> HomePage: return Errors.Keycloak.InvalidRefreshToken
-    HomePage --> Actor: message("Invalid refresh token")
-else token valid
-    LogoutHandler -> KeycloakService: Logout(refreshToken)
+alt token valid
+    LogoutHandler -> KeycloakService: 8. LogoutAsync(refreshToken)
     activate KeycloakService
-    KeycloakService --> LogoutHandler: Result(result)
+    KeycloakService -> DB: 9. RevokeToken(refreshToken)
+    activate DB
+    DB --> KeycloakService: 10. return(revoked)
+    deactivate DB
+    KeycloakService --> LogoutHandler: 11. return Result(success)
     deactivate KeycloakService
-
-    alt logout failed
-        LogoutHandler --> AuthController: return Errors.Keycloak.LogoutFailed
-        AuthController --> HomePage: return Errors.Keycloak.LogoutFailed
-        HomePage --> Actor: message("Logout failed")
-    else logout succeeded
-        LogoutHandler --> AuthController: return true
-        deactivate LogoutHandler
-        AuthController --> HomePage: return true
-        deactivate AuthController
-        HomePage --> Actor: message("")
-        deactivate HomePage
-        deactivate Actor
+    alt logout succeeded
+        LogoutHandler --> AuthController: 12. return true
+        AuthController --> HomePage: 13. return true
+        HomePage --> Actor: 14. message("Logged out successfully")
+    else logout failed
+        LogoutHandler --> AuthController: 11.1 return Errors.Keycloak.LogoutFailed
+        AuthController --> HomePage: 11.2 return Errors.Keycloak.LogoutFailed
+        HomePage --> Actor: 11.3 message("Logout failed")
     end
+else invalid refresh token
+    LogoutHandler --> AuthController: 7.1 return Errors.Keycloak.InvalidRefreshToken
+    deactivate LogoutHandler
+    AuthController --> HomePage: 7.2 return Errors.Keycloak.InvalidRefreshToken
+    deactivate AuthController
+    HomePage --> Actor: 7.3 message("Invalid refresh token")
+    deactivate HomePage
+    deactivate Actor
 end
 
 @enduml

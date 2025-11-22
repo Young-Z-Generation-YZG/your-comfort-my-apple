@@ -1,61 +1,59 @@
 @startuml UC5_view-product-list
 actor Actor
-boundary ProductListPage
+boundary HomePage
+boundary ShopPage
 control CatalogController
-control GetIphoneModelsHandler
+control GetProductModelsHandler
 control MongoRepository
 database MongoDB
 
-Actor -> ProductListPage: open with filters(colors, storages, models,\nminPrice, maxPrice, priceSort, page, limit)
-activate Actor
-activate ProductListPage
 
-ProductListPage -> CatalogController: getIphoneModels(query)
+Actor -> HomePage: 1. click on shop
+activate Actor
+activate HomePage
+
+HomePage -> ShopPage: 2. clickShopPage()
+activate ShopPage
+
+ShopPage -> CatalogController: 3. navigate()
 activate CatalogController
 
-CatalogController -> GetIphoneModelsHandler: getIphoneModels(query)
-activate GetIphoneModelsHandler
+CatalogController -> GetProductModelsHandler: 4. getProductModels()
+activate GetProductModelsHandler
 
-GetIphoneModelsHandler -> GetIphoneModelsHandler: GetFilterDefinition(query)
-
-opt colors provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(colors)
-end
-opt storages provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(storages)
-end
-opt models provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter AnyIn(models)
-end
-opt minPrice provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter prices.unit_price >= minPrice
-end
-opt maxPrice provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: filter prices.unit_price <= maxPrice
-end
-opt priceSort provided
-    GetIphoneModelsHandler -> GetIphoneModelsHandler: sort by prices.unit_price (ASC|DESC)
-end
-
-GetIphoneModelsHandler -> MongoRepository: GetAllAsync(page, limit, filter, null, ct)
+GetProductModelsHandler -> MongoRepository: 5. GetAllAsync()
 activate MongoRepository
-MongoRepository -> MongoDB: query(filter, sort, pagination)
+
+MongoRepository -> MongoDB: 6. query()
 activate MongoDB
-MongoDB --> MongoRepository: (items, totalRecords, totalPages)
+MongoDB --> MongoRepository: 7. return(items, totalRecords, totalPages)
 deactivate MongoDB
-MongoRepository --> GetIphoneModelsHandler: (items, totalRecords, totalPages)
+MongoRepository --> GetProductModelsHandler: 8. return(items, totalRecords, totalPages)
 deactivate MongoRepository
 
-GetIphoneModelsHandler -> GetIphoneModelsHandler: MapToResponse(...)
-GetIphoneModelsHandler --> CatalogController: PaginationResponse<IphoneModelResponse>
-deactivate GetIphoneModelsHandler
-
-CatalogController --> ProductListPage: PaginationResponse
-deactivate CatalogController
-
-ProductListPage --> Actor: display(Product list with pagination)
-deactivate ProductListPage
-deactivate Actor
-
+alt items found
+    GetProductModelsHandler --> CatalogController: 9. return PaginationResponse<ProductModelResponse>
+    CatalogController --> ShopPage: 10. return PaginationResponse
+    ShopPage --> Actor: 11. display(Product list with pagination)
+    opt filters applied
+        Actor -> ShopPage: 12. apply filters(colors, storages, models, \nminPrice, maxPrice)
+            ref over ShopPage: sd: lọc sản phẩm
+    end
+    opt click on item
+        Actor -> ShopPage: 13. clickOnItem(slug)
+            ref over ShopPage: sd: xem chi tiết sản phẩm
+    end
+else items not found
+    GetProductModelsHandler --> CatalogController: 9.1 return PaginationResponse<ProductModelResponse>
+    deactivate GetProductModelsHandler
+    note right
+        items is empty list (0 items)
+    end note
+    CatalogController --> ShopPage: 9.2 return PaginationResponse
+    deactivate CatalogController
+    ShopPage --> Actor: 9.3 display("No products found")
+    deactivate ShopPage
+    deactivate Actor
+end
 @enduml
 

@@ -1,46 +1,53 @@
-@startuml UC8_search_product
+@startuml UC8_search-product
 actor Actor
-boundary SearchPage
+boundary ProductListPage
 control CatalogController
-control GetProductModelsHandler
+control GetIphoneModelsHandler
 control MongoRepository
 database MongoDB
 
-Actor -> SearchPage: input(textSearch)
+Actor -> ProductListPage: 1. input(textSearch)
 activate Actor
-activate SearchPage
+activate ProductListPage
 
-SearchPage -> CatalogController: searchProductModels(query)
+ProductListPage -> CatalogController: 2. getIphoneModels(query)
 activate CatalogController
 
-CatalogController -> GetProductModelsHandler: getProductModels(query)
-activate GetProductModelsHandler
+CatalogController -> GetIphoneModelsHandler: 3. getIphoneModels(query)
+activate GetIphoneModelsHandler
 
-GetProductModelsHandler -> GetProductModelsHandler: BuildFilter(query)
+GetIphoneModelsHandler -> GetIphoneModelsHandler: 4. FilterDefinition(query)
 
-opt textSearch provided
-    GetProductModelsHandler -> GetProductModelsHandler: filter Regex(name, /textSearch/i)
-end
+GetIphoneModelsHandler -> GetIphoneModelsHandler: 5. filter Regex(name, textSearch)
 
-GetProductModelsHandler -> MongoRepository: GetAll(filter, null, ct)
+GetIphoneModelsHandler -> MongoRepository: 6. GetAllAsync(filter)
 activate MongoRepository
-MongoRepository -> MongoDB: query(filter, pagination)
+MongoRepository -> MongoDB: 7. query(filter)
 activate MongoDB
-MongoDB --> MongoRepository: (items, totalRecords, totalPages)
+MongoDB --> MongoRepository: 8. return(items, totalRecords, totalPages)
 deactivate MongoDB
-MongoRepository --> GetProductModelsHandler: (items, totalRecords, totalPages)
+MongoRepository --> GetIphoneModelsHandler: 9. return(items, totalRecords, totalPages)
 deactivate MongoRepository
 
-GetProductModelsHandler -> GetProductModelsHandler: MapToResponse(result, query)\nwith PaginationLinksBuilder.Build(...)
-GetProductModelsHandler --> CatalogController: PaginationResponse<ProductModelResponse>
-deactivate GetProductModelsHandler
-
-CatalogController --> SearchPage: PaginationResponse
-deactivate CatalogController
-
-SearchPage --> Actor: display(Search results with pagination)
-deactivate SearchPage
-deactivate Actor
-
+alt items found
+    GetIphoneModelsHandler --> CatalogController: 10. return PaginationResponse<IphoneModelResponse>
+    CatalogController --> ProductListPage: 11. return PaginationResponse
+    ProductListPage --> Actor: 12. display(Product list with pagination)
+    opt textSearch provided
+        Actor -> ProductListPage: 13. clickOnItem()
+        ref over ProductListPage: sd: Xem chi tiết sản phẩm
+    end
+else items not found
+    GetIphoneModelsHandler --> CatalogController: 10.1 return PaginationResponse<IphoneModelResponse>
+    deactivate GetIphoneModelsHandler
+    note right
+        items is empty list (0 items)
+    end note
+    CatalogController --> ProductListPage: 10.2 return PaginationResponse
+    deactivate CatalogController
+    ProductListPage --> Actor: 10.3 display("No products found")
+    deactivate ProductListPage
+    deactivate Actor
+end
 @enduml
 

@@ -11,68 +11,88 @@ control CachedRepository
 control EmailService
 database DB
 
-Actor -> SignInPage: input(email,password)
+Actor -> SignInPage: 1. input(email,password)
 activate Actor
 activate SignInPage
 
-SignInPage -> AuthController: login(request)
+SignInPage -> AuthController: 2. login(request)
 activate AuthController
 
-AuthController -> LoginHandler: login(request)
+AuthController -> LoginHandler: 3. login(request)
 activate LoginHandler
 
-LoginHandler -> IdentityService: Login(request)
+LoginHandler -> IdentityService: 4. FindUserAsync(email)
 activate IdentityService
-IdentityService --> LoginHandler: Result(user)
+IdentityService -> DB: 5. FindByEmailAsync(email)
+activate DB
+DB --> IdentityService: 6. return(user)
+deactivate DB
+IdentityService --> LoginHandler: 7. return Result(user)
 deactivate IdentityService
 
-alt invalid credentials
-    LoginHandler --> AuthController: return Errors.User.InvalidCredentials
-    AuthController --> SignInPage: return Errors.User.InvalidCredentials
-    SignInPage --> Actor: message("Invalid credentials")
-else login success
-    alt email not confirmed
-        LoginHandler -> OtpGenerator: GenerateOtp(6)
-        activate OtpGenerator
-        OtpGenerator --> LoginHandler: otp
-        deactivate OtpGenerator
-        LoginHandler -> CachedRepository: Set(email, otp, 5 minutes)
-        activate CachedRepository
-        CachedRepository --> LoginHandler: stored
-        deactivate CachedRepository
-        LoginHandler -> IdentityService: GenerateEmailVerificationToken(userId)
-        activate IdentityService
-        IdentityService --> LoginHandler: Result(token)
-        deactivate IdentityService
-        alt token generation failed (user does not exist)
-            LoginHandler --> AuthController: return Errors.User.DoesNotExist
-            AuthController --> SignInPage: return Errors.User.DoesNotExist
-            SignInPage --> Actor: message("User does not exist")
-        else token generated
-            LoginHandler -> EmailService: SendEmail(emailCommand)
-            activate EmailService
-            EmailService --> LoginHandler: sent
-            deactivate EmailService
-            LoginHandler --> AuthController: return LoginResponse(params, verificationType)
-            AuthController --> SignInPage: return LoginResponse
-            SignInPage --> Actor: message("Check your email to verify account")
-        end
-    else email confirmed
-        LoginHandler -> KeycloakService: GetKeycloakTokenPair(email, password)
-        activate KeycloakService
-        KeycloakService --> LoginHandler: TokenPair(accessToken, refreshToken)
-        deactivate KeycloakService
+alt user found
+    LoginHandler -> IdentityService: 8. LoginAsync(user, password)
+    activate IdentityService
+    IdentityService --> LoginHandler: 9. return Result(valid)
+    deactivate IdentityService
 
-        LoginHandler --> AuthController: return LoginResponse(tokens)
-        deactivate LoginHandler
-        AuthController --> SignInPage: return LoginResponse(tokens)
-        deactivate AuthController
-        SignInPage -> HomePage: navigate()
-        deactivate SignInPage
-        activate HomePage
-        HomePage --> Actor: display(HomePage)
-        deactivate HomePage
-        deactivate Actor
+    alt login succeeded
+
+        alt email confirmed
+            LoginHandler -> KeycloakService: 10. GetKeycloakTokenPair(email, password)
+            activate KeycloakService
+            KeycloakService --> LoginHandler: 11. return TokenPair(accessToken, refreshToken)
+            deactivate KeycloakService
+            LoginHandler --> AuthController: 12. return LoginResponse(tokens)
+            AuthController --> SignInPage: 13. return LoginResponse(tokens)
+            SignInPage -> HomePage: 14. navigate()
+            activate HomePage
+            HomePage --> Actor: 15. display(HomePage)
+            deactivate HomePage
+        else email not confirmed
+            LoginHandler -> OtpGenerator: 16. GenerateOtp(6)
+            activate OtpGenerator
+            OtpGenerator --> LoginHandler: 17. return otp
+            deactivate OtpGenerator
+            LoginHandler -> CachedRepository: 18. Set(email, otp, 5 minutes)
+            activate CachedRepository
+            CachedRepository --> LoginHandler: 19. return stored
+            deactivate CachedRepository
+            LoginHandler -> IdentityService: 20. GenerateEmailVerificationToken(userId)
+            activate IdentityService
+            IdentityService -> DB: 21. FindByIdAsync(userId)
+            activate DB
+            DB --> IdentityService: 22. return(user)
+            deactivate DB
+            IdentityService --> LoginHandler: 23. return Result(token)
+            deactivate IdentityService
+
+            alt token generated
+                LoginHandler -> EmailService: 24. SendEmail(emailCommand)
+                activate EmailService
+                EmailService --> LoginHandler: 25. return sent
+                deactivate EmailService
+                LoginHandler --> AuthController: 26. return LoginResponse(params, verificationType)
+                AuthController --> SignInPage: 27. return LoginResponse
+                SignInPage --> Actor: 28. message("Check your email to verify account")
+            else token generation failed
+                LoginHandler --> AuthController: 23.1 return Errors.User.DoesNotExist
+                AuthController --> SignInPage: 23.2 return Errors.User.DoesNotExist
+                SignInPage --> Actor: 23.3 message("User does not exist")
+            end
+        end
+    else login failed
+        LoginHandler --> AuthController: 9.1 return Errors.User.InvalidCredentials
+        AuthController --> SignInPage: 9.2 return Errors.User.InvalidCredentials
+        SignInPage --> Actor: 9.3 message("Invalid credentials")
     end
+else user not found
+    LoginHandler --> AuthController: 7.1 return Errors.User.DoesNotExist
+    deactivate LoginHandler
+    AuthController --> SignInPage: 7.2 return Errors.User.DoesNotExist
+    deactivate AuthController
+    SignInPage --> Actor: 7.3 message("User does not exist")
+    deactivate SignInPage
+    deactivate Actor
 end
 @enduml

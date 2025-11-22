@@ -8,55 +8,55 @@ control ModelSlugCache
 control DistributedCache
 control BasketRepository
 
-Actor -> ProductDetailsPage: addToCart(cartItems)
+Actor -> ProductDetailsPage: 1. selectVariant(color, model, storage)
 activate Actor
 activate ProductDetailsPage
 
-ProductDetailsPage -> CartController: addToCart(command)
+ProductDetailsPage -> CartController: 2. storeBasket(color, model, storage, \nproductModelId)
 activate CartController
 
-CartController -> StoreBasketHandler: storeBasket(command)
+CartController -> StoreBasketHandler: 3. storeBasket(command)
 activate StoreBasketHandler
 
-StoreBasketHandler -> UserHttpContext: GetUserEmail()
+StoreBasketHandler -> UserHttpContext: 4. GetUserEmail()
 activate UserHttpContext
-UserHttpContext --> StoreBasketHandler: userEmail
+UserHttpContext --> StoreBasketHandler: 5. return userEmail
 deactivate UserHttpContext
 
-StoreBasketHandler -> StoreBasketHandler: ShoppingCartItemMapping(cartItems)
+StoreBasketHandler -> StoreBasketHandler: 6. ShoppingCartItemMapping(cartItems)
 
 loop for each item in cartItems
-    StoreBasketHandler -> DistributedCache: GetString(GetIphoneSkuPriceKey(model, storage, color))
+    StoreBasketHandler -> DistributedCache: 7. GetString(GetIphoneSkuPriceKey(model, storage, color))
     activate DistributedCache
-    DistributedCache --> StoreBasketHandler: unitPrice
+    DistributedCache --> StoreBasketHandler: 8. return unitPrice
     deactivate DistributedCache
 
-    StoreBasketHandler -> DistributedCache: GetString(GetDisplayImageUrlKey(modelId, color))
+    StoreBasketHandler -> DistributedCache: 9. GetString(GetDisplayImageUrlKey(modelId, color))
     activate DistributedCache
-    DistributedCache --> StoreBasketHandler: displayImageUrl
+    DistributedCache --> StoreBasketHandler: 10. return displayImageUrl
     deactivate DistributedCache
 
-    StoreBasketHandler -> ModelSlugCache: GetSlug(modelId)
+    StoreBasketHandler -> ModelSlugCache: 11. GetSlug(modelId)
     activate ModelSlugCache
-    ModelSlugCache --> StoreBasketHandler: modelSlug
+    ModelSlugCache --> StoreBasketHandler: 12. return modelSlug
     deactivate ModelSlugCache
 end
 
-StoreBasketHandler -> BasketRepository: StoreBasketAsync(shoppingCart)
+StoreBasketHandler -> BasketRepository: 13. StoreBasketAsync(shoppingCart)
 activate BasketRepository
-BasketRepository --> StoreBasketHandler: Result(result)
+BasketRepository --> StoreBasketHandler: 14. return Result(result)
 deactivate BasketRepository
 
-alt store failed
-    StoreBasketHandler --> CartController: return Error(message)
-    CartController --> ProductDetailsPage: return Error(message)
-    ProductDetailsPage --> Actor: message("Failed to add to cart")
-else store succeeded
-    StoreBasketHandler --> CartController: return true
+alt store succeeded
+    StoreBasketHandler --> CartController: 15. return true
+    CartController --> ProductDetailsPage: 16. return true
+    ProductDetailsPage --> Actor: 17. message("Added to cart")
+else store failed
+    StoreBasketHandler --> CartController: 14.1 return Error(message)
     deactivate StoreBasketHandler
-    CartController --> ProductDetailsPage: return true
+    CartController --> ProductDetailsPage: 14.2 return Error(message)
     deactivate CartController
-    ProductDetailsPage --> Actor: message("Added to cart")
+    ProductDetailsPage --> Actor: 14.3 message("Failed to add to cart")
     deactivate ProductDetailsPage
     deactivate Actor
 end

@@ -1,0 +1,67 @@
+@startuml UC5_view-product-list
+actor Actor
+boundary ProductListPage
+control CatalogController
+control GetIphoneModelsHandler
+control MongoRepository
+database MongoDB
+
+Actor -> ProductListPage: 1. apply filters(colors, storages, \nmodels, minPrice, maxPrice)
+activate Actor
+activate ProductListPage
+
+ProductListPage -> CatalogController: 2. getIphoneModels(query)
+activate CatalogController
+
+CatalogController -> GetIphoneModelsHandler: 3. getIphoneModels(query)
+activate GetIphoneModelsHandler
+
+GetIphoneModelsHandler -> GetIphoneModelsHandler: 4. FilterDefinition(query)
+
+opt colors provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: 5. filter AnyIn(colors)
+end
+opt storages provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: 6. filter AnyIn(storages)
+end
+opt models provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: 7. filter AnyIn(models)
+end
+opt minPrice provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: 8. filter prices.unit_price >= minPrice
+end
+opt maxPrice provided
+    GetIphoneModelsHandler -> GetIphoneModelsHandler: 9. filter prices.unit_price <= maxPrice
+end
+
+GetIphoneModelsHandler -> MongoRepository: 10. GetAllAsync(filter)
+activate MongoRepository
+MongoRepository -> MongoDB: 11. query(filter)
+activate MongoDB
+MongoDB --> MongoRepository: 12. return(items, totalRecords, totalPages)
+deactivate MongoDB
+MongoRepository --> GetIphoneModelsHandler: 13. return(items, totalRecords, totalPages)
+deactivate MongoRepository
+
+alt items found
+    GetIphoneModelsHandler --> CatalogController: 14. return PaginationResponse<IphoneModelResponse>
+    CatalogController --> ProductListPage: 15. return PaginationResponse
+    ProductListPage --> Actor: 16. display(Product list with pagination)
+    opt colors provided
+        Actor -> ProductListPage: 17. clickOnItem()
+        ref over ProductListPage: sd: Xem chi tiết sản phẩm
+    end
+else items not found
+    GetIphoneModelsHandler --> CatalogController: 14.1 return PaginationResponse<IphoneModelResponse>
+    deactivate GetIphoneModelsHandler
+    note right
+        items is empty list (0 items)
+    end note
+    CatalogController --> ProductListPage: 14.2 return PaginationResponse
+    deactivate CatalogController
+    ProductListPage --> Actor: 14.3 display("No products found")
+    deactivate ProductListPage
+    deactivate Actor
+end
+@enduml
+
