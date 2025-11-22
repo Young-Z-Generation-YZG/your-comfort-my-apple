@@ -43,6 +43,10 @@ import { useEffect, useState } from 'react';
 import {
    ArrowUpDown,
    ChevronDown,
+   ChevronLeft,
+   ChevronRight,
+   ChevronsLeft,
+   ChevronsRight,
    Ellipsis,
    MoreHorizontal,
 } from 'lucide-react';
@@ -215,7 +219,9 @@ const HRMPage = () => {
 
    const {
       getPaginationItems,
+      totalPages,
       totalRecords,
+      currentPage,
       firstItemIndex,
       lastItemIndex,
       limitSelectValue,
@@ -239,7 +245,6 @@ const HRMPage = () => {
          fallbackPageSize: PAGE_LIMIT_OPTIONS[0],
       },
    );
-   const paginationItems = getPaginationItems();
 
    // Setup table
    const table = useReactTable({
@@ -374,49 +379,43 @@ const HRMPage = () => {
                   </Table>
                </div>
 
-               <div className="flex gap-4 justify-between px-4 py-2 border-t">
-                  <div className="flex items-center justify-between gap-4">
-                     {/* Items per page selection */}
-                     <div className="flex gap-1">
+               {/* Pagination */}
+               {(totalPages ?? 0) > 0 && (
+                  <div className="flex items-center justify-between px-4 py-4 border-t">
+                     <div className="flex items-center gap-2">
                         <Select
                            value={limitSelectValue}
                            onValueChange={(value) => {
                               setFilters({ _limit: Number(value), _page: 1 });
                            }}
                         >
-                           <SelectTrigger className="w-[140px] h-9">
-                              <SelectValue placeholder="Select limit" />
+                           <SelectTrigger className="w-auto h-9">
+                              <SelectValue />
                            </SelectTrigger>
                            <SelectContent>
                               <SelectGroup>
-                                 {PAGE_LIMIT_OPTIONS.map((limit) => (
-                                    <SelectItem
-                                       key={limit}
-                                       value={limit.toString()}
-                                    >
-                                       {limit} / page
-                                    </SelectItem>
-                                 ))}
+                                 <SelectItem value="10">10 / page</SelectItem>
+                                 <SelectItem value="20">20 / page</SelectItem>
+                                 <SelectItem value="50">50 / page</SelectItem>
                               </SelectGroup>
                            </SelectContent>
                         </Select>
+
+                        <div className="text-muted-foreground text-sm">
+                           Showing{' '}
+                           <span className="font-medium">{firstItemIndex}</span>{' '}
+                           to{' '}
+                           <span className="font-medium">{lastItemIndex}</span>{' '}
+                           of{' '}
+                           <span className="font-medium">{totalRecords}</span>{' '}
+                           users
+                        </div>
                      </div>
 
-                     <div className="text-muted-foreground text-sm">
-                        Showing{' '}
-                        <span className="font-medium">{firstItemIndex}</span> to{' '}
-                        <span className="font-medium">{lastItemIndex}</span> of{' '}
-                        <span className="font-medium">{totalRecords}</span>{' '}
-                        users
-                     </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                     {/* Pagination Controls */}
                      {getUsersByAdminState.data &&
                         getUsersByAdminState.data.total_pages > 0 && (
-                           <div className="flex items-center gap-2 justify-end mr-5 py-5">
-                              {paginationItems.map((item, index) => {
+                           <div className="flex items-center gap-2">
+                              {getPaginationItems().map((item, index) => {
                                  if (item.type === 'ellipsis') {
                                     return (
                                        <span
@@ -430,9 +429,7 @@ const HRMPage = () => {
 
                                  const isCurrentPage =
                                     item.type === 'page' &&
-                                    item.value ===
-                                       (getUsersByAdminState.data
-                                          ?.current_page || 1);
+                                    item.value === currentPage;
 
                                  return (
                                     <Button
@@ -440,7 +437,12 @@ const HRMPage = () => {
                                        variant={
                                           isCurrentPage ? 'default' : 'outline'
                                        }
-                                       size="sm"
+                                       size="icon"
+                                       className={cn(
+                                          'h-9 w-9',
+                                          isCurrentPage &&
+                                             'bg-black text-white hover:bg-black/90',
+                                       )}
                                        disabled={
                                           item.disabled || item.value === null
                                        }
@@ -449,25 +451,30 @@ const HRMPage = () => {
                                              item.value !== null &&
                                              !item.disabled
                                           ) {
-                                             setFilters((prev) => ({
-                                                ...prev,
-                                                _page: item.value!,
-                                             }));
+                                             setFilters({ _page: item.value });
                                           }
                                        }}
-                                       className={cn(
-                                          isCurrentPage &&
-                                             'bg-black text-white hover:bg-black/90',
-                                       )}
                                     >
-                                       {item.label}
+                                       {item.type === 'nav' ? (
+                                          item.label === '<<' ? (
+                                             <ChevronsLeft className="h-4 w-4" />
+                                          ) : item.label === '>>' ? (
+                                             <ChevronsRight className="h-4 w-4" />
+                                          ) : item.label === '<' ? (
+                                             <ChevronLeft className="h-4 w-4" />
+                                          ) : (
+                                             <ChevronRight className="h-4 w-4" />
+                                          )
+                                       ) : (
+                                          item.label
+                                       )}
                                     </Button>
                                  );
                               })}
                            </div>
                         )}
                   </div>
-               </div>
+               )}
             </div>
          </LoadingOverlay>
       </div>

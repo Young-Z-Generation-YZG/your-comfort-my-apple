@@ -31,6 +31,10 @@ import {
    Ellipsis,
    ChevronDown,
    Search,
+   ChevronLeft,
+   ChevronRight,
+   ChevronsLeft,
+   ChevronsRight,
 } from 'lucide-react';
 import {
    DropdownMenu,
@@ -448,6 +452,7 @@ const OnlineOrdersPage = () => {
       getPaginationItems,
       currentPage,
       totalRecords,
+      totalPages,
       firstItemIndex,
       lastItemIndex,
       limitSelectValue,
@@ -471,7 +476,6 @@ const OnlineOrdersPage = () => {
          fallbackPageSize: PAGE_LIMIT_OPTIONS[0],
       },
    );
-   const paginationItems = getPaginationItems();
 
    useEffect(() => {
       getOrdersByAdminAsync({
@@ -901,141 +905,165 @@ const OnlineOrdersPage = () => {
                </DropdownMenu>
             </div>
 
-            <div className="overflow-hidden rounded-md border">
-               <Table className="">
-                  <TableHeader>
-                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                           {headerGroup.headers.map((header) => {
-                              return (
-                                 <TableHead key={header.id}>
-                                    {header.isPlaceholder
-                                       ? null
-                                       : flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext(),
-                                         )}
-                                 </TableHead>
-                              );
-                           })}
-                        </TableRow>
-                     ))}
-                  </TableHeader>
-                  <TableBody>
-                     {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row, index) => (
-                           <TableRow
-                              key={row.id}
-                              data-state={row.getIsSelected() && 'selected'}
-                              className={`cursor-pointer transition-colors ${
-                                 row.getIsSelected()
-                                    ? '!bg-blue-400/20 hover:bg-blue-200'
-                                    : `hover:bg-slate-300/50 ${
-                                         index % 2 === 0
-                                            ? 'bg-white'
-                                            : 'bg-slate-300/30'
-                                      }`
-                              }`}
-                              onClick={() => row.toggleSelected()}
-                           >
-                              {row.getVisibleCells().map((cell) => (
-                                 <TableCell key={cell.id}>
-                                    {flexRender(
-                                       cell.column.columnDef.cell,
-                                       cell.getContext(),
-                                    )}
-                                 </TableCell>
-                              ))}
+            {/* Data Table */}
+            <div className="rounded-lg border bg-card">
+               <div className="overflow-auto">
+                  <Table className="">
+                     <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                           <TableRow key={headerGroup.id}>
+                              {headerGroup.headers.map((header) => {
+                                 return (
+                                    <TableHead key={header.id}>
+                                       {header.isPlaceholder
+                                          ? null
+                                          : flexRender(
+                                               header.column.columnDef.header,
+                                               header.getContext(),
+                                            )}
+                                    </TableHead>
+                                 );
+                              })}
                            </TableRow>
-                        ))
-                     ) : (
-                        <TableRow>
-                           <TableCell
-                              colSpan={columns.length}
-                              className="h-24 text-center"
-                           >
-                              No results.
-                           </TableCell>
-                        </TableRow>
-                     )}
-                  </TableBody>
-               </Table>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-4 border-t">
-               <div className="flex items-center gap-4">
-                  <Select
-                     value={limitSelectValue}
-                     onValueChange={(value) =>
-                        setFilters({ _limit: Number(value), _page: 1 })
-                     }
-                  >
-                     <SelectTrigger className="w-[140px] h-9">
-                        <SelectValue placeholder="Select limit" />
-                     </SelectTrigger>
-                     <SelectContent>
-                        <SelectGroup>
-                           {PAGE_LIMIT_OPTIONS.map((limit) => (
-                              <SelectItem key={limit} value={limit.toString()}>
-                                 {limit} / page
-                              </SelectItem>
-                           ))}
-                        </SelectGroup>
-                     </SelectContent>
-                  </Select>
-
-                  <div className="text-muted-foreground text-sm">
-                     Showing{' '}
-                     <span className="font-medium">{firstItemIndex}</span> to{' '}
-                     <span className="font-medium">{lastItemIndex}</span> of{' '}
-                     <span className="font-medium">{totalRecords}</span> orders
-                  </div>
+                        ))}
+                     </TableHeader>
+                     <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                           table.getRowModel().rows.map((row, index) => (
+                              <TableRow
+                                 key={row.id}
+                                 data-state={row.getIsSelected() && 'selected'}
+                                 className={`cursor-pointer transition-colors ${
+                                    row.getIsSelected()
+                                       ? '!bg-blue-400/20 hover:bg-blue-200'
+                                       : `hover:bg-slate-300/50 ${
+                                            index % 2 === 0
+                                               ? 'bg-white'
+                                               : 'bg-slate-300/30'
+                                         }`
+                                 }`}
+                                 onClick={() => row.toggleSelected()}
+                              >
+                                 {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                       {flexRender(
+                                          cell.column.columnDef.cell,
+                                          cell.getContext(),
+                                       )}
+                                    </TableCell>
+                                 ))}
+                              </TableRow>
+                           ))
+                        ) : (
+                           <TableRow>
+                              <TableCell
+                                 colSpan={columns.length}
+                                 className="h-24 text-center"
+                              >
+                                 No results.
+                              </TableCell>
+                           </TableRow>
+                        )}
+                     </TableBody>
+                  </Table>
                </div>
 
-               {getOrdersByAdminState.data &&
-                  getOrdersByAdminState.data.total_pages > 0 && (
-                     <div className="flex items-center gap-2 justify-end">
-                        {paginationItems.map((item, index) => {
-                           if (item.type === 'ellipsis') {
-                              return (
-                                 <span
-                                    key={`ellipsis-${index}`}
-                                    className="px-2 text-gray-400 flex items-center"
-                                 >
-                                    <Ellipsis className="h-4 w-4" />
-                                 </span>
-                              );
-                           }
+               {/* Pagination */}
+               {(totalPages ?? 0) > 0 && (
+                  <div className="flex items-center justify-between px-4 py-4 border-t">
+                     <div className="flex items-center gap-2">
+                        <Select
+                           value={limitSelectValue}
+                           onValueChange={(value) => {
+                              setFilters({ _limit: Number(value), _page: 1 });
+                           }}
+                        >
+                           <SelectTrigger className="w-auto h-9">
+                              <SelectValue />
+                           </SelectTrigger>
+                           <SelectContent>
+                              <SelectGroup>
+                                 <SelectItem value="10">10 / page</SelectItem>
+                                 <SelectItem value="20">20 / page</SelectItem>
+                                 <SelectItem value="50">50 / page</SelectItem>
+                              </SelectGroup>
+                           </SelectContent>
+                        </Select>
 
-                           const isCurrentPage =
-                              item.type === 'page' &&
-                              item.value === currentPage;
-
-                           return (
-                              <Button
-                                 key={`${item.type}-${item.label}-${index}`}
-                                 variant={isCurrentPage ? 'default' : 'outline'}
-                                 size="sm"
-                                 disabled={item.disabled || item.value === null}
-                                 onClick={() => {
-                                    if (item.value !== null && !item.disabled) {
-                                       setFilters((prev) => ({
-                                          ...prev,
-                                          _page: item.value!,
-                                       }));
-                                    }
-                                 }}
-                                 className={cn(
-                                    isCurrentPage &&
-                                       'bg-black text-white hover:bg-black/90',
-                                 )}
-                              >
-                                 {item.label}
-                              </Button>
-                           );
-                        })}
+                        <div className="text-muted-foreground text-sm">
+                           Showing{' '}
+                           <span className="font-medium">{firstItemIndex}</span>{' '}
+                           to{' '}
+                           <span className="font-medium">{lastItemIndex}</span>{' '}
+                           of{' '}
+                           <span className="font-medium">{totalRecords}</span>{' '}
+                           users
+                        </div>
                      </div>
-                  )}
+
+                     {getOrdersByAdminState.data &&
+                        getOrdersByAdminState.data.total_pages > 0 && (
+                           <div className="flex items-center gap-2">
+                              {getPaginationItems().map((item, index) => {
+                                 if (item.type === 'ellipsis') {
+                                    return (
+                                       <span
+                                          key={`ellipsis-${index}`}
+                                          className="px-2 text-gray-400 flex items-center"
+                                       >
+                                          <Ellipsis className="h-4 w-4" />
+                                       </span>
+                                    );
+                                 }
+
+                                 const isCurrentPage =
+                                    item.type === 'page' &&
+                                    item.value === currentPage;
+
+                                 return (
+                                    <Button
+                                       key={`${item.type}-${item.label}-${index}`}
+                                       variant={
+                                          isCurrentPage ? 'default' : 'outline'
+                                       }
+                                       size="icon"
+                                       className={cn(
+                                          'h-9 w-9',
+                                          isCurrentPage &&
+                                             'bg-black text-white hover:bg-black/90',
+                                       )}
+                                       disabled={
+                                          item.disabled || item.value === null
+                                       }
+                                       onClick={() => {
+                                          if (
+                                             item.value !== null &&
+                                             !item.disabled
+                                          ) {
+                                             setFilters({ _page: item.value });
+                                          }
+                                       }}
+                                    >
+                                       {item.type === 'nav' ? (
+                                          item.label === '<<' ? (
+                                             <ChevronsLeft className="h-4 w-4" />
+                                          ) : item.label === '>>' ? (
+                                             <ChevronsRight className="h-4 w-4" />
+                                          ) : item.label === '<' ? (
+                                             <ChevronLeft className="h-4 w-4" />
+                                          ) : (
+                                             <ChevronRight className="h-4 w-4" />
+                                          )
+                                       ) : (
+                                          item.label
+                                       )}
+                                    </Button>
+                                 );
+                              })}
+                           </div>
+                        )}
+                  </div>
+               )}
             </div>
          </LoadingOverlay>
       </div>
