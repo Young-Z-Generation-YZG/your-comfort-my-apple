@@ -1,0 +1,65 @@
+@startuml UC67_impersonate_staff
+actor Actor
+boundary StaffManagementPage
+control KeycloakController
+control ImpersonateUserHandler
+control KeycloakService
+participant Keycloak
+
+Actor -> StaffManagementPage: 1. impersonate user(userId)
+activate Actor
+activate StaffManagementPage
+
+StaffManagementPage -> KeycloakController: 2. impersonateUser(request)
+activate KeycloakController
+
+KeycloakController -> KeycloakController: 3. Map ImpersonateUserRequest\nto ImpersonateUserCommand
+KeycloakController -> ImpersonateUserHandler: 4. Send(command)
+activate ImpersonateUserHandler
+
+ImpersonateUserHandler -> KeycloakService: 5. ImpersonateUserAsync(userId)
+activate KeycloakService
+
+KeycloakService -> KeycloakService: 6. GetAdminTokenResponseAsync()
+KeycloakService -> Keycloak: 6.1 POST /token\n(grant_type: client_credentials,\nclient_id, client_secret)
+activate Keycloak
+Keycloak --> KeycloakService: 6.2 return adminToken
+deactivate Keycloak
+KeycloakService -> KeycloakService: 6.3 Extract AccessToken\nfrom TokenResponse
+
+KeycloakService -> KeycloakService: 7. Prepare token exchange request\n(grant_type: token-exchange,\nsubject_token, client_id,\nclient_secret, requested_subject: userId)
+
+KeycloakService -> Keycloak: 8. POST /token\n(token exchange request)
+activate Keycloak
+Keycloak --> KeycloakService: 9. return HTTP response
+deactivate Keycloak
+
+alt impersonation success
+    KeycloakService -> KeycloakService: 10. Deserialize TokenExchangeResponse\n(access_token, refresh_token)
+    
+    alt response valid
+        KeycloakService --> ImpersonateUserHandler: 11. return Result(TokenExchangeResponse)
+        ImpersonateUserHandler --> KeycloakController: 12. return Result(TokenExchangeResponse)
+        KeycloakController --> StaffManagementPage: 13. return TokenExchangeResponse
+        StaffManagementPage --> Actor: 14. message("User impersonated successfully")
+    else response invalid\n(empty or null access_token)
+        KeycloakService --> ImpersonateUserHandler: 10.1 return Errors.Keycloak.UserNotFound
+        ImpersonateUserHandler --> KeycloakController: 10.2 return Result.Error
+        KeycloakController --> StaffManagementPage: 10.3 return error
+        StaffManagementPage --> Actor: 10.4 message("Failed to impersonate user")
+    end
+else impersonation failed\n(HTTP error or exception)
+    KeycloakService -> KeycloakService: 9.1 Log error\n(StatusCode, Error content)
+    KeycloakService --> ImpersonateUserHandler: 9.2 return Errors.Keycloak.UserNotFound
+    deactivate KeycloakService
+    ImpersonateUserHandler --> KeycloakController: 9.3 return Result.Error
+    deactivate ImpersonateUserHandler
+    KeycloakController --> StaffManagementPage: 9.4 return error
+    deactivate KeycloakController
+    StaffManagementPage --> Actor: 9.5 message("Failed to impersonate user")
+    deactivate StaffManagementPage
+    deactivate Actor
+end
+
+@enduml
+
