@@ -129,12 +129,6 @@ else has items
                 BasketController --> CheckoutPage: 38. return CheckoutBasketResponse
                 CheckoutPage --> Actor: 39. redirect(orderDetailsUrl)
                     ref over Actor: sd: thanh toán qua COD
-            else paymentMethod == SOLANA
-                CheckoutBasketHandler -> CheckoutBasketWithBlockchainHandler: 37. checkout(command)
-                activate CheckoutBasketWithBlockchainHandler
-                CheckoutBasketWithBlockchainHandler --> CheckoutBasketHandler: 38. return CheckoutBasketResponse(orderId, items, orderDetailsUrl)
-                deactivate CheckoutBasketWithBlockchainHandler
-            end
             else invalid method
                 CheckoutBasketHandler --> BasketController: 37.1 return Errors.Payment.Invalid
                 deactivate CheckoutBasketHandler

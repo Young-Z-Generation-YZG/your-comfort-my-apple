@@ -7,6 +7,7 @@ control UserHttpContext
 control ModelSlugCache
 control DistributedCache
 control BasketRepository
+database DB
 
 Actor -> ProductDetailsPage: 1. selectVariant(color, model, storage)
 activate Actor
@@ -44,19 +45,23 @@ end
 
 StoreBasketHandler -> BasketRepository: 13. StoreBasketAsync(shoppingCart)
 activate BasketRepository
-BasketRepository --> StoreBasketHandler: 14. return Result(result)
+BasketRepository -> DB: 13. StoreBasketAsync(shoppingCart)
+activate DB
+DB --> BasketRepository: 14. return stored
+deactivate DB
+BasketRepository --> StoreBasketHandler: 15. return Result(result)
 deactivate BasketRepository
 
 alt store succeeded
-    StoreBasketHandler --> BasketController: 15. return true
-    BasketController --> ProductDetailsPage: 16. return true
-    ProductDetailsPage --> Actor: 17. message("Added to cart")
+    StoreBasketHandler --> BasketController: 16. return true
+    BasketController --> ProductDetailsPage: 17. return true
+    ProductDetailsPage --> Actor: 18. message("Added to cart")
 else store failed
-    StoreBasketHandler --> BasketController: 14.1 return Error(message)
+    StoreBasketHandler --> BasketController: 15.1 return Error(message)
     deactivate StoreBasketHandler
-    BasketController --> ProductDetailsPage: 14.2 return Error(message)
+    BasketController --> ProductDetailsPage: 15.2 return Error(message)
     deactivate BasketController
-    ProductDetailsPage --> Actor: 14.3 message("Failed to add to cart")
+    ProductDetailsPage --> Actor: 15.3 message("Failed to add to cart")
     deactivate ProductDetailsPage
     deactivate Actor
 end
