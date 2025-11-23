@@ -1,7 +1,7 @@
 @startuml UC15_checkout
 actor Actor
 boundary CheckoutPage
-control CartController
+control BasketController
 control CheckoutBasketHandler
 control UserHttpContext
 control BasketRepository
@@ -15,10 +15,10 @@ Actor -> CheckoutPage: 1. checkout(discountCode?, paymentMethod, shippingAddress
 activate Actor
 activate CheckoutPage
 
-CheckoutPage -> CartController: 2. checkout(command)
-activate CartController
+CheckoutPage -> BasketController: 2. checkout(command)
+activate BasketController
 
-CartController -> CheckoutBasketHandler: 3. checkout(command)
+BasketController -> CheckoutBasketHandler: 3. checkout(command)
 activate CheckoutBasketHandler
 
 CheckoutBasketHandler -> UserHttpContext: 4. GetUserEmail()
@@ -37,13 +37,13 @@ BasketRepository --> CheckoutBasketHandler: 9. return Result(shoppingCart)
 deactivate BasketRepository
 
 alt basket empty or no items
-    CheckoutBasketHandler --> CartController: 9.1 return Errors.Basket.BasketEmpty
-    CartController --> CheckoutPage: 9.2 return Errors.Basket.BasketEmpty
+    CheckoutBasketHandler --> BasketController: 9.1 return Errors.Basket.BasketEmpty
+    BasketController --> CheckoutPage: 9.2 return Errors.Basket.BasketEmpty
     CheckoutPage --> Actor: 9.3 message("Basket is empty")
 else has items
     alt no items selected
-        CheckoutBasketHandler --> CartController: 9.4 return Errors.Basket.NotSelectedItems
-        CartController --> CheckoutPage: 9.5 return Errors.Basket.NotSelectedItems
+        CheckoutBasketHandler --> BasketController: 9.4 return Errors.Basket.NotSelectedItems
+        BasketController --> CheckoutPage: 9.5 return Errors.Basket.NotSelectedItems
         CheckoutPage --> Actor: 9.6 message("No items selected for checkout")
     else proceed
         alt contains event items
@@ -59,8 +59,8 @@ else has items
                 deactivate DiscountProtoService
 
                 alt coupon not found
-                    CheckoutBasketHandler --> CartController: 12.1 return Errors.Discount.CouponNotFound
-                    CartController --> CheckoutPage: 12.2 return Errors.Discount.CouponNotFound
+                    CheckoutBasketHandler --> BasketController: 12.1 return Errors.Discount.CouponNotFound
+                    BasketController --> CheckoutPage: 12.2 return Errors.Discount.CouponNotFound
                     CheckoutPage --> Actor: 12.3 message("Coupon not found")
                 else coupon valid
                     CheckoutBasketHandler -> CheckoutBasketHandler: 13. Select items IsSelected == true
@@ -99,13 +99,13 @@ else has items
                 deactivate VnpayProvider
 
                 alt ok
-                    CheckoutBasketHandler --> CartController: 29. return CheckoutBasketResponse(orderId, items, paymentUrl)
-                    CartController --> CheckoutPage: 30. return CheckoutBasketResponse
+                    CheckoutBasketHandler --> BasketController: 29. return CheckoutBasketResponse(orderId, items, paymentUrl)
+                    BasketController --> CheckoutPage: 30. return CheckoutBasketResponse
                     CheckoutPage --> Actor: 31. redirect(paymentUrl)
                         ref over Actor: sd: thanh toán qua Vnpay
                 else invalid url
-                    CheckoutBasketHandler --> CartController: 28.1 return Errors.Payment.VnpayPaymentUrlInvalid
-                    CartController --> CheckoutPage: 28.2 return Errors.Payment.VnpayPaymentUrlInvalid
+                    CheckoutBasketHandler --> BasketController: 28.1 return Errors.Payment.VnpayPaymentUrlInvalid
+                    BasketController --> CheckoutPage: 28.2 return Errors.Payment.VnpayPaymentUrlInvalid
                     CheckoutPage --> Actor: 28.3 message("Payment URL invalid")
                 end
             else paymentMethod == MOMO
@@ -115,29 +115,34 @@ else has items
                 deactivate MomoProvider
 
                 alt ok
-                    CheckoutBasketHandler --> CartController: 34. return CheckoutBasketResponse(orderId, items, momoPayUrl)
-                    CartController --> CheckoutPage: 35. return CheckoutBasketResponse
+                    CheckoutBasketHandler --> BasketController: 34. return CheckoutBasketResponse(orderId, items, momoPayUrl)
+                    BasketController --> CheckoutPage: 35. return CheckoutBasketResponse
                     CheckoutPage --> Actor: 36. redirect(momoPayUrl)
                         ref over Actor: sd: thanh toán qua Momo
                 else error code != 0
-                    CheckoutBasketHandler --> CartController: 33.1 return Errors.Payment.MomoPaymentUrlInvalid
-                    CartController --> CheckoutPage: 33.2 return Errors.Payment.MomoPaymentUrlInvalid
+                    CheckoutBasketHandler --> BasketController: 33.1 return Errors.Payment.MomoPaymentUrlInvalid
+                    BasketController --> CheckoutPage: 33.2 return Errors.Payment.MomoPaymentUrlInvalid
                     CheckoutPage --> Actor: 33.3 message("Payment URL invalid")
                 end
             else paymentMethod == COD
-                CheckoutBasketHandler --> CartController: 37. return CheckoutBasketResponse(orderId, items, orderDetailsUrl)
-                CartController --> CheckoutPage: 38. return CheckoutBasketResponse
+                CheckoutBasketHandler --> BasketController: 37. return CheckoutBasketResponse(orderId, items, orderDetailsUrl)
+                BasketController --> CheckoutPage: 38. return CheckoutBasketResponse
                 CheckoutPage --> Actor: 39. redirect(orderDetailsUrl)
                     ref over Actor: sd: thanh toán qua COD
+            else paymentMethod == SOLANA
+                CheckoutBasketHandler -> CheckoutBasketWithBlockchainHandler: 37. checkout(command)
+                activate CheckoutBasketWithBlockchainHandler
+                CheckoutBasketWithBlockchainHandler --> CheckoutBasketHandler: 38. return CheckoutBasketResponse(orderId, items, orderDetailsUrl)
+                deactivate CheckoutBasketWithBlockchainHandler
+            end
             else invalid method
-                CheckoutBasketHandler --> CartController: 24.1 return Errors.Payment.Invalid
+                CheckoutBasketHandler --> BasketController: 37.1 return Errors.Payment.Invalid
                 deactivate CheckoutBasketHandler
-                CartController --> CheckoutPage: 24.2 return Errors.Payment.Invalid
-                deactivate CartController
-                CheckoutPage --> Actor: 24.3 message("Invalid payment method")
+                BasketController --> CheckoutPage: 37.2 return Errors.Payment.Invalid
+                deactivate BasketController
+                CheckoutPage --> Actor: 37.3 message("Invalid payment method")
                 deactivate CheckoutPage
                 deactivate Actor
-            end
         end
     end
 end

@@ -1,105 +1,157 @@
-@startuml UC19_payment_with_blockchain
+@startuml UC16_payment_with_blockchain
 actor Actor
 boundary CheckoutPage
-control CartController
+boundary WalletExtension
+control SolanaNetwork
+control BasketController
+participant Blockchain
 control CheckoutBasketWithBlockchainHandler
 control UserHttpContext
+control TenantHttpContext
 control BasketRepository
 control DiscountProtoService
 control PublishEndpoint
+database DB
 
-Actor -> CheckoutPage: checkoutWithBlockchain(discountCode?, cryptoUUID,\ncustomerPublicKey, tx, shippingAddress)
+Actor -> CheckoutPage: 1. checkoutWithBlockchain(discountCode?,\nshippingAddress, paymentMethod)
 activate Actor
 activate CheckoutPage
 
-CheckoutPage -> CartController: checkoutWithBlockchain(command)
-activate CartController
+CheckoutPage -> WalletExtension: 2. requestPayment(amount, orderDetails)
+activate WalletExtension
 
-CartController -> CheckoutBasketWithBlockchainHandler: checkoutWithBlockchain(command)
+WalletExtension -> Actor: 3. request payment approval\n(amount, orderDetails)
+Actor -> WalletExtension: 4. approve payment
+
+WalletExtension -> SolanaNetwork: 5. createOrderTransaction(amount,\norderDetails, customerPublicKey)
+activate SolanaNetwork
+
+SolanaNetwork -> Blockchain: 6. execute smart contract\n(createOrder instruction)
+activate Blockchain
+Blockchain --> SolanaNetwork: 7. return transaction signature (tx)\nand orderId (cryptoUUID)
+deactivate Blockchain
+
+SolanaNetwork --> WalletExtension: 8. return payment result\n(tx, cryptoUUID, customerPublicKey)
+deactivate SolanaNetwork
+
+WalletExtension --> CheckoutPage: 9. return payment result\n(cryptoUUID, customerPublicKey, tx)
+
+CheckoutPage -> BasketController: 10. checkoutWithBlockchain(command\nwith cryptoUUID, customerPublicKey, tx)
+activate BasketController
+
+BasketController -> CheckoutBasketWithBlockchainHandler: 11. checkoutWithBlockchain(command)
 activate CheckoutBasketWithBlockchainHandler
 
-CheckoutBasketWithBlockchainHandler -> UserHttpContext: GetUserEmail()
+CheckoutBasketWithBlockchainHandler -> UserHttpContext: 12. GetUserEmail()
 activate UserHttpContext
-UserHttpContext --> CheckoutBasketWithBlockchainHandler: userEmail
+UserHttpContext --> CheckoutBasketWithBlockchainHandler: 13. return userEmail
 deactivate UserHttpContext
 
-CheckoutBasketWithBlockchainHandler -> UserHttpContext: GetUserId()
+CheckoutBasketWithBlockchainHandler -> UserHttpContext: 14. GetUserId()
 activate UserHttpContext
-UserHttpContext --> CheckoutBasketWithBlockchainHandler: userId
+UserHttpContext --> CheckoutBasketWithBlockchainHandler: 15. return userId
 deactivate UserHttpContext
 
-CheckoutBasketWithBlockchainHandler -> BasketRepository: GetBasketAsync(userEmail)
+CheckoutBasketWithBlockchainHandler -> TenantHttpContext: 16. GetTenantId()
+activate TenantHttpContext
+TenantHttpContext --> CheckoutBasketWithBlockchainHandler: 17. return tenantId
+deactivate TenantHttpContext
+
+CheckoutBasketWithBlockchainHandler -> TenantHttpContext: 18. GetBranchId()
+activate TenantHttpContext
+TenantHttpContext --> CheckoutBasketWithBlockchainHandler: 19. return branchId
+deactivate TenantHttpContext
+
+CheckoutBasketWithBlockchainHandler -> BasketRepository: 20. GetBasketAsync(userEmail)
 activate BasketRepository
-BasketRepository --> CheckoutBasketWithBlockchainHandler: Result(shoppingCart)
+BasketRepository -> DB: 20. GetBasketAsync(userEmail)
+activate DB
+DB --> BasketRepository: 21. return shoppingCart
+deactivate DB
+BasketRepository --> CheckoutBasketWithBlockchainHandler: 22. return Result(shoppingCart)
 deactivate BasketRepository
 
-alt basket empty or no items
-    CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.BasketEmpty
-    CartController --> CheckoutPage: return Errors.Basket.BasketEmpty
-    CheckoutPage --> Actor: message("Basket is empty")
-else has items
-    alt no items selected
-        CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.NotSelectedItems
-        CartController --> CheckoutPage: return Errors.Basket.NotSelectedItems
-        CheckoutPage --> Actor: message("No items selected for checkout")
-    else proceed
-        alt contains event items
-            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: FilterEventItems()
-            note over CheckoutBasketWithBlockchainHandler: Capture event promotion data\n(id, type, discountType, value, amount)
-        else regular items
-            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: FilterOutEventItemsAndSelected()
+alt payment success
+    alt has items
+        alt items selected
+            alt contains event items
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 23. FilterEventItems()
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 24. Capture event promotion data\n(promotionId, promotionType,\ndiscountType, discountValue, discountAmount)
+            else regular items
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 23. FilterOutEventItemsAndSelected()
 
-            opt discount code provided
-                CheckoutBasketWithBlockchainHandler -> DiscountProtoService: GetCouponByCodeGrpc(discountCode)
-                activate DiscountProtoService
-                DiscountProtoService --> CheckoutBasketWithBlockchainHandler: CouponModel | NotFound
-                deactivate DiscountProtoService
+                opt discount code provided
+                    CheckoutBasketWithBlockchainHandler -> DiscountProtoService: 24. GetCouponByCodeGrpcAsync(discountCode)
+                    activate DiscountProtoService
+                    DiscountProtoService --> CheckoutBasketWithBlockchainHandler: 25. return CouponModel | NotFound
+                    deactivate DiscountProtoService
 
-                alt coupon not found
-                    CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Discount.CouponNotFound
-                    CartController --> CheckoutPage: return Errors.Discount.CouponNotFound
-                    CheckoutPage --> Actor: message("Coupon not found")
-                else coupon valid
-                    CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Select items IsSelected == true
-                    CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Calculate totalCartValue
-                    CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Convert discount type
-                    CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Calculate calculatedDiscount
-                    CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Apply max discount cap
-                    note over CheckoutBasketWithBlockchainHandler: Store cart-level promotion data\nfor integration event
-                    loop for each selected item
-                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Proportional item discount
-                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: ApplyCoupon(item)
+                    alt coupon found and valid\n(DiscountValue > 0 && AvailableQuantity > 0)
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 26. Select items where IsSelected == true
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 27. Convert CartItems to EfficientCart format
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 28. ConvertGrpcEnumToNormalEnum(discountType)
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 29. CalculateEfficientCart(beforeCart, discountType,\ndiscountValue, maxDiscountAmount)
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 30. Update ShoppingCart discount properties\nfrom EfficientCart
+                        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 31. Store cart-level promotion data\nfor integration event
+                        loop for each selected item
+                            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 32. Create PromotionCoupon(promotionId,\npromotionType, discountType, discountValue)
+                            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 33. ApplyCoupon(item, promotionCoupon)
+                            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 34. Update item DiscountAmount from EfficientCart
+                        end
+                    else coupon not found (RpcException NotFound)
+                        CheckoutBasketWithBlockchainHandler --> BasketController: 25.1 return Errors.Discount.CouponNotFound
+                        BasketController --> CheckoutPage: 25.2 return Errors.Discount.CouponNotFound
+                        CheckoutPage --> Actor: 25.3 message("Coupon not found")
                     end
                 end
             end
+
+            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 35. TryParse(cryptoUUID) -> orderId
+
+            alt valid CryptoUUID
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 36. Convert CartItems to CheckoutItemIntegrationEvent\n(ToCheckoutItemIntegrationEvent)
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 37. Prepare BasketCheckoutIntegrationEvent\n(orderId=CryptoUUID, tenantId, branchId,\ncustomerId, customerEmail, customerPublicKey,\ntx, shippingAddress, paymentMethod, cart)
+                CheckoutBasketWithBlockchainHandler -> PublishEndpoint: 38. Publish(integrationEvent)
+                activate PublishEndpoint
+                PublishEndpoint --> CheckoutBasketWithBlockchainHandler: 39. return published
+                deactivate PublishEndpoint
+
+                CheckoutBasketWithBlockchainHandler -> BasketRepository: 40. DeleteSelectedItemsBasketAsync(userEmail)
+                activate BasketRepository
+                BasketRepository -> DB: 40. DeleteSelectedItemsBasketAsync(userEmail)
+                activate DB
+                DB --> BasketRepository: 41. return deleted
+                deactivate DB
+                BasketRepository --> CheckoutBasketWithBlockchainHandler: 42. return done
+                deactivate BasketRepository
+
+                CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: 43. Convert CartItems to Response\n(ToResponse)
+                CheckoutBasketWithBlockchainHandler --> BasketController: 44. return CheckoutBasketResponse(orderId, cartItems, orderDetailsUrl)
+                BasketController --> CheckoutPage: 45. return CheckoutBasketResponse
+                CheckoutPage --> Actor: 46. redirect(orderDetailsUrl)
+            else invalid CryptoUUID
+                CheckoutBasketWithBlockchainHandler --> BasketController: 35.1 return Errors.Basket.InvalidCryptoUUID
+                BasketController --> CheckoutPage: 35.2 return Errors.Basket.InvalidCryptoUUID
+                CheckoutPage --> Actor: 35.3 message("Invalid transaction ID")
+            end
+        else no items selected
+            CheckoutBasketWithBlockchainHandler --> BasketController: 22.1 return Errors.Basket.NotSelectedItems
+            BasketController --> CheckoutPage: 22.2 return Errors.Basket.NotSelectedItems
+            CheckoutPage --> Actor: 22.3 message("No items selected for checkout")
         end
-
-        CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: TryParse(request.CryptoUUID)
-        alt invalid CryptoUUID
-            CheckoutBasketWithBlockchainHandler --> CartController: return Errors.Basket.InvalidCryptoUUID
-            CartController --> CheckoutPage: return Errors.Basket.InvalidCryptoUUID
-            CheckoutPage --> Actor: message("Invalid transaction ID")
-        else valid CryptoUUID
-            CheckoutBasketWithBlockchainHandler -> CheckoutBasketWithBlockchainHandler: Prepare BasketCheckoutIntegrationEvent\n(orderId=CryptoUUID, userId, userEmail,\ncustomerPublicKey, tx, shippingAddress,\npromotion data, totals)
-            CheckoutBasketWithBlockchainHandler -> PublishEndpoint: Publish(integrationEvent)
-            activate PublishEndpoint
-            PublishEndpoint --> CheckoutBasketWithBlockchainHandler: published
-            deactivate PublishEndpoint
-
-            CheckoutBasketWithBlockchainHandler -> BasketRepository: DeleteSelectedItemsBasketAsync(userEmail)
-            activate BasketRepository
-            BasketRepository --> CheckoutBasketWithBlockchainHandler: done
-            deactivate BasketRepository
-
-            CheckoutBasketWithBlockchainHandler --> CartController: return CheckoutBasketResponse(orderId, items, orderDetailsUrl)
-            deactivate CheckoutBasketWithBlockchainHandler
-            CartController --> CheckoutPage: return CheckoutBasketResponse
-            deactivate CartController
-            CheckoutPage --> Actor: redirect(orderDetailsUrl)
-            deactivate CheckoutPage
-            deactivate Actor
-        end
+    else basket empty or no items
+        CheckoutBasketWithBlockchainHandler --> BasketController: 22.4 return Errors.Basket.BasketEmpty
+        deactivate CheckoutBasketWithBlockchainHandler
+        BasketController --> CheckoutPage: 22.5 return Errors.Basket.BasketEmpty
+        deactivate BasketController
+        CheckoutPage --> Actor: 22.6 message("Basket is empty")
+    end
+else payment failed
+    WalletExtension --> CheckoutPage: 8.1 return payment error
+    deactivate WalletExtension
+    CheckoutPage --> Actor: 8.2 message("Payment failed")
+    deactivate Actor
+    deactivate CheckoutPage
 end
 
 @enduml
-

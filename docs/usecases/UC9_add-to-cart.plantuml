@@ -1,7 +1,7 @@
 @startuml UC9_add_to_cart
 actor Actor
 boundary ProductDetailsPage
-control CartController
+control BasketController
 control StoreBasketHandler
 control UserHttpContext
 control ModelSlugCache
@@ -12,10 +12,10 @@ Actor -> ProductDetailsPage: 1. selectVariant(color, model, storage)
 activate Actor
 activate ProductDetailsPage
 
-ProductDetailsPage -> CartController: 2. storeBasket(color, model, storage, \nproductModelId)
-activate CartController
+ProductDetailsPage -> BasketController: 2. storeBasket(color, model, storage, \nproductModelId)
+activate BasketController
 
-CartController -> StoreBasketHandler: 3. storeBasket(command)
+BasketController -> StoreBasketHandler: 3. storeBasket(command)
 activate StoreBasketHandler
 
 StoreBasketHandler -> UserHttpContext: 4. GetUserEmail()
@@ -48,14 +48,14 @@ BasketRepository --> StoreBasketHandler: 14. return Result(result)
 deactivate BasketRepository
 
 alt store succeeded
-    StoreBasketHandler --> CartController: 15. return true
-    CartController --> ProductDetailsPage: 16. return true
+    StoreBasketHandler --> BasketController: 15. return true
+    BasketController --> ProductDetailsPage: 16. return true
     ProductDetailsPage --> Actor: 17. message("Added to cart")
 else store failed
-    StoreBasketHandler --> CartController: 14.1 return Error(message)
+    StoreBasketHandler --> BasketController: 14.1 return Error(message)
     deactivate StoreBasketHandler
-    CartController --> ProductDetailsPage: 14.2 return Error(message)
-    deactivate CartController
+    BasketController --> ProductDetailsPage: 14.2 return Error(message)
+    deactivate BasketController
     ProductDetailsPage --> Actor: 14.3 message("Failed to add to cart")
     deactivate ProductDetailsPage
     deactivate Actor
