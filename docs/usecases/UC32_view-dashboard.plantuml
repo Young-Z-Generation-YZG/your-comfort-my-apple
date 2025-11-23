@@ -1,0 +1,58 @@
+@startuml UC32_view_dashboard
+actor Actor
+boundary DashboardPage
+boundary RevenueAnalyticsPage
+control DashboardController
+control GetRevenuesQueryHandler
+control OrderRepository
+database DB
+
+Actor -> DashboardPage: 1. view dashboard()
+activate Actor
+activate DashboardPage
+
+DashboardPage -> RevenueAnalyticsPage: 2. redirect to revenue-analytics
+activate RevenueAnalyticsPage
+deactivate DashboardPage
+
+RevenueAnalyticsPage -> DashboardController: 3. getRevenues(startDate?, endDate?)
+activate DashboardController
+
+DashboardController -> DashboardController: 4. Create GetRevenuesQuery\n(StartDate, EndDate)
+DashboardController -> GetRevenuesQueryHandler: 5. Send(query)
+activate GetRevenuesQueryHandler
+
+GetRevenuesQueryHandler -> GetRevenuesQueryHandler: 6. BuildExpression()\n(filter: !IsDeleted,\nStartDate >= CreatedAt,\nEndDate < CreatedAt)
+
+GetRevenuesQueryHandler -> OrderRepository: 7. GetAllAsync(filterExpression,\nincludeExpressions: OrderItems)
+activate OrderRepository
+OrderRepository -> DB: 7. GetAllAsync(filterExpression,\nincludeExpressions: OrderItems)
+activate DB
+DB --> OrderRepository: 8. return List<Order>
+deactivate DB
+OrderRepository --> GetRevenuesQueryHandler: 9. return List<Order>
+deactivate OrderRepository
+
+GetRevenuesQueryHandler -> GetRevenuesQueryHandler: 10. Map orders to OrderDetailsResponse\n(ToResponse())
+
+alt query success
+    GetRevenuesQueryHandler --> DashboardController: 11. return Result(List<OrderDetailsResponse>)
+    deactivate GetRevenuesQueryHandler
+    DashboardController --> RevenueAnalyticsPage: 12. return List<OrderDetailsResponse>
+    deactivate DashboardController
+    RevenueAnalyticsPage -> RevenueAnalyticsPage: 13. Process and display revenue data\n(charts, analytics)
+    RevenueAnalyticsPage --> Actor: 14. display dashboard with revenue analytics
+    deactivate RevenueAnalyticsPage
+    deactivate Actor
+else query failed
+    GetRevenuesQueryHandler --> DashboardController: 10.1 return Result.Error
+    deactivate GetRevenuesQueryHandler
+    DashboardController --> RevenueAnalyticsPage: 10.2 return error
+    deactivate DashboardController
+    RevenueAnalyticsPage --> Actor: 10.3 message("Failed to load revenue data")
+    deactivate RevenueAnalyticsPage
+    deactivate Actor
+end
+
+@enduml
+

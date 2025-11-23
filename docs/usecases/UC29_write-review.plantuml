@@ -30,42 +30,42 @@ deactivate UserHttpContext
 
 CreateReviewHandler -> SkuRepository: 8. GetByIdAsync(skuId)
 activate SkuRepository
-SkuRepository -> DB: 8.1 GetByIdAsync(skuId)
+SkuRepository -> DB: 8. GetByIdAsync(skuId)
 activate DB
-DB --> SkuRepository: 8.2 return SKU | null
+DB --> SkuRepository: 9. return SKU | null
 deactivate DB
-SkuRepository --> CreateReviewHandler: 9. return SKU | null
+SkuRepository --> CreateReviewHandler: 10. return SKU | null
 deactivate SkuRepository
 
 alt sku found
-    CreateReviewHandler -> CreateReviewHandler: 10. Build OrderInfo(orderId, orderItemId)
-    CreateReviewHandler -> CreateReviewHandler: 11. Build CustomerReviewInfo(name = userEmail || userId || \"Anonymous\")
-    CreateReviewHandler -> CreateReviewHandler: 12. Create Review(modelId, skuId,\norderInfo, customerInfo, content, rating)
+    CreateReviewHandler -> CreateReviewHandler: 11. Build OrderInfo(orderId, orderItemId)
+    CreateReviewHandler -> CreateReviewHandler: 12. Build CustomerReviewInfo(name = userEmail || userId || \"Anonymous\")
+    CreateReviewHandler -> CreateReviewHandler: 13. Create Review(modelId, skuId,\norderInfo, customerInfo, content, rating)
 
-    CreateReviewHandler -> ReviewRepository: 13. InsertOneAsync(review)
+    CreateReviewHandler -> ReviewRepository: 14. InsertOneAsync(review)
     activate ReviewRepository
-    ReviewRepository -> DB: 13.1 InsertOneAsync(review)
+    ReviewRepository -> DB: 14. InsertOneAsync(review)
     activate DB
-    DB --> ReviewRepository: 13.2 return inserted
+    DB --> ReviewRepository: 15. return inserted
     deactivate DB
-    ReviewRepository --> CreateReviewHandler: 14. return Result(bool)
+    ReviewRepository --> CreateReviewHandler: 16. return Result(bool)
     deactivate ReviewRepository
 
     alt insert success
-        CreateReviewHandler --> ReviewController: 15. return true
-        ReviewController --> ProductDetailsPage: 16. return true
-        ProductDetailsPage --> Actor: 17. message("Review submitted")
+        CreateReviewHandler --> ReviewController: 17. return true
+        ReviewController --> ProductDetailsPage: 18. return true
+        ProductDetailsPage --> Actor: 19. message("Review submitted")
     else insert failed
-        CreateReviewHandler --> ReviewController: 14.1 return false
-        ReviewController --> ProductDetailsPage: 14.2 return false
-        ProductDetailsPage --> Actor: 14.3 message("Failed to submit review")
+        CreateReviewHandler --> ReviewController: 16.1 return false
+        ReviewController --> ProductDetailsPage: 16.2 return false
+        ProductDetailsPage --> Actor: 16.3 message("Failed to submit review")
     end
 else sku not found
-    CreateReviewHandler --> ReviewController: 9.1 return false
+    CreateReviewHandler --> ReviewController: 10.1 return false
     deactivate CreateReviewHandler
-    ReviewController --> ProductDetailsPage: 9.2 return false
+    ReviewController --> ProductDetailsPage: 10.2 return false
     deactivate ReviewController
-    ProductDetailsPage --> Actor: 9.3 message("Unable to find product for review")
+    ProductDetailsPage --> Actor: 10.3 message("Unable to find product for review")
     deactivate ProductDetailsPage
     deactivate Actor
 end
