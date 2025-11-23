@@ -1,63 +1,72 @@
-@startuml UC31_confirm_order
+@startuml UC27_confirm_order
 actor Actor
 boundary OrderDetailsPage
 control OrderController
 control ConfirmOrderHandler
 control OrderRepository
 control CatalogProtoService
+database DB
 
-Actor -> OrderDetailsPage: click Confirm(orderId)
+Actor -> OrderDetailsPage: 1. click Confirm(orderId)
 activate Actor
 activate OrderDetailsPage
 
-OrderDetailsPage -> OrderController: confirmOrder(request)
+OrderDetailsPage -> OrderController: 2. confirmOrder(request)
 activate OrderController
 
-OrderController -> ConfirmOrderHandler: confirmOrder(request)
+OrderController -> ConfirmOrderHandler: 3. confirmOrder(request)
 activate ConfirmOrderHandler
 
-ConfirmOrderHandler -> OrderRepository: GetById(orderId, includes: OrderItems)
+ConfirmOrderHandler -> OrderRepository: 4. GetById(orderId, includes: OrderItems)
 activate OrderRepository
-OrderRepository --> ConfirmOrderHandler: Order | null
+OrderRepository -> DB: 4.1 LoadAsync(orderId)
+activate DB
+DB --> OrderRepository: 4.2 return Order | null
+deactivate DB
+OrderRepository --> ConfirmOrderHandler: 5. return Order | null
 deactivate OrderRepository
 
-alt order does not exist
-    ConfirmOrderHandler --> OrderController: return Errors.Order.DoesNotExist
-    OrderController --> OrderDetailsPage: return Errors.Order.DoesNotExist
-    OrderDetailsPage --> Actor: message("Order not found")
-else order exists
+alt order exists
     loop for each item in order.OrderItems
-        ConfirmOrderHandler -> ConfirmOrderHandler: Determine PromotionType (COUPON|EVENT|UNKNOWN)
-        ConfirmOrderHandler -> CatalogProtoService: CheckInsufficientGrpc(modelId,\nnormalizedModel, normalizedStorage,\nnormalizedColor, quantity,\npromotionId, promotionTypeGrpc)
+        ConfirmOrderHandler -> ConfirmOrderHandler: 6. Determine PromotionType (COUPON|EVENT|UNKNOWN)
+        ConfirmOrderHandler -> CatalogProtoService: 7. CheckInsufficientGrpc(modelId,\nnormalizedModel, normalizedStorage,\nnormalizedColor, quantity,\npromotionId, promotionTypeGrpc)
         activate CatalogProtoService
-        CatalogProtoService --> ConfirmOrderHandler: IsSuccess
+        CatalogProtoService --> ConfirmOrderHandler: 8. return IsSuccess
         deactivate CatalogProtoService
 
         alt insufficient stock
-            ConfirmOrderHandler --> OrderController: return Errors.Order.InsufficientStock
-            OrderController --> OrderDetailsPage: return Errors.Order.InsufficientStock
-            OrderDetailsPage --> Actor: message("Insufficient stock")
+            ConfirmOrderHandler --> OrderController: 8.1 return Errors.Order.InsufficientStock
+            OrderController --> OrderDetailsPage: 8.2 return Errors.Order.InsufficientStock
+            OrderDetailsPage --> Actor: 8.3 message("Insufficient stock")
         end
     end
 
-    alt order status not PENDING
-        ConfirmOrderHandler --> OrderController: return Errors.Order.CannotConfirmOrder
-        OrderController --> OrderDetailsPage: return Errors.Order.CannotConfirmOrder
-        OrderDetailsPage --> Actor: message("Cannot confirm order")
-    else status PENDING
-        ConfirmOrderHandler -> ConfirmOrderHandler: SetConfirmed()
-        ConfirmOrderHandler -> OrderRepository: Update(order)
+    alt status PENDING
+        ConfirmOrderHandler -> ConfirmOrderHandler: 9. SetConfirmed()
+        ConfirmOrderHandler -> OrderRepository: 10. Update(order)
         activate OrderRepository
-        OrderRepository --> ConfirmOrderHandler: Result(true)
+        OrderRepository -> DB: 10.1 UpdateAsync(order)
+        activate DB
+        DB --> OrderRepository: 10.2 return updated
+        deactivate DB
+        OrderRepository --> ConfirmOrderHandler: 11. return Result(true)
         deactivate OrderRepository
-        ConfirmOrderHandler --> OrderController: return true
-        deactivate ConfirmOrderHandler
-        OrderController --> OrderDetailsPage: return true
-        deactivate OrderController
-        OrderDetailsPage --> Actor: message("Order confirmed")
-        deactivate OrderDetailsPage
-        deactivate Actor
+        ConfirmOrderHandler --> OrderController: 12. return true
+        OrderController --> OrderDetailsPage: 13. return true
+        OrderDetailsPage --> Actor: 14. message("Order confirmed")
+    else order status not PENDING
+        ConfirmOrderHandler --> OrderController: 9.1 return Errors.Order.CannotConfirmOrder
+        OrderController --> OrderDetailsPage: 9.2 return Errors.Order.CannotConfirmOrder
+        OrderDetailsPage --> Actor: 9.3 message("Cannot confirm order")
     end
+else order does not exist
+    ConfirmOrderHandler --> OrderController: 5.1 return Errors.Order.DoesNotExist
+    deactivate ConfirmOrderHandler
+    OrderController --> OrderDetailsPage: 5.2 return Errors.Order.DoesNotExist
+    deactivate OrderController
+    OrderDetailsPage --> Actor: 5.3 message("Order not found")
+    deactivate OrderDetailsPage
+    deactivate Actor
 end
 
 @enduml
