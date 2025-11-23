@@ -17,6 +17,22 @@ public class ProfileConfiguration : IEntityTypeConfiguration<Profile>
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => ProfileId.Of(value));
 
+        builder.Property(p => p.FirstName)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(p => p.LastName)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(p => p.FullName)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
+        builder.Property(p => p.PhoneNumber)
+            .HasMaxLength(255)
+            .IsRequired(false);
+
         builder.OwnsOne(u => u.Image, img =>
         {
             img.Property(i => i.ImageId)

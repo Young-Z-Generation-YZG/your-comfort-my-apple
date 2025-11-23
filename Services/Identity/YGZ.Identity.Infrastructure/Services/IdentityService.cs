@@ -96,8 +96,7 @@ public class IdentityService : IIdentityService
                 country: request.Country,
                 emailConfirmed: false,
                 tenantId: null,
-                branchId: null,
-                tenantCode: null
+                branchId: null
             );
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);

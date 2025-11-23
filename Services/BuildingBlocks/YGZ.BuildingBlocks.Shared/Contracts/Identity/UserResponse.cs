@@ -10,7 +10,6 @@ public sealed record UserResponse
     public required string Id { get; init; }
     public  string? TenantId { get; init; }
     public  string? BranchId { get; init; }
-    public  string? TenantCode { get; init; }
     public required string UserName { get; init; }
     public required string NormalizedUserName { get; init; }
     public required string Email { get; init; }

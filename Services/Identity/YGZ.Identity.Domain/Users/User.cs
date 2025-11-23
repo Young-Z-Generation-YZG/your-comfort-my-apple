@@ -12,7 +12,6 @@ public class User : IdentityUser, IAggregate, IAuditable, ISoftDelete
 {
     public string? TenantId { get; set; }
     public string? BranchId { get; set; }
-    public string? TenantCode { get; set; }
     public Profile Profile { get; set; } = null!; // One-to-one relationship
     public ICollection<ShippingAddress> ShippingAddresses { get; set; } = new List<ShippingAddress>(); // One-to-many relationship
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
@@ -39,13 +38,14 @@ public class User : IdentityUser, IAggregate, IAuditable, ISoftDelete
                               string country,
                               bool? emailConfirmed,
                               string? tenantId,
-                              string? branchId,
-                              string? tenantCode)
+                              string? branchId)
     {
 
         var user = new User
         {
             Id = guid.ToString(),
+            TenantId = tenantId,
+            BranchId = branchId,
             Email = email,
             UserName = email,
             NormalizedEmail = email.ToUpper(),
@@ -54,9 +54,6 @@ public class User : IdentityUser, IAggregate, IAuditable, ISoftDelete
             PhoneNumber = phoneNumber,
             PhoneNumberConfirmed = false,
             EmailConfirmed = emailConfirmed ?? false,
-            TenantId = tenantId,
-            BranchId = branchId,
-            TenantCode = tenantCode,
         };
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user)
@@ -121,14 +118,13 @@ public class User : IdentityUser, IAggregate, IAuditable, ISoftDelete
             Id = Id,
             TenantId = TenantId,
             BranchId = BranchId,
-            TenantCode = TenantCode,
             UserName = UserName ?? string.Empty,
             NormalizedUserName = NormalizedUserName ?? string.Empty,
             Email = Email!,
             NormalizedEmail = NormalizedEmail ?? string.Empty,
             EmailConfirmed = EmailConfirmed,
             PhoneNumber = PhoneNumber!,
-            Profile =  Profile != null ? Profile.ToResponse() : null,
+            Profile = Profile.ToResponse(),
             CreatedAt = CreatedAt,
             UpdatedAt = UpdatedAt,
             UpdatedBy = UpdatedBy,

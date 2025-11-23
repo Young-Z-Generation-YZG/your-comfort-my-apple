@@ -11,6 +11,8 @@ public sealed record ProfileResponse
     public required string UserId { get; set; }
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
+    public required string FullName { get; init; }
+    public required string PhoneNumber { get; init; }
     public required DateTime BirthDay { get; init; }
     public required string Gender { get; init; }
     public string? ImageId { get; init; }

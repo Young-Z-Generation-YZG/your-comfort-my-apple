@@ -40,8 +40,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             var staff1 = User.Create(
                guid: new Guid("6cb4412f-8241-4b29-b56a-f3911977c1e0"),
@@ -55,8 +54,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             var staff2 = User.Create(
                guid: new Guid("6da1b40f-b9c6-4934-8479-6ffb6a92b354"),
@@ -70,8 +68,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             var staff3 = User.Create(
                guid: new Guid("59fccd42-e244-496b-bb61-39d8898abb89"),
@@ -85,8 +82,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             var staff4 = User.Create(
                guid: new Guid("43b7a6d9-c649-4dde-b6c5-7b6f0ba892b2"),
@@ -100,8 +96,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             var staff5 = User.Create(
                guid: new Guid("d7438b42-cfd6-4078-a8d2-b68da4309a47"),
@@ -115,8 +110,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
-               branchId: BranchIds["HCM_TD_KVC_1060"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_TD_KVC_1060"]);
 
             return new List<User>
             {
@@ -146,8 +140,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             var staff1 = User.Create(
                guid: new Guid("7dc55230-9352-5c3a-c67b-04a22888d2f1"),
@@ -161,8 +154,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             var staff2 = User.Create(
                guid: new Guid("7eb2c520-cad7-5a45-958a-7aac7ba03c465"),
@@ -176,8 +168,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             var staff3 = User.Create(
                guid: new Guid("6aafde53-f355-5a7c-cc7c-4ae99a9bcc9a"),
@@ -191,8 +182,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             var staff4 = User.Create(
                guid: new Guid("54c8b7ea-d75a-5ede-c7d6-8c7a0cb9a3c3"),
@@ -206,8 +196,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             var staff5 = User.Create(
                guid: new Guid("e8549c53-dae7-5b8f-d8e3-c7d9e1b0f1b5"),
@@ -221,8 +210,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
-               branchId: BranchIds["HCM_Q1_CMT8_92"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q1_CMT8_92"]);
 
             return new List<User>
             {
@@ -320,8 +308,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             var staff1 = User.Create(
                guid: new Guid("8ed66341-a463-6d4b-d78c-15b33999e3a2"),
@@ -335,8 +322,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             var staff2 = User.Create(
                guid: new Guid("8fc3d631-be48-6b56-069d-8bdd8cb14d576"),
@@ -350,8 +336,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             var staff3 = User.Create(
                guid: new Guid("7bbaef64-a466-6c8d-dd8d-5bfaabacddab"),
@@ -365,8 +350,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             var staff4 = User.Create(
                guid: new Guid("65d9c8fb-e86b-6fef-d8e7-9d8a1dca4d4d"),
@@ -380,8 +364,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             var staff5 = User.Create(
                guid: new Guid("f965ad64-ebf8-6c9a-e9f4-d8eaf2c1a2c6"),
@@ -395,8 +378,7 @@ public static class SeedUsers
                country: "VN",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
-               branchId: BranchIds["HCM_Q9_LVV_123"],
-               tenantCode: null);
+               branchId: BranchIds["HCM_Q9_LVV_123"]);
 
             return new List<User>
             {

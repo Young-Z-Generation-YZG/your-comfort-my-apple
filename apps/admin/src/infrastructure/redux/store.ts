@@ -26,6 +26,7 @@ import { inventoryApi } from '~/src/infrastructure/services/inventory.service';
 import { tenantApi } from '~/src/infrastructure/services/tenant.service';
 import { productApi } from '~/src/infrastructure/services/product.service';
 import { categoryApi } from '~/src/infrastructure/services/category.service';
+import { userApi } from '~/src/infrastructure/services/user.service';
 
 const storage = createPersistStorage();
 
@@ -44,6 +45,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       tenantApi.reducerPath,
       productApi.reducerPath,
       categoryApi.reducerPath,
+      userApi.reducerPath,
    ],
    whitelist: ['auth', 'tenant'],
 };
@@ -62,6 +64,7 @@ const reducers = combineReducers({
    [inventoryApi.reducerPath]: inventoryApi.reducer,
    [productApi.reducerPath]: productApi.reducer,
    [categoryApi.reducerPath]: categoryApi.reducer,
+   [userApi.reducerPath]: userApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -84,6 +87,7 @@ export const reduxStore = configureStore({
          tenantApi.middleware,
          productApi.middleware,
          categoryApi.middleware,
+         userApi.middleware,
       ),
 });
 

@@ -19,8 +19,7 @@ public class SeedData
                 country: "VN",
                 emailConfirmed: true,
                 tenantId: null,
-                branchId: null,
-                tenantCode: null),
+                branchId: null),
 
         User.Create(
                guid: new Guid("65dad719-7368-4d9f-b623-f308299e9575"),
@@ -34,8 +33,7 @@ public class SeedData
                country: "VN",
                emailConfirmed: true,
                tenantId: null,
-               branchId: null,
-               tenantCode: null),
+               branchId: null),
 
         User.Create(
                guid: new Guid("e79d0b6f-af5a-4162-a6fd-8194d5a5f616"),
@@ -49,8 +47,7 @@ public class SeedData
                country: "VN",
                emailConfirmed: true,
                tenantId: null,
-               branchId: null,
-               tenantCode: null),
+               branchId: null),
 
         User.Create(
                guid: new Guid("c3127b01-9101-4713-8e18-ae1f8f9ffd01"),
@@ -64,8 +61,7 @@ public class SeedData
                country: "VN",
                emailConfirmed: true,
                tenantId: null,
-               branchId: null,
-               tenantCode: null),
+               branchId: null),
 
         User.Create(
                guid: new Guid("8d8059c4-38b8-4f62-a776-4527e059b14a"),
@@ -79,8 +75,7 @@ public class SeedData
                country: "VN",
                emailConfirmed: true,
                tenantId: null,
-               branchId: null,
-               tenantCode: null),
+               branchId: null),
     };
 
     public static IEnumerable<IdentityRole> Roles => new List<IdentityRole>

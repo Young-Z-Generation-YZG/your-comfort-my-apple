@@ -47,11 +47,12 @@ import {
    Ellipsis,
    MoreHorizontal,
    Package,
+   X,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useInventoryService from '~/src/hooks/api/use-inventory-service';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
@@ -1660,6 +1661,13 @@ const getStateStyle = (state: string) => {
    }
 };
 
+// Available filter options
+const models = ['IPHONE_15', 'IPHONE_15_PLUS'] as const;
+
+const colors = ['YELLOW', 'GREEN', 'BLUE', 'PINK', 'BLACK'] as const;
+
+const storages = ['128GB', '256GB', '512GB', '1TB'] as const;
+
 const columns: ColumnDef<TSkuItem>[] = [
    {
       accessorKey: 'display_image_url',
@@ -1920,6 +1928,9 @@ const WarehousesPage = () => {
 
    const paginationItems = getPaginationItems();
 
+   // Track previous API call params to prevent duplicate calls
+   const prevApiParamsRef = useRef<string>('');
+
    // Setup table
    const table = useReactTable({
       data: warehouseData,
@@ -1939,11 +1950,23 @@ const WarehousesPage = () => {
    });
 
    useEffect(() => {
-      const fetchWarehouses = async () => {
-         await getWarehousesAsync(filters);
-      };
+      const apiParams = JSON.stringify({
+         _page: filters._page ?? undefined,
+         _limit: filters._limit ?? undefined,
+         _models: filters._models ?? undefined,
+         _colors: filters._colors ?? undefined,
+         _storages: filters._storages ?? undefined,
+      });
 
-      fetchWarehouses();
+      // Only call API if params actually changed
+      if (prevApiParamsRef.current !== apiParams) {
+         prevApiParamsRef.current = apiParams;
+         const fetchWarehouses = async () => {
+            await getWarehousesAsync(filters);
+         };
+
+         fetchWarehouses();
+      }
    }, [filters, getWarehousesAsync]);
 
    return (
@@ -1960,6 +1983,380 @@ const WarehousesPage = () => {
          </div>
 
          <LoadingOverlay isLoading={isLoading}>
+            {/* Filter section */}
+            <div className="rounded-lg border bg-card shadow-sm mb-4">
+               <div className="p-6 space-y-4">
+                  {/* Filter Dropdowns Row */}
+                  <div className="flex items-center gap-3">
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                           <Button variant="outline" className="h-10 gap-2">
+                              <span className="font-medium">Model</span>
+                              <div className="flex items-center gap-2">
+                                 {(() => {
+                                    const selectedModels =
+                                       filters._models ?? [];
+                                    const modelCount = selectedModels.length;
+
+                                    if (modelCount === 0) {
+                                       return null;
+                                    }
+
+                                    if (modelCount > 2) {
+                                       return (
+                                          <>
+                                             {selectedModels
+                                                .slice(0, 2)
+                                                .map((model) => (
+                                                   <Badge
+                                                      key={model}
+                                                      variant="outline"
+                                                      className="bg-gray-100 text-gray-800 border-gray-300"
+                                                   >
+                                                      {model.replace(/_/g, ' ')}
+                                                   </Badge>
+                                                ))}
+                                             <Badge
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                +{modelCount - 2}
+                                             </Badge>
+                                          </>
+                                       );
+                                    }
+
+                                    return selectedModels.map((model) => (
+                                       <Badge
+                                          key={model}
+                                          variant="outline"
+                                          className="bg-gray-100 text-gray-800 border-gray-300"
+                                       >
+                                          {model.replace(/_/g, ' ')}
+                                       </Badge>
+                                    ));
+                                 })()}
+                                 <ChevronDown />
+                              </div>
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                           align="start"
+                           side="bottom"
+                           sideOffset={4}
+                           className="w-56"
+                        >
+                           <DropdownMenuLabel>Model</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           {models.map((model) => {
+                              const isChecked =
+                                 filters._models?.includes(model) ?? false;
+
+                              return (
+                                 <DropdownMenuCheckboxItem
+                                    key={model}
+                                    onSelect={(e) => e.preventDefault()}
+                                    checked={isChecked}
+                                    onCheckedChange={() => {
+                                       setFilters((prev) => {
+                                          const currentModels =
+                                             prev._models ?? [];
+                                          const isModelSelected =
+                                             currentModels.includes(model);
+
+                                          return {
+                                             ...prev,
+                                             _models: isModelSelected
+                                                ? currentModels.filter(
+                                                     (m) => m !== model,
+                                                  )
+                                                : [...currentModels, model],
+                                          };
+                                       });
+                                    }}
+                                 >
+                                    {model.replace(/_/g, ' ')}
+                                 </DropdownMenuCheckboxItem>
+                              );
+                           })}
+                           <DropdownMenuSeparator />
+                           <div className="p-2">
+                              <Button
+                                 variant="outline"
+                                 size="sm"
+                                 className="w-full"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _models: [],
+                                    }));
+                                 }}
+                                 disabled={(filters._models?.length ?? 0) === 0}
+                              >
+                                 Clear All
+                              </Button>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                           <Button variant="outline" className="h-10 gap-2">
+                              <span className="font-medium">Color</span>
+                              <div className="flex items-center gap-2">
+                                 {(() => {
+                                    const selectedColors =
+                                       filters._colors ?? [];
+                                    const colorCount = selectedColors.length;
+
+                                    if (colorCount === 0) {
+                                       return null;
+                                    }
+
+                                    if (colorCount > 2) {
+                                       return (
+                                          <>
+                                             {selectedColors
+                                                .slice(0, 2)
+                                                .map((color) => (
+                                                   <Badge
+                                                      key={color}
+                                                      variant="outline"
+                                                      className="bg-gray-100 text-gray-800 border-gray-300"
+                                                   >
+                                                      {color}
+                                                   </Badge>
+                                                ))}
+                                             <Badge
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                +{colorCount - 2}
+                                             </Badge>
+                                          </>
+                                       );
+                                    }
+
+                                    return selectedColors.map((color) => (
+                                       <Badge
+                                          key={color}
+                                          variant="outline"
+                                          className="bg-gray-100 text-gray-800 border-gray-300"
+                                       >
+                                          {color}
+                                       </Badge>
+                                    ));
+                                 })()}
+                                 <ChevronDown />
+                              </div>
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                           align="start"
+                           side="bottom"
+                           sideOffset={4}
+                           className="w-56"
+                        >
+                           <DropdownMenuLabel>Color</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           {colors.map((color) => {
+                              const isChecked =
+                                 filters._colors?.includes(color) ?? false;
+
+                              return (
+                                 <DropdownMenuCheckboxItem
+                                    key={color}
+                                    onSelect={(e) => e.preventDefault()}
+                                    checked={isChecked}
+                                    onCheckedChange={() => {
+                                       setFilters((prev) => {
+                                          const currentColors =
+                                             prev._colors ?? [];
+                                          const isColorSelected =
+                                             currentColors.includes(color);
+
+                                          return {
+                                             ...prev,
+                                             _colors: isColorSelected
+                                                ? currentColors.filter(
+                                                     (c) => c !== color,
+                                                  )
+                                                : [...currentColors, color],
+                                          };
+                                       });
+                                    }}
+                                 >
+                                    {color}
+                                 </DropdownMenuCheckboxItem>
+                              );
+                           })}
+                           <DropdownMenuSeparator />
+                           <div className="p-2">
+                              <Button
+                                 variant="outline"
+                                 size="sm"
+                                 className="w-full"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _colors: [],
+                                    }));
+                                 }}
+                                 disabled={(filters._colors?.length ?? 0) === 0}
+                              >
+                                 Clear All
+                              </Button>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                           <Button variant="outline" className="h-10 gap-2">
+                              <span className="font-medium">Storage</span>
+                              <div className="flex items-center gap-2">
+                                 {(() => {
+                                    const selectedStorages =
+                                       filters._storages ?? [];
+                                    const storageCount =
+                                       selectedStorages.length;
+
+                                    if (storageCount === 0) {
+                                       return null;
+                                    }
+
+                                    if (storageCount > 2) {
+                                       return (
+                                          <>
+                                             {selectedStorages
+                                                .slice(0, 2)
+                                                .map((storage) => (
+                                                   <Badge
+                                                      key={storage}
+                                                      variant="outline"
+                                                      className="bg-gray-100 text-gray-800 border-gray-300"
+                                                   >
+                                                      {storage}
+                                                   </Badge>
+                                                ))}
+                                             <Badge
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                +{storageCount - 2}
+                                             </Badge>
+                                          </>
+                                       );
+                                    }
+
+                                    return selectedStorages.map((storage) => (
+                                       <Badge
+                                          key={storage}
+                                          variant="outline"
+                                          className="bg-gray-100 text-gray-800 border-gray-300"
+                                       >
+                                          {storage}
+                                       </Badge>
+                                    ));
+                                 })()}
+                                 <ChevronDown />
+                              </div>
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                           align="start"
+                           side="bottom"
+                           sideOffset={4}
+                           className="w-56"
+                        >
+                           <DropdownMenuLabel>Storage</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           {storages.map((storage) => {
+                              const isChecked =
+                                 filters._storages?.includes(storage) ?? false;
+
+                              return (
+                                 <DropdownMenuCheckboxItem
+                                    key={storage}
+                                    onSelect={(e) => e.preventDefault()}
+                                    checked={isChecked}
+                                    onCheckedChange={() => {
+                                       setFilters((prev) => {
+                                          const currentStorages =
+                                             prev._storages ?? [];
+                                          const isStorageSelected =
+                                             currentStorages.includes(storage);
+
+                                          return {
+                                             ...prev,
+                                             _storages: isStorageSelected
+                                                ? currentStorages.filter(
+                                                     (s) => s !== storage,
+                                                  )
+                                                : [...currentStorages, storage],
+                                          };
+                                       });
+                                    }}
+                                 >
+                                    {storage}
+                                 </DropdownMenuCheckboxItem>
+                              );
+                           })}
+                           <DropdownMenuSeparator />
+                           <div className="p-2">
+                              <Button
+                                 variant="outline"
+                                 size="sm"
+                                 className="w-full"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _storages: [],
+                                    }));
+                                 }}
+                                 disabled={
+                                    (filters._storages?.length ?? 0) === 0
+                                 }
+                              >
+                                 Clear All
+                              </Button>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                     <Button
+                        variant="outline"
+                        onClick={() => {
+                           setFilters({
+                              _models: [],
+                              _colors: [],
+                              _storages: [],
+                              _page: 1,
+                           });
+                        }}
+                        className={cn(
+                           'h-10 px-4 gap-2 whitespace-nowrap',
+                           ((filters._models?.length ?? 0) > 0 ||
+                              (filters._colors?.length ?? 0) > 0 ||
+                              (filters._storages?.length ?? 0) > 0) &&
+                              'border-[#ef4444] text-[#ef4444] bg-[#ef4444]/10 hover:bg-[#ef4444]/20',
+                        )}
+                        disabled={
+                           (filters._models?.length ?? 0) === 0 &&
+                           (filters._colors?.length ?? 0) === 0 &&
+                           (filters._storages?.length ?? 0) === 0
+                        }
+                     >
+                        <X className="h-4 w-4" />
+                        Clear Filters
+                     </Button>
+                  </div>
+               </div>
+            </div>
+
             {/* Column Visibility Toggle */}
             <div className="flex items-center justify-end py-4">
                <DropdownMenu>

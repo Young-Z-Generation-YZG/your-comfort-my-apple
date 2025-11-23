@@ -1,0 +1,84 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.Identity.Application.Abstractions.Data;
+using YGZ.Identity.Domain.Core.Errors;
+using YGZ.Identity.Domain.Users;
+using YGZ.Identity.Domain.Users.Entities;
+
+namespace YGZ.Identity.Application.Users.Commands.UpdateProfileById;
+
+public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand, bool>
+{
+    private readonly ILogger<UpdateProfileByIdHandler> _logger;
+    private readonly IIdentityDbContext _dbContext;
+    private readonly DbSet<User> _userDbSet;
+    private readonly DbSet<Profile> _profileDbSet;
+    
+    public UpdateProfileByIdHandler(
+        ILogger<UpdateProfileByIdHandler> logger,
+        IIdentityDbContext dbContext)
+    {
+        _logger = logger;
+        _dbContext = dbContext;
+        _userDbSet = dbContext.Users;
+        _profileDbSet = dbContext.Profiles;
+    }
+
+    public async Task<Result<bool>> Handle(UpdateProfileByIdCommand request, CancellationToken cancellationToken)
+    {
+        var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            // Get user with profile included
+            var user = await _userDbSet
+                .Include(x => x.Profile)
+                .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
+
+            if (user is null)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Errors.User.DoesNotExist;
+            }
+
+            if (user.Profile is null)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Errors.Profile.DoesNotExist;
+            }
+
+            var profile = user.Profile;
+
+            // Update user's phone number
+            user.PhoneNumber = request.PhoneNumber;
+            _userDbSet.Update(user);
+
+            // Update profile using domain method
+            var birthDay = DateTime.Parse(request.BirthDay ?? throw new ArgumentNullException(nameof(request.BirthDay))).ToUniversalTime();
+            var gender = EGender.FromName(request.Gender, false);
+            profile.Update(request.FirstName, request.LastName, request.PhoneNumber, birthDay, gender);
+
+            _profileDbSet.Update(profile);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (result > 0)
+            {
+                await transaction.CommitAsync(cancellationToken);
+                return true;
+            }
+
+            await transaction.RollbackAsync(cancellationToken);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            _logger.LogError(ex, "Error updating profile by UserId: {UserId}", request.UserId);
+            throw;
+        }
+    }
+}

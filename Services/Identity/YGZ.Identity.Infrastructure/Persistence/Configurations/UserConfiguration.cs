@@ -22,10 +22,6 @@ public class UserConfigurations : IEntityTypeConfiguration<User>
             .HasMaxLength(255)
             .IsRequired(false);
 
-        builder.Property(u => u.TenantCode)
-            .HasMaxLength(255)
-            .IsRequired(false);
-
         builder.HasOne(u => u.Profile)
             .WithOne(p => p.User)
             .HasForeignKey<Profile>(p => p.UserId)

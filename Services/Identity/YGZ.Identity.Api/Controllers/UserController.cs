@@ -16,9 +16,11 @@ using YGZ.Identity.Application.Users.Commands.DeleteAddress;
 using YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateProfile;
+using YGZ.Identity.Application.Users.Commands.UpdateProfileById;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetListUsers;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
+using YGZ.Identity.Application.Users.Queries.GetUserById;
 using YGZ.Identity.Application.Users.Queries.GetUsers;
 using YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
@@ -82,6 +84,18 @@ public class UserController : ApiController
 
         var result = await _sender.Send(query, cancellationToken);
 
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetUserById([FromRoute] string userId, CancellationToken cancellationToken)
+    {
+        var query = new GetUserByIdQuery
+        {
+            UserId = userId
+        };
+
+        var result = await _sender.Send(query, cancellationToken);
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
@@ -155,6 +169,17 @@ public class UserController : ApiController
     public async Task<IActionResult> SetDefaultAddress([FromRoute] string addressId, CancellationToken cancellationToken)
     {
         var cmd = new SetDefaultAddressCommand(addressId);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPut("{userId}/profiles")]
+    public async Task<IActionResult> UpdateProfileById([FromRoute] string userId, [FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<UpdateProfileByIdCommand>(request);
+        cmd.UserId = userId;
 
         var result = await _sender.Send(cmd, cancellationToken);
 

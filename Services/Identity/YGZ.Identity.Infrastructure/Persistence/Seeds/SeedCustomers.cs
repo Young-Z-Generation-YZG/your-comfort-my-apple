@@ -28,8 +28,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("b2c3d4e5-f6a7-4890-b1c2-d3e4f5a6b7c8"),
                     email: "tran.thi.lan@gmail.com",
@@ -42,8 +41,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("c3d4e5f6-a7b8-4901-c2d3-e4f5a6b7c8d9"),
                     email: "le.duc.minh@gmail.com",
@@ -56,8 +54,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("d4e5f6a7-b8c9-4012-d3e4-f5a6b7c8d9e0"),
                     email: "pham.thi.phuong@gmail.com",
@@ -70,8 +67,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("e5f6a7b8-c9d0-4123-e4f5-a6b7c8d9e0f1"),
                     email: "hoang.van.tuan@gmail.com",
@@ -84,8 +80,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("f6a7b8c9-d0e1-4234-f5a6-b7c8d9e0f1a2"),
                     email: "vu.thi.huyen@gmail.com",
@@ -98,8 +93,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("a7b8c9d0-e1f2-4345-a6b7-c8d9e0f1a2b3"),
                     email: "dang.van.hung@gmail.com",
@@ -112,8 +106,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("b8c9d0e1-f2a3-4456-b7c8-d9e0f1a2b3c4"),
                     email: "bui.thi.thao@gmail.com",
@@ -126,8 +119,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("c9d0e1f2-a3b4-4567-c8d9-e0f1a2b3c4d5"),
                     email: "do.van.cuong@gmail.com",
@@ -140,8 +132,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("d0e1f2a3-b4c5-4678-d9e0-f1a2b3c4d5e6"),
                     email: "ho.thi.mai@gmail.com",
@@ -154,8 +145,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("e1f2a3b4-c5d6-4789-e0f1-a2b3c4d5e6f7"),
                     email: "ngo.van.quang@gmail.com",
@@ -168,8 +158,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("f2a3b4c5-d6e7-4890-f1a2-b3c4d5e6f7a8"),
                     email: "duong.thi.nga@gmail.com",
@@ -182,8 +171,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("a3b4c5d6-e7f8-4901-a2b3-c4d5e6f7a8b9"),
                     email: "ly.van.son@gmail.com",
@@ -196,8 +184,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("b4c5d6e7-f8a9-4012-b3c4-d5e6f7a8b9c0"),
                     email: "vuong.thi.trang@gmail.com",
@@ -210,8 +197,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("c5d6e7f8-a9b0-4123-c4d5-e6f7a8b9c0d1"),
                     email: "dao.van.dung@gmail.com",
@@ -224,8 +210,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("d6e7f8a9-b0c1-4234-d5e6-f7a8b9c0d1e2"),
                     email: "truong.thi.uyen@gmail.com",
@@ -238,8 +223,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("e7f8a9b0-c1d2-4345-e6f7-a8b9c0d1e2f3"),
                     email: "phan.van.thanh@gmail.com",
@@ -252,8 +236,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("f8a9b0c1-d2e3-4456-f7a8-b9c0d1e2f3a4"),
                     email: "le.thi.yen@gmail.com",
@@ -266,8 +249,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("a9b0c1d2-e3f4-4567-a8b9-c0d1e2f3a4b5"),
                     email: "nguyen.van.phong@gmail.com",
@@ -280,8 +262,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
                 User.Create(
                     guid: new Guid("b0c1d2e3-f4a5-4678-b9c0-d1e2f3a4b5c6"),
                     email: "tran.thi.hoa@gmail.com",
@@ -294,8 +275,7 @@ public static class SeedCustomers
                     country: "VN",
                     emailConfirmed: true,
                     tenantId: null,
-                    branchId: null,
-                    tenantCode: null),
+                    branchId: null),
             };
         }
     }

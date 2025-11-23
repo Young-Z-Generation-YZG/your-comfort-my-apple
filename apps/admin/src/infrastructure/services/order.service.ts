@@ -71,7 +71,10 @@ export type TOrder = {
 export interface IBaseQueryParams {
    _page?: number;
    _limit?: number;
+   _orderCode?: string | null;
+   _customerEmail?: string | null;
    _orderStatus?: string[] | null;
+   _paymentMethod?: string[] | null;
 }
 
 export interface IUpdateOnlineOrderStatusPayload {
