@@ -116,56 +116,6 @@ const data = {
          isActive: true,
          items: [],
       },
-      //   {
-      //      title: 'iPhone Management',
-      //      url: '#',
-      //      icon: TabletSmartphone,
-      //      isActive: true,
-      //      items: [
-      //         // {
-      //         //    title: 'Analytics',
-      //         //    url: '/dashboard/products/analytics',
-      //         // },
-      //         {
-      //            title: 'Model Management',
-      //            url: '/dashboard/iphone/models',
-      //            items: [
-      //               {
-      //                  title: 'iPhone 15',
-      //                  url: '/dashboard/iphone/models/iphone-14-pro',
-      //               },
-      //               {
-      //                  title: 'iPhone 16e',
-      //                  url: '/dashboard/iphone/models/iphone-14-pro-max',
-      //               },
-      //            ],
-      //         },
-      //      ],
-      //   },
-      //   {
-      //      title: 'Promotions Management',
-      //      url: '#',
-      //      icon: Tag,
-      //      isActive: true,
-      //      items: [
-      //         // {
-      //         //    title: 'Analytics',
-      //         //    url: '#',
-      //         // },
-      //         {
-      //            title: 'Promotion Events',
-      //            url: '/dashboard/promotions/events',
-      //         },
-      //         {
-      //            title: 'Promotion iPhone',
-      //            url: '/dashboard/promotions/items',
-      //         },
-      //         {
-      //            title: 'Promotion Coupon',
-      //            url: '/dashboard/promotions/coupons',
-      //         },
-      //      ],
-      //   },
       {
          title: 'HRM',
          url: '/dashboard/hrm',
@@ -210,16 +160,6 @@ const data = {
          url: '/dashboard/revenue-analytics',
          icon: ChartNoAxesCombined,
       },
-      //   {
-      //      name: 'User Reports',
-      //      url: '/dashboard/user-reports',
-      //      icon: UsersRound,
-      //   },
-      //   {
-      //      name: "User'agent Reports",
-      //      url: '/dashboard/user-agent-reports',
-      //      icon: MonitorSmartphone,
-      //   },
    ],
    employees: [
       {
@@ -398,7 +338,7 @@ const adminSidebarData = [
    },
    {
       title: 'Customer Management',
-      url: '#',
+      url: '/dashboard/customer-management',
       icon: UsersRound,
       isActive: true,
    },
@@ -470,19 +410,19 @@ const staffSidebarData = [
    },
    {
       title: 'Customer Management',
-      url: '#',
+      url: '/dashboard/customer-management',
       icon: UsersRound,
       isActive: true,
    },
    {
       title: 'Order Management',
-      url: '#',
+      url: '/dashboard/order-management',
       icon: ScrollText,
       isActive: true,
       items: [
          {
             title: 'Orders List',
-            url: '#',
+            url: '/dashboard/order-management',
             icon: ScrollText,
          },
       ],

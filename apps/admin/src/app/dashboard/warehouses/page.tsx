@@ -52,7 +52,7 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useInventoryService from '~/src/hooks/api/use-inventory-service';
 import { useEffect, useMemo, useState } from 'react';
-import usePagination from '~/src/hooks/use-pagination';
+import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
 
@@ -1892,30 +1892,33 @@ const WarehousesPage = () => {
    const {
       currentPage,
       totalPages,
-      pageSize,
       totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      getPageNumbers,
-   } = usePagination(
-      getWarehousesState.data && getWarehousesState.data.items.length > 0
-         ? getWarehousesState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue,
+      getPaginationItems,
+   } = usePaginationV2(
+      getWarehousesState.data ?? {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 0,
+         current_page: 0,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      },
+      {
+         pageSizeOverride: filters._limit ?? null,
+         currentPageOverride: filters._page ?? null,
+         fallbackPageSize: 10,
+      },
    );
+
+   const paginationItems = getPaginationItems();
 
    // Setup table
    const table = useReactTable({
@@ -2051,11 +2054,11 @@ const WarehousesPage = () => {
                </div>
 
                {/* Pagination */}
-               {totalPages >= 1 && (
+               {(totalPages ?? 0) > 0 && (
                   <div className="flex items-center justify-between px-4 py-4 border-t">
                      <div className="flex items-center gap-2">
                         <Select
-                           value={filters._limit?.toString() || '10'}
+                           value={limitSelectValue}
                            onValueChange={(value) => {
                               setFilters({ _limit: Number(value), _page: 1 });
                            }}
@@ -2074,116 +2077,76 @@ const WarehousesPage = () => {
 
                         <div className="text-muted-foreground text-sm">
                            Showing{' '}
-                           <span className="font-medium">
-                              {warehouseData.length > 0
-                                 ? (currentPage - 1) * pageSize + 1
-                                 : 0}
-                           </span>{' '}
+                           <span className="font-medium">{firstItemIndex}</span>{' '}
                            to{' '}
-                           <span className="font-medium">
-                              {Math.min(currentPage * pageSize, totalRecords)}
-                           </span>{' '}
+                           <span className="font-medium">{lastItemIndex}</span>{' '}
                            of{' '}
                            <span className="font-medium">{totalRecords}</span>{' '}
                            items
                         </div>
                      </div>
 
-                     <div className="flex items-center gap-2">
-                        {/* First Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              setFilters({ _page: 1 });
-                           }}
-                           disabled={isFirstPage}
-                        >
-                           <ChevronsLeft className="h-4 w-4" />
-                        </Button>
+                     {getWarehousesState.data &&
+                        getWarehousesState.data.total_pages > 0 && (
+                           <div className="flex items-center gap-2">
+                              {paginationItems.map((item, index) => {
+                                 if (item.type === 'ellipsis') {
+                                    return (
+                                       <span
+                                          key={`ellipsis-${index}`}
+                                          className="px-2 text-gray-400 flex items-center"
+                                       >
+                                          <Ellipsis className="h-4 w-4" />
+                                       </span>
+                                    );
+                                 }
 
-                        {/* Previous Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              if (currentPage > 1) {
-                                 setFilters({ _page: currentPage - 1 });
-                              }
-                           }}
-                           disabled={!isPrevPage}
-                        >
-                           <ChevronLeft className="h-4 w-4" />
-                        </Button>
+                                 const isCurrentPage =
+                                    item.type === 'page' &&
+                                    item.value === currentPage;
 
-                        {/* Page Numbers */}
-                        <div className="flex items-center gap-1">
-                           {getPageNumbers().map((page, index) => {
-                              if (page === '...') {
                                  return (
-                                    <span
-                                       key={`ellipsis-${index}`}
-                                       className="px-2 text-gray-400"
+                                    <Button
+                                       key={`${item.type}-${item.label}-${index}`}
+                                       variant={
+                                          isCurrentPage ? 'default' : 'outline'
+                                       }
+                                       size="icon"
+                                       className={cn(
+                                          'h-9 w-9',
+                                          isCurrentPage &&
+                                             'bg-black text-white hover:bg-black/90',
+                                       )}
+                                       disabled={
+                                          item.disabled || item.value === null
+                                       }
+                                       onClick={() => {
+                                          if (
+                                             item.value !== null &&
+                                             !item.disabled
+                                          ) {
+                                             setFilters({ _page: item.value });
+                                          }
+                                       }}
                                     >
-                                       <Ellipsis className="h-4 w-4" />
-                                    </span>
+                                       {item.type === 'nav' ? (
+                                          item.label === '<<' ? (
+                                             <ChevronsLeft className="h-4 w-4" />
+                                          ) : item.label === '>>' ? (
+                                             <ChevronsRight className="h-4 w-4" />
+                                          ) : item.label === '<' ? (
+                                             <ChevronLeft className="h-4 w-4" />
+                                          ) : (
+                                             <ChevronRight className="h-4 w-4" />
+                                          )
+                                       ) : (
+                                          item.label
+                                       )}
+                                    </Button>
                                  );
-                              }
-
-                              return (
-                                 <Button
-                                    key={index}
-                                    variant={
-                                       currentPage === page
-                                          ? 'default'
-                                          : 'outline'
-                                    }
-                                    size="icon"
-                                    className={cn(
-                                       'h-9 w-9',
-                                       currentPage === page &&
-                                          'bg-black text-white hover:bg-black/90',
-                                    )}
-                                    onClick={() => {
-                                       setFilters({ _page: page as number });
-                                    }}
-                                 >
-                                    {page as number}
-                                 </Button>
-                              );
-                           })}
-                        </div>
-
-                        {/* Next Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              if (currentPage < totalPages) {
-                                 setFilters({ _page: currentPage + 1 });
-                              }
-                           }}
-                           disabled={!isNextPage}
-                        >
-                           <ChevronRight className="h-4 w-4" />
-                        </Button>
-
-                        {/* Last Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => {
-                              setFilters({ _page: totalPages });
-                           }}
-                           disabled={isLastPage}
-                        >
-                           <ChevronsRight className="h-4 w-4" />
-                        </Button>
-                     </div>
+                              })}
+                           </div>
+                        )}
                   </div>
                )}
             </div>

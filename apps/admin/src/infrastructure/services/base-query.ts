@@ -5,19 +5,40 @@ import { RootState } from '../redux/store';
 export const baseQuery = (service: string) =>
    fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + service,
-      prepareHeaders: (headers, { getState }) => {
+      prepareHeaders: (headers, { getState, endpoint }) => {
          const { currentUser, impersonatedUser, currentUserKey } = (
             getState() as RootState
          ).auth;
 
+         console.log('[Fn:baseQuery]::ENDPOINT: ', endpoint);
+
          const isImpersonating = currentUserKey === 'impersonatedUser';
 
-         const accessToken = isImpersonating
-            ? impersonatedUser?.accessToken
-            : currentUser?.accessToken;
+         // Check if Authorization header is already set (e.g., by logout mutation)
+         // If not set, determine which token to use
+         if (!headers.get('Authorization')) {
+            // Check if this is a logout request - use refreshToken instead of accessToken
+            const isLogoutRequest =
+               endpoint === 'logout' ||
+               (typeof endpoint === 'string' && endpoint.includes('logout'));
 
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
+            if (isLogoutRequest) {
+               // For logout, use refreshToken
+               const refreshToken = currentUser?.refreshToken;
+
+               if (refreshToken) {
+                  headers.set('Authorization', `Bearer ${refreshToken}`);
+               }
+            } else {
+               // For all other requests, use accessToken
+               const accessToken = isImpersonating
+                  ? impersonatedUser?.accessToken
+                  : currentUser?.accessToken;
+
+               if (accessToken) {
+                  headers.set('Authorization', `Bearer ${accessToken}`);
+               }
+            }
          }
 
          const { tenantId } = (getState() as RootState).tenant;

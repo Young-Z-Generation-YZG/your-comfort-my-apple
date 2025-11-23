@@ -18,6 +18,7 @@ import {
    SidebarMenuSubButton,
    SidebarMenuSubItem,
 } from '@components/ui/sidebar';
+import Link from 'next/link';
 
 export function MainNav({
    items,
@@ -33,7 +34,7 @@ export function MainNav({
          items?: {
             title: string;
             url: string;
-         }[]
+         }[];
       }[];
    }[];
 }) {
@@ -49,10 +50,10 @@ export function MainNav({
                >
                   <SidebarMenuItem>
                      <SidebarMenuButton asChild tooltip={item.title}>
-                        <a href={item.url}>
+                        <Link href={item.url}>
                            <item.icon />
                            <span>{item.title}</span>
-                        </a>
+                        </Link>
                      </SidebarMenuButton>
                      {item.items?.length ? (
                         <>
@@ -67,38 +68,55 @@ export function MainNav({
                                  {item.items?.map((subItem) => (
                                     <SidebarMenuSubItem key={subItem.title}>
                                        <SidebarMenuSubButton asChild>
-                                          <a href={subItem.url}>
+                                          <Link href={subItem.url}>
                                              <span>{subItem.title}</span>
-                                          </a>
+                                          </Link>
                                        </SidebarMenuSubButton>
 
-                                       {
-                                          subItem.items?.length ? (
-                                             <Collapsible
-                                                className='relative'
+                                       {subItem.items?.length ? (
+                                          <Collapsible className="relative">
+                                             <CollapsibleTrigger
+                                                asChild
+                                                className="absolute -top-6"
                                              >
-                                                <CollapsibleTrigger asChild className='absolute -top-6'>
-                                                   <SidebarMenuAction className="data-[state=open]:rotate-90">
-                                                      <ChevronRight />
-                                                      <span className="sr-only">Toggle</span>
-                                                   </SidebarMenuAction>
-                                                </CollapsibleTrigger>
-                                                <CollapsibleContent>
-                                                   <SidebarMenuSub>
-                                                      {subItem.items?.map((subSubItem) => (
-                                                         <SidebarMenuSubItem key={subSubItem.title}>
-                                                            <SidebarMenuSubButton asChild>
-                                                               <a href={subSubItem.url}>
-                                                                  <span>{subSubItem.title}</span>
-                                                               </a>
+                                                <SidebarMenuAction className="data-[state=open]:rotate-90">
+                                                   <ChevronRight />
+                                                   <span className="sr-only">
+                                                      Toggle
+                                                   </span>
+                                                </SidebarMenuAction>
+                                             </CollapsibleTrigger>
+                                             <CollapsibleContent>
+                                                <SidebarMenuSub>
+                                                   {subItem.items?.map(
+                                                      (subSubItem) => (
+                                                         <SidebarMenuSubItem
+                                                            key={
+                                                               subSubItem.title
+                                                            }
+                                                         >
+                                                            <SidebarMenuSubButton
+                                                               asChild
+                                                            >
+                                                               <Link
+                                                                  href={
+                                                                     subSubItem.url
+                                                                  }
+                                                               >
+                                                                  <span>
+                                                                     {
+                                                                        subSubItem.title
+                                                                     }
+                                                                  </span>
+                                                               </Link>
                                                             </SidebarMenuSubButton>
                                                          </SidebarMenuSubItem>
-                                                      ))}
-                                                   </SidebarMenuSub>
-                                                </CollapsibleContent>
-                                             </Collapsible>
-                                          ) : null
-                                       }
+                                                      ),
+                                                   )}
+                                                </SidebarMenuSub>
+                                             </CollapsibleContent>
+                                          </Collapsible>
+                                       ) : null}
                                     </SidebarMenuSubItem>
                                  ))}
                               </SidebarMenuSub>

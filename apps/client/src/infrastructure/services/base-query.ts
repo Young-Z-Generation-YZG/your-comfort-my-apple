@@ -5,11 +5,22 @@ import { RootState } from '../redux/store';
 export const baseQuery = (service: string) =>
    fetchBaseQuery({
       baseUrl: envConfig.API_ENDPOINT + service,
-      prepareHeaders: (headers, { getState }) => {
+      prepareHeaders: (headers, { getState, endpoint }) => {
          const accessToken = (getState() as RootState).auth.accessToken;
+         const refreshToken = (getState() as RootState).auth.refreshToken;
 
-         if (accessToken) {
-            headers.set('Authorization', `Bearer ${accessToken}`);
+         console.log('[Fn:baseQuery]::ENDPOINT: ', endpoint);
+
+         if (!headers.get('Authorization')) {
+            const isLogoutRequest =
+               endpoint === 'logout' ||
+               (typeof endpoint === 'string' && endpoint.includes('logout'));
+
+            if (isLogoutRequest) {
+               headers.set('Authorization', `Bearer ${refreshToken}`);
+            } else {
+               headers.set('Authorization', `Bearer ${accessToken}`);
+            }
          }
 
          headers.set('ngrok-skip-browser-warning', 'true');
