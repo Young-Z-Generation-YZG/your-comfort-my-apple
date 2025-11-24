@@ -2,7 +2,7 @@
 actor Actor
 boundary CartPage
 boundary CheckoutPage
-control CartController
+control BasketController
 control GetBasketQueryHandler
 control UserHttpContext
 control BasketRepository
@@ -13,10 +13,10 @@ Actor -> CartPage: 1. open(cart?couponCode)
 activate Actor
 activate CartPage
 
-CartPage -> CartController: 2. getBasket(query)
-activate CartController
+CartPage -> BasketController: 2. getBasket(query)
+activate BasketController
 
-CartController -> GetBasketQueryHandler: 3. getBasket(query)
+BasketController -> GetBasketQueryHandler: 3. getBasket(query)
 activate GetBasketQueryHandler
 
 GetBasketQueryHandler -> UserHttpContext: 4. GetUserEmail()
@@ -54,15 +54,15 @@ alt has items
                 GetBasketQueryHandler -> GetBasketQueryHandler: 20. Update item DiscountAmount from EfficientCart
             end
         else coupon not found
-            GetBasketQueryHandler --> CartController: 12.1 return Errors.Discount.CouponNotFound
-            CartController --> CartPage: 12.2 return Errors.Discount.CouponNotFound
+            GetBasketQueryHandler --> BasketController: 12.1 return Errors.Discount.CouponNotFound
+            BasketController --> CartPage: 12.2 return Errors.Discount.CouponNotFound
             CartPage --> Actor: 12.3 message("Coupon not found")
         end
     end
 
     GetBasketQueryHandler -> GetBasketQueryHandler: 21. ToResponse(shoppingCart)
-    GetBasketQueryHandler --> CartController: 22. return GetBasketResponse(items, totalAmount, discountAmount)
-    CartController --> CartPage: 23. return GetBasketResponse
+    GetBasketQueryHandler --> BasketController: 22. return GetBasketResponse(items, totalAmount, discountAmount)
+    BasketController --> CartPage: 23. return GetBasketResponse
     CartPage --> Actor: 24. display(Cart with totals)
     opt update quantity
         Actor -> CartPage: 25. updateQuantity(index, quantity)
@@ -77,10 +77,10 @@ alt has items
         ref over CheckoutPage: sd: thanh toán
     end
 else no items in cart
-    GetBasketQueryHandler --> CartController: 9.1 return GetBasketResponse(empty)
+    GetBasketQueryHandler --> BasketController: 9.1 return GetBasketResponse(empty)
     deactivate GetBasketQueryHandler
-    CartController --> CartPage: 9.2 return GetBasketResponse(empty)
-    deactivate CartController
+    BasketController --> CartPage: 9.2 return GetBasketResponse(empty)
+    deactivate BasketController
     CartPage --> Actor: 9.3 display(Empty cart)
     deactivate CartPage
     deactivate Actor

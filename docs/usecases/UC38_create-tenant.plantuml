@@ -1,0 +1,86 @@
+@startuml UC38_create_tenant
+actor Actor
+boundary TenantPage
+control TenantController
+control CreateTenantHandler
+control TenantRepository
+database MongoDB
+
+Actor -> TenantPage: 1. create tenant(name, subDomain,\nbranchAddress, tenantType,\ntenantDescription?, branchDescription?)
+activate Actor
+activate TenantPage
+
+TenantPage -> TenantController: 2. createTenant(request)
+activate TenantController
+
+TenantController -> TenantController: 3. Map CreateTenantRequest\nto CreateTenantCommand
+TenantController -> CreateTenantHandler: 4. Send(command)
+activate CreateTenantHandler
+
+CreateTenantHandler -> CreateTenantHandler: 5. Create TenantId
+CreateTenantHandler -> CreateTenantHandler: 6. Create BranchId
+CreateTenantHandler -> CreateTenantHandler: 7. Create Branch(tenantId, branchId,\nname, branchDescription,\nbranchAddress, manager: null)
+
+CreateTenantHandler -> CreateTenantHandler: 8. TryFromName(tenantType)\n-> tenantTypeEnum
+
+alt tenant type valid
+    CreateTenantHandler -> CreateTenantHandler: 9. Create Tenant(tenantId, name,\nsubDomain, tenantTypeEnum,\nbranch, tenantDescription)
+
+    CreateTenantHandler -> TenantRepository: 10. StartTransactionAsync()
+    activate TenantRepository
+    TenantRepository -> MongoDB: 10.1 StartTransaction()
+    activate MongoDB
+    MongoDB --> TenantRepository: 10.2 return transaction started
+    deactivate MongoDB
+    TenantRepository --> CreateTenantHandler: 10.3 return transaction started
+    deactivate TenantRepository
+
+    CreateTenantHandler -> TenantRepository: 11. InsertOneAsync(tenant)
+    activate TenantRepository
+    TenantRepository -> MongoDB: 11.1 InsertOneAsync(tenant)
+    activate MongoDB
+    MongoDB --> TenantRepository: 11.2 return Result(bool)
+    deactivate MongoDB
+    TenantRepository --> CreateTenantHandler: 12. return Result(bool)
+    deactivate TenantRepository
+
+    alt insert success
+        CreateTenantHandler -> TenantRepository: 13. CommitTransaction()
+        activate TenantRepository
+        TenantRepository -> MongoDB: 13.1 CommitTransaction()
+        activate MongoDB
+        MongoDB --> TenantRepository: 13.2 return committed
+        deactivate MongoDB
+        TenantRepository --> CreateTenantHandler: 13.3 return committed
+        deactivate TenantRepository
+
+        CreateTenantHandler --> TenantController: 14. return Result(true)
+        TenantController --> TenantPage: 15. return true
+        TenantPage --> Actor: 16. message("Tenant created successfully")
+    else insert failed
+        CreateTenantHandler -> TenantRepository: 12.1 RollbackTransaction()
+        activate TenantRepository
+        TenantRepository -> MongoDB: 12.2 RollbackTransaction()
+        activate MongoDB
+        MongoDB --> TenantRepository: 12.3 return rolled back
+        deactivate MongoDB
+        TenantRepository --> CreateTenantHandler: 12.4 return rolled back
+        deactivate TenantRepository
+
+        CreateTenantHandler --> TenantController: 12.5 return Result.Error
+        TenantController --> TenantPage: 12.6 return error
+        TenantPage --> Actor: 12.7 message("Failed to create tenant")
+    end
+else tenant type invalid
+    CreateTenantHandler -> CreateTenantHandler: 8.1 throw ArgumentException\n("Invalid tenant type")
+    CreateTenantHandler --> TenantController: 8.2 throw exception
+    deactivate CreateTenantHandler
+    TenantController --> TenantPage: 8.3 return error
+    deactivate TenantController
+    TenantPage --> Actor: 8.4 message("Invalid tenant type")
+    deactivate TenantPage
+    deactivate Actor
+end
+
+@enduml
+

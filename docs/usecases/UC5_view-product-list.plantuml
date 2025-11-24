@@ -5,7 +5,7 @@ boundary ShopPage
 control CatalogController
 control GetProductModelsHandler
 control MongoRepository
-database MongoDB
+database DB
 
 
 Actor -> HomePage: 1. click on shop
@@ -24,10 +24,10 @@ activate GetProductModelsHandler
 GetProductModelsHandler -> MongoRepository: 5. GetAllAsync()
 activate MongoRepository
 
-MongoRepository -> MongoDB: 6. query()
-activate MongoDB
-MongoDB --> MongoRepository: 7. return(items, totalRecords, totalPages)
-deactivate MongoDB
+MongoRepository -> DB: 6. query()
+activate DB
+DB --> MongoRepository: 7. return(items, totalRecords, totalPages)
+deactivate DB
 MongoRepository --> GetProductModelsHandler: 8. return(items, totalRecords, totalPages)
 deactivate MongoRepository
 

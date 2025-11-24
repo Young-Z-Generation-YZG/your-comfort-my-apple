@@ -1,0 +1,85 @@
+@startuml UC36_update_online_order_status
+actor Actor
+boundary OrderManagementPage
+control OrderingController
+control UpdateOrderStatusHandler
+control UserHttpContext
+control OrderRepository
+database DB
+
+Actor -> OrderManagementPage: 1. update order status(orderId, updateStatus)
+activate Actor
+activate OrderManagementPage
+
+OrderManagementPage -> OrderingController: 2. updateOrderStatus(OrderId, request)
+activate OrderingController
+
+OrderingController -> OrderingController: 3. Create UpdateOrderStatusCommand\n(OrderId, UpdateStatus)
+OrderingController -> UpdateOrderStatusHandler: 4. Send(command)
+activate UpdateOrderStatusHandler
+
+UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 5. Create OrderId.Of(orderId)
+
+UpdateOrderStatusHandler -> OrderRepository: 6. GetByIdAsync(orderId)
+activate OrderRepository
+OrderRepository -> DB: 6. GetByIdAsync(orderId)
+activate DB
+DB --> OrderRepository: 7. return Order | null
+deactivate DB
+OrderRepository --> UpdateOrderStatusHandler: 8. return Order | null
+deactivate OrderRepository
+
+alt order exists
+    UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 9. TryFromName(updateStatus)\n-> newStatus
+
+    alt status valid
+        alt status == PREPARING
+            UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 10. order.SetPreparing()
+        else status == DELIVERING
+            UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 10. order.SetDelivering()
+        else status == DELIVERED
+            UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 10. order.SetDelivered()
+        end
+
+        UpdateOrderStatusHandler -> UserHttpContext: 11. GetUserId()
+        activate UserHttpContext
+        UserHttpContext --> UpdateOrderStatusHandler: 12. return userId
+        deactivate UserHttpContext
+
+        UpdateOrderStatusHandler -> UpdateOrderStatusHandler: 13. order.UpdatedBy = userId
+
+        UpdateOrderStatusHandler -> OrderRepository: 14. UpdateAsync(order)
+        activate OrderRepository
+        OrderRepository -> DB: 14. UpdateAsync(order)
+        activate DB
+        DB --> OrderRepository: 15. return updated
+        deactivate DB
+        OrderRepository --> UpdateOrderStatusHandler: 16. return Result(bool)
+        deactivate OrderRepository
+
+        alt update success
+            UpdateOrderStatusHandler --> OrderingController: 17. return Result(true)
+            OrderingController --> OrderManagementPage: 18. return true
+            OrderManagementPage --> Actor: 19. message("Order status updated successfully")
+        else update failed
+            UpdateOrderStatusHandler --> OrderingController: 16.1 return Result.Error
+            OrderingController --> OrderManagementPage: 16.2 return error
+            OrderManagementPage --> Actor: 16.3 message("Failed to update order status")
+        end
+    else status invalid\n(not PREPARING, DELIVERING, or DELIVERED)
+        UpdateOrderStatusHandler --> OrderingController: 9.1 return Errors.Order.InvalidOrderStatus
+        OrderingController --> OrderManagementPage: 9.2 return error
+        OrderManagementPage --> Actor: 9.3 message("Invalid order status")
+    end
+else order does not exist
+    UpdateOrderStatusHandler --> OrderingController: 8.1 return Errors.Order.DoesNotExist
+    deactivate UpdateOrderStatusHandler
+    OrderingController --> OrderManagementPage: 8.2 return error
+    deactivate OrderingController
+    OrderManagementPage --> Actor: 8.3 message("Order not found")
+    deactivate OrderManagementPage
+    deactivate Actor
+end
+
+@enduml
+

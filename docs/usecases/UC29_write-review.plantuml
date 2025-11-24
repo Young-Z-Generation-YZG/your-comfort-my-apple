@@ -1,64 +1,87 @@
 @startuml UC33_write_review
 actor Actor
-boundary ProductDetailsPage
+boundary OrderDetailsPage
+boundary ReviewModal
 control ReviewController
 control CreateReviewHandler
 control UserHttpContext
 control SkuRepository
 control ReviewRepository
+database DB
 
-Actor -> ProductDetailsPage: submit review(skuId, orderId,\norderItemId, content, rating)
+Actor -> OrderDetailsPage: 1. open review modal()
 activate Actor
-activate ProductDetailsPage
+activate OrderDetailsPage
 
-ProductDetailsPage -> ReviewController: createReview(request)
+OrderDetailsPage -> ReviewModal: 2. show review modal(skuId, orderId, orderItemId)
+activate ReviewModal
+
+ReviewModal -> Actor: 3. display review form
+Actor -> ReviewModal: 4. submit review(content, rating)
+deactivate Actor
+
+ReviewModal -> ReviewController: 5. createReview(request)
 activate ReviewController
 
-ReviewController -> CreateReviewHandler: createReview(request)
+ReviewController -> CreateReviewHandler: 6. createReview(request)
 activate CreateReviewHandler
 
-CreateReviewHandler -> UserHttpContext: GetUserId()
+CreateReviewHandler -> UserHttpContext: 7. GetUserId()
 activate UserHttpContext
-UserHttpContext --> CreateReviewHandler: userId
+UserHttpContext --> CreateReviewHandler: 8. return userId
 deactivate UserHttpContext
 
-CreateReviewHandler -> UserHttpContext: GetUserEmail()
+CreateReviewHandler -> UserHttpContext: 9. GetUserEmail()
 activate UserHttpContext
-UserHttpContext --> CreateReviewHandler: userEmail
+UserHttpContext --> CreateReviewHandler: 10. return userEmail
 deactivate UserHttpContext
 
-CreateReviewHandler -> SkuRepository: GetByIdAsync(skuId)
+CreateReviewHandler -> SkuRepository: 11. GetByIdAsync(skuId)
 activate SkuRepository
-SkuRepository --> CreateReviewHandler: SKU | null
+SkuRepository -> DB: 11. GetByIdAsync(skuId)
+activate DB
+DB --> SkuRepository: 12. return SKU | null
+deactivate DB
+SkuRepository --> CreateReviewHandler: 13. return SKU | null
 deactivate SkuRepository
 
-alt sku not found
-    CreateReviewHandler --> ReviewController: return false
-    ReviewController --> ProductDetailsPage: return false
-    ProductDetailsPage --> Actor: message("Unable to find product for review")
-else sku found
-    CreateReviewHandler -> CreateReviewHandler: Build OrderInfo(orderId, orderItemId)
-    CreateReviewHandler -> CreateReviewHandler: Build CustomerReviewInfo(name = userEmail || userId || \"Anonymous\")
-    CreateReviewHandler -> CreateReviewHandler: Create Review(modelId, skuId,\norderInfo, customerInfo, content, rating)
+alt sku found
+    CreateReviewHandler -> CreateReviewHandler: 14. Build OrderInfo(orderId, orderItemId)
+    CreateReviewHandler -> CreateReviewHandler: 15. Build CustomerReviewInfo(name = userEmail || userId || \"Anonymous\")
+    CreateReviewHandler -> CreateReviewHandler: 16. Create Review(modelId, skuId,\norderInfo, customerInfo, content, rating)
 
-    CreateReviewHandler -> ReviewRepository: InsertOneAsync(review)
+    CreateReviewHandler -> ReviewRepository: 17. InsertOneAsync(review)
     activate ReviewRepository
-    ReviewRepository --> CreateReviewHandler: Result(bool)
+    ReviewRepository -> DB: 17. InsertOneAsync(review)
+    activate DB
+    DB --> ReviewRepository: 18. return inserted
+    deactivate DB
+    ReviewRepository --> CreateReviewHandler: 19. return Result(bool)
     deactivate ReviewRepository
 
-    alt insert failed
-        CreateReviewHandler --> ReviewController: return false
-        ReviewController --> ProductDetailsPage: return false
-        ProductDetailsPage --> Actor: message("Failed to submit review")
-    else insert success
-        CreateReviewHandler --> ReviewController: return true
-        deactivate CreateReviewHandler
-        ReviewController --> ProductDetailsPage: return true
-        deactivate ReviewController
-        ProductDetailsPage --> Actor: message("Review submitted")
-        deactivate ProductDetailsPage
-        deactivate Actor
+    alt insert success
+        CreateReviewHandler --> ReviewController: 20. return true
+        ReviewController --> ReviewModal: 21. return true
+        ReviewModal --> OrderDetailsPage: 22. return true
+        OrderDetailsPage --> Actor: 23. message("Review submitted")
+        activate Actor
+    else insert failed
+        CreateReviewHandler --> ReviewController: 19.1 return false
+        ReviewController --> ReviewModal: 19.2 return false
+        ReviewModal --> OrderDetailsPage: 19.3 return false
+        OrderDetailsPage --> Actor: 19.4 message("Failed to submit review")
+        activate Actor
     end
+else sku not found
+    CreateReviewHandler --> ReviewController: 13.1 return false
+    deactivate CreateReviewHandler
+    ReviewController --> ReviewModal: 13.2 return false
+    deactivate ReviewController
+    ReviewModal --> OrderDetailsPage: 13.3 return false
+    deactivate ReviewModal
+    OrderDetailsPage --> Actor: 13.4 message("Unable to find product for review")
+    deactivate OrderDetailsPage
+    deactivate Actor
 end
 
 @enduml

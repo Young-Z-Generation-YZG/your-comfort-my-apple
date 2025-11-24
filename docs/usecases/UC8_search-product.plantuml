@@ -4,7 +4,7 @@ boundary ProductListPage
 control CatalogController
 control GetIphoneModelsHandler
 control MongoRepository
-database MongoDB
+database DB
 
 Actor -> ProductListPage: 1. input(textSearch)
 activate Actor
@@ -22,10 +22,10 @@ GetIphoneModelsHandler -> GetIphoneModelsHandler: 5. filter Regex(name, textSear
 
 GetIphoneModelsHandler -> MongoRepository: 6. GetAllAsync(filter)
 activate MongoRepository
-MongoRepository -> MongoDB: 7. query(filter)
-activate MongoDB
-MongoDB --> MongoRepository: 8. return(items, totalRecords, totalPages)
-deactivate MongoDB
+MongoRepository -> DB: 7. query(filter)
+activate DB
+DB --> MongoRepository: 8. return(items, totalRecords, totalPages)
+deactivate DB
 MongoRepository --> GetIphoneModelsHandler: 9. return(items, totalRecords, totalPages)
 deactivate MongoRepository
 
