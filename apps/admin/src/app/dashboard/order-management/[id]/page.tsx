@@ -26,15 +26,12 @@ import {
    Loader,
    X,
 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
-import { sampleData } from './_data';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { cn } from '~/src/infrastructure/lib/utils';
-import {
-   useGetOrderDetailsAsyncQuery,
-   useUpdateOrderAsyncMutation,
-} from '~/src/infrastructure/services/ordering.service';
+import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import { useForm } from 'react-hook-form';
 import {
    UpdateOrderStatusFormType,
@@ -88,30 +85,20 @@ const itemVariants = {
 };
 
 const OrderDetails = () => {
-   const [isLoading, setIsLoading] = useState(true);
    const [order, setOrder] = useState<OrderDetailsResponse | null>(null);
-   const router = useRouter();
 
    const params = useParams<{ id: string }>();
 
    const {
-      data: orderDetailsData,
-      isLoading: orderDetailsLoading,
-      isError: orderDetailsError,
-      error: orderDetailsErrorResponse,
-      isSuccess: orderDetailsSuccess,
-      isFetching: orderDetailsFetching,
-      refetch: orderDetailsRefetch,
-   } = useGetOrderDetailsAsyncQuery(params.id);
+      getOrderDetailsAsync,
+      getOrderDetailsState,
+      updateOnlineOrderStatusAsync,
+      isLoading,
+   } = useOrderingService();
 
    const form = useForm({
       resolver: UpdateOrderStatusResolver,
    });
-
-   const [
-      updateOrderAsyncMutation,
-      { isLoading: isUpdating, isSuccess: isUpdated },
-   ] = useUpdateOrderAsyncMutation();
 
    const AvailableUpdateStatus = () => {
       if (order?.order_status === 'CONFIRMED') {
@@ -141,25 +128,30 @@ const OrderDetails = () => {
          return;
       }
 
-      await updateOrderAsyncMutation({
-         order_id: data.order_id,
+      const result = await updateOnlineOrderStatusAsync(data.order_id, {
          update_status: data.update_status,
       });
 
-      window.location.reload();
+      if (result.isSuccess) {
+         // Refetch order details to get updated status
+         if (params.id) {
+            await getOrderDetailsAsync(params.id);
+         }
+      }
    };
 
    useEffect(() => {
-      if (orderDetailsSuccess) {
-         setOrder(orderDetailsData);
-
-         form.setValue('order_id', orderDetailsData.order_id);
-
-         setTimeout(() => {
-            setIsLoading(false);
-         }, 500);
+      if (params.id) {
+         getOrderDetailsAsync(params.id);
       }
-   }, [orderDetailsData]);
+   }, [params.id, getOrderDetailsAsync]);
+
+   useEffect(() => {
+      if (getOrderDetailsState.isSuccess && getOrderDetailsState.data) {
+         setOrder(getOrderDetailsState.data);
+         form.setValue('order_id', getOrderDetailsState.data.order_id);
+      }
+   }, [getOrderDetailsState.data, getOrderDetailsState.isSuccess, form]);
 
    return (
       <Fragment>
@@ -202,14 +194,15 @@ const OrderDetails = () => {
                                              animate="visible"
                                              custom={index}
                                           >
-                                             <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
-                                                <img
+                                             <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden relative">
+                                                <Image
                                                    src={
                                                       item.product_image ||
                                                       '/placeholder.svg'
                                                    }
                                                    alt={item.product_name}
-                                                   className="w-full h-full object-center object-cover"
+                                                   fill
+                                                   className="object-center object-cover"
                                                 />
                                              </div>
                                              <div className="ml-4 flex-1">

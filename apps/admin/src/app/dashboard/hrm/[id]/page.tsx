@@ -278,7 +278,7 @@ const StaffDetailPage = () => {
                                     <User className="h-12 w-12 text-gray-400" />
                                  </div>
                               )}
-                              <div>
+      <div>
                                  <CardTitle className="text-2xl">
                                     {user.profile?.full_name || 'N/A'}
                                  </CardTitle>

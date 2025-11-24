@@ -10,6 +10,9 @@ const envConfig = () => {
          process.env.IDENTITY_PROVIDER_LOGIN_REDIRECT_URL || '',
       IDENTITY_PROVIDER_CALLBACK_URL:
          process.env.IDENTITY_PROVIDER_CALLBACK_URL || '',
+      ORDERING_NOTIFICATION_HUB:
+         process.env.ORDERING_NOTIFICATION_HUB ||
+         'https://7b1bec6f44c4.ngrok-free.app/ordering-services/orderHub',
    };
 };
 

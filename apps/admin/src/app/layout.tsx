@@ -11,6 +11,7 @@ import { ReduxProvider } from '~/src/infrastructure/redux/provider';
 import { ThemeProvider } from '@components/ui/theme-provider';
 import { Toaster } from '@components/ui/toaster';
 import { Toaster as SonnerToaster } from '@components/ui/sonner';
+import OrderNotificationListener from '~/src/components/order-notification-listener';
 
 export const metadata: Metadata = {
    title: 'YB Store Admin Portal',
@@ -47,6 +48,7 @@ export default function RootLayout({
                   >
                      <main>
                         <Toaster />
+                        {/* <OrderNotificationListener /> */}
                         {children}
                      </main>
                   </ThemeProvider>

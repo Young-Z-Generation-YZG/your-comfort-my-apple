@@ -19,6 +19,8 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
+        services.AddSignalR();
+
         services.AddScoped<IUserHttpContext, UserHttpContext>();
         services.AddScoped<ITenantHttpContext, TenantHttpContext>();
 

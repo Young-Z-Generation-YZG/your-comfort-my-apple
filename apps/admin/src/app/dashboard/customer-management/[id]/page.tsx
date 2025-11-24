@@ -223,8 +223,8 @@ const CustomerManagementDetailPage = () => {
             header: 'Order',
             cell: ({ row }) => {
                const order = row.original;
-               return (
-                  <div>
+   return (
+      <div>
                      <div className="font-semibold">{order.order_code}</div>
                      <p className="text-xs text-muted-foreground">
                         {order.created_at
