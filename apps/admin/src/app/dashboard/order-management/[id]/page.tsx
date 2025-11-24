@@ -34,7 +34,7 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import {
    useGetOrderDetailsAsyncQuery,
    useUpdateOrderAsyncMutation,
-} from '~/src/infrastructure/services/order.service';
+} from '~/src/infrastructure/services/ordering.service';
 import { useForm } from 'react-hook-form';
 import {
    UpdateOrderStatusFormType,

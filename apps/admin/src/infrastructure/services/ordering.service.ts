@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
+import { TOrder } from '~/src/domain/types/ordering';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('ordering-services')(args, api, extraOptions);
@@ -11,61 +12,6 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    }
 
    return result;
-};
-
-export type TOrderItem = {
-   order_item_id: string;
-   order_id: string;
-   tenant_id: string | null;
-   branch_id: string | null;
-   sku_id: string | null;
-   model_id: string;
-   model_name: string;
-   color_name: string;
-   storage_name: string;
-   unit_price: number;
-   display_image_url: string;
-   model_slug: string;
-   quantity: number;
-   is_reviewed: boolean;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
-
-export type TOrder = {
-   tenant_id: string | null;
-   branch_id: string | null;
-   order_id: string;
-   customer_id: string;
-   customer_email: string;
-   order_code: string;
-   status: string;
-   payment_method: string;
-   shipping_address: {
-      contact_name: string;
-      contact_email: string;
-      contact_phone_number: string;
-      contact_address_line: string;
-      contact_district: string;
-      contact_province: string;
-      contact_country: string;
-   };
-   order_items: TOrderItem[];
-   promotion_id: null;
-   promotion_type: string | null;
-   discount_type: string | null;
-   discount_value: number | null;
-   discount_amount: number | null;
-   total_amount: number;
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
 };
 
 export interface IBaseQueryParams {
@@ -115,6 +61,19 @@ export const orderingApi = createApi({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}`,
             method: 'GET',
+         }),
+      }),
+      getUserOrdersDetails: builder.query<
+         PaginationResponse<TOrder>,
+         {
+            userId: string;
+            params: IBaseQueryParams;
+         }
+      >({
+         query: ({ userId, params }) => ({
+            url: `/api/v1/orders/users/${userId}`,
+            method: 'GET',
+            params: params,
          }),
       }),
       getRevenues: builder.query<TOrder[], void>({
@@ -174,6 +133,7 @@ export const {
    useLazyGetRevenuesQuery,
    useLazyGetRevenuesByYearsQuery,
    useLazyGetRevenuesByTenantsQuery,
-   useUpdateOnlineOrderStatusMutation,
    useLazyGetOrdersQuery,
+   useLazyGetUserOrdersDetailsQuery,
+   useUpdateOnlineOrderStatusMutation,
 } = orderingApi;

@@ -9,7 +9,8 @@ import {
    useUpdateOnlineOrderStatusMutation,
    IUpdateOnlineOrderStatusPayload,
    useLazyGetOrdersQuery,
-} from '~/src/infrastructure/services/order.service';
+   useLazyGetUserOrdersDetailsQuery,
+} from '~/src/infrastructure/services/ordering.service';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
 
 const useOrderingService = () => {
@@ -23,13 +24,34 @@ const useOrderingService = () => {
    const [getRevenuesByTenantsTrigger, revenuesByTenantsQueryState] =
       useLazyGetRevenuesByTenantsQuery();
    const [getOrdersTrigger, ordersQueryState] = useLazyGetOrdersQuery();
-
+   const [getUserOrdersDetailsTrigger, userOrdersDetailsQueryState] =
+      useLazyGetUserOrdersDetailsQuery();
    const [updateOnlineOrderStatusTrigger, updateOnlineOrderStatusQueryState] =
       useUpdateOnlineOrderStatusMutation();
 
    useCheckApiError([
       { title: 'Can not find this order', error: orderDetailsQueryState.error },
    ]);
+
+   const getUserOrdersDetailsAsync = useCallback(
+      async (userId: string, params: IBaseQueryParams) => {
+         try {
+            const result = await getUserOrdersDetailsTrigger({
+               userId,
+               params,
+            }).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [getUserOrdersDetailsTrigger],
+   );
 
    const getOrderDetailsAsync = useCallback(
       async (id: string) => {
@@ -173,7 +195,9 @@ const useOrderingService = () => {
          revenuesByTenantsQueryState.isFetching ||
          updateOnlineOrderStatusQueryState.isLoading ||
          ordersQueryState.isLoading ||
-         ordersQueryState.isFetching
+         ordersQueryState.isFetching ||
+         userOrdersDetailsQueryState.isLoading ||
+         userOrdersDetailsQueryState.isFetching
       );
    }, [
       orderDetailsQueryState.isLoading,
@@ -189,6 +213,8 @@ const useOrderingService = () => {
       updateOnlineOrderStatusQueryState.isLoading,
       ordersQueryState.isLoading,
       ordersQueryState.isFetching,
+      userOrdersDetailsQueryState.isLoading,
+      userOrdersDetailsQueryState.isFetching,
    ]);
 
    return {
@@ -200,6 +226,7 @@ const useOrderingService = () => {
       getRevenuesByTenantsState: revenuesByTenantsQueryState,
       updateOnlineOrderStatusState: updateOnlineOrderStatusQueryState,
       getOrdersState: ordersQueryState,
+      getUserOrdersDetailsState: userOrdersDetailsQueryState,
 
       // Actions
       getOrderDetailsAsync,
@@ -209,6 +236,7 @@ const useOrderingService = () => {
       getRevenuesByTenantsAsync,
       updateOnlineOrderStatusAsync,
       getOrdersAsync,
+      getUserOrdersDetailsAsync,
 
       // Loading
       isLoading,

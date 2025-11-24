@@ -39,7 +39,7 @@ import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
 import type {
    TOrder,
    TOrderItem,
-} from '~/src/infrastructure/services/order.service';
+} from '~/src/infrastructure/services/ordering.service';
 import { cn } from '~/src/infrastructure/lib/utils';
 
 const statusColorMap: Record<EOrderStatus, string> = {

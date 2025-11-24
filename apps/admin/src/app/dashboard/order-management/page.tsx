@@ -57,7 +57,7 @@ import { LoadingOverlay } from '@components/loading-overlay';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
-import { TOrder } from '~/src/infrastructure/services/order.service';
+import { TOrder } from '~/src/infrastructure/services/ordering.service';
 import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 import { useDebounce } from '~/src/hooks/use-debounce';
 

@@ -20,7 +20,7 @@ import { keycloakApi } from '~/src/infrastructure/services/keycloak.service';
 import { uploadImageApi } from '~/src/infrastructure/services/upload.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
-import { orderingApi } from '~/src/infrastructure/services/order.service';
+import { orderingApi } from '~/src/infrastructure/services/ordering.service';
 import { identityApi } from '~/src/infrastructure/services/identity.service';
 import { inventoryApi } from '~/src/infrastructure/services/inventory.service';
 import { tenantApi } from '~/src/infrastructure/services/tenant.service';
