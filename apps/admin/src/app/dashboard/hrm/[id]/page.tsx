@@ -3,6 +3,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import {
    ArrowLeft,
    Mail,
@@ -10,6 +13,9 @@ import {
    Calendar,
    User,
    Building2,
+   Edit,
+   Save,
+   X,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -23,11 +29,63 @@ import {
 import { Button } from '@components/ui/button';
 import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
+import {
+   Form,
+   FormControl,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormMessage,
+} from '@components/ui/form';
+import { Input } from '@components/ui/input';
+import {
+   Select,
+   SelectContent,
+   SelectItem,
+   SelectTrigger,
+   SelectValue,
+} from '@components/ui/select';
 import { LoadingOverlay } from '@components/loading-overlay';
-import { useToast } from '~/src/hooks/use-toast';
 import useUserService from '~/src/hooks/api/use-user-service';
 import { TUser } from '~/src/domain/types/identity';
+import { Gender } from '~/src/domain/enums/gender.enum';
 import { cn } from '~/src/infrastructure/lib/utils';
+import type { IUpdateProfileByIdPayload } from '~/src/infrastructure/services/user.service';
+
+const updateProfileSchema = z.object({
+   first_name: z
+      .string()
+      .min(1, 'First name must be at least 1 character')
+      .nullable()
+      .optional(),
+   last_name: z
+      .string()
+      .min(1, 'Last name must be at least 1 character')
+      .nullable()
+      .optional(),
+   phone_number: z
+      .string()
+      .refine(
+         (val) =>
+            !val ||
+            val === '' ||
+            /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/.test(
+               val,
+            ),
+         {
+            message: 'Invalid phone number format',
+         },
+      )
+      .nullable()
+      .optional(),
+   birthday: z.string().nullable().optional(),
+   gender: z
+      .enum([Gender.MALE, Gender.FEMALE, Gender.OTHER])
+      .nullable()
+      .optional(),
+});
+
+type UpdateProfileFormValues = z.infer<typeof updateProfileSchema>;
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
    dateStyle: 'medium',
@@ -55,11 +113,28 @@ const getGenderStyle = (gender: string) => {
 const StaffDetailPage = () => {
    const params = useParams<{ id: string }>();
    const router = useRouter();
-   const { toast } = useToast();
 
-   const { getUserByUserIdAsync, isLoading } = useUserService();
+   const {
+      getUserByUserIdAsync,
+      updateProfileByUserIdAsync,
+      getUserByUserIdQueryState,
+      isLoading,
+   } = useUserService();
 
-   const [user, setUser] = useState<TUser | null>(null);
+   // Use query state data directly instead of local state for automatic refetching
+   const user = getUserByUserIdQueryState.data as TUser | undefined;
+   const [isEditMode, setIsEditMode] = useState(false);
+
+   const form = useForm<UpdateProfileFormValues>({
+      resolver: zodResolver(updateProfileSchema),
+      defaultValues: {
+         first_name: null,
+         last_name: null,
+         phone_number: null,
+         birthday: null,
+         gender: null,
+      },
+   });
 
    const userId = useMemo(() => {
       const id = params?.id;
@@ -74,25 +149,72 @@ const StaffDetailPage = () => {
          return;
       }
 
-      const result = await getUserByUserIdAsync(userId);
-
-      if (result.isSuccess && result.data) {
-         setUser(result.data as TUser);
-      } else {
-         setUser(null);
-         toast({
-            title: 'Error',
-            description: 'Failed to load staff details. Please try again.',
-            variant: 'destructive',
-         });
-      }
-   }, [userId, getUserByUserIdAsync, toast]);
+      // Trigger the query - RTK Query will handle caching and automatic refetching
+      // The data will be available via getUserByUserIdQueryState.data
+      await getUserByUserIdAsync(userId);
+   }, [userId, getUserByUserIdAsync]);
 
    useEffect(() => {
       fetchUserDetails();
    }, [fetchUserDetails]);
 
-   if (!user && !isLoading) {
+   // Initialize form when user data is available
+   useEffect(() => {
+      if (user) {
+         form.reset({
+            first_name: user.profile?.first_name || null,
+            last_name: user.profile?.last_name || null,
+            phone_number: user.profile?.phone_number || null,
+            birthday: user.profile?.birth_day
+               ? user.profile.birth_day.split('T')[0]
+               : null,
+            gender: (user.profile?.gender as Gender) || null,
+         });
+      }
+   }, [user, form]);
+
+   const onSubmit = useCallback(
+      async (data: UpdateProfileFormValues) => {
+         if (!userId || !user) {
+            return;
+         }
+
+         const payload: IUpdateProfileByIdPayload = {
+            first_name: data.first_name || null,
+            last_name: data.last_name || null,
+            phone_number: data.phone_number || null,
+            birthday: data.birthday || null,
+            gender: data.gender || null,
+         };
+
+         const result = await updateProfileByUserIdAsync(userId, payload);
+
+         if (result.isSuccess) {
+            setIsEditMode(false);
+            // No need to manually refetch - RTK Query will automatically refetch
+            // when invalidatesTags: ['Users'] triggers
+         }
+      },
+      [userId, updateProfileByUserIdAsync, user],
+   );
+
+   const handleCancel = useCallback(() => {
+      if (user) {
+         // Reset form data to current user data
+         form.reset({
+            first_name: user.profile?.first_name || null,
+            last_name: user.profile?.last_name || null,
+            phone_number: user.profile?.phone_number || null,
+            birthday: user.profile?.birth_day
+               ? user.profile.birth_day.split('T')[0]
+               : null,
+            gender: (user.profile?.gender as Gender) || null,
+         });
+      }
+      setIsEditMode(false);
+   }, [user, form]);
+
+   if (!user && !isLoading && getUserByUserIdQueryState.isError) {
       return (
          <div className="p-5">
             <Button
@@ -118,11 +240,17 @@ const StaffDetailPage = () => {
 
    return (
       <div className="p-5">
-         <div className="mb-4">
+         <div className="mb-4 flex items-center justify-between">
             <Button variant="ghost" onClick={() => router.back()}>
                <ArrowLeft className="mr-2 h-4 w-4" />
                Back
             </Button>
+            {user && !isEditMode && (
+               <Button onClick={() => setIsEditMode(true)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Profile
+               </Button>
+            )}
          </div>
 
          <LoadingOverlay isLoading={isLoading}>
@@ -188,93 +316,280 @@ const StaffDetailPage = () => {
                            </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <User className="h-4 w-4" />
-                                 <span className="font-medium">Full Name</span>
-                              </div>
-                              <p className="text-base font-medium capitalize">
-                                 {user.profile?.full_name || 'N/A'}
-                              </p>
-                           </div>
+                           {!isEditMode ? (
+                              <>
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <User className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          Full Name
+                                       </span>
+                                    </div>
+                                    <p className="text-base font-medium capitalize">
+                                       {user.profile?.full_name || 'N/A'}
+                                    </p>
+                                 </div>
 
-                           <Separator />
+                                 <Separator />
 
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <User className="h-4 w-4" />
-                                 <span className="font-medium">First Name</span>
-                              </div>
-                              <p className="text-base font-medium capitalize">
-                                 {user.profile?.first_name || 'N/A'}
-                              </p>
-                           </div>
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <User className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          First Name
+                                       </span>
+                                    </div>
+                                    <p className="text-base font-medium capitalize">
+                                       {user.profile?.first_name || 'N/A'}
+                                    </p>
+                                 </div>
 
-                           <Separator />
+                                 <Separator />
 
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <User className="h-4 w-4" />
-                                 <span className="font-medium">Last Name</span>
-                              </div>
-                              <p className="text-base font-medium capitalize">
-                                 {user.profile?.last_name || 'N/A'}
-                              </p>
-                           </div>
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <User className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          Last Name
+                                       </span>
+                                    </div>
+                                    <p className="text-base font-medium capitalize">
+                                       {user.profile?.last_name || 'N/A'}
+                                    </p>
+                                 </div>
 
-                           <Separator />
+                                 <Separator />
 
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <Phone className="h-4 w-4" />
-                                 <span className="font-medium">
-                                    Phone Number
-                                 </span>
-                              </div>
-                              <p className="text-base font-medium">
-                                 {user.profile?.phone_number ||
-                                    user.phone_number ||
-                                    'N/A'}
-                              </p>
-                           </div>
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <Phone className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          Phone Number
+                                       </span>
+                                    </div>
+                                    <p className="text-base font-medium">
+                                       {user.profile?.phone_number ||
+                                          user.phone_number ||
+                                          'N/A'}
+                                    </p>
+                                 </div>
 
-                           <Separator />
+                                 <Separator />
 
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <Calendar className="h-4 w-4" />
-                                 <span className="font-medium">Birthday</span>
-                              </div>
-                              <p className="text-base font-medium">
-                                 {user.profile?.birth_day
-                                    ? dateOnlyFormatter.format(
-                                         new Date(user.profile.birth_day),
-                                      )
-                                    : 'N/A'}
-                              </p>
-                           </div>
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <Calendar className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          Birthday
+                                       </span>
+                                    </div>
+                                    <p className="text-base font-medium">
+                                       {user.profile?.birth_day
+                                          ? dateOnlyFormatter.format(
+                                               new Date(user.profile.birth_day),
+                                            )
+                                          : 'N/A'}
+                                    </p>
+                                 </div>
 
-                           <Separator />
+                                 <Separator />
 
-                           <div className="space-y-2">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                 <User className="h-4 w-4" />
-                                 <span className="font-medium">Gender</span>
-                              </div>
-                              {user.profile?.gender ? (
-                                 <Badge
-                                    variant="outline"
-                                    className={cn(
-                                       'capitalize',
-                                       getGenderStyle(user.profile.gender),
+                                 <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <User className="h-4 w-4" />
+                                       <span className="font-medium">
+                                          Gender
+                                       </span>
+                                    </div>
+                                    {user.profile?.gender ? (
+                                       <Badge
+                                          variant="outline"
+                                          className={cn(
+                                             'capitalize',
+                                             getGenderStyle(
+                                                user.profile.gender,
+                                             ),
+                                          )}
+                                       >
+                                          {user.profile.gender.toLowerCase()}
+                                       </Badge>
+                                    ) : (
+                                       <p className="text-base font-medium">
+                                          N/A
+                                       </p>
                                     )}
+                                 </div>
+                              </>
+                           ) : (
+                              <Form {...form}>
+                                 <form
+                                    onSubmit={form.handleSubmit(onSubmit)}
+                                    className="space-y-4"
                                  >
-                                    {user.profile.gender.toLowerCase()}
-                                 </Badge>
-                              ) : (
-                                 <p className="text-base font-medium">N/A</p>
-                              )}
-                           </div>
+                                    <FormField
+                                       control={form.control}
+                                       name="first_name"
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>
+                                                <div className="flex items-center gap-2">
+                                                   <User className="h-4 w-4" />
+                                                   <span>First Name</span>
+                                                </div>
+                                             </FormLabel>
+                                             <FormControl>
+                                                <Input
+                                                   placeholder="Enter first name"
+                                                   {...field}
+                                                   value={field.value || ''}
+                                                />
+                                             </FormControl>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+
+                                    <Separator />
+
+                                    <FormField
+                                       control={form.control}
+                                       name="last_name"
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>
+                                                <div className="flex items-center gap-2">
+                                                   <User className="h-4 w-4" />
+                                                   <span>Last Name</span>
+                                                </div>
+                                             </FormLabel>
+                                             <FormControl>
+                                                <Input
+                                                   placeholder="Enter last name"
+                                                   {...field}
+                                                   value={field.value || ''}
+                                                />
+                                             </FormControl>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+
+                                    <Separator />
+
+                                    <FormField
+                                       control={form.control}
+                                       name="phone_number"
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>
+                                                <div className="flex items-center gap-2">
+                                                   <Phone className="h-4 w-4" />
+                                                   <span>Phone Number</span>
+                                                </div>
+                                             </FormLabel>
+                                             <FormControl>
+                                                <Input
+                                                   type="tel"
+                                                   placeholder="Enter phone number"
+                                                   {...field}
+                                                   value={field.value || ''}
+                                                />
+                                             </FormControl>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+
+                                    <Separator />
+
+                                    <FormField
+                                       control={form.control}
+                                       name="birthday"
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>
+                                                <div className="flex items-center gap-2">
+                                                   <Calendar className="h-4 w-4" />
+                                                   <span>Birthday</span>
+                                                </div>
+                                             </FormLabel>
+                                             <FormControl>
+                                                <Input
+                                                   type="date"
+                                                   {...field}
+                                                   value={field.value || ''}
+                                                />
+                                             </FormControl>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+
+                                    <Separator />
+
+                                    <FormField
+                                       control={form.control}
+                                       name="gender"
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>
+                                                <div className="flex items-center gap-2">
+                                                   <User className="h-4 w-4" />
+                                                   <span>Gender</span>
+                                                </div>
+                                             </FormLabel>
+                                             <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value || ''}
+                                             >
+                                                <FormControl>
+                                                   <SelectTrigger>
+                                                      <SelectValue placeholder="Select gender" />
+                                                   </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                   <SelectItem
+                                                      value={Gender.MALE}
+                                                   >
+                                                      Male
+                                                   </SelectItem>
+                                                   <SelectItem
+                                                      value={Gender.FEMALE}
+                                                   >
+                                                      Female
+                                                   </SelectItem>
+                                                   <SelectItem
+                                                      value={Gender.OTHER}
+                                                   >
+                                                      Other
+                                                   </SelectItem>
+                                                </SelectContent>
+                                             </Select>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+
+                                    <Separator />
+
+                                    <div className="flex items-center gap-2 pt-2">
+                                       <Button type="submit" className="flex-1">
+                                          <Save className="mr-2 h-4 w-4" />
+                                          Save Changes
+                                       </Button>
+                                       <Button
+                                          type="button"
+                                          variant="outline"
+                                          onClick={handleCancel}
+                                          className="flex-1"
+                                       >
+                                          <X className="mr-2 h-4 w-4" />
+                                          Cancel
+                                       </Button>
+                                    </div>
+                                 </form>
+                              </Form>
+                           )}
                         </CardContent>
                      </Card>
 
@@ -353,7 +668,7 @@ const StaffDetailPage = () => {
                                  <Building2 className="h-4 w-4" />
                                  <span className="font-medium">Tenant ID</span>
                               </div>
-                              <p className="text-base font-medium font-mono text-sm">
+                              <p className="text-sm font-medium font-mono">
                                  {user.tenant_id || 'N/A'}
                               </p>
                            </div>
@@ -365,7 +680,7 @@ const StaffDetailPage = () => {
                                  <Building2 className="h-4 w-4" />
                                  <span className="font-medium">Branch ID</span>
                               </div>
-                              <p className="text-base font-medium font-mono text-sm">
+                              <p className="text-sm font-medium font-mono">
                                  {user.branch_id || 'N/A'}
                               </p>
                            </div>
@@ -419,7 +734,7 @@ const StaffDetailPage = () => {
                                        Updated By
                                     </span>
                                  </div>
-                                 <p className="text-base font-medium font-mono text-sm">
+                                 <p className="text-sm font-medium font-mono">
                                     {user.updated_by}
                                  </p>
                               </div>
@@ -451,7 +766,7 @@ const StaffDetailPage = () => {
                                        Deleted By
                                     </span>
                                  </div>
-                                 <p className="text-base font-medium font-mono text-sm">
+                                 <p className="text-sm font-medium font-mono">
                                     {user.deleted_by}
                                  </p>
                               </div>

@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
-
-import { toast } from 'sonner';
+import { useCheckApiSuccess } from '~/src/hooks/use-check-success';
 
 import {
    IUpdateProfileByIdPayload,
@@ -15,7 +14,27 @@ const useUserService = () => {
    const [updateProfileByUserIdTrigger, updateProfileByUserIdQueryState] =
       useUpdateProfileByUserIdMutation();
 
-   useCheckApiError([]);
+   useCheckApiError([
+      {
+         title: 'Failed to load user details',
+         error: getUserByUserIdQueryState.error,
+      },
+      {
+         title: 'Failed to update profile',
+         error: updateProfileByUserIdQueryState.error,
+      },
+   ]);
+
+   useCheckApiSuccess([
+      {
+         title: 'User details loaded successfully',
+         isSuccess: getUserByUserIdQueryState.isSuccess,
+      },
+      {
+         title: 'Profile updated successfully',
+         isSuccess: updateProfileByUserIdQueryState.isSuccess,
+      },
+   ]);
 
    const getUserByUserIdAsync = useCallback(
       async (params: any) => {
