@@ -176,6 +176,7 @@ public class UserController : ApiController
     }
 
     [HttpPut("{userId}/profiles")]
+    [OpenApiOperation("Update profile by user id", "Accessible only to ADMIN or ADMIN_SUPER roles.")]
     public async Task<IActionResult> UpdateProfileById([FromRoute] string userId, [FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateProfileByIdCommand>(request);

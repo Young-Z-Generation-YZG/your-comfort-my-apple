@@ -27,4 +27,8 @@
     </Protobuf>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Orders\Queries\GetUserOrderDetails\" />
+  </ItemGroup>
+
 </Project>

@@ -13,6 +13,7 @@ using YGZ.Ordering.Application.Orders.Queries.GetOnlineOrders;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderByUser;
 using YGZ.Ordering.Application.Orders.Queries.GetOrderItemsByOrderId;
 using YGZ.Ordering.Application.Orders.Queries.GetOrders;
+using YGZ.Ordering.Application.Orders.Queries.GetUserOrderDetails;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Ordering.Api.Controllers;
@@ -70,6 +71,26 @@ public class OrderingController : ApiController
     public async Task<IActionResult> GetOrderDetails([FromRoute] string orderId, CancellationToken cancellationToken)
     {
         var query = new GetOrderDetailsByIdQuery(orderId);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("users/{userId}")]
+    [OpenApiOperation("Get user order details", "Accessible only to ADMIN_SUPER/ADMIN/STAFF roles.")]
+    public async Task<IActionResult> GetUserOrderDetails([FromRoute] string userId,
+                                                         [FromQuery] GetOrdersPaginationRequest request,
+                                                         CancellationToken cancellationToken)
+    {
+        var query = new GetUserOrderDetailsQuery
+        {
+            UserId = userId,
+            Page = request._page,
+            Limit = request._limit,
+            OrderCode = request._orderCode,
+            OrderStatus = request._orderStatus
+        };
 
         var result = await _sender.Send(query, cancellationToken);
 
