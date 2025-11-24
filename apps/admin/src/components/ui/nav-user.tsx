@@ -26,7 +26,7 @@ import {
    useSidebar,
 } from '@components/ui/sidebar';
 import useAuthService from '~/src/hooks/api/use-auth-service';
-
+import { useRouter } from 'next/navigation';
 export function NavUser({
    user,
 }: {
@@ -36,6 +36,8 @@ export function NavUser({
       avatar: string;
    };
 }) {
+   const router = useRouter();
+
    const { isMobile } = useSidebar();
 
    const { logoutAsync } = useAuthService();
@@ -90,22 +92,26 @@ export function NavUser({
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem disabled>
                         <Sparkles />
                         Upgrade to Pro
                      </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           router.push('/dashboard/account');
+                        }}
+                     >
                         <BadgeCheck />
                         Account
                      </DropdownMenuItem>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem disabled>
                         <CreditCard />
                         Billing
                      </DropdownMenuItem>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem disabled>
                         <Bell />
                         Notifications
                      </DropdownMenuItem>

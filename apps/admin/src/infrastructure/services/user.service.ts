@@ -6,9 +6,7 @@ import { TUser } from '~/src/domain/types/identity';
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('identity-services')(args, api, extraOptions);
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 
@@ -49,8 +47,18 @@ export const userApi = createApi({
          }),
          invalidatesTags: ['Users'],
       }),
+      getAccountDetails: builder.query<TUser, void>({
+         query: () => ({
+            url: `/api/v1/users/account`,
+            method: 'GET',
+         }),
+         providesTags: ['Users'],
+      }),
    }),
 });
 
-export const { useLazyGetUserByUserIdQuery, useUpdateProfileByUserIdMutation } =
-   userApi;
+export const {
+   useLazyGetUserByUserIdQuery,
+   useLazyGetAccountDetailsQuery,
+   useUpdateProfileByUserIdMutation,
+} = userApi;

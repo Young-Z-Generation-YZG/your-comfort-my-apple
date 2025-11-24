@@ -17,6 +17,7 @@ using YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateProfile;
 using YGZ.Identity.Application.Users.Commands.UpdateProfileById;
+using YGZ.Identity.Application.Users.Queries.GetAccount;
 using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetListUsers;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
@@ -107,6 +108,16 @@ public class UserController : ApiController
         {
             Roles = request._roles
         };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("account")]
+    public async Task<IActionResult> GetAccount(CancellationToken cancellationToken)
+    {
+        var query = new GetAccountQuery();
 
         var result = await _sender.Send(query, cancellationToken);
 

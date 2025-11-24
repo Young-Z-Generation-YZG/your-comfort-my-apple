@@ -5,12 +5,16 @@ import { useCheckApiSuccess } from '~/src/hooks/use-check-success';
 import {
    IUpdateProfileByIdPayload,
    useLazyGetUserByUserIdQuery,
+   useLazyGetAccountDetailsQuery,
    useUpdateProfileByUserIdMutation,
 } from '~/src/infrastructure/services/user.service';
 
 const useUserService = () => {
    const [getUserByUserIdTrigger, getUserByUserIdQueryState] =
       useLazyGetUserByUserIdQuery();
+   const [getAccountDetailsTrigger, getAccountDetailsQueryState] =
+      useLazyGetAccountDetailsQuery();
+
    const [updateProfileByUserIdTrigger, updateProfileByUserIdQueryState] =
       useUpdateProfileByUserIdMutation();
 
@@ -35,6 +39,20 @@ const useUserService = () => {
          isSuccess: updateProfileByUserIdQueryState.isSuccess,
       },
    ]);
+
+   const getAccountDetailsAsync = useCallback(async () => {
+      try {
+         const result = await getAccountDetailsTrigger().unwrap();
+         return {
+            isSuccess: true,
+            isError: false,
+            data: result,
+            error: null,
+         };
+      } catch (error) {
+         return { isSuccess: false, isError: true, data: null, error };
+      }
+   }, [getAccountDetailsTrigger]);
 
    const getUserByUserIdAsync = useCallback(
       async (params: any) => {
@@ -98,10 +116,12 @@ const useUserService = () => {
       isLoading,
       getUserByUserIdQueryState,
       updateProfileByUserIdQueryState,
+      getAccountDetailsQueryState,
 
       // actions
       getUserByUserIdAsync,
       updateProfileByUserIdAsync,
+      getAccountDetailsAsync,
    };
 };
 
