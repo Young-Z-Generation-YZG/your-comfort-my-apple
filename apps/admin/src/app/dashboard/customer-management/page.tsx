@@ -41,6 +41,7 @@ import {
    DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 import {
    ArrowUpDown,
@@ -84,127 +85,135 @@ type TUserFilter = {
    _emailVerified?: boolean | null;
 };
 
-const columns: ColumnDef<TUser>[] = [
-   {
-      accessorKey: 'email',
-      header: ({ column }) => {
-         return (
-            <Button
-               variant="ghost"
-               onClick={() =>
-                  column.toggleSorting(column.getIsSorted() === 'asc')
-               }
-            >
-               Email
-               <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-         );
-      },
-      cell: ({ row }) => (
-         <div className="font-medium">{row.getValue('email')}</div>
-      ),
-   },
-   {
-      accessorKey: 'profile.first_name',
-      header: 'First Name',
-      cell: ({ row }) => (
-         <div className="capitalize">
-            {row.original.profile?.first_name || '-'}
-         </div>
-      ),
-   },
-   {
-      accessorKey: 'profile.last_name',
-      header: 'Last Name',
-      cell: ({ row }) => (
-         <div className="capitalize">
-            {row.original.profile?.last_name || '-'}
-         </div>
-      ),
-   },
-   {
-      accessorKey: 'phone_number',
-      header: 'Phone Number',
-      cell: ({ row }) => <div>{row.getValue('phone_number') || '-'}</div>,
-   },
-   {
-      accessorKey: 'profile.gender',
-      header: 'Gender',
-      cell: ({ row }) => {
-         const gender = row.original.profile?.gender || 'OTHER';
-         return (
-            <Badge
-               variant="outline"
-               className={cn('capitalize', getGenderStyle(gender))}
-            >
-               {gender.toLowerCase()}
-            </Badge>
-         );
-      },
-   },
-   {
-      accessorKey: 'profile.birth_day',
-      header: 'Birth Date',
-      cell: ({ row }) => {
-         const birthDay = row.original.profile?.birth_day;
-         if (!birthDay || birthDay === '0001-01-01T00:00:00') return '-';
-         return new Date(birthDay).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-         });
-      },
-   },
-   {
-      accessorKey: 'email_confirmed',
-      header: 'Email Verified',
-      cell: ({ row }) => {
-         const isConfirmed = row.getValue('email_confirmed');
-         return (
-            <Badge variant={isConfirmed ? 'default' : 'destructive'}>
-               {isConfirmed ? 'Verified' : 'Not Verified'}
-            </Badge>
-         );
-      },
-   },
-   {
-      id: 'actions',
-      enableHiding: false,
-      cell: ({ row }) => {
-         const user = row.original;
-
-         return (
-            <DropdownMenu>
-               <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                     <span className="sr-only">Open menu</span>
-                     <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-               </DropdownMenuTrigger>
-               <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem
-                     onClick={() => navigator.clipboard.writeText(user.id)}
-                  >
-                     Copy user ID
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>View profile</DropdownMenuItem>
-                  <DropdownMenuItem>Edit user</DropdownMenuItem>
-                  <DropdownMenuItem>Reset password</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">
-                     Delete user
-                  </DropdownMenuItem>
-               </DropdownMenuContent>
-            </DropdownMenu>
-         );
-      },
-   },
-];
-
 const CustomersPage = () => {
+   const router = useRouter();
    const { getUsersAsync, getUsersState, isLoading } = useIdentityService();
+
+   const columns: ColumnDef<TUser>[] = useMemo(
+      () => [
+         {
+            accessorKey: 'email',
+            header: ({ column }) => {
+               return (
+                  <Button
+                     variant="ghost"
+                     onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                     }
+                  >
+                     Email
+                     <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+               );
+            },
+            cell: ({ row }) => (
+               <div className="font-medium">{row.getValue('email')}</div>
+            ),
+         },
+         {
+            accessorKey: 'profile.first_name',
+            header: 'First Name',
+            cell: ({ row }) => (
+               <div className="capitalize">
+                  {row.original.profile?.first_name || '-'}
+               </div>
+            ),
+         },
+         {
+            accessorKey: 'profile.last_name',
+            header: 'Last Name',
+            cell: ({ row }) => (
+               <div className="capitalize">
+                  {row.original.profile?.last_name || '-'}
+               </div>
+            ),
+         },
+         {
+            accessorKey: 'phone_number',
+            header: 'Phone Number',
+            cell: ({ row }) => <div>{row.getValue('phone_number') || '-'}</div>,
+         },
+         {
+            accessorKey: 'profile.gender',
+            header: 'Gender',
+            cell: ({ row }) => {
+               const gender = row.original.profile?.gender || 'OTHER';
+               return (
+                  <Badge
+                     variant="outline"
+                     className={cn('capitalize', getGenderStyle(gender))}
+                  >
+                     {gender.toLowerCase()}
+                  </Badge>
+               );
+            },
+         },
+         {
+            accessorKey: 'profile.birth_day',
+            header: 'Birth Date',
+            cell: ({ row }) => {
+               const birthDay = row.original.profile?.birth_day;
+               if (!birthDay || birthDay === '0001-01-01T00:00:00') return '-';
+               return new Date(birthDay).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+               });
+            },
+         },
+         {
+            accessorKey: 'email_confirmed',
+            header: 'Email Verified',
+            cell: ({ row }) => {
+               const isConfirmed = row.getValue('email_confirmed');
+               return (
+                  <Badge variant={isConfirmed ? 'default' : 'destructive'}>
+                     {isConfirmed ? 'Verified' : 'Not Verified'}
+                  </Badge>
+               );
+            },
+         },
+         {
+            id: 'actions',
+            enableHiding: false,
+            cell: ({ row }) => {
+               const user = row.original;
+
+               return (
+                  <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                           <span className="sr-only">Open menu</span>
+                           <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem
+                           onClick={() =>
+                              navigator.clipboard.writeText(user.id)
+                           }
+                        >
+                           Copy user ID
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                           onClick={() =>
+                              router.push(
+                                 `/dashboard/customer-management/${user.id}`,
+                              )
+                           }
+                        >
+                           View profile
+                        </DropdownMenuItem>
+                     </DropdownMenuContent>
+                  </DropdownMenu>
+               );
+            },
+         },
+      ],
+      [router],
+   );
 
    const { filters, setFilters } = useFilters<TUserFilter>({
       _page: 'number',
