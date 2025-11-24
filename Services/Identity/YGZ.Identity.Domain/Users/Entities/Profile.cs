@@ -55,13 +55,21 @@ public class Profile : Entity<ProfileId>, IAuditable, ISoftDelete
         return profile;
     }
 
-    public void Update(string? firstName, string? lastName, string? phoneNumber, DateTime? birthDay, EGender? gender)
+    public void Update(string? firstName, string? lastName, string? phoneNumber, string? birthDay, string? gender)
     {
+        if(birthDay is not null)
+        {
+            BirthDay = DateTime.Parse(birthDay).ToUniversalTime();
+        }
+        if(gender is not null)
+        {
+            Gender = EGender.FromName(gender, false);
+        }
+
+
         FirstName = firstName ?? FirstName;
         LastName = lastName ?? LastName;
         PhoneNumber = phoneNumber ?? PhoneNumber;
-        BirthDay = birthDay ?? BirthDay;
-        Gender = gender ?? Gender;
         UpdatedAt = DateTime.UtcNow;
         SetFullName();
     }

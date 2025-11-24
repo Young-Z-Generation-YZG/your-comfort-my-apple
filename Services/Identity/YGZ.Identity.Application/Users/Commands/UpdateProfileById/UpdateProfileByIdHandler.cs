@@ -35,6 +35,7 @@ public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand
         {
             // Get user with profile included
             var user = await _userDbSet
+                .IgnoreQueryFilters()
                 .Include(x => x.Profile)
                 .FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken);
 
@@ -57,9 +58,7 @@ public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand
             _userDbSet.Update(user);
 
             // Update profile using domain method
-            var birthDay = DateTime.Parse(request.BirthDay ?? throw new ArgumentNullException(nameof(request.BirthDay))).ToUniversalTime();
-            var gender = EGender.FromName(request.Gender, false);
-            profile.Update(request.FirstName, request.LastName, request.PhoneNumber, birthDay, gender);
+            profile.Update(request.FirstName, request.LastName, request.PhoneNumber, request.BirthDay, request.Gender);
 
             _profileDbSet.Update(profile);
 
