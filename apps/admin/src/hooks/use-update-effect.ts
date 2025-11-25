@@ -2,7 +2,8 @@
 import { type DependencyList, useEffect, useRef } from 'react';
 
 /**
- * A hook that runs a callback on update, but not on initial render
+ * This hook can be helpful in situations where you want to run some logic only when specific values change and not on the initial render.
+ * For example, when you want to fetch data from an API after the user has selected a particular option from a drop-down menu or when you want to update the position of an element on the screen after the size of the window changes.
  * @param callback - The callback to run on update
  * @param dependencies - The dependencies to watch
  * @returns void
