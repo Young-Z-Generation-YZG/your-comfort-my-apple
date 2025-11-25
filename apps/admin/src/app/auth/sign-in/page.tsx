@@ -19,6 +19,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '~/src/hooks/use-toast';
 import useWindowSize from '~/src/hooks/use-window-size';
+import useMediaQuery from '~/src/hooks/use-media-query';
 
 const SignInPage = () => {
    const { isLoading, loginAsync, getIdentityAsync } = useAuthService();
@@ -28,7 +29,21 @@ const SignInPage = () => {
    const loginWindowRef = useRef<Window | null>(null);
    const [isKeycloakLoading, setIsKeycloakLoading] = useState(false);
 
-   const { width, height } = useWindowSize();
+   const {
+      isMobile,
+      isTablet,
+      isDesktop,
+      isLargeDesktop,
+      isExtraLargeDesktop,
+   } = useMediaQuery();
+
+   console.log({
+      isMobile,
+      isTablet,
+      isDesktop,
+      isLargeDesktop,
+      isExtraLargeDesktop,
+   });
 
    const form = useForm({
       resolver: loginResolver,
@@ -244,6 +259,10 @@ const SignInPage = () => {
                         alt="keycloak"
                         className="w-6 h-6"
                      />
+                  </Button>
+
+                  <Button className="w-[500px] sm:w-[300px] md:w-[400px] lg:w-[500px]">
+                     <span>Login with Google</span>
                   </Button>
                </div>
             </div>
