@@ -7,8 +7,15 @@ const useEventListener = (
 ) => {
    const callbackRef = useRef(callback);
 
+   console.log('[Hook:useEventListener] callbackRef', callbackRef);
+
    useEffect(() => {
       callbackRef.current = callback;
+
+      console.log(
+         '[Hook:useEventListener] callbackRef.current',
+         callbackRef.current,
+      );
    }, [callback]);
 
    useEffect(() => {
