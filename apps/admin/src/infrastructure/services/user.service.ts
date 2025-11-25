@@ -4,7 +4,11 @@ import { setLogout } from '~/src/infrastructure/redux/features/auth.slice';
 import { TUser } from '~/src/domain/types/identity';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('identity-services')(args, api, extraOptions);
+   const result = await baseQuery('/identity-services')(
+      args,
+      api,
+      extraOptions,
+   );
 
    if (result.error && result.error.status === 401) {
       api.dispatch(setLogout());

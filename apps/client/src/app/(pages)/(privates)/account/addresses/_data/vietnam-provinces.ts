@@ -1,4 +1,4 @@
-// Vietnam provinces and districts data
+// Việt Nam provinces and districts data
 export type District = {
    code: string;
    name: string;

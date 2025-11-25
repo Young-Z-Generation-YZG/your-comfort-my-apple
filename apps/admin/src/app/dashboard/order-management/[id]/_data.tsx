@@ -11,7 +11,7 @@ export const sampleData = {
       contact_address_line: '106* Kha Van Can',
       contact_district: 'Thu Duc',
       contact_province: 'Ho Chi Minh City',
-      contact_country: 'Vietnam',
+      contact_country: 'Việt Nam',
    },
    order_items: [
       {

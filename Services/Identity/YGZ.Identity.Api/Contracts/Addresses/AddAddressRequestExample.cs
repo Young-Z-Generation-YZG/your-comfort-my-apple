@@ -17,7 +17,7 @@ public class AddAddressRequestExample : ISchemaProcessor
                 address_line = "123 Nguyen Van Cu",
                 district = "District 1",
                 province = "Ho Chi Minh City",
-                country = "Vietnam"
+                country = "Việt Nam"
             };
         }
     }

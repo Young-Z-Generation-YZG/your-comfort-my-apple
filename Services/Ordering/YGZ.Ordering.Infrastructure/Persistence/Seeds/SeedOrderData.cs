@@ -22,7 +22,7 @@ public static class SeedOrderData
                                addressLine: "1060 Kha Van Can",
                                district: "Quận Thủ Đức",
                                province: "Thành phố Hồ Chí Minh",
-                               country: "Vietnam"),
+                               country: "Việt Nam"),
     };
 
     public static IEnumerable<string> TenantIds => new List<string>

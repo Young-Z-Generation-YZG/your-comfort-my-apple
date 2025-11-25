@@ -19,7 +19,7 @@ public class CheckoutBasketRequestExample : ISchemaProcessor
                     address_line = "123 Street",
                     district = "Thu Duc",
                     province = "Ho Chi Minh",
-                    country = "Vietnam"
+                    country = "Việt Nam"
                 },
                 payment_method = "VNPAY",
                 discount_code = "APRIL2025",

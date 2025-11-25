@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useMemo } from 'react';
 import {
    LoginFormType,
@@ -17,13 +18,13 @@ import {
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
-import { useCheckApiError } from '../use-check-error';
+import { useCheckApiError } from '~/components/hooks/use-check-error';
 import { useRouter } from 'next/navigation';
 import { setUseAccessToken } from '~/infrastructure/redux/features/auth.slice';
 import { useDispatch } from 'react-redux';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
 
 const useAuthService = () => {
-   const dispatch = useDispatch();
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [registerMutation, registerMutationState] = useRegisterMutation();
    const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
@@ -37,7 +38,10 @@ const useAuthService = () => {
    const [refreshTokenMutation, refreshTokenMutationState] =
       useRefreshTokenMutation();
 
+   const dispatch = useDispatch();
    const router = useRouter();
+
+   const appStateRoute = useAppSelector((state) => state.app.route);
 
    useCheckApiError([
       { title: 'Login failed', error: loginMutationState.error },
@@ -65,10 +69,35 @@ const useAuthService = () => {
       return Boolean(authAppState.accessToken && authAppState.isAuthenticated);
    }, [authAppState]);
 
-   const login = useCallback(
+   const loginAsync = useCallback(
       async (data: LoginFormType) => {
          try {
             const result = await loginMutation(data).unwrap();
+
+            if (result.isSuccess && result.data) {
+               if (
+                  result.data.verification_type ===
+                  EVerificationType.EMAIL_VERIFICATION
+               ) {
+                  const params = result.data.params;
+                  const queryParams = new URLSearchParams();
+
+                  for (const key in params) {
+                     if (params.hasOwnProperty(key)) {
+                        queryParams.set(key, String(params[key]));
+                     }
+                  }
+
+                  router.push(`/verify/otp?${queryParams.toString()}`, {
+                     scroll: false,
+                  });
+               } else {
+                  router.replace(
+                     appStateRoute.previousUnAuthenticatedPath ||
+                        '/shop/iphone',
+                  );
+               }
+            }
             return {
                isSuccess: true,
                isError: false,
@@ -283,7 +312,7 @@ const useAuthService = () => {
       isAuthenticated,
 
       // Actions
-      login,
+      loginAsync,
       logout,
       register,
       verifyOtp,
@@ -293,7 +322,7 @@ const useAuthService = () => {
       changePassword,
 
       // Mutation states
-      loginState: loginMutationState,
+      loginMutationState,
       registerState: registerMutationState,
       verifyOtpState: verifyOtpMutationState,
       refreshTokenState: refreshTokenMutationState,

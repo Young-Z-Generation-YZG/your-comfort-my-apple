@@ -20,7 +20,7 @@ import {
    vietnamProvinces,
    type Province,
    type District,
-} from '../_data/vietnam-provinces';
+} from '../_data/Việt Nam-provinces';
 import {
    AddressFormType,
    AddressResolver,
@@ -83,7 +83,7 @@ export function AddressForm({
          address_line: initialAddress?.payload.address_line || '',
          district: initialAddress?.payload.district || '',
          province: initialAddress?.payload.province || '',
-         country: 'Vietnam',
+         country: 'Việt Nam',
       } as AddressFormType,
    });
 
@@ -318,7 +318,7 @@ export function AddressForm({
                                  <SelectValue placeholder="Select a country" />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value="Vietnam">
+                                 <SelectItem value="Việt Nam">
                                     Việt Nam
                                  </SelectItem>
                               </SelectContent>

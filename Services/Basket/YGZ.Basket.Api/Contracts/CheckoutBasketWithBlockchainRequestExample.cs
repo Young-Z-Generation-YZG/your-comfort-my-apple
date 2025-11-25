@@ -20,7 +20,7 @@ namespace YGZ.Basket.Api.Contracts
                         address_line = "123 Street",
                         district = "Thu Duc",
                         province = "Ho Chi Minh",
-                        country = "Vietnam"
+                        country = "Việt Nam"
                     },
                     payment_method = "SOLANA",
                     discount_code = "APRIL2025",
