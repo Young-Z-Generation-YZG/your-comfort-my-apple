@@ -31,3 +31,5 @@ const useOnScreen = (
 };
 
 export default useOnScreen;
+
+// Ref: `https://www.youtube.com/watch?v=2IbRtjez6ag&t=50s`

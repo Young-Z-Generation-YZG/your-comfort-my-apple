@@ -53,7 +53,7 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useInventoryService from '~/src/hooks/api/use-inventory-service';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import usePaginationV2 from '~/src/hooks/use-pagination-v2';
+import usePaginationV2 from '~/src/hooks/use-pagination';
 import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
 
