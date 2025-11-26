@@ -99,11 +99,10 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       }
    }, [currentUser?.tenantId, tenants, currentTenantId]);
 
-   // Don't render if no tenants available
    if (
       !selectedTenant ||
       tenants.length === 0 ||
-      (currentTenantId && impersonatedUser)
+      (!currentTenantId && impersonatedUser)
    ) {
       return null;
    }

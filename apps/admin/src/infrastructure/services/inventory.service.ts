@@ -22,7 +22,7 @@ export const inventoryApi = createApi({
    endpoints: (builder) => ({
       getWarehouses: builder.query<PaginationResponse<any>, any>({
          query: (params: any) => ({
-            url: '/api/v1/inventory/warehouse/admin',
+            url: '/api/v1/inventory/skus',
             method: 'GET',
             params: params,
          }),

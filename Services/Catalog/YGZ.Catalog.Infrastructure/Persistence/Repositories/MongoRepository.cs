@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
+using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Domain.Core.Abstractions;
@@ -15,6 +17,8 @@ namespace YGZ.Catalog.Infrastructure.Persistence.Repositories;
 public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> where TEntity : Entity<TId> where TId : ValueObject
 {
     private readonly ILogger<MongoRepository<TEntity, TId>> _logger;
+    private readonly ITenantHttpContext _tenantHttpContext;
+    private readonly IUserHttpContext _userHttpContext; 
     private readonly IMongoClient _mongoClient;
     private readonly IMongoCollection<TEntity> _collection;
     private readonly MongoDbSettings _mongoDbSettings;
@@ -24,11 +28,14 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
     public MongoRepository(IOptions<MongoDbSettings> options,
                            ILogger<MongoRepository<TEntity, TId>> logger,
+                           ITenantHttpContext tenantHttpContext,
+                           IUserHttpContext userHttpContext,
                            IDispatchDomainEventInterceptor dispatchDomainEventInterceptor,
                            ITransactionContext transactionContext)
     {
         _mongoDbSettings = options.Value;
-
+        _tenantHttpContext = tenantHttpContext;
+        _userHttpContext = userHttpContext;
         _mongoClient = new MongoClient(_mongoDbSettings.ConnectionString);
         var database = _mongoClient.GetDatabase(_mongoDbSettings.DatabaseName);
 
@@ -44,6 +51,49 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
             .FirstOrDefault();
 
         return attribute?.CollectionName ?? throw new InvalidOperationException("Collection name attribute is missing.");
+    }
+
+    private FilterDefinition<TEntity>? GetBaseTenantFilter()
+    {
+        // Check if user has ADMIN_SUPER role - if so, skip tenant filtering
+        var userRoles = _userHttpContext.GetUserRoles();
+        if (userRoles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER))
+        {
+            _logger.LogInformation("User has ADMIN_SUPER role. Tenant filter will be skipped.");
+            return null;
+        }
+
+        var tenantId = _tenantHttpContext.GetTenantId();
+        if (string.IsNullOrEmpty(tenantId))
+        {
+            _logger.LogWarning("Tenant ID is not available. Tenant filter will not be applied.");
+            return null;
+        }
+
+        if (!ObjectId.TryParse(tenantId, out var objectId))
+        {
+            _logger.LogWarning("Invalid tenant ID format: {TenantId}. Tenant filter will not be applied.", tenantId);
+            return null;
+        }
+
+        return Builders<TEntity>.Filter.Eq("tenant_id", objectId);
+    }
+
+    private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter)
+    {
+        var tenantFilter = GetBaseTenantFilter();
+        
+        if (tenantFilter == null)
+        {
+            return existingFilter ?? Builders<TEntity>.Filter.Empty;
+        }
+
+        if (existingFilter == null)
+        {
+            return tenantFilter;
+        }
+
+        return Builders<TEntity>.Filter.And(tenantFilter, existingFilter);
     }
 
     public async Task StartTransactionAsync(CancellationToken? cancellationToken = null)
@@ -89,12 +139,14 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
     public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null)
     {
-        return await _collection.Find(new BsonDocument()).ToListAsync(cancellationToken ?? CancellationToken.None);
+        var filter = ApplyTenantFilter(null);
+        return await _collection.Find(filter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
     {
-        return await _collection.Find(filter).ToListAsync(cancellationToken ?? CancellationToken.None);
+        var combinedFilter = ApplyTenantFilter(filter);
+        return await _collection.Find(combinedFilter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public async Task<(List<TEntity> items, int totalRecords, int totalPages)> GetAllAsync(int? _page,
@@ -106,16 +158,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         var page = _page ?? 1;
         var limit = _limit ?? 10000;
 
-        if (filter == null)
-        {
-            filter = Builders<TEntity>.Filter.Empty;
-        }
+        var combinedFilter = ApplyTenantFilter(filter);
 
-        var totalRecords = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken ?? CancellationToken.None);
+        var totalRecords = await _collection.CountDocumentsAsync(combinedFilter, cancellationToken: cancellationToken ?? CancellationToken.None);
 
         var totalPages = (int)Math.Ceiling((double)totalRecords / limit);
 
-        var items = await _collection.Find(filter)
+        var items = await _collection.Find(combinedFilter)
                                      .Sort(sort)
                                      .Skip((page - 1) * limit)
                                      .Limit(limit)
@@ -126,12 +175,15 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
     public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken)
     {
-        return await _collection.Find(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id))).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
+        var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
+        var combinedFilter = ApplyTenantFilter(idFilter);
+        return await _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
     {
-        return _collection.Find(filter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
+        var combinedFilter = ApplyTenantFilter(filter);
+        return _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
     public virtual async Task<Result<bool>> InsertOneAsync(TEntity document, IClientSessionHandle? session = null)
@@ -158,7 +210,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -194,7 +246,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
@@ -205,14 +257,17 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         var modifiedCount = 0;
         try
         {
+            var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
+            var combinedFilter = ApplyTenantFilter(idFilter);
+
             if (session != null)
             {
-                var result = await _collection.ReplaceOneAsync(session, Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), document);
+                var result = await _collection.ReplaceOneAsync(session, combinedFilter, document);
                 modifiedCount = (int)result.ModifiedCount;
             }
             else
             {
-                var result = await _collection.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), document);
+                var result = await _collection.ReplaceOneAsync(combinedFilter, document);
                 modifiedCount = (int)result.ModifiedCount;
             }
 
@@ -243,7 +298,9 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         var deletedCount = 0;
         try
         {
-            var result = await _collection.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), cancellationToken ?? CancellationToken.None);
+            var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
+            var combinedFilter = ApplyTenantFilter(idFilter);
+            var result = await _collection.DeleteOneAsync(combinedFilter, cancellationToken ?? CancellationToken.None);
             deletedCount = (int)result.DeletedCount;
 
             var domainEventEntities = document.DomainEvents.ToList();

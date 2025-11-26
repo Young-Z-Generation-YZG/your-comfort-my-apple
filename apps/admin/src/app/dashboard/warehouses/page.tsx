@@ -47,1597 +47,20 @@ import {
    Ellipsis,
    MoreHorizontal,
    Package,
+   Search,
    X,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useInventoryService from '~/src/hooks/api/use-inventory-service';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Input } from '@components/ui/input';
 import usePaginationV2 from '~/src/hooks/use-pagination-v2';
 import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
-
-const fakeData = {
-   total_records: 40,
-   total_pages: 1,
-   page_size: 40,
-   current_page: 1,
-   items: [
-      {
-         id: '68f71b4a574ee8ac95e48e1f',
-         code: 'IPHONE-IPHONE_15-128GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-128gb-yellow',
-         created_at: '2025-10-21T05:34:02.499Z',
-         updated_at: '2025-10-21T05:34:02.499Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e21',
-         code: 'IPHONE-IPHONE_15-512GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-512gb-yellow',
-         created_at: '2025-10-21T05:34:02.501Z',
-         updated_at: '2025-10-21T05:34:02.501Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e37',
-         code: 'IPHONE-IPHONE_15_PLUS-128GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-128gb-green',
-         created_at: '2025-10-21T05:34:02.516Z',
-         updated_at: '2025-10-21T05:34:02.516Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e38',
-         code: 'IPHONE-IPHONE_15_PLUS-256GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-256gb-green',
-         created_at: '2025-10-21T05:34:02.517Z',
-         updated_at: '2025-10-21T05:34:02.517Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2c',
-         code: 'IPHONE-IPHONE_15_PLUS-256GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-256gb-blue',
-         created_at: '2025-10-21T05:34:02.509Z',
-         updated_at: '2025-10-21T05:34:02.509Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e1b',
-         code: 'IPHONE-IPHONE_15-128GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-128gb-pink',
-         created_at: '2025-10-21T05:34:02.496Z',
-         updated_at: '2025-10-21T05:34:02.496Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e26',
-         code: 'IPHONE-IPHONE_15-1TB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-1tb-green',
-         created_at: '2025-10-21T05:34:02.505Z',
-         updated_at: '2025-10-21T05:34:02.505Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e1d',
-         code: 'IPHONE-IPHONE_15-512GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-512gb-pink',
-         created_at: '2025-10-21T05:34:02.498Z',
-         updated_at: '2025-10-21T05:34:02.498Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e1e',
-         code: 'IPHONE-IPHONE_15-1TB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-1tb-pink',
-         created_at: '2025-10-21T05:34:02.499Z',
-         updated_at: '2025-10-21T05:34:02.499Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e3d',
-         code: 'IPHONE-IPHONE_15_PLUS-512GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-512gb-black',
-         created_at: '2025-10-21T05:34:02.52Z',
-         updated_at: '2025-10-21T05:34:02.52Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e35',
-         code: 'IPHONE-IPHONE_15_PLUS-512GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-512gb-yellow',
-         created_at: '2025-10-21T05:34:02.515Z',
-         updated_at: '2025-10-21T05:34:02.515Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e3b',
-         code: 'IPHONE-IPHONE_15_PLUS-128GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-128gb-black',
-         created_at: '2025-10-21T05:34:02.519Z',
-         updated_at: '2025-10-21T05:34:02.519Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e1c',
-         code: 'IPHONE-IPHONE_15-256GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-256gb-pink',
-         created_at: '2025-10-21T05:34:02.497Z',
-         updated_at: '2025-10-21T05:34:02.497Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e18',
-         code: 'IPHONE-IPHONE_15-256GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-256gb-blue',
-         created_at: '2025-10-21T05:34:02.491Z',
-         updated_at: '2025-10-21T05:34:02.491Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e34',
-         code: 'IPHONE-IPHONE_15_PLUS-256GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-256gb-yellow',
-         created_at: '2025-10-21T05:34:02.515Z',
-         updated_at: '2025-10-21T05:34:02.515Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e3a',
-         code: 'IPHONE-IPHONE_15_PLUS-1TB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-1tb-green',
-         created_at: '2025-10-21T05:34:02.518Z',
-         updated_at: '2025-10-21T05:34:02.518Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e3c',
-         code: 'IPHONE-IPHONE_15_PLUS-256GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-256gb-black',
-         created_at: '2025-10-21T05:34:02.519Z',
-         updated_at: '2025-10-21T05:34:02.519Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e24',
-         code: 'IPHONE-IPHONE_15-256GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-256gb-green',
-         created_at: '2025-10-21T05:34:02.504Z',
-         updated_at: '2025-10-21T05:34:02.504Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e1a',
-         code: 'IPHONE-IPHONE_15-1TB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-1tb-blue',
-         created_at: '2025-10-21T05:34:02.495Z',
-         updated_at: '2025-10-21T05:34:02.495Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e27',
-         code: 'IPHONE-IPHONE_15-128GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-128gb-black',
-         created_at: '2025-10-21T05:34:02.506Z',
-         updated_at: '2025-10-21T05:34:02.506Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e33',
-         code: 'IPHONE-IPHONE_15_PLUS-128GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-128gb-yellow',
-         created_at: '2025-10-21T05:34:02.514Z',
-         updated_at: '2025-10-21T05:34:02.514Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e17',
-         code: 'IPHONE-IPHONE_15-128GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: {
-            event_id: '611db6eb-3d64-474e-9e23-3517ad0df6ec',
-            event_item_id: '99a356c8-c026-4137-8820-394763f30521',
-            event_name: '',
-            reserved_quantity: 40,
-         },
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-128gb-blue',
-         created_at: '2025-10-21T05:34:02.487Z',
-         updated_at: '2025-10-21T05:34:02.487Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e19',
-         code: 'IPHONE-IPHONE_15-512GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-512gb-blue',
-         created_at: '2025-10-21T05:34:02.493Z',
-         updated_at: '2025-10-21T05:34:02.493Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2d',
-         code: 'IPHONE-IPHONE_15_PLUS-512GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-512gb-blue',
-         created_at: '2025-10-21T05:34:02.51Z',
-         updated_at: '2025-10-21T05:34:02.51Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2e',
-         code: 'IPHONE-IPHONE_15_PLUS-1TB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-1tb-blue',
-         created_at: '2025-10-21T05:34:02.511Z',
-         updated_at: '2025-10-21T05:34:02.511Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e36',
-         code: 'IPHONE-IPHONE_15_PLUS-1TB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-1tb-yellow',
-         created_at: '2025-10-21T05:34:02.516Z',
-         updated_at: '2025-10-21T05:34:02.516Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e22',
-         code: 'IPHONE-IPHONE_15-1TB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-1tb-yellow',
-         created_at: '2025-10-21T05:34:02.503Z',
-         updated_at: '2025-10-21T05:34:02.503Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e29',
-         code: 'IPHONE-IPHONE_15-512GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-512gb-black',
-         created_at: '2025-10-21T05:34:02.507Z',
-         updated_at: '2025-10-21T05:34:02.507Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e20',
-         code: 'IPHONE-IPHONE_15-256GB-YELLOW',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'YELLOW',
-            normalized_name: 'YELLOW',
-            hex_code: '#EDE6C8',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-yellow_pwviwe',
-            order: 2,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960389/iphone-15-finish-select-202309-6-1inch-yellow_pwviwe.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-256gb-yellow',
-         created_at: '2025-10-21T05:34:02.501Z',
-         updated_at: '2025-10-21T05:34:02.501Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e28',
-         code: 'IPHONE-IPHONE_15-256GB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-256gb-black',
-         created_at: '2025-10-21T05:34:02.507Z',
-         updated_at: '2025-10-21T05:34:02.507Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2a',
-         code: 'IPHONE-IPHONE_15-1TB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-1tb-black',
-         created_at: '2025-10-21T05:34:02.508Z',
-         updated_at: '2025-10-21T05:34:02.508Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2b',
-         code: 'IPHONE-IPHONE_15_PLUS-128GB-BLUE',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLUE',
-            normalized_name: 'BLUE',
-            hex_code: '#D5DDDF',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-blue_zgxzmz',
-            order: 0,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-128gb-blue',
-         created_at: '2025-10-21T05:34:02.508Z',
-         updated_at: '2025-10-21T05:34:02.508Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e31',
-         code: 'IPHONE-IPHONE_15_PLUS-512GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-512gb-pink',
-         created_at: '2025-10-21T05:34:02.513Z',
-         updated_at: '2025-10-21T05:34:02.513Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e39',
-         code: 'IPHONE-IPHONE_15_PLUS-512GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-512gb-green',
-         created_at: '2025-10-21T05:34:02.518Z',
-         updated_at: '2025-10-21T05:34:02.518Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e3e',
-         code: 'IPHONE-IPHONE_15_PLUS-1TB-BLACK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'BLACK',
-            normalized_name: 'BLACK',
-            hex_code: '#4B4F50',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-black_hhhvfs',
-            order: 4,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960469/iphone-15-finish-select-202309-6-1inch-black_hhhvfs.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-1tb-black',
-         created_at: '2025-10-21T05:34:02.52Z',
-         updated_at: '2025-10-21T05:34:02.52Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e23',
-         code: 'IPHONE-IPHONE_15-128GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-128gb-green',
-         created_at: '2025-10-21T05:34:02.504Z',
-         updated_at: '2025-10-21T05:34:02.504Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e25',
-         code: 'IPHONE-IPHONE_15-512GB-GREEN',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15',
-            normalized_name: 'IPHONE_15',
-            order: 0,
-         },
-         color: {
-            name: 'GREEN',
-            normalized_name: 'GREEN',
-            hex_code: '#D0D9CA',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-green_yk0ln5',
-            order: 3,
-         },
-         storage: {
-            name: '512GB',
-            normalized_name: '512GB',
-            order: 2,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960447/iphone-15-finish-select-202309-6-1inch-green_yk0ln5.webp',
-         unit_price: 1200,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15-512gb-green',
-         created_at: '2025-10-21T05:34:02.505Z',
-         updated_at: '2025-10-21T05:34:02.505Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e2f',
-         code: 'IPHONE-IPHONE_15_PLUS-128GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '128GB',
-            normalized_name: '128GB',
-            order: 0,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1000,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-128gb-pink',
-         created_at: '2025-10-21T05:34:02.511Z',
-         updated_at: '2025-10-21T05:34:02.511Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e30',
-         code: 'IPHONE-IPHONE_15_PLUS-256GB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '256GB',
-            normalized_name: '256GB',
-            order: 1,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1100,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-256gb-pink',
-         created_at: '2025-10-21T05:34:02.512Z',
-         updated_at: '2025-10-21T05:34:02.512Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-      {
-         id: '68f71b4a574ee8ac95e48e32',
-         code: 'IPHONE-IPHONE_15_PLUS-1TB-PINK',
-         model_id: '664351e90087aa09993f5ae7',
-         tenant_id: '664355f845e56534956be32b',
-         branch_id: '664357a235e84033bbd0e6b6',
-         product_classification: 'IPHONE',
-         model: {
-            name: 'IPHONE_15_PLUS',
-            normalized_name: 'IPHONE_15_PLUS',
-            order: 1,
-         },
-         color: {
-            name: 'PINK',
-            normalized_name: 'PINK',
-            hex_code: '#EBD3D4',
-            showcase_image_id:
-               'iphone-15-finish-select-202309-6-1inch-pink_j6v96t',
-            order: 1,
-         },
-         storage: {
-            name: '1TB',
-            normalized_name: '1TB',
-            order: 3,
-         },
-         display_image_url:
-            'https://res.cloudinary.com/delkyrtji/image/upload/v1744960358/iphone-15-finish-select-202309-6-1inch-pink_j6v96t.webp',
-         unit_price: 1300,
-         available_in_stock: 0,
-         total_sold: 0,
-         reserved_for_event: null,
-         state: 'ACTIVE',
-         slug: 'iphone-iphone15plus-1tb-pink',
-         created_at: '2025-10-21T05:34:02.514Z',
-         updated_at: '2025-10-21T05:34:02.514Z',
-         deleted_at: null,
-         deleted_by: null,
-         is_deleted: false,
-      },
-   ],
-   links: {
-      first: '?_page=1&_limit=40',
-      prev: null,
-      next: null,
-      last: '?_page=1&_limit=40',
-   },
-};
-
-export type TSkuItem = (typeof fakeData.items)[number];
+import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { TSku } from '~/src/domain/types/catalog';
+import { Cylinder } from 'lucide-react';
 
 type TSkuFilter = {
    _page?: number | null;
@@ -1662,13 +85,220 @@ const getStateStyle = (state: string) => {
 };
 
 // Available filter options
-const models = ['IPHONE_15', 'IPHONE_15_PLUS'] as const;
+const models = [
+   {
+      name: 'iPhone 15',
+      normalized_name: 'IPHONE_15',
+      icon: Cylinder,
+      order: 0,
+   },
+   {
+      name: 'iPhone 15 Plus',
+      normalized_name: 'IPHONE_15_PLUS',
+      icon: Cylinder,
+      order: 1,
+   },
+   {
+      name: 'iPhone 16',
+      normalized_name: 'IPHONE_16',
+      icon: Cylinder,
+      order: 2,
+   },
+   {
+      name: 'iPhone 16 Plus',
+      normalized_name: 'IPHONE_16_PLUS',
+      icon: Cylinder,
+      order: 3,
+   },
+   {
+      name: 'iPhone 16e',
+      normalized_name: 'IPHONE_16E',
+      icon: Cylinder,
+      order: 5,
+   },
+   {
+      name: 'iPhone 17',
+      normalized_name: 'IPHONE_17',
+      icon: Cylinder,
+      order: 6,
+   },
+   {
+      name: 'iPhone 17 Pro',
+      normalized_name: 'IPHONE_17_PRO',
+      icon: Cylinder,
+      order: 7,
+   },
+   {
+      name: 'iPhone 17 Pro Max',
+      normalized_name: 'IPHONE_17_PRO_MAX',
+      icon: Cylinder,
+      order: 8,
+   },
+   {
+      name: 'iPhone 17 Air',
+      normalized_name: 'IPHONE_17_AIR',
+      icon: Cylinder,
+      order: 9,
+   },
+];
 
-const colors = ['YELLOW', 'GREEN', 'BLUE', 'PINK', 'BLACK'] as const;
+const colors = [
+   {
+      name: 'ultramarine',
+      normalized_name: 'ULTRAMARINE',
+      hex: '#9AADF6',
+      icon: Cylinder,
+      order: 0,
+   },
+   {
+      name: 'green',
+      normalized_name: 'GREEN',
+      hex: '#D0D9CA',
+      icon: Cylinder,
+      order: 1,
+   },
+   {
+      name: 'teal',
+      normalized_name: 'TEAL',
+      hex: '#B0D4D2',
+      icon: Cylinder,
+      order: 2,
+   },
+   {
+      name: 'blue',
+      normalized_name: 'BLUE',
+      hex: '#D5DDDF',
+      icon: Cylinder,
+      order: 3,
+   },
+   {
+      name: 'yellow',
+      normalized_name: 'YELLOW',
+      hex: '#EDE6C8',
+      icon: Cylinder,
+      order: 4,
+   },
+   {
+      name: 'pink',
+      normalized_name: 'PINK',
+      hex: '#F2ADDA',
+      icon: Cylinder,
+      order: 5,
+   },
+   {
+      name: 'white',
+      normalized_name: 'WHITE',
+      hex: '#FAFAFA',
+      icon: Cylinder,
+      order: 6,
+   },
+   {
+      name: 'black',
+      normalized_name: 'BLACK',
+      hex: '#3C4042',
+      icon: Cylinder,
+      order: 7,
+   },
+   {
+      name: 'Lavender',
+      normalized_name: 'LAVENDER',
+      hex: '#E7D9F2',
+      icon: Cylinder,
+      order: 8,
+   },
+   {
+      name: 'Sage',
+      normalized_name: 'SAGE',
+      hex: '#BBC89E',
+      icon: Cylinder,
+      order: 9,
+   },
+   {
+      name: 'Mist Blue',
+      normalized_name: 'MIST_BLUE',
+      hex: '#A7BDDE',
+      icon: Cylinder,
+      order: 10,
+   },
+   {
+      name: 'Silver',
+      normalized_name: 'SILVER',
+      hex: '#E6E6E6',
+      icon: Cylinder,
+      order: 11,
+   },
+   {
+      name: 'Cosmic Orange',
+      normalized_name: 'COSMIC_ORANGE',
+      hex: '#F67E36',
+      icon: Cylinder,
+      order: 12,
+   },
+   {
+      name: 'Deep Blue',
+      normalized_name: 'DEEP_BLUE',
+      hex: '#3F4C77',
+      icon: Cylinder,
+      order: 13,
+   },
+   {
+      name: 'Sky Blue',
+      normalized_name: 'SKY_BLUE',
+      hex: '#E5F2FA',
+      icon: Cylinder,
+      order: 14,
+   },
+   {
+      name: 'Light Gold',
+      normalized_name: 'LIGHT_GOLD',
+      hex: '#FAF3E6',
+      icon: Cylinder,
+      order: 15,
+   },
+   {
+      name: 'Cloud White',
+      normalized_name: 'CLOUD_WHITE',
+      hex: '#FCFCFC',
+      icon: Cylinder,
+      order: 16,
+   },
+   {
+      name: 'Space Black',
+      normalized_name: 'SPACE_BLACK',
+      hex: '#121212',
+      icon: Cylinder,
+      order: 17,
+   },
+];
 
-const storages = ['128GB', '256GB', '512GB', '1TB'] as const;
+const storages = [
+   {
+      name: '128GB',
+      normalized_name: '128GB',
+      icon: Cylinder,
+      order: 0,
+   },
+   {
+      name: '256GB',
+      normalized_name: '256GB',
+      icon: Cylinder,
+      order: 1,
+   },
+   {
+      name: '512GB',
+      normalized_name: '512GB',
+      icon: Cylinder,
+      order: 2,
+   },
+   {
+      name: '1TB',
+      normalized_name: '1TB',
+      icon: Cylinder,
+      order: 3,
+   },
+] as const;
 
-const columns: ColumnDef<TSkuItem>[] = [
+const columns: ColumnDef<TSku>[] = [
    {
       accessorKey: 'display_image_url',
       header: 'Image',
@@ -1878,6 +508,8 @@ const WarehousesPage = () => {
    const { getWarehousesAsync, getWarehousesState, isLoading } =
       useInventoryService();
 
+   const { tenantId } = useAppSelector((state) => state.tenant);
+
    const { filters, setFilters } = useFilters<TSkuFilter>({
       _page: 'number',
       _limit: 'number',
@@ -1892,10 +524,32 @@ const WarehousesPage = () => {
    );
    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-   // Get warehouse data from state or use empty array
-   const warehouseData = useMemo(() => {
-      return getWarehousesState.data?.items || [];
-   }, [getWarehousesState.data]);
+   // Search states for filter dropdowns
+   const [modelSearchQuery, setModelSearchQuery] = useState('');
+   const [colorSearchQuery, setColorSearchQuery] = useState('');
+   const [storageSearchQuery, setStorageSearchQuery] = useState('');
+
+   // Filtered results
+   const filteredModels = useMemo(() => {
+      if (!modelSearchQuery) return models;
+      return models.filter((model) =>
+         model.name.toLowerCase().includes(modelSearchQuery.toLowerCase()),
+      );
+   }, [modelSearchQuery]);
+
+   const filteredColors = useMemo(() => {
+      if (!colorSearchQuery) return colors;
+      return colors.filter((color) =>
+         color.name.toLowerCase().includes(colorSearchQuery.toLowerCase()),
+      );
+   }, [colorSearchQuery]);
+
+   const filteredStorages = useMemo(() => {
+      if (!storageSearchQuery) return storages;
+      return storages.filter((storage) =>
+         storage.name.toLowerCase().includes(storageSearchQuery.toLowerCase()),
+      );
+   }, [storageSearchQuery]);
 
    const {
       currentPage,
@@ -1931,9 +585,8 @@ const WarehousesPage = () => {
    // Track previous API call params to prevent duplicate calls
    const prevApiParamsRef = useRef<string>('');
 
-   // Setup table
    const table = useReactTable({
-      data: warehouseData,
+      data: getWarehousesState.data?.items ?? [],
       columns,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
@@ -1961,13 +614,9 @@ const WarehousesPage = () => {
       // Only call API if params actually changed
       if (prevApiParamsRef.current !== apiParams) {
          prevApiParamsRef.current = apiParams;
-         const fetchWarehouses = async () => {
-            await getWarehousesAsync(filters);
-         };
-
-         fetchWarehouses();
       }
-   }, [filters, getWarehousesAsync]);
+      getWarehousesAsync(filters);
+   }, [filters, tenantId, getWarehousesAsync]);
 
    return (
       <div className="p-5">
@@ -1991,6 +640,7 @@ const WarehousesPage = () => {
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                            <Button variant="outline" className="h-10 gap-2">
+                              <Cylinder className="h-4 w-4" />
                               <span className="font-medium">Model</span>
                               <div className="flex items-center gap-2">
                                  {(() => {
@@ -2007,15 +657,28 @@ const WarehousesPage = () => {
                                           <>
                                              {selectedModels
                                                 .slice(0, 2)
-                                                .map((model) => (
-                                                   <Badge
-                                                      key={model}
-                                                      variant="outline"
-                                                      className="bg-gray-100 text-gray-800 border-gray-300"
-                                                   >
-                                                      {model.replace(/_/g, ' ')}
-                                                   </Badge>
-                                                ))}
+                                                .map((modelNormalizedName) => {
+                                                   const model = models.find(
+                                                      (m) =>
+                                                         m.normalized_name ===
+                                                         modelNormalizedName,
+                                                   );
+                                                   return (
+                                                      <Badge
+                                                         key={
+                                                            modelNormalizedName
+                                                         }
+                                                         variant="outline"
+                                                         className="bg-gray-100 text-gray-800 border-gray-300"
+                                                      >
+                                                         {model?.name ??
+                                                            modelNormalizedName.replace(
+                                                               /_/g,
+                                                               ' ',
+                                                            )}
+                                                      </Badge>
+                                                   );
+                                                })}
                                              <Badge
                                                 variant="outline"
                                                 className="bg-gray-100 text-gray-800 border-gray-300"
@@ -2026,15 +689,28 @@ const WarehousesPage = () => {
                                        );
                                     }
 
-                                    return selectedModels.map((model) => (
-                                       <Badge
-                                          key={model}
-                                          variant="outline"
-                                          className="bg-gray-100 text-gray-800 border-gray-300"
-                                       >
-                                          {model.replace(/_/g, ' ')}
-                                       </Badge>
-                                    ));
+                                    return selectedModels.map(
+                                       (modelNormalizedName) => {
+                                          const model = models.find(
+                                             (m) =>
+                                                m.normalized_name ===
+                                                modelNormalizedName,
+                                          );
+                                          return (
+                                             <Badge
+                                                key={modelNormalizedName}
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                {model?.name ??
+                                                   modelNormalizedName.replace(
+                                                      /_/g,
+                                                      ' ',
+                                                   )}
+                                             </Badge>
+                                          );
+                                       },
+                                    );
                                  })()}
                                  <ChevronDown />
                               </div>
@@ -2044,43 +720,79 @@ const WarehousesPage = () => {
                            align="start"
                            side="bottom"
                            sideOffset={4}
-                           className="w-56"
+                           className="w-56 p-0"
                         >
-                           <DropdownMenuLabel>Model</DropdownMenuLabel>
-                           <DropdownMenuSeparator />
-                           {models.map((model) => {
-                              const isChecked =
-                                 filters._models?.includes(model) ?? false;
+                           <div
+                              className="flex items-center border-b px-3 py-2"
+                              onKeyDown={(e) => e.stopPropagation()}
+                           >
+                              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                              <Input
+                                 placeholder="Search model..."
+                                 value={modelSearchQuery}
+                                 onChange={(e) =>
+                                    setModelSearchQuery(e.target.value)
+                                 }
+                                 className="h-8 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                 autoFocus
+                              />
+                           </div>
+                           <div className="max-h-[300px] overflow-y-auto p-1">
+                              {filteredModels.length === 0 ? (
+                                 <div className="py-6 text-center text-sm text-muted-foreground">
+                                    No model found.
+                                 </div>
+                              ) : (
+                                 <>
+                                    {filteredModels.map((model) => {
+                                       const ModelIcon = model.icon;
+                                       const isChecked =
+                                          filters._models?.includes(
+                                             model.normalized_name,
+                                          ) ?? false;
 
-                              return (
-                                 <DropdownMenuCheckboxItem
-                                    key={model}
-                                    onSelect={(e) => e.preventDefault()}
-                                    checked={isChecked}
-                                    onCheckedChange={() => {
-                                       setFilters((prev) => {
-                                          const currentModels =
-                                             prev._models ?? [];
-                                          const isModelSelected =
-                                             currentModels.includes(model);
+                                       return (
+                                          <DropdownMenuCheckboxItem
+                                             key={model.normalized_name}
+                                             onSelect={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             checked={isChecked}
+                                             onCheckedChange={() => {
+                                                setFilters((prev) => {
+                                                   const currentModels =
+                                                      prev._models ?? [];
+                                                   const isModelSelected =
+                                                      currentModels.includes(
+                                                         model.normalized_name,
+                                                      );
 
-                                          return {
-                                             ...prev,
-                                             _models: isModelSelected
-                                                ? currentModels.filter(
-                                                     (m) => m !== model,
-                                                  )
-                                                : [...currentModels, model],
-                                          };
-                                       });
-                                    }}
-                                 >
-                                    {model.replace(/_/g, ' ')}
-                                 </DropdownMenuCheckboxItem>
-                              );
-                           })}
-                           <DropdownMenuSeparator />
-                           <div className="p-2">
+                                                   return {
+                                                      ...prev,
+                                                      _models: isModelSelected
+                                                         ? currentModels.filter(
+                                                              (m) =>
+                                                                 m !==
+                                                                 model.normalized_name,
+                                                           )
+                                                         : [
+                                                              ...currentModels,
+                                                              model.normalized_name,
+                                                           ],
+                                                   };
+                                                });
+                                             }}
+                                             className="flex items-center gap-2"
+                                          >
+                                             <ModelIcon className="h-4 w-4" />
+                                             {model.name}
+                                          </DropdownMenuCheckboxItem>
+                                       );
+                                    })}
+                                 </>
+                              )}
+                           </div>
+                           <div className="border-t p-2">
                               <Button
                                  variant="outline"
                                  size="sm"
@@ -2091,6 +803,7 @@ const WarehousesPage = () => {
                                        ...prev,
                                        _models: [],
                                     }));
+                                    setModelSearchQuery('');
                                  }}
                                  disabled={(filters._models?.length ?? 0) === 0}
                               >
@@ -2103,6 +816,7 @@ const WarehousesPage = () => {
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                            <Button variant="outline" className="h-10 gap-2">
+                              <Cylinder className="h-4 w-4" />
                               <span className="font-medium">Color</span>
                               <div className="flex items-center gap-2">
                                  {(() => {
@@ -2119,15 +833,25 @@ const WarehousesPage = () => {
                                           <>
                                              {selectedColors
                                                 .slice(0, 2)
-                                                .map((color) => (
-                                                   <Badge
-                                                      key={color}
-                                                      variant="outline"
-                                                      className="bg-gray-100 text-gray-800 border-gray-300"
-                                                   >
-                                                      {color}
-                                                   </Badge>
-                                                ))}
+                                                .map((colorNormalizedName) => {
+                                                   const color = colors.find(
+                                                      (c) =>
+                                                         c.normalized_name ===
+                                                         colorNormalizedName,
+                                                   );
+                                                   return (
+                                                      <Badge
+                                                         key={
+                                                            colorNormalizedName
+                                                         }
+                                                         variant="outline"
+                                                         className="bg-gray-100 text-gray-800 border-gray-300"
+                                                      >
+                                                         {color?.name ??
+                                                            colorNormalizedName}
+                                                      </Badge>
+                                                   );
+                                                })}
                                              <Badge
                                                 variant="outline"
                                                 className="bg-gray-100 text-gray-800 border-gray-300"
@@ -2138,15 +862,25 @@ const WarehousesPage = () => {
                                        );
                                     }
 
-                                    return selectedColors.map((color) => (
-                                       <Badge
-                                          key={color}
-                                          variant="outline"
-                                          className="bg-gray-100 text-gray-800 border-gray-300"
-                                       >
-                                          {color}
-                                       </Badge>
-                                    ));
+                                    return selectedColors.map(
+                                       (colorNormalizedName) => {
+                                          const color = colors.find(
+                                             (c) =>
+                                                c.normalized_name ===
+                                                colorNormalizedName,
+                                          );
+                                          return (
+                                             <Badge
+                                                key={colorNormalizedName}
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                {color?.name ??
+                                                   colorNormalizedName}
+                                             </Badge>
+                                          );
+                                       },
+                                    );
                                  })()}
                                  <ChevronDown />
                               </div>
@@ -2156,43 +890,92 @@ const WarehousesPage = () => {
                            align="start"
                            side="bottom"
                            sideOffset={4}
-                           className="w-56"
+                           className="w-56 p-0"
                         >
-                           <DropdownMenuLabel>Color</DropdownMenuLabel>
-                           <DropdownMenuSeparator />
-                           {colors.map((color) => {
-                              const isChecked =
-                                 filters._colors?.includes(color) ?? false;
+                           <div
+                              className="flex items-center border-b px-3 py-2"
+                              onKeyDown={(e) => e.stopPropagation()}
+                           >
+                              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                              <Input
+                                 placeholder="Search color..."
+                                 value={colorSearchQuery}
+                                 onChange={(e) =>
+                                    setColorSearchQuery(e.target.value)
+                                 }
+                                 className="h-8 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                 autoFocus
+                              />
+                           </div>
+                           <div className="max-h-[300px] overflow-y-auto p-1">
+                              {filteredColors.length === 0 ? (
+                                 <div className="py-6 text-center text-sm text-muted-foreground">
+                                    No color found.
+                                 </div>
+                              ) : (
+                                 <>
+                                    {filteredColors.map((color) => {
+                                       const ColorIcon = color.icon;
+                                       const isChecked =
+                                          filters._colors?.includes(
+                                             color.normalized_name,
+                                          ) ?? false;
 
-                              return (
-                                 <DropdownMenuCheckboxItem
-                                    key={color}
-                                    onSelect={(e) => e.preventDefault()}
-                                    checked={isChecked}
-                                    onCheckedChange={() => {
-                                       setFilters((prev) => {
-                                          const currentColors =
-                                             prev._colors ?? [];
-                                          const isColorSelected =
-                                             currentColors.includes(color);
+                                       return (
+                                          <DropdownMenuCheckboxItem
+                                             key={color.normalized_name}
+                                             onSelect={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             checked={isChecked}
+                                             onCheckedChange={() => {
+                                                setFilters((prev) => {
+                                                   const currentColors =
+                                                      prev._colors ?? [];
+                                                   const isColorSelected =
+                                                      currentColors.includes(
+                                                         color.normalized_name,
+                                                      );
 
-                                          return {
-                                             ...prev,
-                                             _colors: isColorSelected
-                                                ? currentColors.filter(
-                                                     (c) => c !== color,
-                                                  )
-                                                : [...currentColors, color],
-                                          };
-                                       });
-                                    }}
-                                 >
-                                    {color}
-                                 </DropdownMenuCheckboxItem>
-                              );
-                           })}
-                           <DropdownMenuSeparator />
-                           <div className="p-2">
+                                                   return {
+                                                      ...prev,
+                                                      _colors: isColorSelected
+                                                         ? currentColors.filter(
+                                                              (c) =>
+                                                                 c !==
+                                                                 color.normalized_name,
+                                                           )
+                                                         : [
+                                                              ...currentColors,
+                                                              color.normalized_name,
+                                                           ],
+                                                   };
+                                                });
+                                             }}
+                                             className="flex items-center gap-2"
+                                          >
+                                             <div className="flex items-center gap-2">
+                                                {color.hex && (
+                                                   <div
+                                                      className="h-4 w-4 rounded-full border border-gray-300"
+                                                      style={{
+                                                         backgroundColor:
+                                                            color.hex,
+                                                      }}
+                                                   />
+                                                )}
+                                                <ColorIcon className="h-4 w-4" />
+                                             </div>
+                                             <span className="capitalize">
+                                                {color.name}
+                                             </span>
+                                          </DropdownMenuCheckboxItem>
+                                       );
+                                    })}
+                                 </>
+                              )}
+                           </div>
+                           <div className="border-t p-2">
                               <Button
                                  variant="outline"
                                  size="sm"
@@ -2203,6 +986,7 @@ const WarehousesPage = () => {
                                        ...prev,
                                        _colors: [],
                                     }));
+                                    setColorSearchQuery('');
                                  }}
                                  disabled={(filters._colors?.length ?? 0) === 0}
                               >
@@ -2215,6 +999,7 @@ const WarehousesPage = () => {
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                            <Button variant="outline" className="h-10 gap-2">
+                              <Cylinder className="h-4 w-4" />
                               <span className="font-medium">Storage</span>
                               <div className="flex items-center gap-2">
                                  {(() => {
@@ -2232,15 +1017,28 @@ const WarehousesPage = () => {
                                           <>
                                              {selectedStorages
                                                 .slice(0, 2)
-                                                .map((storage) => (
-                                                   <Badge
-                                                      key={storage}
-                                                      variant="outline"
-                                                      className="bg-gray-100 text-gray-800 border-gray-300"
-                                                   >
-                                                      {storage}
-                                                   </Badge>
-                                                ))}
+                                                .map(
+                                                   (storageNormalizedName) => {
+                                                      const storage =
+                                                         storages.find(
+                                                            (s) =>
+                                                               s.normalized_name ===
+                                                               storageNormalizedName,
+                                                         );
+                                                      return (
+                                                         <Badge
+                                                            key={
+                                                               storageNormalizedName
+                                                            }
+                                                            variant="outline"
+                                                            className="bg-gray-100 text-gray-800 border-gray-300"
+                                                         >
+                                                            {storage?.name ??
+                                                               storageNormalizedName}
+                                                         </Badge>
+                                                      );
+                                                   },
+                                                )}
                                              <Badge
                                                 variant="outline"
                                                 className="bg-gray-100 text-gray-800 border-gray-300"
@@ -2251,15 +1049,25 @@ const WarehousesPage = () => {
                                        );
                                     }
 
-                                    return selectedStorages.map((storage) => (
-                                       <Badge
-                                          key={storage}
-                                          variant="outline"
-                                          className="bg-gray-100 text-gray-800 border-gray-300"
-                                       >
-                                          {storage}
-                                       </Badge>
-                                    ));
+                                    return selectedStorages.map(
+                                       (storageNormalizedName) => {
+                                          const storage = storages.find(
+                                             (s) =>
+                                                s.normalized_name ===
+                                                storageNormalizedName,
+                                          );
+                                          return (
+                                             <Badge
+                                                key={storageNormalizedName}
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                {storage?.name ??
+                                                   storageNormalizedName}
+                                             </Badge>
+                                          );
+                                       },
+                                    );
                                  })()}
                                  <ChevronDown />
                               </div>
@@ -2269,43 +1077,80 @@ const WarehousesPage = () => {
                            align="start"
                            side="bottom"
                            sideOffset={4}
-                           className="w-56"
+                           className="w-56 p-0"
                         >
-                           <DropdownMenuLabel>Storage</DropdownMenuLabel>
-                           <DropdownMenuSeparator />
-                           {storages.map((storage) => {
-                              const isChecked =
-                                 filters._storages?.includes(storage) ?? false;
+                           <div
+                              className="flex items-center border-b px-3 py-2"
+                              onKeyDown={(e) => e.stopPropagation()}
+                           >
+                              <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                              <Input
+                                 placeholder="Search storage..."
+                                 value={storageSearchQuery}
+                                 onChange={(e) =>
+                                    setStorageSearchQuery(e.target.value)
+                                 }
+                                 className="h-8 border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                 autoFocus
+                              />
+                           </div>
+                           <div className="max-h-[300px] overflow-y-auto p-1">
+                              {filteredStorages.length === 0 ? (
+                                 <div className="py-6 text-center text-sm text-muted-foreground">
+                                    No storage found.
+                                 </div>
+                              ) : (
+                                 <>
+                                    {filteredStorages.map((storage) => {
+                                       const StorageIcon = storage.icon;
+                                       const isChecked =
+                                          filters._storages?.includes(
+                                             storage.normalized_name,
+                                          ) ?? false;
 
-                              return (
-                                 <DropdownMenuCheckboxItem
-                                    key={storage}
-                                    onSelect={(e) => e.preventDefault()}
-                                    checked={isChecked}
-                                    onCheckedChange={() => {
-                                       setFilters((prev) => {
-                                          const currentStorages =
-                                             prev._storages ?? [];
-                                          const isStorageSelected =
-                                             currentStorages.includes(storage);
+                                       return (
+                                          <DropdownMenuCheckboxItem
+                                             key={storage.normalized_name}
+                                             onSelect={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             checked={isChecked}
+                                             onCheckedChange={() => {
+                                                setFilters((prev) => {
+                                                   const currentStorages =
+                                                      prev._storages ?? [];
+                                                   const isStorageSelected =
+                                                      currentStorages.includes(
+                                                         storage.normalized_name,
+                                                      );
 
-                                          return {
-                                             ...prev,
-                                             _storages: isStorageSelected
-                                                ? currentStorages.filter(
-                                                     (s) => s !== storage,
-                                                  )
-                                                : [...currentStorages, storage],
-                                          };
-                                       });
-                                    }}
-                                 >
-                                    {storage}
-                                 </DropdownMenuCheckboxItem>
-                              );
-                           })}
-                           <DropdownMenuSeparator />
-                           <div className="p-2">
+                                                   return {
+                                                      ...prev,
+                                                      _storages:
+                                                         isStorageSelected
+                                                            ? currentStorages.filter(
+                                                                 (s) =>
+                                                                    s !==
+                                                                    storage.normalized_name,
+                                                              )
+                                                            : [
+                                                                 ...currentStorages,
+                                                                 storage.normalized_name,
+                                                              ],
+                                                   };
+                                                });
+                                             }}
+                                             className="flex items-center gap-2"
+                                          >
+                                             <StorageIcon className="h-4 w-4" />
+                                             {storage.name}
+                                          </DropdownMenuCheckboxItem>
+                                       );
+                                    })}
+                                 </>
+                              )}
+                           </div>
+                           <div className="border-t p-2">
                               <Button
                                  variant="outline"
                                  size="sm"
@@ -2316,6 +1161,7 @@ const WarehousesPage = () => {
                                        ...prev,
                                        _storages: [],
                                     }));
+                                    setStorageSearchQuery('');
                                  }}
                                  disabled={
                                     (filters._storages?.length ?? 0) === 0

@@ -1,12 +1,9 @@
+﻿using System.Reflection;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
-using System.Reflection;
 
-namespace YGZ.Identity.Api.Extensions;
+namespace YGZ.BuildingBlocks.Shared.Swaggers;
 
-/// <summary>
-/// Attribute to specify custom headers for API operations
-/// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 public class SwaggerHeaderAttribute : Attribute
 {

@@ -299,7 +299,7 @@ const adminSidebarData = [
    },
    {
       title: 'Inventory Management',
-      url: '#',
+      url: '/dashboard/warehouses',
       icon: Warehouse,
       isActive: true,
       items: [],

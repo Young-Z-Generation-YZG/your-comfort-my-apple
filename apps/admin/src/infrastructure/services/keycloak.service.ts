@@ -8,20 +8,17 @@ export const keycloakApi = createApi({
    reducerPath: 'keycloak-api',
    tagTypes: ['keycloak'],
    baseQuery: fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + 'identity-services',
+      baseUrl: envConfig.API_ENDPOINT + '/identity-services',
       prepareHeaders: (headers, { getState, endpoint }) => {
          const authAppState = (getState() as RootState).auth;
          let accessToken = null;
 
-         // Endpoints that should always use admin token (not impersonated token)
          const adminOnlyEndpoints = ['impersonateUser'];
          const useAdminTokenOnly = adminOnlyEndpoints.includes(endpoint || '');
 
          if (useAdminTokenOnly) {
-            // Always use current user's (admin's) token
             accessToken = authAppState.currentUser?.accessToken;
          } else {
-            // Use impersonated user's token if available, otherwise use current user's
             if (authAppState.impersonatedUser) {
                accessToken = authAppState.impersonatedUser.accessToken;
             } else {

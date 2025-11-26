@@ -21,19 +21,20 @@ export const useCheckApiSuccess = (
       title: string;
       description?: string;
       isSuccess: boolean;
+      onSuccess?: () => string;
    }[],
 ) => {
    const previousSuccessStatesRef = useRef<Map<string, boolean>>(new Map());
 
    useEffect(() => {
-      successes.forEach(({ title, description, isSuccess }) => {
+      successes.forEach(({ title, description, isSuccess, onSuccess }) => {
          const successKey = `${title}-${description || ''}`;
          const previousSuccess =
             previousSuccessStatesRef.current.get(successKey);
 
          // Only show toast when success transitions from false to true
          if (isSuccess && previousSuccess !== true) {
-            toast.success(title, {
+            toast.success(onSuccess ? onSuccess() : title, {
                description: description,
                style: successStyleObj,
                cancel: cancelObj,

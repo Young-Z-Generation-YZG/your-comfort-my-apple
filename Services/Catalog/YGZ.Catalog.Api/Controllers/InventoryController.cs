@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Catalog.Api.Contracts.IphoneRequest;
+using YGZ.BuildingBlocks.Shared.Swaggers;
+using YGZ.Catalog.Api.Contracts.InventoryRequest;
 using YGZ.Catalog.Application.Inventory.Queries.GetWarehouses;
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -26,10 +27,13 @@ public class InventoryController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet("warehouse/admin")]
-    public async Task<IActionResult> GetWarehouses([FromQuery] GetWarehousesRequest request, CancellationToken cancellationToken)
+    [HttpGet("skus")]
+    [SwaggerHeader("X-TenantId", "Tenant identifier for multi-tenant operations", "", false)]
+    public async Task<IActionResult> GetSkus([FromQuery] GetSkusRequest request, CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<GetWarehousesQuery>(request);
+        var tenantId = Request.Headers["X-TenantId"].FirstOrDefault();
+        var query = _mapper.Map<GetSkusQuery>(request);
+        query._tenantId = tenantId;
 
         var result = await _sender.Send(query, cancellationToken);
 
