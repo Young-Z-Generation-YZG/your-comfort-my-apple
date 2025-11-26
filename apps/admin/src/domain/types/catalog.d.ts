@@ -46,3 +46,35 @@ export type TStorage = {
    normalized_name: string;
    order: number;
 };
+
+// Tenant Types
+export type TTenant = {
+   id: string;
+   name: string;
+   sub_domain: string;
+   description: string;
+   tenant_type: string;
+   tenant_state: string;
+   embedded_branch: TBranch;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TBranch = {
+   id: string;
+   tenant_id: string;
+   name: string;
+   address: string;
+   description: string;
+   manager: any;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};

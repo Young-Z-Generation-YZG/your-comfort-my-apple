@@ -14,5 +14,4 @@ public class EOrderStatus : SmartEnum<EOrderStatus>
     public static readonly EOrderStatus CANCELLED = new(nameof(CANCELLED), 0);
     public static readonly EOrderStatus PAID = new(nameof(PAID), 0);
     public static readonly EOrderStatus DELIVERED = new(nameof(DELIVERED), 0);
-    public static readonly EOrderStatus PENDING_ASSIGNMENT = new(nameof(PENDING_ASSIGNMENT), 0);
 }
