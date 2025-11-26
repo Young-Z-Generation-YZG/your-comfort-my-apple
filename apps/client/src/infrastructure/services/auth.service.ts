@@ -57,6 +57,26 @@ const baseQueryHandler = async (
    return result;
 };
 
+export interface IRegisterPayload {
+   email: string;
+   password: string;
+   confirm_password: string;
+   first_name: string;
+   last_name: string;
+   phone_number: string;
+   birth_date: string;
+   country: string;
+}
+
+export type TEmailVerificationResponse = {
+   params: {
+      _email: string;
+      _token: string;
+   };
+   verification_type: string;
+   token_expired_in: number;
+};
+
 export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
@@ -134,15 +154,15 @@ export const authApi = createApi({
             }
          },
       }),
-      register: builder.mutation({
-         query: (payload: any) => ({
+      register: builder.mutation<
+         TEmailVerificationResponse | unknown,
+         IRegisterPayload
+      >({
+         query: (payload: IRegisterPayload) => ({
             url: '/api/v1/auth/register',
             method: 'POST',
             body: payload,
          }),
-         transformResponse: (response: any) => {
-            return response;
-         },
       }),
       verifyOtp: builder.mutation({
          query: (payload: any) => ({
@@ -150,9 +170,6 @@ export const authApi = createApi({
             method: 'POST',
             body: payload,
          }),
-         transformResponse: (response: boolean) => {
-            return response;
-         },
       }),
       sendEmailResetPassword: builder.mutation({
          query: (payload: sendEmailResetPasswordFormType) => ({

@@ -1,4 +1,4 @@
-import { VERIFICATION_TYPES } from '~/domain/enums/verification-type.enum';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
 
 export interface ILoginPayload {
    email: string;
@@ -11,6 +11,6 @@ export interface ILoginResponse {
    access_token: string | null;
    refresh_token: string | null;
    access_token_expires_in: number | null;
-   verification_type: VERIFICATION_TYPES;
-   params: Object | null;
+   verification_type: EVerificationType;
+   params: object | null;
 }

@@ -15,6 +15,8 @@ import {
    useRegisterMutation,
    useLogoutMutation,
    useRefreshTokenMutation,
+   IRegisterPayload,
+   TEmailVerificationResponse,
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
@@ -139,10 +141,36 @@ const useAuthService = () => {
       }
    }, [refreshTokenMutation]);
 
-   const register = useCallback(
-      async (data: any) => {
+   const registerAsync = useCallback(
+      async (data: IRegisterPayload) => {
          try {
             const result = await registerMutation(data).unwrap();
+
+            if (
+               result &&
+               typeof result === 'object' &&
+               'verification_type' in result &&
+               result.verification_type === EVerificationType.EMAIL_VERIFICATION
+            ) {
+               const typedResult = result as TEmailVerificationResponse;
+               const params = typedResult.params;
+
+               const queryParams = new URLSearchParams();
+
+               for (const key in params) {
+                  if (params.hasOwnProperty(key)) {
+                     queryParams.set(
+                        key,
+                        String(params[key as keyof typeof params]),
+                     );
+                  }
+               }
+
+               router.push(`/verify/otp?${queryParams.toString()}`, {
+                  scroll: false,
+               });
+            }
+
             return {
                isSuccess: true,
                isError: false,
@@ -314,7 +342,7 @@ const useAuthService = () => {
       // Actions
       loginAsync,
       logout,
-      register,
+      registerAsync,
       verifyOtp,
       refreshToken,
       sendEmailResetPassword,
@@ -323,7 +351,7 @@ const useAuthService = () => {
 
       // Mutation states
       loginMutationState,
-      registerState: registerMutationState,
+      registerMutationState,
       verifyOtpState: verifyOtpMutationState,
       refreshTokenState: refreshTokenMutationState,
       sendEmailResetPasswordState: sendEmailResetPasswordMutationState,

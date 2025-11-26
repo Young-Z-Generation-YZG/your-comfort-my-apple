@@ -5,71 +5,38 @@ import { GoArrowUpRight } from 'react-icons/go';
 
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
-import Button from '../_components/button';
+import Button from '~/app/(pages)/(auth)/_components/button';
 import { FieldInput } from '@components/client/forms/field-input';
 import {
    RegisterFormType,
    RegisterResolver,
 } from '~/domain/schemas/auth.schema';
-import { FormSelector } from '../_components/selector-input';
-import { FormBirthdaySelector } from '@components/client/forms/birthday-selector';
+import { FormSelector } from '~/app/(pages)/(auth)/_components/selector-input';
+import { FormBirthDateSelector } from '@components/client/forms/birthday-selector';
 import { FormPhoneInput } from '@components/client/forms/phone-input';
-import { useRouter } from 'next/navigation';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { EVerificationType } from '~/domain/enums/verification-type.enum';
 import { Separator } from '@components/ui/separator';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '../../../../components/hooks/api/use-auth-service';
+import useAuth from '~/components/hooks/api/use-auth-service';
 import { countries } from '~/domain/constants/countries';
 
-const defaultValues: RegisterFormType = {
-   email: '',
-   password: '',
-   confirm_password: '',
-   first_name: '',
-   last_name: '',
-   phone_number: '',
-   birth_day: { month: 0, day: 0, year: 0 },
-   country: '',
-};
-
 const SignUpPage = () => {
-   const router = useRouter();
-
    const form = useForm<RegisterFormType>({
       resolver: RegisterResolver,
-      defaultValues: defaultValues,
    });
 
-   const { register, isLoading } = useAuth();
+   const { registerAsync, isLoading } = useAuth();
 
-   const handleSubmitRegister = async (data: RegisterFormType) => {
-      const result = await register({
+   const handleSubmitRegister = (data: RegisterFormType) => {
+      registerAsync({
          ...data,
-         birth_day: `${data.birth_day.year}-${data.birth_day.month}-${data.birth_day.day}`,
+         birth_date: new Date(
+            data.birth_date.year,
+            data.birth_date.month,
+            data.birth_date.day,
+         ).toISOString(),
       });
-
-      if (result.isSuccess && result.data) {
-         if (
-            result.data.verification_type ===
-            EVerificationType.EMAIL_VERIFICATION
-         ) {
-            const params = result.data.params;
-
-            const queryParams = new URLSearchParams();
-
-            for (const key in params) {
-               if (params.hasOwnProperty(key)) {
-                  queryParams.set(key, String(params[key]));
-               }
-            }
-
-            router.push(`/verify/otp?${queryParams.toString()}`, {
-               scroll: false,
-            });
-         }
-      }
    };
 
    return (
@@ -166,9 +133,9 @@ const SignUpPage = () => {
                         </div>
 
                         <div className="mt-3">
-                           <FormBirthdaySelector
+                           <FormBirthDateSelector
                               form={form}
-                              name="birth_day"
+                              name="birth_date"
                               required
                            />
                         </div>

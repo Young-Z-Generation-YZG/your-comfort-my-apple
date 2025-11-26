@@ -45,14 +45,14 @@ const getMonthName = (month: number): string => {
    return MONTH_NAMES[month - 1] || '';
 };
 
-// Birthday type definition
-export interface Birthday {
+// birthdate type definition
+export interface birthdate {
    month: number;
    day: number;
    year: number;
 }
 
-interface FormBirthdaySelectorProps<T extends FieldValues> {
+interface FormBirthDateSelectorProps<T extends FieldValues> {
    form: UseFormReturn<T>;
    name: Path<T>;
    label?: string;
@@ -63,16 +63,16 @@ interface FormBirthdaySelectorProps<T extends FieldValues> {
    showMonthAs?: 'number' | 'name' | 'both';
 }
 
-export function FormBirthdaySelector<T extends FieldValues>({
+export function FormBirthDateSelector<T extends FieldValues>({
    form,
    name,
-   label = 'Birthday',
-   helpText = 'Your birthday helps us verify your identity and provide age-appropriate experiences.',
+   label = 'Birth Date',
+   helpText = 'Your birthdate helps us verify your identity and provide age-appropriate experiences.',
    className = '',
    required = false,
    disabled = false,
    showMonthAs = 'both',
-}: FormBirthdaySelectorProps<T>) {
+}: FormBirthDateSelectorProps<T>) {
    // State for dropdown visibility
    const [monthOpen, setMonthOpen] = useState(false);
    const [dayOpen, setDayOpen] = useState(false);
@@ -84,29 +84,22 @@ export function FormBirthdaySelector<T extends FieldValues>({
    const yearRef = useRef<HTMLDivElement>(null);
 
    const {
-      control,
       formState: { errors },
       watch,
       setValue,
    } = form;
 
    // Get the current value from the form
-   const birthday = watch(name) as Birthday | undefined;
+   const birthdate = watch(name) as birthdate | undefined;
 
    // Get the error for this field if it exists
-   let errorMessage = errors[name] as
-      | {
-           day?: { message: string };
-           month?: { message: string };
-           year?: { message: string };
-        }
-      | undefined;
-   const hasError = !!errorMessage;
+   const formError = errors[name] as any;
 
-   const errorField =
-      errorMessage?.day ?? errorMessage?.month ?? errorMessage?.year;
+   const hasError = !!formError;
 
-   const errorText = errorField ? errorField.message : undefined;
+   const errorField = formError?.day ?? formError?.month ?? formError?.year;
+
+   const errorText = formError?.message ?? errorField?.message;
 
    // Handle outside clicks to close dropdowns
    useEffect(() => {
@@ -134,9 +127,9 @@ export function FormBirthdaySelector<T extends FieldValues>({
 
    // Get valid days based on selected month and year
    const getValidDays = () => {
-      if (!birthday?.month || !birthday?.year) return DAYS;
+      if (!birthdate?.month || !birthdate?.year) return DAYS;
 
-      const daysInMonth = getDaysInMonth(birthday.month, birthday.year);
+      const daysInMonth = getDaysInMonth(birthdate.month, birthdate.year);
       return DAYS.slice(0, daysInMonth);
    };
 
@@ -168,20 +161,20 @@ export function FormBirthdaySelector<T extends FieldValues>({
 
    // Handle selection of a month
    const handleMonthSelect = (month: number) => {
-      const newBirthday = {
-         ...(birthday || { day: undefined, year: undefined }),
+      const newbirthdate = {
+         ...(birthdate || { day: undefined, year: undefined }),
          month,
       };
 
       // If the current day is invalid for the new month, reset it
-      if (birthday?.day && birthday.year) {
-         const daysInMonth = getDaysInMonth(month, birthday.year);
-         if (birthday.day > daysInMonth) {
-            newBirthday.day = undefined;
+      if (birthdate?.day && birthdate.year) {
+         const daysInMonth = getDaysInMonth(month, birthdate.year);
+         if (birthdate.day > daysInMonth) {
+            newbirthdate.day = undefined;
          }
       }
 
-      setValue(name, newBirthday as any, { shouldValidate: true });
+      setValue(name, newbirthdate as any, { shouldValidate: true });
       setMonthOpen(false);
    };
 
@@ -190,7 +183,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
       setValue(
          name,
          {
-            ...(birthday || { month: undefined, year: undefined }),
+            ...(birthdate || { month: undefined, year: undefined }),
             day,
          } as any,
          { shouldValidate: true },
@@ -200,20 +193,20 @@ export function FormBirthdaySelector<T extends FieldValues>({
 
    // Handle selection of a year
    const handleYearSelect = (year: number) => {
-      const newBirthday = {
-         ...(birthday || { month: undefined, day: undefined }),
+      const newbirthdate = {
+         ...(birthdate || { month: undefined, day: undefined }),
          year,
       };
 
       // If the current day is invalid for the selected month and year, reset it
-      if (birthday?.month && birthday?.day) {
-         const daysInMonth = getDaysInMonth(birthday.month, year);
-         if (birthday.day > daysInMonth) {
-            newBirthday.day = undefined;
+      if (birthdate?.month && birthdate?.day) {
+         const daysInMonth = getDaysInMonth(birthdate.month, year);
+         if (birthdate.day > daysInMonth) {
+            newbirthdate.day = undefined;
          }
       }
 
-      setValue(name, newBirthday as any, { shouldValidate: true });
+      setValue(name, newbirthdate as any, { shouldValidate: true });
       setYearOpen(false);
    };
 
@@ -267,10 +260,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
                   <span
                      className={cn(
                         'font-normal text-base',
-                        birthday?.month ? 'text-gray-900' : 'text-gray-400',
+                        birthdate?.month ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {formatMonthDisplay(birthday?.month)}
+                     {formatMonthDisplay(birthdate?.month)}
                   </span>
                   <ChevronDown
                      size={16}
@@ -290,7 +283,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                            <div
                               key={index}
                               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                                 m === birthday?.month ? 'bg-gray-100' : ''
+                                 m === birthdate?.month ? 'bg-gray-100' : ''
                               }`}
                               onClick={(e) => {
                                  e.stopPropagation();
@@ -324,10 +317,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
                   <span
                      className={cn(
                         'font-normal text-base',
-                        birthday?.day ? 'text-gray-900' : 'text-gray-400',
+                        birthdate?.day ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {birthday?.day || 'Day'}
+                     {birthdate?.day || 'Day'}
                   </span>
                   <ChevronDown
                      size={16}
@@ -346,7 +339,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                         {validDays.map((d, index) => (
                            <div
                               key={index}
-                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${d === birthday?.day ? 'bg-gray-100' : ''}`}
+                              className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${d === birthdate?.day ? 'bg-gray-100' : ''}`}
                               onClick={(e) => {
                                  e.stopPropagation();
                                  handleDaySelect(d);
@@ -375,10 +368,10 @@ export function FormBirthdaySelector<T extends FieldValues>({
                   <span
                      className={cn(
                         'font-normal text-base',
-                        birthday?.year ? 'text-gray-900' : 'text-gray-400',
+                        birthdate?.year ? 'text-gray-900' : 'text-gray-400',
                      )}
                   >
-                     {birthday?.year || 'Year'}
+                     {birthdate?.year || 'Year'}
                   </span>
                   <ChevronDown
                      size={16}
@@ -398,7 +391,7 @@ export function FormBirthdaySelector<T extends FieldValues>({
                            <div
                               key={index}
                               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                                 y === birthday?.year ? 'bg-gray-100' : ''
+                                 y === birthdate?.year ? 'bg-gray-100' : ''
                               }`}
                               onClick={(e) => {
                                  e.stopPropagation();
