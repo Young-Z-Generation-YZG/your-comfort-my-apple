@@ -68,6 +68,12 @@ export interface IRegisterPayload {
    country: string;
 }
 
+export interface IVerifyOtpPayload {
+   email: string;
+   token: string;
+   otp: string;
+}
+
 export type TEmailVerificationResponse = {
    params: {
       _email: string;
@@ -164,8 +170,8 @@ export const authApi = createApi({
             body: payload,
          }),
       }),
-      verifyOtp: builder.mutation({
-         query: (payload: any) => ({
+      verifyOtp: builder.mutation<boolean, IVerifyOtpPayload>({
+         query: (payload: IVerifyOtpPayload) => ({
             url: '/api/v1/auth/verification/email',
             method: 'POST',
             body: payload,
