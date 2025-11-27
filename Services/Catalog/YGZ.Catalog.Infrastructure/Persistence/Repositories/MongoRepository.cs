@@ -76,19 +76,12 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
             return null;
         }
 
-        var builder = Builders<TEntity>.Filter;
-
-        var tenantFieldFilter = builder.Eq("tenant_id", objectId);
-        var idFieldFilter = builder.Eq("_id", objectId);
-
-        // Some collections store tenant reference under `tenant_id`, while tenant documents use `_id`.
-        // Apply both filters via OR so whichever field exists will gate access.
-        return builder.Or(tenantFieldFilter, idFieldFilter);
+        return Builders<TEntity>.Filter.Eq("tenant_id", objectId);
     }
 
-    private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter)
+    private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter, bool ignoreBaseFilter = false)
     {
-        var tenantFilter = GetBaseTenantFilter();
+        var tenantFilter = ignoreBaseFilter ? null : GetBaseTenantFilter();
         
         if (tenantFilter == null)
         {
@@ -144,15 +137,15 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return _transactionContext.CurrentSession;
     }
 
-    public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null)
+    public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null, bool ignoreBaseFilter = false)
     {
-        var filter = ApplyTenantFilter(null);
+        var filter = ApplyTenantFilter(null, ignoreBaseFilter);
         return await _collection.Find(filter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
+    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
     {
-        var combinedFilter = ApplyTenantFilter(filter);
+        var combinedFilter = ApplyTenantFilter(filter, ignoreBaseFilter);
         return await _collection.Find(combinedFilter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
@@ -160,12 +153,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                                                                                            int? _limit,
                                                                                            FilterDefinition<TEntity>? filter,
                                                                                            SortDefinition<TEntity>? sort,
-                                                                                           CancellationToken? cancellationToken)
+                                                                                           CancellationToken? cancellationToken,
+                                                                                           bool ignoreBaseFilter = false)
     {
         var page = _page ?? 1;
         var limit = _limit ?? 10000;
 
-        var combinedFilter = ApplyTenantFilter(filter);
+        var combinedFilter = ApplyTenantFilter(filter, ignoreBaseFilter);
 
         var totalRecords = await _collection.CountDocumentsAsync(combinedFilter, cancellationToken: cancellationToken ?? CancellationToken.None);
 
@@ -180,16 +174,16 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return (items, (int)totalRecords, totalPages);
     }
 
-    public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken)
+    public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
     {
         var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
-        var combinedFilter = ApplyTenantFilter(idFilter);
+        var combinedFilter = ApplyTenantFilter(idFilter, ignoreBaseFilter);
         return await _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
-    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken)
+    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
     {
-        var combinedFilter = ApplyTenantFilter(filter);
+        var combinedFilter = ApplyTenantFilter(filter, ignoreBaseFilter);
         return _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
@@ -259,13 +253,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(string id, TEntity document, IClientSessionHandle? session = null)
+    public async Task<Result<bool>> UpdateAsync(string id, TEntity document, IClientSessionHandle? session = null, bool ignoreBaseFilter = false)
     {
         var modifiedCount = 0;
         try
         {
             var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
-            var combinedFilter = ApplyTenantFilter(idFilter);
+            var combinedFilter = ApplyTenantFilter(idFilter, ignoreBaseFilter);
 
             if (session != null)
             {
@@ -300,13 +294,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken? cancellationToken)
+    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
     {
         var deletedCount = 0;
         try
         {
             var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
-            var combinedFilter = ApplyTenantFilter(idFilter);
+            var combinedFilter = ApplyTenantFilter(idFilter, ignoreBaseFilter);
             var result = await _collection.DeleteOneAsync(combinedFilter, cancellationToken ?? CancellationToken.None);
             deletedCount = (int)result.DeletedCount;
 
