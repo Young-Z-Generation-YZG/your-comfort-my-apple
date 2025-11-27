@@ -50,6 +50,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new RevenuesByTenantsRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateOrderRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateNotificationRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new VnpayIpnCheckRequestExample());
         });
 

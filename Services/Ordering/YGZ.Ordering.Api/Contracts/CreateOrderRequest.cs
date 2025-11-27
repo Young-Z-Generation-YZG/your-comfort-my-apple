@@ -5,7 +5,6 @@ using YGZ.Ordering.Api.Contracts.Common;
 
 namespace YGZ.Ordering.Api.Contracts;
 
-#pragma warning disable CS8618
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record CreateOrderRequest

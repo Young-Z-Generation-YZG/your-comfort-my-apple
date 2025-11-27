@@ -11,7 +11,7 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
     public Notification(NotificationId id) : base(id) { }
 
     public UserId? SenderId { get; init; }
-    public UserId? ReceiverId { get; init; }
+    public required UserId ReceiverId { get; init; }
     public required string Title { get; set; }
     public required string Content { get; set; }
     public required EOrderNotificationType Type { get; init; }
@@ -27,57 +27,96 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
     public string? DeletedBy { get; set; } = null;
 
 
+    public static Notification Create(string title,
+                                      string content,
+                                      string type,
+                                      string status,
+                                      string receiverId,
+                                      string? senderId = null,
+                                      string? link = null,
+                                      bool isRead = false,
+                                      bool isSystem = true)
+    {
+        EOrderNotificationType.TryFromName(type, out var typeEnum);
+        if (typeEnum is null)
+        {
+            throw new ArgumentException("Invalid notification type", nameof(type));
+        }
+
+        EOrderNotificationStatus.TryFromName(status, out var statusEnum);
+        if (statusEnum is null)
+        {
+            throw new ArgumentException("Invalid notification status", nameof(status));
+        }  
+
+        var receiverUserId = UserId.Of(receiverId);
+        var senderUserId = senderId is not null ? UserId.Of(senderId) : null;
+
+        return new Notification(NotificationId.Create()) {
+            Title = title,
+            Content = content,
+            Type = typeEnum,
+            Status = statusEnum,
+            ReceiverId = receiverUserId,
+            SenderId = senderUserId,
+            Link = link,
+            IsRead = isRead,
+            IsSystem = isSystem
+        };
+    }
+
+
 
     /// <summary>
     /// Creates a system notification for order status updates to customers
     /// </summary>
-    public static Notification CreateOrderStatusNotification(
-        NotificationId notificationId,
-        UserId customerId,
-        string orderCode,
-        EOrderStatus orderStatus,
-        string? orderLink = null)
-    {
-        var (title, content) = GetOrderStatusNotificationContent(orderCode, orderStatus);
+    // public static Notification CreateOrderStatusNotification(
+    //     NotificationId notificationId,
+    //     UserId customerId,
+    //     string orderCode,
+    //     EOrderStatus orderStatus,
+    //     string? orderLink = null)
+    // {
+    //     var (title, content) = GetOrderStatusNotificationContent(orderCode, orderStatus);
 
-        return new Notification(notificationId)
-        {
-            Title = title,
-            Content = content,
-            Type = EOrderNotificationType.ORDER_STATUS_UPDATE,
-            Status = EOrderNotificationStatus.PENDING,
-            ReceiverId = customerId,
-            SenderId = null, // System notification
-            Link = orderLink,
-            IsRead = false,
-            IsSystem = true
-        };
-    }
+    //     return new Notification(notificationId)
+    //     {
+    //         Title = title,
+    //         Content = content,
+    //         Type = EOrderNotificationType.ORDER_STATUS_UPDATE,
+    //         Status = EOrderNotificationStatus.PENDING,
+    //         ReceiverId = customerId,
+    //         SenderId = null, // System notification
+    //         Link = orderLink,
+    //         IsRead = false,
+    //         IsSystem = true
+    //     };
+    // }
 
     /// <summary>
     /// Creates a system notification for new order creation to ADMIN_SUPER users
     /// </summary>
-    public static Notification CreateNewOrderNotification(
-        NotificationId notificationId,
-        UserId adminSuperUserId,
-        string orderCode,
-        string customerEmail,
-        decimal totalAmount,
-        string? orderLink = null)
-    {
-        return new Notification(notificationId)
-        {
-            Title = "New Order Created",
-            Content = $"A new order {orderCode} has been created by customer {customerEmail} with total amount of {totalAmount:C}.",
-            Type = EOrderNotificationType.NEW_ORDER_CREATED,
-            Status = EOrderNotificationStatus.PENDING,
-            ReceiverId = adminSuperUserId,
-            SenderId = null, // System notification
-            Link = orderLink,
-            IsRead = false,
-            IsSystem = true
-        };
-    }
+    // public static Notification CreateNewOrderNotification(
+    //     NotificationId notificationId,
+    //     UserId adminSuperUserId,
+    //     string orderCode,
+    //     string customerEmail,
+    //     decimal totalAmount,
+    //     string? orderLink = null)
+    // {
+    //     return new Notification(notificationId)
+    //     {
+    //         Title = "New Order Created",
+    //         Content = $"A new order {orderCode} has been created by customer {customerEmail} with total amount of {totalAmount:C}.",
+    //         Type = EOrderNotificationType.NEW_ORDER_CREATED,
+    //         Status = EOrderNotificationStatus.PENDING,
+    //         ReceiverId = adminSuperUserId,
+    //         SenderId = null, // System notification
+    //         Link = orderLink,
+    //         IsRead = false,
+    //         IsSystem = true
+    //     };
+    // }
 
     /// <summary>
     /// Marks the notification as read

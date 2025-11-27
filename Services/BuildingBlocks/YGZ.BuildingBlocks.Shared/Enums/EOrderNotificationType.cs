@@ -8,5 +8,5 @@ public class EOrderNotificationType : SmartEnum<EOrderNotificationType>
 
     public static readonly EOrderNotificationType UNKNOWN = new(nameof(UNKNOWN), 0);
     public static readonly EOrderNotificationType ORDER_STATUS_UPDATE = new(nameof(ORDER_STATUS_UPDATE), 0);
-    public static readonly EOrderNotificationType NEW_ORDER_CREATED = new(nameof(NEW_ORDER_CREATED), 0);
+    public static readonly EOrderNotificationType ORDER_CREATED = new(nameof(ORDER_CREATED), 0);
 }
