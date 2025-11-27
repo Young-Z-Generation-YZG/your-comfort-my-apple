@@ -38,7 +38,7 @@ public class TenantController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("${tenantId}")]
+    [HttpGet("{tenantId}")]
     public async Task<IActionResult> GetTenantById([FromRoute] string tenantId, CancellationToken cancellationToken)
     {
         var query = new GetTenantByIdQuery
@@ -47,10 +47,10 @@ public class TenantController : ApiController
         };
 
         var result = await _sender.Send(query, cancellationToken);
-        
+
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
-    
+
     [HttpPost()]
     public async Task<IActionResult> CreateTenant([FromBody] CreateTenantRequest request, CancellationToken cancellationToken)
     {

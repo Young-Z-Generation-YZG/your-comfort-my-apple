@@ -4,6 +4,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Domain.Core.Primitives;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.Events;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Domain.Tenants.Entities;
@@ -140,6 +141,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
         }
 
         AvailableInStock -= quantity;
+        TotalSold += quantity;
     }
 
     public void DeductReservedQuantity(int quantity)
@@ -152,6 +154,9 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             }
 
             ReservedForEvent.ReservedQuantity -= quantity;
+            TotalSold += quantity;
+
+            AddDomainEvent(new ReservedQuantityDeductedDomainEvent(this));
         }
     }
 

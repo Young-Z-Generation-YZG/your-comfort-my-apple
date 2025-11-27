@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using MassTransit;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Application.Abstractions.Providers.Momo;
 using YGZ.Basket.Application.Abstractions.Providers.vnpay;
@@ -20,6 +21,7 @@ namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
 
 public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketCommand, CheckoutBasketResponse>
 {
+    private readonly ILogger<CheckoutBasketHandler> _logger;
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
@@ -36,7 +38,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                                  DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
                                  IVnpayProvider vnpayProvider,
                                  IHttpContextAccessor httpContextAccessor,
-                                 IMomoProvider momoProvider)
+                                 IMomoProvider momoProvider,
+                                 ILogger<CheckoutBasketHandler> logger)
     {
         _basketRepository = basketRepository;
         _publishIntegrationEvent = publishEndpoint;
@@ -46,6 +49,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         _vnpayProvider = vnpayProvider;
         _httpContextAccessor = httpContextAccessor;
         _momoProvider = momoProvider;
+        _logger = logger;
     }
 
     public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)

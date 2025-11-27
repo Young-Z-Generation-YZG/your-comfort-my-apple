@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import * as React from 'react';
@@ -437,7 +438,13 @@ export function SidebarLayout({
    );
 
    const dispatch = useDispatch();
-   const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
+   const {
+      getListTenantsAsync,
+      getTenantByIdAsync,
+      getTenantByIdState,
+      getListTenantsState,
+      isLoading,
+   } = useTenantService();
 
    // Get roles directly from Redux state (stored when switching users)
    // Use currentUserKey to determine which user's roles to use
@@ -448,17 +455,26 @@ export function SidebarLayout({
    }, [currentUserKey, currentUser, impersonatedUser]);
 
    const tenantItems = useMemo(() => {
-      return getTenantsState.isSuccess && getTenantsState.data
-         ? getTenantsState.data
+      return getListTenantsState.isSuccess && getListTenantsState.data
+         ? getListTenantsState.data
          : [];
-   }, [getTenantsState.isSuccess, getTenantsState.data]);
+   }, [getListTenantsState.isSuccess, getListTenantsState.data]);
+
+   const currentTenant = useMemo(() => {
+      return getTenantByIdState.isSuccess && getTenantByIdState.data
+         ? getTenantByIdState.data
+         : null;
+   }, [getTenantByIdState.isSuccess, getTenantByIdState.data]);
 
    // Fetch tenants only for super admin
    useEffect(() => {
       if (roles.includes(ERole.ADMIN_SUPER)) {
-         getTenantsAsync();
+         getListTenantsAsync();
       }
-   }, [getTenantsAsync, roles]);
+      if (currentUser?.tenantId) {
+         getTenantByIdAsync(currentUser.tenantId);
+      }
+   }, [getListTenantsAsync, getTenantByIdAsync]);
 
    // Update global loading state
    useEffect(() => {
@@ -483,7 +499,10 @@ export function SidebarLayout({
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
-                  <TenantSwitcher tenants={tenantItems} />
+                  <TenantSwitcher
+                     tenants={tenantItems}
+                     currentTenant={currentTenant}
+                  />
                </SidebarMenuItem>
             </SidebarMenu>
          </SidebarHeader>

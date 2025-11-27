@@ -76,7 +76,14 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
             return null;
         }
 
-        return Builders<TEntity>.Filter.Eq("tenant_id", objectId);
+        var builder = Builders<TEntity>.Filter;
+
+        var tenantFieldFilter = builder.Eq("tenant_id", objectId);
+        var idFieldFilter = builder.Eq("_id", objectId);
+
+        // Some collections store tenant reference under `tenant_id`, while tenant documents use `_id`.
+        // Apply both filters via OR so whichever field exists will gate access.
+        return builder.Or(tenantFieldFilter, idFieldFilter);
     }
 
     private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter)

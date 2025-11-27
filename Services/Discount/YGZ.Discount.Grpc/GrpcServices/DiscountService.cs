@@ -10,6 +10,7 @@ using YGZ.Discount.Application.Coupons.Queries.GetByCouponCode;
 using YGZ.Discount.Application.EventItem.Queries.GetEventItemById;
 using YGZ.Discount.Application.Events.Commands.AddEventItem;
 using YGZ.Discount.Application.Events.Commands.CreateEvent;
+using YGZ.Discount.Application.Events.Commands.DeductEventItemQuantity;
 using YGZ.Discount.Application.Events.Commands.UpdateEvent;
 using YGZ.Discount.Application.Events.Queries.GetEventDetails;
 using YGZ.Discount.Application.Events.Queries.GetEvents;
@@ -303,7 +304,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
         return response;
     }
-    
+
     private static EventResponse MapEventResponse(DiscountContracts.EventResponse discountEvent)
     {
         var eventModel = new EventModel
@@ -355,6 +356,40 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         }
 
         return MapEventResponse(result.Response!);
+    }
+
+    public override async Task<BooleanResponse> DeductEventItemQuantityGpc(DeductEventItemQuantityGpcRequest request, ServerCallContext context)
+    {
+        if (!request.DeductQuantity.HasValue)
+        {
+            throw new RpcException(new Status(
+                StatusCode.InvalidArgument,
+                "DeductQuantity is required"
+            ));
+        }
+
+        var cmd = new DeductEventItemQuantityCommand
+        {
+            EventItemId = request.EventItemId,
+            EventId = request.EventId,
+            DeductQuantity = request.DeductQuantity.Value
+        };
+
+        var result = await _sender.Send(cmd, context.CancellationToken);
+
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "service-name", "DiscountService" }
+            });
+        }
+
+        return new BooleanResponse { IsSuccess = result.Response };
     }
 
     //public override async Task<GetEventWithEventItemsResponse> GetEventWithEventItemsGrpc(GetEventWithEventItemsRequest request, ServerCallContext context)
@@ -534,6 +569,7 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             "Discount.CouponInactive" => StatusCode.FailedPrecondition,
             "Discount.InsufficientStock" => StatusCode.FailedPrecondition,
             "Discount.InvalidCouponCode" => StatusCode.InvalidArgument,
+            "Discount.InvalidQuantity" => StatusCode.InvalidArgument,
 
             // Default to Internal for unknown errors
             _ => StatusCode.Internal

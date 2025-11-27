@@ -48,6 +48,9 @@ service DiscountProtoService {
 
     rpc GetEventWithEventItemsGrpc (GetEventWithEventItemsRequest) returns (GetEventWithEventItemsResponse);   
     rpc GetEventItemByIdGrpc (GetEventItemByIdRequest) returns (EventItemModel);
+
+    // 27/11/2025
+    rpc DeductEventItemQuantityGpc (DeductEventItemQuantityGpcRequest) returns (BooleanResponse);
 }
 
 // models
@@ -173,6 +176,12 @@ message GetCouponsRequest {}
 
 message GetCouponByCodeRequest {
     google.protobuf.StringValue coupon_code = 1;
+}
+
+message DeductEventItemQuantityGpcRequest {
+    google.protobuf.StringValue event_item_id = 1;
+    google.protobuf.StringValue event_id = 2;
+    google.protobuf.Int32Value deduct_quantity = 3;
 }
 
 // value objects
