@@ -1,4 +1,5 @@
 ﻿using YGZ.BuildingBlocks.Shared.Abstractions.Data;
+using YGZ.BuildingBlocks.Shared.Contracts.Notifications;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
@@ -134,6 +135,32 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
     {
         Status = status;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Maps the notification to a response DTO
+    /// </summary>
+    public NotificationResponse ToResponse()
+    {
+        return new NotificationResponse
+        {
+            Id = Id.Value.ToString(),
+            SenderId = SenderId?.Value.ToString(),
+            ReceiverId = ReceiverId.Value.ToString(),
+            Title = Title,
+            Content = Content,
+            Type = Type.Name,
+            Status = Status.Name,
+            IsRead = IsRead,
+            Link = Link,
+            IsSystem = IsSystem,
+            CreatedAt = CreatedAt,
+            UpdatedAt = UpdatedAt,
+            UpdatedBy = UpdatedBy,
+            IsDeleted = IsDeleted,
+            DeletedAt = DeletedAt,
+            DeletedBy = DeletedBy
+        };
     }
 
     private static (string title, string content) GetOrderStatusNotificationContent(string orderCode, EOrderStatus orderStatus)

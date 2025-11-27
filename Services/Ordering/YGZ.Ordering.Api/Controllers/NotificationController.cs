@@ -6,6 +6,7 @@ using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using YGZ.Ordering.Application.Notifications.Commands.CreateNotification;
+using YGZ.Ordering.Application.Notifications.Queries.GetNotifications;
 
 namespace YGZ.Ordering.Api.Controllers;
 
@@ -26,12 +27,22 @@ public class NotificationController : ApiController
         _mapper = mapper;
     }
 
-    [HttpPost]
+    [HttpPost("")]
     public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationRequest request, CancellationToken cancellationToken)
     {
         var command = _mapper.Map<CreateNotificationCommand>(request);
 
         var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("")]
+    public async Task<IActionResult> GetNotifications([FromQuery] GetNotificationsRequest request, CancellationToken cancellationToken)
+    {
+        var query = _mapper.Map<GetNotificationsQuery>(request);
+
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
