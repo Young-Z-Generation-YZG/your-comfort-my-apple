@@ -4,7 +4,7 @@ public sealed record NotificationResponse
 {
     public required string Id { get; init; }
     public string? SenderId { get; init; }
-    public required string ReceiverId { get; init; }
+    public string? ReceiverId { get; init; }
     public required string Title { get; init; }
     public required string Content { get; init; }
     public required string Type { get; init; }

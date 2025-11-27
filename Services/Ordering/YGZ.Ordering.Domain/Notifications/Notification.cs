@@ -12,7 +12,7 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
     public Notification(NotificationId id) : base(id) { }
 
     public UserId? SenderId { get; init; }
-    public required UserId ReceiverId { get; init; }
+    public UserId? ReceiverId { get; init; }
     public required string Title { get; set; }
     public required string Content { get; set; }
     public required EOrderNotificationType Type { get; init; }
@@ -146,7 +146,7 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
         {
             Id = Id.Value.ToString(),
             SenderId = SenderId?.Value.ToString(),
-            ReceiverId = ReceiverId.Value.ToString(),
+            ReceiverId = ReceiverId?.Value.ToString(),
             Title = Title,
             Content = Content,
             Type = Type.Name,

@@ -6,6 +6,8 @@ using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using YGZ.Ordering.Application.Notifications.Commands.CreateNotification;
+using YGZ.Ordering.Application.Notifications.Commands.MarkAsRead;
+using YGZ.Ordering.Application.Notifications.Commands.MarkAllAsRead;
 using YGZ.Ordering.Application.Notifications.Queries.GetNotifications;
 
 namespace YGZ.Ordering.Api.Controllers;
@@ -43,6 +45,29 @@ public class NotificationController : ApiController
         var query = _mapper.Map<GetNotificationsQuery>(request);
 
         var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPut("{notificationId}/read")]
+    public async Task<IActionResult> MarkAsRead([FromRoute] string notificationId, CancellationToken cancellationToken)
+    {
+        var command = new MarkAsReadCommand
+        {
+            NotificationId = notificationId
+        };
+
+        var result = await _sender.Send(command, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPut("read-all")]
+    public async Task<IActionResult> MarkAllAsRead(CancellationToken cancellationToken)
+    {
+        var command = new MarkAllAsReadCommand();
+
+        var result = await _sender.Send(command, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
