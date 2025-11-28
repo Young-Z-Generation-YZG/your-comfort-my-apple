@@ -93,11 +93,13 @@ const useNotificationService = () => {
       return (
          getNotificationsQueryState.isLoading ||
          markAsReadQueryState.isLoading ||
+         getNotificationsQueryState.isFetching ||
          markAllAsReadQueryState.isLoading
       );
    }, [
       getNotificationsQueryState.isLoading,
       markAsReadQueryState.isLoading,
+      getNotificationsQueryState.isFetching,
       markAllAsReadQueryState.isLoading,
    ]);
 

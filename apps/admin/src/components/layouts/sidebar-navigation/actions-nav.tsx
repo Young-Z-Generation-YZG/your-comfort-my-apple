@@ -13,11 +13,11 @@ import {
    LineChart,
    Link,
    MoreHorizontal,
+   RefreshCw,
    Settings2,
    Star,
    Trash,
    Trash2,
-   X,
 } from 'lucide-react';
 
 import { Button } from '@components/ui/button';
@@ -48,6 +48,7 @@ import useNotificationService from '~/src/hooks/api/use-notification-service';
 import { INotificationQueryParams } from '~/src/infrastructure/services/notification.service';
 import { TNotification } from '~/src/domain/types/ordering';
 import { Badge } from '@components/ui/badge';
+import { LoadingOverlay } from '@components/loading-overlay';
 
 const data = [
    [
@@ -361,17 +362,29 @@ export function ActionNav() {
                            </span>
                         )}
                      </div>
-                     {unreadCount > 0 && (
+                     <div className="flex items-center gap-2">
+                        <button
+                           className="p-1.5 rounded-full hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                           onClick={fetchAllNotificationTabs}
+                           disabled={isLoadingNotifications}
+                           title="Refresh notifications"
+                        >
+                           <RefreshCw
+                              className={`h-4 w-4 text-muted-foreground ${
+                                 isLoadingNotifications ? 'animate-spin' : ''
+                              }`}
+                           />
+                        </button>
                         <Button
                            variant="ghost"
                            size="sm"
                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
                            onClick={handleMarkAllAsRead}
-                           disabled={isLoadingNotifications}
+                           disabled={!unreadCount || isLoadingNotifications}
                         >
                            Mark all read
                         </Button>
-                     )}
+                     </div>
                   </div>
                   <Tabs
                      value={notificationTab}
@@ -380,31 +393,31 @@ export function ActionNav() {
                      }
                      className="w-full"
                   >
-                     <TabsList className="flex w-full gap-1 rounded-full bg-background/80 p-1">
+                     <TabsList className="flex w-full gap-1 rounded-lg bg-gray-100 p-1 shadow-sm">
                         <TabsTrigger
                            value="all"
-                           className="flex-1 gap-2 rounded-full px-2 py-1 text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
                         >
-                           <span>All</span>
-                           <span className="rounded-full bg-muted px-1.5 py-px text-[10px]">
+                           <span>ALL</span>
+                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
                               {totalNotifications}
                            </span>
                         </TabsTrigger>
                         <TabsTrigger
                            value="unread"
-                           className="flex-1 gap-2 rounded-full px-2 py-1 text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
                         >
-                           <span>Unread</span>
-                           <span className="rounded-full bg-muted px-1.5 py-px text-[10px]">
+                           <span>unread</span>
+                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
                               {unreadCount}
                            </span>
                         </TabsTrigger>
                         <TabsTrigger
                            value="read"
-                           className="flex-1 gap-2 rounded-full px-2 py-1 text-[11px] font-medium data-[state=active]:bg-white data-[state=active]:shadow-sm"
+                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
                         >
-                           <span>Read</span>
-                           <span className="rounded-full bg-muted px-1.5 py-px text-[10px]">
+                           <span>readed</span>
+                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
                               {readCount}
                            </span>
                         </TabsTrigger>
@@ -434,100 +447,101 @@ export function ActionNav() {
                         </p>
                      </div>
                   ) : (
-                     <div className="divide-y divide-border">
-                        {notifications.map((notification: any) => {
-                           const isUnread = !notification.is_read;
-                           return (
-                              <div
-                                 key={notification.id}
-                                 className={`group relative px-4 py-3 transition-colors ${
-                                    isUnread
-                                       ? 'cursor-pointer bg-primary/5 hover:bg-primary/10'
-                                       : 'cursor-default hover:bg-muted/50'
-                                 }`}
-                                 onClick={() => {
-                                    if (isUnread) {
-                                       handleMarkAsRead(notification.id);
-                                    }
-                                 }}
-                                 role={isUnread ? 'button' : undefined}
-                                 tabIndex={isUnread ? 0 : -1}
-                              >
-                                 <div className="flex items-start gap-2.5">
-                                    {/* Unread Indicator */}
-                                    {isUnread && (
-                                       <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0"></div>
-                                    )}
-                                    {/* Content */}
-                                    <div className="flex-1 min-w-0 space-y-1">
-                                       <div className="flex items-start justify-between gap-1.5">
-                                          <p
-                                             className={`text-[13px] font-medium leading-tight line-clamp-1 ${
-                                                isUnread
-                                                   ? 'text-foreground'
-                                                   : 'text-muted-foreground'
-                                             }`}
-                                          >
-                                             {notification.title}
-                                          </p>
-                                          {isUnread && (
-                                             <button
-                                                onClick={(e) => {
-                                                   e.stopPropagation();
-                                                   handleMarkAsRead(
-                                                      notification.id,
-                                                   );
-                                                }}
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded"
-                                                title="Mark as read"
-                                             >
-                                                <X className="h-3 w-3 text-muted-foreground" />
-                                             </button>
-                                          )}
-                                       </div>
-                                       {notification.content && (
-                                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
-                                             {notification.content}
-                                          </p>
+                     <LoadingOverlay isLoading={isLoadingNotifications}>
+                        <div className="divide-y divide-border">
+                           {notifications.map((notification: TNotification) => {
+                              const isUnread = !notification.is_read;
+                              const hasLink =
+                                 typeof notification.link === 'string' &&
+                                 notification.link.trim().length > 0;
+
+                              const handleNotificationClick = async () => {
+                                 if (isUnread) {
+                                    await handleMarkAsRead(notification.id);
+                                 }
+                                 if (hasLink) {
+                                    window.location.href = notification.link;
+                                 }
+                              };
+
+                              const isClickable = isUnread || hasLink;
+
+                              return (
+                                 <div
+                                    key={notification.id}
+                                    className={`group relative px-4 py-3 transition-colors ${
+                                       isClickable
+                                          ? isUnread
+                                             ? 'cursor-pointer bg-primary/5 hover:bg-primary/10'
+                                             : 'cursor-pointer hover:bg-muted/50'
+                                          : 'cursor-default hover:bg-muted/50'
+                                    }`}
+                                    onClick={handleNotificationClick}
+                                    role={isClickable ? 'button' : undefined}
+                                    tabIndex={isClickable ? 0 : -1}
+                                 >
+                                    <div className="flex items-start gap-2.5">
+                                       {/* Unread Indicator */}
+                                       {isUnread && (
+                                          <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0"></div>
                                        )}
-                                       <div className="flex flex-wrap gap-1.5 pt-0.5">
-                                          {notification.type && (
-                                             <Badge
-                                                variant="outline"
-                                                className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getTypeBadgeClass(notification.type)}`}
+                                       {/* Content */}
+                                       <div className="flex-1 min-w-0 space-y-1">
+                                          <div className="flex items-start justify-between gap-1.5">
+                                             <p
+                                                className={`text-[13px] font-medium leading-tight line-clamp-1 ${
+                                                   isUnread
+                                                      ? 'text-foreground'
+                                                      : 'text-muted-foreground'
+                                                }`}
                                              >
-                                                {formatNotificationMetaLabel(
-                                                   notification.type,
-                                                )}
-                                             </Badge>
+                                                {notification.title}
+                                             </p>
+                                          </div>
+                                          {notification.content && (
+                                             <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                                                {notification.content}
+                                             </p>
                                           )}
-                                          {notification.status && (
-                                             <Badge
-                                                variant="outline"
-                                                className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getStatusBadgeClass(notification.status)}`}
-                                             >
-                                                {formatNotificationMetaLabel(
-                                                   notification.status,
-                                                )}
-                                             </Badge>
-                                          )}
-                                       </div>
-                                       <div className="flex items-center gap-1.5 pt-0.5">
-                                          <span className="text-[9px] text-muted-foreground">
-                                             {formatRelativeTime(
-                                                notification.created_at,
+                                          <div className="flex flex-wrap gap-1.5 pt-0.5">
+                                             {notification.type && (
+                                                <Badge
+                                                   variant="outline"
+                                                   className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getTypeBadgeClass(notification.type)}`}
+                                                >
+                                                   {formatNotificationMetaLabel(
+                                                      notification.type,
+                                                   )}
+                                                </Badge>
                                              )}
-                                          </span>
-                                          {isUnread && (
-                                             <span className="h-1 w-1 rounded-full bg-muted-foreground"></span>
-                                          )}
+                                             {notification.status && (
+                                                <Badge
+                                                   variant="outline"
+                                                   className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getStatusBadgeClass(notification.status)}`}
+                                                >
+                                                   {formatNotificationMetaLabel(
+                                                      notification.status,
+                                                   )}
+                                                </Badge>
+                                             )}
+                                          </div>
+                                          <div className="flex items-center gap-1.5 pt-0.5">
+                                             <span className="text-[9px] text-muted-foreground">
+                                                {formatRelativeTime(
+                                                   notification.created_at,
+                                                )}
+                                             </span>
+                                             {isUnread && (
+                                                <span className="h-1 w-1 rounded-full bg-muted-foreground"></span>
+                                             )}
+                                          </div>
                                        </div>
                                     </div>
                                  </div>
-                              </div>
-                           );
-                        })}
-                     </div>
+                              );
+                           })}
+                        </div>
+                     </LoadingOverlay>
                   )}
                </div>
             </PopoverContent>
