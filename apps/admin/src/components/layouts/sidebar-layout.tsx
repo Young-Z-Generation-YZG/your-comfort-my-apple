@@ -55,24 +55,6 @@ const data = {
       email: 'lxbach1608@gmail.com',
       avatar: '',
    },
-   tenants: [
-      {
-         tenantId: null,
-         branchId: '664357a235e84033bbd0e6b6',
-         tenantCode: 'WARE_HOUSE',
-         tenantName: 'Ware house',
-         tenantType: 'WARE_HOUSE',
-         tenantAddress: '123 Nguyen Van Linh, Q9, TP.HCM',
-      },
-      {
-         tenantId: 'hcm-td-kvc-01',
-         branchId: '664357a235e84033bbd0e6b7',
-         tenantCode: 'HCM_TD_KVC_01',
-         tenantName: 'HCM TD KVC 01',
-         tenantType: 'BRANCH',
-         tenantAddress: 'Số 1060, Kha Vạn Cân, Linh Chiểu, Thủ Đức',
-      },
-   ],
    navMain: [
       {
          title: 'Online Shop',
@@ -446,8 +428,6 @@ export function SidebarLayout({
       isLoading,
    } = useTenantService();
 
-   // Get roles directly from Redux state (stored when switching users)
-   // Use currentUserKey to determine which user's roles to use
    const roles = useMemo(() => {
       const activeUser =
          currentUserKey === 'impersonatedUser' ? impersonatedUser : currentUser;
@@ -466,7 +446,6 @@ export function SidebarLayout({
          : null;
    }, [getTenantByIdState.isSuccess, getTenantByIdState.data]);
 
-   // Fetch tenants only for super admin
    useEffect(() => {
       if (roles.includes(ERole.ADMIN_SUPER)) {
          getListTenantsAsync();

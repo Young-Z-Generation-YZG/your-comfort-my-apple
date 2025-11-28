@@ -1,19 +1,19 @@
 ﻿using MapsterMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.Ordering.Api.Contracts;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using Microsoft.AspNetCore.Authorization;
+using YGZ.Ordering.Api.Contracts;
 using YGZ.Ordering.Application.Notifications.Commands.CreateNotification;
-using YGZ.Ordering.Application.Notifications.Commands.MarkAsRead;
 using YGZ.Ordering.Application.Notifications.Commands.MarkAllAsRead;
+using YGZ.Ordering.Application.Notifications.Commands.MarkAsRead;
 using YGZ.Ordering.Application.Notifications.Queries.GetNotifications;
 
 namespace YGZ.Ordering.Api.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/orders/notification")]
+[Route("api/v{version:apiVersion}/orders/notifications")]
 [OpenApiTag("notification", Description = "Notification check.")]
 [AllowAnonymous]
 public class NotificationController : ApiController

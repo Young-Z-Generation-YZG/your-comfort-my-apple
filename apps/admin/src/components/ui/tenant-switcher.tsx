@@ -106,8 +106,6 @@ export function TenantSwitcher({
       }
    }, [currentUser?.tenantId, tenants, currentTenantId]);
 
-   console.log('!roles.includes(ERole.ADMIN_SUPER) && currentTenant');
-
    if (!roles.includes(ERole.ADMIN_SUPER) && currentTenant) {
       return (
          <SidebarMenuButton size="lg" className="cursor-default">

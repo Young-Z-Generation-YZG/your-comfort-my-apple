@@ -42,7 +42,7 @@ public class CreateNotificationHandler : ICommandHandler<CreateNotificationComma
         else, this notification will be sent to the user who has the role USER
         => receiverId will be the userId of the user who has the role USER
         ***/
-        if (typeEnum == EOrderNotificationType.ORDER_CREATED)
+        if (typeEnum.Name == EOrderNotificationType.ORDER_CREATED.Name)
         {
             notification = Notification.Create(title: request.Title,
                                                content: request.Content,

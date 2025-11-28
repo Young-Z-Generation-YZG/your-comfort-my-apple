@@ -50,16 +50,13 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
             throw new ArgumentException("Invalid notification status", nameof(status));
         }  
 
-        var receiverUserId = UserId.Of(receiverId);
-        var senderUserId = senderId is not null ? UserId.Of(senderId) : null;
-
         return new Notification(NotificationId.Create()) {
             Title = title,
             Content = content,
             Type = typeEnum,
             Status = statusEnum,
-            ReceiverId = receiverUserId,
-            SenderId = senderUserId,
+            ReceiverId = receiverId is not null ? UserId.Of(receiverId) : null,
+            SenderId = senderId is not null ? UserId.Of(senderId) : null,
             Link = link,
             IsRead = isRead,
             IsSystem = isSystem

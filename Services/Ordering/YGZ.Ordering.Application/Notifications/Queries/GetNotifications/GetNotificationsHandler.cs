@@ -40,7 +40,7 @@ public class GetNotificationsHandler : IQueryHandler<GetNotificationsQuery, Pagi
         var filterExpression = BuildExpression(request, userIdValueObject, roles);
 
         // Order by CreatedAt descending (newest first)
-        Func<IQueryable<Notification>, IOrderedQueryable<Notification>> orderByCreatedAtDesc = 
+        Func<IQueryable<Notification>, IOrderedQueryable<Notification>> orderByCreatedAtDesc =
             query => query.OrderByDescending(n => n.CreatedAt);
 
         var result = await _repository.GetAllAsync(
@@ -57,8 +57,8 @@ public class GetNotificationsHandler : IQueryHandler<GetNotificationsQuery, Pagi
     }
 
     private static Expression<Func<Notification, bool>> BuildExpression(
-        GetNotificationsQuery request, 
-        UserId userId, 
+        GetNotificationsQuery request,
+        UserId userId,
         List<string> roles)
     {
         var filterExpression = ExpressionBuilder.New<Notification>();
@@ -116,9 +116,9 @@ public class GetNotificationsHandler : IQueryHandler<GetNotificationsQuery, Pagi
     }
 
     private PaginationResponse<NotificationResponse> MapToResponse(
-        List<Notification> notifications, 
-        int totalRecords, 
-        int totalPages, 
+        List<Notification> notifications,
+        int totalRecords,
+        int totalPages,
         GetNotificationsQuery request)
     {
         var queryParams = QueryParamBuilder.Build(request);

@@ -1,5 +1,9 @@
-﻿namespace YGZ.BuildingBlocks.Shared.Contracts.Notifications;
+﻿using System.Text.Json.Serialization;
+using YGZ.BuildingBlocks.Shared.Utils;
 
+namespace YGZ.BuildingBlocks.Shared.Contracts.Notifications;
+
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record NotificationResponse
 {
     public required string Id { get; init; }

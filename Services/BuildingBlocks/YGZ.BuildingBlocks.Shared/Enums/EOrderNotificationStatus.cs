@@ -11,5 +11,6 @@ public class EOrderNotificationStatus : SmartEnum<EOrderNotificationStatus>
     public static readonly EOrderNotificationStatus PREPARING = new(nameof(PREPARING), 0);
     public static readonly EOrderNotificationStatus DELIVERING = new(nameof(DELIVERING), 0);
     public static readonly EOrderNotificationStatus DELIVERED = new(nameof(DELIVERED), 0);
+    public static readonly EOrderNotificationStatus PAID = new(nameof(PAID), 0);
 
 }
