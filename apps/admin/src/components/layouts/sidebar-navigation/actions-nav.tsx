@@ -260,9 +260,8 @@ export function ActionNav() {
             baseParams._isRead = false;
          } else if (tab === 'read') {
             baseParams._isRead = true;
-         } else {
-            baseParams._isRead = null;
          }
+         // For 'all' tab, omit _isRead to fetch every notification
 
          return baseParams;
       },
@@ -296,10 +295,6 @@ export function ActionNav() {
       const tabs: NotificationTab[] = ['all', 'unread', 'read'];
       await Promise.all(tabs.map((tab) => fetchNotificationsByTab(tab)));
    }, [fetchNotificationsByTab]);
-
-   useEffect(() => {
-      fetchNotificationsByTab(notificationTab);
-   }, [notificationTab, fetchNotificationsByTab]);
 
    useEffect(() => {
       fetchAllNotificationTabs();
