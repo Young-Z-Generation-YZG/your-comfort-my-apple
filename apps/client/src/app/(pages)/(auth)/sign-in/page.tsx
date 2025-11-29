@@ -7,54 +7,47 @@ import Link from 'next/link';
 import { LoginFormType, LoginResolver } from '~/domain/schemas/auth.schema';
 import { FieldInput } from '@components/client/forms/field-input';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import withAuth from '@components/HoCs/with-auth.hoc';
 import useAuthService from '~/components/hooks/api/use-auth-service';
-import { useAppSelector } from '~/infrastructure/redux/store';
-import { EVerificationType } from '~/domain/enums/verification-type.enum';
+import { useRememberMe } from '~/components/hooks/use-remember-me';
+import { useEffect, useState } from 'react';
 
 const SignInPage = () => {
-   const { login, isLoading } = useAuthService();
-
-   const router = useRouter();
-
-   const appStateRoute = useAppSelector((state) => state.app.route);
+   const { loginAsync, isLoading } = useAuthService();
+   const {
+      saveCredentials,
+      getCredentials,
+      clearCredentials,
+      hasRememberedCredentials,
+   } = useRememberMe();
+   const [rememberMe, setRememberMe] = useState(false);
 
    const form = useForm<LoginFormType>({
       resolver: LoginResolver,
-      defaultValues: {
-         email: '',
-         password: '',
-      },
    });
 
-   const onSubmit = async (data: LoginFormType) => {
-      const result = await login(data);
-
-      if (result.isSuccess && result.data) {
-         if (
-            result.data.verification_type ===
-            EVerificationType.EMAIL_VERIFICATION
-         ) {
-            const params = result.data.params;
-            const queryParams = new URLSearchParams();
-
-            for (const key in params) {
-               if (params.hasOwnProperty(key)) {
-                  queryParams.set(key, String(params[key]));
-               }
-            }
-
-            router.push(`/verify/otp?${queryParams.toString()}`, {
-               scroll: false,
-            });
-         } else {
-            router.replace(
-               appStateRoute.previousUnAuthenticatedPath || '/shop/iphone',
-            );
+   // Load saved credentials on mount
+   useEffect(() => {
+      if (hasRememberedCredentials()) {
+         const credentials = getCredentials();
+         if (credentials) {
+            form.setValue('email', credentials.email);
+            form.setValue('password', credentials.password);
+            setRememberMe(true);
          }
       }
+   }, [hasRememberedCredentials, getCredentials, form]);
+
+   const onSubmit = (data: LoginFormType) => {
+      // Save or clear credentials based on remember me checkbox
+      if (rememberMe) {
+         saveCredentials(data.email, data.password);
+      } else {
+         clearCredentials();
+      }
+
+      loginAsync(data);
    };
 
    return (
@@ -119,33 +112,35 @@ const SignInPage = () => {
                               label="Password"
                               type="password"
                               disabled={isLoading}
-                              visibleEyeIcon={false}
+                              visibleEyeIcon={true}
                               className="rounded-xl rounded-t-none"
                               fetchingFunc={onSubmit}
-                              hasEnterArrowButton={true}
+                              // hasEnterArrowButton={true}
                            />
                         </form>
                      </div>
 
-                     <div className="mt-3  ml-auto w-fit">
+                     <div className="mt-3 flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                            <input
                               type="checkbox"
                               id="remember"
+                              checked={rememberMe}
+                              onChange={(e) => setRememberMe(e.target.checked)}
                               className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                            />
                            <label
                               htmlFor="remember"
-                              className="text-gray-600 text-sm"
+                              className="text-gray-600 text-sm cursor-pointer"
                            >
                               Remember me
                            </label>
                         </div>
 
-                        <div className="mt-2 flex text-blue-500">
+                        <div className="flex text-blue-500">
                            <Link
                               href="/forgot-password"
-                              className="text-sm font-normal text-end w-full block hover:underline"
+                              className="text-sm font-normal hover:underline"
                            >
                               Forgot password?
                            </Link>
@@ -153,7 +148,42 @@ const SignInPage = () => {
                         </div>
                      </div>
 
-                     <div className="mt-5">
+                     <button
+                        type="button"
+                        onClick={form.handleSubmit(onSubmit)}
+                        disabled={isLoading}
+                        className="w-full mt-5 px-6 py-3 bg-blue-600 text-white font-SFProText text-base font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+                     >
+                        {isLoading ? (
+                           <>
+                              <svg
+                                 className="animate-spin h-5 w-5 text-white"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                              >
+                                 <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                 ></circle>
+                                 <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                 ></path>
+                              </svg>
+                              Signing in...
+                           </>
+                        ) : (
+                           'Log in'
+                        )}
+                     </button>
+
+                     <div className="mt-8">
                         <h3 className="text-lg font-SFProText font-medium text-center">
                            Sign In with another method
                         </h3>

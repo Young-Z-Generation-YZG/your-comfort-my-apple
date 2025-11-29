@@ -11,7 +11,7 @@ const baseQueryHandler = async (
    api: BaseQueryApi,
    extraOptions: unknown,
 ) => {
-   const result = await baseQuery('basket-services')(
+   const result = await baseQuery('/basket-services')(
       args,
       api,
       extraOptions as unknown as any,

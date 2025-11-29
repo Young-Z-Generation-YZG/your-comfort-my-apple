@@ -4,7 +4,7 @@ import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('catalog-services')(args, api, extraOptions);
+   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -22,7 +22,7 @@ export const inventoryApi = createApi({
    endpoints: (builder) => ({
       getWarehouses: builder.query<PaginationResponse<any>, any>({
          query: (params: any) => ({
-            url: '/api/v1/inventory/warehouse/admin',
+            url: '/api/v1/inventory/skus',
             method: 'GET',
             params: params,
          }),

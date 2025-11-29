@@ -41,7 +41,11 @@ export type TUserProfile = {
 };
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('identity-services')(args, api, extraOptions);
+   const result = await baseQuery('/identity-services')(
+      args,
+      api,
+      extraOptions,
+   );
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {

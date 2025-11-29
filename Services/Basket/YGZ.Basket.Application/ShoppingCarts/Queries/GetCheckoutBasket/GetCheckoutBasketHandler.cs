@@ -62,23 +62,75 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
         {
             ShoppingCart FilterEventItemsShoppingCart = shoppingCart.FilterEventItems();
 
-            // Extract promotion information from event items
-            var firstEventItem = FilterEventItemsShoppingCart.CartItems.FirstOrDefault();
-            var eventPromotion = firstEventItem?.Promotion?.PromotionEvent;
-
-            return new GetBasketResponse()
+            if (FilterEventItemsShoppingCart.CartItems.Any())
             {
-                UserEmail = FilterEventItemsShoppingCart.UserEmail,
-                CartItems = FilterEventItemsShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
-                SubTotalAmount = FilterEventItemsShoppingCart.SubTotalAmount,
-                PromotionId = eventPromotion?.PromotionId,
-                PromotionType = EPromotionType.EVENT_ITEM.Name,
-                DiscountType = eventPromotion?.DiscountType,
-                DiscountValue = eventPromotion?.DiscountValue,
-                DiscountAmount = shoppingCart.DiscountAmount,
-                MaxDiscountAmount = null,
-                TotalAmount = shoppingCart.TotalAmount
-            };
+                // Extract promotion information from event items
+                var firstEventItem = FilterEventItemsShoppingCart.CartItems.FirstOrDefault();
+                var eventPromotion = firstEventItem?.Promotion?.PromotionEvent;
+
+                if (eventPromotion is not null)
+                {
+                    var efficientCartItems = FilterEventItemsShoppingCart.CartItems.Select((item, index) => new EfficientCartItem
+                    {
+                        UniqueString = $"item_{index}_{item.GetHashCode()}",
+                        OriginalPrice = item.UnitPrice,
+                        Quantity = item.Quantity,
+                        PromotionId = item.Promotion?.PromotionEvent?.PromotionId,
+                        PromotionType = EPromotionType.EVENT_ITEM.Name,
+                        DiscountType = null,
+                        DiscountValue = null,
+                        DiscountAmount = null
+                    }).ToList();
+
+                    var beforeCart = new EfficientCart
+                    {
+                        CartItems = efficientCartItems,
+                        PromotionId = eventPromotion.PromotionId,
+                        PromotionType = EPromotionType.EVENT_ITEM.Name,
+                        DiscountType = null,
+                        DiscountValue = null,
+                        DiscountAmount = null,
+                        MaxDiscountAmount = null
+                    };
+
+                    var discountTypeName = eventPromotion.DiscountType;
+                    var discountValue = eventPromotion.DiscountValue;
+
+                    var afterCart = CalculatePrice.CalculateEfficientCart(
+                        beforeCart: beforeCart,
+                        discountType: discountTypeName,
+                        discountValue: discountValue,
+                        maxDiscountAmount: null);
+
+                    FilterEventItemsShoppingCart.PromotionId = afterCart.PromotionId;
+                    FilterEventItemsShoppingCart.PromotionType = afterCart.PromotionType;
+                    FilterEventItemsShoppingCart.DiscountType = afterCart.DiscountType;
+                    FilterEventItemsShoppingCart.DiscountValue = afterCart.DiscountValue;
+                    FilterEventItemsShoppingCart.DiscountAmount = afterCart.DiscountAmount;
+                    FilterEventItemsShoppingCart.MaxDiscountAmount = afterCart.MaxDiscountAmount;
+
+                    for (int i = 0; i < FilterEventItemsShoppingCart.CartItems.Count && i < afterCart.CartItems.Count; i++)
+                    {
+                        var cartItem = FilterEventItemsShoppingCart.CartItems[i];
+                        var efficientItem = afterCart.CartItems[i];
+                        cartItem.DiscountAmount = efficientItem.DiscountAmount;
+                    }
+
+                    return new GetBasketResponse()
+                    {
+                        UserEmail = FilterEventItemsShoppingCart.UserEmail,
+                        CartItems = FilterEventItemsShoppingCart.CartItems.Select(item => item.ToResponse()).ToList(),
+                        SubTotalAmount = FilterEventItemsShoppingCart.SubTotalAmount,
+                        PromotionId = FilterEventItemsShoppingCart.PromotionId,
+                        PromotionType = FilterEventItemsShoppingCart.PromotionType,
+                        DiscountType = FilterEventItemsShoppingCart.DiscountType,
+                        DiscountValue = FilterEventItemsShoppingCart.DiscountValue,
+                        DiscountAmount = FilterEventItemsShoppingCart.DiscountAmount,
+                        MaxDiscountAmount = FilterEventItemsShoppingCart.MaxDiscountAmount,
+                        TotalAmount = FilterEventItemsShoppingCart.TotalAmount
+                    };
+                }
+            }
         }
 
         if (shoppingCart.CartItems.All(ci => ci.IsSelected == false))

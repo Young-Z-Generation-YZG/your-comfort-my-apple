@@ -44,12 +44,14 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new GetOrdersPaginationRequestExample());
+            settings.OperationProcessors.Add(new GetNotificationsRequestExample());
             settings.OperationProcessors.Add(new UpdateOrderStatusRequestExample());
             settings.OperationProcessors.Add(new RevenuesRequestExample());
             settings.OperationProcessors.Add(new RevenuesByYearsRequestExample());
             settings.OperationProcessors.Add(new RevenuesByTenantsRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateOrderRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateNotificationRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new VnpayIpnCheckRequestExample());
         });
 

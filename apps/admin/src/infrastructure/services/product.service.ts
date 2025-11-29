@@ -3,7 +3,7 @@ import { baseQuery } from './base-query';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('catalog-services')(args, api, extraOptions);
+   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
 
    return result;
 };

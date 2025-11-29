@@ -6,6 +6,7 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Contracts.TenantRequest;
 using YGZ.Catalog.Application.Tenants.Commands;
+using YGZ.Catalog.Application.Tenants.Queries.GetTenantById;
 using YGZ.Catalog.Application.Tenants.Queries.GetTenants;
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -27,15 +28,22 @@ public class TenantController : ApiController
         _mapper = mapper;
     }
 
-    [HttpGet()]
-    public async Task<IActionResult> GetTenants([FromQuery] GetTenantsRequest request, CancellationToken cancellationToken)
+    [HttpGet("list")]
+    public async Task<IActionResult> GetListTenants(CancellationToken cancellationToken)
     {
-        var query = new GetTenantsQuery
+        var query = new GetTenantsQuery();
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{tenantId}")]
+    public async Task<IActionResult> GetTenantById([FromRoute] string tenantId, CancellationToken cancellationToken)
+    {
+        var query = new GetTenantByIdQuery
         {
-            //Page = request._page,
-            //Limit = request._limit,
-            //TenantName = request._tenantName,
-            //TenantType = request._tenantType
+            TenantId = tenantId
         };
 
         var result = await _sender.Send(query, cancellationToken);

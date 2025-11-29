@@ -43,7 +43,7 @@ const fakeData = {
             contact_address_line: '111 Main St',
             contact_district: 'District 1',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -105,7 +105,7 @@ const fakeData = {
             contact_address_line: '222 Second Ave',
             contact_district: 'District 2',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -167,7 +167,7 @@ const fakeData = {
             contact_address_line: '333 Third Blvd',
             contact_district: 'District 3',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -230,7 +230,7 @@ const fakeData = {
             contact_address_line: '444 Fourth St',
             contact_district: 'District 4',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -292,7 +292,7 @@ const fakeData = {
             contact_address_line: '555 Fifth Ave',
             contact_district: 'District 5',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -355,7 +355,7 @@ const fakeData = {
             contact_address_line: '666 Sixth Rd',
             contact_district: 'District 6',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -417,7 +417,7 @@ const fakeData = {
             contact_address_line: '777 Seventh Ln',
             contact_district: 'District 7',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -480,7 +480,7 @@ const fakeData = {
             contact_address_line: '888 Eighth Way',
             contact_district: 'District 8',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -542,7 +542,7 @@ const fakeData = {
             contact_address_line: '999 Ninth Ct',
             contact_district: 'District 9',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -605,7 +605,7 @@ const fakeData = {
             contact_address_line: '1000 Tenth Pkwy',
             contact_district: 'District 10',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -667,7 +667,7 @@ const fakeData = {
             contact_address_line: '1111 Eleventh Dr',
             contact_district: 'District 11',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -729,7 +729,7 @@ const fakeData = {
             contact_address_line: '123 Street',
             contact_district: 'Thu Duc',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -791,7 +791,7 @@ const fakeData = {
             contact_address_line: '123 Street',
             contact_district: 'Thu Duc',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -853,7 +853,7 @@ const fakeData = {
             contact_address_line: '123 Street',
             contact_district: 'Thu Duc',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1040,7 +1040,7 @@ const fakeData = {
             contact_address_line: '456 Avenue',
             contact_district: 'District 1',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1102,7 +1102,7 @@ const fakeData = {
             contact_address_line: '789 Street',
             contact_district: 'District 2',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1165,7 +1165,7 @@ const fakeData = {
             contact_address_line: '321 Road',
             contact_district: 'District 3',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1227,7 +1227,7 @@ const fakeData = {
             contact_address_line: '654 Boulevard',
             contact_district: 'District 4',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1290,7 +1290,7 @@ const fakeData = {
             contact_address_line: '987 Lane',
             contact_district: 'District 5',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1352,7 +1352,7 @@ const fakeData = {
             contact_address_line: '147 Plaza',
             contact_district: 'District 6',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1415,7 +1415,7 @@ const fakeData = {
             contact_address_line: '258 Court',
             contact_district: 'District 7',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1477,7 +1477,7 @@ const fakeData = {
             contact_address_line: '369 Circle',
             contact_district: 'District 8',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1540,7 +1540,7 @@ const fakeData = {
             contact_address_line: '1212 Twelfth Ave',
             contact_district: 'District 12',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1602,7 +1602,7 @@ const fakeData = {
             contact_address_line: '1313 Thirteenth St',
             contact_district: 'District 1',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1664,7 +1664,7 @@ const fakeData = {
             contact_address_line: '1414 Fourteenth Rd',
             contact_district: 'District 2',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1727,7 +1727,7 @@ const fakeData = {
             contact_address_line: '1515 Fifteenth Blvd',
             contact_district: 'District 3',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1789,7 +1789,7 @@ const fakeData = {
             contact_address_line: '1616 Sixteenth Way',
             contact_district: 'District 4',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {
@@ -1851,7 +1851,7 @@ const fakeData = {
             contact_address_line: '1717 Seventeenth Ct',
             contact_district: 'District 5',
             contact_province: 'Ho Chi Minh',
-            contact_country: 'Vietnam',
+            contact_country: 'Việt Nam',
          },
          order_items: [
             {

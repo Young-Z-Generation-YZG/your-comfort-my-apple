@@ -28,9 +28,9 @@ public sealed record RegisterRequest
     [JsonRequired]
     public required string PhoneNumber { get; init; }
 
-    [JsonPropertyName("birth_day")]
+    [JsonPropertyName("birth_date")]
     [JsonRequired]
-    public required string BirthDay { get; init; }
+    public required string BirthDate { get; init; }
 
     [JsonPropertyName("country")]
     [JsonRequired]

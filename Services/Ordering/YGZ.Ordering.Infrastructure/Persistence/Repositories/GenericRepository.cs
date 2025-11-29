@@ -193,4 +193,32 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
             throw;
         }
     }
+
+    public async Task<Result<bool>> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken)
+    {
+        try
+        {
+            var entitiesList = entities.ToList();
+            
+            if (!entitiesList.Any())
+            {
+                return true;
+            }
+
+            _dbSet.UpdateRange(entitiesList);
+
+            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            if (result > 0)
+            {
+                return true;
+            }
+
+            return Errors.Common.UpdateFailure;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

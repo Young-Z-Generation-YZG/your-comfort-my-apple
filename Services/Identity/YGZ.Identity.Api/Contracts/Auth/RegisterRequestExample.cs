@@ -17,8 +17,8 @@ public class RegisterRequestExample : ISchemaProcessor
                 password = "password",
                 confirm_password = "password",
                 phone_number = "0123456789",
-                birth_day = "2003-8-16",
-                country = "Vietnam"
+                birth_date = new DateTime(2003, 8, 16, 0, 0, 0, DateTimeKind.Utc).AddHours(7), // UTC +7
+                country = "Việt Nam"
             };
         }
     }

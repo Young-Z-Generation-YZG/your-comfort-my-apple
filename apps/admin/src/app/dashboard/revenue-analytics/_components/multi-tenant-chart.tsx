@@ -37,11 +37,11 @@ import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import useTenantService from '~/src/hooks/api/use-tenant-service';
 
 const MultiTenantChart = () => {
-   const { getTenantsAsync, getTenantsState } = useTenantService();
+   const { getListTenantsAsync, getListTenantsState } = useTenantService();
 
    const listTenantIds = useMemo(() => {
-      return getTenantsState.data?.map((tenant) => tenant.id) || [];
-   }, [getTenantsState.data]);
+      return getListTenantsState.data?.map((tenant) => tenant.id) || [];
+   }, [getListTenantsState.data]);
 
    // Filter states for Chart 3 - Multi-select tenants
    const [selectedTenants, setSelectedTenants] = useState<
@@ -53,8 +53,8 @@ const MultiTenantChart = () => {
 
    // Get available tenants from API
    const tenants = useMemo(() => {
-      return getTenantsState.data || [];
-   }, [getTenantsState.data]);
+      return getListTenantsState.data || [];
+   }, [getListTenantsState.data]);
 
    useEffect(() => {
       setSelectedTenants(
@@ -161,8 +161,8 @@ const MultiTenantChart = () => {
 
    useEffect(() => {
       // Fetch tenants list
-      getTenantsAsync();
-   }, [getTenantsAsync]);
+      getListTenantsAsync();
+   }, [getListTenantsAsync]);
 
    useEffect(() => {
       // Fetch revenues by tenants for Chart 3

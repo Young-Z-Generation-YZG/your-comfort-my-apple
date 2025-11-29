@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useMemo } from 'react';
 import {
    LoginFormType,
@@ -14,16 +15,20 @@ import {
    useRegisterMutation,
    useLogoutMutation,
    useRefreshTokenMutation,
+   IRegisterPayload,
+   TEmailVerificationResponse,
+   IVerifyOtpPayload,
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import { toast } from 'sonner';
-import { useCheckApiError } from '../use-check-error';
+import { useCheckApiError } from '~/components/hooks/use-check-error';
 import { useRouter } from 'next/navigation';
 import { setUseAccessToken } from '~/infrastructure/redux/features/auth.slice';
 import { useDispatch } from 'react-redux';
+import { EVerificationType } from '~/domain/enums/verification-type.enum';
+import { useCheckApiSuccess } from '~/components/hooks/use-check-success';
+import { setPreviousUnAuthenticatedPath } from '~/infrastructure/redux/features/app.slice';
 
 const useAuthService = () => {
-   const dispatch = useDispatch();
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [registerMutation, registerMutationState] = useRegisterMutation();
    const [verifyOtpMutation, verifyOtpMutationState] = useVerifyOtpMutation();
@@ -37,7 +42,10 @@ const useAuthService = () => {
    const [refreshTokenMutation, refreshTokenMutationState] =
       useRefreshTokenMutation();
 
+   const dispatch = useDispatch();
    const router = useRouter();
+
+   const appStateRoute = useAppSelector((state) => state.app.route);
 
    useCheckApiError([
       { title: 'Login failed', error: loginMutationState.error },
@@ -59,16 +67,87 @@ const useAuthService = () => {
       { title: 'Refresh Token failed', error: refreshTokenMutationState.error },
    ]);
 
+   useCheckApiSuccess([
+      {
+         title: 'Login successful',
+         isSuccess: loginMutationState.isSuccess,
+         onSuccess: () => {
+            if (
+               loginMutationState.data &&
+               typeof loginMutationState.data === 'object' &&
+               'verification_type' in loginMutationState.data &&
+               loginMutationState.data.verification_type ===
+                  EVerificationType.EMAIL_VERIFICATION
+            ) {
+               return 'Please verify your email to continue!';
+            } else {
+               return 'Welcome back! 123';
+            }
+         },
+      },
+      {
+         title: 'Verify OTP successful',
+         isSuccess: verifyOtpMutationState.isSuccess,
+      },
+      {
+         title: 'Send Email Reset Password successful',
+         isSuccess: sendEmailResetPasswordMutationState.isSuccess,
+      },
+      {
+         title: 'Reset Password successful',
+         isSuccess: resetPasswordMutationState.isSuccess,
+      },
+      {
+         title: 'Change Password successful',
+         isSuccess: changePasswordMutationState.isSuccess,
+      },
+      { title: 'Logout', isSuccess: logoutMutationState.isSuccess },
+      {
+         title: 'Refresh Token successful',
+         isSuccess: refreshTokenMutationState.isSuccess,
+      },
+   ]);
+
    const authAppState = useAppSelector((state) => state.auth);
 
    const isAuthenticated = useMemo(() => {
       return Boolean(authAppState.accessToken && authAppState.isAuthenticated);
    }, [authAppState]);
 
-   const login = useCallback(
+   const loginAsync = useCallback(
       async (data: LoginFormType) => {
          try {
             const result = await loginMutation(data).unwrap();
+
+            if (
+               result &&
+               typeof result === 'object' &&
+               'verification_type' in result &&
+               result.verification_type === EVerificationType.EMAIL_VERIFICATION
+            ) {
+               const typedData = result as TEmailVerificationResponse;
+
+               const params = typedData.params;
+               const queryParams = new URLSearchParams();
+
+               for (const key in params) {
+                  if (params.hasOwnProperty(key)) {
+                     queryParams.set(
+                        key,
+                        String(params[key as keyof typeof params]),
+                     );
+                  }
+               }
+
+               router.push(`/verify/otp?${queryParams.toString()}`, {
+                  scroll: false,
+               });
+            } else {
+               router.replace(
+                  appStateRoute.previousUnAuthenticatedPath || '/shop/iphone',
+               );
+            }
+
             return {
                isSuccess: true,
                isError: false,
@@ -85,6 +164,7 @@ const useAuthService = () => {
    const logout = useCallback(async () => {
       try {
          dispatch(setUseAccessToken(false));
+         dispatch(setPreviousUnAuthenticatedPath(null));
 
          await logoutMutation().unwrap();
 
@@ -110,10 +190,36 @@ const useAuthService = () => {
       }
    }, [refreshTokenMutation]);
 
-   const register = useCallback(
-      async (data: any) => {
+   const registerAsync = useCallback(
+      async (data: IRegisterPayload) => {
          try {
             const result = await registerMutation(data).unwrap();
+
+            if (
+               result &&
+               typeof result === 'object' &&
+               'verification_type' in result &&
+               result.verification_type === EVerificationType.EMAIL_VERIFICATION
+            ) {
+               const typedResult = result as TEmailVerificationResponse;
+               const params = typedResult.params;
+
+               const queryParams = new URLSearchParams();
+
+               for (const key in params) {
+                  if (params.hasOwnProperty(key)) {
+                     queryParams.set(
+                        key,
+                        String(params[key as keyof typeof params]),
+                     );
+                  }
+               }
+
+               router.push(`/verify/otp?${queryParams.toString()}`, {
+                  scroll: false,
+               });
+            }
+
             return {
                isSuccess: true,
                isError: false,
@@ -127,10 +233,15 @@ const useAuthService = () => {
       [registerMutation],
    );
 
-   const verifyOtp = useCallback(
-      async (data: any) => {
+   const verifyOtpAsync = useCallback(
+      async (data: IVerifyOtpPayload) => {
          try {
             const result = await verifyOtpMutation(data).unwrap();
+
+            if (result && typeof result === 'boolean' && result === true) {
+               router.replace('/sign-in');
+            }
+
             return {
                isSuccess: true,
                isError: false,
@@ -218,84 +329,25 @@ const useAuthService = () => {
       changePasswordMutationState.isLoading,
    ]);
 
-   // centrally track the success
-   useMemo(() => {
-      if (loginMutationState.isSuccess) {
-         toast.success('Welcome!', {
-            style: {
-               backgroundColor: '#DCFCE7',
-               color: '#166534',
-               border: '1px solid #86EFAC',
-            },
-            cancel: {
-               label: 'Close',
-               onClick: () => {},
-               actionButtonStyle: {
-                  backgroundColor: '#16A34A',
-                  color: '#FFFFFF',
-               },
-            },
-         });
-      } else if (verifyOtpMutationState.isSuccess) {
-         toast.success('Verification successful!', {
-            style: {
-               backgroundColor: '#DCFCE7',
-               color: '#166534',
-               border: '1px solid #86EFAC',
-            },
-         });
-      } else if (sendEmailResetPasswordMutationState.isSuccess) {
-         toast.success('Reset password email sent!', {
-            style: {
-               backgroundColor: '#DCFCE7',
-               color: '#166534',
-               border: '1px solid #86EFAC',
-            },
-         });
-      } else if (resetPasswordMutationState.isSuccess) {
-         toast.success('Password reset successful!', {
-            style: {
-               backgroundColor: '#DCFCE7',
-               color: '#166534',
-               border: '1px solid #86EFAC',
-            },
-         });
-      } else if (changePasswordMutationState.isSuccess) {
-         toast.success('Password changed successfully!', {
-            style: {
-               backgroundColor: '#DCFCE7',
-               color: '#166534',
-               border: '1px solid #86EFAC',
-            },
-         });
-      }
-   }, [
-      loginMutationState,
-      verifyOtpMutationState,
-      sendEmailResetPasswordMutationState,
-      resetPasswordMutationState,
-      changePasswordMutationState,
-   ]);
-
    return {
       // States
       isLoading,
       isAuthenticated,
 
       // Actions
-      login,
+      loginAsync,
       logout,
-      register,
-      verifyOtp,
+      registerAsync,
+      verifyOtpAsync,
       refreshToken,
       sendEmailResetPassword,
       resetPassword,
       changePassword,
 
       // Mutation states
-      loginState: loginMutationState,
-      registerState: registerMutationState,
-      verifyOtpState: verifyOtpMutationState,
+      loginMutationState,
+      registerMutationState,
+      verifyOtpMutationState,
       refreshTokenState: refreshTokenMutationState,
       sendEmailResetPasswordState: sendEmailResetPasswordMutationState,
       resetPasswordState: resetPasswordMutationState,

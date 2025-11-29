@@ -1,5 +1,17 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
+export type ValidationErrorResponse = {
+   type: string;
+   title: 'BadRequest';
+   status: 400;
+   trace_id: string;
+   path: string;
+   errors: {
+      code: string;
+      message: string;
+   }[];
+};
+
 export type ClientErrorResponse = {
    title: string;
    path: string;
@@ -64,15 +76,39 @@ export const isUnknownErrorResponse = (
    );
 };
 
+export const isValidationErrorResponse = (
+   error: unknown,
+): error is ValidationErrorResponse => {
+   return (
+      typeof error === 'object' &&
+      error !== null &&
+      'type' in error &&
+      'title' in error &&
+      'status' in error &&
+      'trace_id' in error &&
+      'path' in error &&
+      'errors' in error
+   );
+};
+
 export const parseFetchError = (
    error: unknown,
-): ClientErrorResponse | ServerErrorResponse | UnknownErrorResponse | null => {
+):
+   | ClientErrorResponse
+   | ServerErrorResponse
+   | ValidationErrorResponse
+   | UnknownErrorResponse
+   | null => {
    if (!isFetchError(error)) {
       return null;
    }
 
    if (isClientErrorResponse(error.data)) {
       return error.data as ClientErrorResponse;
+   }
+
+   if (isValidationErrorResponse(error.data)) {
+      return error.data as ValidationErrorResponse;
    }
 
    if (isServerErrorResponse(error.data)) {

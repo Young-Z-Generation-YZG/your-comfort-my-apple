@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
+using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
@@ -14,20 +16,22 @@ using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Application.Inventory.Queries.GetWarehouses;
 
-public class GetWarehousesHandler : IQueryHandler<GetWarehousesQuery, PaginationResponse<SkuWithImageResponse>>
+public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<SkuWithImageResponse>>
 {
+    private readonly ILogger<GetSkusHandler> _logger;
     private readonly IMongoRepository<SKU, SkuId> _repository;
-    private readonly ILogger<GetWarehousesHandler> _logger;
     private readonly IDistributedCache _distributedCache;
+    private readonly IUserHttpContext _userHttpContext;
 
-    public GetWarehousesHandler(IMongoRepository<SKU, SkuId> repository, ILogger<GetWarehousesHandler> logger, IDistributedCache distributedCache)
+    public GetSkusHandler(IMongoRepository<SKU, SkuId> repository, ILogger<GetSkusHandler> logger, IDistributedCache distributedCache, IUserHttpContext userHttpContext)
     {
         _repository = repository;
         _logger = logger;
         _distributedCache = distributedCache;
+        _userHttpContext = userHttpContext;
     }
 
-    public async Task<Result<PaginationResponse<SkuWithImageResponse>>> Handle(GetWarehousesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginationResponse<SkuWithImageResponse>>> Handle(GetSkusQuery request, CancellationToken cancellationToken)
     {
         var (filter, sort) = GetFilterDefinition(request);
 
@@ -43,10 +47,15 @@ public class GetWarehousesHandler : IQueryHandler<GetWarehousesQuery, Pagination
         return response;
     }
 
-    private static (FilterDefinition<SKU> filter, SortDefinition<SKU>? sort) GetFilterDefinition(GetWarehousesQuery request)
+    private static (FilterDefinition<SKU> filter, SortDefinition<SKU>? sort) GetFilterDefinition(GetSkusQuery request)
     {
         var filterBuilder = Builders<SKU>.Filter;
         var filter = filterBuilder.Empty;
+
+        if (request._tenantId is not null)
+        {
+            filter &= filterBuilder.Eq("tenant_id", new ObjectId(request._tenantId));
+        }
 
         if (request._colors is not null && request._colors.Any())
         {
@@ -71,7 +80,7 @@ public class GetWarehousesHandler : IQueryHandler<GetWarehousesQuery, Pagination
         return (filter, null);
     }
 
-    private async Task<PaginationResponse<SkuWithImageResponse>> MapToResponse((List<SKU> items, int totalRecords, int totalPages) result, GetWarehousesQuery request)
+    private async Task<PaginationResponse<SkuWithImageResponse>> MapToResponse((List<SKU> items, int totalRecords, int totalPages) result, GetSkusQuery request)
     {
         var items = await Task.WhenAll(result.items.Select(async sku =>
         {

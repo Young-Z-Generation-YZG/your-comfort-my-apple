@@ -30,7 +30,7 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     public required decimal OriginalPrice { get; init; }
     public decimal FinalPrice { get; set; }
     public required int Stock { get; init; }
-    public int Sold { get; init; } = 0;
+    public int Sold { get; private set; } = 0;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public string? UpdatedBy { get; private set; } = null;
@@ -148,6 +148,25 @@ public class EventItem : Entity<EventItemId>, IAuditable, ISoftDelete
     private static string? FormatStorageName(string normalizedStorage)
     {
         return string.IsNullOrWhiteSpace(normalizedStorage) ? null : normalizedStorage;
+    }
+
+    /// <summary>
+    /// Increases the sold quantity by the specified amount
+    /// </summary>
+    public void IncreaseSold(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new ArgumentException("Quantity must be greater than zero", nameof(quantity));
+        }
+
+        if (Sold + quantity > Stock)
+        {
+            throw new InvalidOperationException($"Cannot increase sold quantity beyond stock. Current sold: {Sold}, Stock: {Stock}, Requested increase: {quantity}");
+        }
+
+        Sold += quantity;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public EventItemResponse ToResponse()

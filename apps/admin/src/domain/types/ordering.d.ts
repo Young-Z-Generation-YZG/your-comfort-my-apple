@@ -1,3 +1,6 @@
+import { EOrderNotificationStatus } from '~/src/domain/enums/order-notification-status';
+import { EOrderNotificationType } from '~/src/domain/enums/order-notification-type';
+
 export type TOrderItem = {
    order_item_id: string;
    order_id: string;
@@ -45,6 +48,26 @@ export type TOrder = {
    discount_value: number | null;
    discount_amount: number | null;
    total_amount: number;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+// Notification
+export type TNotification = {
+   id: string;
+   sender_id: string | null;
+   receiver_id: string | null;
+   title: string;
+   content: string;
+   type: EOrderNotificationType;
+   status: EOrderNotificationStatus;
+   is_read: boolean;
+   link: string;
+   is_system: boolean;
    created_at: string;
    updated_at: string;
    updated_by: string | null;

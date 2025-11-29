@@ -23,4 +23,5 @@ public interface IGenericRepository<TEntity, TId> where TEntity : class
                                     CancellationToken? cancellationToken = null);
     Task<Result<bool>> AddAsync(TEntity entity, CancellationToken? cancellationToken);
     Task<Result<bool>> UpdateAsync(TEntity entity, CancellationToken? cancellationToken);
+    Task<Result<bool>> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken);
 }

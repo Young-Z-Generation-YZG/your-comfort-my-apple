@@ -1,37 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-
-export type TTenant = {
-   id: string;
-   name: string;
-   sub_domain: string;
-   description: string;
-   tenant_type: string;
-   tenant_state: string;
-   embedded_branch: TBranch;
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
-
-export type TBranch = {
-   id: string;
-   tenant_id: string;
-   name: string;
-   address: string;
-   description: string;
-   manager: any;
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
+import { TTenant } from '~/src/domain/types/catalog';
 
 export interface ICreateTenantPayload {
    name: string;
@@ -43,7 +13,7 @@ export interface ICreateTenantPayload {
 }
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('catalog-services')(args, api, extraOptions);
+   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -59,10 +29,10 @@ export const tenantApi = createApi({
    tagTypes: ['Tenants'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getTenants: builder.query<TTenant[], void>({
+      getListTenants: builder.query<TTenant[], void>({
          query: () => {
             return {
-               url: '/api/v1/tenants',
+               url: '/api/v1/tenants/list',
                method: 'GET',
             };
          },
@@ -91,7 +61,7 @@ export const tenantApi = createApi({
 });
 
 export const {
-   useLazyGetTenantsQuery,
+   useLazyGetListTenantsQuery,
    useLazyGetTenantByIdQuery,
    useCreateTenantMutation,
 } = tenantApi;

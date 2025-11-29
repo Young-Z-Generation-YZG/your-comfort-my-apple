@@ -91,7 +91,7 @@ public class IdentityService : IIdentityService
                 passwordHash: "",
                 firstName: request.FirstName,
                 lastName: request.LastName,
-                birthDay: DateTime.Parse(request.BirthDay).ToUniversalTime().AddHours(7),
+                birthDay: DateTime.Parse(request.BirthDate).ToUniversalTime().AddHours(7),
                 image: null,
                 country: request.Country,
                 emailConfirmed: false,

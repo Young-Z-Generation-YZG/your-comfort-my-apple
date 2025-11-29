@@ -29,7 +29,6 @@ public static class DependencyInjection
 
         services.AddScoped<ITransactionContext, TransactionContext>();
         services.AddScoped(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
-        services.AddScoped<IReviewRepository, ReviewRepository>();
         services.AddScoped<IUploadImageService, UploadImageService>();
 
         services.AddScoped<IDispatchDomainEventInterceptor, DispatchDomainEventInterceptor>();

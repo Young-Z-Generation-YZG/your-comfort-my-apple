@@ -17,7 +17,7 @@ public class UpdateAddressRequestExample : ISchemaProcessor
                 address_line = "Hoang Dieu 2",
                 district = "Thu Duc",
                 province = "Ho Chi Minh city",
-                country = "Vietnam"
+                country = "Việt Nam"
             };
         }
     }

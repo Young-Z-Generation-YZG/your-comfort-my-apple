@@ -26,7 +26,8 @@ const OtpPage = () => {
       defaultValues: defaultValues,
    });
 
-   const { verifyOtp, isLoading, verifyOtpState } = useAuthService();
+   const { verifyOtpAsync, verifyOtpMutationState, isLoading } =
+      useAuthService();
 
    // Countdown timer for resend code
    useEffect(() => {
@@ -55,19 +56,13 @@ const OtpPage = () => {
          form.setValue('token', _token);
          form.setValue('otp', _otp);
 
-         const handleSubmit = async (data: OtpFormType) => {
-            await verifyOtp(data);
+         const handleSubmit = (data: OtpFormType) => {
+            verifyOtpAsync(data);
          };
 
          form.handleSubmit(handleSubmit)();
       }
-   }, [searchParams, form, verifyOtp]);
-
-   useEffect(() => {
-      if (verifyOtpState.isSuccess) {
-         router.replace('/sign-in');
-      }
-   }, [verifyOtpState.isSuccess, router]);
+   }, [searchParams, form, verifyOtpAsync]);
 
    return (
       <div className="w-[1180px] mx-auto px-10">
@@ -98,12 +93,12 @@ const OtpPage = () => {
                            form.setValue('otp', value);
 
                            if (value.length === 6) {
-                              await verifyOtp(form.getValues());
+                              await verifyOtpAsync(form.getValues());
                            }
                         }}
                         onChange={() => {}}
                         disabled={isLoading}
-                        isError={verifyOtpState.isError}
+                        isError={verifyOtpMutationState.isError}
                         errorMessage="Invalid verification code. Please try again."
                         className="mb-6"
                      />
@@ -134,7 +129,7 @@ const OtpPage = () => {
                         </div>
                      )}
 
-                     {verifyOtpState.isSuccess && (
+                     {verifyOtpMutationState.isSuccess && (
                         <div className="text-center text-green-600 my-4 flex items-center justify-center">
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +178,7 @@ const OtpPage = () => {
                               console.log(form.getValues());
 
                               if (form.getValues('otp').length === 6)
-                                 await verifyOtp(form.getValues());
+                                 await verifyOtpAsync(form.getValues());
                            }}
                            disabled={
                               form.getValues('otp').length !== 6 || isLoading

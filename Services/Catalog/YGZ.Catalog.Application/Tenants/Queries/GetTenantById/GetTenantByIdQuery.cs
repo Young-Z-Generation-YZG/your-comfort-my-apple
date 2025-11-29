@@ -3,4 +3,6 @@ using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Tenants;
 
 namespace YGZ.Catalog.Application.Tenants.Queries.GetTenantById;
 
-public sealed record GetTenantByIdQuery(string TenantId) : IQuery<TenantResponse>;
+public sealed record GetTenantByIdQuery : IQuery<TenantResponse> {
+    public required string TenantId { get; init; }
+}

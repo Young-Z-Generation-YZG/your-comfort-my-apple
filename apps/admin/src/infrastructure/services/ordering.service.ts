@@ -5,7 +5,11 @@ import { baseQuery } from './base-query';
 import { TOrder } from '~/src/domain/types/ordering';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('ordering-services')(args, api, extraOptions);
+   const result = await baseQuery('/ordering-services')(
+      args,
+      api,
+      extraOptions,
+   );
 
    if (result.error && result.error.status === 401) {
       api.dispatch(setLogout());

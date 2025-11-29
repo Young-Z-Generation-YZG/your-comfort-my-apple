@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { LoadingOverlay } from '@components/loading-overlay';
@@ -271,7 +272,6 @@ const HRMPage = () => {
             };
          });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedEmail]);
 
    useEffect(() => {
@@ -283,7 +283,6 @@ const HRMPage = () => {
             };
          });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedFirstName]);
 
    useEffect(() => {
@@ -295,7 +294,6 @@ const HRMPage = () => {
             };
          });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedLastName]);
 
    useEffect(() => {
@@ -307,7 +305,6 @@ const HRMPage = () => {
             };
          });
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedPhoneNumber]);
 
    const {

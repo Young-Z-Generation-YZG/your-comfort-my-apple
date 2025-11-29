@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import {
    Breadcrumb,
    BreadcrumbItem,
@@ -20,6 +20,9 @@ import { ActionNav } from '@components/layouts/sidebar-navigation/actions-nav';
 import withAuth from '@components/HoCs/with-auth.hoc';
 import { LoadingOverlay } from '@components/loading-overlay';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
+import { useDispatch } from 'react-redux';
+import { setImpersonatedUser } from '~/src/infrastructure/redux/features/auth.slice';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 
 const DashboardLayout = ({
    children,
@@ -27,6 +30,60 @@ const DashboardLayout = ({
    children: React.ReactNode;
 }>) => {
    const isLoading = useAppSelector((state: RootState) => state.app.isLoading);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      //   let navEntries: PerformanceNavigationTiming[] = [];
+
+      //   if (typeof performance !== 'undefined') {
+      //      const entries = performance.getEntriesByType?.('navigation');
+      //      if (Array.isArray(entries)) {
+      //         navEntries = entries as PerformanceNavigationTiming[];
+      //      }
+      //   }
+
+      //   const isReload =
+      //      navEntries.length > 0
+      //         ? navEntries.some(
+      //              (entry: PerformanceNavigationTiming) =>
+      //                 entry.type === 'reload',
+      //           )
+      //         : typeof performance !== 'undefined' &&
+      //           performance.navigation.type ===
+      //              (performance.navigation as PerformanceNavigation)?.TYPE_RELOAD;
+
+      //   if (isReload) {
+      //      dispatch(setImpersonatedUser({ impersonatedUser: null }));
+      //      dispatch(
+      //         setTenant({
+      //            tenantId: null,
+      //            branchId: null,
+      //            tenantSubDomain: null,
+      //         }),
+      //      );
+      //   }
+
+      if (typeof window === 'undefined') {
+         return;
+      }
+
+      const handleBeforeUnload = () => {
+         dispatch(setImpersonatedUser({ impersonatedUser: null }));
+         dispatch(
+            setTenant({
+               tenantId: null,
+               branchId: null,
+               tenantSubDomain: null,
+            }),
+         );
+      };
+
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      return () => {
+         window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+   }, [dispatch]);
 
    return (
       <Fragment>

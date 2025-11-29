@@ -4,6 +4,7 @@ import {
    isClientErrorResponse,
    isServerErrorResponse,
    isUnknownErrorResponse,
+   isValidationErrorResponse,
 } from '~/infrastructure/utils/http/fetch-error-handler';
 import { toast } from 'sonner';
 
@@ -40,14 +41,12 @@ export const useCheckApiError = (
 
          const parsedError = parseFetchError(error);
 
-         console.log(
-            'isClientErrorResponse(parsedError)',
-            isClientErrorResponse(parsedError),
-         );
-         console.log(
-            'isServerErrorResponse(parsedError)',
-            isServerErrorResponse(parsedError),
-         );
+         console.log({
+            isClientErrorResponse: isClientErrorResponse(parsedError),
+            isServerErrorResponse: isServerErrorResponse(parsedError),
+            isValidationErrorResponse: isValidationErrorResponse(parsedError),
+            isUnknownErrorResponse: isUnknownErrorResponse(parsedError),
+         });
 
          console.log('parsedError', parsedError);
 
@@ -57,6 +56,15 @@ export const useCheckApiError = (
             if (isClientErrorResponse(parsedError)) {
                toast.error(title, {
                   description: parsedError.error.message,
+                  style: errorStyleObj,
+                  cancel: cancelObj,
+                  duration: 2000,
+               });
+            } else if (isValidationErrorResponse(parsedError)) {
+               toast.error('Validation failed', {
+                  description: parsedError.errors
+                     .map((error) => error.message)
+                     .join(', '),
                   style: errorStyleObj,
                   cancel: cancelObj,
                   duration: 2000,

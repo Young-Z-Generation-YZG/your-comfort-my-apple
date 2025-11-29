@@ -32,7 +32,7 @@ const fakeData = {
       contact_address_line: '123 Street',
       contact_district: 'Thu Duc',
       contact_province: 'Ho Chi Minh',
-      contact_country: 'Vietnam',
+      contact_country: 'Việt Nam',
    },
    order_items: [
       {

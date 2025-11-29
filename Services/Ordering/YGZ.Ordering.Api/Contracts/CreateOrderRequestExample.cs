@@ -34,7 +34,7 @@ public class CreateOrderRequestExample : ISchemaProcessor
                     address_line = "106* Kha Van Can",
                     district = "Thu Duc",
                     province = "Ho Chi Minh",
-                    country = "Vietnam",
+                    country = "Việt Nam",
                 },
                 payment_method = "VNPAY",
                 discount_amount = 0,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import * as React from 'react';
@@ -54,24 +55,6 @@ const data = {
       email: 'lxbach1608@gmail.com',
       avatar: '',
    },
-   tenants: [
-      {
-         tenantId: null,
-         branchId: '664357a235e84033bbd0e6b6',
-         tenantCode: 'WARE_HOUSE',
-         tenantName: 'Ware house',
-         tenantType: 'WARE_HOUSE',
-         tenantAddress: '123 Nguyen Van Linh, Q9, TP.HCM',
-      },
-      {
-         tenantId: 'hcm-td-kvc-01',
-         branchId: '664357a235e84033bbd0e6b7',
-         tenantCode: 'HCM_TD_KVC_01',
-         tenantName: 'HCM TD KVC 01',
-         tenantType: 'BRANCH',
-         tenantAddress: 'Số 1060, Kha Vạn Cân, Linh Chiểu, Thủ Đức',
-      },
-   ],
    navMain: [
       {
          title: 'Online Shop',
@@ -299,7 +282,7 @@ const adminSidebarData = [
    },
    {
       title: 'Inventory Management',
-      url: '#',
+      url: '/dashboard/warehouses',
       icon: Warehouse,
       isActive: true,
       items: [],
@@ -437,10 +420,14 @@ export function SidebarLayout({
    );
 
    const dispatch = useDispatch();
-   const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
+   const {
+      getListTenantsAsync,
+      getTenantByIdAsync,
+      getTenantByIdState,
+      getListTenantsState,
+      isLoading,
+   } = useTenantService();
 
-   // Get roles directly from Redux state (stored when switching users)
-   // Use currentUserKey to determine which user's roles to use
    const roles = useMemo(() => {
       const activeUser =
          currentUserKey === 'impersonatedUser' ? impersonatedUser : currentUser;
@@ -448,17 +435,25 @@ export function SidebarLayout({
    }, [currentUserKey, currentUser, impersonatedUser]);
 
    const tenantItems = useMemo(() => {
-      return getTenantsState.isSuccess && getTenantsState.data
-         ? getTenantsState.data
+      return getListTenantsState.isSuccess && getListTenantsState.data
+         ? getListTenantsState.data
          : [];
-   }, [getTenantsState.isSuccess, getTenantsState.data]);
+   }, [getListTenantsState.isSuccess, getListTenantsState.data]);
 
-   // Fetch tenants only for super admin
+   const currentTenant = useMemo(() => {
+      return getTenantByIdState.isSuccess && getTenantByIdState.data
+         ? getTenantByIdState.data
+         : null;
+   }, [getTenantByIdState.isSuccess, getTenantByIdState.data]);
+
    useEffect(() => {
       if (roles.includes(ERole.ADMIN_SUPER)) {
-         getTenantsAsync();
+         getListTenantsAsync();
       }
-   }, [getTenantsAsync, roles]);
+      if (currentUser?.tenantId) {
+         getTenantByIdAsync(currentUser.tenantId);
+      }
+   }, [getListTenantsAsync, getTenantByIdAsync]);
 
    // Update global loading state
    useEffect(() => {
@@ -483,7 +478,10 @@ export function SidebarLayout({
          <SidebarHeader>
             <SidebarMenu>
                <SidebarMenuItem>
-                  <TenantSwitcher tenants={tenantItems} />
+                  <TenantSwitcher
+                     tenants={tenantItems}
+                     currentTenant={currentTenant}
+                  />
                </SidebarMenuItem>
             </SidebarMenu>
          </SidebarHeader>

@@ -24,9 +24,15 @@ import { useDispatch } from 'react-redux';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
-import { TTenant } from '~/src/infrastructure/services/tenant.service';
+import { TTenant } from '~/src/domain/types/catalog';
 
-export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
+export function TenantSwitcher({
+   tenants,
+   currentTenant,
+}: {
+   tenants: TTenant[];
+   currentTenant: TTenant | null;
+}) {
    const [selectedTenant, setSelectedTenant] = useState<TTenant | null>(null);
    const [searchQuery, setSearchQuery] = useState('');
 
@@ -37,10 +43,6 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       (state) => state.tenant,
    );
 
-   const DEFAULT_TENANT_ID = useMemo(() => {
-      return currentUser?.tenantId || null;
-   }, [currentUser?.tenantId]);
-
    const dispatch = useDispatch();
 
    const roles = useMemo(
@@ -48,7 +50,11 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       [currentUser, impersonatedUser],
    );
 
-   // Check if user has permission to switch tenants
+   const DEFAULT_TENANT_ID = useMemo(() => {
+      return currentUser?.tenantId || null;
+   }, [currentUser?.tenantId]);
+
+   //    // Check if user has permission to switch tenants
    const canSwitchTenants = useMemo(
       () => roles.includes(ERole.ADMIN_SUPER),
       [roles],
@@ -67,6 +73,7 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       setSearchQuery('');
 
       const isDefaultTenant = tenant.id === DEFAULT_TENANT_ID;
+
       const tenantPayload = {
          tenantId: isDefaultTenant ? null : tenant.id,
          branchId: isDefaultTenant
@@ -99,11 +106,26 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
       }
    }, [currentUser?.tenantId, tenants, currentTenantId]);
 
-   // Don't render if no tenants available
+   if (!roles.includes(ERole.ADMIN_SUPER) && currentTenant) {
+      return (
+         <SidebarMenuButton size="lg" className="cursor-default">
+            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+               <GalleryVerticalEnd className="size-4" />
+            </div>
+            <div className="flex flex-col gap-0.5 leading-none">
+               <span className="font-medium">{currentTenant.name}</span>
+               <span className="text-xs text-muted-foreground">
+                  {currentTenant.sub_domain}
+               </span>
+            </div>
+         </SidebarMenuButton>
+      );
+   }
+
    if (
       !selectedTenant ||
       tenants.length === 0 ||
-      (currentTenantId && impersonatedUser)
+      (!currentTenantId && impersonatedUser)
    ) {
       return null;
    }
@@ -163,7 +185,7 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
                                     key={tenant.id}
                                     onSelect={() => handleSelectTenant(tenant)}
                                     className="flex items-center gap-2"
-                                    disabled={isSelected}
+                                    disabled={isSelected || !!impersonatedUser}
                                  >
                                     <div className="flex flex-col flex-1">
                                        <span className="font-medium">
@@ -191,9 +213,9 @@ export function TenantSwitcher({ tenants }: { tenants: TTenant[] }) {
                      <GalleryVerticalEnd className="size-4" />
                   </div>
                   <div className="flex flex-col gap-0.5 leading-none">
-                     <span className="font-medium">{selectedTenant.name}</span>
+                     <span className="font-medium">{currentTenant?.name}</span>
                      <span className="text-xs text-muted-foreground">
-                        {selectedTenant.sub_domain}
+                        {currentTenant?.sub_domain}
                      </span>
                   </div>
                </SidebarMenuButton>

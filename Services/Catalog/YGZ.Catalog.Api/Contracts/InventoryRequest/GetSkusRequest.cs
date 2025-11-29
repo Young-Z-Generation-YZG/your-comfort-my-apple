@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-namespace YGZ.Catalog.Api.Contracts.IphoneRequest;
+﻿namespace YGZ.Catalog.Api.Contracts.InventoryRequest;
 
-[SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Underscore prefix is used for query parameters matching API conventions")]
-public sealed record GetWarehousesRequest
+public sealed record GetSkusRequest
 {
     public int? _page { get; init; } = 1;
     public int? _limit { get; init; } = 10;

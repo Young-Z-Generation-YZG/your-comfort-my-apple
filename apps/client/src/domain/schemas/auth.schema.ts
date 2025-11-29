@@ -8,6 +8,7 @@ import {
    IResetPasswordPayload,
    ISendEmailResetPasswordPayload,
 } from '../interfaces/auth/password.interface';
+import { countries } from '../constants/countries';
 
 /// Login Schema
 const LoginSchema = z.object({
@@ -23,29 +24,35 @@ export type LoginFormType = z.infer<typeof LoginSchema>;
 export const LoginResolver = zodResolver(LoginSchema);
 
 /// Register Schema
-const birthdaySchema = z
-   .object({
-      month: z
-         .number({
-            required_error: 'Month is required',
-            invalid_type_error: 'Month must be a number',
-         })
-         .min(1, 'Month must be between 1 and 12')
-         .max(12, 'Month must be between 1 and 12'),
-      day: z
-         .number({
-            required_error: 'Day is required',
-            invalid_type_error: 'Day must be a number',
-         })
-         .min(1, 'Day is required')
-         .max(31, 'Invalid day'),
-      year: z
-         .number({
-            required_error: 'Year is required',
-            invalid_type_error: 'Year must be a number',
-         })
-         .min(1900, 'Year must be after 1900'),
-   })
+const birthdateSchema = z
+   .object(
+      {
+         month: z
+            .number({
+               required_error: 'Month is required',
+               invalid_type_error: 'Month must be a number',
+            })
+            .min(1, 'Month must be between 1 and 12')
+            .max(12, 'Month must be between 1 and 12'),
+         day: z
+            .number({
+               required_error: 'Day is required',
+               invalid_type_error: 'Day must be a number',
+            })
+            .min(1, 'Day is required')
+            .max(31, 'Invalid day'),
+         year: z
+            .number({
+               required_error: 'Year is required',
+               invalid_type_error: 'Year must be a number',
+            })
+            .min(1900, 'Year must be after 1900'),
+      },
+      {
+         required_error: 'BirthDate is required',
+         invalid_type_error: 'BirthDate is required',
+      },
+   )
    .refine(
       (data) => {
          // Validate that the date is valid
@@ -66,13 +73,16 @@ const birthdaySchema = z
          return birthDate <= today;
       },
       {
-         message: 'Birthday cannot be in the future',
+         message: 'BirthDate cannot be in the future',
          path: ['year'],
       },
    );
 
 const vietnamesePhoneSchema = z
-   .string()
+   .string({
+      required_error: 'Phone number is required',
+      invalid_type_error: 'Phone number is required',
+   })
    .refine((value) => !!value, {
       message: 'Phone number is required',
    })
@@ -103,10 +113,18 @@ const RegisterSchema = z.object({
       message: 'Last Name is required',
    }),
    phone_number: vietnamesePhoneSchema,
-   birth_day: birthdaySchema,
-   country: z.string().min(1, {
-      message: 'Country is required',
-   }),
+   birth_date: birthdateSchema,
+   country: z
+      .string({
+         required_error: 'Country/Region is required',
+         invalid_type_error: 'Country/Region is required',
+      })
+      .min(1, {
+         message: 'Country/Region is required',
+      })
+      .refine((value) => countries.includes(value), {
+         message: 'Country is not available',
+      }),
 } satisfies Record<keyof IRegisterPayload, any>);
 
 export type RegisterFormType = z.infer<typeof RegisterSchema>;

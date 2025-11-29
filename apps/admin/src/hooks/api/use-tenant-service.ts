@@ -1,20 +1,22 @@
 import { useCallback, useMemo } from 'react';
 import {
-   useLazyGetTenantsQuery,
+   useLazyGetListTenantsQuery,
    useLazyGetTenantByIdQuery,
    ICreateTenantPayload,
    useCreateTenantMutation,
 } from '~/src/infrastructure/services/tenant.service';
 
 const useTenantService = () => {
-   const [getTenantsTrigger, getTenantsState] = useLazyGetTenantsQuery();
+   const [getListTenantsTrigger, getListTenantsState] =
+      useLazyGetListTenantsQuery();
    const [getTenantByIdTrigger, getTenantByIdState] =
       useLazyGetTenantByIdQuery();
+
    const [createTenantTrigger, createTenantState] = useCreateTenantMutation();
 
-   const getTenantsAsync = useCallback(async () => {
+   const getListTenantsAsync = useCallback(async () => {
       try {
-         const result = await getTenantsTrigger().unwrap();
+         const result = await getListTenantsTrigger().unwrap();
          return {
             isSuccess: true,
             isError: false,
@@ -29,7 +31,7 @@ const useTenantService = () => {
             error,
          };
       }
-   }, [getTenantsTrigger]);
+   }, [getListTenantsTrigger]);
 
    const getTenantByIdAsync = useCallback(
       async (id: string) => {
@@ -78,26 +80,29 @@ const useTenantService = () => {
 
    const isLoading = useMemo(() => {
       return (
-         getTenantsState.isLoading ||
-         getTenantsState.isFetching ||
+         getListTenantsState.isLoading ||
+         getListTenantsState.isFetching ||
          getTenantByIdState.isLoading ||
          getTenantByIdState.isFetching ||
          createTenantState.isLoading
       );
    }, [
-      getTenantsState.isLoading,
-      getTenantsState.isFetching,
+      getListTenantsState.isLoading,
+      getListTenantsState.isFetching,
       getTenantByIdState.isLoading,
       getTenantByIdState.isFetching,
       createTenantState.isLoading,
    ]);
 
    return {
+      // States
       isLoading,
-      getTenantsState,
+      getListTenantsState,
       getTenantByIdState,
       createTenantState,
-      getTenantsAsync,
+
+      // Actions
+      getListTenantsAsync,
       getTenantByIdAsync,
       createTenantAsync,
    };

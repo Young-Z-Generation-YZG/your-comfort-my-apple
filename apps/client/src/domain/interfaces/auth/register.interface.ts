@@ -5,7 +5,7 @@ export interface IRegisterPayload {
    first_name: string;
    last_name: string;
    phone_number: string;
-   birth_day: string;
+   birth_date: string;
    country: string;
 }
 

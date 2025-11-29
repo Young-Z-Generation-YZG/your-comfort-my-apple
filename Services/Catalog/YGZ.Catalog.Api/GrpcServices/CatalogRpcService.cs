@@ -33,7 +33,10 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
 
     public async override Task<TenantModel> GetTenantByIdGrpc(GetTenantByIdRequest request, ServerCallContext context)
     {
-        var query = new GetTenantByIdQuery(request.TenantId);
+        var query = new GetTenantByIdQuery
+        {
+            TenantId = request.TenantId
+        };
 
         var result = await _sender.Send(query);
 

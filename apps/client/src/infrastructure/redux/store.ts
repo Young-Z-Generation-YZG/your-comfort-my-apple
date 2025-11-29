@@ -26,6 +26,7 @@ import { productApi } from '~/infrastructure/services/product.service';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
+import { notificationApi } from '~/infrastructure/services/notification.service';
 
 const storage = createPersistStorage();
 
@@ -43,6 +44,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       orderingApi.reducerPath,
       identityApi.reducerPath,
       productApi.reducerPath,
+      notificationApi.reducerPath,
    ], // Add the blacklist option
    whitelist: ['auth', 'cart', 'search'],
 };
@@ -61,6 +63,7 @@ const reducers = combineReducers({
    [orderingApi.reducerPath]: orderingApi.reducer,
    [identityApi.reducerPath]: identityApi.reducer,
    [productApi.reducerPath]: productApi.reducer,
+   [notificationApi.reducerPath]: notificationApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -82,6 +85,7 @@ export const reduxStore = configureStore({
          orderingApi.middleware,
          identityApi.middleware,
          productApi.middleware,
+         notificationApi.middleware,
       ),
 });
 

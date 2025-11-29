@@ -24,59 +24,48 @@ const storageFilter = [
    {
       name: '64GB',
       normalizedName: '64GB',
-      value: '64GB',
    },
    {
       name: '128GB',
       normalizedName: '128GB',
-      value: '128GB',
    },
    {
       name: '256GB',
       normalizedName: '256GB',
-      value: '256GB',
    },
    {
       name: '512GB',
       normalizedName: '512GB',
-      value: '512GB',
    },
    {
       name: '1TB',
       normalizedName: '1TB',
-      value: '1TB',
    },
 ];
 const models = [
    {
       name: 'iPhone 15',
       normalizedName: 'IPHONE_15',
-      value: 'iphone-15',
    },
    {
       name: 'iPhone 16',
       normalizedName: 'IPHONE_16',
-      value: 'iphone-16',
    },
    {
       name: 'iPhone 16e',
       normalizedName: 'IPHONE_16E',
-      value: 'iphone-16e',
    },
    {
       name: 'iPhone 17',
       normalizedName: 'IPHONE_17',
-      value: 'iphone-17',
    },
    {
       name: 'iPhone 17 Pro',
       normalizedName: 'IPHONE_17_PRO',
-      value: 'iphone-17-pro',
    },
    {
       name: 'iPhone 17 Air',
       normalizedName: 'IPHONE_17_AIR',
-      value: 'iphone-17-air',
    },
 ];
 
@@ -273,7 +262,7 @@ const FilterSection = () => {
                         <div className="grid grid-cols-3 gap-2">
                            {storageFilter.map((storage) => (
                               <Button
-                                 key={storage.value}
+                                 key={storage.normalizedName}
                                  onClick={() =>
                                     toggleStorage(storage.normalizedName)
                                  }
@@ -370,7 +359,7 @@ const FilterSection = () => {
                      <div className="grid grid-cols-3 gap-2">
                         {models.map((model) => (
                            <Button
-                              key={model.value}
+                              key={model.normalizedName}
                               onClick={() => toggleModel(model.normalizedName)}
                               className={cn(
                                  'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
