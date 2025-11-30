@@ -27,6 +27,17 @@ export interface IGetProductModelsQueryParams {
    _textSearch?: string | null;
 }
 
+export interface IGetProductModelsByCategorySlugQueryParams {
+   _page?: number | null;
+   _limit?: number | null;
+   _colors?: string[] | null;
+   _storages?: string[] | null;
+   _models?: string[] | null;
+   _minPrice?: number | null;
+   _maxPrice?: number | null;
+   _priceSort?: 'ASC' | 'DESC' | null;
+}
+
 export const productApi = createApi({
    reducerPath: 'product-api',
    tagTypes: ['Products'],
@@ -40,6 +51,27 @@ export const productApi = createApi({
             return {
                url: '/api/v1/product-models',
                params: query,
+            };
+         },
+         providesTags: ['Products'],
+      }),
+      getProductModelsByCategorySlug: builder.query<
+         PaginationResponse<TProductModel>,
+         {
+            categorySlug: string;
+            queryParams: IGetProductModelsByCategorySlugQueryParams;
+         }
+      >({
+         query: ({
+            categorySlug,
+            queryParams,
+         }: {
+            categorySlug: string;
+            queryParams: IGetProductModelsByCategorySlugQueryParams;
+         }) => {
+            return {
+               url: `/api/v1/product-models/category/${categorySlug}`,
+               params: queryParams,
             };
          },
          providesTags: ['Products'],
@@ -73,4 +105,5 @@ export const {
    useLazyGetPopularProductsQuery,
    useLazyGetNewestProductsQuery,
    useLazyGetSuggestionProductsQuery,
+   useLazyGetProductModelsByCategorySlugQuery,
 } = productApi;

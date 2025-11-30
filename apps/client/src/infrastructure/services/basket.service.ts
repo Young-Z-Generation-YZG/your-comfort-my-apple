@@ -4,7 +4,7 @@ import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-import { TColor, TModel, TStorage } from './catalog.service';
+import { TColor, TModel, TStorage } from '~/domain/types/catalog.type';
 
 const baseQueryHandler = async (
    args: string | FetchArgs,

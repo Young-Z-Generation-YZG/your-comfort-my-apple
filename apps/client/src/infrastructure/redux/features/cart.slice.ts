@@ -6,6 +6,13 @@ export type CartState = TCart;
 const initialState: CartState = {
    user_email: '',
    cart_items: [],
+   sub_total_amount: 0,
+   promotion_id: '',
+   promotion_type: '',
+   discount_type: '',
+   discount_value: 0,
+   discount_amount: 0,
+   max_discount_amount: null,
    total_amount: 0,
 };
 
@@ -59,6 +66,16 @@ const cartSlice = createSlice({
             (item) => !item.is_selected,
          );
       },
+      removeCartItem: (state, action: PayloadAction<number>) => {
+         const index = action.payload;
+         if (index >= 0 && index < state.cart_items.length) {
+            state.cart_items = state.cart_items.filter((_, i) => i !== index);
+         }
+      },
+      clearCart: (state) => {
+         state.cart_items = [];
+         state.total_amount = 0;
+      },
    },
 });
 
@@ -69,6 +86,8 @@ export const {
    AddCartItems,
    UpdateSelection,
    CleanSelectedItems,
+   removeCartItem,
+   clearCart,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

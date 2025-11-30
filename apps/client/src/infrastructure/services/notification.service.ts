@@ -11,9 +11,7 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
       extraOptions,
    );
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 

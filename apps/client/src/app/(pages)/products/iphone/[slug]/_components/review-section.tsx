@@ -23,7 +23,7 @@ import {
 } from '@components/ui/select';
 import { cn } from '~/infrastructure/lib/utils';
 import RatingStar from '@components/ui/rating-star';
-import usePaginationV2 from '@components/hooks/use-pagination-v2';
+import usePaginationV2 from '@components/hooks/use-pagination';
 
 const ReviewsSection = () => {
    const { slug } = useParams();

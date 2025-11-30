@@ -28,7 +28,11 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
 import useCartFormV2 from './_hooks/useCartFormV2';
 import { useDispatch } from 'react-redux';
-import { UpdateSelection } from '~/infrastructure/redux/features/cart.slice';
+import {
+   clearCart,
+   UpdateSelection,
+   removeCartItem,
+} from '~/infrastructure/redux/features/cart.slice';
 
 const CartPage = () => {
    const router = useRouter();
@@ -182,7 +186,13 @@ const CartPage = () => {
                                           onQuantityChange={
                                              handleQuantityChange
                                           }
-                                          onRemoveItem={handleRemoveItem}
+                                          onRemoveItem={() => {
+                                             if (isAuthenticated) {
+                                                handleRemoveItem(index);
+                                             } else {
+                                                dispatch(removeCartItem(index));
+                                             }
+                                          }}
                                        />
                                     </div>
                                  ),
@@ -199,10 +209,14 @@ const CartPage = () => {
                                    disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={isLoading}
                         onClick={async () => {
-                           await deleteBasketAsync();
-                           await getBasketAsync({
-                              _couponCode: null,
-                           });
+                           if (isAuthenticated) {
+                              await deleteBasketAsync();
+                              await getBasketAsync({
+                                 _couponCode: null,
+                              });
+                           } else {
+                              dispatch(clearCart());
+                           }
                         }}
                      >
                         <FaRegTrashAlt className="w-4 h-4" />

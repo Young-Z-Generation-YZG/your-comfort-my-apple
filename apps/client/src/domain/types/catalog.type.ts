@@ -76,6 +76,25 @@ export type TSkuPrice = {
    unit_price: number;
 };
 
+export type TIphoneModelDetails = {
+   id: string;
+   category: TCategory;
+   name: string;
+   model_items: TModel[];
+   color_items: TColor[];
+   storage_items: TStorage[];
+   sku_prices: TSkuPrice[];
+   description: string;
+   showcase_images: TImage[];
+   overall_sold: number;
+   rating_stars: TRatingStar[];
+   average_rating: TAverageRating;
+   branchs: {
+      branch: TBranch;
+      skus: TSku[];
+   }[];
+};
+
 export type TProductModel = {
    id: string;
    category: TCategory;

@@ -1,5 +1,5 @@
-import { EOrderNotificationStatus } from '~/src/domain/enums/order-notification-status';
-import { EOrderNotificationType } from '~/src/domain/enums/order-notification-type';
+import { EOrderNotificationStatus } from '~/domain/enums/order-notification-status';
+import { EOrderNotificationType } from '~/domain/enums/order-notification-type';
 
 export type TOrderItem = {
    order_item_id: string;
@@ -16,6 +16,12 @@ export type TOrderItem = {
    model_slug: string;
    quantity: number;
    is_reviewed: boolean;
+   promotion_id?: string | null;
+   promotion_type?: string | null;
+   discount_type?: string | null;
+   discount_value?: number | null;
+   discount_amount?: number | null;
+   sub_total_amount?: number | null;
    updated_at: string;
    updated_by: string | null;
    is_deleted: boolean;

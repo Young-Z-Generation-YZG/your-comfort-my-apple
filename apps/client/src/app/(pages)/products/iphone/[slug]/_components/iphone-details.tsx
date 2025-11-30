@@ -23,16 +23,15 @@ import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
 import {
-   TBranchWithSkus,
-   TIphoneModelDetails,
+   TBranch,
+   TColor,
+   TImage,
    TSku,
-} from '~/infrastructure/services/catalog.service';
-import {
-   TColorItem,
-   TShowcaseImage,
-   TModelItem,
-   TStorageItem,
-} from '~/infrastructure/services/product.service';
+   TIphoneModelDetails,
+   TModel,
+   TStorage,
+   TSkuPrice,
+} from '~/domain/types/catalog.type';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -167,7 +166,7 @@ const IphoneDetails = () => {
    const getImageIndexByColor = (colorName: string) => {
       // Find the selected color item from the original data
       const selectedColorItem = displayData?.color_items.find(
-         (color: TColorItem) => color.normalized_name === colorName,
+         (color: TColor) => color.normalized_name === colorName,
       );
 
       if (!selectedColorItem) {
@@ -176,7 +175,7 @@ const IphoneDetails = () => {
 
       // Find the index of the showcase image that matches the selected color's showcase_image_id
       const imageIndex = displayData?.showcase_images.findIndex(
-         (image: TShowcaseImage) =>
+         (image: TImage) =>
             image.image_id === selectedColorItem.showcase_image_id,
       );
 
@@ -207,7 +206,7 @@ const IphoneDetails = () => {
       }
 
       return displayData?.branchs
-         .map((branchData: TBranchWithSkus) => {
+         .map((branchData: { branch: TBranch; skus: TSku[] }) => {
             // Find the matching SKU for this branch
             const matchingSku = branchData.skus.find((sku: TSku) => {
                return (
@@ -247,17 +246,17 @@ const IphoneDetails = () => {
             normalized_name: selectedColor.normalized_name,
             hex_code:
                data.color_items.find(
-                  (color) =>
+                  (color: TColor) =>
                      color.normalized_name === selectedColor.normalized_name,
                )?.hex_code || '',
             showcase_image_id:
                data.color_items.find(
-                  (color) =>
+                  (color: TColor) =>
                      color.normalized_name === selectedColor.normalized_name,
                )?.showcase_image_id || '',
             order:
                data.color_items.find(
-                  (color) =>
+                  (color: TColor) =>
                      color.normalized_name === selectedColor.normalized_name,
                )?.order || 0,
          };
@@ -276,12 +275,12 @@ const IphoneDetails = () => {
 
          const display_image_url =
             data.showcase_images.find(
-               (image) => image.image_id === color.showcase_image_id,
+               (image: TImage) => image.image_id === color.showcase_image_id,
             )?.image_url || '';
 
          const sku_id =
             getModelBySlugState.data?.sku_prices.find(
-               (sku) =>
+               (sku: TSkuPrice) =>
                   sku.normalized_model === selectedModel.normalized_name &&
                   sku.normalized_color === selectedColor.normalized_name &&
                   sku.normalized_storage === selectedStorage.normalized_name,
@@ -296,6 +295,8 @@ const IphoneDetails = () => {
             )?.unit_price || 0;
 
          const sub_total_amount = unit_price * 1;
+         const discount_amount = 0;
+         const total_amount = sub_total_amount - discount_amount;
 
          storeBasketSync([
             {
@@ -311,6 +312,8 @@ const IphoneDetails = () => {
                promotion: null,
                quantity: 1,
                sub_total_amount: sub_total_amount,
+               discount_amount: discount_amount,
+               total_amount: total_amount,
                index: 1,
             },
          ]);
@@ -319,54 +322,6 @@ const IphoneDetails = () => {
             position: 'bottom-center',
             style: toastStyle,
          });
-
-         //  if (isAuthenticated) {
-         //     const sku_id =
-         //        getModelBySlugState.data?.sku_prices.find(
-         //           (sku) =>
-         //              sku.normalized_model === selectedModel.normalized_name &&
-         //              sku.normalized_color === selectedColor.normalized_name &&
-         //              sku.normalized_storage === selectedStorage.normalized_name,
-         //        )?.sku_id || '';
-
-         //     const result = await storeBasketAsync({
-         //        cart_items: [
-         //           {
-         //              is_selected: false,
-         //              sku_id: sku_id,
-         //              model_id: (getModelBySlugState.data as TIphoneModelDetails)
-         //                 .id,
-         //              color: {
-         //                 name: selectedColor.name,
-         //                 normalized_name: selectedColor.normalized_name,
-         //              },
-         //              model: {
-         //                 name: selectedModel.name,
-         //                 normalized_name: selectedModel.normalized_name,
-         //              },
-         //              storage: {
-         //                 name: selectedStorage.name,
-         //                 normalized_name: selectedStorage.normalized_name,
-         //              },
-         //              quantity: 1,
-         //           },
-         //        ],
-         //     });
-
-         //     if (result.isSuccess) {
-         //        toast.success('Item added to cart', {
-         //           position: 'bottom-center',
-         //           style: toastStyle,
-         //        });
-         //     } else {
-         //        toast.error('Failed to add item to cart', {
-         //           position: 'bottom-center',
-         //           style: errorToastStyle,
-         //        });
-         //     }
-         //  } else {
-
-         //  }
       };
 
       return (
@@ -586,7 +541,7 @@ const IphoneDetails = () => {
                      </div>
 
                      <div className="w-full flex flex-col gap-2">
-                        {models.map((model: TModelItem) => (
+                        {models.map((model: TModel) => (
                            <ModelItem
                               key={model.name}
                               modelName={model.name}
@@ -634,7 +589,7 @@ const IphoneDetails = () => {
                      </div>
 
                      <div className="flex flex-row gap-[12px] items-center">
-                        {colors.map((color: TColorItem) => {
+                        {colors.map((color: TColor) => {
                            return (
                               <ColorItem
                                  key={color.name}
@@ -679,7 +634,7 @@ const IphoneDetails = () => {
                      </div>
 
                      <div className="w-full flex flex-col gap-2">
-                        {storages.map((storage: TStorageItem) => {
+                        {storages.map((storage: TStorage) => {
                            return (
                               <StorageItem
                                  key={storage.name}

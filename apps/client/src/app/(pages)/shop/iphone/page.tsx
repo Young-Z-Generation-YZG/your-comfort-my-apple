@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { Button } from '@components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
@@ -22,64 +22,72 @@ import {
    ChevronRight,
    ChevronsLeft,
    ChevronsRight,
+   Ellipsis,
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
-import useCatalogService from '@components/hooks/api/use-catalog-service';
-import usePagination from '@components/hooks/use-pagination';
 import SuggestionProducts from './_components/suggestion-products';
-import { TGetIphoneModelsFilter } from '~/infrastructure/services/catalog.service';
 import useFilters from '@components/hooks/use-filter';
+import useProductService from '@components/hooks/api/use-product-service';
+import { IGetProductModelsByCategorySlugQueryParams } from '~/infrastructure/services/product.service';
+import usePaginationV2 from '@components/hooks/use-pagination';
 
 const IphoneShopPage = () => {
-   const { filters, setFilters } = useFilters<TGetIphoneModelsFilter>({
-      _page: 'number',
-      _limit: 'number',
-      _colors: { array: 'string' },
-      _storages: { array: 'string' },
-      _models: { array: 'string' },
-      _minPrice: 'number',
-      _maxPrice: 'number',
-      _priceSort: 'string',
-   });
+   const { filters, setFilters } =
+      useFilters<IGetProductModelsByCategorySlugQueryParams>({
+         _page: 'number',
+         _limit: 'number',
+         _colors: { array: 'string' },
+         _storages: { array: 'string' },
+         _models: { array: 'string' },
+         _minPrice: 'number',
+         _maxPrice: 'number',
+         _priceSort: 'string',
+      });
 
-   const { getIphoneModelsState, getIphoneModelsAsync, isLoading } =
-      useCatalogService();
+   const {
+      getProductModelsByCategorySlugAsync,
+      getProductModelsByCategorySlugState,
+      isLoading,
+   } = useProductService();
 
-   // Prepare filters for API call - pass filters directly to getIphoneModelsAsync
    useEffect(() => {
-      getIphoneModelsAsync(filters);
-   }, [filters, getIphoneModelsAsync]);
+      getProductModelsByCategorySlugAsync('iphone', filters);
+   }, [filters, getProductModelsByCategorySlugAsync]);
+
+   const paginationData = useMemo(() => {
+      return (
+         getProductModelsByCategorySlugState.data ?? {
+            total_records: 0,
+            total_pages: 0,
+            page_size: 10,
+            current_page: 1,
+            items: [],
+            links: {
+               first: null,
+               last: null,
+               prev: null,
+               next: null,
+            },
+         }
+      );
+   }, [getProductModelsByCategorySlugState.data]);
 
    const {
       currentPage,
       totalPages,
-      pageSize,
       totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getIphoneModelsState.isSuccess &&
-         getIphoneModelsState.data &&
-         getIphoneModelsState.data.items.length > 0
-         ? getIphoneModelsState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue,
+      getPaginationItems,
+   } = usePaginationV2(paginationData, {
+      pageSizeOverride: filters._limit ?? null,
+      currentPageOverride: filters._page ?? null,
+      fallbackPageSize: 10,
+   });
+
+   const paginationItems = getPaginationItems();
+   const productItems = paginationData.items;
 
    const handleSortChange = (value: string) => {
       // Map sort value to priceSort
@@ -281,24 +289,30 @@ const IphoneShopPage = () => {
                                          </div>
                                       </div>
                                    ))
-                              : paginationItems.map((item) => (
-                                   <div
-                                      key={item.id}
-                                      className="mb-10 hover:shadow-lg transition-all duration-300 ease-in-out rounded-md"
-                                   >
-                                      <IphoneModel
-                                         models={item.model_items}
-                                         colors={item.color_items}
-                                         storages={item.storage_items}
-                                         displayImageUrl={
-                                            item.showcase_images[0].image_url
-                                         }
-                                         averageRating={item.average_rating}
-                                         skuPrices={item.sku_prices}
-                                         modelSlug={item.slug}
-                                      />
-                                   </div>
-                                ))}
+                              : productItems.length > 0
+                                ? productItems.map((item) => (
+                                     <div
+                                        key={item.id}
+                                        className="mb-10 hover:shadow-lg transition-all duration-300 ease-in-out rounded-md"
+                                     >
+                                        <IphoneModel
+                                           models={item.model_items}
+                                           colors={item.color_items}
+                                           storages={item.storage_items}
+                                           displayImageUrl={
+                                              item.showcase_images[0]?.image_url
+                                           }
+                                           averageRating={item.average_rating}
+                                           skuPrices={item.sku_prices}
+                                           modelSlug={item.slug}
+                                        />
+                                     </div>
+                                  ))
+                                : !isLoading && (
+                                     <div className="col-span-full text-center py-12 text-gray-500">
+                                        No products found
+                                     </div>
+                                  )}
                         </div>
                      </div>
 
@@ -307,27 +321,8 @@ const IphoneShopPage = () => {
                         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
                            {/* Page Info & Size Selector */}
                            <div className="flex items-center gap-4">
-                              <div className="text-sm text-gray-600">
-                                 Showing{' '}
-                                 <span className="font-semibold">
-                                    {(currentPage - 1) * pageSize + 1}
-                                 </span>{' '}
-                                 to{' '}
-                                 <span className="font-semibold">
-                                    {Math.min(
-                                       currentPage * pageSize,
-                                       totalRecords,
-                                    )}
-                                 </span>{' '}
-                                 of{' '}
-                                 <span className="font-semibold">
-                                    {totalRecords}
-                                 </span>{' '}
-                                 results
-                              </div>
-
                               <Select
-                                 //  value={filters._limit?.toString() || '10'}
+                                 value={limitSelectValue}
                                  onValueChange={handlePageSizeChange}
                               >
                                  <SelectTrigger className="w-[100px] h-9">
@@ -341,99 +336,101 @@ const IphoneShopPage = () => {
                                        <SelectItem value="10">
                                           10 / page
                                        </SelectItem>
+                                       <SelectItem value="20">
+                                          20 / page
+                                       </SelectItem>
                                     </SelectGroup>
                                  </SelectContent>
                               </Select>
+
+                              <div className="text-sm text-gray-600">
+                                 Showing{' '}
+                                 <span className="font-semibold">
+                                    {firstItemIndex}
+                                 </span>{' '}
+                                 to{' '}
+                                 <span className="font-semibold">
+                                    {lastItemIndex}
+                                 </span>{' '}
+                                 of{' '}
+                                 <span className="font-semibold">
+                                    {totalRecords}
+                                 </span>{' '}
+                                 results
+                              </div>
                            </div>
 
                            {/* Pagination Controls */}
                            <div className="flex items-center gap-2">
-                              {/* First Page */}
-                              <Button
-                                 variant="outline"
-                                 size="icon"
-                                 className="h-9 w-9"
-                                 onClick={() => handlePageChange(1)}
-                                 disabled={isFirstPage}
-                              >
-                                 <ChevronsLeft className="h-4 w-4" />
-                              </Button>
-
-                              {/* Previous Page */}
-                              <Button
-                                 variant="outline"
-                                 size="icon"
-                                 className="h-9 w-9"
-                                 onClick={() =>
-                                    handlePageChange(currentPage - 1)
-                                 }
-                                 disabled={!isPrevPage}
-                              >
-                                 <ChevronLeft className="h-4 w-4" />
-                              </Button>
-
-                              {/* Page Numbers */}
-                              <div className="flex items-center gap-1">
-                                 {getPageNumbers().map((page, index) => {
-                                    const pageNum = page as number | string;
-                                    if (pageNum === '...') {
+                              {paginationItems.map(
+                                 (
+                                    item: {
+                                       type: 'nav' | 'page' | 'ellipsis';
+                                       label: string;
+                                       value: number | null;
+                                       disabled?: boolean;
+                                    },
+                                    index: number,
+                                 ) => {
+                                    if (item.type === 'ellipsis') {
                                        return (
                                           <span
                                              key={`ellipsis-${index}`}
-                                             className="px-2 text-gray-400"
+                                             className="px-2 text-gray-400 flex items-center"
                                           >
-                                             ...
+                                             <Ellipsis className="h-4 w-4" />
                                           </span>
                                        );
                                     }
 
+                                    const isCurrentPage =
+                                       item.type === 'page' &&
+                                       item.value === currentPage;
+
                                     return (
                                        <Button
-                                          key={`page-${pageNum}`}
+                                          key={`${item.type}-${item.label}-${index}`}
                                           variant={
-                                             currentPage === pageNum
+                                             isCurrentPage
                                                 ? 'default'
                                                 : 'outline'
                                           }
                                           size="icon"
                                           className={cn(
                                              'h-9 w-9',
-                                             currentPage === pageNum &&
+                                             isCurrentPage &&
                                                 'bg-black text-white hover:bg-black/90',
                                           )}
-                                          onClick={() =>
-                                             handlePageChange(pageNum as number)
+                                          disabled={
+                                             item.disabled ||
+                                             item.value === null
                                           }
+                                          onClick={() => {
+                                             if (
+                                                item.value !== null &&
+                                                !item.disabled
+                                             ) {
+                                                handlePageChange(item.value);
+                                             }
+                                          }}
                                        >
-                                          {pageNum}
+                                          {item.type === 'nav' ? (
+                                             item.label === '<<' ? (
+                                                <ChevronsLeft className="h-4 w-4" />
+                                             ) : item.label === '>>' ? (
+                                                <ChevronsRight className="h-4 w-4" />
+                                             ) : item.label === '<' ? (
+                                                <ChevronLeft className="h-4 w-4" />
+                                             ) : (
+                                                <ChevronRight className="h-4 w-4" />
+                                             )
+                                          ) : (
+                                             item.label
+                                          )}
                                        </Button>
                                     );
-                                 })}
-                              </div>
-
-                              {/* Next Page */}
-                              <Button
-                                 variant="outline"
-                                 size="icon"
-                                 className="h-9 w-9"
-                                 onClick={() =>
-                                    handlePageChange(currentPage + 1)
-                                 }
-                                 disabled={!isNextPage}
-                              >
-                                 <ChevronRight className="h-4 w-4" />
-                              </Button>
-
-                              {/* Last Page */}
-                              <Button
-                                 variant="outline"
-                                 size="icon"
-                                 className="h-9 w-9"
-                                 onClick={() => handlePageChange(totalPages)}
-                                 disabled={isLastPage}
-                              >
-                                 <ChevronsRight className="h-4 w-4" />
-                              </Button>
+                                 },
+                              )}
                            </div>
                         </div>
                      )}

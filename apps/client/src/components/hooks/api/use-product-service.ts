@@ -5,6 +5,8 @@ import {
    useLazyGetNewestProductsQuery,
    useLazyGetSuggestionProductsQuery,
    IGetProductModelsQueryParams,
+   useLazyGetProductModelsByCategorySlugQuery,
+   IGetProductModelsByCategorySlugQueryParams,
 } from '~/infrastructure/services/product.service';
 
 const useProductService = () => {
@@ -16,6 +18,38 @@ const useProductService = () => {
       useLazyGetNewestProductsQuery();
    const [getSuggestionProductsTrigger, getSuggestionProductsState] =
       useLazyGetSuggestionProductsQuery();
+   const [
+      getProductModelsByCategorySlugTrigger,
+      getProductModelsByCategorySlugState,
+   ] = useLazyGetProductModelsByCategorySlugQuery();
+
+   const getProductModelsByCategorySlugAsync = useCallback(
+      async (
+         categorySlug: string,
+         queryParams: IGetProductModelsByCategorySlugQueryParams,
+      ) => {
+         try {
+            const result = await getProductModelsByCategorySlugTrigger({
+               categorySlug,
+               queryParams,
+            }).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getProductModelsByCategorySlugTrigger],
+   );
 
    const getProductModelsAsync = useCallback(
       async (query: IGetProductModelsQueryParams) => {
@@ -105,7 +139,9 @@ const useProductService = () => {
          getNewestProductsState.isLoading ||
          getNewestProductsState.isFetching ||
          getSuggestionProductsState.isLoading ||
-         getSuggestionProductsState.isFetching
+         getSuggestionProductsState.isFetching ||
+         getProductModelsByCategorySlugState.isLoading ||
+         getProductModelsByCategorySlugState.isFetching
       );
    }, [
       getProductModelsState.isLoading,
@@ -116,6 +152,8 @@ const useProductService = () => {
       getNewestProductsState.isFetching,
       getSuggestionProductsState.isLoading,
       getSuggestionProductsState.isFetching,
+      getProductModelsByCategorySlugState.isLoading,
+      getProductModelsByCategorySlugState.isFetching,
    ]);
 
    return {
@@ -124,11 +162,13 @@ const useProductService = () => {
       getPopularProductsState,
       getNewestProductsState,
       getSuggestionProductsState,
+      getProductModelsByCategorySlugState,
 
       getProductModelsAsync,
       getPopularProductsAsync,
       getNewestProductsAsync,
       getSuggestionProductsAsync,
+      getProductModelsByCategorySlugAsync,
    };
 };
 

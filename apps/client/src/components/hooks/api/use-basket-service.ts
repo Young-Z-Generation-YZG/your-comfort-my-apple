@@ -13,6 +13,8 @@ import {
 } from '~/infrastructure/services/basket.service';
 import { useCheckApiError } from '../use-check-error';
 import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
+import { useDispatch } from 'react-redux';
+import { clearCart } from '~/infrastructure/redux/features/cart.slice';
 
 const useBasketService = () => {
    const [getBasketQueryTrigger, getBasketQueryState] = useLazyGetBasketQuery();
@@ -33,6 +35,8 @@ const useBasketService = () => {
       checkoutBasketWithBlockchainMutation,
       checkoutBasketWithBlockchainMutationState,
    ] = useCheckoutBasketWithBlockchainMutation();
+
+   const dispatch = useDispatch();
 
    useCheckApiError([
       { title: 'Get Basket failed', error: getBasketQueryState.error },
@@ -132,6 +136,8 @@ const useBasketService = () => {
    const deleteBasketAsync = useCallback(async () => {
       try {
          const result = await deleteBasketMutation().unwrap();
+
+         dispatch(clearCart());
          return {
             isSuccess: true,
             isError: false,

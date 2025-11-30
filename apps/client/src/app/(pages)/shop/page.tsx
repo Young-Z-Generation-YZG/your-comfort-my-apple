@@ -1,7 +1,7 @@
 'use client';
 
 import useProductService from '@components/hooks/api/use-product-service';
-import usePaginationV2 from '@components/hooks/use-pagination-v2';
+import usePaginationV2 from '@components/hooks/use-pagination';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { Button } from '@components/ui/button';

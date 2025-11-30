@@ -31,9 +31,9 @@ import NextImage from 'next/image';
 import useOrderingService from '~/components/hooks/api/use-ordering-service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import useReviewService from '@components/hooks/api/use-review-service';
-import { TReviewInOrderItem } from '~/infrastructure/services/review.service';
 import RatingStar from '@components/ui/rating-star';
-import { TOrderItem } from '~/infrastructure/services/ordering.service';
+import { TOrderItem } from '~/domain/types/ordering.type';
+import { TReviewInOrderItem } from '~/domain/types/catalog.type';
 
 const containerVariants = {
    hidden: { opacity: 0 },
@@ -477,7 +477,7 @@ export default function OrderDetails() {
                         <div className="divide-y divide-gray-200">
                            <AnimatePresence>
                               {getOrderDetailsState.data.order_items.map(
-                                 (item: TOrderItem, index: number) => (
+                                 (item, index) => (
                                     <motion.div
                                        key={index}
                                        className="p-4 flex items-center"
@@ -522,9 +522,9 @@ export default function OrderDetails() {
                                              </p>
                                              <p className="text-sm font-medium text-gray-900">
                                                 $
-                                                {item.sub_total_amount.toFixed(
-                                                   2,
-                                                )}
+                                                {(
+                                                   item.sub_total_amount ?? 0
+                                                ).toFixed(2)}
                                              </p>
                                           </div>
 
@@ -712,7 +712,7 @@ export default function OrderDetails() {
                      item={{
                         product_id: reviewItem.model_id, // Using model_id as product_id
                         model_id: reviewItem.model_id,
-                        order_id: getOrderDetailsState.data.order_id,
+                        order_id: getOrderDetailsState.data?.order_id || '',
                         order_item_id: reviewItem.order_item_id,
                         sku_id: reviewItem.sku_id || null,
                         name:
