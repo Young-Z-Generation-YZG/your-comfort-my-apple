@@ -30,7 +30,12 @@ public static class SeedDataExtension
             return;
         }
 
-        await context.Orders.AddRangeAsync(SeedOrderData.Orders);
+        await context.Orders.AddRangeAsync(OrderData_2025.Orders);
+        await context.Orders.AddRangeAsync(OrderData_2024.Orders);
+        await context.Orders.AddRangeAsync(OrderData_HCM_TD_KVC_1060.Orders);
+        await context.Orders.AddRangeAsync(OrderData_HCM_Q1_CMT8_92.Orders);
+        await context.Orders.AddRangeAsync(OrderData_HCM_Q9_LVV_33.Orders);
+
         await context.SaveChangesAsync();
     }
 }

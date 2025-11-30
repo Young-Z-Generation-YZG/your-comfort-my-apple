@@ -49,6 +49,9 @@ import {
    Package,
    Search,
    X,
+   Blend,
+   Smartphone,
+   TabletSmartphone,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
@@ -89,55 +92,55 @@ const models = [
    {
       name: 'iPhone 15',
       normalized_name: 'IPHONE_15',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 0,
    },
    {
       name: 'iPhone 15 Plus',
       normalized_name: 'IPHONE_15_PLUS',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 1,
    },
    {
       name: 'iPhone 16',
       normalized_name: 'IPHONE_16',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 2,
    },
    {
       name: 'iPhone 16 Plus',
       normalized_name: 'IPHONE_16_PLUS',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 3,
    },
    {
       name: 'iPhone 16e',
       normalized_name: 'IPHONE_16E',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 5,
    },
    {
       name: 'iPhone 17',
       normalized_name: 'IPHONE_17',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 6,
    },
    {
       name: 'iPhone 17 Pro',
       normalized_name: 'IPHONE_17_PRO',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 7,
    },
    {
       name: 'iPhone 17 Pro Max',
       normalized_name: 'IPHONE_17_PRO_MAX',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 8,
    },
    {
       name: 'iPhone 17 Air',
       normalized_name: 'IPHONE_17_AIR',
-      icon: Cylinder,
+      icon: Smartphone,
       order: 9,
    },
 ];
@@ -147,126 +150,108 @@ const colors = [
       name: 'ultramarine',
       normalized_name: 'ULTRAMARINE',
       hex: '#9AADF6',
-      icon: Cylinder,
       order: 0,
    },
    {
       name: 'green',
       normalized_name: 'GREEN',
       hex: '#D0D9CA',
-      icon: Cylinder,
       order: 1,
    },
    {
       name: 'teal',
       normalized_name: 'TEAL',
       hex: '#B0D4D2',
-      icon: Cylinder,
       order: 2,
    },
    {
       name: 'blue',
       normalized_name: 'BLUE',
       hex: '#D5DDDF',
-      icon: Cylinder,
       order: 3,
    },
    {
       name: 'yellow',
       normalized_name: 'YELLOW',
       hex: '#EDE6C8',
-      icon: Cylinder,
       order: 4,
    },
    {
       name: 'pink',
       normalized_name: 'PINK',
       hex: '#F2ADDA',
-      icon: Cylinder,
       order: 5,
    },
    {
       name: 'white',
       normalized_name: 'WHITE',
       hex: '#FAFAFA',
-      icon: Cylinder,
       order: 6,
    },
    {
       name: 'black',
       normalized_name: 'BLACK',
       hex: '#3C4042',
-      icon: Cylinder,
       order: 7,
    },
    {
       name: 'Lavender',
       normalized_name: 'LAVENDER',
       hex: '#E7D9F2',
-      icon: Cylinder,
       order: 8,
    },
    {
       name: 'Sage',
       normalized_name: 'SAGE',
       hex: '#BBC89E',
-      icon: Cylinder,
       order: 9,
    },
    {
       name: 'Mist Blue',
       normalized_name: 'MIST_BLUE',
       hex: '#A7BDDE',
-      icon: Cylinder,
       order: 10,
    },
    {
       name: 'Silver',
       normalized_name: 'SILVER',
       hex: '#E6E6E6',
-      icon: Cylinder,
       order: 11,
    },
    {
       name: 'Cosmic Orange',
       normalized_name: 'COSMIC_ORANGE',
       hex: '#F67E36',
-      icon: Cylinder,
       order: 12,
    },
    {
       name: 'Deep Blue',
       normalized_name: 'DEEP_BLUE',
       hex: '#3F4C77',
-      icon: Cylinder,
       order: 13,
    },
    {
       name: 'Sky Blue',
       normalized_name: 'SKY_BLUE',
       hex: '#E5F2FA',
-      icon: Cylinder,
       order: 14,
    },
    {
       name: 'Light Gold',
       normalized_name: 'LIGHT_GOLD',
       hex: '#FAF3E6',
-      icon: Cylinder,
       order: 15,
    },
    {
       name: 'Cloud White',
       normalized_name: 'CLOUD_WHITE',
       hex: '#FCFCFC',
-      icon: Cylinder,
       order: 16,
    },
    {
       name: 'Space Black',
       normalized_name: 'SPACE_BLACK',
       hex: '#121212',
-      icon: Cylinder,
       order: 17,
    },
 ];
@@ -640,7 +625,7 @@ const WarehousesPage = () => {
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                            <Button variant="outline" className="h-10 gap-2">
-                              <Cylinder className="h-4 w-4" />
+                              <TabletSmartphone className="h-4 w-4" />
                               <span className="font-medium">Model</span>
                               <div className="flex items-center gap-2">
                                  {(() => {
@@ -816,7 +801,7 @@ const WarehousesPage = () => {
                      <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                            <Button variant="outline" className="h-10 gap-2">
-                              <Cylinder className="h-4 w-4" />
+                              <Blend className="h-4 w-4" />
                               <span className="font-medium">Color</span>
                               <div className="flex items-center gap-2">
                                  {(() => {
@@ -915,7 +900,6 @@ const WarehousesPage = () => {
                               ) : (
                                  <>
                                     {filteredColors.map((color) => {
-                                       const ColorIcon = color.icon;
                                        const isChecked =
                                           filters._colors?.includes(
                                              color.normalized_name,
@@ -964,7 +948,6 @@ const WarehousesPage = () => {
                                                       }}
                                                    />
                                                 )}
-                                                <ColorIcon className="h-4 w-4" />
                                              </div>
                                              <span className="capitalize">
                                                 {color.name}
