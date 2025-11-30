@@ -59,7 +59,7 @@ import { Gender } from '~/src/domain/enums/gender.enum';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TUser } from '~/src/infrastructure/services/identity.service';
-import usePaginationV2 from '~/src/hooks/use-pagination-v2';
+import usePaginationV2 from '~/src/hooks/use-pagination';
 import { useDebounce } from '~/src/hooks/use-debounce';
 
 // Helper function to get gender badge styles

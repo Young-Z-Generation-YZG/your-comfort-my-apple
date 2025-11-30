@@ -42,7 +42,7 @@ import {
 } from '@components/ui/dropdown-menu';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import usePaginationV2 from '~/src/hooks/use-pagination-v2';
+import usePaginationV2 from '~/src/hooks/use-pagination';
 import {
    ArrowUpDown,
    ChevronDown,

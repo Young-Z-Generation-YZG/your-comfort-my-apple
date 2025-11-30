@@ -53,7 +53,7 @@ import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import { TUser } from '~/src/domain/types/identity';
 import { TOrder } from '~/src/domain/types/ordering';
 import { cn } from '~/src/infrastructure/lib/utils';
-import usePaginationV2 from '~/src/hooks/use-pagination-v2';
+import usePaginationV2 from '~/src/hooks/use-pagination';
 import {
    ColumnDef,
    flexRender,
@@ -223,8 +223,8 @@ const CustomerManagementDetailPage = () => {
             header: 'Order',
             cell: ({ row }) => {
                const order = row.original;
-   return (
-      <div>
+               return (
+                  <div>
                      <div className="font-semibold">{order.order_code}</div>
                      <p className="text-xs text-muted-foreground">
                         {order.created_at
