@@ -188,6 +188,47 @@ export type TSuggestionProduct = {
    deleted_by: string | null;
 };
 
+// Review Types
+export type TReviewItem = {
+   id: string;
+   model_id: string;
+   sku_id: string;
+   order_info: {
+      order_id: string;
+      order_item_id: string;
+   };
+   customer_review_info: {
+      name: string;
+      avatar_image_url: string | null;
+   };
+   rating: number;
+   content: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TReviewInOrderItem = {
+   id: string;
+   model_id: string;
+   sku_id: string;
+   order_info: {
+      order_id: string;
+      order_item_id: string;
+   };
+   rating: number;
+   content: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
 // Tenant Types
 export type TTenant = {
    id: string;

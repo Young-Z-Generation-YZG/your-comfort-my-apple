@@ -5,6 +5,7 @@ import {
    useCreateReviewAsyncMutation,
    useUpdateReviewAsyncMutation,
    useDeleteReviewAsyncMutation,
+   IGetReviewByProductModelSlugQueryParams,
 } from '~/infrastructure/services/review.service';
 import {
    IReviewPayload,
@@ -53,18 +54,12 @@ const useReviewService = () => {
    const getReviewByProductModelSlugAsync = useCallback(
       async (
          slug: string,
-         options?: {
-            page?: number;
-            limit?: number;
-            sortOrder?: 'asc' | 'desc';
-         },
+         queryParams: IGetReviewByProductModelSlugQueryParams,
       ) => {
          try {
             const result = await getReviewByProductModelSlugTrigger({
                slug,
-               page: options?.page,
-               limit: options?.limit,
-               sortOrder: options?.sortOrder,
+               queryParams: queryParams,
             }).unwrap();
             return {
                isSuccess: true,

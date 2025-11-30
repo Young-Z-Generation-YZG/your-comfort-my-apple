@@ -1,7 +1,4 @@
-﻿
-
-using MassTransit;
-using MediatR;
+﻿using MediatR;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
@@ -30,15 +27,15 @@ public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreate
 
         await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
 
-                var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
-        {
-            OrderItemId = notification.Review.OrderInfo.OrderItemId,
-            IsReviewed = true
-        });
+        // var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+        // {
+        //     OrderItemId = notification.Review.OrderInfo.OrderItemId,
+        //     IsReviewed = true
+        // });
 
-        if (rpcResult.IsFailure)
-        {
-            throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
-        }
+        // if (rpcResult.IsFailure)
+        // {
+        //     throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+        // }
     }
 }

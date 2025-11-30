@@ -1,105 +1,116 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import {
    ChevronLeft,
    ChevronRight,
    ChevronsLeft,
    ChevronsRight,
+   Ellipsis,
 } from 'lucide-react';
 import useReviewService from '@components/hooks/api/use-review-service';
-import usePagination from '@components/hooks/use-pagination';
-import useFilter from '../../../../shop/_hooks/use-filter';
 import ReviewItem from './review-item';
 import { Button } from '@components/ui/button';
 import { Separator } from '@components/ui/separator';
+import {
+   Select,
+   SelectContent,
+   SelectGroup,
+   SelectItem,
+   SelectTrigger,
+   SelectValue,
+} from '@components/ui/select';
 import { cn } from '~/infrastructure/lib/utils';
 import RatingStar from '@components/ui/rating-star';
-
-type ReviewFilters = {
-   _page: number;
-};
+import usePaginationV2 from '@components/hooks/use-pagination-v2';
 
 const ReviewsSection = () => {
    const { slug } = useParams();
-   const { filters, setFilters, removeFilter } = useFilter<ReviewFilters>();
+
+   const [_page, setPage] = useState<number | null>(null);
+   const [_limit, setLimit] = useState<number | null>(null);
+
    const {
       getReviewByProductModelSlugAsync,
       getReviewByProductModelSlugState,
       isLoading,
    } = useReviewService();
 
-   const page = filters._page || 1;
-   const limit = 5;
+   // Default pagination data
+   const defaultPaginationData = useMemo(
+      () => ({
+         total_records: 0,
+         total_pages: 0,
+         page_size: 10,
+         current_page: 1,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      }),
+      [],
+   );
 
-   useEffect(() => {
-      if (slug && page) {
-         getReviewByProductModelSlugAsync(slug as string, {
-            page,
-            limit,
-            sortOrder: 'desc',
-         });
-      }
-   }, [slug, page, limit, getReviewByProductModelSlugAsync]);
+   const paginationData = useMemo(() => {
+      return getReviewByProductModelSlugState.data ?? defaultPaginationData;
+   }, [getReviewByProductModelSlugState.data, defaultPaginationData]);
 
    const {
       currentPage,
       totalPages,
-      pageSize,
       totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getReviewByProductModelSlugState.data &&
-         getReviewByProductModelSlugState.data.items.length > 0
-         ? getReviewByProductModelSlugState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue,
+      getPaginationItems,
+   } = usePaginationV2(paginationData, {
+      pageSizeOverride: _limit ?? null,
+      currentPageOverride: _page ?? null,
+      fallbackPageSize: 5,
+   });
+
+   const paginationItems = getPaginationItems();
+   const reviewItems = paginationData.items;
+
+   useEffect(() => {
+      if (slug) {
+         getReviewByProductModelSlugAsync(slug as string, {
+            _page: _page ?? 1,
+            _limit: _limit ?? 5,
+            _sortOrder: 'DESC',
+         });
+      }
+   }, [slug, _page, _limit, getReviewByProductModelSlugAsync]);
 
    const averageRating = useMemo(() => {
-      if (
-         !getReviewByProductModelSlugState.data ||
-         getReviewByProductModelSlugState.data.items.length === 0
-      ) {
+      if (!reviewItems || reviewItems.length === 0) {
          return 0;
       }
-      const sum = getReviewByProductModelSlugState.data.items.reduce(
-         (acc, review) => acc + review.rating,
-         0,
-      );
-      return sum / getReviewByProductModelSlugState.data.items.length;
-   }, [getReviewByProductModelSlugState.data]);
+      const sum = reviewItems.reduce((acc, review) => acc + review.rating, 0);
+      return sum / reviewItems.length;
+   }, [reviewItems]);
 
    const handlePageChange = (page: number) => {
       if (page !== currentPage && page >= 1 && page <= totalPages) {
-         // Only add _page to URL if it's not page 1, remove it if it's page 1
          if (page === 1) {
-            removeFilter('_page'); // Remove _page from URL when going to page 1
+            setPage(null);
          } else {
-            setFilters({ _page: page });
+            setPage(page);
          }
-         window.scrollTo({ top: 0, behavior: 'smooth' });
+         //  window.scrollTo({ top: 0, behavior: 'smooth' });
       }
    };
 
-   const hasReviews = paginationItems.length > 0;
+   const handlePageSizeChange = (size: string) => {
+      setLimit(Number(size));
+      setPage(1);
+   };
+
+   const hasReviews = reviewItems.length > 0;
 
    return (
       <div className="mt-16">
@@ -138,7 +149,7 @@ const ReviewsSection = () => {
          ) : hasReviews ? (
             <>
                <div className="space-y-6 mb-8">
-                  {paginationItems.map((item) => {
+                  {reviewItems.map((item) => {
                      return <ReviewItem key={item.id} review={item} />;
                   })}
                </div>
@@ -146,107 +157,90 @@ const ReviewsSection = () => {
                {/* Pagination */}
                {totalPages > 0 && (
                   <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
-                     {/* Page Info */}
+                     {/* Page Info & Size Selector */}
                      <div className="flex items-center gap-4">
+                        <Select
+                           value={limitSelectValue}
+                           onValueChange={handlePageSizeChange}
+                        >
+                           <SelectTrigger className="w-auto h-9">
+                              <SelectValue />
+                           </SelectTrigger>
+                           <SelectContent>
+                              <SelectGroup>
+                                 <SelectItem value="5">5 / page</SelectItem>
+                                 <SelectItem value="10">10 / page</SelectItem>
+                                 <SelectItem value="20">20 / page</SelectItem>
+                              </SelectGroup>
+                           </SelectContent>
+                        </Select>
+
                         <div className="text-sm text-gray-600">
                            Showing{' '}
                            <span className="font-semibold">
-                              {(currentPage - 1) * pageSize + 1}
+                              {firstItemIndex}
                            </span>{' '}
                            to{' '}
                            <span className="font-semibold">
-                              {Math.min(currentPage * pageSize, totalRecords)}
+                              {lastItemIndex}
                            </span>{' '}
                            of{' '}
                            <span className="font-semibold">{totalRecords}</span>{' '}
-                           results
+                           reviews
                         </div>
                      </div>
 
                      {/* Pagination Controls */}
                      <div className="flex items-center gap-2">
-                        {/* First Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => handlePageChange(1)}
-                           disabled={isFirstPage}
-                        >
-                           <ChevronsLeft className="h-4 w-4" />
-                        </Button>
-
-                        {/* Previous Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => handlePageChange(currentPage - 1)}
-                           disabled={!isPrevPage}
-                        >
-                           <ChevronLeft className="h-4 w-4" />
-                        </Button>
-
-                        {/* Page Numbers */}
-                        <div className="flex items-center gap-1">
-                           {getPageNumbers().map((page, index) => {
-                              const pageNum = page as number | string;
-                              if (pageNum === '...') {
-                                 return (
-                                    <span
-                                       key={`ellipsis-${index}`}
-                                       className="px-2 text-gray-400"
-                                    >
-                                       ...
-                                    </span>
-                                 );
-                              }
-
+                        {paginationItems.map((item, index) => {
+                           if (item.type === 'ellipsis') {
                               return (
-                                 <Button
-                                    key={`page-${pageNum}`}
-                                    variant={
-                                       currentPage === pageNum
-                                          ? 'default'
-                                          : 'outline'
-                                    }
-                                    size="icon"
-                                    className={cn(
-                                       'h-9 w-9',
-                                       currentPage === pageNum &&
-                                          'bg-black text-white hover:bg-black/90',
-                                    )}
-                                    onClick={() =>
-                                       handlePageChange(pageNum as number)
-                                    }
+                                 <span
+                                    key={`ellipsis-${index}`}
+                                    className="px-2 text-gray-400 flex items-center"
                                  >
-                                    {pageNum}
-                                 </Button>
+                                    <Ellipsis className="h-4 w-4" />
+                                 </span>
                               );
-                           })}
-                        </div>
+                           }
 
-                        {/* Next Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => handlePageChange(currentPage + 1)}
-                           disabled={!isNextPage}
-                        >
-                           <ChevronRight className="h-4 w-4" />
-                        </Button>
+                           const isCurrentPage =
+                              item.type === 'page' &&
+                              item.value === currentPage;
 
-                        {/* Last Page */}
-                        <Button
-                           variant="outline"
-                           size="icon"
-                           className="h-9 w-9"
-                           onClick={() => handlePageChange(totalPages)}
-                           disabled={isLastPage}
-                        >
-                           <ChevronsRight className="h-4 w-4" />
-                        </Button>
+                           return (
+                              <Button
+                                 key={`${item.type}-${item.label}-${index}`}
+                                 variant={isCurrentPage ? 'default' : 'outline'}
+                                 size="icon"
+                                 className={cn(
+                                    'h-9 w-9',
+                                    isCurrentPage &&
+                                       'bg-black text-white hover:bg-black/90',
+                                 )}
+                                 disabled={item.disabled || item.value === null}
+                                 onClick={() => {
+                                    if (item.value !== null && !item.disabled) {
+                                       handlePageChange(item.value);
+                                    }
+                                 }}
+                              >
+                                 {item.type === 'nav' ? (
+                                    item.label === '<<' ? (
+                                       <ChevronsLeft className="h-4 w-4" />
+                                    ) : item.label === '>>' ? (
+                                       <ChevronsRight className="h-4 w-4" />
+                                    ) : item.label === '<' ? (
+                                       <ChevronLeft className="h-4 w-4" />
+                                    ) : (
+                                       <ChevronRight className="h-4 w-4" />
+                                    )
+                                 ) : (
+                                    item.label
+                                 )}
+                              </Button>
+                           );
+                        })}
                      </div>
                   </div>
                )}

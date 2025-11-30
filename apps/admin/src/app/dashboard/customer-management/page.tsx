@@ -56,7 +56,7 @@ import {
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
-import useFilters from '~/src/hooks/use-filter';
+import useFilter from '~/src/hooks/use-filter';
 import { TUser } from '~/src/infrastructure/services/identity.service';
 import { useDebounce } from '~/src/hooks/use-debounce';
 
@@ -215,7 +215,7 @@ const CustomersPage = () => {
       [router],
    );
 
-   const { filters, setFilters } = useFilters<TUserFilter>({
+   const { filters, setFilters } = useFilter<TUserFilter>({
       _page: 'number',
       _limit: 'number',
       _email: 'string',

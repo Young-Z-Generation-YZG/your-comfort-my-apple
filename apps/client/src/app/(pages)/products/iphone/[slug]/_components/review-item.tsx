@@ -3,7 +3,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@components/ui/avatar';
 import RatingStar from '@components/ui/rating-star';
 import { Separator } from '@components/ui/separator';
-import { TReviewItem } from '~/infrastructure/services/review.service';
+import { TReviewItem } from '~/domain/types/catalog.type';
 
 type ReviewItemProps = {
    review: TReviewItem;

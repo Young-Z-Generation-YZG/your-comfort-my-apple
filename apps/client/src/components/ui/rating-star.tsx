@@ -10,12 +10,13 @@ const RatingStar = ({
    className = '',
 }: RatingStarProps) => {
    return (
-      <div className="flex flex-row gap-1">
+      <div className={`flex flex-row gap-1 ${className}`}>
          {Array(5)
             .fill(0)
             .map((_, index) => {
+               const starNumber = index + 1;
                const fillPercentage = Math.min(
-                  Math.max((rating - index) * 100, 0),
+                  Math.max((rating - (starNumber - 1)) * 100, 0),
                   100,
                );
                return (
@@ -29,7 +30,14 @@ const RatingStar = ({
                      className="mdl-js"
                   >
                      <defs>
-                        <linearGradient id={`star-gradient-${index}`}>
+                        <linearGradient
+                           id={`star-gradient-${index}-${rating}`}
+                           x1="0%"
+                           y1="0%"
+                           x2="100%"
+                           y2="0%"
+                        >
+                           <stop offset="0%" stopColor="#FFAA4E" />
                            <stop
                               offset={`${fillPercentage}%`}
                               stopColor="#FFAA4E"
@@ -38,10 +46,11 @@ const RatingStar = ({
                               offset={`${fillPercentage}%`}
                               stopColor="#D9D9D9"
                            />
+                           <stop offset="100%" stopColor="#D9D9D9" />
                         </linearGradient>
                      </defs>
                      <path
-                        fill={`url(#star-gradient-${index})`}
+                        fill={`url(#star-gradient-${index}-${rating})`}
                         d="M7.322 1.038c.255-.622 1.066-.633 1.341-.034l.015.034 1.773 4.316 4.685.341c.662.048.926.796.468 
                               1.245l-.025.023-.026.023-3.585 3.008 1.12 4.523c.16.644-.468 1.127-1.037.832l-.03-.015-.028-.017L8 
                               12.857l-3.993 2.46c-.564.348-1.217-.103-1.109-.735l.006-.032.008-.033 1.12-4.523L.446 6.986C-.063 

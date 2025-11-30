@@ -8,6 +8,8 @@ using YGZ.Catalog.Domain.Categories;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone;
+using YGZ.Catalog.Domain.Products.Iphone.Entities;
+using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
 using YGZ.Catalog.Domain.Tenants;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
@@ -27,6 +29,7 @@ public static class SeedDataExtension
         var tenantRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Tenant, TenantId>>();
         var branchRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Branch, BranchId>>();
         var skuRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<SKU, SkuId>>();
+        var reviewRepository = scope.ServiceProvider.GetRequiredService<IMongoRepository<Review, ReviewId>>();
         var distributedCache = scope.ServiceProvider.GetRequiredService<IDistributedCache>();
 
         await SeedCategoriesAsync(categoryRepository);
@@ -39,6 +42,9 @@ public static class SeedDataExtension
         await SeedCacheColorImages(iphoneModelRepository, distributedCache);
 
         await SeedTenantsAsync(tenantRepository);
+
+
+        await SeedReviewsAsync(reviewRepository);
     }
 
     private static async Task SeedCategoriesAsync(IMongoRepository<Category, CategoryId> categoryRepository)
@@ -116,7 +122,7 @@ public static class SeedDataExtension
         {
             await distributedCache.SetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: EIphoneModel.FromName(iphoneSkuPrice.Model.NormalizedName),
                                                                                                               colorEnum: EColor.FromName(iphoneSkuPrice.Color.NormalizedName),
-                                                                                                              storageEnum: EStorage.FromName(iphoneSkuPrice.Storage.NormalizedName)), 
+                                                                                                              storageEnum: EStorage.FromName(iphoneSkuPrice.Storage.NormalizedName)),
                                                                                                               iphoneSkuPrice.UnitPrice.ToString());
         }
     }
@@ -139,6 +145,19 @@ public static class SeedDataExtension
                 await distributedCache.SetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(iphoneModel.Id.Value!, colorEnum), matchedDisplayImageUrl!.ImageUrl);
             }
 
+        }
+    }
+
+    private static async Task SeedReviewsAsync(IMongoRepository<Review, ReviewId> reviewRepository)
+    {
+        var existingItems = await reviewRepository.GetAllAsync();
+
+        if (existingItems.Count == 0)
+        {
+            foreach (var item in SeedReviews.Reviews)
+            {
+                await reviewRepository.InsertOneAsync(item);
+            }
         }
     }
 }
