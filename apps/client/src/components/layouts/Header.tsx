@@ -22,7 +22,7 @@ import { exploreIphoneList } from './_data/explore-iphone-list';
 import useIdentityService from '@components/hooks/api/use-identity-service';
 import useNotificationService from '@components/hooks/api/use-notification-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import { TNotification } from '~/domain/types/ordering';
+import { TNotification } from '~/domain/types/ordering.type';
 import { INotificationQueryParams } from '~/infrastructure/services/notification.service';
 
 const containerVariants = {

@@ -13,23 +13,23 @@ using YGZ.Catalog.Application.Products.Queries.GetSuggestionProducts;
 namespace YGZ.Catalog.Api.Controllers;
 
 [ApiController]
-[Route("api/v{version:apiVersion}/products")]
+[Route("api/v{version:apiVersion}/product-models")]
 [OpenApiTag("Product Controllers", Description = "Display products.")]
 [AllowAnonymous]
-public class ProductController : ApiController
+public class ProductModelController : ApiController
 {
-    private readonly ILogger<ProductController> _logger;
+    private readonly ILogger<ProductModelController> _logger;
     private readonly ISender _sender;
     private readonly IMapper _mapper;
 
-    public ProductController(ILogger<ProductController> logger, ISender sender, IMapper mapper)
+    public ProductModelController(ILogger<ProductModelController> logger, ISender sender, IMapper mapper)
     {
         _logger = logger;
         _sender = sender;
         _mapper = mapper;
     }
 
-    [HttpGet()]
+    [HttpGet("")]
     public async Task<IActionResult> GetProducts([FromQuery] GetProductModelsRequest request, CancellationToken cancellationToken)
     {
         var query = new GetProductModelsQuery

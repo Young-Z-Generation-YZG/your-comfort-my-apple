@@ -1,13 +1,15 @@
 import { useCallback, useMemo } from 'react';
 import {
-   useLazyGetProductsQuery,
+   useLazyGetProductModelsQuery,
    useLazyGetPopularProductsQuery,
    useLazyGetNewestProductsQuery,
    useLazyGetSuggestionProductsQuery,
+   IGetProductModelsQueryParams,
 } from '~/infrastructure/services/product.service';
 
 const useProductService = () => {
-   const [getProductsTrigger, getProductsState] = useLazyGetProductsQuery();
+   const [getProductModelsTrigger, getProductModelsState] =
+      useLazyGetProductModelsQuery();
    const [getPopularProductsTrigger, getPopularProductsState] =
       useLazyGetPopularProductsQuery();
    const [getNewestProductsTrigger, getNewestProductsState] =
@@ -15,10 +17,10 @@ const useProductService = () => {
    const [getSuggestionProductsTrigger, getSuggestionProductsState] =
       useLazyGetSuggestionProductsQuery();
 
-   const getProductsAsync = useCallback(
-      async (query: Record<string, any>) => {
+   const getProductModelsAsync = useCallback(
+      async (query: IGetProductModelsQueryParams) => {
          try {
-            const result = await getProductsTrigger(query).unwrap();
+            const result = await getProductModelsTrigger(query).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -34,7 +36,7 @@ const useProductService = () => {
             };
          }
       },
-      [getProductsTrigger],
+      [getProductModelsTrigger],
    );
 
    const getPopularProductsAsync = useCallback(async () => {
@@ -96,8 +98,8 @@ const useProductService = () => {
 
    const isLoading = useMemo(() => {
       return (
-         getProductsState.isLoading ||
-         getProductsState.isFetching ||
+         getProductModelsState.isLoading ||
+         getProductModelsState.isFetching ||
          getPopularProductsState.isLoading ||
          getPopularProductsState.isFetching ||
          getNewestProductsState.isLoading ||
@@ -106,8 +108,8 @@ const useProductService = () => {
          getSuggestionProductsState.isFetching
       );
    }, [
-      getProductsState.isLoading,
-      getProductsState.isFetching,
+      getProductModelsState.isLoading,
+      getProductModelsState.isFetching,
       getPopularProductsState.isLoading,
       getPopularProductsState.isFetching,
       getNewestProductsState.isLoading,
@@ -118,12 +120,12 @@ const useProductService = () => {
 
    return {
       isLoading,
-      getProductsState,
+      getProductModelsState,
       getPopularProductsState,
       getNewestProductsState,
       getSuggestionProductsState,
 
-      getProductsAsync,
+      getProductModelsAsync,
       getPopularProductsAsync,
       getNewestProductsAsync,
       getSuggestionProductsAsync,

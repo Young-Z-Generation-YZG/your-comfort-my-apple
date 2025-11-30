@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import { TNotification } from '~/domain/types/ordering';
+import { TNotification } from '~/domain/types/ordering.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/ordering-services')(
