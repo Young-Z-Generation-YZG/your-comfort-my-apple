@@ -10,43 +10,15 @@ import {
 
 import NewestProduct from '@components/client/newest-product';
 import useProductService from '@components/hooks/api/use-product-service';
-import usePagination from '@components/hooks/use-pagination';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const NewestProducts = () => {
    const { getNewestProductsAsync, getNewestProductsState, isLoading } =
       useProductService();
 
-   const {
-      currentPage,
-      totalPages,
-      pageSize,
-      totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getNewestProductsState.isSuccess &&
-         getNewestProductsState.data &&
-         getNewestProductsState.data.items.length > 0
-         ? getNewestProductsState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
+   const productItems = useMemo(() => {
+      return getNewestProductsState.data?.items ?? [];
+   }, [getNewestProductsState.data]);
 
    useEffect(() => {
       const fetchNewestProducts = async () => {
@@ -70,14 +42,20 @@ const NewestProducts = () => {
                className="w-full"
             >
                <CarouselContent className="-ml-4">
-                  {paginationItems.map((product) => (
-                     <CarouselItem
-                        key={product.id}
-                        className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
-                     >
-                        <NewestProduct product={product} />
-                     </CarouselItem>
-                  ))}
+                  {productItems.length > 0
+                     ? productItems.map((product) => (
+                          <CarouselItem
+                             key={product.id}
+                             className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                          >
+                             <NewestProduct product={product} />
+                          </CarouselItem>
+                       ))
+                     : !isLoading && (
+                          <div className="col-span-full text-center py-12 text-gray-500">
+                             No newest products available
+                          </div>
+                       )}
                </CarouselContent>
                <CarouselPrevious className="hidden md:flex" />
                <CarouselNext className="hidden md:flex" />

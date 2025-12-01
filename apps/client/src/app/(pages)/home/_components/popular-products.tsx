@@ -1,6 +1,5 @@
 import PopularProduct from '@components/client/popular-product';
 import useProductService from '@components/hooks/api/use-product-service';
-import usePagination from '@components/hooks/use-pagination';
 import {
    Carousel,
    CarouselContent,
@@ -8,42 +7,15 @@ import {
    CarouselNext,
    CarouselPrevious,
 } from '@components/ui/carousel';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const PopularProducts = () => {
    const { getPopularProductsAsync, getPopularProductsState, isLoading } =
       useProductService();
 
-   const {
-      currentPage,
-      totalPages,
-      pageSize,
-      totalRecords,
-      isLastPage,
-      isFirstPage,
-      isNextPage,
-      isPrevPage,
-      paginationItems,
-      getPageNumbers,
-   } = usePagination(
-      getPopularProductsState.isSuccess &&
-         getPopularProductsState.data &&
-         getPopularProductsState.data.items.length > 0
-         ? getPopularProductsState.data
-         : {
-              total_records: 0,
-              total_pages: 0,
-              page_size: 0,
-              current_page: 0,
-              items: [],
-              links: {
-                 first: null,
-                 last: null,
-                 prev: null,
-                 next: null,
-              },
-           },
-   );
+   const productItems = useMemo(() => {
+      return getPopularProductsState.data?.items ?? [];
+   }, [getPopularProductsState.data]);
 
    useEffect(() => {
       const fetchPopularProducts = async () => {
@@ -67,14 +39,20 @@ const PopularProducts = () => {
                className="w-full"
             >
                <CarouselContent className="-ml-4">
-                  {paginationItems.map((product) => (
-                     <CarouselItem
-                        key={product.id}
-                        className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
-                     >
-                        <PopularProduct product={product} />
-                     </CarouselItem>
-                  ))}
+                  {productItems.length > 0
+                     ? productItems.map((product) => (
+                          <CarouselItem
+                             key={product.id}
+                             className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                          >
+                             <PopularProduct product={product} />
+                          </CarouselItem>
+                       ))
+                     : !isLoading && (
+                          <div className="col-span-full text-center py-12 text-gray-500">
+                             No popular products available
+                          </div>
+                       )}
                </CarouselContent>
                <CarouselPrevious className="hidden md:flex" />
                <CarouselNext className="hidden md:flex" />

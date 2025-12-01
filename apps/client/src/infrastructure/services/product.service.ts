@@ -80,21 +80,36 @@ export const productApi = createApi({
          PaginationResponse<TPopularProduct>,
          void
       >({
-         query: () => `/api/v1/product-models/popular`,
+         query: () => ({
+            url: `/api/v1/product-models/popular`,
+            params: {
+               _limit: 999,
+            },
+         }),
          providesTags: ['Products'],
       }),
       getNewestProducts: builder.query<
          PaginationResponse<TNewestProduct>,
          void
       >({
-         query: () => `/api/v1/product-models/newest`,
+         query: () => ({
+            url: `/api/v1/product-models/newest`,
+            params: {
+               _limit: 999,
+            },
+         }),
          providesTags: ['Products'],
       }),
       getSuggestionProducts: builder.query<
          PaginationResponse<TSuggestionProduct>,
          void
       >({
-         query: () => `/api/v1/product-models/suggestion`,
+         query: () => ({
+            url: `/api/v1/product-models/suggestion`,
+            params: {
+               _limit: 999,
+            },
+         }),
          providesTags: ['Products'],
       }),
    }),
