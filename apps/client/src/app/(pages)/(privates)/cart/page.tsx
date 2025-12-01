@@ -33,6 +33,7 @@ import {
    UpdateSelection,
    removeCartItem,
 } from '~/infrastructure/redux/features/cart.slice';
+import PopularProducts from '~/app/(pages)/home/_components/popular-products';
 
 const CartPage = () => {
    const router = useRouter();
@@ -147,7 +148,7 @@ const CartPage = () => {
             'font-SFProDisplay w-full flex flex-col items-center justify-start bg-white',
          )}
       >
-         <div className="max-w-[1156px] w-full grid grid-cols-12">
+         <div className="max-w-[1156px] w-full grid grid-cols-12 mb-[200px]">
             <div className="col-span-12 h-fit flex flex-row justify-start items-center gap-3 p-6 bg-[#f5f5f7] mb-8">
                <BsExclamationCircle className="h-6 w-6" />
                <div className="text-black text-[16px] font-medium">
@@ -389,80 +390,10 @@ const CartPage = () => {
                </div>
             </div>
          </div>
-         <div className="w-full h-fit">
-            <div className="w-full h-fit pt-[100px] pb-[50px]">
-               <div className="w-fit mx-auto text-[38px] font-semibold tracking-[0.2px]">
-                  You may also like
-               </div>
-            </div>
-            {/* <div className="w-full h-fit">
-               <Carousel
-                  opts={{
-                     align: 'start',
-                  }}
-                  className="w-full max-w-[1066px] mx-auto"
-               >
-                  <CarouselContent>
-                     {Array.from({ length: 5 }).map((_, index) => (
-                        <CarouselItem
-                           key={index}
-                           className="md:basis-1/2 lg:basis-1/3"
-                        >
-                           <div className="w-full h-[654px] p-6 bg-[#f5f5f7] rounded-[10px] flex flex-col justify-start items-center relative">
-                              <div className="absolute top-5 left-5 w-fit h-fit bg-[#0070f0] text-white text-[12px] font-medium rounded-full px-2 py-[2px]">
-                                 New
-                              </div>
-                              <Image
-                                 src={images.ip16Pro}
-                                 alt="product"
-                                 width={1000}
-                                 height={1000}
-                                 quality={100}
-                                 className="w-[240px] h-auto"
-                              />
-                              <div className="w-full h-[44px] mt-6 mb-4">
-                                 <div className="text-[20px] font-semibold tracking-[0.2px] text-center">
-                                    iPhone 16 Pro
-                                 </div>
-                              </div>
-                              <div className="w-full h-fit mb-6 flex flex-row justify-center items-center gap-2">
-                                 <div className="h-5 w-5 bg-[#0070f0] rounded-full"></div>
-                                 <div className="h-5 w-5 bg-[#0070f0] rounded-full"></div>
-                                 <div className="h-5 w-5 bg-[#0070f0] rounded-full"></div>
-                              </div>
-                              <div className="w-full h-fit mb-5 flex flex-row justify-center items-center gap-2">
-                                 <Button className="w-[64px] h-fit px-2 py-1 border border-[#000] rounded-full text-[14px] font-medium  ">
-                                    128 GB
-                                 </Button>
-                                 <Button className="w-[64px] h-fit px-2 py-1 border border-[#000] rounded-full text-[14px] font-medium  ">
-                                    256 GB
-                                 </Button>
-                                 <Button className="w-[64px] h-fit px-2 py-1 border border-[#000] rounded-full text-[14px] font-medium  ">
-                                    512 GB
-                                 </Button>
-                                 <Button className="w-[64px] h-fit px-2 py-1 border border-[#000] rounded-full text-[14px] font-medium  ">
-                                    1 TB
-                                 </Button>
-                              </div>
-                              <div className="w-full h-fit mb-4">
-                                 <div className="text-[18px] font-semibold tracking-[0.2px] text-center">
-                                    $1,928.00
-                                 </div>
-                              </div>
-                              <Button className="w-full h-fit bg-[#000] hover:bg-[#333] text-white rounded-full text-[14px] font-medium tracking-[0.2px]">
-                                 Add to Cart
-                              </Button>
-                              <Button className="w-full h-fit bg-white border border-[#000] text-black hover:bg-[#f5f5f7] rounded-full text-[14px] font-medium tracking-[0.2px] mt-auto">
-                                 View Details
-                              </Button>
-                           </div>
-                        </CarouselItem>
-                     ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-               </Carousel>
-            </div> */}
+
+         <div className="w-full px-4 py-8">
+            {/* POPULAR PRODUCTS */}
+            <PopularProducts />
          </div>
       </div>
    );
