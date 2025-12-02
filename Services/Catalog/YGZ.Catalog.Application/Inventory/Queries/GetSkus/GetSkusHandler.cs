@@ -77,7 +77,52 @@ public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<Sku
             filter &= filterBuilder.In("model.normalized_name", productModels);
         }
 
+        // Dynamic filters for stock
+        if (request._stock.HasValue && !string.IsNullOrEmpty(request._stockOperator))
+        {
+            filter &= request._stockOperator switch
+            {
+                ">=" => filterBuilder.Gte(x => x.AvailableInStock, request._stock.Value),
+                ">" => filterBuilder.Gt(x => x.AvailableInStock, request._stock.Value),
+                "<=" => filterBuilder.Lte(x => x.AvailableInStock, request._stock.Value),
+                "<" => filterBuilder.Lt(x => x.AvailableInStock, request._stock.Value),
+                "==" => filterBuilder.Eq(x => x.AvailableInStock, request._stock.Value),
+                "!=" => filterBuilder.Ne(x => x.AvailableInStock, request._stock.Value),
+                "in" => HandleInOperator(filterBuilder, x => x.AvailableInStock, request._stock.Value), // TODO: Enhance for range support
+                _ => filterBuilder.Empty
+            };
+        }
+
+        // Dynamic filters for sold
+        if (request._sold.HasValue && !string.IsNullOrEmpty(request._soldOperator))
+        {
+            filter &= request._soldOperator switch
+            {
+                ">=" => filterBuilder.Gte(x => x.TotalSold, request._sold.Value),
+                ">" => filterBuilder.Gt(x => x.TotalSold, request._sold.Value),
+                "<=" => filterBuilder.Lte(x => x.TotalSold, request._sold.Value),
+                "<" => filterBuilder.Lt(x => x.TotalSold, request._sold.Value),
+                "==" => filterBuilder.Eq(x => x.TotalSold, request._sold.Value),
+                "!=" => filterBuilder.Ne(x => x.TotalSold, request._sold.Value),
+                "in" => HandleInOperator(filterBuilder, x => x.TotalSold, request._sold.Value), // TODO: Enhance for range support
+                _ => filterBuilder.Empty
+            };
+        }
+
         return (filter, null);
+    }
+
+    private static FilterDefinition<SKU> HandleInOperator(
+        FilterDefinitionBuilder<SKU> filterBuilder,
+        System.Linq.Expressions.Expression<Func<SKU, int>> fieldExpression,
+        int value)
+    {
+        // For "in" operator with range support, you would parse a range string like "30-50"
+        // For now, this is a placeholder - you may need to adjust based on how ranges are passed
+        // Example: if value is passed as a string "30-50", parse it here and use Gte/Lte
+        // For simplicity, treating single value as exact match for now
+        // You can enhance this to parse range strings like "30-50" from a separate parameter
+        return filterBuilder.Eq(fieldExpression, value);
     }
 
     private async Task<PaginationResponse<SkuWithImageResponse>> MapToResponse((List<SKU> items, int totalRecords, int totalPages) result, GetSkusQuery request)

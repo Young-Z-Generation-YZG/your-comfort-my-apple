@@ -1,12 +1,15 @@
 import { useCallback, useMemo } from 'react';
-import { useLazyGetWarehousesQuery } from '~/src/infrastructure/services/inventory.service';
+import {
+   IGetWarehousesQueryParams,
+   useLazyGetWarehousesQuery,
+} from '~/src/infrastructure/services/inventory.service';
 
 const useInventoryService = () => {
    const [getWarehousesTrigger, getWarehousesState] =
       useLazyGetWarehousesQuery();
 
    const getWarehousesAsync = useCallback(
-      async (params: any) => {
+      async (params: IGetWarehousesQueryParams) => {
          try {
             const result = await getWarehousesTrigger(params).unwrap();
             return {

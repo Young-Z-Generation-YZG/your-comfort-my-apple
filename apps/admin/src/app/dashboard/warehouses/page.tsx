@@ -52,6 +52,7 @@ import {
    Blend,
    Smartphone,
    TabletSmartphone,
+   Plus,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
@@ -64,14 +65,27 @@ import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TSku } from '~/src/domain/types/catalog';
 import { Cylinder } from 'lucide-react';
+import { IGetWarehousesQueryParams } from '~/src/infrastructure/services/inventory.service';
+import { z } from 'zod';
 
-type TSkuFilter = {
-   _page?: number | null;
-   _limit?: number | null;
-   _colors?: string[] | null;
-   _storages?: string[] | null;
-   _models?: string[] | null;
-};
+// Zod schemas for dynamic filters
+const DynamicFilterFieldSchema = z.object({
+   field: z.string(),
+   type: z.enum(['number', 'string', 'date']),
+   label: z.string(),
+});
+
+const DynamicFilterItemSchema = z.object({
+   id: z.string(),
+   field: z.string(),
+   operation: z.string(),
+   value: z.string(),
+});
+
+const DynamicFilterFieldsSchema = z.array(DynamicFilterFieldSchema);
+
+type DynamicFilterField = z.infer<typeof DynamicFilterFieldSchema>;
+type DynamicFilterItem = z.infer<typeof DynamicFilterItemSchema>;
 
 // Helper function to get state badge styles
 const getStateStyle = (state: string) => {
@@ -282,6 +296,39 @@ const storages = [
       order: 3,
    },
 ] as const;
+
+const listOperations = [
+   {
+      name: 'equals',
+      label: '=',
+      value: '=',
+   },
+   {
+      name: 'not equals',
+      label: '!=',
+      value: '!=',
+   },
+   {
+      name: 'greater than',
+      label: '>',
+      value: '>',
+   },
+   {
+      name: 'greater than or equal to',
+      label: '>=',
+      value: '>=',
+   },
+   {
+      name: 'less than',
+      label: '<',
+      value: '<',
+   },
+   {
+      name: 'less than or equal to',
+      label: '<=',
+      value: '<=',
+   },
+];
 
 const columns: ColumnDef<TSku>[] = [
    {
@@ -495,7 +542,7 @@ const WarehousesPage = () => {
 
    const { tenantId } = useAppSelector((state) => state.tenant);
 
-   const { filters, setFilters } = useFilters<TSkuFilter>({
+   const { filters, setFilters } = useFilters<IGetWarehousesQueryParams>({
       _page: 'number',
       _limit: 'number',
       _colors: { array: 'string' },
@@ -513,6 +560,12 @@ const WarehousesPage = () => {
    const [modelSearchQuery, setModelSearchQuery] = useState('');
    const [colorSearchQuery, setColorSearchQuery] = useState('');
    const [storageSearchQuery, setStorageSearchQuery] = useState('');
+
+   // Dynamic filter states
+   const [showDynamicFilters, setShowDynamicFilters] = useState<boolean>(false);
+   const [dynamicFilters, setDynamicFilters] = useState<DynamicFilterItem[]>(
+      [],
+   );
 
    // Filtered results
    const filteredModels = useMemo(() => {
@@ -569,6 +622,278 @@ const WarehousesPage = () => {
 
    // Track previous API call params to prevent duplicate calls
    const prevApiParamsRef = useRef<string>('');
+
+   const renderDynamicFilters = () => {
+      const dynamicFilterFields: DynamicFilterField[] = [
+         {
+            field: '_stock',
+            type: 'number',
+            label: 'Stock',
+         },
+         {
+            field: '_sold',
+            type: 'number',
+            label: 'Sold',
+         },
+      ];
+
+      // Validate filter fields configuration
+      const validatedFields =
+         DynamicFilterFieldsSchema.parse(dynamicFilterFields);
+
+      const handleAddFilter = () => {
+         const newFilter: DynamicFilterItem = {
+            id: `filter-${Date.now()}-${Math.random()}`,
+            field: '',
+            operation: '',
+            value: '',
+         };
+         // Validate before adding
+         DynamicFilterItemSchema.parse(newFilter);
+         setDynamicFilters((prev) => [...prev, newFilter]);
+      };
+
+      const handleRemoveFilter = (id: string) => {
+         const filterToRemove = dynamicFilters.find((f) => f.id === id);
+         if (
+            filterToRemove &&
+            filterToRemove.field &&
+            filterToRemove.operation
+         ) {
+            const valueKey =
+               filterToRemove.field as keyof IGetWarehousesQueryParams;
+            const operatorKey =
+               `${filterToRemove.field}Operator` as keyof IGetWarehousesQueryParams;
+
+            // Remove from filters state
+            setFilters((prev) => {
+               const newFilters = { ...prev };
+               delete newFilters[valueKey];
+               delete newFilters[operatorKey];
+               return { ...newFilters, _page: 1 };
+            });
+         }
+         setDynamicFilters((prev) => prev.filter((f) => f.id !== id));
+      };
+
+      const handleUpdateFilter = (
+         id: string,
+         field: 'field' | 'operation' | 'value',
+         value: string,
+      ) => {
+         setDynamicFilters((prev) =>
+            prev.map((f) => {
+               if (f.id === id) {
+                  const updated = { ...f, [field]: value };
+                  // Reset dependent fields
+                  if (field === 'field') {
+                     updated.operation = '';
+                     updated.value = '';
+                  } else if (field === 'operation') {
+                     updated.value = '';
+                  }
+                  return updated;
+               }
+               return f;
+            }),
+         );
+      };
+
+      const handleApplyFilter = (id: string) => {
+         const filter = dynamicFilters.find((f) => f.id === id);
+         if (!filter) return;
+
+         // Validate filter using Zod
+         const validationResult = DynamicFilterItemSchema.safeParse(filter);
+         if (!validationResult.success) {
+            console.error('Invalid filter:', validationResult.error);
+            return;
+         }
+
+         const validatedFilter = validationResult.data;
+         if (
+            !validatedFilter.field ||
+            !validatedFilter.operation ||
+            !validatedFilter.value
+         ) {
+            return;
+         }
+
+         const selectedField = validatedFields.find(
+            (f) => f.field === validatedFilter.field,
+         );
+
+         if (!selectedField) return;
+
+         // Map operation to backend operator format
+         const operationMap: Record<string, string> = {
+            '=': '==',
+            '!=': '!=',
+            '>': '>',
+            '>=': '>=',
+            '<': '<',
+            '<=': '<=',
+         };
+
+         const operator = operationMap[validatedFilter.operation] ?? '==';
+         const valueKey =
+            validatedFilter.field as keyof IGetWarehousesQueryParams;
+         const operatorKey =
+            `${validatedFilter.field}Operator` as keyof IGetWarehousesQueryParams;
+
+         // Parse value based on field type with Zod validation
+         let filterValue: number | string;
+         if (selectedField.type === 'number') {
+            const numberValue = z.coerce
+               .number()
+               .safeParse(validatedFilter.value);
+            if (!numberValue.success) {
+               console.error('Invalid number value:', validatedFilter.value);
+               return;
+            }
+            filterValue = numberValue.data;
+         } else {
+            filterValue = validatedFilter.value;
+         }
+
+         setFilters((prev) => ({
+            ...prev,
+            [valueKey]: filterValue,
+            [operatorKey]: operator,
+            _page: 1,
+         }));
+      };
+
+      return (
+         <div className="space-y-3">
+            {dynamicFilters.map((filter) => {
+               const selectedField = validatedFields.find(
+                  (f) => f.field === filter.field,
+               );
+
+               // Get fields that are already selected in other filters
+               const selectedFieldsInOtherFilters = dynamicFilters
+                  .filter((f) => f.id !== filter.id && f.field)
+                  .map((f) => f.field);
+
+               return (
+                  <div key={filter.id} className="flex items-center gap-2">
+                     {/* Field Dropdown */}
+                     <Select
+                        value={filter.field}
+                        onValueChange={(value) =>
+                           handleUpdateFilter(filter.id, 'field', value)
+                        }
+                     >
+                        <SelectTrigger className="w-[140px] h-10">
+                           <SelectValue placeholder="Select field" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              {validatedFields.map((field) => {
+                                 // Disable if field is selected in another filter
+                                 const isDisabled =
+                                    selectedFieldsInOtherFilters.includes(
+                                       field.field,
+                                    );
+                                 return (
+                                    <SelectItem
+                                       key={field.field}
+                                       value={field.field}
+                                       disabled={isDisabled}
+                                    >
+                                       {field.label}
+                                    </SelectItem>
+                                 );
+                              })}
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+
+                     {/* Operation Dropdown */}
+                     <Select
+                        value={filter.operation}
+                        onValueChange={(value) =>
+                           handleUpdateFilter(filter.id, 'operation', value)
+                        }
+                        disabled={!filter.field}
+                     >
+                        <SelectTrigger className="w-[140px] h-10">
+                           <SelectValue placeholder="Select operation" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              {listOperations.map((op) => (
+                                 <SelectItem key={op.value} value={op.value}>
+                                    {op.label} ({op.name})
+                                 </SelectItem>
+                              ))}
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+
+                     {/* Value Input */}
+                     {selectedField && (
+                        <Input
+                           type={selectedField.type}
+                           placeholder={`Enter ${selectedField.label.toLowerCase()}`}
+                           value={filter.value}
+                           onChange={(e) =>
+                              handleUpdateFilter(
+                                 filter.id,
+                                 'value',
+                                 e.target.value,
+                              )
+                           }
+                           disabled={!filter.operation}
+                           className="w-[140px] h-10"
+                           onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                 handleApplyFilter(filter.id);
+                              }
+                           }}
+                        />
+                     )}
+
+                     {/* Apply Button */}
+                     <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleApplyFilter(filter.id)}
+                        disabled={
+                           !filter.field || !filter.operation || !filter.value
+                        }
+                        className="h-10"
+                     >
+                        Apply
+                     </Button>
+
+                     {/* Clear Button */}
+                     <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveFilter(filter.id)}
+                        className="h-10"
+                     >
+                        <X className="h-4 w-4" />
+                     </Button>
+                  </div>
+               );
+            })}
+
+            {/* Add Button */}
+            <Button
+               variant="outline"
+               size="sm"
+               onClick={handleAddFilter}
+               className="h-10 gap-2"
+            >
+               <Plus className="h-4 w-4" />
+               Add
+            </Button>
+         </div>
+      );
+   };
 
    const table = useReactTable({
       data: getWarehousesState.data?.items ?? [],
@@ -1159,12 +1484,29 @@ const WarehousesPage = () => {
                      <Button
                         variant="outline"
                         onClick={() => {
+                           setShowDynamicFilters(!showDynamicFilters);
+                        }}
+                        className="h-10 gap-2"
+                     >
+                        <span className="font-medium">Dynamic Filter</span>
+                        <ChevronDown
+                           className={cn(
+                              'h-4 w-4 transition-transform',
+                              showDynamicFilters && 'rotate-180',
+                           )}
+                        />
+                     </Button>
+
+                     <Button
+                        variant="outline"
+                        onClick={() => {
                            setFilters({
                               _models: [],
                               _colors: [],
                               _storages: [],
                               _page: 1,
                            });
+                           setDynamicFilters([]);
                         }}
                         className={cn(
                            'h-10 px-4 gap-2 whitespace-nowrap',
@@ -1183,6 +1525,13 @@ const WarehousesPage = () => {
                         Clear Filters
                      </Button>
                   </div>
+
+                  {/* Dynamic Filters Row */}
+                  {showDynamicFilters && (
+                     <div className="flex items-center gap-3">
+                        {renderDynamicFilters()}
+                     </div>
+                  )}
                </div>
             </div>
 

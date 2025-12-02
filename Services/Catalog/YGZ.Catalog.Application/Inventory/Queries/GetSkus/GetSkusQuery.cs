@@ -12,4 +12,12 @@ public sealed record GetSkusQuery : IQuery<PaginationResponse<SkuWithImageRespon
     public List<string>? _colors { get; init; }
     public List<string>? _storages { get; init; }
     public List<string>? _models { get; init; }
+    
+    // Dynamic filters for stock
+    public int? _stock { get; init; }
+    public string? _stockOperator { get; init; } // ">=", ">", "<", "<=", "==", "!=", "in"
+    
+    // Dynamic filters for sold
+    public int? _sold { get; init; }
+    public string? _soldOperator { get; init; } // ">=", ">", "<", "<=", "==", "!=", "in"
 }

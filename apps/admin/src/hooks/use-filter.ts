@@ -91,9 +91,7 @@ function deepEqual(a: any, b: any): boolean {
    return true;
 }
 
-const useFilters = <T extends Record<string, FilterValue>>(
-   schema: FilterSchema,
-) => {
+const useFilters = <T extends Record<string, any>>(schema: FilterSchema) => {
    const router = useRouter();
    const searchParams = useSearchParams();
    const firstRenderRef = useRef(true);
