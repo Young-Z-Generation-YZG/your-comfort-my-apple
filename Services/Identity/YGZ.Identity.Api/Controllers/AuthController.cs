@@ -4,11 +4,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Auth;
+using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
+using YGZ.Identity.Application.Auths.Commands.AddNewStaff;
+using YGZ.Identity.Application.Auths.Commands.AssignRoles;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Logout;
@@ -19,7 +22,6 @@ using YGZ.Identity.Application.Auths.Commands.VerifyEmail;
 using YGZ.Identity.Application.Auths.Commands.VerifyResetPassword;
 using YGZ.Identity.Application.Auths.Queries.GetIdentity;
 using YGZ.Identity.Domain.Core.Errors;
-using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Identity.Api.Controllers;
@@ -157,7 +159,7 @@ public class AuthController : ApiController
         }
 
         var refreshToken = authHeader.Substring("Bearer ".Length).Trim();
-        
+
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
             var errorResult = Result<TokenResponse>.Failure(Errors.Auth.MissingAuthorizationHeader);
@@ -184,7 +186,7 @@ public class AuthController : ApiController
         }
 
         var refreshToken = authHeader.Substring("Bearer ".Length).Trim();
-        
+
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
             var errorResult = Result<bool>.Failure(Errors.Auth.MissingAuthorizationHeader);
@@ -196,5 +198,27 @@ public class AuthController : ApiController
         var result = await _sender.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleAuthFailure);
+    }
+
+    [HttpPost("assign-roles")]
+    [AllowAnonymous]
+    public async Task<IActionResult> AssignRoles([FromBody] AssignRolesRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<AssignRolesCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("add-new-staff")]
+    [AllowAnonymous]
+    public async Task<IActionResult> AddNewStaff([FromBody] AddNewStaffRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<AddNewStaffCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 }

@@ -66,6 +66,7 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateProfileRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new ChangePasswordRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateTenantUserRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new AssignRolesRequestExample());
         });
 
         return services;

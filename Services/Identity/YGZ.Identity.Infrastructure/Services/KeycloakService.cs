@@ -888,4 +888,64 @@ public class KeycloakService : IKeycloakService
             throw;
         }
     }
+
+    public async Task<Result<bool>> AssignRolesToUserAsync(string userId, List<string> roleNames)
+    {
+        try
+        {
+            var adminToken = await GetAdminTokenResponseAsync();
+
+            // Get all roles by name
+            var roles = new List<KeycloakRole>();
+            foreach (var roleName in roleNames)
+            {
+                var roleResult = await GetKeycloakRoleByNameAsync(roleName);
+                if (roleResult.IsFailure)
+                {
+                    _logger.LogWarning("Role not found: {RoleName}", roleName);
+                    return roleResult.Error;
+                }
+                roles.Add(roleResult.Response!);
+            }
+
+            // Serialize roles to JSON
+            var roleJson = JsonConvert.SerializeObject(roles);
+
+            // Assign roles to user via Keycloak API
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{_adminEndpoint}/{userId}/role-mappings/clients/{_nextjsClientUUID}"),
+                Content = new StringContent(roleJson, Encoding.UTF8, "application/json"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" }
+                }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode == HttpStatusCode.NoContent || response.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Successfully assigned roles to user {UserId}", userId);
+                return true;
+            }
+
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Failed to assign roles to user {UserId}. Status: {StatusCode}, Error: {Error}",
+                userId, response.StatusCode, errorContent);
+
+            return Errors.Keycloak.CannotAssignRole;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "HTTP request exception while assigning roles to user {UserId}", userId);
+            return Errors.Keycloak.CannotAssignRole;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error while assigning roles to user {UserId}", userId);
+            throw;
+        }
+    }
 }

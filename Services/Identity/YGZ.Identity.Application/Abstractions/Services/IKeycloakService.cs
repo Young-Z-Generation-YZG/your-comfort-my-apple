@@ -28,4 +28,5 @@ public interface IKeycloakService
     Task<Result<bool>> DeleteKeycloakUserAsync(string keycloakUserId);
     Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName);
     Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId);
+    Task<Result<bool>> AssignRolesToUserAsync(string userId, List<string> roleNames);
 }
