@@ -19,6 +19,7 @@ export interface IModel {
 }
 
 export interface ISKUPrice {
+   price: any;
    normalized_model: string;
    normalized_color: string;
    normalized_storage: string;

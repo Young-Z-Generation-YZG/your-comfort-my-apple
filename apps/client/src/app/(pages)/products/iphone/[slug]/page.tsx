@@ -23,12 +23,12 @@ const IphoneDetailPage = () => {
          {/* CARRIER */}
          <Carrier />
 
-         <div className="w-full p-28">
+         <div className="w-full lg:p-28 md:p-14 p-4">
             {/* Product Detail */}
             <IphoneDetails />
 
             {/* Coverage */}
-            <div className="mt-[200px]">
+            <div className="mt-0 md:mt-[400px] lg:mt-[300px]">
                <Coverage />
             </div>
 

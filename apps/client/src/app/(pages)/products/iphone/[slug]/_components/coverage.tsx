@@ -8,8 +8,9 @@ import { appleCareOptions } from '../_constants/applecare-data';
 const Coverage = () => {
    return (
       <div className={cn('w-full bg-transparent flex flex-col mt-16 h-fit')}>
-         <div className="coverage-title flex flex-row">
-            <div className="basis-3/4">
+         {/* Title */}
+         <div className="coverage-title flex flex-col md:flex-row md:items-center">
+            <div className="md:basis-3/4">
                <div className="w-full text-[24px] font-semibold leading-[28px]">
                   <span className="text-[#1D1D1F] tracking-[0.3px]">
                      AppleCare+ coverage.{' '}
@@ -19,10 +20,15 @@ const Coverage = () => {
                   </span>
                </div>
             </div>
-            <div className="basis-1/4 min-w-[328px]"></div>
+            <div className="md:basis-1/4 min-w-[0] mt-4 md:mt-0">
+               {/* Empty or reserved for spacing on desktop */}
+            </div>
          </div>
-         <div className="coverage-items flex flex-row mt-6">
-            <div className="basis-3/4 list-items w-full grid grid-cols-3 gap-4 pr-12">
+
+         {/* Items */}
+         <div className="coverage-items flex flex-col md:flex-row mt-6 gap-6">
+            {/* AppleCare cards */}
+            <div className="basis-full md:basis-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-0 md:pr-12">
                {appleCareOptions.map((option, index) => (
                   <AppleCareCard
                      key={index}
@@ -33,7 +39,9 @@ const Coverage = () => {
                   />
                ))}
             </div>
-            <div className="basis-1/4 min-w-[328px]">
+
+            {/* HelpItem */}
+            <div className="basis-full md:basis-1/4 min-w-[0]">
                <HelpItem
                   title="What kind of protection do you need?"
                   subTitle="Compare the additional features and coverage of the two AppleCare+ plans."

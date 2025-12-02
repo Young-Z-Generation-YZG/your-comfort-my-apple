@@ -63,7 +63,7 @@ const AddressesPage = () => {
    return (
       <CardContext>
          <div className="flex flex-col">
-            <div className="flex justify-between">
+            <div className="flex justify-between md:flex-row flex-col">
                <h3 className="text-xl font-medium">Addresses Management</h3>
 
                {/* <Addresses /> */}
@@ -83,7 +83,7 @@ const AddressesPage = () => {
                         </Button>
                      </motion.div>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="w-full max-w-[90vw] sm:max-w-[425px] p-4 sm:p-6 rounded-xl">
                      <DialogHeader>
                         <DialogTitle>
                            {editingAddress ? 'Edit Address' : 'Add New Address'}
@@ -138,34 +138,47 @@ const AddressesPage = () => {
                         className="w-full mt-2"
                         key={item?.id ?? index}
                      >
-                        <div className="flex w-full flex-col gap-1 text-slate-500 font-SFProText text-sm font-light">
-                           <div className="flex justify-between items-center">
+                        <div
+                           className={` flex w-full flex-col gap-1 text-slate-500 font-SFProText text-sm font-light md:cursor-default cursor-pointer md:hover:bg-transparent hover:bg-gray-50 md:rounded-none rounded-xl md:p-0 p-3 md:border-0 border border-gray-100 `}
+                           onClick={() => {
+                              if (window.innerWidth < 1024 && item) {
+                                 setEditingAddress({
+                                    id: item.id,
+                                    payload: item,
+                                 });
+                                 setOpen(true);
+                              }
+                           }}
+                        >
+                           <div className="flex justify-between items-center flex-wrap">
                               <div className="flex gap-2 items-center">
-                                 <h3 className="text-xl font-medium text-black/80 font-SFProDisplay">
+                                 <h3 className="text-base md:text-xl font-medium text-black/80 font-SFProDisplay">
                                     {item?.label ?? ''}
                                  </h3>
                                  {item?.is_default && (
                                     <Badge variants="default" />
                                  )}
                               </div>
-
-                              <Button
-                                 variant="outline"
-                                 className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium gap-1"
-                                 onClick={() => {
-                                    if (item) {
-                                       setEditingAddress({
-                                          id: item.id,
-                                          payload: item,
-                                       });
-                                       setOpen(true);
-                                    }
-                                 }}
-                              >
-                                 <span>Edit</span>
-                                 <FiEdit3 className="h-3 w-3" />
-                              </Button>
+                              <div className="hidden md:block">
+                                 <Button
+                                    variant="outline"
+                                    className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium gap-1"
+                                    onClick={() => {
+                                       if (item) {
+                                          setEditingAddress({
+                                             id: item.id,
+                                             payload: item,
+                                          });
+                                          setOpen(true);
+                                       }
+                                    }}
+                                 >
+                                    <span>Edit</span>
+                                    <FiEdit3 className="h-3 w-3" />
+                                 </Button>
+                              </div>
                            </div>
+
                            <p>
                               {item?.contact_name ?? ''} | +84{' '}
                               {item?.contact_phone_number ?? ''}
@@ -180,16 +193,19 @@ const AddressesPage = () => {
                            </p>
 
                            {!item?.is_default && (
-                              <p
-                                 className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline"
-                                 onClick={async () => {
-                                    if (item?.id) {
-                                       await setDefaultAddressAsync(item.id);
-                                    }
-                                 }}
-                              >
-                                 Set as Default
-                              </p>
+                              <div className="mt-2">
+                                 <button
+                                    className=" text-blue-600 font-medium text-sm md:text-[13px] rounded-lg border border-blue-200 px-3 py-1.5 hover:bg-blue-50 active:bg-blue-100 transition-all select-none"
+                                    onClick={async (e) => {
+                                       e.stopPropagation();
+                                       if (item?.id) {
+                                          await setDefaultAddressAsync(item.id);
+                                       }
+                                    }}
+                                 >
+                                    Set as Default
+                                 </button>
+                              </div>
                            )}
                         </div>
                      </DefaultActionContent>

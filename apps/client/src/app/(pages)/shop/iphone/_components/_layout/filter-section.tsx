@@ -106,7 +106,11 @@ const colors = [
    },
 ];
 
-const FilterSection = () => {
+type FilterSectionType = {
+   className?: string;
+};
+
+const FilterSection = ({ className }: FilterSectionType) => {
    const searchParams = useSearchParams();
 
    // Initialize state from URL params
@@ -189,7 +193,7 @@ const FilterSection = () => {
    }, [selectedColors, selectedModels, selectedStorages, debouncedPriceFilter]);
 
    return (
-      <div className="w-[354px] min-h-screen relative">
+      <div className={cn(className, 'w-[354px] min-h-screen relative')}>
          <div className="w-full h-fit sticky top-0 bg-white">
             <Accordion
                type="multiple"

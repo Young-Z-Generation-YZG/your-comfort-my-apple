@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaFilter } from 'react-icons/fa6';
 import { Button } from '@components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
@@ -27,6 +27,8 @@ import { cn } from '~/infrastructure/lib/utils';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import useFilter from '../_hooks/use-filter';
 import usePagination from '@components/hooks/use-pagination';
+import { MobileFilterSection } from './_components/_layout/filter-section-mobile';
+import { CardIphoneModel } from './_components/card-iphone-model';
 
 type IphoneModelsFilter = {
    _colors: string[];
@@ -477,6 +479,8 @@ const fakeData = {
 };
 
 const IphoneShopPage = () => {
+   const [isOpen, setIsOpen] = useState(false);
+
    const { filters, setFilters, clearFilters, activeFilterCount } =
       useFilter<IphoneModelsFilter>();
 
@@ -560,10 +564,13 @@ const IphoneShopPage = () => {
    return (
       <div>
          {/* FILTERS INFO */}
-         <div className="w-full border-y border-[#ccc] text-[15px] font-semibold">
-            <div className="h-[4.514vw] w-full max-w-[1440px] mx-auto px-5 flex flex-row justify-start items-center">
+         {/* <div className="w-full border-y border-[#ccc] text-[15px] font-semibold">
+            <div className="h-[7vw] md:h-[5vw] lg:h-[4.514vw] w-full max-w-[1440px] mx-auto px-5 flex flex-row justify-start items-center">
                <div className="flex flex-row mr-auto">
-                  <div className="text-[#218bff] flex flex-row items-center gap-2">
+                  <div
+                     className="text-[#218bff] flex flex-row items-center gap-2"
+                     onClick={() => setIsOpen(true)}
+                  >
                      <FaFilter />
                      <div>
                         Filters
@@ -594,57 +601,89 @@ const IphoneShopPage = () => {
                      <IoChatboxEllipsesOutline />
                      <div>Chat with an expert</div>
                   </div>
-                  <Select
-                     value={
-                        filters._priceSort === 'ASC'
-                           ? 'price-low-high'
-                           : filters._priceSort === 'DESC'
-                             ? 'price-high-low'
-                             : 'recommended'
-                     }
-                     onValueChange={handleSortChange}
-                  >
-                     <SelectTrigger className="w-fit flex items-center justify-center border-none focus:ring-0">
-                        <GoMultiSelect className="mr-2" />
-                        <SelectValue placeholder="Recommended" />
-                     </SelectTrigger>
-                     <SelectContent className="bg-[#f7f7f7]">
-                        <SelectGroup>
-                           {/* <SelectItem value="recommended">
-                              Recommended
-                           </SelectItem>
-                           <SelectItem value="newest">Newest</SelectItem> */}
-                           <SelectItem value="price-low-high">
-                              Price: Low to High
-                           </SelectItem>
-                           <SelectItem value="price-high-low">
-                              Price: High to Low
-                           </SelectItem>
-                           {/* <SelectItem value="most-clicked">
-                              Most Clicked
-                           </SelectItem>
-                           <SelectItem value="highest-rated">
-                              Highest Rated
-                           </SelectItem>
-                           <SelectItem value="most-reviewed">
-                              Most Reviewed
-                           </SelectItem>
-                           <SelectItem value="online-availability">
-                              Online Availability
-                           </SelectItem> */}
-                        </SelectGroup>
-                     </SelectContent>
-                  </Select>
                </div>
+            </div>
+         </div> */}
+         <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-5 flex flex-wrap items-center h-[auto] py-2 md:py-3 border-y border-[#ccc]">
+            {/* Left section: Filters & Results */}
+            <div className="flex flex-wrap items-center mr-auto gap-2 sm:gap-3">
+               {/* Filters button */}
+               <div
+                  className="text-[#218bff] flex items-center gap-1 sm:gap-2 cursor-pointer"
+                  onClick={() => setIsOpen(true)}
+               >
+                  <FaFilter className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="text-sm sm:text-[15px] font-medium">
+                     Filters
+                     {activeFilterCount > 0 && (
+                        <span className="ml-1">({activeFilterCount})</span>
+                     )}
+                  </div>
+               </div>
+
+               {/* Total results */}
+               <div className="px-3 border-x border-[#ccc] text-sm sm:text-[15px]">
+                  {totalRecords} {totalRecords === 1 ? 'Result' : 'Results'}
+               </div>
+
+               {/* Clear filters */}
+               {activeFilterCount > 0 && (
+                  <Button
+                     onClick={() => clearFilters()}
+                     className="h-8 sm:h-[22.5px] px-2 text-xs sm:text-[15px] font-semibold border-b border-black hover:text-blue-600 rounded-none bg-transparent text-black hover:bg-transparent hover:border-b-blue-500/50 transition-colors"
+                  >
+                     Clear Filters
+                  </Button>
+               )}
+            </div>
+
+            {/* Right section: Chat & Sort */}
+            <div className="lg:flex hidden flex-wrap items-center gap-3 sm:gap-[50px] mt-2 md:mt-0">
+               <div className="flex items-center gap-1 sm:gap-2 text-sm sm:text-[15px]">
+                  <IoChatboxEllipsesOutline className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div>Chat with an expert</div>
+               </div>
+               <Select
+                  value={
+                     filters._priceSort === 'ASC'
+                        ? 'price-low-high'
+                        : filters._priceSort === 'DESC'
+                          ? 'price-high-low'
+                          : 'recommended'
+                  }
+                  onValueChange={handleSortChange}
+               >
+                  <SelectTrigger className="w-fit flex items-center justify-center border-none focus:ring-0">
+                     <GoMultiSelect className="mr-2" />
+                     <SelectValue placeholder="Recommended" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#f7f7f7]">
+                     <SelectGroup>
+                        <SelectItem value="price-low-high">
+                           Price: Low to High
+                        </SelectItem>
+                        <SelectItem value="price-high-low">
+                           Price: High to Low
+                        </SelectItem>
+                     </SelectGroup>
+                  </SelectContent>
+               </Select>
             </div>
          </div>
 
+         <MobileFilterSection
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            minPrice={filters._minPrice}
+            maxPrice={filters._maxPrice}
+         />
+
          {/* MAIN CONTENT: FILTERS + PRODUCTS */}
          <div className="w-full max-w-[1440px] mx-auto px-5">
-            <div className="flex flex-row gap-6 py-6">
+            {/* PC */}
+            <div className="lg:flex hidden flex-row gap-6 py-6">
                {/* Left: Filter Section */}
                <FilterSection />
-
                {/* Right: Products Grid */}
                <div className="flex-1">
                   <div className="w-full">
@@ -884,6 +923,167 @@ const IphoneShopPage = () => {
                         </div>
                      )}
                   </div>
+               </div>
+            </div>
+            {/* TABLET MOBILE */}
+            <div className="flex lg:hidden flex-row gap-6 py-6 ">
+               {/* <MobileFilterSection /> */}
+               <div className="flex-1 w-full">
+                  {/* Products Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6">
+                     {isLoading
+                        ? Array(8)
+                             .fill(0)
+                             .map((_, index) => (
+                                <div
+                                   key={index}
+                                   className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col gap-3"
+                                >
+                                   {/* Image Skeleton */}
+                                   <div className="relative w-full h-[220px] rounded-lg overflow-hidden">
+                                      <Skeleton className="h-full w-full rounded-lg" />
+                                   </div>
+
+                                   {/* Info Skeleton */}
+                                   <div className="space-y-3 mt-2">
+                                      <Skeleton className="h-5 w-3/4" />
+                                      <Skeleton className="h-4 w-1/2" />
+                                      <Skeleton className="h-4 w-2/3" />
+                                   </div>
+
+                                   {/* Bottom Actions */}
+                                   <div className="mt-auto space-y-2">
+                                      <Skeleton className="h-8 w-full rounded-md" />
+                                      <Skeleton className="h-8 w-full rounded-md" />
+                                   </div>
+                                </div>
+                             ))
+                        : paginationItems.map((item) => (
+                             <CardIphoneModel key={item.id} item={item} />
+                          ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 0 && (
+                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
+                        {/* Page Info & Size Selector */}
+                        <div className="flex items-center gap-4">
+                           <div className="text-sm text-gray-600">
+                              Showing{' '}
+                              <span className="font-semibold">
+                                 {(currentPage - 1) * pageSize + 1}
+                              </span>{' '}
+                              to{' '}
+                              <span className="font-semibold">
+                                 {Math.min(
+                                    currentPage * pageSize,
+                                    totalRecords,
+                                 )}
+                              </span>{' '}
+                              of{' '}
+                              <span className="font-semibold">
+                                 {totalRecords}
+                              </span>{' '}
+                              results
+                           </div>
+
+                           <Select
+                              value={filters._limit?.toString() || '10'}
+                              onValueChange={handlePageSizeChange}
+                           >
+                              <SelectTrigger className="w-[100px] h-9">
+                                 <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 <SelectGroup>
+                                    <SelectItem value="5">5 / page</SelectItem>
+                                    <SelectItem value="10">
+                                       10 / page
+                                    </SelectItem>
+                                 </SelectGroup>
+                              </SelectContent>
+                           </Select>
+                        </div>
+
+                        {/* Pagination Controls */}
+                        <div className="flex items-center gap-2">
+                           <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-9 w-9"
+                              onClick={() => handlePageChange(1)}
+                              disabled={isFirstPage}
+                           >
+                              <ChevronsLeft className="h-4 w-4" />
+                           </Button>
+                           <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-9 w-9"
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={!isPrevPage}
+                           >
+                              <ChevronLeft className="h-4 w-4" />
+                           </Button>
+
+                           {/* Page Numbers */}
+                           <div className="flex items-center gap-1">
+                              {getPageNumbers().map((page, index) => {
+                                 if (page === '...') {
+                                    return (
+                                       <span
+                                          key={`ellipsis-${index}`}
+                                          className="px-2 text-gray-400"
+                                       >
+                                          ...
+                                       </span>
+                                    );
+                                 }
+                                 return (
+                                    <Button
+                                       key={`page-${page}`}
+                                       variant={
+                                          currentPage === page
+                                             ? 'default'
+                                             : 'outline'
+                                       }
+                                       size="icon"
+                                       className={cn(
+                                          'h-9 w-9',
+                                          currentPage === page &&
+                                             'bg-black text-white hover:bg-black/90',
+                                       )}
+                                       onClick={() =>
+                                          handlePageChange(page as number)
+                                       }
+                                    >
+                                       {page as React.ReactNode}
+                                    </Button>
+                                 );
+                              })}
+                           </div>
+
+                           <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-9 w-9"
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={!isNextPage}
+                           >
+                              <ChevronRight className="h-4 w-4" />
+                           </Button>
+                           <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-9 w-9"
+                              onClick={() => handlePageChange(totalPages)}
+                              disabled={isLastPage}
+                           >
+                              <ChevronsRight className="h-4 w-4" />
+                           </Button>
+                        </div>
+                     </div>
+                  )}
                </div>
             </div>
          </div>

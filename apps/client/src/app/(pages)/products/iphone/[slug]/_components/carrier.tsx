@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 const Carrier = () => {
    return (
-      <div className="w-full pt-[14px] relative bg-transparent">
-         <div className="w-[980px] py-[14px] h-[66px] rounded-[5px] flex flex-row justify-center items-center text-[12px] font-normal bg-[#f5f5f7] mx-auto">
-            <div className="h-full pl-[20px] w-[176px] flex flex-col">
+      <div className="w-full pt-[14px] relative bg-transparent md:flex hidden">
+         <div className="max-w-[980px] py-[14px] h-[66px] rounded-[5px] flex flex-row justify-center items-center text-[12px] font-normal bg-[#f5f5f7] mx-auto">
+            <div className="h-full pl-[10px] max-w-[200px] flex flex-col">
                <div className="leading-[18px] tracking-[0.4px] text-[15px] font-medium">
                   Carrier Deals at Apple
                </div>
@@ -15,7 +15,7 @@ const Carrier = () => {
                   </a>
                </div>
             </div>
-            <div className="h-full pl-[20px] w-[190px] flex flex-row items-center">
+            <div className="h-full pl-[10px] max-w-[200px] flex flex-row items-center">
                <div className="basis-1/6 w-[24px]">
                   <Image
                      src={images.icAtt}
@@ -30,7 +30,7 @@ const Carrier = () => {
                   Save up to $1000 after trade-in.
                </div>
             </div>
-            <div className="h-full pl-[20px] w-[190px] flex flex-row items-center">
+            <div className="h-full pl-[10px] max-w-[200px] flex flex-row items-center">
                <div className="basis-1/6 w-[24px]">
                   <Image
                      src={images.icLightYear}
@@ -45,7 +45,7 @@ const Carrier = () => {
                   Save up to $1000. No trade-in needed.
                </div>
             </div>
-            <div className="h-full pl-[20px] w-[190px] flex flex-row items-center">
+            <div className="h-full pl-[10px] max-w-[200px] flex flex-row items-center">
                <div className="basis-1/6 w-[24px]">
                   <Image
                      src={images.icTmobile}
@@ -60,7 +60,7 @@ const Carrier = () => {
                   Save up to $1000 after trade-in.
                </div>
             </div>
-            <div className="h-full pl-[20px] w-[190px] flex flex-row items-center">
+            <div className="h-full pl-[10px] max-w-[200px] flex flex-row items-center">
                <div className="basis-1/6 w-[24px]">
                   <Image
                      src={images.icVerizon}

@@ -49,7 +49,8 @@ const IphoneDetails = () => {
       useState(false);
    const [hoveredColor, setHoveredColor] = useState<string | null>(null);
    const [currentSlide, setCurrentSlide] = useState(0);
-   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+   const [carouselApiTop, setCarouselApiTop] = useState<CarouselApi>();
+   const [carouselApiBottom, setCarouselApiBottom] = useState<CarouselApi>();
 
    const { slug } = useParams();
 
@@ -95,7 +96,7 @@ const IphoneDetails = () => {
       }
    };
 
-   const handleColorSelection = (color: {
+   const handleColorSelectionTop = (color: {
       name: string;
       normalized_name: string;
    }) => {
@@ -104,8 +105,27 @@ const IphoneDetails = () => {
       // Navigate to the image corresponding to the selected color
       const targetImageIndex = getImageIndexByColor(color.normalized_name);
       setCurrentSlide(targetImageIndex);
-      if (carouselApi) {
-         carouselApi.scrollTo(targetImageIndex);
+      if (carouselApiTop) {
+         carouselApiTop.scrollTo(targetImageIndex);
+      }
+
+      // Only reset storage selection if not completed initial selection
+      if (!hasCompletedInitialSelection) {
+         setSelectedStorage(null);
+      }
+   };
+
+   const handleColorSelectionBottom = (color: {
+      name: string;
+      normalized_name: string;
+   }) => {
+      setSelectedColor(color);
+
+      // Navigate to the image corresponding to the selected color
+      const targetImageIndex = getImageIndexByColor(color.normalized_name);
+      setCurrentSlide(targetImageIndex);
+      if (carouselApiBottom) {
+         carouselApiBottom.scrollTo(targetImageIndex);
       }
 
       // Only reset storage selection if not completed initial selection
@@ -240,158 +260,243 @@ const IphoneDetails = () => {
       };
 
       return (
-         <div className="fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
-            <div className="max-w-[1240px] mx-auto px-6 py-4">
-               {!isAllSelected ? (
-                  <div className="flex flex-row items-center justify-between gap-4">
-                     {/* Left: Product Summary */}
-                     <div className="flex flex-col gap-1">
-                        <div className="text-[14px] font-semibold text-[#1D1D1F]">
-                           Configure your iPhone
-                        </div>
-                     </div>
-
-                     {/* Right: Action Buttons */}
-                     <div className="flex flex-row items-center gap-3">
-                        <div className="text-[12px] text-[#86868B] mr-2">
-                           Please select all options
-                        </div>
-                        <Button
-                           disabled={true}
-                           className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#f5f5f7] text-[#86868B] cursor-not-allowed"
-                        >
-                           Add to Bag
-                        </Button>
-                     </div>
-                  </div>
-               ) : (
-                  <div className="flex flex-col gap-4">
-                     {/* Product Summary */}
-                     <div className="flex flex-row items-center justify-between">
+         <>
+            <div className="hidden md:block fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+               <div className="max-w-[1240px] mx-auto px-6 py-4">
+                  {!isAllSelected ? (
+                     <div className="flex flex-row items-center justify-between gap-4">
+                        {/* Left: Product Summary */}
                         <div className="flex flex-col gap-1">
                            <div className="text-[14px] font-semibold text-[#1D1D1F]">
-                              {selectedModel?.name} - {selectedStorage?.name} -{' '}
-                              {selectedColor?.name}
-                           </div>
-                           <div className="text-[12px] text-[#86868B]">
-                              Available in {filteredBranches.length} location
-                              {filteredBranches.length !== 1 ? 's' : ''}
+                              Configure your iPhone
                            </div>
                         </div>
-                     </div>
 
-                     {/* Available Branches */}
-                     {filteredBranches.length > 0 && (
-                        <div className="max-h-[200px] overflow-y-auto">
-                           <div className="text-[12px] font-semibold text-[#1D1D1F] mb-2">
-                              Available Locations:
+                        {/* Right: Action Buttons */}
+                        <div className="flex flex-row items-center gap-3">
+                           <div className="text-[12px] text-[#86868B] mr-2">
+                              Please select all options
                            </div>
-                           <div className="space-y-2">
-                              {filteredBranches.map((branchData) => (
-                                 <div
-                                    key={branchData.branch.id}
-                                    className="flex flex-row items-center justify-between p-3 rounded-lg border border-[#D2D2D7] bg-white"
-                                 >
-                                    <div className="flex flex-col gap-1">
-                                       <div className="text-[13px] font-semibold text-[#1D1D1F]">
-                                          {branchData.branch.name}
-                                       </div>
-                                       <div className="text-[11px] text-[#86868B]">
-                                          {branchData.branch.address}
-                                       </div>
-                                       <div className="text-[11px] text-[#0071E3]">
-                                          In Stock:{' '}
-                                          {branchData.sku?.available_in_stock ||
-                                             0}{' '}
-                                          units
-                                       </div>
-                                    </div>
-                                    <div className="text-right">
-                                       <div className="text-[13px] font-semibold text-[#1D1D1F]">
-                                          ${branchData.sku?.unit_price || 0}
-                                       </div>
-                                       {branchData.sku?.unit_price && (
-                                          <div className="text-[11px] text-[#86868B]">
-                                             $
-                                             {Math.round(
-                                                (branchData.sku.unit_price /
-                                                   24) *
-                                                   100,
-                                             ) / 100}
-                                             /mo. for 24 mo.
+                           <Button
+                              disabled={true}
+                              className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#f5f5f7] text-[#86868B] cursor-not-allowed"
+                           >
+                              Add to Bag
+                           </Button>
+                        </div>
+                     </div>
+                  ) : (
+                     <div className="flex flex-col gap-4">
+                        {/* Product Summary */}
+                        <div className="flex flex-row items-center justify-between">
+                           <div className="flex flex-col gap-1">
+                              <div className="text-[14px] font-semibold text-[#1D1D1F]">
+                                 {selectedModel?.name} - {selectedStorage?.name}{' '}
+                                 - {selectedColor?.name}
+                              </div>
+                              <div className="text-[12px] text-[#86868B]">
+                                 Available in {filteredBranches.length} location
+                                 {filteredBranches.length !== 1 ? 's' : ''}
+                              </div>
+                           </div>
+                        </div>
+
+                        {/* Available Branches */}
+                        {filteredBranches.length > 0 && (
+                           <div className="max-h-[200px] overflow-y-auto">
+                              <div className="text-[12px] font-semibold text-[#1D1D1F] mb-2">
+                                 Available Locations:
+                              </div>
+                              <div className="space-y-2">
+                                 {filteredBranches.map((branchData) => (
+                                    <div
+                                       key={branchData.branch.id}
+                                       className="flex flex-row items-center justify-between p-3 rounded-lg border border-[#D2D2D7] bg-white"
+                                    >
+                                       <div className="flex flex-col gap-1">
+                                          <div className="text-[13px] font-semibold text-[#1D1D1F]">
+                                             {branchData.branch.name}
                                           </div>
-                                       )}
+                                          <div className="text-[11px] text-[#86868B]">
+                                             {branchData.branch.address}
+                                          </div>
+                                          <div className="text-[11px] text-[#0071E3]">
+                                             In Stock:{' '}
+                                             {branchData.sku
+                                                ?.available_in_stock || 0}{' '}
+                                             units
+                                          </div>
+                                       </div>
+                                       <div className="text-right">
+                                          <div className="text-[13px] font-semibold text-[#1D1D1F]">
+                                             ${branchData.sku?.unit_price || 0}
+                                          </div>
+                                          {branchData.sku?.unit_price && (
+                                             <div className="text-[11px] text-[#86868B]">
+                                                $
+                                                {Math.round(
+                                                   (branchData.sku.unit_price /
+                                                      24) *
+                                                      100,
+                                                ) / 100}
+                                                /mo. for 24 mo.
+                                             </div>
+                                          )}
+                                       </div>
                                     </div>
-                                 </div>
-                              ))}
+                                 ))}
+                              </div>
                            </div>
+                        )}
+
+                        {/* Action Button */}
+                        <div className="flex flex-row items-center justify-end">
+                           <Button
+                              className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white transition-all duration-200"
+                              onClick={() => {
+                                 // console.log('Add to Bag:', {
+                                 //    selectedModel,
+                                 //    selectedColor,
+                                 //    selectedStorage,
+                                 //    availableBranches: filteredBranches,
+                                 // });
+
+                                 handleAddToBag();
+                              }}
+                           >
+                              Add to Bag
+                           </Button>
                         </div>
-                     )}
-
-                     {/* Action Button */}
-                     <div className="flex flex-row items-center justify-end">
-                        <Button
-                           className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white transition-all duration-200"
-                           onClick={() => {
-                              // console.log('Add to Bag:', {
-                              //    selectedModel,
-                              //    selectedColor,
-                              //    selectedStorage,
-                              //    availableBranches: filteredBranches,
-                              // });
-
-                              handleAddToBag();
-                           }}
-                        >
-                           Add to Bag
-                        </Button>
                      </div>
-                  </div>
-               )}
+                  )}
+               </div>
             </div>
-         </div>
+            <div className="md:hidden fixed bottom-0 left-0 right-0 w-full bg-white border-t border-[#d2d2d7] z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+               <div className="flex flex-col px-4 py-3 gap-2">
+                  {!isAllSelected ? (
+                     <div className="text-[14px] font-semibold text-center text-[#1D1D1F]">
+                        Please select model, color, and storage
+                     </div>
+                  ) : (
+                     <div className="text-[14px] font-semibold text-center text-[#1D1D1F]">
+                        {selectedModel?.name} - {selectedStorage?.name} -{' '}
+                        {selectedColor?.name}
+                     </div>
+                  )}
+                  <Button
+                     onClick={handleAddToBag}
+                     disabled={!isAllSelected}
+                     className={`w-full py-3 rounded-full text-[15px] font-semibold transition-all duration-200 ${
+                        isAllSelected
+                           ? 'bg-[#0071E3] hover:bg-[#0077ED] text-white'
+                           : 'bg-[#f5f5f7] text-[#86868B] cursor-not-allowed'
+                     }`}
+                  >
+                     Add to Bag
+                  </Button>
+
+                  {/* Optional: show available branches collapsed */}
+                  {isAllSelected && filteredBranches.length > 0 && (
+                     <div className="max-h-40 overflow-y-auto mt-2 space-y-2">
+                        {filteredBranches.map((branchData) => (
+                           <div
+                              key={branchData.branch.id}
+                              className="flex flex-row justify-between p-3 rounded-lg border border-[#D2D2D7] bg-white"
+                           >
+                              <div className="flex flex-col gap-1">
+                                 <div className="text-[12px] font-semibold text-[#1D1D1F]">
+                                    {branchData.branch.name}
+                                 </div>
+                                 <div className="text-[11px] text-[#86868B]">
+                                    {branchData.branch.address}
+                                 </div>
+                                 <div className="text-[11px] text-[#0071E3]">
+                                    In Stock:{' '}
+                                    {branchData.sku?.available_in_stock || 0}{' '}
+                                    units
+                                 </div>
+                              </div>
+                              <div className="text-right">
+                                 <div className="text-[12px] font-semibold text-[#1D1D1F]">
+                                    ${branchData.sku?.unit_price || 0}
+                                 </div>
+                                 {branchData.sku?.unit_price && (
+                                    <div className="text-[11px] text-[#86868B]">
+                                       $
+                                       {Math.round(
+                                          (branchData.sku.unit_price / 24) *
+                                             100,
+                                       ) / 100}
+                                       /mo. for 24 mo.
+                                    </div>
+                                 )}
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  )}
+               </div>
+            </div>
+         </>
       );
    };
 
    useEffect(() => {
-      if (!carouselApi) return;
+      if (!carouselApiTop) return;
 
       const onSelect = () => {
-         setCurrentSlide(carouselApi.selectedScrollSnap());
+         setCurrentSlide(carouselApiTop.selectedScrollSnap());
       };
 
-      carouselApi.on('select', onSelect);
+      carouselApiTop.on('select', onSelect);
       onSelect(); // Set initial slide
 
       return () => {
-         carouselApi.off('select', onSelect);
+         carouselApiTop.off('select', onSelect);
       };
-   }, [carouselApi]);
+   }, [carouselApiTop]);
+   useEffect(() => {
+      if (!carouselApiBottom) return;
+
+      const onSelect = () => {
+         setCurrentSlide(carouselApiBottom.selectedScrollSnap());
+      };
+
+      carouselApiBottom.on('select', onSelect);
+      onSelect(); // Set initial slide
+
+      return () => {
+         carouselApiBottom.off('select', onSelect);
+      };
+   }, [carouselApiBottom]);
 
    return (
       <div>
          {/* Product Title */}
-         <div className="w-full bg-transparent flex flex-row pt-[52px] pb-32">
-            <div className="basis-[70%] bg-transparent">
-               <span className="text-[18px] text-[#b64400] font-semibold leading-[20px]">
+         <div className="w-full bg-transparent flex flex-col md:flex-row pt-[32px] md:pt-[52px] pb-16 md:pb-32 px-4 md:px-0">
+            {/* Left Section */}
+            <div className="w-full md:basis-[70%] bg-transparent mb-6 md:mb-0">
+               <span className="text-[16px] md:text-[18px] text-[#b64400] font-semibold leading-[20px]">
                   New
                </span>
-               <h1 className="text-[48px] font-semibold leading-[52px] pb-2 mb-[13px]">
+               <h1 className="text-[32px] md:text-[48px] font-semibold leading-[36px] md:leading-[52px] pb-1 md:pb-2 mb-4 md:mb-[13px]">
                   {iphoneDetailsFakeData.name}
                </h1>
-               <div className="text-[15px] font-light leading-[20px]">
+               <div className="text-[14px] md:text-[15px] font-light leading-[18px] md:leading-[20px]">
                   From $999 or $41.62/mo. for 24 mo.
                </div>
             </div>
-            <div className="basis-[30%] bg-transparent">
-               <div className="h-full flex flex-col mt-1">
-                  <div className="w-full basis-1/2 flex flex-row justify-end">
-                     <div className="w-fit text-[13px] font-light leading-[16px] tracking-[0.7px] px-[16px] py-[12px] my-[6px] flex items-center bg-[#f5f5f7] rounded-full">
+
+            {/* Right Section */}
+            <div className="w-full md:basis-[30%] bg-transparent">
+               <div className="flex flex-col h-full mt-1 md:mt-1 gap-2">
+                  <div className="w-full flex flex-row justify-end mb-2 md:mb-0">
+                     <div className="w-fit text-[12px] md:text-[13px] font-light leading-[14px] md:leading-[16px] tracking-[0.5px] md:tracking-[0.7px] px-4 md:px-[16px] py-2 md:py-[12px] flex items-center bg-[#f5f5f7] rounded-full">
                         Get $40–$650 for your trade-in.
                      </div>
                   </div>
-                  <div className="w-full basis-1/2 flex flex-row justify-end">
-                     <div className="w-fit text-[13px] font-light leading-[16px] tracking-[0.7px] px-[16px] py-[12px] my-[6px] flex items-center bg-[#f5f5f7] rounded-full">
+                  <div className="w-full flex flex-row justify-end">
+                     <div className="w-fit text-[12px] md:text-[13px] font-light leading-[14px] md:leading-[16px] tracking-[0.5px] md:tracking-[0.7px] px-4 md:px-[16px] py-2 md:py-[12px] flex items-center bg-[#f5f5f7] rounded-full">
                         Get 3% Daily Cash back with Apple Card.
                      </div>
                   </div>
@@ -399,12 +504,12 @@ const IphoneDetails = () => {
             </div>
          </div>
 
-         {/* Product Details */}
-         <div className="w-full flex flex-row gap-14 relative h-[1000px]">
+         {/* Product Details - PC, Tablet */}
+         <div className="hidden lg:flex w-full flex-row gap-14 relative h-[1000px]">
             {/* left */}
             <div className="basis-[70%] sticky top-[100px] self-start">
                <Carousel
-                  setApi={setCarouselApi}
+                  setApi={setCarouselApiTop}
                   opts={{
                      loop: true,
                      align: 'center',
@@ -523,7 +628,7 @@ const IphoneDetails = () => {
                                  onClick={() => {
                                     return (
                                        !isColorDisabled &&
-                                       handleColorSelection({
+                                       handleColorSelectionTop({
                                           name: color.name,
                                           normalized_name:
                                              color.normalized_name,
@@ -589,6 +694,141 @@ const IphoneDetails = () => {
                   </div>
                   {/* End Storage */}
                </div>
+            </div>
+         </div>
+         {/* Product Details - Mobile */}
+         <div className="flex flex-col lg:hidden w-full gap-6 px-4">
+            {/* Carousel */}
+            <div className="w-full overflow-hidden relative rounded-[20px]">
+               <Carousel
+                  setApi={setCarouselApiBottom}
+                  opts={{ loop: true, align: 'center' }}
+               >
+                  <CarouselContent className="h-[500px]">
+                     {iphoneDetailsFakeData.showcase_images.map((image) => (
+                        <CarouselItem key={image.image_id}>
+                           <NextImage
+                              src={`https://res.cloudinary.com/delkyrtji/image/upload/${resizeFromHeight(
+                                 500,
+                                 '16:9',
+                              )}/${image.image_url.split('/').pop()}`}
+                              alt={image.image_name || 'iPhone showcase image'}
+                              width={Math.round((500 * 16) / 9)}
+                              height={500}
+                              className="w-full h-full object-cover"
+                           />
+                        </CarouselItem>
+                     ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-2" />
+                  <CarouselNext className="right-2" />
+               </Carousel>
+            </div>
+
+            {/* Models */}
+            <div className="flex flex-col gap-2">
+               <h2 className="text-[20px] font-semibold text-center">
+                  Model.{' '}
+                  <span className="text-gray-500">Which is best for you?</span>
+               </h2>
+               {models.map((model: TModelItem) => (
+                  <ModelItem
+                     key={model.name}
+                     modelName={model.name}
+                     displaySize={model.name}
+                     price={0}
+                     monthlyPrice="0"
+                     isSelected={selectedModel?.name === model.name}
+                     onClick={() =>
+                        handleModelSelection({
+                           name: model.name,
+                           normalized_name: model.normalized_name,
+                        })
+                     }
+                  />
+               ))}
+               <HelpItem
+                  title="Need help choosing a model?"
+                  subTitle="Explore the differences in screen size and battery life."
+               />
+            </div>
+
+            {/* Color */}
+            <div className="flex flex-col gap-2 items-center">
+               <h2 className="text-[20px] font-semibold text-center">
+                  Finish.{' '}
+                  <span className="text-gray-500">Pick your favorite.</span>
+               </h2>
+               <div className="text-[16px] font-semibold">
+                  {isColorDisabled
+                     ? 'Color (Select a model first)'
+                     : hoveredColor
+                       ? `Color - ${hoveredColor}`
+                       : selectedColor
+                         ? `Color - ${selectedColor.name}`
+                         : 'Color'}
+               </div>
+               <div className="flex flex-row gap-3 flex-wrap">
+                  {colors.map((color: TColorItem) => (
+                     <ColorItem
+                        key={color.name}
+                        colorHex={color.hex_code}
+                        colorName={color.name}
+                        isSelected={
+                           selectedColor?.normalized_name ===
+                           color.normalized_name
+                        }
+                        onClick={() =>
+                           !isColorDisabled &&
+                           handleColorSelectionBottom({
+                              name: color.name,
+                              normalized_name: color.normalized_name,
+                           })
+                        }
+                        onMouseEnter={() =>
+                           !isColorDisabled && setHoveredColor(color.name)
+                        }
+                        onMouseLeave={() => setHoveredColor(null)}
+                        isDisabled={isColorDisabled}
+                     />
+                  ))}
+               </div>
+            </div>
+
+            {/* Storage */}
+            <div className="flex flex-col gap-2">
+               <h2 className="text-[20px] font-semibold text-center">
+                  Storage.{' '}
+                  <span className="text-gray-500">
+                     {isStorageDisabled
+                        ? 'Select model and color first'
+                        : 'How much space do you need?'}
+                  </span>
+               </h2>
+               {storages.map((storage: TStorageItem) => (
+                  <StorageItem
+                     key={storage.name}
+                     storageName={storage.name}
+                     price={0}
+                     monthlyPrice="0"
+                     isSelected={
+                        selectedStorage?.normalized_name ===
+                        storage.normalized_name
+                     }
+                     onClick={() =>
+                        !isStorageDisabled &&
+                        handleStorageSelection({
+                           name: storage.name,
+                           normalized_name: storage.normalized_name,
+                        })
+                     }
+                     isDisabled={isStorageDisabled}
+                  />
+               ))}
+               <HelpItem
+                  title="Not sure how much storage to get?"
+                  subTitle="Get a better understanding of how much space you’ll need."
+               />
             </div>
          </div>
 
