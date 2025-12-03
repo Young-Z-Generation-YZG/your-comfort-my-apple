@@ -303,7 +303,7 @@ const Header = () => {
                </div>
 
                {/* Right Actions */}
-               <div className="flex items-center gap-6">
+               <div className="flex items-center gap-3">
                   <div
                      className="cursor-pointer"
                      onClick={() => setActiveCategory('Search')}
@@ -334,11 +334,22 @@ const Header = () => {
                   >
                      <PiUserCircleFill className="w-12 h-6 text-[#1d1d1f]" />
                   </div>
+                  <div
+                     className="cursor-pointer relative"
+                     onClick={handleNotificationToggle}
+                  >
+                     <Bell className="w-12 h-6 text-[#1d1d1f]" />
+                     {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
+                           {unreadCount > 9 ? '9+' : unreadCount}
+                        </span>
+                     )}
+                  </div>
                   <button
                      onClick={() => {
-                        setIsMobileMenuOpen(true)
+                        setIsMobileMenuOpen(true);
 
-                        if(!isMobileMenuOpen) {
+                        if (!isMobileMenuOpen) {
                            setActiveCategory(null);
                         }
                      }}
@@ -442,7 +453,9 @@ const Header = () => {
                      setActiveCategory('Watch');
                   }}
                >
-                  <p className="antialiased opacity-[0.8] tracking-wide">Watch</p>
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Watch
+                  </p>
                </li>
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
@@ -479,7 +492,9 @@ const Header = () => {
                      setActiveCategory('Vision');
                   }}
                >
-                  <p className="antialiased opacity-[0.8] tracking-wide">Vision</p>
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Vision
+                  </p>
                </li>
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
@@ -585,8 +600,8 @@ const Header = () => {
                   className="px-[8px] cursor-pointer hidden md:block"
                   onClick={() => {
                      setActiveCategory('UserMenu');
-                     if(isMobileMenuOpen) {
-                           setActiveCategory(null);
+                     if (isMobileMenuOpen) {
+                        setActiveCategory(null);
                      }
                   }}
                >
@@ -616,7 +631,11 @@ const Header = () => {
                      initial={{ x: -320 }}
                      animate={{ x: -5 }}
                      exit={{ x: -320 }}
-                     transition={{ type: 'spring', stiffness: 300, damping: 50 }}
+                     transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 50,
+                     }}
                   >
                      <div className="flex flex-col h-full">
                         {/* Mobile menu header */}
@@ -963,7 +982,7 @@ const NotificationPanel = ({
          initial={{ opacity: 0, y: -8 }}
          animate={{ opacity: 1, y: 0 }}
          exit={{ opacity: 0, y: -8 }}
-         className="absolute top-[44px] right-[32px] w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
+         className="absolute top-[48px] right-[32px] w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
          onMouseLeave={onClose}
       >
          <div className="flex items-center justify-between gap-3 px-4 pt-4">
