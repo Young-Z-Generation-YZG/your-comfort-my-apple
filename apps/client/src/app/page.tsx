@@ -16,7 +16,7 @@ import {
 import LatestItem from './_components/latest-item';
 
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
-import ExperienceItem from '@components/client/experience-item';
+import ExperienceItem from '~/app/_components/experience-item';
 import NewestProducts from './_components/newest-products';
 import PopularProducts from './_components/popular-products';
 import useMediaQuery from '@components/hooks/use-media-query';
@@ -214,7 +214,7 @@ const HomePage = () => {
                         isMobile,
                   })}
                >
-                  Financial infrastructure to grow your revenue
+                  Discover the latest Apple products and innovations
                </div>
                <div
                   className={cn('content-body text-[#425466]', {
@@ -224,10 +224,9 @@ const HomePage = () => {
                         isSmallScreen,
                   })}
                >
-                  Join the millions of companies of all sizes that use Stripe to
-                  accept payments online and in person, embed financial
-                  services, power custom revenue models, and build a more
-                  profitable business.
+                  Explore the newest Apple devices and accessories designed to
+                  elevate the way you work, create, and play—delivered with the
+                  innovation and quality you expect.
                </div>
             </div>
             <div
@@ -411,9 +410,9 @@ const HomePage = () => {
                               key={index}
                               className={cn('mr-0', {
                                  'basis-[30%]': !isSmallScreen,
-                                 'basis-[100%]': isMobile,
-                                 'basis-[65%]': isTablet,
-                                 'basis-[50%]': isDesktop,
+                                 'basis-full': isMobile,
+                                 'basis-[50%]': isTablet,
+                                 'basis-[45%]': isDesktop,
                                  'basis-[40%]': isLargeDesktop,
                                  'basis-[35%]': isExtraLargeDesktop,
                               })}

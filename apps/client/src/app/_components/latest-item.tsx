@@ -25,7 +25,7 @@ const LatestItem = ({ product }: { product: LastestItemType }) => {
             SFDisplayFont.variable,
             'font-SFProDisplay w-full rounded-[20px] bg-cover bg-center bg-no-repeat shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,rgba(0,0,0,0.3)_0px_3px_7px_-3px]',
             {
-               'max-w-[420px] h-[580px]': !isSmallScreen,
+               'max-w-[400px] h-[580px]': !isSmallScreen,
                'max-w-[360px] h-[520px]': isTablet && !isMobile,
                'max-w-full h-[420px]': isMobile,
             },

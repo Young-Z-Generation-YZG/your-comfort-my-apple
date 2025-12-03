@@ -23,24 +23,20 @@ const ExperienceItem = ({ experience }: { experience: ExperienceItemType }) => {
    const containerWidth = isMobile
       ? 'w-full'
       : isTablet
-        ? 'w-[350px]'
-        : isDesktop
-          ? 'w-[400px]'
-          : 'w-[450px]';
+        ? 'w-[360px]'
+        : 'w-[400px]';
 
    const containerHeight = isMobile
-      ? 'h-[500px]'
+      ? 'h-[420px]'
       : isTablet
-        ? 'h-[550px]'
-        : 'h-[600px]';
+        ? 'h-[520px]'
+        : 'h-[580px]';
 
    const contentWidth = isMobile
       ? 'w-full'
       : isTablet
         ? 'w-[320px]'
-        : isDesktop
-          ? 'w-[370px]'
-          : 'w-[400px]';
+        : 'w-[360px]';
 
    const contentPadding = isMobile
       ? 'p-[20px]'

@@ -389,7 +389,7 @@ const Header = () => {
                   }}
                >
                   <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
-                     Black Friday 12.12
+                     Black Friday 25.11
                   </Badge>
                </li>
 
@@ -681,7 +681,7 @@ const Header = () => {
                                  }}
                               >
                                  <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
-                                    Black Friday 12.12
+                                    Black Friday 25.11
                                  </Badge>
                               </li>
                               <li

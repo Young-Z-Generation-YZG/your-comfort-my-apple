@@ -15,7 +15,7 @@ const PopularProducts = () => {
    const { getPopularProductsAsync, getPopularProductsState, isLoading } =
       useProductService();
 
-   const { isMobile, isTablet } = useMediaQuery();
+   const { isMobile, isTablet, isDesktop } = useMediaQuery();
    const isSmallScreen = isMobile || isTablet;
 
    const productItems = useMemo(() => {
@@ -66,10 +66,9 @@ const PopularProducts = () => {
                           <CarouselItem
                              key={product.id}
                              className={cn('pl-4 p-5', {
-                                'md:basis-1/2 lg:basis-1/2 xl:basis-1/3':
-                                   !isSmallScreen,
-                                'basis-[80%]': isTablet,
                                 'basis-full': isMobile,
+                                'basis-[80%]': isTablet,
+                                'basis-[40%]': isDesktop,
                              })}
                           >
                              <PopularProduct product={product} />
