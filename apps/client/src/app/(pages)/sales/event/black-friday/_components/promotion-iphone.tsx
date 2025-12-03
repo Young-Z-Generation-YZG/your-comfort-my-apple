@@ -5,9 +5,9 @@ import CardWrapper from './card-wrapper';
 import NextImage from 'next/image';
 import { Button } from '@components/ui/button';
 import { Badge } from '@components/ui/badge';
-import { TEventItem } from '../lib/get-event-data';
 import { useRouter } from 'next/navigation';
 import useBasketService from '@components/hooks/api/use-basket-service';
+import { TEventItem } from '~/domain/types/catalog.type';
 
 interface PromotionIPhoneProps {
    item: TEventItem;
@@ -38,8 +38,8 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
    };
 
    return (
-      <div className={cn('', className)}>
-         <CardWrapper className="w-full">
+      <div className={cn('h-full', className)}>
+         <CardWrapper className="w-full h-full flex flex-col">
             <div className="w-full overflow-hidden relative h-[300px]">
                <NextImage
                   src={item.image_url}
@@ -68,8 +68,8 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                ></span>
             </div>
 
-            <div className="p-6">
-               <h3 className="mb-4 text-2xl font-semibold">
+            <div className="p-6 flex flex-col flex-1">
+               <h3 className="mb-4 text-2xl font-semibold min-h-[64px]">
                   {item.model_name} {item.color_name} {item.storage_name}
                </h3>
 

@@ -1,51 +1,9 @@
+import { TEvent } from "~/domain/types/catalog.type";
+
 const EVENT_ID = '611db6eb-3d64-474e-9e23-3517ad0df6ec';
 // Full API endpoint as provided - includes the base URL
-const API_ENDPOINT = 'https://dc7a69b7406b.ngrok-free.app';
+const API_ENDPOINT = 'https://5b5eee1f95f6.ngrok-free.app';
 
-export type TEventItem = {
-   id: string;
-   event_id: string;
-   sku_id: string;
-   tenant_id: string;
-   branch_id: string;
-   model_name: string;
-   normalized_model: string;
-   color_name: string;
-   normalized_color: string;
-   color_hex_code: string;
-   storage_name: string;
-   normalized_storage: string;
-   product_classification: string;
-   image_url: string;
-   discount_type: string;
-   discount_value: number; // Percentage as number (e.g., 11 for 11%)
-   discount_amount: number;
-   original_price: number;
-   final_price: number;
-   stock: number;
-   sold: number;
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
-
-export type TEvent = {
-   id: string;
-   title: string;
-   description: string;
-   start_date: string;
-   end_date: string;
-   event_items: TEventItem[];
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
 
 /**
  * Server-side function to fetch event data

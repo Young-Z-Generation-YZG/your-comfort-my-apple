@@ -1,9 +1,9 @@
 'use client';
 
 import CategoriesCarousel from '@components/client/categories-carousel';
-import { TEvent, TEventItem } from '../lib/get-event-data';
-import Banner from './banner';
 import PromotionIPhone from './promotion-iphone';
+import { TEvent, TEventItem } from '~/domain/types/catalog.type';
+import { BlackFridayBanner } from './banner';
 
 interface EventContentProps {
    eventData: TEvent;
@@ -14,7 +14,7 @@ const EventContent = ({ eventData, eventItems }: EventContentProps) => {
    return (
       <div className="bg-[#f5f5f7]">
          <div className="bg-white text-red-500 font-bold">
-            <Banner eventData={eventData} />
+            <BlackFridayBanner />
          </div>
 
          <div className="row w-[1200px] mx-auto pt-[80px] pb-[64px]">
@@ -41,12 +41,13 @@ const EventContent = ({ eventData, eventItems }: EventContentProps) => {
 
             {eventItems && eventItems.length > 0 && (
                <div className="w-full">
-                  <div className="grid grid-cols-3 gap-x-4 gap-y-8 mt-5">
+                  <div className="grid grid-cols-3 gap-x-4 gap-y-8 mt-5 items-stretch">
                      {eventItems.map((item: TEventItem, index: number) => {
                         return (
                            <PromotionIPhone
                               key={item.id || index}
                               item={item}
+                              className="h-full"
                            />
                         );
                      })}

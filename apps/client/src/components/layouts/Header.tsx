@@ -287,7 +287,7 @@ const Header = () => {
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
-                     router.push('/home');
+                     router.push('/');
                   }}
                >
                   <Image
@@ -303,10 +303,10 @@ const Header = () => {
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
                   onClick={() => {
-                     router.push('/store');
+                     router.push('/sales/event/black-friday');
                   }}
                   onMouseEnter={() => {
-                     setActiveCategory('Store');
+                     setActiveCategory('Event');
                   }}
                >
                   <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">

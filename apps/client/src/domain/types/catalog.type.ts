@@ -294,3 +294,49 @@ export type TCategory = {
    deleted_at: string | null;
    deleted_by: string | null;
 };
+
+
+export type TEventItem = {
+   id: string;
+   event_id: string;
+   sku_id: string;
+   tenant_id: string;
+   branch_id: string;
+   model_name: string;
+   normalized_model: string;
+   color_name: string;
+   normalized_color: string;
+   color_hex_code: string;
+   storage_name: string;
+   normalized_storage: string;
+   product_classification: string;
+   image_url: string;
+   discount_type: string;
+   discount_value: number; // Percentage as number (e.g., 11 for 11%)
+   discount_amount: number;
+   original_price: number;
+   final_price: number;
+   stock: number;
+   sold: number;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TEvent = {
+   id: string;
+   title: string;
+   description: string;
+   start_date: string;
+   end_date: string;
+   event_items: TEventItem[];
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};

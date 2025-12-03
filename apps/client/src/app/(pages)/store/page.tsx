@@ -10,8 +10,8 @@ import { useEffect, useMemo } from 'react';
 import useBasketService from '@components/hooks/api/use-basket-service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useRouter } from 'next/navigation';
-import { TEventItem } from '~/infrastructure/services/promotion.service';
 import { cn } from '~/infrastructure/lib/utils';
+import { TEventItem } from '~/domain/types/catalog.type';
 
 const StorePage = () => {
    const router = useRouter();

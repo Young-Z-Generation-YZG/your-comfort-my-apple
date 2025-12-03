@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { getEventData, TEvent, TEventItem } from './lib/get-event-data';
+import { getEventData } from './lib/get-event-data';
 import EventContent from './_components/event-content';
+import { TEvent, TEventItem } from '~/domain/types/catalog.type';
 
 /**
  * Generate dynamic metadata for SEO
