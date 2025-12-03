@@ -284,33 +284,69 @@ const Header = () => {
          }}
       >
          <div className="flex flex-row items-center max-w-7xl h-12 md:h-[44px] px-4 sm:px-6 lg:px-8 mx-auto">
-            {/* Mobile menu button */}
-            <div className="lg:hidden flex items-center">
-               <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
-                  aria-label="Toggle menu"
-               >
-                  {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-               </button>
-            </div>
-
-            {/* Logo - centered on mobile */}
-            <div className="flex lg:hidden flex-1 justify-center">
+            {/* Mobile Header Layout */}
+            <div className="flex lg:hidden w-full items-center justify-between">
+               {/* Logo */}
                <div
-                  className="px-[8px] cursor-pointer"
+                  className="cursor-pointer"
                   onClick={() => {
                      router.push('/');
                   }}
                >
                   <Image
                      src={svgs.appleIcon}
-                     alt="cover"
-                     width={1200}
-                     height={1000}
-                     quality={100}
-                     className="w-5 h-10 md:w-[22px] md:h-[44px]"
+                     alt="Apple"
+                     width={20}
+                     height={44}
+                     className="w-[18px] h-[44px] object-contain"
                   />
+               </div>
+
+               {/* Right Actions */}
+               <div className="flex items-center gap-6">
+                  <div
+                     className="cursor-pointer"
+                     onClick={() => setActiveCategory('Search')}
+                  >
+                     <Image
+                        src={svgs.appleSearchIcon}
+                        alt="Search"
+                        width={32}
+                        height={32}
+                        className="w-14 h-14"
+                     />
+                  </div>
+                  <div
+                     className="cursor-pointer relative"
+                     onClick={() => setActiveCategory('BagMenu')}
+                  >
+                     <Image
+                        src={svgs.appleBasketIcon}
+                        alt="Bag"
+                        width={32}
+                        height={32}
+                        className="w-14 h-14"
+                     />
+                  </div>
+                  <div
+                     className="cursor-pointer"
+                     onClick={() => setActiveCategory('UserMenu')}
+                  >
+                     <PiUserCircleFill className="w-12 h-6 text-[#1d1d1f]" />
+                  </div>
+                  <button
+                     onClick={() => {
+                        setIsMobileMenuOpen(true)
+
+                        if(!isMobileMenuOpen) {
+                           setActiveCategory(null);
+                        }
+                     }}
+                     className="text-[#1d1d1f] focus:outline-none"
+                     aria-label="Open menu"
+                  >
+                     <Menu className="w-5 h-5" />
+                  </button>
                </div>
             </div>
 
@@ -502,13 +538,15 @@ const Header = () => {
 
                <div
                   className="px-[8px] cursor-pointer hidden md:block"
-                  onClick={() => setActiveCategory('Search')}
+                  onClick={() => {
+                     setActiveCategory('Search');
+                  }}
                >
                   <Image
                      src={svgs.appleSearchIcon}
                      alt="cover"
-                     width={1200}
-                     height={1000}
+                     width={10}
+                     height={10}
                      quality={100}
                      className="w-4 h-8 md:w-[22px] md:h-[44px]"
                   />
@@ -547,6 +585,9 @@ const Header = () => {
                   className="px-[8px] cursor-pointer hidden md:block"
                   onClick={() => {
                      setActiveCategory('UserMenu');
+                     if(isMobileMenuOpen) {
+                           setActiveCategory(null);
+                     }
                   }}
                >
                   <PiUserCircleFill className="w-4 h-4 md:size-5" />
@@ -554,16 +595,29 @@ const Header = () => {
             </ul>
 
             {/* Mobile menu overlay */}
-            {isMobileMenuOpen && (
-               <>
-                  {/* Backdrop overlay */}
-                  <div 
+            <AnimatePresence>
+               {isMobileMenuOpen && (
+                  <motion.div
+                     key="backdrop"
                      className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     exit={{ opacity: 0 }}
                      onClick={() => setIsMobileMenuOpen(false)}
                   />
-                  
-                  {/* Mobile menu */}
-                  <div className="lg:hidden fixed inset-y-0 left-0 w-80 bg-[#fafafc] z-50 shadow-xl">
+               )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+               {isMobileMenuOpen && (
+                  <motion.div
+                     key="drawer"
+                     className="lg:hidden fixed inset-y-0 left-0 w-80 bg-[#fafafc] z-50 shadow-xl"
+                     initial={{ x: -320 }}
+                     animate={{ x: -5 }}
+                     exit={{ x: -320 }}
+                     transition={{ type: 'spring', stiffness: 300, damping: 50 }}
+                  >
                      <div className="flex flex-col h-full">
                         {/* Mobile menu header */}
                         <div className="flex items-center justify-between px-4 h-12 md:h-[44px] border-b border-gray-200">
@@ -594,155 +648,92 @@ const Header = () => {
                                  />
                               </div>
                            </div>
-                           <div className="w-10"></div> {/* Spacer */}
+                           <div className="w-10"></div>
                         </div>
 
-                     {/* Mobile menu items */}
-                     <div className="flex-1 overflow-y-auto px-4 py-4">
-                        <ul className="space-y-2">
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('/sales/event/black-friday');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
-                                 Black Friday 12.12
-                              </Badge>
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('/shop');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              Store
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('/store');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              Mac
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('/store');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              iPad
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('#');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              iPhone
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('#');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              Watch
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('#');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              Vision
-                           </li>
-                           <li
-                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
-                              onClick={() => {
-                                 router.push('#');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                           >
-                              Accessories
-                           </li>
-                        </ul>
-                     </div>
-
-                     {/* Mobile menu footer */}
-                     <div className="border-t border-gray-200 px-4 py-4">
-                        <div className="flex items-center justify-between">
-                           <div className="flex items-center space-x-4">
-                              {isAuthenticated && (
-                                 <button
-                                    onClick={() => {
-                                       setActiveCategory('Notifications');
-                                       setIsMobileMenuOpen(false);
-                                    }}
-                                    className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
-                                 >
-                                    <Bell className="w-5 h-5" />
-                                    {unreadCount > 0 && (
-                                       <span className="absolute -top-0.5 right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
-                                          {unreadCount > 9 ? '9+' : unreadCount}
-                                       </span>
-                                    )}
-                                 </button>
-                              )}
-                              <button
+                        {/* Mobile menu items */}
+                        <div className="flex-1 overflow-y-auto px-4 py-4">
+                           <ul className="divide-y divide-[#e5e5ea]">
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
                                  onClick={() => {
-                                    setActiveCategory('Search');
+                                    router.push('/sales/event/black-friday');
                                     setIsMobileMenuOpen(false);
                                  }}
-                                 className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
                               >
-                                 <Image
-                                    src={svgs.appleSearchIcon}
-                                    alt="Search"
-                                    width={20}
-                                    height={20}
-                                    className="w-5 h-5"
-                                 />
-                              </button>
-                              <button
+                                 <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
+                                    Black Friday 12.12
+                                 </Badge>
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
                                  onClick={() => {
-                                    setActiveCategory('BagMenu');
+                                    router.push('/shop');
                                     setIsMobileMenuOpen(false);
                                  }}
-                                 className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
                               >
-                                 <Image
-                                    src={svgs.appleBasketIcon}
-                                    alt="Basket"
-                                    width={20}
-                                    height={20}
-                                    className="w-5 h-5"
-                                 />
-                              </button>
-                           </div>
-                           <button
-                              onClick={() => {
-                                 setActiveCategory('UserMenu');
-                                 setIsMobileMenuOpen(false);
-                              }}
-                              className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
-                           >
-                              <PiUserCircleFill className="w-5 h-5" />
-                           </button>
+                                 Store
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('/store');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 Mac
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('/store');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 iPad
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('#');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 iPhone
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('#');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 Watch
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('#');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 Vision
+                              </li>
+                              <li
+                                 className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 onClick={() => {
+                                    router.push('#');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 Accessories
+                              </li>
+                           </ul>
                         </div>
                      </div>
-                     </div>
-                  </div>
-               </>
-            )}
+                  </motion.div>
+               )}
+            </AnimatePresence>
 
             <AnimatePresence>
                {activeCategory &&
