@@ -51,29 +51,28 @@ const SignInPage = () => {
    };
 
    return (
-      <div className="w-[1180px] mx-auto px-10">
-         <section className="flex justify-between border-b h-[60px] items-center">
-            <div>
-               <h2 className="text-2xl font-medium">Account</h2>
-            </div>
-
-            <div className="flex gap-3 font-SFProText text-slate-500 text-sm">
+      <div className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-10">
+         <section className="flex flex-col sm:flex-row items-center justify-between border-b py-3 sm:py-0 gap-2">
+             <div>
+               <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">Account</h2>
+             </div>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 font-SFProText text-slate-500 text-xs sm:text-sm">
                <Link href="/sign-in">Sign in</Link>
                <Link href="/sign-up">Create your Account</Link>
                <a href="#">FAQ</a>
             </div>
          </section>
 
-         <div className="h-full px-[200px] py-[200px]">
-            <div className="w-full  flex flex-col justify-center items-center">
-               <h3 className="text-4xl font-SFProDisplay font-medium">
+         <div className="min-h-[calc(100vh-160px)] px-4 sm:px-6 lg:px-[80px] py-12 sm:py-16 lg:py-[80px] flex items-center">
+            <div className="w-full flex flex-col items-center">
+               <h3 className="text-3xl sm:text-4xl font-SFProDisplay font-medium">
                   Account
                </h3>
-               <p className="text-base font-SFProText font-light pt-5">
+               <p className="text-sm sm:text-base font-SFProText font-light pt-4 sm:pt-5">
                   Manage Your Account
                </p>
 
-               <p className="text-base font-SFProText font-light py-1 flex gap-2">
+               <p className="text-sm sm:text-base font-SFProText font-light py-1 flex gap-2 flex-wrap sm:flex-nowrap">
                   Not have account yet?{' '}
                   <Link
                      href="/sign-up"
@@ -84,7 +83,7 @@ const SignInPage = () => {
                   </Link>
                </p>
 
-               <div className="w-[480px]">
+               <div className="w-full max-w-[480px]">
                   <LoadingOverlay isLoading={isLoading} text="Signing in...">
                      <div>
                         <form
@@ -149,10 +148,10 @@ const SignInPage = () => {
                      </div>
 
                      <button
-                        type="button"
-                        onClick={form.handleSubmit(onSubmit)}
-                        disabled={isLoading}
-                        className="w-full mt-5 px-6 py-3 bg-blue-600 text-white font-SFProText text-base font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+                         type="button"
+                         onClick={form.handleSubmit(onSubmit)}
+                         disabled={isLoading}
+                         className="w-full mt-5 px-6 py-3 bg-blue-600 text-white font-SFProText text-base font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                      >
                         {isLoading ? (
                            <>
@@ -189,7 +188,7 @@ const SignInPage = () => {
                         </h3>
 
                         <div className="flex flex-col justify-center items-center gap-3 mt-3">
-                           <button className="w-fit px-3 py-2 rounded-full font-SFProText text-base font-medium min-w-[300px] bg-slate-200 flex items-center justify-between hover:bg-slate-300 active:bg-slate-200">
+                           <button className="w-full sm:w-fit max-w-[400px] px-4 py-2 rounded-full font-SFProText text-base font-medium sm:min-w-[300px] bg-slate-200 flex items-center justify-between hover:bg-slate-300 active:bg-slate-200">
                               <Image
                                  src={googlePng}
                                  alt="cover"
