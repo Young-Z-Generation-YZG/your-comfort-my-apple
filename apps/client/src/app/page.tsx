@@ -334,9 +334,12 @@ const HomePage = () => {
                            <CarouselItem
                               key={index}
                               className={cn('mr-0', {
-                                 'lg:basis-[30%]': !isSmallScreen,
-                                 'basis-[50%]': isTablet,
+                                 'basis-[30%]': !isSmallScreen,
                                  'basis-full': isMobile,
+                                 'basis-[50%]': isTablet,
+                                 'basis-[45%]': isDesktop,
+                                 'basis-[40%]': isLargeDesktop,
+                                 'basis-[35%]': isExtraLargeDesktop,
                               })}
                            >
                               <LatestItem product={product} />
@@ -408,9 +411,11 @@ const HomePage = () => {
                               key={index}
                               className={cn('mr-0', {
                                  'basis-[30%]': !isSmallScreen,
-                                 'basis-[75%]': isTablet,
-                                 'basis-full': isMobile,
+                                 'basis-[100%]': isMobile,
+                                 'basis-[65%]': isTablet,
+                                 'basis-[50%]': isDesktop,
                                  'basis-[40%]': isLargeDesktop,
+                                 'basis-[35%]': isExtraLargeDesktop,
                               })}
                            >
                               <ExperienceItem experience={item} />
