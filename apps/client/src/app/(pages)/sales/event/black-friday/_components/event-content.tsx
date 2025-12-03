@@ -17,19 +17,19 @@ const EventContent = ({ eventData, eventItems }: EventContentProps) => {
             <BlackFridayBanner />
          </div>
 
-         <div className="row w-[1200px] mx-auto pt-[80px] pb-[64px]">
-            <p className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
+         <div className="row w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[64px] md:pt-[80px] pb-[48px] md:pb-[64px]">
+            <p className="text-3xl sm:text-4xl lg:text-5xl w-full max-w-[700px] text-wrap font-semibold text-slate-900/60 leading-9 sm:leading-[48px] lg:leading-[60px]">
                <span className="inline text-black">Store.</span>
                The best way to buy the products you love.
             </p>
          </div>
 
-         <div>
+         <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0">
             <CategoriesCarousel />
          </div>
 
-         <div className="w-[1200px] mx-auto pt-[80px] pb-[64px]">
-            <div className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
+         <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[64px] md:pt-[80px] pb-[48px] md:pb-[64px]">
+            <div className="text-3xl sm:text-4xl lg:text-5xl w-full max-w-[700px] text-wrap font-semibold text-slate-900/60 leading-9 sm:leading-[48px] lg:leading-[60px]">
                <h1 className="text-black">
                   {eventData.title || 'Black Friday Special'}
                </h1>
@@ -41,7 +41,7 @@ const EventContent = ({ eventData, eventItems }: EventContentProps) => {
 
             {eventItems && eventItems.length > 0 && (
                <div className="w-full">
-                  <div className="grid grid-cols-3 gap-x-4 gap-y-8 mt-5 items-stretch">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 mt-5 items-stretch">
                      {eventItems.map((item: TEventItem, index: number) => {
                         return (
                            <PromotionIPhone

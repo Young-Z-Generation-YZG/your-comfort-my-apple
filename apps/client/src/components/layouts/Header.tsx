@@ -13,7 +13,7 @@ import {
 import { PiUserCircleFill } from 'react-icons/pi';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Bell, RefreshCw } from 'lucide-react';
+import { Bell, RefreshCw, Menu, X } from 'lucide-react';
 import Search from './_components/search';
 import UserMenu from './_components/user-menu';
 import BasketMenu from './_components/basket-menu';
@@ -106,6 +106,7 @@ const Header = () => {
    const [activeCategory, setActiveCategory] = useState<string | null>(null);
    const [notificationTab, setNotificationTab] =
       useState<NotificationTab>('all');
+   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
    const router = useRouter();
    const { isAuthenticated } = useAppSelector((state) => state.auth);
 
@@ -282,8 +283,20 @@ const Header = () => {
             setActiveCategory(null);
          }}
       >
-         <div className="flex flex-row items-center w-[1180px] h-[44px] px-[22px] mx-auto">
-            <ul className="main-category flex flex-row justify-between items-center w-full">
+         <div className="flex flex-row items-center max-w-7xl h-12 md:h-[44px] px-4 sm:px-6 lg:px-8 mx-auto">
+            {/* Mobile menu button */}
+            <div className="lg:hidden flex items-center">
+               <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                  aria-label="Toggle menu"
+               >
+                  {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+               </button>
+            </div>
+
+            {/* Logo - centered on mobile */}
+            <div className="flex lg:hidden flex-1 justify-center">
                <div
                   className="px-[8px] cursor-pointer"
                   onClick={() => {
@@ -296,12 +309,31 @@ const Header = () => {
                      width={1200}
                      height={1000}
                      quality={100}
-                     className="w-[22px] h-[44px]"
+                     className="w-5 h-10 md:w-[22px] md:h-[44px]"
+                  />
+               </div>
+            </div>
+
+            {/* Desktop navigation */}
+            <ul className="hidden lg:flex main-category flex-row justify-between items-center w-full">
+               <div
+                  className="px-[8px] cursor-pointer"
+                  onClick={() => {
+                     router.push('/');
+                  }}
+               >
+                  <Image
+                     src={svgs.appleIcon}
+                     alt="cover"
+                     width={1200}
+                     height={1000}
+                     quality={100}
+                     className="w-5 h-10 md:w-[22px] md:h-[44px]"
                   />
                </div>
 
                <li
-                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] hidden md:block"
                   onClick={() => {
                      router.push('/sales/event/black-friday');
                   }}
@@ -329,7 +361,7 @@ const Header = () => {
                </li>
 
                <li
-                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] hidden xl:block"
                   onClick={() => {
                      router.push('#');
                   }}
@@ -366,7 +398,7 @@ const Header = () => {
                   </p>
                </li>
                <li
-                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] hidden lg:block"
                   onClick={() => {
                      router.push('#');
                   }}
@@ -374,9 +406,7 @@ const Header = () => {
                      setActiveCategory('Watch');
                   }}
                >
-                  <p className="antialiased opacity-[0.8] tracking-wide">
-                     Watch
-                  </p>
+                  <p className="antialiased opacity-[0.8] tracking-wide">Watch</p>
                </li>
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
@@ -405,7 +435,7 @@ const Header = () => {
                   </p>
                </li>
                <li
-                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px] hidden xl:block"
                   onClick={() => {
                      router.push('#');
                   }}
@@ -413,9 +443,7 @@ const Header = () => {
                      setActiveCategory('Vision');
                   }}
                >
-                  <p className="antialiased opacity-[0.8] tracking-wide">
-                     Vision
-                  </p>
+                  <p className="antialiased opacity-[0.8] tracking-wide">Vision</p>
                </li>
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
@@ -473,7 +501,7 @@ const Header = () => {
                </li> */}
 
                <div
-                  className="px-[8px] cursor-pointer"
+                  className="px-[8px] cursor-pointer hidden md:block"
                   onClick={() => setActiveCategory('Search')}
                >
                   <Image
@@ -482,11 +510,11 @@ const Header = () => {
                      width={1200}
                      height={1000}
                      quality={100}
-                     className="w-[22px] h-[44px]"
+                     className="w-4 h-8 md:w-[22px] md:h-[44px]"
                   />
                </div>
                <div
-                  className="px-[8px] cursor-pointer relative"
+                  className="px-[8px] cursor-pointer relative hidden md:block"
                   onClick={() => {
                      setActiveCategory('BagMenu');
                   }}
@@ -497,16 +525,16 @@ const Header = () => {
                      width={1200}
                      height={1000}
                      quality={100}
-                     className="w-[22px] h-[44px]"
+                     className="w-4 h-8 md:w-[22px] md:h-[44px]"
                   />
                </div>
 
                {isAuthenticated && (
                   <div
-                     className="px-[8px] cursor-pointer relative"
+                     className="px-[8px] cursor-pointer relative hidden md:block"
                      onClick={handleNotificationToggle}
                   >
-                     <Bell className="w-[18px] h-[18px] text-[#1d1d1f]" />
+                     <Bell className="w-4 h-4 md:w-[18px] md:h-[18px] text-[#1d1d1f]" />
                      {unreadCount > 0 && (
                         <span className="absolute -top-0.5 right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
                            {unreadCount > 9 ? '9+' : unreadCount}
@@ -516,14 +544,205 @@ const Header = () => {
                )}
 
                <div
-                  className="px-[8px] cursor-pointer"
+                  className="px-[8px] cursor-pointer hidden md:block"
                   onClick={() => {
                      setActiveCategory('UserMenu');
                   }}
                >
-                  <PiUserCircleFill className="size-5" />
+                  <PiUserCircleFill className="w-4 h-4 md:size-5" />
                </div>
             </ul>
+
+            {/* Mobile menu overlay */}
+            {isMobileMenuOpen && (
+               <>
+                  {/* Backdrop overlay */}
+                  <div 
+                     className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+                     onClick={() => setIsMobileMenuOpen(false)}
+                  />
+                  
+                  {/* Mobile menu */}
+                  <div className="lg:hidden fixed inset-y-0 left-0 w-80 bg-[#fafafc] z-50 shadow-xl">
+                     <div className="flex flex-col h-full">
+                        {/* Mobile menu header */}
+                        <div className="flex items-center justify-between px-4 h-12 md:h-[44px] border-b border-gray-200">
+                           <div className="flex items-center">
+                              <button
+                                 onClick={() => setIsMobileMenuOpen(false)}
+                                 className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 aria-label="Close menu"
+                              >
+                                 <X className="h-5 w-5 md:h-6 md:w-6" />
+                              </button>
+                           </div>
+                           <div className="flex-1 flex justify-center">
+                              <div
+                                 className="px-[8px] cursor-pointer"
+                                 onClick={() => {
+                                    router.push('/');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                              >
+                                 <Image
+                                    src={svgs.appleIcon}
+                                    alt="cover"
+                                    width={1200}
+                                    height={1000}
+                                    quality={100}
+                                    className="w-5 h-10 md:w-[22px] md:h-[44px]"
+                                 />
+                              </div>
+                           </div>
+                           <div className="w-10"></div> {/* Spacer */}
+                        </div>
+
+                     {/* Mobile menu items */}
+                     <div className="flex-1 overflow-y-auto px-4 py-4">
+                        <ul className="space-y-2">
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('/sales/event/black-friday');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
+                                 Black Friday 12.12
+                              </Badge>
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('/shop');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              Store
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('/store');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              Mac
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('/store');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              iPad
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('#');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              iPhone
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('#');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              Watch
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('#');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              Vision
+                           </li>
+                           <li
+                              className="cursor-pointer py-3 px-4 font-medium text-[16px] text-[#1d1d1f] hover:bg-[#f5f5f7] rounded-lg transition-colors"
+                              onClick={() => {
+                                 router.push('#');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                           >
+                              Accessories
+                           </li>
+                        </ul>
+                     </div>
+
+                     {/* Mobile menu footer */}
+                     <div className="border-t border-gray-200 px-4 py-4">
+                        <div className="flex items-center justify-between">
+                           <div className="flex items-center space-x-4">
+                              {isAuthenticated && (
+                                 <button
+                                    onClick={() => {
+                                       setActiveCategory('Notifications');
+                                       setIsMobileMenuOpen(false);
+                                    }}
+                                    className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                                 >
+                                    <Bell className="w-5 h-5" />
+                                    {unreadCount > 0 && (
+                                       <span className="absolute -top-0.5 right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
+                                          {unreadCount > 9 ? '9+' : unreadCount}
+                                       </span>
+                                    )}
+                                 </button>
+                              )}
+                              <button
+                                 onClick={() => {
+                                    setActiveCategory('Search');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                                 className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                              >
+                                 <Image
+                                    src={svgs.appleSearchIcon}
+                                    alt="Search"
+                                    width={20}
+                                    height={20}
+                                    className="w-5 h-5"
+                                 />
+                              </button>
+                              <button
+                                 onClick={() => {
+                                    setActiveCategory('BagMenu');
+                                    setIsMobileMenuOpen(false);
+                                 }}
+                                 className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                              >
+                                 <Image
+                                    src={svgs.appleBasketIcon}
+                                    alt="Basket"
+                                    width={20}
+                                    height={20}
+                                    className="w-5 h-5"
+                                 />
+                              </button>
+                           </div>
+                           <button
+                              onClick={() => {
+                                 setActiveCategory('UserMenu');
+                                 setIsMobileMenuOpen(false);
+                              }}
+                              className="p-2 rounded-md text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                           >
+                              <PiUserCircleFill className="w-5 h-5" />
+                           </button>
+                        </div>
+                     </div>
+                     </div>
+                  </div>
+               </>
+            )}
 
             <AnimatePresence>
                {activeCategory &&

@@ -40,7 +40,7 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
    return (
       <div className={cn('h-full', className)}>
          <CardWrapper className="w-full h-full flex flex-col">
-            <div className="w-full overflow-hidden relative h-[300px]">
+            <div className="w-full overflow-hidden relative h-[220px] sm:h-[260px] md:h-[300px]">
                <NextImage
                   src={item.image_url}
                   alt={`${item.model_name} ${item.color_name} ${item.storage_name}`}
@@ -52,7 +52,7 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                {/* Discount Badge */}
                <Badge
                   variant="destructive"
-                  className="absolute top-4 right-4 text-base px-3 py-1"
+                  className="absolute top-4 right-4 text-sm sm:text-base px-3 py-1"
                >
                   -{discountPercentage}% OFF
                </Badge>
@@ -62,24 +62,24 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
             <div className="flex justify-center mt-5">
                <span
                   className={cn(
-                     'h-[40px] w-[40px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector ring-offset-white',
+                     'h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 cursor-pointer rounded-full border-2 border-solid shadow-color-selector ring-offset-white',
                   )}
                   style={{ backgroundColor: item.color_hex_code }}
                ></span>
             </div>
 
-            <div className="p-6 flex flex-col flex-1">
-               <h3 className="mb-4 text-2xl font-semibold min-h-[64px]">
+            <div className="p-4 sm:p-6 flex flex-col flex-1">
+               <h3 className="mb-4 text-xl sm:text-2xl font-semibold min-h-[48px] sm:min-h-[64px]">
                   {item.model_name} {item.color_name} {item.storage_name}
                </h3>
 
                <div className="flex items-end gap-2">
                   {/* discount price */}
-                  <span className="text-2xl font-medium text-red-600 font-SFProText">
+                  <span className="text-xl sm:text-2xl font-medium text-red-600 font-SFProText">
                      ${item.final_price}
                   </span>
                   {/* original price */}
-                  <span className="text-lg text-gray-500 line-through font-SFProText">
+                  <span className="text-base sm:text-lg text-gray-500 line-through font-SFProText">
                      ${item.original_price}
                   </span>
                </div>
@@ -125,7 +125,7 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                )}
 
                <Button
-                  className="w-full mt-5 cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700 disabled:opacity-50"
+                  className="w-full mt-5 cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700 disabled:opacity-50 text-sm sm:text-base"
                   onClick={handleBuy}
                   disabled={isStoreEventItemLoading}
                >
