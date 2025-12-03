@@ -3,12 +3,12 @@
 const Footer = () => {
    return (
       <footer className="w-full h-full">
-         <div className="max-w-[1680px] w-[87.5vw] mx-auto font-SFProText mb-5 py-16">
-            <h2 className="mb-[53px] text-[56px] font-[600] leading-[60px]">
+         <div className="max-w-[1680px] w-full px-6 md:w-[87.5vw] md:px-0 mx-auto font-SFProText mb-5 py-10 md:py-16">
+            <h2 className="mb-8 md:mb-[53px] text-4xl md:text-[56px] font-[600] leading-tight md:leading-[60px]">
                iPhone
             </h2>
-            <div className="flex flex-wrap lg:flex-row ">
-               <div className="w-full mb-14 lg:w-auto lg:mb-0 pr-[88px]">
+            <div className="flex flex-wrap lg:flex-row">
+               <div className="w-full mb-10 lg:w-auto lg:mb-0 pr-0 lg:pr-[88px]">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Explore iPhone
                   </h3>
@@ -36,7 +36,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 pr-[44px] font-SFProDisplay">
+               <div className="w-full mb-10 md:w-auto md:mb-0 pr-0 md:pr-[44px] font-SFProDisplay">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      Shop iPhone
                   </h3>
@@ -55,7 +55,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
-               <div className="w-full mb-14 md:w-auto md:mb-0 pr-[44px]">
+               <div className="w-full mb-10 md:w-auto md:mb-0 pr-0 md:pr-[44px]">
                   <h3 className="mb-[14px] text-[#6E6E73] text-[17px] font-normal leading-[21px] font-SFProDisplay">
                      More from iPhone
                   </h3>
@@ -89,7 +89,7 @@ const Footer = () => {
             </div>
          </div>
          <div className="w-full bg-[#FAFAFC]">
-            <div className="w-[980px] mx-auto py-[17px] flex flex-col gap-2 text-[11px] font-light font-SFProText text-[#6E6E73]">
+            <div className="w-full max-w-[980px] px-4 lg:px-0 mx-auto py-[17px] flex flex-col gap-2 text-[11px] font-light font-SFProText text-[#6E6E73]">
                <div className="w-full flex flex-col gap-2 text-[#0000008F]">
                   <p>
                      * Trade‑in values will vary based on the condition, year,
@@ -141,8 +141,8 @@ const Footer = () => {
                   </p>
                </div>
                <div className="w-full border border-[#ccc]" />
-               <div className="w-full flex flex-row">
-                  <div className="flex-1 flex flex-col gap-5">
+               <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8 pt-5">
+                  <div className="flex flex-col gap-5">
                      <div className="flex flex-col gap-1">
                         <p className="font-medium">Shop and Learn</p>
                         <ul className="flex flex-col gap-1">
@@ -170,7 +170,7 @@ const Footer = () => {
                      </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-5">
+                  <div className="flex flex-col gap-5">
                      <ul className="flex flex-col gap-1">
                         <p className="font-medium">Account</p>
                         <li>Manage Your Apple Account</li>
@@ -191,7 +191,7 @@ const Footer = () => {
                      </ul>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-5">
+                  <div className="flex flex-col gap-5">
                      <ul className="flex flex-col gap-1">
                         <p className="font-medium">Apple Store</p>
                         <li>Find a Store</li>
@@ -209,7 +209,7 @@ const Footer = () => {
                      </ul>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-5">
+                  <div className="flex flex-col gap-5">
                      <ul className="flex flex-col gap-1">
                         <p className="font-medium">For Business</p>
                         <li>Apple and Business</li>
@@ -235,7 +235,7 @@ const Footer = () => {
                      </ul>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-5">
+                  <div className="flex flex-col gap-5">
                      <ul className="flex flex-col gap-1">
                         <p className="font-medium">Apple Values</p>
                         <li>Accessibility</li>
