@@ -74,11 +74,14 @@ const listCategoryItem: CategoryItem[] = [
 const CategoriesCarousel = () => {
    return (
       <Carousel className="w-full max-w-screen relative flex justify-center items-center">
-         <CarouselContent className="w-screen mb-5">
+         <CarouselContent className="w-full mb-5">
             {listCategoryItem.length > 0 &&
                listCategoryItem.map((item, index) => {
                   return (
-                     <CarouselItem key={index} className="basis-[10%]">
+                     <CarouselItem
+                        key={index}
+                        className="basis-1/3 md:basis-1/6 lg:basis-[10%]"
+                     >
                         <Link
                            href="#"
                            className="flex flex-col justify-center items-center"
@@ -90,10 +93,10 @@ const CategoriesCarousel = () => {
                               }
                               width={1000}
                               height={1000}
-                              className="w-[100px]"
+                              className="w-[60px] md:w-[80px] lg:w-[100px]"
                               alt="test"
                            />
-                           <span className="font-SFProText mt-3 text-sm font-medium">
+                           <span className="font-SFProText mt-3 text-xs md:text-sm font-medium">
                               {item.category_name}
                            </span>
                         </Link>

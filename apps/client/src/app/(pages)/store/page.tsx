@@ -11,6 +11,7 @@ import useBasketService from '@components/hooks/api/use-basket-service';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { useRouter } from 'next/navigation';
 import { TEventItem } from '~/infrastructure/services/promotion.service';
+import { cn } from '~/infrastructure/lib/utils';
 
 const StorePage = () => {
    const router = useRouter();
@@ -28,6 +29,7 @@ const StorePage = () => {
       getEventDetailsAsync('611db6eb-3d64-474e-9e23-3517ad0df6ec');
    }, [getEventDetailsAsync]);
 
+
    const isLoading = useMemo(() => {
       return isGettingData || isStoreEventItemLoading;
    }, [isGettingData, isStoreEventItemLoading]);
@@ -39,27 +41,27 @@ const StorePage = () => {
             fullScreen={true}
          ></LoadingOverlay>
 
-         <div className="bg-white text-red-500 font-bold">
+         <div className={cn("bg-white text-red-500 font-bold", {})}>
             <PromotionBanner />
          </div>
-         <div className="row w-[1200px] mx-auto pt-[80px] pb-[64px]">
-            <p className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
-               <span className="inline text-black">Store.</span>
-               The best way to buy the products you love.
-            </p>
-         </div>
+         <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-20 pb-8 md:pb-16">
+      <p className="text-3xl md:text-5xl max-w-lg md:max-w-2xl text-wrap font-semibold text-slate-900/60 leading-tight md:leading-[60px]">
+         <span className="inline text-black">Store.</span>
+         The best way to buy the products you love.
+      </p>
+   </div>
 
          <div>
             <CategoriesCarousel />
          </div>
 
-         <div className="w-[1200px] mx-auto pt-[80px] pb-[64px]">
-            <span className="text-5xl w-[700px] text-wrap font-semibold text-slate-900/60 leading-[60px]">
-               <p className="text-black">Black Friday Special</p>
-               <p className="inline text-base text-slate-400 font-SFProText font-light relative -top-5">
-                  Limited-time savings on your favorite Apple products.
-               </p>
-            </span>
+         <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-20 pb-8 md:pb-16">
+      <span className="text-3xl md:text-5xl max-w-lg md:max-w-2xl text-wrap font-semibold text-slate-900/60 leading-tight md:leading-[60px]">
+         <p className="text-black">Black Friday Special</p>
+         <p className="inline text-sm md:text-base text-slate-400 font-SFProText font-light relative -top-2 md:-top-5">
+            Limited-time savings on your favorite Apple products.
+         </p>
+      </span>
 
             <div className="w-full">
                {isLoading ? (
@@ -73,13 +75,14 @@ const StorePage = () => {
                      <ProductCardSkeleton />
                   </div>
                ) : (
-                  <div className="grid grid-cols-3 gap-x-4 gap-y-8 mt-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-5 items-stretch">
                      {getEventDetailsState.data?.event_items.map(
                         (item: TEventItem, index: number) => {
                            return (
                               <PromotionIPhone
                                  key={index}
                                  item={item}
+                                 className="h-full"
                                  onBuy={async () => {
                                     const result = await storeEventItemAsync({
                                        event_item_id: item.id,

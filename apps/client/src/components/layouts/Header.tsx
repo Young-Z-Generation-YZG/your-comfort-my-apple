@@ -17,13 +17,13 @@ import { Bell, RefreshCw } from 'lucide-react';
 import Search from './_components/search';
 import UserMenu from './_components/user-menu';
 import BasketMenu from './_components/basket-menu';
-import { categoryList } from './_data/category-list';
 import { exploreIphoneList } from './_data/explore-iphone-list';
 import useIdentityService from '@components/hooks/api/use-identity-service';
 import useNotificationService from '@components/hooks/api/use-notification-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { TNotification } from '~/domain/types/ordering.type';
 import { INotificationQueryParams } from '~/infrastructure/services/notification.service';
+import { Badge } from '@components/ui/badge';
 
 const containerVariants = {
    hidden: {},
@@ -300,24 +300,177 @@ const Header = () => {
                   />
                </div>
 
-               {categoryList.map((item) => {
-                  return (
-                     <li
-                        key={item.id}
-                        className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
-                        onClick={() => {
-                           router.push(item.navigate);
-                        }}
-                        onMouseEnter={() => {
-                           setActiveCategory(item.name);
-                        }}
-                     >
-                        <p className="antialiased opacity-[0.8] tracking-wide">
-                           {item.name}
-                        </p>
-                     </li>
-                  );
-               })}
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('/store');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Store');
+                  }}
+               >
+                  <Badge className="bg-gradient-to-r from-orange-500 to-red-600 text-white hover:from-orange-600 hover:to-red-700 shadow-lg border-0">
+                     Black Friday 12.12
+                  </Badge>
+               </li>
+
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('/shop');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Shop');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Store
+                  </p>
+               </li>
+
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Mac');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">Mac</p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('/store');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('iPad');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     iPad
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('iPhone');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     iPhone
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Watch');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Watch
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('/store');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Store');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Store
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('HeadPhones');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     HeadPhones
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Vision');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Vision
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('TV & Home');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     TV & Home
+                  </p>
+               </li>
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Entertainment');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Entertainment
+                  </p>
+               </li>
+
+               <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Accessories');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Accessories
+                  </p>
+               </li>
+
+               {/* <li
+                  className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
+                  onClick={() => {
+                     router.push('#');
+                  }}
+                  onMouseEnter={() => {
+                     setActiveCategory('Support');
+                  }}
+               >
+                  <p className="antialiased opacity-[0.8] tracking-wide">
+                     Support
+                  </p>
+               </li> */}
 
                <div
                   className="px-[8px] cursor-pointer"

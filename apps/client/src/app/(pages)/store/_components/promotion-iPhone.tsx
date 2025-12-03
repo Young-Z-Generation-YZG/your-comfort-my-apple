@@ -17,9 +17,9 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
    const soldPercentage = (item.sold / totalAvailable) * 100;
 
    return (
-      <div className={cn('', className)}>
-         <CardWrapper className="w-full">
-            <div className="w-full overflow-hidden relative h-[300px]">
+      <div className={cn('h-full', className)}>
+         <CardWrapper className="w-full h-full flex flex-col">
+            <div className="w-full overflow-hidden relative aspect-[3/4] md:aspect-[4/3]">
                <NextImage
                   src={item.image_url}
                   alt={`${item.model_name} ${item.color_name}`}
@@ -46,8 +46,8 @@ const PromotionIPhone = ({ item, className, onBuy }: PromotionIPhoneProps) => {
                ></span>
             </div>
 
-            <div className="p-6">
-               <h3 className="mb-4 text-2xl font-semibold">
+            <div className="p-6 flex flex-col flex-1">
+               <h3 className="mb-4 text-2xl font-semibold min-h-[64px]">
                   {item.model_name} {item.color_name} {item.storage_name}
                </h3>
 
