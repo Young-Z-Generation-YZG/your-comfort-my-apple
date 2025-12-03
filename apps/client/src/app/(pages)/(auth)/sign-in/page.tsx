@@ -52,14 +52,28 @@ const SignInPage = () => {
 
    return (
       <div className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-10">
-         <section className="flex flex-col sm:flex-row items-center justify-between border-b py-3 sm:py-0 gap-2">
-             <div>
-               <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">Account</h2>
-             </div>
-            <div className="flex flex-wrap justify-center sm:justify-end gap-2 sm:gap-3 font-SFProText text-slate-500 text-xs sm:text-sm">
-               <Link href="/sign-in">Sign in</Link>
-               <Link href="/sign-up">Create your Account</Link>
-               <a href="#">FAQ</a>
+         <section className="flex flex-col sm:flex-row items-center justify-between border-b py-5 gap-2">
+            <div>
+               <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
+                  Account
+               </h2>
+            </div>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-6 font-SFProText text-slate-500 text-xs sm:text-sm">
+               <Link
+                  href="/sign-in"
+                  className="hover:text-blue-500 hover:underline"
+               >
+                  Sign in
+               </Link>
+               <Link
+                  href="/sign-up"
+                  className="hover:text-blue-500 hover:underline"
+               >
+                  Create your Account
+               </Link>
+               <a href="#" className="hover:text-blue-500 hover:underline">
+                  FAQ
+               </a>
             </div>
          </section>
 
@@ -148,10 +162,10 @@ const SignInPage = () => {
                      </div>
 
                      <button
-                         type="button"
-                         onClick={form.handleSubmit(onSubmit)}
-                         disabled={isLoading}
-                         className="w-full mt-5 px-6 py-3 bg-blue-600 text-white font-SFProText text-base font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+                        type="button"
+                        onClick={form.handleSubmit(onSubmit)}
+                        disabled={isLoading}
+                        className="w-full mt-5 px-6 py-3 bg-blue-600 text-white font-SFProText text-base font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
                      >
                         {isLoading ? (
                            <>

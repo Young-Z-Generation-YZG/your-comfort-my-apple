@@ -244,9 +244,9 @@ export function FormBirthDateSelector<T extends FieldValues>({
             </button>
          </div>
 
-         <div className="flex gap-3">
+         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Month Selector */}
-            <div className="relative flex-1" ref={monthRef}>
+            <div className="relative w-full" ref={monthRef}>
                <div
                   className={cn(
                      'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
@@ -303,7 +303,7 @@ export function FormBirthDateSelector<T extends FieldValues>({
             </div>
 
             {/* Day Selector */}
-            <div className="relative flex-1" ref={dayRef}>
+            <div className="relative w-full" ref={dayRef}>
                <div
                   className={cn(
                      'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',
@@ -354,7 +354,7 @@ export function FormBirthDateSelector<T extends FieldValues>({
             </div>
 
             {/* Year Selector */}
-            <div className="relative flex-1" ref={yearRef}>
+            <div className="relative w-full" ref={yearRef}>
                <div
                   className={cn(
                      'flex items-center h-[56px] justify-between border rounded-md px-3 py-2 cursor-pointer',

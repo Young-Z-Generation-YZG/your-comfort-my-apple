@@ -45,7 +45,7 @@ const BasketMenu = () => {
             },
          }}
       >
-         <div className="py-8">
+         <div className="py-8 px-5">
             <motion.div
                className="mx-auto w-[980px]"
                variants={containerVariants}

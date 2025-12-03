@@ -23,13 +23,6 @@ const containerVariants = {
 };
 
 const UserMenu = () => {
-   //  const router = useRouter();
-   //  const dispatch = useDispatch();
-
-   //  const { isAuthenticated, userEmail } = useAppSelector(
-   //     (state) => state.auth.value,
-   //  );
-
    const { isAuthenticated, logout } = useAuthService();
 
    return (
@@ -53,7 +46,7 @@ const UserMenu = () => {
             },
          }}
       >
-         <div className="py-8">
+         <div className="py-8 px-5">
             <motion.div
                className="mx-auto w-[980px]"
                variants={containerVariants}

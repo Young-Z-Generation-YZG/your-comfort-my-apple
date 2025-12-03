@@ -40,29 +40,42 @@ const SignUpPage = () => {
    };
 
    return (
-      <div className="w-[1180px] mx-auto px-10">
-         <section className="flex justify-between border-b h-[60px] items-center">
+      <div className="w-full max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-10">
+         <section className="flex flex-col sm:flex-row items-center justify-between border-b py-5 gap-2">
             <div>
-               <h2 className="text-2xl font-medium">Account</h2>
+               <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
+                  Account
+               </h2>
             </div>
-
-            <div className="flex gap-3 font-SFProText text-slate-500 text-sm">
-               <Link href="/sign-in">Sign in</Link>
-               <Link href="/sign-up">Create your Account</Link>
-               <a href="#">FAQ</a>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-6 font-SFProText text-slate-500 text-xs sm:text-sm">
+               <Link
+                  href="/sign-in"
+                  className="hover:text-blue-500 hover:underline"
+               >
+                  Sign in
+               </Link>
+               <Link
+                  href="/sign-up"
+                  className="hover:text-blue-500 hover:underline"
+               >
+                  Create your Account
+               </Link>
+               <a href="#" className="hover:text-blue-500 hover:underline">
+                  FAQ
+               </a>
             </div>
          </section>
 
-         <div className="h-full px-[200px] py-[50px]">
-            <div className="w-full  flex flex-col justify-center items-center">
-               <h3 className="text-4xl font-SFProDisplay font-medium">
+         <div className="h-full px-4 sm:px-6 lg:px-[80px] py-10 sm:py-14">
+            <div className="w-full flex flex-col justify-center items-center">
+               <h3 className="text-2xl sm:text-3xl lg:text-4xl leading-tight font-SFProDisplay font-medium">
                   Create Your Account
                </h3>
-               <p className="text-base font-SFProText font-light p3-5">
+               <p className="text-xs sm:text-sm md:text-base font-SFProText font-light pt-3 sm:pt-4">
                   One Account is all you need to access all of our services
                </p>
 
-               <p className="text-base font-SFProText font-light py-5 flex gap-2">
+               <p className="text-xs sm:text-sm md:text-base font-SFProText font-light py-3 sm:py-4 flex gap-2 flex-wrap sm:flex-nowrap">
                   Already have an account?{' '}
                   <Link
                      href="/sign-in"
@@ -73,10 +86,10 @@ const SignUpPage = () => {
                   </Link>
                </p>
 
-               <div className="w-[500px]">
+               <div className="w-full max-w-[500px]">
                   <LoadingOverlay isLoading={isLoading} text="Loading...">
                      <div className="w-full mt-2">
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                            <div className="w-full">
                               <form
                                  onSubmit={form.handleSubmit(
@@ -94,7 +107,7 @@ const SignUpPage = () => {
                                     }
                                  }}
                               >
-                                 <div className="w-full flex gap-2 justify-between mt-3">
+                                 <div className="w-full flex flex-col sm:flex-row gap-2 justify-between mt-3">
                                     <FieldInput
                                        form={form}
                                        name="first_name"
@@ -153,7 +166,7 @@ const SignUpPage = () => {
                                  disabled={isLoading}
                                  errorTextClassName="pb-5"
                               />
-                              <p className="mt-2 text-sm font-light text-slate-500">
+                              <p className="mt-2 text-xs sm:text-sm font-light text-slate-500">
                                  *Note: This will be your new Account.
                               </p>
                            </div>
@@ -206,7 +219,7 @@ const SignUpPage = () => {
                         className="h-8 w-8"
                      />
 
-                     <p className="text-xs font-light mt-3 text-justify text-slate-600">
+                     <p className="text-xs sm:text-sm font-light mt-3 text-justify text-slate-600">
                         Your Apple Account information is used to allow you to
                         sign in securely and access your data. Apple records
                         certain data for security, support and reporting
