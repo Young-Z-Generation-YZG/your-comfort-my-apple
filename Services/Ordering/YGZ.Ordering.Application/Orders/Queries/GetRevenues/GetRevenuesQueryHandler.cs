@@ -5,6 +5,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Utils;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Application.Orders.Queries.RevenuesQuery;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -56,12 +57,11 @@ public class GetRevenuesQueryHandler : IQueryHandler<GetRevenuesQuery, List<Orde
         // Filter by tenantId (default filter)
         if (!string.IsNullOrWhiteSpace(tenantId))
         {
-            var tenantIdValue = tenantId;
-            // Filter by comparing TenantId.Value directly (handles null TenantId gracefully)
-            // Note: Warnings are expected here due to nullable reference types in expression trees
-            filterExpression = filterExpression.And(order => 
-                order.TenantId != null && 
-                order.TenantId.Value == tenantIdValue);
+            var tenantIdValueObject = TenantId.Of(tenantId);
+            var tenantIdValue = tenantIdValueObject.Value;
+
+            filterExpression = filterExpression.And(order =>
+                order.TenantId!.Value == tenantIdValue);
         }
 
         // Default date range: Jan 2025 to Dec 2025

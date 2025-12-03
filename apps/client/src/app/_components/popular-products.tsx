@@ -1,5 +1,6 @@
 import PopularProduct from '@components/client/popular-product';
 import useProductService from '@components/hooks/api/use-product-service';
+import useMediaQuery from '@components/hooks/use-media-query';
 import {
    Carousel,
    CarouselContent,
@@ -7,11 +8,15 @@ import {
    CarouselNext,
    CarouselPrevious,
 } from '@components/ui/carousel';
+import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
 const PopularProducts = () => {
    const { getPopularProductsAsync, getPopularProductsState, isLoading } =
       useProductService();
+
+   const { isMobile, isTablet } = useMediaQuery();
+   const isSmallScreen = isMobile || isTablet;
 
    const productItems = useMemo(() => {
       return getPopularProductsState.data?.items ?? [];
@@ -25,9 +30,22 @@ const PopularProducts = () => {
    }, [getPopularProductsAsync]);
 
    return (
-      <div className="w-full px-4 py-8">
+      <div
+         className={cn('w-full py-8', {
+            'px-4': !isMobile,
+            'px-3': isMobile,
+         })}
+      >
          <div className="mx-auto max-w-7xl">
-            <h2 className="mb-8 text-center text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+            <h2
+               className={cn(
+                  'mb-8 text-center font-semibold tracking-tight text-gray-900 dark:text-gray-100',
+                  {
+                     'text-3xl': !isMobile,
+                     'text-2xl': isMobile,
+                  },
+               )}
+            >
                Popular Products
             </h2>
 
@@ -38,12 +56,21 @@ const PopularProducts = () => {
                }}
                className="w-full"
             >
-               <CarouselContent className="-ml-4">
+               <CarouselContent
+                  className={cn('-ml-4', {
+                     'pl-2': isSmallScreen,
+                  })}
+               >
                   {productItems.length > 0
                      ? productItems.map((product) => (
                           <CarouselItem
                              key={product.id}
-                             className="pl-4 p-5 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                             className={cn('pl-4 p-5', {
+                                'md:basis-1/2 lg:basis-1/2 xl:basis-1/3':
+                                   !isSmallScreen,
+                                'basis-[80%]': isTablet,
+                                'basis-full': isMobile,
+                             })}
                           >
                              <PopularProduct product={product} />
                           </CarouselItem>
@@ -54,8 +81,18 @@ const PopularProducts = () => {
                           </div>
                        )}
                </CarouselContent>
-               <CarouselPrevious className="hidden md:flex" />
-               <CarouselNext className="hidden md:flex" />
+               <CarouselPrevious
+                  className={cn('md:flex', {
+                     hidden: isSmallScreen,
+                     flex: !isSmallScreen,
+                  })}
+               />
+               <CarouselNext
+                  className={cn('md:flex', {
+                     hidden: isSmallScreen,
+                     flex: !isSmallScreen,
+                  })}
+               />
             </Carousel>
          </div>
       </div>

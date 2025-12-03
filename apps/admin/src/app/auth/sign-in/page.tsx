@@ -18,8 +18,8 @@ import { redirectToIdentityProvider } from '~/src/infrastructure/identity-server
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '~/src/hooks/use-toast';
-import useWindowSize from '~/src/hooks/use-window-size';
 import useMediaQuery from '~/src/hooks/use-media-query';
+import { cn } from '~/src/infrastructure/lib/utils';
 
 const SignInPage = () => {
    const { isLoading, loginAsync, getIdentityAsync } = useAuthService();
@@ -37,7 +37,7 @@ const SignInPage = () => {
       isExtraLargeDesktop,
    } = useMediaQuery();
 
-   console.log({
+   console.log('Responsive:', {
       isMobile,
       isTablet,
       isDesktop,
@@ -142,81 +142,199 @@ const SignInPage = () => {
    }, [dispatch, getIdentityAsync, router]);
 
    return (
-      <div className="bg-white flex">
+      <div className={cn('flex bg-white min-h-screen')}>
          <LoadingOverlay
             isLoading={isLoading || isKeycloakLoading}
             fullScreen
          />
-         <div className="bg-[#ebebeb] relative h-screen flex items-center justify-center w-[75%] overflow-hidden">
-            <div className="w-full flex items-center justify-center absolute top-3">
-               <Image
-                  src={'/images/logo.svg'}
-                  alt="cover"
-                  width={1000}
-                  height={1000}
-                  quality={100}
-                  className="w-[500px] h-[100px]"
-               />
-            </div>
-
-            <div className="w-full flex items-center justify-center absolute top-10">
-               <Image
-                  src={'/images/products.svg'}
-                  alt="cover"
-                  width={1200}
-                  height={1000}
-                  quality={100}
-                  className="w-[700px] h-[600px]"
-               />
-            </div>
-
-            <div className="w-full flex items-center justify-center absolute -bottom-[500px]">
-               <Image
-                  src={'/images/ip-conver.svg'}
-                  alt="cover"
-                  width={1200}
-                  height={1000}
-                  quality={100}
-                  className="w-[1000px] h-[900px]"
-               />
-            </div>
-
-            <div className="flex absolute bottom-5 w-full justify-between px-10">
-               <div className="flex flex-col">
-                  <p className="text-black font-mono font-bold">
-                     David Bach Bale
-                  </p>
-                  <p className="text-black">Founder & CEO</p>
-               </div>
-
-               <div className="flex flex-col">
-                  <p className="text-black font-mono font-bold">
-                     www.astoreyb.com
-                  </p>
-                  <p className="text-black">hello@astoreyb.com</p>
-               </div>
-            </div>
-         </div>
-
-         <div className="bg-slate-50 w-[25%]">
-            <div className="w-full h-full flex justify-center items-center flex-col">
-               <div>
+         {/* Left side - Brand/Cover section - Hidden on mobile & tablet */}
+         {!isMobile && !isTablet && (
+            <div
+               className={cn(
+                  'bg-[#ebebeb] relative h-screen flex items-center justify-center overflow-hidden',
+                  {
+                     'w-[70%]': isTablet,
+                     'w-[75%]': !isTablet,
+                  },
+               )}
+            >
+               <div className="w-full flex items-center justify-center absolute top-3">
                   <Image
                      src={'/images/logo.svg'}
                      alt="cover"
                      width={1000}
                      height={1000}
                      quality={100}
-                     className="w-[300px] h-[100px]"
+                     className={cn('h-[100px] object-contain', {
+                        'w-[500px]':
+                           isDesktop || isLargeDesktop || isExtraLargeDesktop,
+                        'w-[350px]': isTablet,
+                     })}
                   />
+               </div>
 
-                  <div className="">
+               <div className="w-full flex items-center justify-center absolute top-10">
+                  <Image
+                     src={'/images/products.svg'}
+                     alt="cover"
+                     width={1200}
+                     height={1000}
+                     quality={100}
+                     className={cn('object-contain', {
+                        'w-[700px] h-[600px]':
+                           isDesktop || isLargeDesktop || isExtraLargeDesktop,
+                        'w-[500px] h-[450px]': isTablet,
+                     })}
+                  />
+               </div>
+
+               <div className="w-full flex items-center justify-center absolute -bottom-[500px]">
+                  <Image
+                     src={'/images/ip-conver.svg'}
+                     alt="cover"
+                     width={1200}
+                     height={1000}
+                     quality={100}
+                     className={cn('object-contain', {
+                        'w-[1000px] h-[900px]':
+                           isDesktop || isLargeDesktop || isExtraLargeDesktop,
+                        'w-[800px] h-[700px]': isTablet,
+                     })}
+                  />
+               </div>
+
+               <div
+                  className={cn(
+                     'flex absolute bottom-5 w-full justify-between px-5',
+                     {
+                        'px-10': isTablet,
+                        'px-12':
+                           isDesktop || isLargeDesktop || isExtraLargeDesktop,
+                     },
+                  )}
+               >
+                  <div className="flex flex-col">
+                     <p
+                        className={cn('text-black font-mono font-bold', {
+                           'text-base': isTablet || isDesktop,
+                           'text-lg': isLargeDesktop || isExtraLargeDesktop,
+                        })}
+                     >
+                        David Bach Bale
+                     </p>
+                     <p
+                        className={cn('text-black', {
+                           'text-sm': isTablet || isDesktop,
+                           'text-base': isLargeDesktop || isExtraLargeDesktop,
+                        })}
+                     >
+                        Founder & CEO
+                     </p>
+                  </div>
+
+                  <div className="flex flex-col text-right">
+                     <p
+                        className={cn('text-black font-mono font-bold', {
+                           'text-base': isTablet || isDesktop,
+                           'text-lg': isLargeDesktop || isExtraLargeDesktop,
+                        })}
+                     >
+                        www.astoreyb.com
+                     </p>
+                     <p
+                        className={cn('text-black', {
+                           'text-sm': isTablet || isDesktop,
+                           'text-base': isLargeDesktop || isExtraLargeDesktop,
+                        })}
+                     >
+                        hello@astoreyb.com
+                     </p>
+                  </div>
+               </div>
+            </div>
+         )}
+
+         {/* Right side - Login form */}
+         <div
+            className={cn(
+               'bg-slate-50 min-h-screen flex items-center justify-center',
+               {
+                  'w-full': isMobile || isTablet,
+                  'w-[30%]': isDesktop,
+                  'w-[25%]': isLargeDesktop || isExtraLargeDesktop,
+               },
+            )}
+         >
+            <div
+               className={cn(
+                  'w-full h-full flex justify-center items-center flex-col',
+                  {
+                     'px-6 py-8': isMobile,
+                     'px-8 py-6': isTablet,
+                     'px-6 py-6': !isMobile && !isTablet,
+                  },
+               )}
+            >
+               <div
+                  className={cn('w-full', {
+                     'max-w-md': isMobile,
+                     'max-w-sm': isTablet,
+                  })}
+               >
+                  {/* Logo - Show on mobile since left side is hidden */}
+                  {isMobile && (
+                     <div className="flex justify-center mb-8">
+                        <Image
+                           src={'/images/logo.svg'}
+                           alt="cover"
+                           width={1000}
+                           height={1000}
+                           quality={100}
+                           className="w-[250px] h-[80px] object-contain"
+                        />
+                     </div>
+                  )}
+
+                  {!isMobile && (
+                     <div className="flex justify-center mb-6">
+                        <Image
+                           src={'/images/logo.svg'}
+                           alt="cover"
+                           width={1000}
+                           height={1000}
+                           quality={100}
+                           className={cn('object-contain', {
+                              'w-[280px] h-[90px]': isTablet,
+                              'w-[300px] h-[100px]': !isTablet,
+                           })}
+                        />
+                     </div>
+                  )}
+
+                  {/* Tablet-only cover image above form inputs */}
+                  {isTablet && !isMobile && (
+                     <div className="flex justify-center mb-6">
+                        <Image
+                           src={'/images/products.svg'}
+                           alt="cover"
+                           width={800}
+                           height={600}
+                           quality={100}
+                           className="w-full max-w-md h-auto object-contain"
+                        />
+                     </div>
+                  )}
+
+                  <div className="w-full">
                      <Form {...form}>
                         <form
                            onSubmit={form.handleSubmit((data: TLoginForm) => {
                               loginAsync(data);
                            })}
-                           className="flex flex-col gap-5"
+                           className={cn('flex flex-col', {
+                              'gap-5': isTablet || isDesktop,
+                              'gap-4': isMobile,
+                           })}
                         >
                            <div className="flex flex-col gap-2">
                               <Label htmlFor="email">Email</Label>
@@ -231,7 +349,13 @@ const SignInPage = () => {
                            </div>
 
                            <Button
-                              className="bg-primary font-sans font-bold"
+                              className={cn(
+                                 'bg-primary font-sans font-bold w-full',
+                                 {
+                                    'h-11': isMobile,
+                                    'h-12': !isMobile,
+                                 },
+                              )}
                               type="submit"
                               disabled={isLoading}
                            >
@@ -241,29 +365,51 @@ const SignInPage = () => {
                      </Form>
                   </div>
 
-                  <p className="text-black font-mono font-bold text-center py-5">
+                  <p
+                     className={cn(
+                        'text-black font-mono font-bold text-center',
+                        {
+                           'py-5 text-base': isTablet || isDesktop,
+                           'py-4 text-sm': isMobile,
+                        },
+                     )}
+                  >
                      Or login with
                   </p>
 
-                  <Button
-                     className="w-full font-semibold flex items-center justify-center gap-2"
-                     variant="outline"
-                     onClick={handleKeycloakLogin}
-                     disabled={isLoading || isKeycloakLoading}
-                  >
-                     <span>Login with Keycloak</span>
-                     <Image
-                        src={svgs.keycloak}
-                        width={24}
-                        height={24}
-                        alt="keycloak"
-                        className="w-6 h-6"
-                     />
-                  </Button>
+                  <div className="flex flex-col gap-3 w-full">
+                     <Button
+                        className={cn(
+                           'w-full font-semibold flex items-center justify-center gap-2',
+                           {
+                              'h-11': isMobile,
+                              'h-12': !isMobile,
+                           },
+                        )}
+                        variant="outline"
+                        onClick={handleKeycloakLogin}
+                        disabled={isLoading || isKeycloakLoading}
+                     >
+                        <span>Login with Keycloak</span>
+                        <Image
+                           src={svgs.keycloak}
+                           width={24}
+                           height={24}
+                           alt="keycloak"
+                           className="w-6 h-6"
+                        />
+                     </Button>
 
-                  <Button className="w-[500px] sm:w-[300px] md:w-[400px] lg:w-[500px]">
-                     <span>Login with Google</span>
-                  </Button>
+                     <Button
+                        className={cn('w-full font-semibold', {
+                           'h-11': isMobile,
+                           'h-12': !isMobile,
+                        })}
+                        variant="outline"
+                     >
+                        <span>Login with Google</span>
+                     </Button>
+                  </div>
                </div>
             </div>
          </div>

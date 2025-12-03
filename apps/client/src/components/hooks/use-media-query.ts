@@ -50,6 +50,22 @@ const useMediaQuery = () => {
       setIsExtraLargeDesktop(mediaExtraLargeDesktop.matches);
    }, [width]);
 
+   console.log('Hook: useMediaQuery', {
+      isMobile,
+      isTablet,
+      isDesktop,
+      isLargeDesktop,
+      isExtraLargeDesktop,
+   });
+
+   console.log('[Hook:useMediaQuery]', {
+      isMobile,
+      isTablet,
+      isDesktop,
+      isLargeDesktop,
+      isExtraLargeDesktop,
+   });
+
    return {
       isMobile,
       isTablet,

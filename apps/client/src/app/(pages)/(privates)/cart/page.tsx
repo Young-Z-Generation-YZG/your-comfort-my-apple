@@ -33,7 +33,7 @@ import {
    UpdateSelection,
    removeCartItem,
 } from '~/infrastructure/redux/features/cart.slice';
-import PopularProducts from '~/app/(pages)/home/_components/popular-products';
+import PopularProducts from '~/app/_components/popular-products';
 
 const CartPage = () => {
    const router = useRouter();
