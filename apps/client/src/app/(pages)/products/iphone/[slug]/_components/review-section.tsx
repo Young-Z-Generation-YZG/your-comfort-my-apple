@@ -24,6 +24,7 @@ import {
 import { cn } from '~/infrastructure/lib/utils';
 import RatingStar from '@components/ui/rating-star';
 import usePaginationV2 from '@components/hooks/use-pagination';
+import useCatalogService from '@components/hooks/api/use-catalog-service';
 
 const ReviewsSection = () => {
    const { slug } = useParams();
@@ -36,6 +37,8 @@ const ReviewsSection = () => {
       getReviewByProductModelSlugState,
       isLoading,
    } = useReviewService();
+
+   const { getModelBySlugState } = useCatalogService();
 
    // Default pagination data
    const defaultPaginationData = useMemo(
@@ -87,12 +90,20 @@ const ReviewsSection = () => {
    }, [slug, _page, _limit, getReviewByProductModelSlugAsync]);
 
    const averageRating = useMemo(() => {
-      if (!reviewItems || reviewItems.length === 0) {
-         return 0;
+      if (getModelBySlugState.isSuccess && getModelBySlugState.data) {
+         return (
+            getModelBySlugState.data.average_rating?.rating_average_value || 0
+         );
       }
-      const sum = reviewItems.reduce((acc, review) => acc + review.rating, 0);
-      return sum / reviewItems.length;
-   }, [reviewItems]);
+      return 0;
+   }, [getModelBySlugState]);
+
+   const ratingCount = useMemo(() => {
+      if (getModelBySlugState.isSuccess && getModelBySlugState.data) {
+         return getModelBySlugState.data.average_rating?.rating_count || 0;
+      }
+      return totalRecords;
+   }, [getModelBySlugState, totalRecords]);
 
    const handlePageChange = (page: number) => {
       if (page !== currentPage && page >= 1 && page <= totalPages) {
@@ -130,7 +141,7 @@ const ReviewsSection = () => {
                   </div>
                   <Separator orientation="vertical" className="h-6" />
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                     {totalRecords} {totalRecords === 1 ? 'review' : 'reviews'}
+                     {ratingCount} {ratingCount === 1 ? 'review' : 'reviews'}
                   </span>
                </div>
             )}

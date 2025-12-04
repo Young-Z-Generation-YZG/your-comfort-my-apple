@@ -10,10 +10,6 @@ import {
    type CarouselApi,
 } from '~/components/ui/carousel';
 import NextImage from 'next/image';
-import ModelItem from './model-item';
-import HelpItem from './help-item';
-import ColorItem from './color-item';
-import StorageItem from './storage-item';
 import { Button } from '@components/ui/button';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
@@ -32,11 +28,67 @@ import {
    TStorage,
    TSkuPrice,
 } from '~/domain/types/catalog.type';
+import useReviewService from '@components/hooks/api/use-review-service';
+import ColorItem from '~/app/(pages)/products/iphone/[slug]/_components/color-item';
+import HelpItem from '~/app/(pages)/products/iphone/[slug]/_components/help-item';
+import ModelItem from '~/app/(pages)/products/iphone/[slug]/_components/model-item';
+import StorageItem from '~/app/(pages)/products/iphone/[slug]/_components/storage-item';
+import ReviewItem from '~/app/(pages)/products/iphone/[slug]/_components/review-item';
+import { cn } from '~/infrastructure/lib/utils';
+import { AppleIcon } from '@components/icon';
+import ProductInfo from '~/app/(pages)/products/iphone/[slug]/_components/product-info';
+import CompareIPhoneSection from '@components/client/compare-iphone-section';
+import usePaginationV2 from '@components/hooks/use-pagination';
+import {
+   ChevronLeft,
+   ChevronRight,
+   ChevronsLeft,
+   ChevronsRight,
+   Ellipsis,
+} from 'lucide-react';
+import {
+   Select,
+   SelectContent,
+   SelectGroup,
+   SelectItem,
+   SelectTrigger,
+   SelectValue,
+} from '@components/ui/select';
+import { Separator } from '@components/ui/separator';
+import RatingStar from '@components/ui/rating-star';
 
-const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
-   const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
-   return `w_${Math.round((height * widthRatio) / heightRatio)},h_${height}`;
-};
+const SMALL_TAILWIND = '(max-width: 640px)';
+const MEDIUM_TAILWIND = '(min-width: 641px) and (max-width: 1024px)';
+const LARGE_TAILWIND = '(min-width: 1025px) and (max-width: 1280px)';
+
+const appleCareOptions = [
+   {
+      title: 'AppleCare+',
+      price: '199.00',
+      monthlyPrice: '9.99',
+      features: [
+         'Unlimited repairs for accidental damage protection',
+         'Apple-certified repairs using genuine Apple parts',
+         "Express Replacement Service - we'll ship you a replacement so you don't have to wait for a repair",
+         '24/7 priority access to Apple experts',
+      ],
+   },
+   {
+      title: 'AppleCare+ with Theft and Loss',
+      price: '269.00',
+      monthlyPrice: '13.49',
+      features: [
+         'Everything in AppleCare+ with additional coverage for theft and loss',
+         'We can ship your replacement iPhone to any country where AppleCare+ with Theft and Loss is available.',
+      ],
+   },
+   {
+      title: 'No AppleCare+ coverage',
+      price: '0',
+      monthlyPrice: '0',
+      features: [],
+   },
+];
 
 const toastStyle = {
    backgroundColor: '#F0FFF0',
@@ -51,7 +103,31 @@ const errorToastStyle = {
    fontWeight: 'bold',
 };
 
-const IphoneDetails = () => {
+const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
+   const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
+   return `w_${Math.round((height * widthRatio) / heightRatio)},h_${height}`;
+};
+
+const IphoneDetailsPage = () => {
+   const { slug } = useParams();
+   const {
+      getModelBySlugAsync,
+      getModelBySlugState,
+      isLoading: isGetModelBySlugLoading,
+   } = useCatalogService();
+   const { storeBasketAsync, isLoading: isStoreBasketLoading } =
+      useBasketService();
+   const {
+      getReviewByProductModelIdAsync,
+      getReviewByProductModelIdState,
+      isLoading: isFetchReviewLoading,
+   } = useReviewService();
+
+   const isLoading =
+      isGetModelBySlugLoading || isStoreBasketLoading || isFetchReviewLoading;
+
+   const { storeBasketSync } = useCartSync();
+
    const [selectedModel, setSelectedModel] = useState<{
       name: string;
       normalized_name: string;
@@ -69,29 +145,89 @@ const IphoneDetails = () => {
    const [hoveredColor, setHoveredColor] = useState<string | null>(null);
    const [currentSlide, setCurrentSlide] = useState(0);
    const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-
-   const { slug } = useParams();
-
-   const { storeBasketSync } = useCartSync();
-
-   const {
-      getModelBySlugAsync,
-      getModelBySlugState,
-      isLoading: isGetModelBySlugLoading,
-   } = useCatalogService();
-
-   const displayData = useMemo(() => {
-      return getModelBySlugState.isSuccess && getModelBySlugState.data
-         ? getModelBySlugState.data
-         : null;
-   }, [getModelBySlugState.isSuccess, getModelBySlugState.data]);
-
-   const { storeBasketAsync, isLoading: isStoreBasketLoading } =
-      useBasketService();
+   const [_pageReview, setPageReview] = useState<number>(1);
+   const [_limitReview, setLimitReview] = useState<number>(5);
 
    useEffect(() => {
       getModelBySlugAsync(slug as string);
-   }, [getModelBySlugAsync, slug]);
+   }, [slug]);
+
+   useEffect(() => {
+      if (getModelBySlugState.isSuccess && getModelBySlugState.data.id) {
+         getReviewByProductModelIdAsync(getModelBySlugState.data.id, {
+            _page: _pageReview,
+            _limit: _limitReview,
+            _sortOrder: 'DESC',
+         });
+      }
+   }, [getModelBySlugState.isSuccess, _pageReview, _limitReview]);
+
+   useEffect(() => {
+      if (!carouselApi) return;
+
+      const onSelect = () => {
+         setCurrentSlide(carouselApi.selectedScrollSnap());
+      };
+
+      carouselApi.on('select', onSelect);
+      onSelect(); // Set initial slide
+
+      return () => {
+         carouselApi.off('select', onSelect);
+      };
+   }, [carouselApi]);
+
+   const iphoneDetailsData: TIphoneModelDetails | null = useMemo(() => {
+      if (getModelBySlugState.isSuccess) {
+         return getModelBySlugState.data;
+      }
+      return null;
+   }, [getModelBySlugState]);
+
+   const reviewsData = useMemo(() => {
+      if (getReviewByProductModelIdState.isSuccess) {
+         return getReviewByProductModelIdState.data;
+      }
+      return {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 10,
+         current_page: 1,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      };
+   }, [getReviewByProductModelIdState]);
+
+   const {
+      currentPage,
+      totalPages,
+      totalRecords,
+      firstItemIndex,
+      lastItemIndex,
+      limitSelectValue,
+      getPaginationItems,
+   } = usePaginationV2(reviewsData, {
+      pageSizeOverride: _limitReview,
+      currentPageOverride: _pageReview,
+   });
+
+   const paginationItems = getPaginationItems();
+
+   const handlePageChange = (page: number) => {
+      if (page !== currentPage && page >= 1 && page <= totalPages) {
+         setPageReview(page);
+      }
+   };
+
+   const handlePageSizeChange = (size: string) => {
+      setLimitReview(Number(size));
+      setPageReview(1);
+   };
 
    const models = useMemo(() => {
       if (!getModelBySlugState.isSuccess || !getModelBySlugState.data)
@@ -122,9 +258,22 @@ const IphoneDetails = () => {
       return getModelBySlugState.data.storage_items;
    }, [getModelBySlugState.data]);
 
-   const isLoading = useMemo(() => {
-      return isGetModelBySlugLoading || isStoreBasketLoading;
-   }, [isGetModelBySlugLoading, isStoreBasketLoading]);
+   if (!iphoneDetailsData) {
+      return null;
+   }
+
+   // Check if options should be disabled (only during initial progressive selection)
+   const isColorDisabled = !hasCompletedInitialSelection && !selectedModel;
+   const isStorageDisabled =
+      !hasCompletedInitialSelection && (!selectedModel || !selectedColor);
+
+   const mediaMobile = window.matchMedia(SMALL_TAILWIND);
+   const mediaTablet = window.matchMedia(MEDIUM_TAILWIND);
+
+   // const getImageUrl = (image: TImage) => {
+   //    if (!image) return '';
+   //    return `${image.image_url}?${resizeFromHeight(1000)}`;
+   // };
 
    // Progressive selection handlers
    const handleModelSelection = (model: {
@@ -163,7 +312,7 @@ const IphoneDetails = () => {
    // Function to find the index of the image corresponding to the selected color
    const getImageIndexByColor = (colorName: string) => {
       // Find the selected color item from the original data
-      const selectedColorItem = displayData?.color_items.find(
+      const selectedColorItem = iphoneDetailsData.color_items.find(
          (color: TColor) => color.normalized_name === colorName,
       );
 
@@ -172,7 +321,7 @@ const IphoneDetails = () => {
       }
 
       // Find the index of the showcase image that matches the selected color's showcase_image_id
-      const imageIndex = displayData?.showcase_images.findIndex(
+      const imageIndex = iphoneDetailsData.showcase_images.findIndex(
          (image: TImage) =>
             image.image_id === selectedColorItem.showcase_image_id,
       );
@@ -192,18 +341,13 @@ const IphoneDetails = () => {
       }
    };
 
-   // Check if options should be disabled (only during initial progressive selection)
-   const isColorDisabled = !hasCompletedInitialSelection && !selectedModel;
-   const isStorageDisabled =
-      !hasCompletedInitialSelection && (!selectedModel || !selectedColor);
-
    // Filter branches and SKUs based on selections
    const getFilteredBranches = () => {
       if (!selectedModel || !selectedColor || !selectedStorage) {
          return [];
       }
 
-      return displayData?.branchs
+      return iphoneDetailsData.branchs
          .map((branchData: { branch: TBranch; skus: TSku[] }) => {
             // Find the matching SKU for this branch
             const matchingSku = branchData.skus.find((sku: TSku) => {
@@ -430,23 +574,8 @@ const IphoneDetails = () => {
       );
    };
 
-   useEffect(() => {
-      if (!carouselApi) return;
-
-      const onSelect = () => {
-         setCurrentSlide(carouselApi.selectedScrollSnap());
-      };
-
-      carouselApi.on('select', onSelect);
-      onSelect(); // Set initial slide
-
-      return () => {
-         carouselApi.off('select', onSelect);
-      };
-   }, [carouselApi]);
-
    return (
-      <div>
+      <div className="px-5">
          {/* Product Title */}
          <div className="w-full bg-transparent flex flex-row pt-[52px] pb-32">
             <div className="basis-[70%] bg-transparent">
@@ -454,7 +583,7 @@ const IphoneDetails = () => {
                   New
                </span>
                <h1 className="text-[48px] font-semibold leading-[52px] pb-2 mb-[13px]">
-                  {displayData?.name || 'NO DATA'}
+                  {iphoneDetailsData.name || 'NO DATA'}
                </h1>
                <div className="text-[15px] font-light leading-[20px]">
                   From $999 or $41.62/mo. for 24 mo.
@@ -477,9 +606,9 @@ const IphoneDetails = () => {
          </div>
 
          {/* Product Details */}
-         <div className="w-full flex flex-row gap-14 relative h-[1000px]">
+         <div className="w-full flex flex-col lg:flex-row gap-14 relative lg:h-[1000px]">
             {/* left */}
-            <div className="basis-[70%] sticky top-[100px] self-start">
+            <div className="order-1 w-full lg:basis-[70%] lg:sticky lg:top-[100px] lg:self-start">
                <Carousel
                   setApi={setCarouselApi}
                   opts={{
@@ -488,21 +617,19 @@ const IphoneDetails = () => {
                   }}
                >
                   <CarouselContent>
-                     {displayData?.showcase_images?.map((image) => (
+                     {iphoneDetailsData.showcase_images.map((image) => (
                         <CarouselItem key={image.image_id}>
                            <div className="w-full overflow-hidden relative h-[1000px]">
                               <NextImage
                                  src={`https://res.cloudinary.com/delkyrtji/image/upload/${resizeFromHeight(1000, '16:9')}/${image.image_url.split('/').pop()}`}
-                                 alt={
-                                    image.image_name || 'iPhone showcase image'
-                                 }
+                                 alt={image.image_name}
                                  width={Math.round((1000 * 16) / 9)}
-                                 height={1000}
+                                 height={0}
                                  className="absolute top-0 left-0 w-full h-full object-cover rounded-[20px]"
                               />
                            </div>
                         </CarouselItem>
-                     )) || []}
+                     ))}
                   </CarouselContent>
 
                   <CarouselPrevious className="left-[1rem]" />
@@ -510,7 +637,7 @@ const IphoneDetails = () => {
 
                   <div className="absolute bottom-2 left-0 w-full z-50 flex flex-row items-center justify-center gap-2">
                      {Array.from({
-                        length: displayData?.showcase_images?.length || 0,
+                        length: iphoneDetailsData.showcase_images.length || 0,
                      }).map((_, index) => (
                         <div
                            className="w-[10px] h-[10px] rounded-full transition-colors duration-200"
@@ -524,10 +651,9 @@ const IphoneDetails = () => {
                   </div>
                </Carousel>
             </div>
-            {/* end left */}
 
             {/* Right */}
-            <div className="basis-[30%] max-w-[328px]">
+            <div className="order-2 w-full lg:basis-[30%] lg:max-w-[328px]">
                <div className="flex flex-col gap-24">
                   {/* Models */}
                   <div className="w-full">
@@ -565,7 +691,6 @@ const IphoneDetails = () => {
                         />
                      </div>
                   </div>
-                  {/* End Models */}
 
                   {/* Color */}
                   <div className="w-full">
@@ -618,7 +743,6 @@ const IphoneDetails = () => {
                         })}
                      </div>
                   </div>
-                  {/* End Color */}
 
                   {/* Storage */}
                   <div className="w-full">
@@ -664,11 +788,257 @@ const IphoneDetails = () => {
                         />
                      </div>
                   </div>
-                  {/* End Storage */}
                </div>
             </div>
-            {/* end right */}
          </div>
+
+         {/* Coverage */}
+         <div className="mt-16 sm:mt-24 lg:mt-[200px]">
+            <div
+               className={cn('w-full bg-transparent flex flex-col mt-16 h-fit')}
+            >
+               <div className="coverage-title flex flex-col lg:flex-row">
+                  <div className="w-full lg:basis-3/4">
+                     <div className="w-full text-[24px] font-semibold leading-[28px]">
+                        <span className="text-[#1D1D1F] tracking-[0.3px]">
+                           AppleCare+ coverage.{' '}
+                        </span>
+                        <span className="text-[#86868B] tracking-[0.3px]">
+                           Protect your new iPhone.
+                        </span>
+                     </div>
+                  </div>
+                  <div className="w-full lg:basis-1/4 lg:min-w-[328px] mt-4 lg:mt-0"></div>
+               </div>
+               <div className="coverage-items flex flex-col lg:flex-row mt-6">
+                  <div className="w-full lg:basis-3/4 list-items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-0 lg:pr-12">
+                     {appleCareOptions.map((option, index) => {
+                        const isNoCoverage = option.title.startsWith('No ');
+
+                        return (
+                           <div className="border-[0.8px] border-[#86868b] rounded-[10px] p-[14px] flex flex-col items-start">
+                              <div className="item-title text-[18px] font-semibold leading-[21px] tracking-[0.6px] flex flex-row items-start justify-start">
+                                 {!isNoCoverage ? (
+                                    <span className="flex flex-row items-start justify-start gap-1">
+                                       <AppleIcon size={21} color="red" />
+                                       <span>{option.title}</span>
+                                    </span>
+                                 ) : (
+                                    <span>{option.title}</span>
+                                 )}
+                              </div>
+
+                              {!isNoCoverage && (
+                                 <>
+                                    <div className="item-price w-full pt-1 pb-[21px] border-b-[0.8px] border-[#86868b] text-[14px] font-light leading-[21px] tracking-[0.5px]">
+                                       ${option.title} or ${option.monthlyPrice}
+                                       /mo.
+                                    </div>
+                                    {option.features.length > 0 && (
+                                       <div className="item-sub-title w-full pt-[18px] text-[12px] font-light leading-[16px] tracking-[0.8px]">
+                                          <ul className="list-disc ml-4">
+                                             {option.features.map(
+                                                (feature, index) => (
+                                                   <li
+                                                      key={index}
+                                                      className="pr-3 pb-[15px] tracking-[0.7px]"
+                                                   >
+                                                      {feature}
+                                                   </li>
+                                                ),
+                                             )}
+                                          </ul>
+                                       </div>
+                                    )}
+                                 </>
+                              )}
+                           </div>
+                        );
+                     })}
+                  </div>
+                  <div className="w-full lg:basis-1/4 lg:min-w-[328px] mt-6 lg:mt-0">
+                     <HelpItem
+                        title="What kind of protection do you need?"
+                        subTitle="Compare the additional features and coverage of the two AppleCare+ plans."
+                     />
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* start: Product Info */}
+         <ProductInfo />
+         {/* end: Product Info */}
+
+         {/* Compare iPhone Section */}
+         <div className="mx-auto mt-20 mb-24">
+            <CompareIPhoneSection />
+         </div>
+
+         {/* Reviews section */}
+         <div className="mt-16">
+            {/* Header Section */}
+            <div className="mb-8">
+               <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-4">
+                  Customer Reviews
+               </h2>
+
+               {reviewsData.items.length > 0 && (
+                  <div className="flex items-center gap-4">
+                     <div className="flex items-center gap-2">
+                        <RatingStar
+                           rating={
+                              iphoneDetailsData.average_rating
+                                 .rating_average_value
+                           }
+                           size="lg"
+                        />
+                        <span className="text-2xl font-semibold">
+                           {iphoneDetailsData.average_rating.rating_average_value.toFixed(
+                              1,
+                           )}
+                        </span>
+                     </div>
+                     <Separator orientation="vertical" className="h-6" />
+                     <span className="text-sm text-gray-600 dark:text-gray-400">
+                        {totalRecords}{' '}
+                        {totalRecords === 1 ? 'review' : 'reviews'}
+                     </span>
+                  </div>
+               )}
+            </div>
+
+            {/* Reviews List */}
+            {!(reviewsData.items.length > 0) ? (
+               <div className="space-y-6">
+                  {[1, 2, 3].map((i) => (
+                     <div
+                        key={i}
+                        className="animate-pulse bg-gray-100 dark:bg-gray-800 rounded-lg p-6 h-32"
+                     />
+                  ))}
+               </div>
+            ) : reviewsData.items.length > 0 ? (
+               <>
+                  <div className="space-y-6 mb-8">
+                     {reviewsData.items.map((item) => {
+                        return <ReviewItem key={item.id} review={item} />;
+                     })}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 0 && (
+                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pb-6">
+                        {/* Page Info & Size Selector */}
+                        <div className="flex items-center gap-4">
+                           <Select
+                              value={limitSelectValue}
+                              onValueChange={handlePageSizeChange}
+                           >
+                              <SelectTrigger className="w-auto h-9">
+                                 <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 <SelectGroup>
+                                    <SelectItem value="5">5 / page</SelectItem>
+                                    <SelectItem value="10">
+                                       10 / page
+                                    </SelectItem>
+                                    <SelectItem value="20">
+                                       20 / page
+                                    </SelectItem>
+                                 </SelectGroup>
+                              </SelectContent>
+                           </Select>
+
+                           <div className="text-sm text-gray-600">
+                              Showing{' '}
+                              <span className="font-semibold">
+                                 {firstItemIndex}
+                              </span>{' '}
+                              to{' '}
+                              <span className="font-semibold">
+                                 {lastItemIndex}
+                              </span>{' '}
+                              of{' '}
+                              <span className="font-semibold">
+                                 {totalRecords}
+                              </span>{' '}
+                              reviews
+                           </div>
+                        </div>
+
+                        {/* Pagination Controls */}
+                        <div className="flex items-center gap-2">
+                           {paginationItems.map((item, index) => {
+                              if (item.type === 'ellipsis') {
+                                 return (
+                                    <span
+                                       key={`ellipsis-${index}`}
+                                       className="px-2 text-gray-400 flex items-center"
+                                    >
+                                       <Ellipsis className="h-4 w-4" />
+                                    </span>
+                                 );
+                              }
+
+                              const isCurrentPage =
+                                 item.type === 'page' &&
+                                 item.value === currentPage;
+
+                              return (
+                                 <Button
+                                    key={`${item.type}-${item.label}-${index}`}
+                                    variant={
+                                       isCurrentPage ? 'default' : 'outline'
+                                    }
+                                    size="icon"
+                                    className={cn(
+                                       'h-9 w-9',
+                                       isCurrentPage &&
+                                          'bg-black text-white hover:bg-black/90',
+                                    )}
+                                    disabled={
+                                       item.disabled || item.value === null
+                                    }
+                                    onClick={() => {
+                                       if (
+                                          item.value !== null &&
+                                          !item.disabled
+                                       ) {
+                                          handlePageChange(item.value);
+                                       }
+                                    }}
+                                 >
+                                    {item.type === 'nav' ? (
+                                       item.label === '<<' ? (
+                                          <ChevronsLeft className="h-4 w-4" />
+                                       ) : item.label === '>>' ? (
+                                          <ChevronsRight className="h-4 w-4" />
+                                       ) : item.label === '<' ? (
+                                          <ChevronLeft className="h-4 w-4" />
+                                       ) : (
+                                          <ChevronRight className="h-4 w-4" />
+                                       )
+                                    ) : (
+                                       item.label
+                                    )}
+                                 </Button>
+                              );
+                           })}
+                        </div>
+                     </div>
+                  )}
+               </>
+            ) : (
+               <div className="text-center py-12 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">
+                     No reviews yet. Be the first to review this product!
+                  </p>
+               </div>
+            )}
+         </div>
+         {/* end: Reviews Section */}
 
          {/* Checkout Bottom Bar */}
          {renderCheckoutBottom()}
@@ -676,4 +1046,4 @@ const IphoneDetails = () => {
    );
 };
 
-export default IphoneDetails;
+export default IphoneDetailsPage;

@@ -21,7 +21,7 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    return result;
 };
 
-export interface IGetReviewByProductModelSlugQueryParams {
+export interface IGetReviewsQueryParams {
    _page?: number | null;
    _limit?: number | null;
    _sortOrder?: 'ASC' | 'DESC' | null;
@@ -36,12 +36,28 @@ export const reviewApi = createApi({
          PaginationResponse<TReviewItem>,
          {
             slug: string;
-            queryParams: IGetReviewByProductModelSlugQueryParams;
+            queryParams: IGetReviewsQueryParams;
          }
       >({
          query: ({ slug, queryParams }) => {
             return {
                url: `/api/v1/reviews/model/${slug}`,
+               method: 'GET',
+               params: queryParams,
+            };
+         },
+         providesTags: ['Reviews'],
+      }),
+      getReviewByProductModelIdAsync: builder.query<
+         PaginationResponse<TReviewItem>,
+         {
+            id: string;
+            queryParams: IGetReviewsQueryParams;
+         }
+      >({
+         query: ({ id, queryParams }) => {
+            return {
+               url: `/api/v1/reviews/product-models/${id}`,
                method: 'GET',
                params: queryParams,
             };
@@ -85,6 +101,7 @@ export const reviewApi = createApi({
 
 export const {
    useLazyGetReviewByProductModelSlugAsyncQuery,
+   useLazyGetReviewByProductModelIdAsyncQuery,
    useCreateReviewAsyncMutation,
    useLazyGetReviewByOrderIdAsyncQuery,
    useUpdateReviewAsyncMutation,

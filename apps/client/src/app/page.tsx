@@ -19,7 +19,6 @@ import CompareIPhoneSection from '@components/client/compare-iphone-section';
 import ExperienceItem from '~/app/_components/experience-item';
 import NewestProducts from './_components/newest-products';
 import PopularProducts from './_components/popular-products';
-import useMediaQuery from '@components/hooks/use-media-query';
 
 const listLatestItem = [
    {
@@ -168,17 +167,6 @@ const listExperienceItem = [
 ];
 
 const HomePage = () => {
-   const {
-      isMobile,
-      isTablet,
-      isDesktop,
-      isLargeDesktop,
-      isExtraLargeDesktop,
-   } = useMediaQuery();
-
-   const isSmallScreen = isMobile || isTablet;
-   const isWideDesktop = isLargeDesktop || isExtraLargeDesktop;
-
    return (
       <div
          className={cn(
@@ -187,42 +175,26 @@ const HomePage = () => {
          )}
       >
          <div
-            className={cn('hero-container w-full mx-auto flex', {
-               'max-w-[1264px] h-screen px-8 mb-[100px] flex-row gap-10':
-                  !isSmallScreen,
-               'px-4 py-12 flex-col gap-10 mb-16': isSmallScreen,
-            })}
+            className={cn(
+               'hero-container w-full mx-auto flex px-4 py-12 flex-col gap-10 mb-16 md:max-w-[1264px] md:h-screen md:px-8 md:mb-[100px] md:flex-row md:gap-10',
+            )}
          >
             <div
                className={cn(
-                  'hero-content bg-transparent relative z-10 flex flex-col',
-                  {
-                     'basis-1/2 h-full items-start gap-[30px]': !isSmallScreen,
-                     'w-full items-center text-center gap-6': isSmallScreen,
-                  },
+                  'hero-content bg-transparent relative z-10 flex flex-col w-full items-center text-center gap-6 md:basis-1/2 md:h-full md:items-start md:text-left md:gap-[30px]',
                )}
             >
                <div
-                  className={cn('content-header font-medium text-[#3a3a3a]', {
-                     'max-w-[600px] mt-8 text-[94px] leading-[97px] tracking-[-3.76px]':
-                        isWideDesktop,
-                     'max-w-[520px] mt-6 text-[72px] leading-[80px] tracking-[-2.5px]':
-                        isDesktop && !isWideDesktop,
-                     'max-w-[520px] text-[48px] leading-[56px] tracking-[-1.5px]':
-                        isTablet,
-                     'text-[36px] leading-[42px] tracking-[-1px] px-2':
-                        isMobile,
-                  })}
+                  className={cn(
+                     'content-header font-medium text-[#3a3a3a] text-[36px] leading-[42px] tracking-[-1px] px-2 sm:text-[48px] sm:leading-[56px] sm:tracking-[-1.5px] md:max-w-[520px] md:mt-6 md:text-[72px] md:leading-[80px] md:tracking-[-2.5px] lg:max-w-[600px] lg:mt-8 lg:text-[94px] lg:leading-[97px] lg:tracking-[-3.76px]',
+                  )}
                >
                   Discover the latest Apple products and innovations
                </div>
                <div
-                  className={cn('content-body text-[#425466]', {
-                     'max-w-[540px] pl-2 pr-12 text-[18px] leading-[28px] tracking-[0.2px] text-left':
-                        !isSmallScreen,
-                     'max-w-[640px] px-2 text-[16px] leading-[26px] text-center':
-                        isSmallScreen,
-                  })}
+                  className={cn(
+                     'content-body text-[#425466] max-w-[640px] px-2 text-[16px] leading-[26px] text-center md:max-w-[540px] md:px-0 md:pl-2 md:pr-12 md:text-[18px] md:leading-[28px] md:tracking-[0.2px] md:text-left',
+                  )}
                >
                   Explore the newest Apple devices and accessories designed to
                   elevate the way you work, create, and play—delivered with the
@@ -231,12 +203,7 @@ const HomePage = () => {
             </div>
             <div
                className={cn(
-                  'hero-masonry bg-transparent relative z-10 w-full',
-                  {
-                     'basis-1/2 h-full': !isSmallScreen,
-                     'h-[420px]': isTablet,
-                     'h-[360px]': isMobile,
-                  },
+                  'hero-masonry bg-transparent relative z-10 w-full h-[360px] sm:h-[420px] md:basis-1/2 md:h-full',
                )}
             >
                <div className="bg-transparent h-full w-full absolute z-10">
@@ -295,51 +262,36 @@ const HomePage = () => {
          <div className="list-item-container w-full mb-[100px] flex flex-col justify-center items-center">
             <div className="w-full max-w-screen mb-[50px]">
                <div
-                  className={cn('title-list w-full pb-[24px]', {
-                     'pl-[140px] text-left': !isSmallScreen,
-                     'px-6 text-center': isSmallScreen,
-                  })}
+                  className={cn(
+                     'title-list w-full pb-[24px] px-6 text-center md:pl-[140px] md:text-left',
+                  )}
                >
                   <span
                      className={cn(
-                        'text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]',
-                        {
-                           'text-[24px]': isMobile,
-                        },
+                        'text-[24px] md:text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]',
                      )}
                   >
                      The latest.{' '}
                   </span>
                   <span
                      className={cn(
-                        'text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]',
-                        {
-                           'text-[24px]': isMobile,
-                        },
+                        'text-[24px] md:text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]',
                      )}
                   >
                      Take a look at what’s new, right now.
                   </span>
                </div>
-               <Carousel className="w-full max-w-screen relative flex justify-center items-center">
+               <Carousel className="w-full max-w-screen pl-5 relative flex justify-center items-center">
                   <CarouselContent
-                     className={cn('w-full mb-5', {
-                        'pl-[140px]': !isSmallScreen,
-                        'px-4': isSmallScreen,
-                     })}
+                     className={cn('w-full mb-5 px-4 md:pl-[140px] md:px-0')}
                   >
                      {listLatestItem.map((product, index) => {
                         return (
                            <CarouselItem
                               key={index}
-                              className={cn('mr-0', {
-                                 'basis-[30%]': !isSmallScreen,
-                                 'basis-full': isMobile,
-                                 'basis-[50%]': isTablet,
-                                 'basis-[45%]': isDesktop,
-                                 'basis-[40%]': isLargeDesktop,
-                                 'basis-[35%]': isExtraLargeDesktop,
-                              })}
+                              className={cn(
+                                 'mr-0 basis-full sm:basis-[50%] md:basis-[45%] lg:basis-[40%] xl:basis-[35%]',
+                              )}
                            >
                               <LatestItem product={product} />
                            </CarouselItem>
@@ -348,22 +300,12 @@ const HomePage = () => {
                   </CarouselContent>
                   <CarouselPrevious
                      className={cn(
-                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc]',
-                        {
-                           'left-[90%]': !isSmallScreen,
-                           'left-[60%]': isTablet,
-                           hidden: isMobile,
-                        },
+                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc] hidden sm:flex sm:left-[60%] md:left-[90%]',
                      )}
                   />
                   <CarouselNext
                      className={cn(
-                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc]',
-                        {
-                           'right-[5%]': !isSmallScreen,
-                           'right-[10%]': isTablet,
-                           hidden: isMobile,
-                        },
+                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc] hidden sm:flex sm:right-[10%] md:right-[5%]',
                      )}
                   />
                </Carousel>
@@ -371,51 +313,36 @@ const HomePage = () => {
 
             <div className="experience-container w-full max-w-screen">
                <div
-                  className={cn('title-list w-full pb-[24px]', {
-                     'pl-[140px] text-left': !isSmallScreen,
-                     'px-6 text-center': isSmallScreen,
-                  })}
+                  className={cn(
+                     'title-list w-full pb-[24px] px-6 text-center md:pl-[140px] md:text-left',
+                  )}
                >
                   <span
                      className={cn(
-                        'text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]',
-                        {
-                           'text-[24px]': isMobile,
-                        },
+                        'text-[24px] md:text-[28px] font-semibold text-[#1d1d1f] leading-[1.14] tracking-[0.007em]',
                      )}
                   >
                      The Apple experience.{' '}
                   </span>
                   <span
                      className={cn(
-                        'text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]',
-                        {
-                           'text-[24px]': isMobile,
-                        },
+                        'text-[24px] md:text-[28px] font-semibold text-[#6e6e73] leading-[1.14] tracking-[0.007em]',
                      )}
                   >
                      Do even more with Apple products and services.
                   </span>
                </div>
-               <Carousel className="w-full max-w-screen relative flex justify-center items-center">
+               <Carousel className="w-full max-w-screen pl-5 relative flex justify-center items-center">
                   <CarouselContent
-                     className={cn('w-full mb-5', {
-                        'pl-[140px]': !isSmallScreen,
-                        'px-4': isSmallScreen,
-                     })}
+                     className={cn('w-full mb-5 px-4 md:pl-[140px] md:px-0')}
                   >
                      {listExperienceItem.map((item, index) => {
                         return (
                            <CarouselItem
                               key={index}
-                              className={cn('mr-0', {
-                                 'basis-[30%]': !isSmallScreen,
-                                 'basis-full': isMobile,
-                                 'basis-[50%]': isTablet,
-                                 'basis-[45%]': isDesktop,
-                                 'basis-[40%]': isLargeDesktop,
-                                 'basis-[35%]': isExtraLargeDesktop,
-                              })}
+                              className={cn(
+                                 'mr-0 basis-full sm:basis-[50%] md:basis-[45%] lg:basis-[40%] xl:basis-[35%]',
+                              )}
                            >
                               <ExperienceItem experience={item} />
                            </CarouselItem>
@@ -424,22 +351,12 @@ const HomePage = () => {
                   </CarouselContent>
                   <CarouselPrevious
                      className={cn(
-                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc]',
-                        {
-                           'left-[90%]': !isSmallScreen,
-                           'left-[60%]': isTablet,
-                           hidden: isMobile,
-                        },
+                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc] hidden sm:flex sm:left-[60%] md:left-[90%]',
                      )}
                   />
                   <CarouselNext
                      className={cn(
-                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc]',
-                        {
-                           'right-[5%]': !isSmallScreen,
-                           'right-[10%]': isTablet,
-                           hidden: isMobile,
-                        },
+                        'absolute -top-[40px] -translate-y-1/2 border-black bg-[#ccc] hidden sm:flex sm:right-[10%] md:right-[5%]',
                      )}
                   />
                </Carousel>

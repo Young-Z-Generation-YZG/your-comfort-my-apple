@@ -8,6 +8,7 @@ using YGZ.Catalog.Api.Contracts.ReviewRequest;
 using YGZ.Catalog.Application.Reviews.Commands;
 using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByModel;
 using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByOrder;
+using YGZ.Catalog.Application.Reviews.Queries.GetReviewsByProductModelId;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -33,6 +34,23 @@ public class ReviewController : ApiController
     public async Task<IActionResult> GetReviewsOfModel([FromRoute] string productModelSlug, [FromQuery] GetReviewsByModelRequest request, CancellationToken cancellationToken)
     {
         var query = new GetReviewsByProductModelSlugQuery(productModelSlug)
+        {
+            Page = request._page,
+            Limit = request._limit,
+            SortBy = request._sortBy,
+            SortOrder = request._sortOrder
+        };
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("product-models/{productModelId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetReviewsOfModel([FromRoute] string productModelId, [FromQuery] GetReviewsQueryParamsRequest request, CancellationToken cancellationToken)
+    {
+        var query = new GetReviewsByProductModelIdQuery(productModelId)
         {
             Page = request._page,
             Limit = request._limit,

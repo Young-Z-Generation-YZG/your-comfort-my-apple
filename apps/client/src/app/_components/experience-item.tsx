@@ -1,7 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 'use client';
 import { SFDisplayFont } from '@assets/fonts/font.config';
-import useMediaQuery from '@components/hooks/use-media-query';
 import { cn } from '~/infrastructure/lib/utils';
 
 type ExperienceItemType = {
@@ -17,62 +16,16 @@ const ExperienceItem = ({ experience }: { experience: ExperienceItemType }) => {
    const { id, subtitle, title, content, img, checkLightImg } = experience;
    const checkSubTitle = subtitle !== '';
 
-   const { isMobile, isTablet, isDesktop, isLargeDesktop } = useMediaQuery();
-
-   // Responsive dimensions
-   const containerWidth = isMobile
-      ? 'w-full'
-      : isTablet
-        ? 'w-[360px]'
-        : 'w-[400px]';
-
-   const containerHeight = isMobile
-      ? 'h-[420px]'
-      : isTablet
-        ? 'h-[520px]'
-        : 'h-[580px]';
-
-   const contentWidth = isMobile
-      ? 'w-full'
-      : isTablet
-        ? 'w-[320px]'
-        : 'w-[360px]';
-
-   const contentPadding = isMobile
-      ? 'p-[20px]'
-      : isTablet
-        ? 'p-[25px]'
-        : 'p-[30px]';
-
-   const subtitleSize = isMobile
-      ? 'text-[10px]'
-      : isTablet
-        ? 'text-[11px]'
-        : 'text-[12px]';
-
-   const titleSize = isMobile
-      ? 'text-[22px]'
-      : isTablet
-        ? 'text-[25px]'
-        : 'text-[28px]';
-
-   const titleLeading = isMobile
-      ? 'leading-7'
-      : isDesktop
-        ? 'leading-8'
-        : 'leading-7';
-
-   const contentSize = isMobile
-      ? 'text-[15px]'
-      : isTablet
-        ? 'text-[16px]'
-        : 'text-[17px]';
-
-   const contentLeading = isMobile
-      ? 'leading-[16px]'
-      : isTablet
-        ? 'leading-[17px]'
-        : 'leading-[18px]';
+   // Tailwind-based responsive classes
+   const containerWidth = 'w-full sm:w-[360px] md:w-[400px]';
+   const containerHeight = 'h-[420px] sm:h-[520px] md:h-[580px]';
+   const contentWidth = 'w-full sm:w-[320px] md:w-[360px]';
+   const contentPadding = 'p-[20px] sm:p-[25px] md:p-[30px]';
+   const subtitleSize = 'text-[10px] sm:text-[11px] md:text-[12px]';
+   const titleSize = 'text-[22px] sm:text-[25px] md:text-[28px]';
+   const titleLeading = 'leading-7 md:leading-8';
+   const contentSize = 'text-[15px] sm:text-[16px] md:text-[17px]';
+   const contentLeading = 'leading-[16px] sm:leading-[17px] md:leading-[18px]';
 
    return (
       <div

@@ -227,13 +227,13 @@ const useBasketService = () => {
 
    return {
       isLoading,
-      getBasketState: getBasketQueryState,
-      storeBasketState: storeBasketMutationState,
-      deleteBasketState: deleteBasketMutationState,
-      proceedToCheckoutState: proceedToCheckoutMutationState,
-      getCheckoutItemsState: getCheckoutItemsQueryState,
-      checkoutBasketState: checkoutBasketMutationState,
-      storeEventItemState: storeEventItemMutationState,
+      getBasketQueryState,
+      storeBasketMutationState,
+      deleteBasketMutationState,
+      getCheckoutItemsQueryState,
+      checkoutBasketMutationState,
+      storeEventItemMutationState,
+
       getBasketAsync,
       getCheckoutItemsAsync,
       storeBasketAsync,

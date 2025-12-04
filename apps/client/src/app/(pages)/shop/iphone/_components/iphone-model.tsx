@@ -249,7 +249,7 @@ const IphoneModel = ({
 
                <Button
                   className="rounded-full text-base mt-5"
-                  onClick={() => router.push(`/products/iphone/${modelSlug}`)}
+                  onClick={() => router.push(`/shop/iphone/${modelSlug}`)}
                >
                   Visit
                </Button>

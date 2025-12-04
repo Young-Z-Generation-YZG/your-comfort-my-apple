@@ -1,11 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import {
-   useLazyGetReviewByProductModelSlugAsyncQuery,
    useLazyGetReviewByOrderIdAsyncQuery,
    useCreateReviewAsyncMutation,
    useUpdateReviewAsyncMutation,
    useDeleteReviewAsyncMutation,
-   IGetReviewByProductModelSlugQueryParams,
+   IGetReviewsQueryParams,
+   useLazyGetReviewByProductModelIdAsyncQuery,
+   useLazyGetReviewByProductModelSlugAsyncQuery,
 } from '~/infrastructure/services/review.service';
 import {
    IReviewPayload,
@@ -14,6 +15,8 @@ import {
 import { useCheckApiError } from '../use-check-error';
 
 const useReviewService = () => {
+   const [getReviewByProductModelIdTrigger, getReviewByProductModelIdState] =
+      useLazyGetReviewByProductModelIdAsyncQuery();
    const [
       getReviewByProductModelSlugTrigger,
       getReviewByProductModelSlugState,
@@ -29,6 +32,10 @@ const useReviewService = () => {
       useDeleteReviewAsyncMutation();
 
    useCheckApiError([
+      {
+         title: 'Get Review By Product Model Id failed',
+         error: getReviewByProductModelIdState.error,
+      },
       {
          title: 'Get Review By Product Model Slug failed',
          error: getReviewByProductModelSlugState.error,
@@ -51,14 +58,11 @@ const useReviewService = () => {
       },
    ]);
 
-   const getReviewByProductModelSlugAsync = useCallback(
-      async (
-         slug: string,
-         queryParams: IGetReviewByProductModelSlugQueryParams,
-      ) => {
+   const getReviewByProductModelIdAsync = useCallback(
+      async (id: string, queryParams: IGetReviewsQueryParams) => {
          try {
-            const result = await getReviewByProductModelSlugTrigger({
-               slug,
+            const result = await getReviewByProductModelIdTrigger({
+               id,
                queryParams: queryParams,
             }).unwrap();
             return {
@@ -76,7 +80,7 @@ const useReviewService = () => {
             };
          }
       },
-      [getReviewByProductModelSlugTrigger],
+      [getReviewByProductModelIdTrigger],
    );
 
    const getReviewByOrderIdAsync = useCallback(
@@ -99,6 +103,31 @@ const useReviewService = () => {
          }
       },
       [getReviewByOrderIdTrigger],
+   );
+
+   const getReviewByProductModelSlugAsync = useCallback(
+      async (slug: string, queryParams: IGetReviewsQueryParams) => {
+         try {
+            const result = await getReviewByProductModelSlugTrigger({
+               slug,
+               queryParams,
+            }).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [getReviewByProductModelSlugTrigger],
    );
 
    const createReviewAsync = useCallback(
@@ -172,6 +201,8 @@ const useReviewService = () => {
 
    const isLoading = useMemo(() => {
       return (
+         getReviewByProductModelIdState.isLoading ||
+         getReviewByProductModelIdState.isFetching ||
          getReviewByProductModelSlugState.isLoading ||
          getReviewByProductModelSlugState.isFetching ||
          getReviewByOrderIdState.isLoading ||
@@ -181,6 +212,8 @@ const useReviewService = () => {
          deleteReviewMutationState.isLoading
       );
    }, [
+      getReviewByProductModelIdState.isLoading,
+      getReviewByProductModelIdState.isFetching,
       getReviewByProductModelSlugState.isLoading,
       getReviewByProductModelSlugState.isFetching,
       getReviewByOrderIdState.isLoading,
@@ -192,12 +225,14 @@ const useReviewService = () => {
 
    return {
       isLoading,
+      getReviewByProductModelIdState,
       getReviewByProductModelSlugState,
       getReviewByOrderIdState,
-      createReviewState: createReviewMutationState,
-      updateReviewState: updateReviewMutationState,
-      deleteReviewState: deleteReviewMutationState,
+      createReviewMutationState,
+      updateReviewMutationState,
+      deleteReviewMutationState,
 
+      getReviewByProductModelIdAsync,
       getReviewByProductModelSlugAsync,
       getReviewByOrderIdAsync,
       createReviewAsync,

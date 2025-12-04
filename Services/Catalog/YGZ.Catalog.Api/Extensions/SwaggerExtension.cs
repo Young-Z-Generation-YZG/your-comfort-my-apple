@@ -48,12 +48,13 @@ public static class SwaggerExtension
 
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(OpenIdConnectDefaults.AuthenticationScheme));
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
-            
+
             // Add processor for SwaggerHeader attributes
             settings.OperationProcessors.Add(new SwaggerHeaderOperationProcessor());
-            
+
             settings.OperationProcessors.Add(new GetIphoneModelsRequestExample());
             settings.OperationProcessors.Add(new GetReviewsByModelRequestExample());
+            settings.OperationProcessors.Add(new GetReviewsQueryParamsRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateCategoryRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CreateReviewRequestExample());

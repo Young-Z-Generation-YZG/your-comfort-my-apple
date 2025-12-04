@@ -10,16 +10,12 @@ import {
 
 import NewestProduct from '@components/client/newest-product';
 import useProductService from '@components/hooks/api/use-product-service';
-import useMediaQuery from '@components/hooks/use-media-query';
 import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
 const NewestProducts = () => {
    const { getNewestProductsAsync, getNewestProductsState, isLoading } =
       useProductService();
-
-   const { isMobile, isTablet, isDesktop } = useMediaQuery();
-   const isSmallScreen = isMobile || isTablet;
 
    const productItems = useMemo(() => {
       return getNewestProductsState.data?.items ?? [];
@@ -33,20 +29,11 @@ const NewestProducts = () => {
    }, [getNewestProductsAsync]);
 
    return (
-      <div
-         className={cn('w-full py-8', {
-            'px-4': !isMobile,
-            'px-3': isMobile,
-         })}
-      >
+      <div className={cn('w-full py-8 px-3 md:px-4')}>
          <div className="mx-auto max-w-7xl">
             <h2
                className={cn(
-                  'mb-8 text-center font-semibold tracking-tight text-gray-900 dark:text-gray-100',
-                  {
-                     'text-3xl': !isMobile,
-                     'text-2xl': isMobile,
-                  },
+                  'mb-8 text-center font-semibold tracking-tight text-gray-900 dark:text-gray-100 text-2xl md:text-3xl',
                )}
             >
                Newest Products
@@ -59,20 +46,14 @@ const NewestProducts = () => {
                }}
                className="w-full"
             >
-               <CarouselContent
-                  className={cn('-ml-4', {
-                     'pl-2': isSmallScreen,
-                  })}
-               >
+               <CarouselContent className={cn('-ml-4 pl-2 md:pl-0')}>
                   {productItems.length > 0
                      ? productItems.map((product) => (
                           <CarouselItem
                              key={product.id}
-                             className={cn('pl-4 p-5', {
-                                'basis-full': isMobile,
-                                'basis-[80%]': isTablet,
-                                'basis-[40%]': isDesktop,
-                             })}
+                             className={cn(
+                                'pl-4 p-5 basis-full md:basis-[80%] lg:basis-[40%]',
+                             )}
                           >
                              <NewestProduct product={product} />
                           </CarouselItem>
@@ -83,18 +64,8 @@ const NewestProducts = () => {
                           </div>
                        )}
                </CarouselContent>
-               <CarouselPrevious
-                  className={cn('md:flex', {
-                     hidden: isSmallScreen,
-                     flex: !isSmallScreen,
-                  })}
-               />
-               <CarouselNext
-                  className={cn('md:flex', {
-                     hidden: isSmallScreen,
-                     flex: !isSmallScreen,
-                  })}
-               />
+               <CarouselPrevious className={cn('hidden md:flex')} />
+               <CarouselNext className={cn('hidden md:flex')} />
             </Carousel>
          </div>
       </div>

@@ -5,7 +5,7 @@ using YGZ.BuildingBlocks.Shared.Contracts.Catalogs.Iphone;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
-using YGZ.Catalog.Domain.Products.Iphone;
+using YGZ.Catalog.Domain.Products.ProductModels;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
@@ -14,20 +14,20 @@ namespace YGZ.Catalog.Application.Iphone.Queries.GetIphoneModelBySlug;
 public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQuery, IphoneModelDetailsResponse>
 {
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
-    private readonly IMongoRepository<IphoneModel, ModelId> _iphoneModelRepository;
+    private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
     private readonly IMongoRepository<Branch, BranchId> _branchRepository;
 
-    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<IphoneModel, ModelId> iphoneModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
+    public GetIphoneModelBySlugHandler(IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<ProductModel, ModelId> productModelRepository, IMongoRepository<Branch, BranchId> branchRepository)
     {
         _skuRepository = skuRepository;
-        _iphoneModelRepository = iphoneModelRepository;
+        _productModelRepository = productModelRepository;
         _branchRepository = branchRepository;
     }
 
     public async Task<Result<IphoneModelDetailsResponse>> Handle(GetIphoneModelBySlugQuery request, CancellationToken cancellationToken)
     {
 
-        var iphoneModel = await _iphoneModelRepository.GetByFilterAsync(Builders<IphoneModel>.Filter.Eq(x => x.Slug, Slug.Of(request.ModelSlug)), cancellationToken);
+        var iphoneModel = await _productModelRepository.GetByFilterAsync(Builders<ProductModel>.Filter.Eq(x => x.Slug, Slug.Of(request.ModelSlug)), cancellationToken);
 
         if (iphoneModel is null)
         {
@@ -45,7 +45,7 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
         return await ToResponse(iphoneModel, skusByBranch, cancellationToken);
     }
 
-    private async Task<IphoneModelDetailsResponse> ToResponse(IphoneModel model, Dictionary<BranchId, List<SKU>> skusByBranch, CancellationToken cancellationToken)
+    private async Task<IphoneModelDetailsResponse> ToResponse(ProductModel model, Dictionary<BranchId, List<SKU>> skusByBranch, CancellationToken cancellationToken)
     {
         var branchsResponse = new List<BranchWithSkusResponse>();
 

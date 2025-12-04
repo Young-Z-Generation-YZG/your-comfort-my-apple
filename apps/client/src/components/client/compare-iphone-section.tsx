@@ -12,7 +12,6 @@ import CompareItem, { CompareItemType } from './compare-item';
 import { Button } from '@components/ui/button';
 import { useState } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
-import useMediaQuery from '@components/hooks/use-media-query';
 
 const listProduct = [
    {
@@ -202,16 +201,6 @@ const CompareIPhoneSection = () => {
 
    const [showDetailCompare, setShowDetailCompare] = useState(false);
 
-   const {
-      isMobile,
-      isTablet,
-      isDesktop,
-      isLargeDesktop,
-      isExtraLargeDesktop,
-   } = useMediaQuery();
-
-   const visibleColumns = isMobile ? 1 : isTablet ? 2 : 3;
-
    return (
       <div>
          <div className="compare-container w-full mb-[100px] flex flex-col justify-center items-center px-4">
@@ -222,170 +211,152 @@ const CompareIPhoneSection = () => {
                </div>
             </div>
             <div className="compare-content bg-transparent w-full max-w-[996px] mx-auto flex flex-col">
-               <div className="w-full flex flex-col md:flex-row gap-3 mb-10">
-                  {visibleColumns >= 1 && (
-                     <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
-                        <Select
-                           value={selectedOption1}
-                           onValueChange={(value) => setSelectedOption1(value)}
-                        >
-                           <SelectTrigger className="w-full text-base font-medium bg-white">
-                              <SelectValue />
-                           </SelectTrigger>
-                           <SelectContent className="bg-white">
-                              {listProduct.map(
-                                 (product: any, index: number) => (
-                                    <SelectItem value={product.id} key={index}>
-                                       {product.name}
-                                    </SelectItem>
-                                 ),
-                              )}
-                           </SelectContent>
-                        </Select>
-                     </div>
-                  )}
-                  {visibleColumns >= 2 && (
-                     <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
-                        <Select
-                           value={selectedOption2}
-                           onValueChange={(value) => setSelectedOption2(value)}
-                        >
-                           <SelectTrigger className="w-full text-base font-medium bg-white">
-                              <SelectValue />
-                           </SelectTrigger>
-                           <SelectContent className="bg-white">
-                              {listProduct.map(
-                                 (product: any, index: number) => (
-                                    <SelectItem value={product.id} key={index}>
-                                       {product.name}
-                                    </SelectItem>
-                                 ),
-                              )}
-                           </SelectContent>
-                        </Select>
-                     </div>
-                  )}
-                  {visibleColumns >= 3 && (
-                     <div className="flex-1 bg-gray-300 flex flex-col items-center rounded-[10px]">
-                        <Select
-                           value={selectedOption3}
-                           onValueChange={(value) => setSelectedOption3(value)}
-                        >
-                           <SelectTrigger className="w-full text-base font-medium bg-white">
-                              <SelectValue />
-                           </SelectTrigger>
-                           <SelectContent className="bg-white">
-                              {listProduct.map(
-                                 (product: any, index: number) => (
-                                    <SelectItem value={product.id} key={index}>
-                                       {product.name}
-                                    </SelectItem>
-                                 ),
-                              )}
-                           </SelectContent>
-                        </Select>
-                     </div>
-                  )}
+               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-10">
+                  <div className="bg-gray-300 flex flex-col items-center rounded-[10px]">
+                     <Select
+                        value={selectedOption1}
+                        onValueChange={(value) => setSelectedOption1(value)}
+                     >
+                        <SelectTrigger className="w-full text-base font-medium bg-white">
+                           <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                           {listProduct.map((product: any, index: number) => (
+                              <SelectItem value={product.id} key={index}>
+                                 {product.name}
+                              </SelectItem>
+                           ))}
+                        </SelectContent>
+                     </Select>
+                  </div>
+                  <div className="bg-gray-300 flex-col items-center rounded-[10px] hidden md:flex">
+                     <Select
+                        value={selectedOption2}
+                        onValueChange={(value) => setSelectedOption2(value)}
+                     >
+                        <SelectTrigger className="w-full text-base font-medium bg-white">
+                           <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                           {listProduct.map((product: any, index: number) => (
+                              <SelectItem value={product.id} key={index}>
+                                 {product.name}
+                              </SelectItem>
+                           ))}
+                        </SelectContent>
+                     </Select>
+                  </div>
+                  <div className="bg-gray-300 flex-col items-center rounded-[10px] hidden lg:flex">
+                     <Select
+                        value={selectedOption3}
+                        onValueChange={(value) => setSelectedOption3(value)}
+                     >
+                        <SelectTrigger className="w-full text-base font-medium bg-white">
+                           <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white">
+                           {listProduct.map((product: any, index: number) => (
+                              <SelectItem value={product.id} key={index}>
+                                 {product.name}
+                              </SelectItem>
+                           ))}
+                        </SelectContent>
+                     </Select>
+                  </div>
                </div>
                <div
                   className={cn(
-                     'w-full flex flex-col md:flex-row gap-3',
+                     'w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3',
                      showDetailCompare ? 'h-fit' : 'h-[1250px] overflow-hidden',
                   )}
                >
-                  {visibleColumns >= 1 && (
-                     <div className="flex-1">
-                        <CompareItem
-                           compare={
-                              listProduct.find(
-                                 (product: CompareItemType) =>
-                                    product.id === selectedOption1,
-                              ) || {
-                                 id: '',
-                                 checkNew: false,
-                                 name: '',
-                                 image: '',
-                                 price: 0,
-                                 colors: [],
-                                 screen: [],
-                                 checkDynamic: false,
-                                 chip: [],
-                                 battery: '',
-                                 biometricAuthen: '',
-                                 crashDetection: [],
-                                 camera: [],
-                                 material: [],
-                                 description: '',
-                                 checkCameraControl: false,
-                                 checkAppIntell: false,
-                                 typeConnect: [],
-                              }
+                  <div>
+                     <CompareItem
+                        compare={
+                           listProduct.find(
+                              (product: CompareItemType) =>
+                                 product.id === selectedOption1,
+                           ) || {
+                              id: '',
+                              checkNew: false,
+                              name: '',
+                              image: '',
+                              price: 0,
+                              colors: [],
+                              screen: [],
+                              checkDynamic: false,
+                              chip: [],
+                              battery: '',
+                              biometricAuthen: '',
+                              crashDetection: [],
+                              camera: [],
+                              material: [],
+                              description: '',
+                              checkCameraControl: false,
+                              checkAppIntell: false,
+                              typeConnect: [],
                            }
-                        />
-                     </div>
-                  )}
-                  {visibleColumns >= 2 && (
-                     <div className="flex-1">
-                        <CompareItem
-                           compare={
-                              listProduct.find(
-                                 (product: CompareItemType) =>
-                                    product.id === selectedOption2,
-                              ) || {
-                                 id: '',
-                                 checkNew: false,
-                                 name: '',
-                                 image: '',
-                                 price: 0,
-                                 colors: [],
-                                 screen: [],
-                                 checkDynamic: false,
-                                 chip: [],
-                                 battery: '',
-                                 biometricAuthen: '',
-                                 crashDetection: [],
-                                 camera: [],
-                                 material: [],
-                                 description: '',
-                                 checkCameraControl: false,
-                                 checkAppIntell: false,
-                                 typeConnect: [],
-                              }
+                        }
+                     />
+                  </div>
+                  <div className="hidden md:block">
+                     <CompareItem
+                        compare={
+                           listProduct.find(
+                              (product: CompareItemType) =>
+                                 product.id === selectedOption2,
+                           ) || {
+                              id: '',
+                              checkNew: false,
+                              name: '',
+                              image: '',
+                              price: 0,
+                              colors: [],
+                              screen: [],
+                              checkDynamic: false,
+                              chip: [],
+                              battery: '',
+                              biometricAuthen: '',
+                              crashDetection: [],
+                              camera: [],
+                              material: [],
+                              description: '',
+                              checkCameraControl: false,
+                              checkAppIntell: false,
+                              typeConnect: [],
                            }
-                        />
-                     </div>
-                  )}
-                  {visibleColumns >= 3 && (
-                     <div className="flex-1">
-                        <CompareItem
-                           compare={
-                              listProduct.find(
-                                 (product: CompareItemType) =>
-                                    product.id === selectedOption3,
-                              ) || {
-                                 id: '',
-                                 checkNew: false,
-                                 name: '',
-                                 image: '',
-                                 price: 0,
-                                 colors: [],
-                                 screen: [],
-                                 checkDynamic: false,
-                                 chip: [],
-                                 battery: '',
-                                 biometricAuthen: '',
-                                 crashDetection: [],
-                                 camera: [],
-                                 material: [],
-                                 description: '',
-                                 checkCameraControl: false,
-                                 checkAppIntell: false,
-                                 typeConnect: [],
-                              }
+                        }
+                     />
+                  </div>
+                  <div className="hidden lg:block">
+                     <CompareItem
+                        compare={
+                           listProduct.find(
+                              (product: CompareItemType) =>
+                                 product.id === selectedOption3,
+                           ) || {
+                              id: '',
+                              checkNew: false,
+                              name: '',
+                              image: '',
+                              price: 0,
+                              colors: [],
+                              screen: [],
+                              checkDynamic: false,
+                              chip: [],
+                              battery: '',
+                              biometricAuthen: '',
+                              crashDetection: [],
+                              camera: [],
+                              material: [],
+                              description: '',
+                              checkCameraControl: false,
+                              checkAppIntell: false,
+                              typeConnect: [],
                            }
-                        />
-                     </div>
-                  )}
+                        }
+                     />
+                  </div>
                </div>
                <div
                   className={cn(
