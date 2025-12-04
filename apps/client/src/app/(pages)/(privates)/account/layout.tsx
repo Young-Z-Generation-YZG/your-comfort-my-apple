@@ -14,12 +14,12 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
                Manage your Account ID and account settings.
             </p>
 
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 md:mt-10 w-full">
-               <div className="w-full md:w-1/4">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 mt-6 md:mt-10 w-full">
+               <div className="w-full lg:w-1/4">
                   <SideBar />
                </div>
 
-               <div className="content w-full md:flex-1 mt-6 md:mt-0">
+               <div className="content w-full lg:flex-1 mt-6 lg:mt-0">
                   {children}
                </div>
             </div>

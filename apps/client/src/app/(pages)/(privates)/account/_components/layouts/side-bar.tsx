@@ -54,7 +54,7 @@ const SideBar = () => {
 
    return (
       <>
-         <ul className="w-full hidden md:block">
+         <ul className="w-full hidden lg:block">
             {listSidebarItems.map((item, index) => (
                <li
                   key={index}
@@ -81,7 +81,7 @@ const SideBar = () => {
             ))}
          </ul>
 
-         <div className="md:hidden">
+         <div className="lg:hidden">
             <div
                className={cn(
                   'fixed inset-0 z-40 bg-black/25 transition-opacity duration-300',

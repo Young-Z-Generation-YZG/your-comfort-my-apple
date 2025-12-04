@@ -43,7 +43,7 @@ const AccountPage = () => {
       return (
          <div>
             <CardContext>
-               <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2">
                   <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
                      <h3 className="font-medium text-lg md:text-xl">Profile picture</h3>
 
@@ -261,7 +261,7 @@ const AccountPage = () => {
                      </div>
 
                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w/full mt-3 gap-3">
+                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w-full mt-3 gap-3">
                            <div className="flex flex-col gap-1">
                               <span className="text-base font-medium text-black/80 font-SFProText">
                                  Two-Factor Authentication
@@ -275,7 +275,7 @@ const AccountPage = () => {
                            <Badge variants="enabled" />
                         </div>
 
-                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w/full mt-3 gap-3">
+                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w-full mt-3 gap-3">
                            <div className="flex flex-col gap-1">
                               <span className="text-base font-medium text-black/80 font-SFProText">
                                  Password
