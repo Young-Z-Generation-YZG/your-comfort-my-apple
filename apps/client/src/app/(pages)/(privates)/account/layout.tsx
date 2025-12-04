@@ -5,19 +5,23 @@ import withAuth from '@components/HoCs/with-auth.hoc';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    return (
-      <div className="w-full bg-[#f5f5f7] px-5 py-10">
-         <div className="w-[1200px] mx-auto mt-10">
-            <h2 className="text-4xl font-medium">Account</h2>
-            <p className="font-light font-SFProText mt-1 text-slate-500">
+      <div className="w-full bg-[#f5f5f7] px-4 sm:px-6 md:px-8 py-8 md:py-10">
+         <div className="w-full max-w-[1200px] mx-auto mt-6 md:mt-10">
+            <h2 className="font-medium text-2xl sm:text-3xl md:text-4xl">
+               Account
+            </h2>
+            <p className="font-light font-SFProText mt-1 text-slate-500 text-sm md:text-base">
                Manage your Account ID and account settings.
             </p>
 
-            <div className="flex gap-2 mt-10 w-full">
-               <div className="w-1/4">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-6 md:mt-10 w-full">
+               <div className="w-full md:w-1/4">
                   <SideBar />
                </div>
 
-               <div className="content w-full">{children}</div>
+               <div className="content w-full md:flex-1 mt-6 md:mt-0">
+                  {children}
+               </div>
             </div>
          </div>
       </div>

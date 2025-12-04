@@ -20,7 +20,7 @@ import {
    vietnamProvinces,
    type Province,
    type District,
-} from '../_data/Việt Nam-provinces';
+} from '../_data/vietnam-provinces';
 import {
    AddressFormType,
    AddressResolver,

@@ -44,8 +44,8 @@ const AccountPage = () => {
          <div>
             <CardContext>
                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between">
-                     <h3 className="text-xl font-medium">Profile picture</h3>
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                     <h3 className="font-medium text-lg md:text-xl">Profile picture</h3>
 
                      <span
                         onClick={() => {
@@ -87,8 +87,8 @@ const AccountPage = () => {
             <div className="flex gap-5 flex-col">
                <CardContext>
                   <div className="flex flex-col gap-2">
-                     <div className="flex justify-between">
-                        <h3 className="text-xl font-medium">
+                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <h3 className="font-medium text-lg md:text-xl">
                            Personal Information
                         </h3>
 
@@ -130,7 +130,7 @@ const AccountPage = () => {
                         </div>
                      </div>
 
-                     <div className="mt-3 flex justify-between items-center w-[65%]">
+                     <div className="mt-3 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w-full sm:w-[65%] gap-3">
                         <span className="flex flex-col gap-1">
                            <span className="text-sm text-slate-400 font-SFProText">
                               Phone
@@ -169,8 +169,8 @@ const AccountPage = () => {
 
                <CardContext>
                   <div className="flex flex-col gap-2">
-                     <div className="flex justify-between">
-                        <h3 className="text-xl font-medium">
+                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <h3 className="font-medium text-lg md:text-xl">
                            Shipping Addresses
                         </h3>
 
@@ -212,8 +212,8 @@ const AccountPage = () => {
 
                <CardContext>
                   <div className="flex flex-col gap-2">
-                     <div className="flex justify-between">
-                        <h3 className="text-xl font-medium">Payment methods</h3>
+                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <h3 className="font-medium text-lg md:text-xl">Payment methods</h3>
 
                         <Link
                            href="#"
@@ -248,8 +248,8 @@ const AccountPage = () => {
 
                <CardContext>
                   <div className="flex flex-col gap-2">
-                     <div className="flex justify-between">
-                        <h3 className="text-xl font-medium">Security</h3>
+                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <h3 className="font-medium text-lg md:text-xl">Security</h3>
 
                         <Link
                            href="/account/security"
@@ -261,7 +261,7 @@ const AccountPage = () => {
                      </div>
 
                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center w-full mt-3">
+                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w/full mt-3 gap-3">
                            <div className="flex flex-col gap-1">
                               <span className="text-base font-medium text-black/80 font-SFProText">
                                  Two-Factor Authentication
@@ -275,7 +275,7 @@ const AccountPage = () => {
                            <Badge variants="enabled" />
                         </div>
 
-                        <div className="flex justify-between items-center w-full mt-3">
+                        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center w/full mt-3 gap-3">
                            <div className="flex flex-col gap-1">
                               <span className="text-base font-medium text-black/80 font-SFProText">
                                  Password
