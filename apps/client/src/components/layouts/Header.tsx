@@ -107,8 +107,14 @@ const Header = () => {
    const [notificationTab, setNotificationTab] =
       useState<NotificationTab>('all');
    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
    const router = useRouter();
+
    const { isAuthenticated } = useAppSelector((state) => state.auth);
+   const { cart_items } = useAppSelector((state) => state.cart);
+   const totalCartQuantity = useMemo(() => {
+      return cart_items.reduce((acc, item) => acc + (item.quantity ?? 0), 0);
+   }, [cart_items]);
 
    const { getMeAsync, isLoading: isIdentityLoading } = useIdentityService();
    const {
@@ -327,6 +333,11 @@ const Header = () => {
                         height={32}
                         className="w-14 h-14"
                      />
+                     {totalCartQuantity > 0 && (
+                        <span className="absolute bottom-3 right-3 text-xs min-w-[16px] rounded-full bg-black text-white px-[4px] font-semibold leading-[16px] text-center">
+                           {totalCartQuantity > 99 ? '99+' : totalCartQuantity}
+                        </span>
+                     )}
                   </div>
                   <div
                      className="cursor-pointer"
@@ -580,6 +591,11 @@ const Header = () => {
                      quality={100}
                      className="w-4 h-8 md:w-[22px] md:h-[44px]"
                   />
+                  {totalCartQuantity > 0 && (
+                     <span className="absolute bottom-2 right-1 flex items-center justify-center rounded-full bg-black text-white px-[4px] text-[10px] font-semibold">
+                        {totalCartQuantity > 99 ? '99+' : totalCartQuantity}
+                     </span>
+                  )}
                </div>
 
                {isAuthenticated && (
