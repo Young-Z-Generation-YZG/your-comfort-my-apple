@@ -12,13 +12,13 @@ using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetRevenues;
 
-public class GetRevenuesQueryHandler : IQueryHandler<GetRevenuesQuery, List<OrderDetailsResponse>>
+public class GetRevenuesHandler : IQueryHandler<GetRevenuesQuery, List<OrderDetailsResponse>>
 {
-    private readonly ILogger<GetRevenuesQueryHandler> _logger;
+    private readonly ILogger<GetRevenuesHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly ITenantHttpContext _tenantHttpContext;
 
-    public GetRevenuesQueryHandler(ILogger<GetRevenuesQueryHandler> logger,
+    public GetRevenuesHandler(ILogger<GetRevenuesHandler> logger,
                                    IGenericRepository<Order, OrderId> repository,
                                    ITenantHttpContext tenantHttpContext)
     {
@@ -58,10 +58,9 @@ public class GetRevenuesQueryHandler : IQueryHandler<GetRevenuesQuery, List<Orde
         if (!string.IsNullOrWhiteSpace(tenantId))
         {
             var tenantIdValueObject = TenantId.Of(tenantId);
-            var tenantIdValue = tenantIdValueObject.Value;
 
             filterExpression = filterExpression.And(order =>
-                order.TenantId!.Value == tenantIdValue);
+                order.TenantId == tenantIdValueObject);
         }
 
         // Default date range: Jan 2025 to Dec 2025

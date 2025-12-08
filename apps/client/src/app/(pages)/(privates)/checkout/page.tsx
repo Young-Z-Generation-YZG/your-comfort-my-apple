@@ -130,6 +130,17 @@ const CheckoutPage = () => {
       isLoading: isLoadingBasket,
    } = useBasketService();
 
+   const totalCartQuantity = useMemo(() => {
+      if (getCheckoutItemsQueryState.data) {
+         return getCheckoutItemsQueryState.data.cart_items.reduce(
+            (acc, item) => acc + (item.quantity ?? 0),
+            0,
+         );
+      }
+
+      return 0;
+   }, [getCheckoutItemsQueryState.data]);
+
    const isLoading = useMemo(() => {
       return isLoadingAddresses || isLoadingBasket;
    }, [isLoadingAddresses, isLoadingBasket]);
@@ -505,7 +516,7 @@ const CheckoutPage = () => {
                         Order Summary
                      </div>
                      <div className="text-[16px] font-light tracking-[0.2px] font-SFProText">
-                        You have {0} items in your cart
+                        You have {totalCartQuantity} items in your cart
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
                         {getCheckoutItemsQueryState.data &&

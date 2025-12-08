@@ -7,20 +7,21 @@ using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
+using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
 
 namespace YGZ.Ordering.Application.Orders.Queries.GetOnlineOrders;
 
-public class GetOnlineOrdersQueryHandler : IQueryHandler<GetOnlineOrdersQuery, PaginationResponse<OrderDetailsResponse>>
+public class GetOnlineOrdersHandler : IQueryHandler<GetOnlineOrdersQuery, PaginationResponse<OrderDetailsResponse>>
 {
-    private readonly ILogger<GetOnlineOrdersQueryHandler> _logger;
+    private readonly ILogger<GetOnlineOrdersHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserHttpContext _userContext;
 
-    public GetOnlineOrdersQueryHandler(IGenericRepository<Order, OrderId> repository,
+    public GetOnlineOrdersHandler(IGenericRepository<Order, OrderId> repository,
                                        IUserHttpContext userContext,
-                                       ILogger<GetOnlineOrdersQueryHandler> logger)
+                                       ILogger<GetOnlineOrdersHandler> logger)
     {
         _repository = repository;
         _userContext = userContext;
@@ -53,6 +54,9 @@ public class GetOnlineOrdersQueryHandler : IQueryHandler<GetOnlineOrdersQuery, P
     private static Expression<Func<Order, bool>> BuildExpression(GetOnlineOrdersQuery request)
     {
         var filterExpression = ExpressionBuilder.New<Order>();
+
+        // default tenantId=
+        filterExpression = filterExpression.And(order => order.TenantId.Equals(TenantId.Of("664355f845e56534956be32b")));
 
         if (!string.IsNullOrWhiteSpace(request._customerEmail))
         {

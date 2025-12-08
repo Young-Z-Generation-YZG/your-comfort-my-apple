@@ -56,8 +56,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     {
         var userEmail = _userContext.GetUserEmail();
         var userId = _userContext.GetUserId();
-        var tenantId = _tenantContext.GetTenantId() ?? "664357a235e84033bbd0e6b6";
-        var branchId = _tenantContext.GetBranchId() ?? "664355f845e56534956be32b";
+        var tenantId = _tenantContext.GetTenantId() ?? "664355f845e56534956be32b";
+        var branchId = _tenantContext.GetBranchId() ?? "664357a235e84033bbd0e6b6";
 
         var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 

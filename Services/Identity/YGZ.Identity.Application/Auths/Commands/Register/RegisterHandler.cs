@@ -24,6 +24,8 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
     private readonly IOtpGenerator _otpGenerator;
     private readonly IEmailService _emailService;
     private readonly string _webClientUrl;
+    private const string DEFAULT_TENANT_ID = "664355f845e56534956be32b";
+    private const string DEFAULT_BRANCH_ID = "664357a235e84033bbd0e6b6";
 
     public RegisterHandler(ILogger<RegisterHandler> logger,
                            IIdentityService identityService,
@@ -61,10 +63,10 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
             .WithEmailVerified(false)
             .WithPassword(request.Password)
             .WithTenantAttributes(
-                tenantId: null,
+                tenantId: DEFAULT_TENANT_ID,
                 subDomain: null,
                 tenantType: null,
-                branchId: null,
+                branchId: DEFAULT_BRANCH_ID,
                 fullName: $"{request.FirstName} {request.LastName}"
             )
             .Build();

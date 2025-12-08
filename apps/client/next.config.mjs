@@ -4,6 +4,7 @@ const nextConfig = {
    output: 'standalone',
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,
+      APP_URL: process.env.APP_URL,
    },
    reactStrictMode: false,
    eslint: {

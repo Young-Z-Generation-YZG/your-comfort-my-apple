@@ -1062,7 +1062,7 @@ const OnlineOrdersPage = () => {
                            <span className="font-medium">{lastItemIndex}</span>{' '}
                            of{' '}
                            <span className="font-medium">{totalRecords}</span>{' '}
-                           users
+                           orders
                         </div>
                      </div>
 
