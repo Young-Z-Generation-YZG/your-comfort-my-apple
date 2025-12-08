@@ -137,7 +137,18 @@ const IphoneShopPage = () => {
                   {Object.keys(filters).length > 0 && (
                      <div className="flex flex-row items-center">
                         <Button
-                           onClick={() => setFilters({})}
+                           onClick={() => {
+                              setFilters({
+                                 _page: null,
+                                 _limit: null,
+                                 _colors: null,
+                                 _storages: null,
+                                 _models: null,
+                                 _minPrice: null,
+                                 _maxPrice: null,
+                                 _priceSort: null,
+                              });
+                           }}
                            className="h-[22.5px] p-0 text-[15px] font-semibold border-b border-[#000] hover:text-blue-600 rounded-none bg-transparent text-black hover:bg-transparent hover:border-b-blue-500/50 transition-colors"
                         >
                            Clear Filters

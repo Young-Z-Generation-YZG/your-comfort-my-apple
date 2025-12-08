@@ -100,7 +100,6 @@ export type TAddressItem = (typeof fakeData)[number];
 const CheckoutPage = () => {
    const router = useRouter();
    const searchParams = useSearchParams();
-   //  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
    const [editable, setEditable] = useState(false);
    const [selectedAddress, setSelectedAddress] = useState<TAddressItem | null>(
       null,
@@ -127,7 +126,7 @@ const CheckoutPage = () => {
    const {
       getCheckoutItemsAsync,
       checkoutBasketAsync,
-      getCheckoutItemsState,
+      getCheckoutItemsQueryState,
       isLoading: isLoadingBasket,
    } = useBasketService();
 
@@ -253,7 +252,8 @@ const CheckoutPage = () => {
                isOpen={displayPaymentBlockchainModel}
                onClose={handleClosePaymentModal}
                amount={
-                  getCheckoutItemsState.data?.total_amount?.toFixed(2) || '0.00'
+                  getCheckoutItemsQueryState.data?.total_amount?.toFixed(2) ||
+                  '0.00'
                }
             />
          )}
@@ -508,9 +508,10 @@ const CheckoutPage = () => {
                         You have {0} items in your cart
                      </div>
                      <div className="w-full flex flex-col justify-start items-center">
-                        {getCheckoutItemsState.data &&
-                        getCheckoutItemsState.data.cart_items.length > 0 ? (
-                           getCheckoutItemsState.data.cart_items.map(
+                        {getCheckoutItemsQueryState.data &&
+                        getCheckoutItemsQueryState.data.cart_items.length >
+                           0 ? (
+                           getCheckoutItemsQueryState.data.cart_items.map(
                               (item: TCheckoutBasketItem, index: number) => {
                                  return (
                                     <CheckoutItem key={index} item={item} />
@@ -535,9 +536,10 @@ const CheckoutPage = () => {
                            <div className="font-light">Subtotal</div>
                            <div className="font-semibold">
                               $
-                              {getCheckoutItemsState.data &&
-                              getCheckoutItemsState.data.cart_items.length > 0
-                                 ? getCheckoutItemsState.data.cart_items
+                              {getCheckoutItemsQueryState.data &&
+                              getCheckoutItemsQueryState.data.cart_items
+                                 .length > 0
+                                 ? getCheckoutItemsQueryState.data.cart_items
                                       .reduce(
                                          (
                                             acc: number,
@@ -566,10 +568,10 @@ const CheckoutPage = () => {
                                     </div>
                                     <div className="font-semibold">
                                        - $
-                                       {getCheckoutItemsState.data &&
-                                       getCheckoutItemsState.data.cart_items
-                                          .length > 0
-                                          ? getCheckoutItemsState.data.cart_items
+                                       {getCheckoutItemsQueryState.data &&
+                                       getCheckoutItemsQueryState.data
+                                          .cart_items.length > 0
+                                          ? getCheckoutItemsQueryState.data.cart_items
                                                .reduce(
                                                   (
                                                      acc: number,
@@ -595,9 +597,9 @@ const CheckoutPage = () => {
                         <div className="">Total</div>
                         <div className="">
                            $
-                           {getCheckoutItemsState.data &&
-                           getCheckoutItemsState.data.cart_items.length > 0
-                              ? getCheckoutItemsState.data.total_amount.toFixed(
+                           {getCheckoutItemsQueryState.data &&
+                           getCheckoutItemsQueryState.data.cart_items.length > 0
+                              ? getCheckoutItemsQueryState.data.total_amount.toFixed(
                                    2,
                                 )
                               : '0.00'}

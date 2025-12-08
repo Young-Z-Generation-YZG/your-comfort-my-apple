@@ -46,7 +46,7 @@ const CartPage = () => {
 
    const {
       getBasketAsync,
-      getBasketState,
+      getBasketQueryState,
       storeBasketAsync,
       deleteBasketAsync,
       proceedToCheckoutAsync,
@@ -77,15 +77,15 @@ const CartPage = () => {
    }, [getBasketAsync, urlCouponCode, isAuthenticated]);
 
    const basketData = useMemo(() => {
-      if (getBasketState.isSuccess && getBasketState.data)
-         return getBasketState.data as TCart;
+      if (getBasketQueryState.isSuccess && getBasketQueryState.data)
+         return getBasketQueryState.data as TCart;
 
       return {
          user_email: '',
          cart_items: cartAppState.cart_items,
          total_amount: 0,
       } as TCart;
-   }, [getBasketState, cartAppState]);
+   }, [getBasketQueryState, cartAppState]);
 
    const { form, cartItems, handleQuantityChange, handleRemoveItem } =
       useCartFormV2({
@@ -291,8 +291,10 @@ const CartPage = () => {
                         <div className="font-light">Subtotal</div>
                         <div className="font-semibold">
                            $
-                           {getBasketState.data
-                              ? getBasketState.data.sub_total_amount.toFixed(2)
+                           {getBasketQueryState.data
+                              ? getBasketQueryState.data.sub_total_amount.toFixed(
+                                   2,
+                                )
                               : '0.00'}
                         </div>
                      </div>
@@ -309,7 +311,7 @@ const CartPage = () => {
                                  <div className="font-semibold">
                                     - $
                                     {(
-                                       getBasketState.data as unknown as TCart
+                                       getBasketQueryState.data as unknown as TCart
                                     )?.cart_items
                                        .reduce(
                                           (acc: number, item: TCartItem) =>
@@ -329,9 +331,9 @@ const CartPage = () => {
                      <div className="">Total</div>
                      <div className="">
                         $
-                        {getBasketState.data
+                        {getBasketQueryState.data
                            ? (
-                                getBasketState.data as unknown as TCart
+                                getBasketQueryState.data as unknown as TCart
                              ).total_amount.toFixed(2)
                            : '0.00'}
                      </div>
