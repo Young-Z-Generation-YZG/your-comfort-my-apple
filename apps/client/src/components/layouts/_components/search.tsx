@@ -130,7 +130,9 @@ const Search = () => {
                                        <li
                                           className="flex items-center gap-3 font-SFProText text-sm text-slate-900 cursor-pointer pb-3 hover:bg-gray-100 p-2 rounded-lg transition-colors"
                                           onClick={() => {
-                                             router.push(`/shop/${item.slug}`);
+                                             router.push(
+                                                `/shop/iphone/${item.slug}`,
+                                             );
                                           }}
                                        >
                                           <div className="w-[60px] h-[60px] overflow-hidden flex-shrink-0">
