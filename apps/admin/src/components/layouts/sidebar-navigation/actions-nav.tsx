@@ -46,7 +46,7 @@ import { useDispatch } from 'react-redux';
 import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
 import useNotificationService from '~/src/hooks/api/use-notification-service';
 import { INotificationQueryParams } from '~/src/infrastructure/services/notification.service';
-import { TNotification } from '~/src/domain/types/ordering';
+import { TNotification } from '~/src/domain/types/ordering.type';
 import { Badge } from '@components/ui/badge';
 import { LoadingOverlay } from '@components/loading-overlay';
 

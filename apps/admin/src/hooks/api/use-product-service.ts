@@ -1,13 +1,25 @@
 import { useCallback, useMemo } from 'react';
-import { useLazyGetProductsQuery } from '~/src/infrastructure/services/product.service';
+import {
+   IGetProductModelsByCategorySlugQueryParams,
+   useLazyGetProductModelsByCategorySlugQuery,
+} from '~/src/infrastructure/services/product.service';
 
 const useProductService = () => {
-   const [getProductsTrigger, getProductsState] = useLazyGetProductsQuery();
+   const [
+      getProductModelsByCategorySlugTrigger,
+      getProductModelsByCategorySlugState,
+   ] = useLazyGetProductModelsByCategorySlugQuery();
 
-   const getProductsAsync = useCallback(
-      async (query: Record<string, any>) => {
+   const getProductModelsByCategorySlugAsync = useCallback(
+      async (
+         categorySlug: string,
+         queryParams: IGetProductModelsByCategorySlugQueryParams,
+      ) => {
          try {
-            const result = await getProductsTrigger(query).unwrap();
+            const result = await getProductModelsByCategorySlugTrigger({
+               categorySlug,
+               queryParams,
+            }).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -23,18 +35,24 @@ const useProductService = () => {
             };
          }
       },
-      [getProductsTrigger],
+      [getProductModelsByCategorySlugTrigger],
    );
 
    const isLoading = useMemo(() => {
-      return getProductsState.isLoading || getProductsState.isFetching;
-   }, [getProductsState.isLoading, getProductsState.isFetching]);
+      return (
+         getProductModelsByCategorySlugState.isLoading ||
+         getProductModelsByCategorySlugState.isFetching
+      );
+   }, [
+      getProductModelsByCategorySlugState.isLoading,
+      getProductModelsByCategorySlugState.isFetching,
+   ]);
 
    return {
       isLoading,
-      getProductsState,
+      getProductModelsByCategorySlugState,
 
-      getProductsAsync,
+      getProductModelsByCategorySlugAsync,
    };
 };
 

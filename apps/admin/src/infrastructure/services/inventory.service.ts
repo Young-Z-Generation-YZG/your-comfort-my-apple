@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-import { TSku } from '~/src/domain/types/catalog';
+import { TSku } from '~/src/domain/types/catalog.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/catalog-services')(args, api, extraOptions);

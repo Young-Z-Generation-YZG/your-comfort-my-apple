@@ -8,26 +8,24 @@ import { Button } from '@components/ui/button';
 import TenantCard from './_components/tenant-card';
 import useTenantService from '~/src/hooks/api/use-tenant-service';
 import { LoadingOverlay } from '@components/loading-overlay';
-import { TTenant } from '~/src/infrastructure/services/tenant.service';
+import { TTenant } from '~/src/domain/types/catalog.type';
 
 const TenantsPage = () => {
    const router = useRouter();
-   const { getTenantsAsync, getTenantsState, isLoading } = useTenantService();
+   const { getListTenantsAsync, getListTenantsState, isLoading } =
+      useTenantService();
 
    // Get tenants from API response
    const tenants = useMemo(() => {
-      if (!getTenantsState.isSuccess || !getTenantsState.data) {
+      if (!getListTenantsState.isSuccess || !getListTenantsState.data) {
          return [];
       }
-      return getTenantsState.data as TTenant[];
-   }, [getTenantsState.isSuccess, getTenantsState.data]);
+      return getListTenantsState.data as TTenant[];
+   }, [getListTenantsState.isSuccess, getListTenantsState.data]);
 
    useEffect(() => {
-      const fetchTenants = async () => {
-         await getTenantsAsync();
-      };
-      fetchTenants();
-   }, [getTenantsAsync]);
+      getListTenantsAsync();
+   }, [getListTenantsAsync]);
 
    return (
       <Fragment>

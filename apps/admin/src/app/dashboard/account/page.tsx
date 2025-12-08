@@ -22,7 +22,7 @@ import { Button } from '@components/ui/button';
 import { Separator } from '@components/ui/separator';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useUserService from '~/src/hooks/api/use-user-service';
-import { TUser } from '~/src/domain/types/identity';
+import { TUser } from '~/src/domain/types/identity.type';
 import { cn } from '~/src/infrastructure/lib/utils';
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {

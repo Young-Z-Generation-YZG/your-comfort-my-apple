@@ -50,8 +50,8 @@ import {
 import { LoadingOverlay } from '@components/loading-overlay';
 import useUserService from '~/src/hooks/api/use-user-service';
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
-import { TUser } from '~/src/domain/types/identity';
-import { TOrder } from '~/src/domain/types/ordering';
+import { TUser } from '~/src/domain/types/identity.type';
+import { TOrder } from '~/src/domain/types/ordering.type';
 import { cn } from '~/src/infrastructure/lib/utils';
 import usePaginationV2 from '~/src/hooks/use-pagination';
 import {

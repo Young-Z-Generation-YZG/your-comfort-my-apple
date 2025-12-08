@@ -4,8 +4,8 @@ import { Separator } from '@components/ui/separator';
 import { Fragment } from 'react';
 import Image from 'next/image';
 import { Star } from 'lucide-react';
-import { TProductModel } from '~/src/infrastructure/services/product.service';
 import { cn } from '~/src/infrastructure/lib/utils';
+import { TProductModel } from '~/src/domain/types/catalog.type';
 
 interface IphoneModelProps {
    productModel: TProductModel;
@@ -20,17 +20,10 @@ const IphoneModel = ({
 }: IphoneModelProps) => {
    const showcaseImage = productModel.showcase_images[showcaseImageIndex];
 
-   // Calculate min and max prices from sku_prices
-   const priceRange = productModel.sku_prices.reduce(
-      (acc, sku) => {
-         if (sku.unit_price < acc.min) acc.min = sku.unit_price;
-         if (sku.unit_price > acc.max) acc.max = sku.unit_price;
-         return acc;
-      },
-      { min: Infinity, max: -Infinity },
-   );
+   const prices = productModel.sku_prices.map((s) => s.unit_price);
+   const minPrice = prices.length ? Math.min(...prices) : null;
+   const maxPrice = prices.length ? Math.max(...prices) : null;
 
-   // Format price for display
    const formatPrice = (price: number) => {
       return new Intl.NumberFormat('en-US', {
          style: 'currency',
@@ -117,19 +110,26 @@ const IphoneModel = ({
                   <Separator className="mt-2" />
 
                   <span className="flex flex-row gap-2 mt-2 items-center">
-                     <RatingStar
-                        rating={
-                           productModel.average_rating.rating_average_value
-                        }
-                        size={24}
-                        className="text-sm"
-                     />
-                     <span className="text-base inline-block leading-7">
-                        {productModel.average_rating.rating_average_value}
-                     </span>
-                     <span className="text-sm">
-                        ({productModel.average_rating.rating_count})
-                     </span>
+                     {(() => {
+                        const ratingAvg =
+                           productModel.average_rating?.rating_average_value ??
+                           0;
+                        const ratingCount =
+                           productModel.average_rating?.rating_count ?? 0;
+                        return (
+                           <>
+                              <RatingStar
+                                 rating={ratingAvg}
+                                 size={24}
+                                 className="text-sm"
+                              />
+                              <span className="text-base inline-block leading-7">
+                                 {ratingAvg}
+                              </span>
+                              <span className="text-sm">({ratingCount})</span>
+                           </>
+                        );
+                     })()}
                   </span>
 
                   {/* Rating Stars Breakdown */}
@@ -159,16 +159,16 @@ const IphoneModel = ({
                                        <div
                                           className="h-full bg-yellow-400 rounded-full"
                                           style={{
-                                             width: `${
-                                                productModel.average_rating
-                                                   .rating_count > 0
+                                             width: `${(() => {
+                                                const ratingCount =
+                                                   productModel.average_rating
+                                                      ?.rating_count ?? 0;
+                                                return ratingCount > 0
                                                    ? (ratingStar.count /
-                                                        productModel
-                                                           .average_rating
-                                                           .rating_count) *
-                                                     100
-                                                   : 0
-                                             }%`,
+                                                        ratingCount) *
+                                                        100
+                                                   : 0;
+                                             })()}%`,
                                           }}
                                        />
                                     </div>
@@ -192,15 +192,18 @@ const IphoneModel = ({
 
                   {/* prices */}
                   <div className="flex flex-row gap-2 mt-2 justify-end">
-                     {priceRange.min === priceRange.max ? (
-                        <span className="text-lg font-semibold text-gray-900">
-                           {formatPrice(priceRange.min)}
-                        </span>
+                     {minPrice != null && maxPrice != null ? (
+                        minPrice === maxPrice ? (
+                           <span className="text-lg font-semibold text-gray-900">
+                              {formatPrice(minPrice)}
+                           </span>
+                        ) : (
+                           <span className="text-lg font-semibold text-gray-900">
+                              {formatPrice(minPrice)} - {formatPrice(maxPrice)}
+                           </span>
+                        )
                      ) : (
-                        <span className="text-lg font-semibold text-gray-900">
-                           {formatPrice(priceRange.min)} -{' '}
-                           {formatPrice(priceRange.max)}
-                        </span>
+                        <span className="text-sm text-muted-foreground">—</span>
                      )}
                   </div>
                </div>

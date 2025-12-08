@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
-import { TTenant } from '~/src/domain/types/catalog';
+import { TTenant } from '~/src/domain/types/catalog.type';
 
 export interface ICreateTenantPayload {
    name: string;

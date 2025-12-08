@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from './base-query';
 import { setLogout } from '~/src/infrastructure/redux/features/auth.slice';
-import { TUser } from '~/src/domain/types/identity';
+import { TUser } from '~/src/domain/types/identity.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/identity-services')(

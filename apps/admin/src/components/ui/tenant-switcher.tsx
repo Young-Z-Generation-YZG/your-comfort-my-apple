@@ -24,7 +24,7 @@ import { useDispatch } from 'react-redux';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
-import { TTenant } from '~/src/domain/types/catalog';
+import { TTenant } from '~/src/domain/types/catalog.type';
 
 export function TenantSwitcher({
    tenants,

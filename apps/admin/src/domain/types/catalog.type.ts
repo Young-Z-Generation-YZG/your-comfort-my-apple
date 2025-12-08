@@ -78,3 +78,73 @@ export type TBranch = {
    deleted_at: string | null;
    deleted_by: string | null;
 };
+
+export type TProductModel = {
+   id: string;
+   category: TCategory;
+   name: string;
+   normalized_model: string;
+   product_classification: string;
+   model_items: TModel[];
+   color_items: TColor[];
+   storage_items: TStorage[];
+   sku_prices: TSkuPrice[];
+   showcase_images: TImage[];
+   description: string;
+   average_rating: TAverageRating;
+   rating_stars: TRatingStar[];
+   overall_sold: number;
+   promotion: null;
+   is_newest: boolean;
+   slug: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TCategory = {
+   id: string;
+   name: string;
+   description: string;
+   order: number;
+   slug: string;
+   parent_id: string | null;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TSkuPrice = {
+   sku_id: string;
+   normalized_model: string;
+   normalized_color: string;
+   normalized_storage: string;
+   unit_price: number;
+};
+
+export type TAverageRating = {
+   rating_average_value: number;
+   rating_count: number;
+};
+
+export type TImage = {
+   image_id: string;
+   image_url: string;
+   image_name: string;
+   image_description: string;
+   image_width: number;
+   image_height: number;
+   image_bytes: number;
+   image_order: number;
+};
+
+export type TRatingStar = {
+   star: number;
+   count: number;
+};

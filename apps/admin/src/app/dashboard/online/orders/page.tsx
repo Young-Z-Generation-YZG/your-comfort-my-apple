@@ -63,7 +63,7 @@ import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import usePaginationV2 from '~/src/hooks/use-pagination';
 import { useDebounce } from '~/src/hooks/use-debounce';
-import { TOrder } from '~/src/domain/types/ordering';
+import { TOrder } from '~/src/domain/types/ordering.type';
 
 const getStatusStyle = (status: string) => {
    switch (status) {

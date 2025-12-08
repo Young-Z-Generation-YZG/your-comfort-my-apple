@@ -30,6 +30,7 @@ import useFilters from '@components/hooks/use-filter';
 import useProductService from '@components/hooks/api/use-product-service';
 import { IGetProductModelsByCategorySlugQueryParams } from '~/infrastructure/services/product.service';
 import usePaginationV2 from '@components/hooks/use-pagination';
+import { TProductModel } from '~/domain/types/catalog.type';
 
 const IphoneShopPage = () => {
    const { filters, setFilters } =
@@ -54,24 +55,6 @@ const IphoneShopPage = () => {
       getProductModelsByCategorySlugAsync('iphone', filters);
    }, [filters, getProductModelsByCategorySlugAsync]);
 
-   const paginationData = useMemo(() => {
-      return (
-         getProductModelsByCategorySlugState.data ?? {
-            total_records: 0,
-            total_pages: 0,
-            page_size: 10,
-            current_page: 1,
-            items: [],
-            links: {
-               first: null,
-               last: null,
-               prev: null,
-               next: null,
-            },
-         }
-      );
-   }, [getProductModelsByCategorySlugState.data]);
-
    const {
       currentPage,
       totalPages,
@@ -80,14 +63,28 @@ const IphoneShopPage = () => {
       lastItemIndex,
       limitSelectValue,
       getPaginationItems,
-   } = usePaginationV2(paginationData, {
-      pageSizeOverride: filters._limit ?? null,
-      currentPageOverride: filters._page ?? null,
-      fallbackPageSize: 10,
-   });
+   } = usePaginationV2(
+      getProductModelsByCategorySlugState.data ?? {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 10,
+         current_page: 1,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      },
+      {
+         pageSizeOverride: filters._limit ?? null,
+         currentPageOverride: filters._page ?? null,
+         fallbackPageSize: 10,
+      },
+   );
 
    const paginationItems = getPaginationItems();
-   const productItems = paginationData.items;
 
    const handleSortChange = (value: string) => {
       // Map sort value to priceSort
@@ -300,25 +297,32 @@ const IphoneShopPage = () => {
                                          </div>
                                       </div>
                                    ))
-                              : productItems.length > 0
-                                ? productItems.map((item) => (
-                                     <div
-                                        key={item.id}
-                                        className="mb-10 hover:shadow-lg transition-all duration-300 ease-in-out rounded-md"
-                                     >
-                                        <IphoneModel
-                                           models={item.model_items}
-                                           colors={item.color_items}
-                                           storages={item.storage_items}
-                                           displayImageUrl={
-                                              item.showcase_images[0]?.image_url
-                                           }
-                                           averageRating={item.average_rating}
-                                           skuPrices={item.sku_prices}
-                                           modelSlug={item.slug}
-                                        />
-                                     </div>
-                                  ))
+                              : getProductModelsByCategorySlugState.isSuccess &&
+                                  getProductModelsByCategorySlugState.data
+                                     ?.items.length > 0
+                                ? getProductModelsByCategorySlugState.data.items.map(
+                                     (item: TProductModel) => (
+                                        <div
+                                           key={item.id}
+                                           className="mb-10 hover:shadow-lg transition-all duration-300 ease-in-out rounded-md"
+                                        >
+                                           <IphoneModel
+                                              models={item.model_items}
+                                              colors={item.color_items}
+                                              storages={item.storage_items}
+                                              displayImageUrl={
+                                                 item.showcase_images[0]
+                                                    ?.image_url
+                                              }
+                                              averageRating={
+                                                 item.average_rating
+                                              }
+                                              skuPrices={item.sku_prices}
+                                              modelSlug={item.slug}
+                                           />
+                                        </div>
+                                     ),
+                                  )
                                 : !isLoading && (
                                      <div className="col-span-full text-center py-12 text-gray-500">
                                         No products found

@@ -1,4 +1,4 @@
-﻿
+
 using YGZ.BuildingBlocks.Shared.Abstractions.Data;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
 using YGZ.BuildingBlocks.Shared.Domain.Core.Primitives;

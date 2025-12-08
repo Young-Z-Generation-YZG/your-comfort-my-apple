@@ -47,7 +47,7 @@ import {
 } from '@components/ui/select';
 import { LoadingOverlay } from '@components/loading-overlay';
 import useUserService from '~/src/hooks/api/use-user-service';
-import { TUser } from '~/src/domain/types/identity';
+import { TUser } from '~/src/domain/types/identity.type';
 import { Gender } from '~/src/domain/enums/gender.enum';
 import { cn } from '~/src/infrastructure/lib/utils';
 import type { IUpdateProfileByIdPayload } from '~/src/infrastructure/services/user.service';
@@ -278,7 +278,7 @@ const StaffDetailPage = () => {
                                     <User className="h-12 w-12 text-gray-400" />
                                  </div>
                               )}
-      <div>
+                              <div>
                                  <CardTitle className="text-2xl">
                                     {user.profile?.full_name || 'N/A'}
                                  </CardTitle>

@@ -63,7 +63,7 @@ import { Input } from '@components/ui/input';
 import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
-import { TSku } from '~/src/domain/types/catalog';
+import { TSku } from '~/src/domain/types/catalog.type';
 import { Cylinder } from 'lucide-react';
 import { IGetWarehousesQueryParams } from '~/src/infrastructure/services/inventory.service';
 import { z } from 'zod';
