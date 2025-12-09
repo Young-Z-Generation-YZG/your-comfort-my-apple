@@ -28,7 +28,7 @@ public class GetProductModelsByCategoryHandler : IQueryHandler<GetProductModelsB
         var page = request.Page ?? 1;
         var limit = request.Limit ?? 10;
 
-        var allModels = await _mongoRepository.GetAllAsync(page, limit, filter, sort, cancellationToken);
+        var allModels = await _mongoRepository.GetAllAsync(page, limit, filter, sort, cancellationToken, ignoreBaseFilter: true);
 
         PaginationResponse<ProductModelResponse> response = MapToResponse(allModels, request);
 

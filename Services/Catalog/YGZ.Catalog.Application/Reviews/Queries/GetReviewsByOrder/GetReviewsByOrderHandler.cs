@@ -24,7 +24,7 @@ public class GetReviewsByOrderHandler : IQueryHandler<GetReviewsByOrderQuery, Li
     {
         var filter = BuildFilter(request);
 
-        var reviews = await _reviewRepository.GetAllAsync(filter, cancellationToken);
+        var reviews = await _reviewRepository.GetAllAsync(filter, cancellationToken, ignoreBaseFilter: true);
 
         var response = reviews.Select(r => r.ToReviewInOrderResponse()).ToList();
 

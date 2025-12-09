@@ -34,6 +34,7 @@ public class GetProductModelsHandler : IQueryHandler<GetProductModelsQuery, Pagi
             _limit: limit,
             filter: filter,
             sort: null,
+            ignoreBaseFilter: true,
             cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, request);

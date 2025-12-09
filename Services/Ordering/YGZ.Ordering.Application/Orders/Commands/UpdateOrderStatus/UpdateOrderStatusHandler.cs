@@ -40,15 +40,15 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
             return Errors.Order.InvalidOrderStatus;
         }
 
-        switch (newStatus)
+        switch (newStatus.Name)
         {
-            case var status when status == EOrderStatus.PREPARING:
+            case nameof(EOrderStatus.PREPARING):
             order.SetPreparing();
             break;
-            case var status when status == EOrderStatus.DELIVERING:
+            case nameof(EOrderStatus.DELIVERING):
             order.SetDelivering();
             break;
-            case var status when status == EOrderStatus.DELIVERED:
+            case nameof(EOrderStatus.DELIVERED):
             order.SetDelivered();
             break;
             default:
@@ -58,5 +58,6 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
         order.UpdatedBy = _userContext.GetUserId();
 
         return await _repository.UpdateAsync(order, cancellationToken);
+
     }
 }

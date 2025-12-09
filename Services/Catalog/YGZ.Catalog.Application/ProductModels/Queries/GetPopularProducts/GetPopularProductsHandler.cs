@@ -40,6 +40,7 @@ public class GetPopularProductsHandler : IQueryHandler<GetPopularProductsQuery, 
             _limit: limit,
             filter: filter,
             sort: sort,
+            ignoreBaseFilter: true,
             cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, page, limit);

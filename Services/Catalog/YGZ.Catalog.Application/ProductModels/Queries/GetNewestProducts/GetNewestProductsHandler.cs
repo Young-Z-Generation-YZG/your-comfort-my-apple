@@ -40,6 +40,7 @@ public class GetNewestProductsHandler : IQueryHandler<GetNewestProductsQuery, Pa
             _limit: limit,
             filter: filter,
             sort: sort,
+            ignoreBaseFilter: true,
             cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, page, limit);

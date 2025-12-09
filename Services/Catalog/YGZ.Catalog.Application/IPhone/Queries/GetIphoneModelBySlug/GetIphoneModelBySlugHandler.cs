@@ -27,14 +27,14 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
     public async Task<Result<IphoneModelDetailsResponse>> Handle(GetIphoneModelBySlugQuery request, CancellationToken cancellationToken)
     {
 
-        var iphoneModel = await _productModelRepository.GetByFilterAsync(Builders<ProductModel>.Filter.Eq(x => x.Slug, Slug.Of(request.ModelSlug)), cancellationToken);
+        var iphoneModel = await _productModelRepository.GetByFilterAsync(Builders<ProductModel>.Filter.Eq(x => x.Slug, Slug.Of(request.ModelSlug)), cancellationToken, ignoreBaseFilter: true);
 
         if (iphoneModel is null)
         {
             return Errors.Iphone.ModelDoesNotExist;
         }
 
-        var skus = await _skuRepository.GetAllAsync(Builders<SKU>.Filter.Eq(x => x.ModelId, iphoneModel.Id), cancellationToken);
+        var skus = await _skuRepository.GetAllAsync(Builders<SKU>.Filter.Eq(x => x.ModelId, iphoneModel.Id), cancellationToken, ignoreBaseFilter: true);
 
         // Group SKUs by BranchId
         var skusByBranch = skus.GroupBy(sku => sku.BranchId)
@@ -51,7 +51,7 @@ public class GetIphoneModelBySlugHandler : IQueryHandler<GetIphoneModelBySlugQue
 
         foreach (var (branchId, skus) in skusByBranch)
         {
-            var branch = await _branchRepository.GetByIdAsync(branchId.Value!, cancellationToken)!;
+            var branch = await _branchRepository.GetByIdAsync(branchId.Value!, cancellationToken, ignoreBaseFilter: true)!;
 
             var skusResponse = skus.Select(sku => sku.ToResponse()).ToList();
 

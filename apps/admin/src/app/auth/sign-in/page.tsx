@@ -350,7 +350,7 @@ const SignInPage = () => {
 
                            <Button
                               className={cn(
-                                 'bg-primary font-sans font-bold w-full',
+                                 'bg-primary font-sans font-bold w-full mt-5',
                                  {
                                     'h-11': isMobile,
                                     'h-12': !isMobile,
@@ -367,7 +367,7 @@ const SignInPage = () => {
 
                   <p
                      className={cn(
-                        'text-black font-mono font-bold text-center',
+                        'text-black font-mono font-bold text-center mt-10',
                         {
                            'py-5 text-base': isTablet || isDesktop,
                            'py-4 text-sm': isMobile,
@@ -377,7 +377,7 @@ const SignInPage = () => {
                      Or login with
                   </p>
 
-                  <div className="flex flex-col gap-3 w-full">
+                  <div className="flex flex-col gap-3 w-full mt-5">
                      <Button
                         className={cn(
                            'w-full font-semibold flex items-center justify-center gap-2',

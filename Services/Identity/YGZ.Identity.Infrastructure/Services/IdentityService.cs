@@ -7,11 +7,9 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.Services;
-using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
-using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Infrastructure.Services;
 
@@ -23,6 +21,8 @@ public class IdentityService : IIdentityService
     private readonly IKeycloakService _keycloakService;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IIdentityDbContext _identityDbContext;
+    private const string DEFAULT_TENANT_ID = "664355f845e56534956be32b";
+    private const string DEFAULT_BRANCH_ID = "664357a235e84033bbd0e6b6";
 
     public IdentityService(ILogger<IdentityService> logger,
                            UserManager<User> userManager,
@@ -95,13 +95,13 @@ public class IdentityService : IIdentityService
                 image: null,
                 country: request.Country,
                 emailConfirmed: false,
-                tenantId: null,
-                branchId: null
+                tenantId: DEFAULT_TENANT_ID,
+                branchId: DEFAULT_BRANCH_ID
             );
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 
-            var checkRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER); 
+            var checkRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER);
 
             var result = await _userManager.CreateAsync(newUser);
 
@@ -164,10 +164,10 @@ public class IdentityService : IIdentityService
         {
             var user = await _userManager.FindByIdAsync(userId);
 
-           if(user is null)
-           {
-            return Errors.User.DoesNotExist;
-           }
+            if (user is null)
+            {
+                return Errors.User.DoesNotExist;
+            }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
 
@@ -366,12 +366,12 @@ public class IdentityService : IIdentityService
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-        if(user is null)
-        {
-            return Errors.User.DoesNotExist;
-        }
+            if (user is null)
+            {
+                return Errors.User.DoesNotExist;
+            }
 
-        return user;
+            return user;
         }
         catch (Exception)
         {

@@ -40,7 +40,8 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             _limit: limit,
             filter: filter,
             sort: sort,
-            cancellationToken: cancellationToken);
+			ignoreBaseFilter: true,
+			cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, page, limit);
 

@@ -29,7 +29,7 @@ public class GetReviewsByProductModelIdHandler : IQueryHandler<GetReviewsByProdu
 
     public async Task<Result<PaginationResponse<ProductModelReviewResponse>>> Handle(GetReviewsByProductModelIdQuery request, CancellationToken cancellationToken)
     {
-        var productModel = await _productModelRepository.GetByIdAsync(request.ProductModelId, cancellationToken);
+        var productModel = await _productModelRepository.GetByIdAsync(request.ProductModelId, cancellationToken, ignoreBaseFilter: true);
 
         if (productModel is null)
         {
@@ -44,6 +44,7 @@ public class GetReviewsByProductModelIdHandler : IQueryHandler<GetReviewsByProdu
             _limit: request.Limit,
             filter: filter,
             sort: sort,
+            ignoreBaseFilter: true,
             cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, request);
