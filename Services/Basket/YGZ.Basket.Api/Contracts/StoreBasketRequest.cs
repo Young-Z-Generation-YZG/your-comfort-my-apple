@@ -17,59 +17,12 @@ public sealed record CartItemRequest()
     public required bool IsSelected { get; init; }
 
     [Required]
-    [JsonPropertyName("model_id")]
-    public required string ModelId { get; init; }
-
-    [Required]
     [JsonPropertyName("sku_id")]
     public required string SkuId { get; init; }
-
-    [Required]
-    [JsonPropertyName("model")]
-    public required ModelRequest Model { get; init; }
-
-    [Required]
-    [JsonPropertyName("color")]
-    public required ColorRequest Color { get; init; }
-
-    [Required]
-    [JsonPropertyName("storage")]
-    public required StorageRequest Storage { get; init; }
 
     [Required]
     [JsonPropertyName("quantity")]
     public required int Quantity { get; init; }
 }
 
-public sealed record ColorRequest()
-{
-    [Required]
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
 
-    [Required]
-    [JsonPropertyName("normalized_name")]
-    public required string NormalizedName { get; init; }
-}
-
-public sealed record ModelRequest()
-{
-    [Required]
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
-
-    [Required]
-    [JsonPropertyName("normalized_name")]
-    public required string NormalizedName { get; init; }
-}
-
-public sealed record StorageRequest()
-{
-    [Required]
-    [JsonPropertyName("name")]
-    public required string Name { get; init; }
-
-    [Required]
-    [JsonPropertyName("normalized_name")]
-    public required string NormalizedName { get; init; }
-}

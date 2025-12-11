@@ -17,9 +17,9 @@ public class CheckoutBasketRequestExample : ISchemaProcessor
                     contact_name = "Foo Bar",
                     contact_phone_number = "0333284890",
                     address_line = "123 Street",
-                    district = "Thu Duc",
-                    province = "Ho Chi Minh",
-                    country = "Việt Nam"
+                    district = "Thủ Đức",
+                    province = "Hồ Chí Minh",
+                    country = "Vietnam"
                 },
                 payment_method = "VNPAY",
                 discount_code = "APRIL2025",

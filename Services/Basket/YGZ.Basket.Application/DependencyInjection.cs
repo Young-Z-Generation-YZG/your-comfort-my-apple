@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Catalog.Api.Protos;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application;
@@ -23,6 +24,22 @@ public static class DependencyInjection
         services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
         {
             options.Address = new Uri(discountServiceAddress);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            return handler;
+        });
+
+        var catalogServiceAddress = configuration["GrpcSettings:CatalogUrl"]!;
+
+        services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>(options =>
+        {
+            options.Address = new Uri(catalogServiceAddress);
         })
         .ConfigurePrimaryHttpMessageHandler(() =>
         {

@@ -1,0 +1,9 @@
+---
+globs:
+  alwaysApply: true
+---
+
+## Discount Project Rules
+
+- Applies to Discount microservice.
+- Pair with `custom-agent.mdc`; keep scope to Discount domain code.

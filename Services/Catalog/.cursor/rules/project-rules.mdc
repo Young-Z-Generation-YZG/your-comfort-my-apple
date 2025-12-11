@@ -1,0 +1,9 @@
+---
+globs:
+  alwaysApply: true
+---
+
+## Catalog Project Rules
+
+- Applies to Catalog microservice.
+- Pair with `custom-agent.mdc`; keep scope to Catalog domain code.

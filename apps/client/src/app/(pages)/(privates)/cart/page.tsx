@@ -23,17 +23,18 @@ import { useRouter } from 'next/navigation';
 import CheckboxField from '@components/client/forms/checkbox-field';
 import useBasketService from '@components/hooks/api/use-basket-service';
 import { useEffect, useMemo } from 'react';
-import { TCart, TCartItem } from '~/infrastructure/services/basket.service';
+import { TCartItem } from '~/domain/types/basket.type';
+import { TReduxCartState } from '~/infrastructure/redux/features/cart.slice';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
-import useCartFormV2 from './_hooks/useCartFormV2';
+import useCartForm from './_hooks/useCartForm';
 import { useDispatch } from 'react-redux';
 import {
    clearCart,
    UpdateSelection,
    removeCartItem,
 } from '~/infrastructure/redux/features/cart.slice';
-import PopularProducts from '~/app/_components/popular-products';
+import PopularProducts from '~/app/_components/popular-product-section';
 
 const CartPage = () => {
    const router = useRouter();
@@ -42,7 +43,7 @@ const CartPage = () => {
    const { isAuthenticated } = useAppSelector((state) => state.auth);
    const cartAppState = useAppSelector((state) => state.cart);
 
-   useCartSync();
+   useCartSync({ autoSync: true });
 
    const {
       getBasketAsync,
@@ -52,8 +53,6 @@ const CartPage = () => {
       proceedToCheckoutAsync,
       isLoading,
    } = useBasketService();
-
-   useCartSync();
 
    // Promo code management
    const {
@@ -76,19 +75,44 @@ const CartPage = () => {
       }
    }, [getBasketAsync, urlCouponCode, isAuthenticated]);
 
+   // Auto-clear coupon code from URL when server rejects coupon due to no selected items
+   useEffect(() => {
+      if (!isAuthenticated) return;
+      if (!urlCouponCode) return;
+
+      const err = getBasketQueryState.error as any;
+
+      console.log('err', err);
+
+      const errorCode = err?.data?.error?.code || '';
+
+      const isNoSelectedItemsError = errorCode === 'Basket.NotSelectedItems';
+
+      console.log('isNoSelectedItemsError', isNoSelectedItemsError);
+
+      if (isNoSelectedItemsError) {
+         handleRemovePromoCode();
+      }
+   }, [
+      isAuthenticated,
+      urlCouponCode,
+      getBasketQueryState.error,
+      handleRemovePromoCode,
+   ]);
+
    const basketData = useMemo(() => {
       if (getBasketQueryState.isSuccess && getBasketQueryState.data)
-         return getBasketQueryState.data as TCart;
+         return getBasketQueryState.data as TReduxCartState;
 
       return {
          user_email: '',
          cart_items: cartAppState.cart_items,
          total_amount: 0,
-      } as TCart;
+      } as TReduxCartState;
    }, [getBasketQueryState, cartAppState]);
 
    const { form, cartItems, handleQuantityChange, handleRemoveItem } =
-      useCartFormV2({
+      useCartForm({
          basketData: basketData,
          storeBasketAsync: storeBasketAsync,
          deleteBasketAsync: deleteBasketAsync,
@@ -124,6 +148,18 @@ const CartPage = () => {
    const selectedItems = form
       .getValues('cart_items')
       .filter((item) => item.is_selected);
+
+   // If a coupon code is present but no items are selected, remove the coupon (do not auto-select items)
+   // useEffect(() => {
+   //    if (!isAuthenticated) return;
+   //    if (!urlCouponCode) return;
+
+   //    const items = form.getValues('cart_items');
+   //    const hasAnySelected = items.some((i) => i.is_selected);
+   //    if (!hasAnySelected) {
+   //       handleRemovePromoCode();
+   //    }
+   // }, [isAuthenticated, urlCouponCode, form, handleRemovePromoCode]);
 
    // Validate and apply promo code (only when items are selected)
    const handleValidatedApplyPromoCode = () => {
@@ -311,7 +347,7 @@ const CartPage = () => {
                                  <div className="font-semibold">
                                     - $
                                     {(
-                                       getBasketQueryState.data as unknown as TCart
+                                       getBasketQueryState.data as unknown as TReduxCartState
                                     )?.cart_items
                                        .reduce(
                                           (acc: number, item: TCartItem) =>
@@ -333,7 +369,7 @@ const CartPage = () => {
                         $
                         {getBasketQueryState.data
                            ? (
-                                getBasketQueryState.data as unknown as TCart
+                                getBasketQueryState.data as unknown as TReduxCartState
                              ).total_amount.toFixed(2)
                            : '0.00'}
                      </div>

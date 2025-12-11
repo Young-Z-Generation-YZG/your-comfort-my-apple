@@ -17,8 +17,8 @@ import LatestItem from './_components/latest-item';
 
 import CompareIPhoneSection from '@components/client/compare-iphone-section';
 import ExperienceItem from '~/app/_components/experience-item';
-import NewestProducts from './_components/newest-products';
-import PopularProducts from './_components/popular-products';
+import NewestProductSection from './_components/newest-product-section';
+import PopularProductSection from './_components/popular-product-section';
 
 const listLatestItem = [
    {
@@ -254,10 +254,10 @@ const HomePage = () => {
          </div>
 
          {/* NEWEST PRODUCTS */}
-         <NewestProducts />
+         <NewestProductSection />
 
          {/* POPULAR PRODUCTS */}
-         <PopularProducts />
+         <PopularProductSection />
 
          <div className="list-item-container w-full mb-[100px] flex flex-col justify-center items-center">
             <div className="w-full max-w-screen mb-[50px]">

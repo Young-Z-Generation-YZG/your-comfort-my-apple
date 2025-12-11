@@ -1,0 +1,4 @@
+## Custom Agent (Basket)
+
+- Scope: `Services/Basket` only.
+- Load with `project-rules.mdc` for Basket service work.

@@ -10,7 +10,9 @@ using YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasketWithBlockchain
 using YGZ.Basket.Application.ShoppingCarts.Commands.DeleteBasket;
 using YGZ.Basket.Application.ShoppingCarts.Commands.ProceedCheckout;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasket;
+using YGZ.Basket.Application.ShoppingCarts.Commands.StoreBasketItem;
 using YGZ.Basket.Application.ShoppingCarts.Commands.StoreEventItem;
+using YGZ.Basket.Application.ShoppingCarts.Commands.SyncBasket;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
 using YGZ.Basket.Application.ShoppingCarts.Queries.GetCheckoutBasket;
 using YGZ.BuildingBlocks.Shared.Extensions;
@@ -48,12 +50,52 @@ public class BasketController : ApiController
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
+    [HttpPost("product-model-item")]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    public async Task<IActionResult> StoreBasketItem([FromBody] StoreBasketItemRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<StoreBasketItemCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPost("sync")]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    public async Task<IActionResult> SyncBasket([FromBody] StoreBasketRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<SyncBasketCommand>(request);
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
     [HttpPost("event-item")]
     public async Task<IActionResult> StoreEventItem([FromBody] StoreEventItemRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<StoreEventItemCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet()]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
+    public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("checkout-items")]
+    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
+    public async Task<IActionResult> GetCheckoutBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _sender.Send(new GetCheckoutBasketQuery(request._couponCode), cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
@@ -87,27 +129,11 @@ public class BasketController : ApiController
         var cmd = _mapper.Map<CheckoutBasketWithBlockchainCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
-        
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
-
-    [HttpGet()]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
-    public async Task<IActionResult> GetBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
-    {
-        var result = await _sender.Send(new GetBasketQuery(request._couponCode), cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
-    [HttpGet("checkout-items")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
-    public async Task<IActionResult> GetCheckoutBasket([FromQuery] GetBasketRequest request, CancellationToken cancellationToken)
-    {
-        var result = await _sender.Send(new GetCheckoutBasketQuery(request._couponCode), cancellationToken);
 
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
-    }
 
     [HttpDelete()]
     [ProtectedResource(Resources.RESOURCE_USERS, Scopes.DELETE_OWN)]

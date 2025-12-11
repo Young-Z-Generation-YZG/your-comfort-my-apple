@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (BuildingBlocks)
+
+-   Scope: `Services/BuildingBlocks` shared libs.
+-   Load with `project-rules.mdc` for shared primitives/messaging.

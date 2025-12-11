@@ -1,0 +1,9 @@
+---
+globs:
+  alwaysApply: true
+---
+
+## Basket Project Rules
+
+- Applies to Basket microservice.
+- Pair with `custom-agent.mdc`; keep scope to Basket domain code.

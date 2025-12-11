@@ -10,6 +10,8 @@ import { CheckoutFormType } from '~/domain/schemas/basket.schema';
 import { LoadingOverlay } from '@components/client/loading-overlay';
 import { TCheckoutResponse } from '../page';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 
 interface BlockchainPaymentModelProps {
    form: UseFormReturn<CheckoutFormType>;
@@ -26,6 +28,8 @@ const BlockchainPaymentModel = ({
 }: BlockchainPaymentModelProps) => {
    const router = useRouter();
    const [processing, setProcessing] = useState(false);
+
+   const dispatch = useDispatch();
 
    const {
       createPaymentOrder,
@@ -64,6 +68,8 @@ const BlockchainPaymentModel = ({
          });
 
          if (checkoutResult.isSuccess) {
+            dispatch(CleanSelectedItems());
+
             if (
                (checkoutResult.data as unknown as TCheckoutResponse)
                   .payment_redirect_url

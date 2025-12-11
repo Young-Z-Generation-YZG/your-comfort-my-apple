@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (Discount)
+
+-   Scope: `Services/Discount` only.
+-   Load with `project-rules.mdc` for Discount service work.

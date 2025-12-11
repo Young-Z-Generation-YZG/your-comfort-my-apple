@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (Services root)
+
+-   Scope: `Services` root coordination.
+-   Use alongside `project-rules.mdc` for shared service guidance.

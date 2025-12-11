@@ -39,7 +39,7 @@ import { useSolana } from '@components/providers/solana-provider';
 import { toast } from 'sonner';
 import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 import { useDispatch } from 'react-redux';
-import { TCheckoutBasketItem } from '~/infrastructure/services/basket.service';
+import { TCheckoutBasketItem } from '~/domain/types/basket.type';
 
 const fakeData = [
    {
@@ -223,6 +223,8 @@ const CheckoutPage = () => {
       const result = await checkoutBasketAsync(data);
 
       if (result.isSuccess) {
+         dispatch(CleanSelectedItems());
+
          if (
             (result.data as unknown as TCheckoutResponse).payment_redirect_url
          ) {
@@ -238,8 +240,6 @@ const CheckoutPage = () => {
                   .order_details_redirect_url,
             );
          }
-
-         dispatch(CleanSelectedItems());
       }
    };
 

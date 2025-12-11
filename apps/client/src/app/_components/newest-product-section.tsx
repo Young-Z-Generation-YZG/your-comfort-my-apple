@@ -13,7 +13,7 @@ import useProductService from '@components/hooks/api/use-product-service';
 import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
-const NewestProducts = () => {
+const NewestProductSection = () => {
    const { getNewestProductsAsync, getNewestProductsState, isLoading } =
       useProductService();
 
@@ -72,4 +72,4 @@ const NewestProducts = () => {
    );
 };
 
-export default NewestProducts;
+export default NewestProductSection;

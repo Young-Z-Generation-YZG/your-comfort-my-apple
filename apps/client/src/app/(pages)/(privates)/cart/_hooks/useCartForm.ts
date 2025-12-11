@@ -1,18 +1,17 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-   TCart,
-   TCartItem,
-   TStoreBasketPayload,
-} from '~/infrastructure/services/basket.service';
+import { TCartItem, IStoreBasketPayload } from '~/domain/types/basket.type';
+import { TReduxCartState } from '~/infrastructure/redux/features/cart.slice';
 import { useAppSelector } from '~/infrastructure/redux/store';
+import { useDispatch } from 'react-redux';
+import { AddCartItems } from '~/infrastructure/redux/features/cart.slice';
 
 const cartItemSchema = z.object({
    is_selected: z.boolean(),
-   sku_id: z.string().min(1, { message: 'SKU ID is required' }),
    model_id: z.string().min(1, { message: 'Model ID is required' }),
+   sku_id: z.string().min(1, { message: 'SKU ID is required' }),
    color: z.object({
       name: z.string().min(1, { message: 'Color name is required' }),
       normalized_name: z
@@ -43,135 +42,57 @@ export const cartFormSchema = z.object({
 
 export type CartFormData = z.infer<typeof cartFormSchema>;
 
-const DEBOUNCE_DELAY = 100;
-
 interface UseCartFormProps {
-   basketData: TCart;
-   storeBasketAsync: (payload: TStoreBasketPayload) => Promise<any>;
-   storeBasketSync: (cartItems: TCartItem[]) => void;
-   deleteBasket: () => Promise<any>;
+   basketData: TReduxCartState;
+   storeBasketAsync?: (payload: IStoreBasketPayload) => Promise<{
+      isSuccess: boolean;
+      isError: boolean;
+      data: boolean | null;
+      error: unknown;
+   }>;
+   deleteBasketAsync?: () => Promise<{
+      isSuccess: boolean;
+      isError: boolean;
+      data: boolean | null;
+      error: unknown;
+   }>;
 }
 
-export const useCartForm = ({
+const useCartForm = ({
    basketData,
    storeBasketAsync,
-   storeBasketSync,
-   deleteBasket,
+   deleteBasketAsync,
 }: UseCartFormProps) => {
-   const { isAuthenticated } = useAppSelector((state) => state.auth);
+   const [cartItems, setCartItems] = useState<TCartItem[]>([]);
+
+   const cartItemState = useAppSelector((state) => state.cart.cart_items);
+
+   const dispatch = useDispatch();
+
+   // Track previous cart items to detect selection changes
+   const prevCartItemsRef = useRef<typeof cartItems>([]);
 
    const form = useForm<CartFormData>({
       resolver: zodResolver(cartFormSchema),
-   });
-
-   // Track if we're resetting from server data to prevent unnecessary API calls
-   const isResettingFromServer = useRef(false);
-
-   // Watch form values
-   const cartItems = useWatch({
-      control: form.control,
-      name: 'cart_items',
-   });
-
-   // Calculate selected items
-   const selectedItems = useMemo(() => {
-      return cartItems?.filter((item) => item.is_selected) || [];
-   }, [cartItems]);
-
-   // Transform basket data for form
-   const formData = useMemo(() => {
-      if (!basketData?.cart_items) return { cart_items: [] };
-
-      return {
+      defaultValues: {
          cart_items: basketData.cart_items.map((item) => ({
             is_selected: item.is_selected,
             model_id: item.model_id,
+            sku_id: item.sku_id,
             color: item.color,
             model: item.model,
             storage: item.storage,
             quantity: item.quantity,
          })),
-      };
-   }, [basketData?.cart_items]);
+      },
+   });
 
-   // Reset form when basket data changes
-   useEffect(() => {
-      isResettingFromServer.current = true;
-      form.reset(formData);
-   }, [formData, form]);
+   // Watch cart_items for changes
+   const watchedCartItems = useWatch({
+      control: form.control,
+      name: 'cart_items',
+   });
 
-   // Debounced API call to prevent multiple requests
-   useEffect(() => {
-      // Skip if we're resetting from server data
-      if (isResettingFromServer.current) {
-         isResettingFromServer.current = false;
-         return;
-      }
-
-      // Skip if we don't have basket data yet (initial load)
-      if (!basketData || !cartItems) return;
-
-      const handleBasketUpdate = async () => {
-         try {
-            console.log('cartItems', cartItems);
-            console.log('isAuthenticated', isAuthenticated);
-
-            if (cartItems.length === 0) {
-               // Delete basket when empty
-               await deleteBasket();
-            } else {
-               // Store basket with items
-               if (isAuthenticated) {
-                  await storeBasketAsync({
-                     cart_items: cartItems.map((item) => ({
-                        is_selected: item.is_selected,
-                        model_id: item.model_id,
-                        sku_id: item.sku_id,
-                        color: item.color,
-                        model: item.model,
-                        storage: item.storage,
-                        quantity: item.quantity,
-                     })),
-                  });
-               } else {
-                  const cartItems: TCartItem[] = basketData.cart_items.map(
-                     (item) => ({
-                        is_selected: item.is_selected,
-                        model_id: item.model_id,
-                        sku_id: item.sku_id,
-                        color: item.color,
-                        model: item.model,
-                        storage: item.storage,
-                        quantity: item.quantity,
-                        product_name: item.product_name,
-                        display_image_url: item.display_image_url,
-                        unit_price: item.unit_price,
-                        promotion: item.promotion,
-                        sub_total_amount: item.sub_total_amount,
-                        index: item.index,
-                     }),
-                  );
-
-                  // storeBasketSync(cartItems);
-               }
-            }
-         } catch (error) {
-            console.error('Failed to update basket:', error);
-         }
-      };
-
-      const timeoutId = setTimeout(handleBasketUpdate, DEBOUNCE_DELAY);
-      return () => clearTimeout(timeoutId);
-   }, [
-      cartItems,
-      storeBasketAsync,
-      deleteBasket,
-      basketData,
-      isAuthenticated,
-      storeBasketSync,
-   ]);
-
-   // Handle quantity change
    const handleQuantityChange = useCallback(
       (index: number, newQuantity: number) => {
          const currentCartItems = form.getValues('cart_items');
@@ -181,38 +102,108 @@ export const useCartForm = ({
                ...updatedItems[index],
                quantity: newQuantity,
             };
+
             form.setValue('cart_items', updatedItems);
+            setCartItems(updatedItems as TCartItem[]);
+
+            const updatedCartItems = cartItemState.map((item) =>
+               item.model_id === updatedItems[index].model_id &&
+               item.color.normalized_name ===
+                  updatedItems[index].color.normalized_name &&
+               item.storage.normalized_name ===
+                  updatedItems[index].storage.normalized_name
+                  ? { ...item, quantity: newQuantity }
+                  : item,
+            );
+
+            dispatch(AddCartItems(updatedCartItems as TCartItem[]));
          }
       },
-      [form],
+      [cartItemState, dispatch, form],
    );
 
-   // Handle remove item
    const handleRemoveItem = useCallback(
       (index: number) => {
-         console.log('index', index);
-         const currentCartItems = form.getValues('cart_items');
-         if (currentCartItems && currentCartItems[index]) {
-            const updatedItems = [...currentCartItems];
-            updatedItems.splice(index, 1);
+         const currentItems = form.getValues('cart_items');
 
-            console.log('updatedItems', updatedItems);
-
-            form.setValue('cart_items', updatedItems);
-            console.log(
-               'form.getValues("cart_items")',
-               form.getValues('cart_items'),
-            );
+         if (!currentItems || !currentItems[index]) {
+            return;
          }
+
+         const targetItem = currentItems[index];
+         const updatedFormItems = currentItems.filter((_, i) => i !== index);
+
+         form.setValue('cart_items', updatedFormItems);
+         setCartItems(updatedFormItems as TCartItem[]);
+
+         const updatedCartItems = cartItemState.filter(
+            (item) =>
+               !(
+                  item.model_id === targetItem.model_id &&
+                  item.color.normalized_name ===
+                     targetItem.color.normalized_name &&
+                  item.storage.normalized_name ===
+                     targetItem.storage.normalized_name
+               ),
+         );
+
+         dispatch(AddCartItems(updatedCartItems as TCartItem[]));
+
+         const deleteBasket = async () => {
+            if (deleteBasketAsync) {
+               await deleteBasketAsync();
+            }
+         };
+
+         deleteBasket();
       },
-      [form],
+      [cartItemState, dispatch, form, deleteBasketAsync],
    );
+
+   // Update cartItems state when watched values change
+   useEffect(() => {
+      if (watchedCartItems) {
+         setCartItems(watchedCartItems as TCartItem[]);
+      }
+   }, [watchedCartItems]);
+
+   // Watch for selection changes and call API
+   useEffect(() => {
+      if (!watchedCartItems || !storeBasketAsync) return;
+
+      // Check if any is_selected value has changed
+      const hasSelectionChanged = prevCartItemsRef.current.some(
+         (prevItem, index) => {
+            const currentItem = watchedCartItems[index];
+            return (
+               currentItem && prevItem?.is_selected !== currentItem.is_selected
+            );
+         },
+      );
+
+      if (hasSelectionChanged && prevCartItemsRef.current.length > 0) {
+         // Call storeBasket API
+         const payload: IStoreBasketPayload = {
+            cart_items: watchedCartItems.map((item) => ({
+               is_selected: item.is_selected,
+               sku_id: item.sku_id,
+               quantity: item.quantity,
+            })),
+         };
+
+         storeBasketAsync(payload);
+      }
+
+      // Update ref for next comparison
+      prevCartItemsRef.current = watchedCartItems as typeof cartItems;
+   }, [watchedCartItems, storeBasketAsync, cartItemState, dispatch]);
 
    return {
       form,
       cartItems,
-      selectedItems,
       handleQuantityChange,
       handleRemoveItem,
    };
 };
+
+export default useCartForm;

@@ -1,0 +1,9 @@
+---
+globs:
+  alwaysApply: true
+---
+
+## BuildingBlocks Project Rules
+
+- Applies to shared libraries.
+- Pair with `custom-agent.mdc`; keep changes generic and reusable.

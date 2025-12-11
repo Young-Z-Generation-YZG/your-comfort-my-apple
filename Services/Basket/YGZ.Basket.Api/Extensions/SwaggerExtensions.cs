@@ -45,6 +45,7 @@ public static class SwaggerExtensions
             settings.OperationProcessors.Add(new OperationSecurityScopeProcessor(JwtBearerDefaults.AuthenticationScheme));
 
             settings.SchemaSettings.SchemaProcessors.Add(new StoreBasketRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new StoreBasketItemRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new StoreEventItemRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CheckoutBasketRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new CheckoutBasketWithBlockchainRequestExample());

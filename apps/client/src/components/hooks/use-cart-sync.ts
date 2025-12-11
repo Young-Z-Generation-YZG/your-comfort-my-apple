@@ -1,7 +1,7 @@
 import { useAppSelector } from '~/infrastructure/redux/store';
 import useBasketService from './api/use-basket-service';
 import { useCallback, useEffect } from 'react';
-import { TCartItem } from '~/infrastructure/services/basket.service';
+import { TCartItem } from '~/domain/types/basket.type';
 import { useDispatch } from 'react-redux';
 import {
    AddCartItems,
@@ -9,7 +9,9 @@ import {
    UpdateQuantity,
 } from '~/infrastructure/redux/features/cart.slice';
 
-const useCartSync = () => {
+type CartSyncOptions = { autoSync?: boolean };
+
+const useCartSync = (options?: CartSyncOptions) => {
    const dispatch = useDispatch();
 
    const isAuthenticated = useAppSelector(
@@ -23,21 +25,20 @@ const useCartSync = () => {
    useEffect(() => {
       console.log('cartAppState in useCartSync', cartAppState);
 
+      // Only auto-sync on pages that opt-in
+      if (!options?.autoSync) return;
+
       // Sync 1 way from redux state to basket data
       if (isAuthenticated && cartAppState.cart_items.length > 0) {
          storeBasketAsync({
             cart_items: cartAppState.cart_items.map((item) => ({
                is_selected: item.is_selected,
-               model_id: item.model_id,
                sku_id: item.sku_id,
-               model: item.model,
-               color: item.color,
-               storage: item.storage,
                quantity: item.quantity,
             })),
          });
       }
-   }, [isAuthenticated, cartAppState, storeBasketAsync]);
+   }, [options?.autoSync, isAuthenticated, cartAppState, storeBasketAsync]);
 
    const storeBasketSync = useCallback(
       async (cartItems: TCartItem[]) => {

@@ -1,0 +1,10 @@
+---
+globs:
+   alwaysApply: true
+---
+
+## Admin Project Rules
+
+- Always pair with `custom-agent.mdc`; both are admin-specific.
+- If auto-application is disabled, open both files manually in Cursor.
+- Keep rules minimal and project-scoped; avoid global overrides.

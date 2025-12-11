@@ -14,9 +14,9 @@ import { Button } from '@components/ui/button';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
 import useBasketService from '@components/hooks/api/use-basket-service';
+import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import useCartSync from '@components/hooks/use-cart-sync';
 import {
    TBranch,
@@ -45,6 +45,10 @@ import {
    ChevronsLeft,
    ChevronsRight,
    Ellipsis,
+   TrendingUp,
+   Flame,
+   CheckCircle2,
+   ShoppingBag,
 } from 'lucide-react';
 import {
    Select,
@@ -56,10 +60,6 @@ import {
 } from '@components/ui/select';
 import { Separator } from '@components/ui/separator';
 import RatingStar from '@components/ui/rating-star';
-
-const SMALL_TAILWIND = '(max-width: 640px)';
-const MEDIUM_TAILWIND = '(min-width: 641px) and (max-width: 1024px)';
-const LARGE_TAILWIND = '(min-width: 1025px) and (max-width: 1280px)';
 
 const appleCareOptions = [
    {
@@ -96,12 +96,6 @@ const toastStyle = {
    border: '1px solid #50C878',
    fontWeight: 'bold',
 };
-const errorToastStyle = {
-   backgroundColor: '#FFF5F5',
-   color: '#B91C1C',
-   border: '1px solid #FCA5A5',
-   fontWeight: 'bold',
-};
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -115,8 +109,11 @@ const IphoneDetailsPage = () => {
       getModelBySlugState,
       isLoading: isGetModelBySlugLoading,
    } = useCatalogService();
-   const { storeBasketAsync, isLoading: isStoreBasketLoading } =
+   const { storeBasketItemAsync, isLoading: isBasketLoading } =
       useBasketService();
+   const isAuthenticated = useAppSelector(
+      (state) => state.auth.isAuthenticated,
+   );
    const {
       getReviewByProductModelIdAsync,
       getReviewByProductModelIdState,
@@ -124,9 +121,9 @@ const IphoneDetailsPage = () => {
    } = useReviewService();
 
    const isLoading =
-      isGetModelBySlugLoading || isStoreBasketLoading || isFetchReviewLoading;
+      isGetModelBySlugLoading || isBasketLoading || isFetchReviewLoading;
 
-   const { storeBasketSync } = useCartSync();
+   const { storeBasketSync } = useCartSync({ autoSync: false });
 
    const [selectedModel, setSelectedModel] = useState<{
       name: string;
@@ -266,14 +263,6 @@ const IphoneDetailsPage = () => {
    const isColorDisabled = !hasCompletedInitialSelection && !selectedModel;
    const isStorageDisabled =
       !hasCompletedInitialSelection && (!selectedModel || !selectedColor);
-
-   const mediaMobile = window.matchMedia(SMALL_TAILWIND);
-   const mediaTablet = window.matchMedia(MEDIUM_TAILWIND);
-
-   // const getImageUrl = (image: TImage) => {
-   //    if (!image) return '';
-   //    return `${image.image_url}?${resizeFromHeight(1000)}`;
-   // };
 
    // Progressive selection handlers
    const handleModelSelection = (model: {
@@ -440,6 +429,7 @@ const IphoneDetailsPage = () => {
          const discount_amount = 0;
          const total_amount = sub_total_amount - discount_amount;
 
+         // Always update Redux immediately for UI responsiveness
          storeBasketSync([
             {
                is_selected: false,
@@ -457,8 +447,18 @@ const IphoneDetailsPage = () => {
                discount_amount: discount_amount,
                total_amount: total_amount,
                index: 1,
+               quantity_remain: 999, // note mock
             },
          ]);
+
+         // If logged in, also persist the single item server-side
+         if (isAuthenticated) {
+            await storeBasketItemAsync({
+               is_selected: false,
+               sku_id: sku_id,
+               quantity: 1,
+            });
+         }
 
          toast.success('Item added to cart', {
             position: 'bottom-center',
@@ -560,8 +560,8 @@ const IphoneDetailsPage = () => {
                      <div className="flex flex-row items-center justify-end">
                         <Button
                            className="px-6 py-3 h-auto text-[15px] font-normal rounded-full bg-[#0071E3] hover:bg-[#0077ED] text-white transition-all duration-200"
-                           onClick={() => {
-                              handleAddToBag();
+                           onClick={async () => {
+                              await handleAddToBag();
                            }}
                         >
                            Add to Bag
@@ -588,6 +588,21 @@ const IphoneDetailsPage = () => {
                <div className="text-[15px] font-light leading-[20px]">
                   From $999 or $41.62/mo. for 24 mo.
                </div>
+               {iphoneDetailsData.overall_sold > 0 && (
+                  <div className="mt-5 flex items-center">
+                     <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-[#0071E3] rounded-xl shadow-md hover:border-[#0077ED] hover:shadow-lg transition-all duration-200">
+                        <ShoppingBag className="w-5 h-5 text-[#0071E3]" />
+                        <div className="flex flex-col">
+                           <span className="text-[20px] font-extrabold text-[#0071E3] leading-tight">
+                              {iphoneDetailsData.overall_sold.toLocaleString()}
+                           </span>
+                           <span className="text-[12px] font-medium text-[#86868B] leading-tight -mt-0.5">
+                              units sold
+                           </span>
+                        </div>
+                     </div>
+                  </div>
+               )}
             </div>
             <div className="basis-[30%] bg-transparent">
                <div className="h-full flex flex-col mt-1">
@@ -812,7 +827,7 @@ const IphoneDetailsPage = () => {
                </div>
                <div className="coverage-items flex flex-col lg:flex-row mt-6">
                   <div className="w-full lg:basis-3/4 list-items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pr-0 lg:pr-12">
-                     {appleCareOptions.map((option, index) => {
+                     {appleCareOptions.map((option) => {
                         const isNoCoverage = option.title.startsWith('No ');
 
                         return (

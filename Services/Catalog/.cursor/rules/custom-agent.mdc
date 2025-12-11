@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (Catalog)
+
+-   Scope: `Services/Catalog` only.
+-   Load with `project-rules.mdc` for Catalog service work.

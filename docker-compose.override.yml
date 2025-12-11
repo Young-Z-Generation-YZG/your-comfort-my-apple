@@ -293,6 +293,7 @@ services:
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             # - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - WebClientSettings__BaseUrl=http://localhost:3000

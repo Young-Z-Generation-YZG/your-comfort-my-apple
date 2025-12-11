@@ -17,30 +17,54 @@ public class ShoppingCartItem
     public required Model Model { get; init; }
     public required Color Color { get; init; }
     public required Storage Storage { get; init; }
-    public required int Quantity { get; init; }
+    public required int Quantity { get; set; }
+    public required int QuantityRemain { get; set; }
     public required decimal UnitPrice { get; init; }
-    public decimal SubTotalAmount => UnitPrice * Quantity;
+    public bool IsOutOfStock { get; set; } = false;
+    public decimal SubTotalAmount
+    {
+        get
+        {
+            if (IsOutOfStock)
+            {
+                return 0;
+            }
+
+            return UnitPrice * Quantity;
+        }
+    }
     public Promotion? Promotion { get; set; }
     public decimal? DiscountAmount { get; set; }
-    public decimal TotalAmount => SubTotalAmount - (DiscountAmount ?? 0);
-    public required string ModelSlug { get; init; }
-    public required int Order { get; init; }
+    public decimal TotalAmount
+    {
+        get
+        {
+            if (IsOutOfStock)
+            {
+                return 0;
+            }
 
-    public static ShoppingCartItem Create(
-        bool isSelected,
-        string modelId,
-        string skuId,
-        string productName,
-        Model model,
-        Color color,
-        Storage storage,
-        string displayImageUrl,
-        decimal unitPrice,
-        Promotion? promotion,
-        int quantity,
-        string modelSlug,
-        int order
-    )
+            return SubTotalAmount - (DiscountAmount ?? 0);
+        }
+    }
+    public required string ModelSlug { get; init; }
+    public required int Order { get; set; }
+
+    public static ShoppingCartItem Create(bool isSelected,
+                                          string modelId,
+                                          string skuId,
+                                          string productName,
+                                          Model model,
+                                          Color color,
+                                          Storage storage,
+                                          string displayImageUrl,
+                                          decimal unitPrice,
+                                          int quantity,
+                                          string modelSlug,
+                                          int order,
+                                          int quantityRemain = 0,
+                                          Promotion? promotion = null,
+                                          bool isOutOfStock = false)
     {
         return new ShoppingCartItem
         {
@@ -55,7 +79,9 @@ public class ShoppingCartItem
             UnitPrice = unitPrice,
             Promotion = promotion,
             Quantity = quantity,
+            QuantityRemain = quantityRemain,
             ModelSlug = modelSlug,
+            IsOutOfStock = isOutOfStock,
             Order = order
         };
     }
@@ -74,6 +100,8 @@ public class ShoppingCartItem
             DisplayImageUrl = DisplayImageUrl,
             UnitPrice = UnitPrice,
             Quantity = Quantity,
+            QuantityRemain = QuantityRemain,
+            IsOutOfStock = IsOutOfStock,
             SubTotalAmount = SubTotalAmount,
             Promotion = Promotion?.ToResponse(),
             DiscountAmount = DiscountAmount,
@@ -99,6 +127,11 @@ public class ShoppingCartItem
             SubTotalAmount = SubTotalAmount,
             Promotion = Promotion?.ToPromotionIntegrationEvent(),
         };
+    }
+
+    public void SetOutOfStock(bool isOutOfStock)
+    {
+        this.IsOutOfStock = isOutOfStock;
     }
 
     public void ApplyCoupon(PromotionCoupon coupon)

@@ -1,0 +1,6 @@
+---
+globs:
+   alwaysApply: true
+---
+
+1. **Allow Console Logging for Debugging**: You are permitted to insert `console.log` statements into the code. This is to facilitate debugging, inspect data responses, and trace application flow. These logs should be considered temporary and ideally removed after the debugging session is complete.

@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { useMemo } from 'react';
 import RatingStar from '@components/ui/rating-star';
-import { TPopularProduct } from '~/infrastructure/services/product.service';
 import { useRouter } from 'next/navigation';
+import { TPopularProduct } from '~/domain/types/catalog.type';
 
 type PopularProductProps = {
    product: TPopularProduct;

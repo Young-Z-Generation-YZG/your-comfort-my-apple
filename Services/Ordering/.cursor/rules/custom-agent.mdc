@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (Ordering)
+
+-   Scope: `Services/Ordering` only.
+-   Load with `project-rules.mdc` for Ordering service work.

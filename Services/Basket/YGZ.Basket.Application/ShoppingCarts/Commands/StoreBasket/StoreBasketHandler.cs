@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using Grpc.Core;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
-using YGZ.Basket.Domain.Cache.Entities;
+using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -45,33 +46,74 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
     public async Task<Result<bool>> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
     {
         string userEmail = _userContext.GetUserEmail();
+        var shoppingCart = ShoppingCart.Create(_userContext.GetUserEmail(), new List<ShoppingCartItem>());
 
-        //foreach (var item in request.CartItems)
-        //{
-        //    try
-        //    {
-        //        var skuResponse = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
-        //        {
-        //            SkuId = item.SkuId
-        //        }, cancellationToken: cancellationToken);
+        foreach (var item in request.CartItems)
+        {
+            var order = 1;
+            SkuModel sku;
 
-        //        // Validate stock availability
-        //        if (skuResponse.AvailableInStock < item.Quantity)
-        //        {
-        //            _logger.LogWarning("SKU with ID {SkuId} has not enough stock. Available: {AvailableInStock}, Requested: {Stock}",
-        //                item.SkuId, skuResponse.AvailableInStock, item.Quantity);
+            try
+            {
+                var skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                {
+                    SkuId = item.SkuId
+                }, cancellationToken: cancellationToken);
 
-        //            return Errors.Basket.InsufficientQuantity;
-        //        }
-        //    }
-        //    catch (RpcException ex)
-        //    {
-        //        throw;
-        //    }
-        //}
 
-        List<ShoppingCartItem> cartItems = await ShoppingCartItemMapping(request.CartItems, cancellationToken);
-        ShoppingCart shoppingCart = ShoppingCart.Create(userEmail, cartItems);
+                // check sku
+                if (skuGrpc is not null)
+                {
+                    sku = skuGrpc;
+                    // check stock availability
+                    if (skuGrpc.AvailableInStock < item.Quantity)
+                    {
+                        return Errors.Basket.InsufficientQuantity;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (RpcException)
+            {
+                throw;
+            }
+
+            var modelVO = Model.Create(sku.NormalizedModel);
+            var colorVO = Color.Create(sku.NormalizedColor);
+            var storageVO = Storage.Create(sku.NormalizedStorage);
+            EColor.TryFromName(sku.NormalizedColor, out var colorEnum);
+            EIphoneModel.TryFromName(sku.NormalizedModel, out var modelEnum);
+            EStorage.TryFromName(sku.NormalizedStorage, out var storageEnum);
+            var unitPrice = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: modelEnum,
+                                                                                                                               colorEnum: colorEnum,
+                                                                                                                               storageEnum: storageEnum));
+
+            decimal unitPriceParsed = decimal.Parse(unitPrice ?? "0");
+
+            var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(modelId: sku.ModelId,
+                                                                                                                                      colorEnum: colorEnum));
+
+
+            var cartItem = ShoppingCartItem.Create(isSelected: item.IsSelected,
+                                                   modelId: sku.ModelId,
+                                                   skuId: sku.Id,
+                                                   productName: $"{modelVO.Name} {modelVO.Name} {modelVO.Name}",
+                                                   model: modelVO,
+                                                   color: colorVO,
+                                                   storage: storageVO,
+                                                   displayImageUrl: displayImageUrl ?? "",
+                                                   unitPrice: unitPriceParsed,
+                                                   promotion: null,
+                                                   quantity: item.Quantity,
+                                                   quantityRemain: sku.AvailableInStock ?? 0,
+                                                   modelSlug: "",
+                                                   order: order++);
+
+            shoppingCart.AddCartItem(cartItem);
+        }
 
         var result = await _basketRepository.StoreBasketAsync(shoppingCart, cancellationToken);
 
@@ -81,57 +123,5 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
         }
 
         return result.Response;
-    }
-
-    private async Task<List<ShoppingCartItem>> ShoppingCartItemMapping(List<CartItemCommand> cartItems, CancellationToken cancellationToken)
-    {
-        var shoppingCartItems = new List<ShoppingCartItem>();
-        var order = 1;
-
-        foreach (var item in cartItems)
-        {
-
-
-            var model = Model.Create(item.Model.Name);
-            var color = Color.Create(item.Color.Name);
-            var storage = Storage.Create(item.Storage.Name);
-            var skuPriceCache = PriceCache.Of(model, color, storage);
-            var colorImageCache = ColorImageCache.Of(item.ModelId, color);
-            var modelSlugCache = ModelSlugCache.Of(item.ModelId);
-
-            EColor.TryFromName(color.NormalizedName, out var colorEnum);
-            EIphoneModel.TryFromName(model.NormalizedName, out var modelEnum);
-            EStorage.TryFromName(storage.NormalizedName, out var storageEnum);
-
-            var unitPrice = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetIphoneSkuPriceKey(modelEnum: modelEnum,
-                                                                                                                               colorEnum: colorEnum,
-                                                                                                                               storageEnum: storageEnum));
-            var displayImageUrl = await _distributedCache.GetStringAsync(CacheKeyPrefixConstants.CatalogService.GetDisplayImageUrlKey(modelId: item.ModelId,
-                                                                                                                                      colorEnum: colorEnum));
-            var modelSlug = await _modelSlugCache.GetSlugAsync(modelSlugCache);
-
-
-            var subTotalAmount = decimal.Parse(unitPrice ?? "0") * item.Quantity;
-
-            var shoppingCartItem = ShoppingCartItem.Create(
-                isSelected: item.IsSelected,
-                modelId: item.ModelId,
-                skuId: item.SkuId,
-                productName: $"{model.Name} {storage.Name} {color.Name}",
-                model: model,
-                color: color,
-                storage: storage,
-                displayImageUrl: displayImageUrl ?? "",
-                unitPrice: decimal.Parse(unitPrice ?? "0"),
-                promotion: null,
-                quantity: item.Quantity,
-                modelSlug: modelSlug ?? "",
-                order: order++
-            );
-
-            shoppingCartItems.Add(shoppingCartItem);
-        }
-
-        return shoppingCartItems;
     }
 }

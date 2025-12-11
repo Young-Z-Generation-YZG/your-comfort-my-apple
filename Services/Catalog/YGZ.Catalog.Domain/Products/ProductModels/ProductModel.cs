@@ -171,6 +171,11 @@ public class ProductModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
         RatingStars.FirstOrDefault(x => x.Star == review.Rating)!.Count -= 1;
     }
 
+    public void IncreaseSoldQuantity(int quantity)
+    {
+        OverallSold += quantity;
+    }
+
     public void SetIsNewest(bool isNewest)
     {
         IsNewest = isNewest;

@@ -2,7 +2,7 @@
 import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import NextImage from 'next/image';
-import { TCheckoutBasketItem } from '~/infrastructure/services/basket.service';
+import { TCheckoutBasketItem } from '~/domain/types/basket.type';
 
 interface CheckoutItemProps {
    item: TCheckoutBasketItem;

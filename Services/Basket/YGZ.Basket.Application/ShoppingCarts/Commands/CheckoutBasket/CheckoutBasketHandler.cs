@@ -15,6 +15,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
+using YGZ.Catalog.Api.Protos;
 using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Basket.Application.ShoppingCarts.Commands.CheckoutBasket;
@@ -25,6 +26,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
     private readonly IBasketRepository _basketRepository;
     private readonly IPublishEndpoint _publishIntegrationEvent;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
+    private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
     private readonly IUserHttpContext _userContext;
     private readonly ITenantHttpContext _tenantContext;
     private readonly IVnpayProvider _vnpayProvider;
@@ -39,7 +41,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                                  IVnpayProvider vnpayProvider,
                                  IHttpContextAccessor httpContextAccessor,
                                  IMomoProvider momoProvider,
-                                 ILogger<CheckoutBasketHandler> logger)
+                                 ILogger<CheckoutBasketHandler> logger,
+                                 CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient)
     {
         _basketRepository = basketRepository;
         _publishIntegrationEvent = publishEndpoint;
@@ -50,6 +53,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         _httpContextAccessor = httpContextAccessor;
         _momoProvider = momoProvider;
         _logger = logger;
+        _catalogProtoServiceClient = catalogProtoServiceClient;
     }
 
     public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketCommand request, CancellationToken cancellationToken)
@@ -59,36 +63,42 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         var tenantId = _tenantContext.GetTenantId() ?? "664355f845e56534956be32b";
         var branchId = _tenantContext.GetBranchId() ?? "664357a235e84033bbd0e6b6";
 
-        var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
+        // 1. check basket
+        // 1.1. return error if cart is empty or null
+        // 1.2. return error if no items selected
 
-        if (result.Response is null || !result.Response.CartItems.Any())
+        var shoppingCartResult = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
+
+        var shoppingCart = shoppingCartResult.Response;
+
+        // 1.1.
+        if (shoppingCart is null || !shoppingCart.CartItems.Any())
         {
             return Errors.Basket.BasketEmpty;
         }
 
-        var shoppingCart = result.Response!;
-
-        if (shoppingCart.CartItems is null || !shoppingCart.CartItems.Any())
-        {
-            return Errors.Basket.BasketEmpty;
-        }
-
+        // 1.2.
         if (shoppingCart.CartItems.All(ci => ci.IsSelected == false))
         {
             return Errors.Basket.NotSelectedItems;
         }
 
+        // 2. Handle checkout with event item or normal items
+        // 2.1 CASE 1: if cart has event items, only checkout event items
+        // 2.2 CASE 2: if cart has no event items, checkout selected normal items, apply coupon if provided
+        // 2.2. (alter flow): handle coupon if provided
 
+        // 2.1.
         ShoppingCart checkoutShoppingCart;
-
-        // Variables to store cart-level promotion data
         string? cartPromotionId = null;
         string? cartPromotionType = null;
         string? cartDiscountType = null;
         decimal? cartDiscountValue = null;
         decimal? cartDiscountAmount = null;
 
-        if (shoppingCart.CheckHasEventItems())
+        var eventItems = shoppingCart.CartItems.Where(ci => ci.Promotion?.PromotionEvent is not null).Where(ci => ci.IsSelected == true).ToList();
+
+        if (eventItems.Any())
         {
             checkoutShoppingCart = shoppingCart.FilterEventItems();
 
@@ -101,11 +111,40 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 .Where(item => item.Promotion?.PromotionEvent != null)
                 .Sum(item => item.DiscountAmount ?? 0);
         }
+        // 2.2
         else
         {
-            checkoutShoppingCart = shoppingCart.FilterOutEventItemsAndSelected();
+            checkoutShoppingCart = shoppingCart.FilterOutEventItemsAndNotSelectedItem();
 
-            // get coupon details if coupon code is provided
+            // Check stock availability
+            foreach (var cartItem in checkoutShoppingCart.CartItems)
+            {
+                try
+                {
+                    var skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                    {
+                        SkuId = cartItem.SkuId
+                    }, cancellationToken: cancellationToken);
+
+                    SkuModel sku;
+
+                    if (skuGrpc is not null)
+                    {
+                        sku = skuGrpc;
+
+                        if (skuGrpc.AvailableInStock < cartItem.Quantity)
+                        {
+                            return Errors.Basket.InsufficientQuantity;
+                        }
+                    }
+                }
+                catch (RpcException)
+                {
+                    throw;
+                }
+            }
+
+            // 2.2. (alter flow)
             if (!string.IsNullOrEmpty(request.DiscountCode))
             {
                 var grpcRequest = new GetCouponByCodeRequest
@@ -123,94 +162,34 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 {
                     if (ex.StatusCode == StatusCode.NotFound)
                     {
-                        return Errors.Discount.CouponNotFound;
+                        if (checkoutShoppingCart.CartItems.Any())
+                        {
+                            checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
+                        }
                     }
                 }
 
-                if (coupon is not null && coupon.DiscountValue > 0 && coupon.AvailableQuantity > 0)
+                if (coupon is not null)
                 {
-                    // Get only selected items
-                    var selectedItems = checkoutShoppingCart.CartItems
-                        .Where(item => item.IsSelected == true)
-                        .ToList();
-
-                    if (selectedItems.Any())
+                    if (coupon.AvailableQuantity <= 0)
                     {
-                        // Convert CartItems to EfficientCart format
-                        var efficientCartItems = selectedItems.Select((item, index) => new EfficientCartItem
-                        {
-                            UniqueString = $"item_{index}_{item.GetHashCode()}",
-                            OriginalPrice = item.UnitPrice,
-                            Quantity = item.Quantity,
-                            PromotionId = item.Promotion?.PromotionCoupon?.PromotionId,
-                            PromotionType = item.Promotion?.PromotionCoupon != null ? EPromotionType.COUPON.Name : null,
-                            DiscountType = null,
-                            DiscountValue = null,
-                            DiscountAmount = null
-                        }).ToList();
+                        checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
+                    }
+                    else
+                    {
+                        checkoutShoppingCart = HandleFinalCart(checkoutShoppingCart, coupon);
 
-                        var beforeCart = new EfficientCart
-                        {
-                            CartItems = efficientCartItems,
-                            PromotionId = coupon.Id,
-                            PromotionType = EPromotionType.COUPON.Name,
-                            DiscountType = null,
-                            DiscountValue = null,
-                            DiscountAmount = null,
-                            MaxDiscountAmount = null
-                        };
-
-                        // Use CalculateEfficientCart to calculate discounts
-                        var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
-                        var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
-                        var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-                        var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
-
-                        var afterCart = CalculatePrice.CalculateEfficientCart(
-                            beforeCart: beforeCart,
-                            discountType: discountTypeName,
-                            discountValue: discountValue,
-                            maxDiscountAmount: maxDiscountAmount);
-
-                        // Store cart-level promotion data for integration event
-                        cartPromotionId = coupon.Id;
-                        cartPromotionType = EPromotionType.COUPON.Name;
-                        cartDiscountType = discountTypeName;
-                        cartDiscountValue = discountValue;
-                        cartDiscountAmount = afterCart.DiscountAmount;
-
-                        // Update ShoppingCart discount properties
-                        checkoutShoppingCart.DiscountType = discountTypeName;
-                        checkoutShoppingCart.DiscountValue = discountValue;
-                        checkoutShoppingCart.DiscountAmount = afterCart.DiscountAmount;
-                        checkoutShoppingCart.MaxDiscountAmount = maxDiscountAmount;
-                        checkoutShoppingCart.PromotionId = coupon.Id;
-                        checkoutShoppingCart.PromotionType = EPromotionType.COUPON.Name;
-
-                        // Map calculated discounts back to CartItems and apply coupons
-                        for (int i = 0; i < selectedItems.Count; i++)
-                        {
-                            var cartItem = selectedItems[i];
-                            var efficientItem = afterCart.CartItems[i];
-
-                            PromotionCoupon promotionCoupon = PromotionCoupon.Create(
-                                promotionId: coupon.Id,
-                                promotionType: EPromotionType.COUPON.Name,
-                                discountType: discountType ?? EDiscountType.UNKNOWN,
-                                discountValue: efficientItem.DiscountValue ?? 0
-                            );
-
-                            cartItem.ApplyCoupon(promotionCoupon);
-                            
-                            // Update cart item discount amount
-                            cartItem.DiscountAmount = efficientItem.DiscountAmount;
-                        }
+                        cartPromotionId = checkoutShoppingCart.PromotionId;
+                        cartPromotionType = checkoutShoppingCart.PromotionType;
+                        cartDiscountType = checkoutShoppingCart.DiscountType;
+                        cartDiscountValue = checkoutShoppingCart.DiscountValue;
+                        cartDiscountAmount = checkoutShoppingCart.DiscountAmount;
                     }
                 }
             }
         }
 
-
+        // 3. Handle payment methods
         var orderId = Guid.NewGuid();
 
         var orderItems = checkoutShoppingCart.CartItems
@@ -306,5 +285,67 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             default:
             return Errors.Payment.Invalid;
         }
+    }
+
+    private ShoppingCart HandleFinalCart(ShoppingCart cart, CouponModel coupon)
+    {
+        var efficientCartItems = cart.CartItems.Select((item, index) => new EfficientCartItem
+        {
+            UniqueString = $"item_{index}_{item.GetHashCode()}",
+            OriginalPrice = item.UnitPrice,
+            Quantity = item.Quantity,
+            PromotionId = item.Promotion?.PromotionCoupon?.PromotionId,
+            PromotionType = item.Promotion?.PromotionCoupon?.PromotionType,
+            DiscountType = null,
+            DiscountValue = null,
+            DiscountAmount = null
+        }).ToList();
+
+        var beforeCart = new EfficientCart
+        {
+            CartItems = efficientCartItems,
+            PromotionId = coupon.Id,
+            PromotionType = EPromotionType.COUPON.Name,
+            DiscountType = null,
+            DiscountValue = null,
+            DiscountAmount = null,
+            MaxDiscountAmount = null
+        };
+
+        var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
+        var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
+        var discountValue = (decimal)(coupon.DiscountValue ?? 0);
+        var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
+
+        var afterCart = CalculatePrice.CalculateEfficientCart(
+            beforeCart: beforeCart,
+            discountType: discountTypeName,
+            discountValue: discountValue,
+            maxDiscountAmount: maxDiscountAmount);
+
+        cart.PromotionId = afterCart.PromotionId;
+        cart.PromotionType = afterCart.PromotionType;
+        cart.DiscountType = afterCart.DiscountType;
+        cart.DiscountValue = afterCart.DiscountValue;
+        cart.DiscountAmount = afterCart.DiscountAmount;
+        cart.MaxDiscountAmount = null;
+
+        for (int i = 0; i < cart.CartItems.Count; i++)
+        {
+            var cartItem = cart.CartItems[i];
+            var efficientItem = afterCart.CartItems[i];
+
+            var promotionCoupon = PromotionCoupon.Create(
+                promotionId: coupon.Id,
+                promotionType: EPromotionType.COUPON.Name,
+                discountType: discountType ?? EDiscountType.UNKNOWN,
+                discountValue: efficientItem.DiscountValue ?? 0
+            );
+
+            cartItem.ApplyCoupon(promotionCoupon);
+            cartItem.DiscountAmount = efficientItem.DiscountAmount;
+        }
+
+        return cart;
     }
 }

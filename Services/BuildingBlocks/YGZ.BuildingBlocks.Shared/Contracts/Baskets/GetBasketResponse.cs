@@ -18,6 +18,7 @@ public sealed record GetBasketResponse()
     public decimal? DiscountValue { get; init; }
     public decimal? DiscountAmount { get; init; }
     public decimal? MaxDiscountAmount { get; init; }
+    public string? DiscountCouponError { get; init; }
     public decimal TotalAmount { get; init; }
 }
 
@@ -34,9 +35,11 @@ public sealed record CartItemResponse()
     public required string DisplayImageUrl { get; init; }
     public required decimal UnitPrice { get; init; }
     public required int Quantity { get; init; }
+    public required int QuantityRemain { get; init; }
+    public required bool IsOutOfStock { get; init; }
     public required decimal SubTotalAmount { get; init; }
     public PromotionResponse? Promotion { get; init; }
-    public  decimal? DiscountAmount { get; init; }
+    public decimal? DiscountAmount { get; init; }
     public required decimal TotalAmount { get; init; }
     public required int Index { get; init; }
 }

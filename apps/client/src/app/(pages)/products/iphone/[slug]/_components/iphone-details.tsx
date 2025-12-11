@@ -17,10 +17,10 @@ import StorageItem from './storage-item';
 import { Button } from '@components/ui/button';
 import useCatalogService from '@components/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
-import useBasketService from '@components/hooks/api/use-basket-service';
+//
 import { toast } from 'sonner';
 import { LoadingOverlay } from '@components/client/loading-overlay';
-import { useAppSelector } from '~/infrastructure/redux/store';
+
 import useCartSync from '@components/hooks/use-cart-sync';
 import {
    TBranch,
@@ -32,6 +32,7 @@ import {
    TStorage,
    TSkuPrice,
 } from '~/domain/types/catalog.type';
+import useBasketService from '@components/hooks/api/use-basket-service';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);
@@ -42,12 +43,6 @@ const toastStyle = {
    backgroundColor: '#F0FFF0',
    color: '#18673D',
    border: '1px solid #50C878',
-   fontWeight: 'bold',
-};
-const errorToastStyle = {
-   backgroundColor: '#FFF5F5',
-   color: '#B91C1C',
-   border: '1px solid #FCA5A5',
    fontWeight: 'bold',
 };
 
@@ -86,9 +81,6 @@ const IphoneDetails = () => {
          : null;
    }, [getModelBySlugState.isSuccess, getModelBySlugState.data]);
 
-   const { storeBasketAsync, isLoading: isStoreBasketLoading } =
-      useBasketService();
-
    useEffect(() => {
       getModelBySlugAsync(slug as string);
    }, [getModelBySlugAsync, slug]);
@@ -123,8 +115,8 @@ const IphoneDetails = () => {
    }, [getModelBySlugState.data]);
 
    const isLoading = useMemo(() => {
-      return isGetModelBySlugLoading || isStoreBasketLoading;
-   }, [isGetModelBySlugLoading, isStoreBasketLoading]);
+      return isGetModelBySlugLoading;
+   }, [isGetModelBySlugLoading]);
 
    // Progressive selection handlers
    const handleModelSelection = (model: {
@@ -313,6 +305,7 @@ const IphoneDetails = () => {
                discount_amount: discount_amount,
                total_amount: total_amount,
                index: 1,
+               quantity_remain: 999, // note mock
             },
          ]);
 

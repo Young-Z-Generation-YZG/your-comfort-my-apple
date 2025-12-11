@@ -10,7 +10,7 @@ import {
 import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
-const PopularProducts = () => {
+const PopularProductSection = () => {
    const { getPopularProductsAsync, getPopularProductsState, isLoading } =
       useProductService();
 
@@ -69,4 +69,4 @@ const PopularProducts = () => {
    );
 };
 
-export default PopularProducts;
+export default PopularProductSection;

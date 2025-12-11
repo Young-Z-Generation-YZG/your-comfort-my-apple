@@ -6,50 +6,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { Input } from '@components/ui/input';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import {
-   TCartItem,
-   TStoreBasketItem,
-} from '~/infrastructure/services/basket.service';
-
-// const fakeData = {
-//    is_selected: true,
-//    model_id: '664351e90087aa09993f5ae7',
-//    product_name: 'iPhone 15 128GB BLUE',
-//    color: {
-//       name: 'BLUE',
-//       normalized_name: 'BLUE',
-//       hex_code: '',
-//       showcase_image_id: '',
-//       order: 0,
-//    },
-//    model: {
-//       name: 'iPhone 15',
-//       normalized_name: 'IPHONE_15',
-//       order: 0,
-//    },
-//    storage: {
-//       name: '128GB',
-//       normalized_name: '128GB',
-//       order: 0,
-//    },
-//    display_image_url:
-//       'https://res.cloudinary.com/delkyrtji/image/upload/v1744960327/iphone-15-finish-select-202309-6-1inch-blue_zgxzmz.webp',
-//    unit_price: 1000,
-//    quantity: 1,
-//    sub_total_amount: 900.0,
-//    promotion: {
-//       promotion_id: '550e8400-e29b-41d4-a716-446655440000',
-//       promotion_type: 'COUPON',
-//       product_unit_price: 1000,
-//       discount_type: 'PERCENTAGE',
-//       discount_value: 0.1,
-//       discount_amount: 100.0,
-//       final_price: 900.0,
-//    },
-//    index: 1,
-// };
-
-// export type TCartItem = typeof fakeData;
+import { TCartItem, IStoreBasketItemPayload } from '~/domain/types/basket.type';
 
 // Constants
 const MIN_QUANTITY = 1;
@@ -57,7 +14,7 @@ const MAX_QUANTITY = 99;
 
 interface CartItemProps {
    item: TCartItem;
-   currentCartItem: TStoreBasketItem;
+   currentCartItem: IStoreBasketItemPayload;
    index: number;
    onQuantityChange: (index: number, newQuantity: number) => void;
    onRemoveItem: (index: number) => void;
@@ -70,27 +27,33 @@ const CartItem = ({
    onQuantityChange,
    onRemoveItem,
 }: CartItemProps) => {
+   const displayQuantity =
+      (currentCartItem && currentCartItem.quantity) ||
+      item.quantity ||
+      MIN_QUANTITY;
+
+   const maxAllowed = Math.min(MAX_QUANTITY, item.quantity_remain);
+
    const handleIncrement = () => {
-      if (currentCartItem && currentCartItem.quantity < MAX_QUANTITY) {
-         onQuantityChange(index, currentCartItem.quantity + 1);
+      if (displayQuantity < maxAllowed) {
+         onQuantityChange(index, displayQuantity + 1);
       }
    };
 
    const handleDecrement = () => {
-      if (currentCartItem && currentCartItem.quantity > MIN_QUANTITY) {
-         onQuantityChange(index, currentCartItem.quantity - 1);
+      if (displayQuantity > MIN_QUANTITY) {
+         onQuantityChange(index, displayQuantity - 1);
       }
    };
 
-   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log('e', e.target.value);
+   // Prevent manual typing or wheel changes
+   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+      e.preventDefault();
+   };
 
-      const value = parseInt(e.target.value) || MIN_QUANTITY;
-      const clampedValue = Math.max(
-         MIN_QUANTITY,
-         Math.min(MAX_QUANTITY, value),
-      );
-      onQuantityChange(index, clampedValue);
+   const handleWheel: React.WheelEventHandler<HTMLInputElement> = (e) => {
+      (e.target as HTMLInputElement).blur();
+      e.preventDefault();
    };
 
    if (!currentCartItem && !item) return null;
@@ -122,30 +85,42 @@ const CartItem = ({
                         {item.model.name} {item.storage.name} {item.color.name}
                      </Link>
                   </div>
-                  {item.promotion && (
-                     <div className="h-full flex flex-col text-[16px] font-normal text-end">
-                        <div className="w-full font-medium text-red-500">
-                           ${item.sub_total_amount.toFixed(2)}
-                        </div>
-                        <div className="w-full line-through text-[14px] font-light ">
-                           ${(item.unit_price * item.quantity).toFixed(2)}
-                        </div>
-                        <div className="w-full text-[14px] font-light ">
-                           x {currentCartItem.quantity}
-                        </div>
-                     </div>
-                  )}
+                  {(() => {
+                     const originalTotal = item.unit_price * displayQuantity;
+                     const discountAmount = item.discount_amount ?? 0;
+                     const hasDiscount = discountAmount > 0;
+                     const discountedTotal = Math.max(
+                        0,
+                        originalTotal - discountAmount,
+                     );
 
-                  {!item.promotion && (
-                     <div className="h-full flex flex-col text-[16px] font-normal text-end">
-                        <div className="w-full font-medium">
-                           ${(item.unit_price * item.quantity).toFixed(2)}
+                     if (hasDiscount) {
+                        return (
+                           <div className="h-full flex flex-col text-[16px] font-normal text-end">
+                              <div className="w-full font-medium text-red-500">
+                                 ${discountedTotal.toFixed(2)}
+                              </div>
+                              <div className="w-full line-through text-[14px] font-light ">
+                                 ${originalTotal.toFixed(2)}
+                              </div>
+                              <div className="w-full text-[14px] font-light ">
+                                 x {displayQuantity}
+                              </div>
+                           </div>
+                        );
+                     }
+
+                     return (
+                        <div className="h-full flex flex-col text-[16px] font-normal text-end">
+                           <div className="w-full font-medium">
+                              ${originalTotal.toFixed(2)}
+                           </div>
+                           <div className="w-full text-[14px] font-light ">
+                              x {displayQuantity}
+                           </div>
                         </div>
-                        <div className="w-full text-[14px] font-light ">
-                           x {item.quantity}
-                        </div>
-                     </div>
-                  )}
+                     );
+                  })()}
                </div>
                <div className="w-full h-[60px] flex flex-row">
                   <div className="w-full h-full">
@@ -175,36 +150,28 @@ const CartItem = ({
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-l-full flex p-0 z-0"
                      onClick={handleDecrement}
-                     disabled={
-                        currentCartItem &&
-                        currentCartItem.quantity <= MIN_QUANTITY
-                     }
+                     disabled={displayQuantity <= MIN_QUANTITY}
+                     aria-label="Decrease quantity"
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">-</p>
                   </Button>
                   <Input
-                     type="number"
-                     min={MIN_QUANTITY}
-                     max={MAX_QUANTITY}
-                     className="w-8 h-6 p-0 border-x-0 border-[#ebebeb] text-center rounded-none text-xs"
-                     value={(() => {
-                        if (item.quantity) {
-                           return item.quantity;
-                        }
-                        if (currentCartItem && currentCartItem.quantity) {
-                           return currentCartItem.quantity;
-                        }
-                     })()}
-                     onChange={handleInputChange}
+                     type="text"
+                     inputMode="none"
+                     readOnly
+                     onKeyDown={handleKeyDown}
+                     onWheel={handleWheel}
+                     className="w-8 h-6 p-0 border-x-0 border-[#ebebeb] text-center rounded-none text-xs cursor-default select-none"
+                     value={displayQuantity}
+                     aria-label="Quantity"
+                     tabIndex={-1}
                   />
                   <Button
                      type="button"
                      className="relative w-8 h-6 border border-[#ebebeb] bg-sky-400 hover:bg-sky-500 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-r-full flex p-0"
                      onClick={handleIncrement}
-                     disabled={
-                        currentCartItem &&
-                        currentCartItem.quantity >= MAX_QUANTITY
-                     }
+                     disabled={displayQuantity >= maxAllowed}
+                     aria-label="Increase quantity"
                   >
                      <p className="absolute h-1 top-0 bottom-0 right-3">+</p>
                   </Button>

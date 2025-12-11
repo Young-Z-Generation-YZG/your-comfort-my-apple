@@ -5,6 +5,8 @@ using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
+using YGZ.Catalog.Domain.Products.Common.ValueObjects;
+using YGZ.Catalog.Domain.Products.ProductModels;
 using YGZ.Catalog.Domain.Tenants.Entities;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
@@ -13,19 +15,21 @@ namespace YGZ.Catalog.Application.Inventory.Commands.UpdateSkuCommand;
 public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool>
 {
     private readonly ILogger<DeductQuantityHandler> _logger;
-    private readonly IMongoRepository<SKU, SkuId> _repository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
+    private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
 
-    public DeductQuantityHandler(ILogger<DeductQuantityHandler> logger, IMongoRepository<SKU, SkuId> repository)
+    public DeductQuantityHandler(ILogger<DeductQuantityHandler> logger, IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<ProductModel, ModelId> productModelRepository)
     {
         _logger = logger;
-        _repository = repository;
+        _skuRepository = skuRepository;
+        _productModelRepository = productModelRepository;
     }
 
     public async Task<Result<bool>> Handle(DeductQuantityCommand request, CancellationToken cancellationToken)
     {
         foreach (var orderItem in request.Order.OrderItems)
         {
-            var sku = await _repository.GetByIdAsync(orderItem.SkuId, cancellationToken);
+            var sku = await _skuRepository.GetByIdAsync(orderItem.SkuId, cancellationToken);
 
             if (sku is null)
             {
@@ -47,8 +51,66 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
                 sku.DeductQuantity(orderItem.Quantity);
             }
 
-            await _repository.UpdateAsync(sku.Id.Value!, sku);
+            // increase sold quantity in product model
+            var productModel = await _productModelRepository.GetByIdAsync(sku.ModelId.Value!, cancellationToken);
+
+            if (productModel is not null)
+            {
+                productModel.IncreaseSoldQuantity(orderItem.Quantity);
+                await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
+            }
+
+            await _skuRepository.UpdateAsync(sku.Id.Value!, sku);
         }
+
+        // var orderItems = request.Order.OrderItems;
+
+        // // Group order items by ModelId to aggregate quantities per ProductModel
+        // var modelGroups = orderItems
+        //     .GroupBy(item => item.ModelId)
+        //     .ToList();
+
+        // foreach (var group in modelGroups)
+        // {
+        //     var modelId = group.Key;
+        //     var totalQuantity = group.Sum(item => item.Quantity);
+
+        //     try
+        //     {
+        //         var productModel = await _productModelRepository.GetByIdAsync(modelId, cancellationToken);
+
+        //         if (productModel is null)
+        //         {
+        //             _logger.LogWarning("ProductModel with Id {ModelId} not found", modelId);
+        //             continue;
+        //         }
+
+        //         // Increase overall sold count
+        //         productModel.OverallSold += totalQuantity;
+
+        //         // Update the ProductModel
+        //         var updateResult = await _productModelRepository.UpdateAsync(modelId, productModel);
+
+        //         if (updateResult.IsSuccess)
+        //         {
+        //             _logger.LogInformation(
+        //                 "Updated OverallSold for ProductModel {ModelId}: Added {Quantity}, New Total: {OverallSold}",
+        //                 modelId, totalQuantity, productModel.OverallSold);
+        //         }
+        //         else
+        //         {
+        //             _logger.LogError(
+        //                 "Failed to update OverallSold for ProductModel {ModelId}: {Error}",
+        //                 modelId, updateResult.Error);
+        //         }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex,
+        //             "Error updating OverallSold for ProductModel {ModelId}: {ErrorMessage}",
+        //             modelId, ex.Message);
+        //     }
+        // }
 
         return true;
     }

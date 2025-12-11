@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react';
-import { IGetBasketQueries } from '~/domain/interfaces/baskets/basket.interface';
 import {
    useDeleteBasketMutation,
    useLazyGetBasketQuery,
@@ -9,10 +8,16 @@ import {
    useCheckoutBasketMutation,
    useStoreEventItemMutation,
    useCheckoutBasketWithBlockchainMutation,
-   TStoreBasketPayload,
+   useStoreBasketItemMutation,
+   useSyncBasketMutation,
 } from '~/infrastructure/services/basket.service';
+import {
+   ICheckoutPayload,
+   IGetBasketQueryParams,
+   IStoreBasketItemPayload,
+   IStoreBasketPayload,
+} from '~/domain/types/basket.type';
 import { useCheckApiError } from '../use-check-error';
-import { ICheckoutPayload } from '~/domain/interfaces/baskets/checkout.interface';
 import { useDispatch } from 'react-redux';
 import { clearCart } from '~/infrastructure/redux/features/cart.slice';
 
@@ -35,6 +40,10 @@ const useBasketService = () => {
       checkoutBasketWithBlockchainMutation,
       checkoutBasketWithBlockchainMutationState,
    ] = useCheckoutBasketWithBlockchainMutation();
+   const [storeBasketItemMutation, storeBasketItemMutationState] =
+      useStoreBasketItemMutation();
+   const [syncBasketMutation, syncBasketMutationState] =
+      useSyncBasketMutation();
 
    const dispatch = useDispatch();
 
@@ -60,12 +69,17 @@ const useBasketService = () => {
          title: 'Checkout Basket With Blockchain failed',
          error: checkoutBasketWithBlockchainMutationState.error,
       },
-      // { title: 'Store Basket failed', error: storeBasketMutationState.error },
+      {
+         title: 'Store Basket Item failed',
+         error: storeBasketItemMutationState.error,
+      },
+      { title: 'Sync Basket failed', error: syncBasketMutationState.error },
+      { title: 'Store Basket failed', error: storeBasketMutationState.error },
       // { title: 'Delete Basket failed', error: deleteBasketMutationState.error },
    ]);
 
    const getBasketAsync = useCallback(
-      async (queries: IGetBasketQueries) => {
+      async (queries: IGetBasketQueryParams) => {
          try {
             const result = await getBasketQueryTrigger(queries).unwrap();
 
@@ -83,7 +97,7 @@ const useBasketService = () => {
    );
 
    const getCheckoutItemsAsync = useCallback(
-      async (queries: IGetBasketQueries) => {
+      async (queries: IGetBasketQueryParams) => {
          try {
             const result = await getCheckoutItemsQueryTrigger(queries).unwrap();
             return {
@@ -100,7 +114,7 @@ const useBasketService = () => {
    );
 
    const storeBasketAsync = useCallback(
-      async (payload: TStoreBasketPayload) => {
+      async (payload: IStoreBasketPayload) => {
          try {
             const result = await storeBasketMutation(payload).unwrap();
             return {
@@ -199,11 +213,47 @@ const useBasketService = () => {
       [checkoutBasketWithBlockchainMutation],
    );
 
+   const storeBasketItemAsync = useCallback(
+      async (payload: IStoreBasketItemPayload) => {
+         try {
+            const result = await storeBasketItemMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [storeBasketItemMutation],
+   );
+
+   const syncBasketAsync = useCallback(
+      async (payload: IStoreBasketPayload) => {
+         try {
+            const result = await syncBasketMutation(payload).unwrap();
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [syncBasketMutation],
+   );
+
    const isLoading = useMemo(() => {
       return (
          getBasketQueryState.isLoading ||
          getBasketQueryState.isFetching ||
          storeBasketMutationState.isLoading ||
+         storeBasketItemMutationState.isLoading ||
+         syncBasketMutationState.isLoading ||
          deleteBasketMutationState.isLoading ||
          proceedToCheckoutMutationState.isLoading ||
          getCheckoutItemsQueryState.isLoading ||
@@ -216,6 +266,8 @@ const useBasketService = () => {
       getBasketQueryState.isLoading,
       getBasketQueryState.isFetching,
       storeBasketMutationState.isLoading,
+      storeBasketItemMutationState.isLoading,
+      syncBasketMutationState.isLoading,
       deleteBasketMutationState.isLoading,
       proceedToCheckoutMutationState.isLoading,
       getCheckoutItemsQueryState.isLoading,
@@ -229,6 +281,8 @@ const useBasketService = () => {
       isLoading,
       getBasketQueryState,
       storeBasketMutationState,
+      storeBasketItemMutationState,
+      syncBasketMutationState,
       deleteBasketMutationState,
       getCheckoutItemsQueryState,
       checkoutBasketMutationState,
@@ -237,6 +291,8 @@ const useBasketService = () => {
       getBasketAsync,
       getCheckoutItemsAsync,
       storeBasketAsync,
+      storeBasketItemAsync,
+      syncBasketAsync,
       deleteBasketAsync,
       proceedToCheckoutAsync,
       checkoutBasketAsync,
