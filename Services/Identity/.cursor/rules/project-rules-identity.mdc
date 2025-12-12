@@ -1,0 +1,258 @@
+---
+globs:
+    - "Services/Identity/**"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+AI:
+    alwaysApply: true
+---
+
+# Identity Service Project Rules
+
+These rules apply **only** to the Identity microservice located in `Services/Identity`.
+
+## Architecture Pattern
+
+-   **Clean Architecture** with Domain-Driven Design (DDD):
+    -   **Domain Layer** (`YGZ.Identity.Domain`): Core business entities (User, Address), value objects, domain events, domain errors, and domain logic. No dependencies on other layers.
+    -   **Application Layer** (`YGZ.Identity.Application`): Use cases, commands, queries, handlers (CQRS), validators, and application services. Depends only on Domain.
+    -   **Infrastructure Layer** (`YGZ.Identity.Infrastructure`): Keycloak integration, data access (MongoDB), email services, external services. Implements interfaces defined in Application/Domain.
+    -   **API Layer** (`YGZ.Identity.Api`): Controllers, request/response DTOs, middleware, dependency injection setup. Entry point for HTTP/gRPC.
+
+## CQRS Pattern
+
+-   Use **MediatR** for CQRS implementation:
+    -   Commands: Implement `ICommand<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Queries: Implement `IQuery<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Handlers: Implement `ICommandHandler<TCommand, TResponse>` or `IQueryHandler<TQuery, TResponse>`
+-   Commands and queries must return `Result<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.Result`
+-   Organize by feature: `Application/{Feature}/Commands/{CommandName}/` and `Application/{Feature}/Queries/{QueryName}/`
+-   Each command/query should be in its own folder containing: `{Command/Query}Name.cs`, `{Command/Query}NameHandler.cs`, and optionally `{Command/Query}NameValidator.cs`
+
+## Result Pattern
+
+-   All handlers must return `Result<TResponse>`:
+    -   Use `Result.Success(data)` for successful operations
+    -   Use `Result.Failure(Error)` or `Result.ValidationFailure(ValidationError[])` for failures
+-   Controllers use `result.Match(onSuccess: Ok, onFailure: HandleFailure)` pattern
+-   Never throw exceptions from application layer; use Result pattern instead
+
+## Naming Conventions
+
+### Commands
+
+-   **Pattern**: `{Action}{Entity}Command` (e.g., `LoginCommand`, `RegisterCommand`, `AddNewStaffCommand`, `AssignRolesCommand`, `ChangePasswordCommand`)
+-   **Handler**: `{CommandName}Handler` (e.g., `LoginHandler`, `AddNewStaffHandler`)
+-   **Validator**: `{CommandName}Validator` (e.g., `LoginValidator`, `RegisterValidator`)
+-   **Location**: `Application/{Feature}/Commands/{CommandName}/`
+-   Examples:
+    -   `Application/Auths/Commands/Login/LoginCommand.cs`
+    -   `Application/Auths/Commands/AddNewStaff/AddNewStaffCommand.cs`
+    -   `Application/Users/Commands/AssignRoles/AssignRolesCommand.cs`
+
+### Queries
+
+-   **Pattern**: `Get{Entity}Query` or `Get{Entity}{Detail}Query` (e.g., `GetAccountQuery`, `GetUsersQuery`, `GetUserByIdQuery`, `GetUserRolesQuery`, `GetAddressesQuery`)
+-   **Handler**: `{QueryName}Handler` or `Get{Entity}QueryHandler` (e.g., `GetAccountHandler`, `GetUsersQueryHandler`)
+-   **Location**: `Application/{Feature}/Queries/{QueryName}/`
+-   Examples:
+    -   `Application/Users/Queries/GetAccount/GetAccountQuery.cs`
+    -   `Application/Users/Queries/GetUsers/GetUsersQuery.cs`
+    -   `Application/Users/Queries/GetUserById/GetUserByIdQuery.cs`
+
+### Controllers
+
+-   **Pattern**: `{Entity}Controller` (e.g., `AuthController`, `UserController`, `TenantController`)
+-   **Location**: `Api/Controllers/`
+-   **Route Pattern**: `[Route("api/v{version:apiVersion}/{resource}")]` (e.g., `api/v1/auth`, `api/v1/users`)
+-   Must inherit from `ApiController` base class
+-   Use `[OpenApiTag("{tag}", Description = "...")]` for Swagger documentation
+
+### Request DTOs
+
+-   **Pattern**: `{Action}{Entity}Request` (e.g., `LoginRequest`, `RegisterRequest`, `AddNewStaffRequest`, `AssignRolesRequest`)
+-   **Location**: `Api/Contracts/{Feature}/` (e.g., `Api/Contracts/Auth/LoginRequest.cs`, `Api/Contracts/Users/AssignRolesRequest.cs`)
+-   Use `required` keyword for required properties (C# 11+)
+-   Use `[JsonPropertyName("snake_case")]` for JSON serialization naming
+-   Include example classes for Swagger when needed
+
+### Response DTOs
+
+-   **Pattern**: `{Entity}Response` or `{Action}{Entity}Response` (e.g., `LoginResponse`, `UserResponse`, `AddressResponse`)
+-   **Location**: Prefer shared contracts from `YGZ.BuildingBlocks.Shared.Contracts` when possible
+-   For service-specific responses: `Api/Contracts/{Feature}/` (e.g., `Api/Contracts/Auth/LoginResponse.cs`)
+
+### Domain Entities
+
+-   **Pattern**: `{Entity}` (e.g., `User`, `Address`)
+-   **Location**: `Domain/{Feature}/` (e.g., `Domain/Users/User.cs`, `Domain/Users/Entities/Address.cs`)
+-   Use value objects for domain concepts (e.g., `Email`, `PhoneNumber`, `AddressLine`)
+
+### Domain Errors
+
+-   **Pattern**: `{Entity}Errors` or `{Feature}Errors` (e.g., `UserErrors`, `AuthErrors`)
+-   **Location**: `Domain/Core/Errors/`
+-   Use static methods to create error instances
+
+### Enums
+
+-   **Pattern**: `E{Name}` prefix (e.g., `EUserStatus`, `EAddressType`)
+-   **Location**: `Domain/Core/Enums/` or `Domain/{Feature}/Enums/`
+
+## Feature Organization
+
+-   **Auths**: Authentication and authorization features (login, register, password reset, OTP, etc.)
+    -   Commands: `Application/Auths/Commands/`
+    -   Queries: `Application/Auths/Queries/`
+    -   Contracts: `Api/Contracts/Auth/`
+-   **Users**: User management features (profile, addresses, roles, etc.)
+    -   Commands: `Application/Users/Commands/`
+    -   Queries: `Application/Users/Queries/`
+    -   Contracts: `Api/Contracts/Users/`
+-   **Tenants**: Tenant management features
+    -   Commands: `Application/Tenants/Commands/`
+    -   Queries: `Application/Tenants/Queries/`
+    -   Contracts: `Api/Contracts/Tenants/`
+
+## Keycloak Integration
+
+-   Use **Keycloak** for authentication and authorization via `Keycloak.AuthServices`
+-   Access Keycloak Admin API through infrastructure services
+-   Use `[ProtectedResource("resource")]` attribute for resource-based authorization
+-   Use `[AllowAnonymous]` only when explicitly required (e.g., login, register endpoints)
+-   Access user context via `IUserHttpContext` from BuildingBlocks
+-   Keycloak-related commands/queries: `Application/Keycloak/Commands/`
+
+## Validation
+
+-   Use **FluentValidation** for request validation
+-   Validator naming: `{CommandName}Validator`
+-   Location: Same folder as command (e.g., `Application/Auths/Commands/Login/LoginValidator.cs`)
+-   Register validators in Application layer DI setup
+-   Use `ValidationPipelineBehavior` from BuildingBlocks for automatic validation
+-   Validation errors are returned via `Result.ValidationFailure(ValidationError[])`
+
+## Email Services
+
+-   Email templates: `Api/Views/Emails/`
+-   Email models: `Application/Emails/Models/`
+-   Email service abstraction: `Application/Abstractions/Emails/`
+-   Email service implementation: `Infrastructure/Email/EmailService.cs`
+-   Use Razor views for email templates (`.cshtml` files)
+
+## Multi-Tenancy
+
+-   Use `X-TenantId` header for tenant isolation
+-   Implement `ITenantHttpContext` from BuildingBlocks to access tenant context
+-   Use `TenantId` value object for type-safe tenant identification
+-   Apply tenant filtering in queries automatically via infrastructure layer
+
+## Database
+
+-   Use **MongoDB** for data persistence
+-   Implement repository pattern in Infrastructure layer
+-   Repository location: `Infrastructure/Persistence/`
+-   Use `IAuditable` interface for entities that need audit fields
+-   Use `ISoftDelete` interface for soft-delete support
+
+## Code Style
+
+-   Use **C# 12** features where appropriate
+-   Follow C# naming conventions:
+    -   Classes: PascalCase
+    -   Methods: PascalCase
+    -   Properties: PascalCase
+    -   Private fields: `_camelCase`
+    -   Parameters: camelCase
+-   Use file-scoped namespaces: `namespace YGZ.Identity.{Layer}.{Feature};`
+-   Use primary constructors where appropriate (C# 12)
+-   Use `var` for local variables when type is obvious
+-   Use expression-bodied members when appropriate
+-   Use `sealed record` for commands and queries
+-   Use `required` keyword for required properties in DTOs
+
+## Controllers
+
+-   All controllers inherit from `ApiController` base class
+-   Use MediatR `ISender` to send commands/queries:
+    ```csharp
+    var result = await _sender.Send(command, cancellationToken);
+    return result.Match(onSuccess: Ok, onFailure: HandleFailure);
+    ```
+-   Use Mapster `IMapper` for request-to-command/query mapping
+-   Route pattern: `[Route("api/v{version:apiVersion}/{resource}")]`
+-   Use API versioning attributes: `[ApiVersion(1)]`
+-   Use `[OpenApiTag]` for Swagger documentation
+-   Use `CancellationToken` in all async controller methods
+
+## Dependency Injection
+
+-   Use extension methods for layer registration:
+    -   `AddPresentationLayer()` in API layer (`DependencyInjection.cs`)
+    -   `AddApplicationLayer(configuration)` in Application layer (`DependencyInjection.cs`)
+    -   `AddInfrastructureLayer(configuration)` in Infrastructure layer (`DependencyInjection.cs`)
+-   Register MediatR handlers: `services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))`
+-   Register FluentValidation validators: `services.AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssembly(...))`
+-   Register Mapster mappings: `services.AddSingleton<IMapper>(new Mapper(...))`
+
+## Error Handling
+
+-   Use `GlobalExceptionHandler` from BuildingBlocks for unhandled exceptions
+-   Use `ApplicationProblemDetailsFactory` for consistent error responses
+-   Controllers use `HandleFailure` method from `ApiController` base class
+-   Never expose internal exceptions to clients; map to user-friendly errors
+-   Use domain errors from `Domain/Core/Errors/` for business logic failures
+
+## Logging
+
+-   Use **Serilog** for structured logging
+-   Use `ILogger<T>` with dependency injection
+-   Configure Serilog via `AddSerilogExtension` extension method
+-   Use **OpenTelemetry** for distributed tracing
+
+## Health Checks
+
+-   Register health checks in `Program.cs`
+-   Map health endpoint: `app.MapHealthChecks("/health", new HealthCheckOptions { ... })`
+
+## Security
+
+-   Never commit secrets or connection strings
+-   Use `IConfiguration` and `appsettings.json` for configuration
+-   Use environment-specific `appsettings.{Environment}.json` files
+-   Validate all inputs; never trust client data
+-   Use HTTPS in production
+-   Secure Keycloak credentials and connection strings
+
+## Performance
+
+-   Use async/await for all I/O operations
+-   Use `CancellationToken` throughout async chains
+-   Implement pagination for list endpoints
+-   Use caching for frequently accessed data (user roles, permissions)
+-   Use `ConfigureHttpClientDefaults` with resilience handlers for external HTTP calls (Keycloak)
+
+## Code Organization
+
+-   Group related files by feature, not by type
+-   Keep controllers thin; business logic belongs in Application layer
+-   Use extension methods for cross-cutting concerns
+-   Keep domain entities pure; no infrastructure dependencies
+-   Use value objects for domain concepts (e.g., `Email`, `PhoneNumber`, `AddressLine`)
+-   Each command/query in its own folder with handler and optional validator
+
+## Common Patterns
+
+-   **Pipeline Behaviors**: Use `ValidationPipelineBehavior` and `RequestLoggingPipelineBehavior` from BuildingBlocks
+-   **Mapping**: Use Mapster for DTO-to-command/query mapping (location: `Api/Mappings/`)
+-   **Pagination**: Use `PaginationResponse<T>` and `PaginationLinks` from BuildingBlocks
+-   **Filtering/Sorting**: Use query builders and expression builders from BuildingBlocks utilities
+
+## Identity-Specific Features
+
+-   **OTP Generation**: Use `Infrastructure/Utils/OtpGenerator.cs` for OTP generation
+-   **Email Verification**: Implement email verification flow with OTP
+-   **Password Reset**: Implement password reset with email verification
+-   **Role Assignment**: Support role assignment via Keycloak
+-   **Address Management**: Support multiple addresses per user with default address
+-   **Profile Management**: Support user profile updates

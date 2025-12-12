@@ -1,9 +1,0 @@
----
-globs:
-  alwaysApply: true
----
-
-## Identity Project Rules
-
-- Applies to Identity microservice.
-- Pair with `custom-agent.mdc`; keep scope to Identity domain code.

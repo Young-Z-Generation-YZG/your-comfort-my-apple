@@ -1,0 +1,201 @@
+---
+globs:
+  - "Services/Ordering/**"
+  - "!**/node_modules/**"
+  - "!**/.next/**"
+AI:
+  alwaysApply: true
+---
+
+# Ordering Service Project Rules
+
+These rules apply specifically to the **Ordering** microservice located in `Services/Ordering/`.
+
+## Scope
+
+- Applies only to code within `Services/Ordering/` directory
+- Inherits general patterns from `Services/.cursor/rules/project-rules-services.mdc`
+- Pair with `custom-agent.mdc`; keep scope to Ordering domain code
+
+## Architecture Layers
+
+The Ordering service follows Clean Architecture with these layers:
+
+- **YGZ.Ordering.Domain**: Core domain entities (`Order`, `Notification`), value objects, domain events, and domain errors
+- **YGZ.Ordering.Application**: Use cases organized by feature (Orders, OrderItems, Notifications, Payments), commands, queries, handlers
+- **YGZ.Ordering.Infrastructure**: Persistence (MongoDB repositories), payment provider implementations (Momo, Vnpay), settings
+- **YGZ.Ordering.Api**: Controllers, request/response contracts, gRPC services, dependency injection setup
+
+## Naming Conventions
+
+### Commands
+- **Command Class**: `{Action}{Entity}Command` (e.g., `CreateOrderCommand`, `CancelOrderCommand`, `UpdateOrderStatusCommand`)
+- **Command Folder**: `{Action}{Entity}/` (e.g., `CreateOrder/`, `CancelOrder/`)
+- **Handler**: `{Action}{Entity}Handler` (e.g., `CreateOrderHandler`, `CancelOrderHandler`)
+- **Validator**: `{Action}{Entity}Validator` (e.g., `CreateOrderValidator`)
+- **Command Nested Records**: Use descriptive suffixes like `{Entity}Command` (e.g., `ShippingAddressCommand`, `OrderItemCommand`, `PromotionInOrderCommand`)
+
+### Queries
+- **Query Class**: `Get{Entity}{Detail}Query` or `Get{Entity}{By}{Context}Query` (e.g., `GetOnlineOrdersQuery`, `GetOrderDetailsByIdQuery`, `GetOrdersByUserQuery`, `GetRevenuesQuery`)
+- **Query Folder**: `Get{Entity}{Detail}/` or `Get{Entity}{By}{Context}/` (e.g., `GetOnlineOrders/`, `GetOrderDetailsById/`, `GetOrdersByUser/`)
+- **Handler**: `Get{Entity}{Detail}Handler` or `Get{Entity}{By}{Context}Handler` (e.g., `GetOnlineOrdersHandler`, `GetOrderDetailsByIdHandler`)
+
+### Controllers
+- **Controller Class**: `{Entity}Controller` (e.g., `OrderingController`, `NotificationController`, `DashboardController`, `PaymentController`)
+- **Route Pattern**: `[Route("api/v{version:apiVersion}/{resource}")]` (e.g., `api/v{version:apiVersion}/orders`)
+
+### Request/Response Contracts
+- **Request DTOs**: `{Action}{Entity}Request` (e.g., `CreateOrderRequest`, `UpdateOrderRequest`, `GetOrdersRequest`, `GetOrdersPaginationRequest`)
+- **Request Example**: `{Action}{Entity}RequestExample` (e.g., `CreateOrderRequestExample`)
+- **Location**: `Api/Contracts/` directory
+- **Nested Records**: Use `{Entity}Request` suffix (e.g., `OrderItemRequest`, `ShippingAddressRequest`)
+
+### Domain Entities
+- **Aggregate Root**: `{Entity}` (e.g., `Order`, `Notification`)
+- **Entity Classes**: Use singular form (e.g., `Order`, not `Orders`)
+- **Value Objects**: Located in `Domain/{Entity}/ValueObjects/` (e.g., `OrderId`, `Code`, `ShippingAddress`)
+- **Domain Events**: Located in `Domain/{Entity}/Events/` (e.g., `OrderCreatedEvent`, `OrderStatusChangedEvent`)
+
+### Application Features
+- **Feature Folders**: Organize by domain concept (e.g., `Orders/`, `OrderItems/`, `Notifications/`, `Payments/`)
+- **Sub-folders**: `Commands/`, `Queries/`, `Events/`, `Jobs/` within each feature folder
+
+### Infrastructure
+- **Repositories**: `{Entity}Repository` (e.g., `OrderRepository`, `NotificationRepository`)
+- **Payment Providers**: Organize by provider in `Payments/{Provider}/` (e.g., `Payments/Momo/`, `Payments/Vnpay/`)
+- **Settings**: Located in `Settings/` directory
+
+### gRPC Services
+- **Proto Files**: Located in `Api/Protos/` (e.g., `order.proto`)
+- **RPC Service**: `{Service}RpcService` (e.g., `OrderingRpcService`)
+- **Location**: `Api/RpcServices/`
+
+## Code Organization
+
+### Feature-Based Structure
+```
+YGZ.Ordering.Application/
+├── Orders/
+│   ├── Commands/
+│   │   ├── CreateOrder/
+│   │   │   ├── CreateOrderCommand.cs
+│   │   │   ├── CreateOrderHandler.cs
+│   │   │   └── CreateOrderValidator.cs
+│   │   ├── CancelOrder/
+│   │   └── UpdateOrderStatus/
+│   ├── Queries/
+│   │   ├── GetOnlineOrders/
+│   │   ├── GetOrderDetailsById/
+│   │   └── GetOrdersByUser/
+│   └── Events/
+├── OrderItems/
+├── Notifications/
+└── Payments/
+```
+
+### Domain Structure
+```
+YGZ.Ordering.Domain/
+├── Orders/
+│   ├── Order.cs (Aggregate Root)
+│   ├── Entities/
+│   ├── ValueObjects/
+│   └── Events/
+├── Notifications/
+│   ├── Notification.cs
+│   └── ValueObjects/
+└── Core/
+    ├── Constants/
+    ├── Errors/
+    └── Exceptions/
+```
+
+## Ordering-Specific Patterns
+
+### Order Status Management
+- Use `EOrderStatus` enum from `YGZ.BuildingBlocks.Shared.Enums`
+- Order status transitions must be validated in domain logic
+- Use `UpdateOrderStatus` command for status changes
+- Emit domain events for status changes (e.g., `OrderStatusChangedEvent`)
+
+### Payment Integration
+- Payment providers (Momo, Vnpay) are abstracted via interfaces in `Application/Abstractions/PaymentProviders/`
+- Implementations are in `Infrastructure/Payments/{Provider}/`
+- Use `IPN` (Instant Payment Notification) endpoints for payment callbacks
+- Request contracts: `MomoIpnCheckRequest`, `VnpayIpnCheckRequest`
+
+### Order Items
+- Order items are part of the Order aggregate
+- Use `OrderItem` entity within the Order aggregate
+- Order items are managed through Order commands, not separate commands
+
+### Notifications
+- Notifications are a separate aggregate root
+- Use `Notification` entity in `Domain/Notifications/`
+- Commands: `CreateNotification`, `MarkAsRead`, `DeleteNotification`
+- Queries: `GetNotifications`, `GetNotificationById`
+
+### Revenue & Dashboard
+- Revenue queries: `GetRevenuesQuery`, `RevenuesByTenantsQuery`, `RevenuesByYearsQuery`
+- Dashboard controller handles aggregated data endpoints
+- Use appropriate aggregation patterns for revenue calculations
+
+### Multi-Tenancy
+- Orders must include `TenantId` and `BranchId` (nullable)
+- Use `TenantId` and `BranchId` value objects from BuildingBlocks
+- Apply tenant filtering in all queries automatically
+
+### Order Code Generation
+- Use `Code` value object for order codes
+- Order codes should be unique and follow domain rules
+
+### Payment Methods
+- Use `EPaymentMethod` enum from `YGZ.BuildingBlocks.Shared.Enums`
+- Support both traditional payment (Vnpay, Momo) and blockchain payment
+- Blockchain payments include `CustomerPublicKey` and `Tx` (transaction hash)
+
+## Validation Rules
+
+- Use FluentValidation for all command validation
+- Validators are co-located with commands in feature folders
+- Validation errors return `Result.ValidationFailure(ValidationError[])`
+- Domain validation should be in domain entities, not validators
+
+## Error Handling
+
+- Use domain errors from `Domain/Core/Errors/`
+- Use `Result<T>` pattern for all operations
+- Never throw exceptions from application layer
+- Map domain errors to appropriate HTTP status codes in controllers
+
+## Testing Considerations
+
+- Test order status transitions
+- Test payment provider integrations (mock abstractions)
+- Test multi-tenancy isolation
+- Test order aggregation and revenue calculations
+- Test notification creation and retrieval
+
+## Common Patterns
+
+- **Commands**: Return `Result<bool>` or `Result<{Entity}Id>` for creation commands
+- **Queries**: Return `Result<{Entity}Dto>` or `Result<PaginationResponse<{Entity}Dto>>`
+- **Domain Events**: Emit events for significant state changes (order created, status changed, etc.)
+- **Jobs**: Use Hangfire or similar for background jobs (e.g., order expiration)
+
+## File Naming
+
+- One class per file
+- File name matches class name exactly
+- Use PascalCase for all file names
+- Group related files in feature folders
+
+## Dependencies
+
+- **BuildingBlocks.Shared**: CQRS abstractions, Result pattern, shared contracts, enums, value objects
+- **BuildingBlocks.Messaging**: Event-driven communication
+- **MediatR**: CQRS implementation
+- **Mapster**: DTO mapping
+- **FluentValidation**: Request validation
+- **MongoDB**: Data persistence
+- **Keycloak.AuthServices**: Authentication and authorization

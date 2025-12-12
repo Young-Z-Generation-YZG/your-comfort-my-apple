@@ -1,0 +1,287 @@
+---
+globs:
+    - "Services/Discount/**"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+AI:
+    alwaysApply: true
+---
+
+# Discount Service Project Rules
+
+These rules apply **only** to the Discount microservice located in `Services/Discount`.
+
+## Architecture Pattern
+
+-   **Clean Architecture** with Domain-Driven Design (DDD):
+    -   **Domain Layer** (`YGZ.Discount.Domain`): Core business entities (Coupon, Event, EventItem), value objects (CouponId, Code, EventId, EventItemId), domain events, domain errors, and domain logic. No dependencies on other layers.
+    -   **Application Layer** (`YGZ.Discount.Application`): Use cases, commands, queries, handlers (CQRS), validators, and application services. Depends only on Domain.
+    -   **Infrastructure Layer** (`YGZ.Discount.Infrastructure`): Entity Framework Core data access, repositories, unique code generation. Implements interfaces defined in Application/Domain.
+    -   **gRPC Layer** (`YGZ.Discount.Grpc`): gRPC service implementation, request/response mapping, dependency injection setup. Entry point for gRPC communication.
+
+## CQRS Pattern
+
+-   Use **MediatR** for CQRS implementation:
+    -   Commands: Implement `ICommand<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Queries: Implement `IQuery<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Handlers: Implement `ICommandHandler<TCommand, TResponse>` or `IQueryHandler<TQuery, TResponse>`
+-   Commands and queries must return `Result<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.Result`
+-   Organize by feature: `Application/{Feature}/Commands/{CommandName}/` and `Application/{Feature}/Queries/{QueryName}/`
+-   Each command/query should be in its own folder containing: `{Command/Query}Name.cs`, `{Command/Query}NameHandler.cs`, and optionally `{Command/Query}NameValidator.cs`
+
+## Result Pattern
+
+-   All handlers must return `Result<TResponse>`:
+    -   Use `Result.Success(data)` for successful operations
+    -   Use `Result.Failure(Error)` or `Result.ValidationFailure(ValidationError[])` for failures
+-   gRPC services handle results using `result.Match` or check `result.IsFailure` and throw `RpcException`
+-   Never throw exceptions from application layer; use Result pattern instead
+
+## Naming Conventions
+
+### Commands
+
+-   **Pattern**: `{Action}{Entity}Command` (e.g., `CreateCouponCommand`, `UseCouponCommand`, `CreateEventCommand`, `UpdateEventCommand`, `AddEventItemsCommand`, `DeductEventItemQuantityCommand`)
+-   **Handler**: `{CommandName}Handler` (e.g., `CreateCouponHandler`, `UseCouponHandler`)
+-   **Validator**: `{CommandName}Validator` (e.g., `CreateCouponValidator`, `CreateEventValidator`)
+-   **Location**: `Application/{Feature}/Commands/{CommandName}/`
+-   Examples:
+    -   `Application/Coupons/Commands/CreateCoupon/CreateCouponCommand.cs`
+    -   `Application/Coupons/Commands/UseCoupon/UseCouponCommand.cs`
+    -   `Application/Events/Commands/CreateEvent/CreateEventCommand.cs`
+    -   `Application/Events/Commands/AddEventItems/AddEventItemsCommand.cs`
+
+### Queries
+
+-   **Pattern**: `Get{Entity}Query` or `Get{Entity}{Detail}Query` (e.g., `GetCouponByCodeQuery`, `GetCouponsQuery`, `GetEventsQuery`, `GetEventDetailsQuery`, `GetEventItemByIdQuery`)
+-   **Handler**: `{QueryName}Handler` (e.g., `GetCouponByCodeHandler`, `GetCouponsHandler`)
+-   **Location**: `Application/{Feature}/Queries/{QueryName}/`
+-   Examples:
+    -   `Application/Coupons/Queries/GetCouponByCode/GetCouponByCodeQuery.cs`
+    -   `Application/Coupons/Queries/GetCoupons/GetCouponsQuery.cs`
+    -   `Application/Events/Queries/GetEvents/GetEventsQuery.cs`
+    -   `Application/EventItem/Queries/GetEventItemById/GetEventItemByIdQuery.cs`
+
+### gRPC Services
+
+-   **Pattern**: `{Service}RpcService` (e.g., `DiscountService`)
+-   **Location**: `Grpc/GrpcServices/`
+-   **Base Class**: Inherit from `{Service}ProtoService.{Service}ProtoServiceBase` (e.g., `DiscountProtoService.DiscountProtoServiceBase`)
+-   **Method Naming**: `{Action}{Entity}Grpc` (e.g., `CreateCouponGrpc`, `GetCouponByCodeGrpc`, `CreateEventGrpc`)
+-   Use `ServerCallContext` for cancellation tokens and metadata
+
+### Request/Response Mapping
+
+-   **Mapping Classes**: `{Entity}Mapping` (e.g., `CouponMapping`, `EventMapping`, `EventItemMapping`)
+-   **Location**: `Grpc/Mappings/`
+-   Use **Mapster** `IMapper` for mapping between gRPC requests and commands/queries
+-   Use `_mapper.Map<T>(source)` for mapping operations
+
+### Domain Entities
+
+-   **Pattern**: `{Entity}` (e.g., `Coupon`, `Event`, `EventItem`)
+-   **Location**: `Domain/{Feature}/` (e.g., `Domain/Coupons/Coupon.cs`, `Domain/Event/Event.cs`, `Domain/Event/Entities/EventItem.cs`)
+-   Inherit from `AggregateRoot<TId>` for aggregate roots
+-   Use value objects for domain concepts (e.g., `Code`, `CouponId`, `EventId`, `EventItemId`)
+-   Implement `IAuditable` for entities that need audit fields
+-   Implement `ISoftDelete` for soft-delete support
+
+### Domain Errors
+
+-   **Pattern**: `{Entity}Errors` or `{Feature}Errors` (e.g., `CouponErrors`, `EventErrors`)
+-   **Location**: `Domain/Core/Errors/`
+-   Use static methods to create error instances
+-   Examples: `Errors.Coupon.cs`, `Errors.Event.cs`
+
+### Value Objects
+
+-   **Pattern**: `{Concept}` (e.g., `Code`, `CouponId`, `EventId`, `EventItemId`)
+-   **Location**: `Domain/{Feature}/ValueObjects/`
+-   Inherit from `ValueObject` base class
+-   Examples:
+    -   `Domain/Coupons/ValueObjects/Code.cs`
+    -   `Domain/Coupons/ValueObjects/CouponId.cs`
+    -   `Domain/Event/ValueObjects/EventId.cs`
+
+### Enums
+
+-   **Pattern**: `E{Name}` prefix (e.g., `EDiscountState`, `EDiscountType`, `EEventState`, `EProductClassification`)
+-   **Location**: Use shared enums from `YGZ.BuildingBlocks.Shared.Enums` when available
+-   For service-specific enums: `Domain/Core/Enums/` or `Domain/{Feature}/Enums/`
+
+## Feature Organization
+
+-   **Coupons**: Coupon management features (create, use, get by code, get all)
+    -   Commands: `Application/Coupons/Commands/`
+    -   Queries: `Application/Coupons/Queries/`
+-   **Events**: Event management features (create, update, get events, get event details)
+    -   Commands: `Application/Events/Commands/`
+    -   Queries: `Application/Events/Queries/`
+-   **EventItems**: Event item management features (get by id, add items, deduct quantity)
+    -   Commands: `Application/Events/Commands/` (AddEventItems, DeductEventItemQuantity)
+    -   Queries: `Application/EventItem/Queries/`
+
+## gRPC Integration
+
+-   Define `.proto` files in `Grpc/Protos/` directory
+-   Implement gRPC services: `public class DiscountService : DiscountProtoService.DiscountProtoServiceBase`
+-   Register gRPC: `services.AddGrpc()` and `app.MapGrpcService<DiscountService>()`
+-   Use `ConvertGrpcEnumToNormalEnum` and `ConvertNormalEnumToGrpcEnum` utilities from BuildingBlocks when needed
+-   Handle errors by throwing `RpcException` with appropriate `StatusCode`:
+    ```csharp
+    if (result.IsFailure)
+    {
+        throw new RpcException(new Status(
+            MapErrorToStatusCode(result.Error),
+            result.Error.Message
+        ), new Metadata
+        {
+            { "error-code", result.Error.Code },
+            { "service-name", "DiscountService" }
+        });
+    }
+    ```
+-   Map gRPC enums to domain enums using helper methods (e.g., `ConvertToEProductClassificationGrpc`, `ConvertToEDiscountTypeGrpc`)
+-   Use `Timestamp` for DateTime conversion: `Timestamp.FromDateTime(DateTime.SpecifyKind(dateTime, DateTimeKind.Utc))`
+
+## Validation
+
+-   Use **FluentValidation** for request validation
+-   Validator naming: `{CommandName}Validator`
+-   Location: Same folder as command (e.g., `Application/Coupons/Commands/CreateCoupon/CreateCouponValidator.cs`)
+-   Register validators in Application layer DI setup
+-   Use `ValidationPipelineBehavior` from BuildingBlocks for automatic validation
+-   Validation errors are returned via `Result.ValidationFailure(ValidationError[])`
+
+## Database
+
+-   Use **Entity Framework Core** with SQL Server for data persistence
+-   Implement repository pattern in Infrastructure layer
+-   Repository location: `Infrastructure/Persistence/Repositories/`
+-   DbContext: `Infrastructure/Persistence/DiscountDbContext.cs`
+-   Entity configurations: `Infrastructure/Persistence/Configurations/`
+-   Migrations: `Infrastructure/Persistence/Migrations/`
+-   Use `IAuditable` interface for entities that need audit fields (`CreatedAt`, `UpdatedAt`, `UpdatedBy`)
+-   Use `ISoftDelete` interface for soft-delete support (`IsDeleted`, `DeletedAt`, `DeletedBy`)
+-   Use `DispatchDomainEventInterceptor` for domain event dispatching
+
+## Unique Code Generation
+
+-   Abstraction: `Application/Abstractions/IUniqueCodeGenerator.cs`
+-   Implementation: `Infrastructure/Utils/UniqueCodeGenerator.cs`
+-   Use for generating unique coupon codes
+
+## Code Style
+
+-   Use **C# 12** features where appropriate
+-   Follow C# naming conventions:
+    -   Classes: PascalCase
+    -   Methods: PascalCase
+    -   Properties: PascalCase
+    -   Private fields: `_camelCase`
+    -   Parameters: camelCase
+-   Use file-scoped namespaces: `namespace YGZ.Discount.{Layer}.{Feature};`
+-   Use primary constructors where appropriate (C# 12)
+-   Use `var` for local variables when type is obvious
+-   Use expression-bodied members when appropriate
+-   Use `sealed record` for commands and queries
+-   Use `required` keyword for required properties in commands/queries
+
+## Dependency Injection
+
+-   Use extension methods for layer registration:
+    -   `AddPresentationLayer()` in gRPC layer (`DependencyInjection.cs`)
+    -   `AddApplicationLayer(configuration)` in Application layer (`DependencyInjection.cs`)
+    -   `AddInfrastructureLayer(configuration)` in Infrastructure layer (`DependencyInjection.cs`)
+-   Register MediatR handlers: `services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))`
+-   Register FluentValidation validators: `services.AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssembly(...))`
+-   Register Mapster mappings: `services.AddSingleton<IMapper>(new Mapper(...))`
+-   Register Entity Framework: `services.AddDbContext<DiscountDbContext>(options => options.UseSqlServer(connectionString))`
+
+## Error Handling
+
+-   Use domain errors from `Domain/Core/Errors/` for business logic failures
+-   Map domain errors to gRPC status codes using `MapErrorToStatusCode` helper method
+-   gRPC services throw `RpcException` with appropriate status codes:
+    -   `StatusCode.NotFound` for not found errors
+    -   `StatusCode.InvalidArgument` for validation errors
+    -   `StatusCode.FailedPrecondition` for business logic violations (e.g., expired coupon, insufficient stock)
+    -   `StatusCode.Internal` for unexpected errors
+-   Include error metadata in `RpcException`:
+    ```csharp
+    new Metadata
+    {
+        { "error-code", result.Error.Code },
+        { "service-name", "DiscountService" }
+    }
+    ```
+-   Never expose internal exceptions to clients; map to user-friendly errors
+
+## Logging
+
+-   Use **Serilog** for structured logging
+-   Use `ILogger<T>` with dependency injection
+-   Configure Serilog via `AddSerilogExtension` extension method
+-   Use **OpenTelemetry** for distributed tracing
+
+## Health Checks
+
+-   Register health checks in `Program.cs`
+-   Map health endpoint: `app.MapHealthChecks("/health", new HealthCheckOptions { ... })`
+-   Include database health checks: `.AddDbContextCheck<DiscountDbContext>()`
+
+## Security
+
+-   Never commit secrets or connection strings
+-   Use `IConfiguration` and `appsettings.json` for configuration
+-   Use environment-specific `appsettings.{Environment}.json` files
+-   Validate all inputs; never trust client data
+-   Use HTTPS in production
+
+## Performance
+
+-   Use async/await for all I/O operations
+-   Use `CancellationToken` throughout async chains (from `ServerCallContext.CancellationToken` in gRPC)
+-   Implement pagination for list queries when needed
+-   Use caching for frequently accessed data (e.g., active coupons, active events)
+-   Use `ConfigureHttpClientDefaults` with resilience handlers for external HTTP calls if needed
+
+## Code Organization
+
+-   Group related files by feature, not by type
+-   Keep gRPC services thin; business logic belongs in Application layer
+-   Use extension methods for cross-cutting concerns
+-   Keep domain entities pure; no infrastructure dependencies
+-   Use value objects for domain concepts (e.g., `Code`, `CouponId`, `EventId`)
+-   Each command/query in its own folder with handler and optional validator
+
+## Common Patterns
+
+-   **Pipeline Behaviors**: Use `ValidationPipelineBehavior` and `RequestLoggingPipelineBehavior` from BuildingBlocks
+-   **Mapping**: Use Mapster for gRPC request-to-command/query mapping (location: `Grpc/Mappings/`)
+-   **Domain Events**: Use domain events for side effects (e.g., `EventItemCreatedDomainEvent`)
+-   **Repository Pattern**: Use repositories for data access abstraction
+-   **Factory Methods**: Use static factory methods on domain entities (e.g., `Coupon.Create()`, `Event.Create()`)
+
+## Discount-Specific Features
+
+-   **Coupon Management**: Support creating coupons with unique codes, using coupons, tracking available quantity
+-   **Event Management**: Support creating events with start/end dates, managing event items
+-   **Event Items**: Support adding event items to events, deducting quantities, tracking stock
+-   **Discount Types**: Support percentage and fixed amount discounts
+-   **Product Classification**: Support discounts for different product categories (iPhone, iPad, MacBook, Watch, Headphone, Accessory)
+-   **Stock Management**: Track available quantity and stock for coupons and event items
+-   **Soft Delete**: Support soft deletion for coupons, events, and event items
+-   **Audit Trail**: Track creation, update, and deletion timestamps and user information
+
+## Domain Rules
+
+-   Coupons have unique codes (enforced by `Code` value object)
+-   Coupons track available quantity and stock
+-   Using a coupon decrements available quantity
+-   Events have start and end dates
+-   Event items belong to events and track SKU information
+-   Event items have normalized model, color, and storage for matching
+-   Event items track discount type, discount value, original price, and final price
+-   Event items track stock and sold quantities
+-   Domain entities use aggregate root pattern for consistency boundaries

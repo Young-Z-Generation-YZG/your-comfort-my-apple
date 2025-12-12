@@ -1,0 +1,9 @@
+---
+globs:
+    alwaysApply: true
+---
+
+## Custom Agent (Identity)
+
+-   Scope: `Services/Identity` only.
+-   Load with `project-rules.mdc` for Identity service work.

@@ -1,0 +1,226 @@
+---
+globs:
+    - "Gateways/**"
+    - "!**/bin/**"
+    - "!**/obj/**"
+AI:
+    alwaysApply: true
+---
+
+# Gateway Project Rules
+
+These rules apply to all gateway projects under `Gateways` folder, including:
+
+-   YGZ.Gateways.Yarp
+
+## Architecture Pattern
+
+-   **API Gateway Pattern**: Acts as a single entry point for all client requests, routing to backend microservices
+-   **Reverse Proxy**: Uses YARP (Yet Another Reverse Proxy) for request routing and load balancing
+-   **Authentication Gateway**: Centralizes authentication/authorization using Keycloak before forwarding requests
+-   **Minimal Controllers**: Gateway should have minimal business logic; primarily routing and cross-cutting concerns
+
+## YARP Configuration
+
+-   **Configuration Source**: Routes and clusters are configured in `appsettings.json` under `ReverseProxy` section
+-   **Route Pattern**: Routes match paths like `{service-name}-services/{**catch-all}` and transform to backend paths
+-   **Cluster Pattern**: Each service has a cluster with destination addresses (e.g., `http://ygz.identity.api:8080`)
+-   **Path Transformation**: Use `PathPattern: "{**catch-all}"` to strip the service prefix when forwarding
+-   **Dynamic Configuration**: Prefer configuration-based routing over code-based for easier updates
+
+## Authentication & Authorization
+
+-   **Keycloak Integration**: Use `Keycloak.AuthServices` for JWT authentication
+-   **Authentication Scheme**: Use `JwtBearerDefaults.AuthenticationScheme`
+-   **Authorization**: Use `AddKeycloakAuthorization()` and `AddAuthorizationServer()` for resource-based authorization
+-   **Token Forwarding**: YARP automatically forwards `Authorization` header to backend services
+-   **Multi-Tenancy**: Forward `X-TenantId` header to backend services (if required by backend)
+-   **Protected Routes**: Apply `[Authorize]` attributes on gateway controllers if needed
+-   **Public Routes**: Use `[AllowAnonymous]` for health checks and public endpoints
+
+## Request Forwarding
+
+-   **Header Forwarding**: YARP forwards all request headers by default, including:
+    -   `Authorization` (JWT token)
+    -   `X-TenantId` (tenant context)
+    -   `Content-Type`, `Accept`, etc.
+-   **Custom Headers**: Add custom headers via YARP transforms if needed
+-   **Request/Response Transformation**: Use YARP transforms for path rewriting, header manipulation, etc.
+
+## Observability & Logging
+
+-   **OpenTelemetry**: Use OpenTelemetry for distributed tracing and metrics:
+    ```csharp
+    builder.Services
+        .AddOpenTelemetry()
+        .WithMetrics(metrics => metrics
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddKeycloakAuthServicesInstrumentation()
+        )
+        .WithTracing(tracing => tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddKeycloakAuthServicesInstrumentation()
+        )
+        .UseOtlpExporter();
+    ```
+-   **Structured Logging**: Use Serilog for structured logging (if configured)
+-   **Logging Integration**: `builder.Logging.AddOpenTelemetry()` for log correlation
+
+## Resilience & Performance
+
+-   **Resilience Handlers**: Use `AddStandardResilienceHandler()` for HTTP client resilience:
+    ```csharp
+    builder.Services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
+    ```
+-   **Circuit Breakers**: Configure circuit breakers for backend service calls
+-   **Retries**: Configure retry policies for transient failures
+-   **Timeouts**: Set appropriate timeouts for backend service calls
+
+## API Documentation
+
+-   **NSwag**: Use NSwag (OpenAPI) for API documentation
+-   **Swagger Configuration**: Configure via `AddSwaggerExtensions()` extension method
+-   **Security Schemes**: Add both JWT Bearer and OpenID Connect security schemes:
+    ```csharp
+    document.AddSecurity(JwtBearerDefaults.AuthenticationScheme, [], ...);
+    document.AddSecurity(OpenIdConnectDefaults.AuthenticationScheme, [], ...);
+    ```
+-   **OAuth2 Client**: Configure OAuth2 client settings for Swagger UI with Keycloak
+-   **Documentation Scope**: Document gateway endpoints; backend service docs are maintained separately
+
+## Health Checks
+
+-   **Gateway Health**: Implement health checks for the gateway itself
+-   **Backend Health**: Optionally aggregate health checks from backend services
+-   **Health Endpoint**: Map health endpoint: `app.MapHealthChecks("/health")`
+
+## BuildingBlocks Usage
+
+-   **YGZ.BuildingBlocks.Shared**: Reference shared abstractions, contracts, and utilities:
+    -   Use shared contracts for inter-service communication
+    -   Use shared enums and value objects when needed
+    -   Use shared error handling patterns
+-   **Do Not Duplicate**: Do not duplicate shared code; reference BuildingBlocks projects instead
+
+## Code Style
+
+-   **C# 12**: Use C# 12 features where appropriate
+-   **File-Scoped Namespaces**: Use `namespace YGZ.Gateways.Yarp.Extensions;`
+-   **Primary Constructors**: Use primary constructors where appropriate
+-   **Naming Conventions**:
+    -   Classes: PascalCase
+    -   Methods: PascalCase
+    -   Extension Methods: `Add{Feature}Extensions()`, `Use{Feature}Settings()`
+    -   Private fields: `_camelCase`
+
+## Extension Methods
+
+-   **Service Registration**: Use extension methods for service registration:
+    -   `AddSwaggerExtensions()` for Swagger/OpenAPI configuration
+    -   `AddGatewayExtensions()` for gateway-specific setup (if needed)
+-   **Middleware Configuration**: Use extension methods for middleware setup:
+    -   `UseApplicationSwaggerSettings()` for Swagger UI configuration
+
+## Configuration
+
+-   **appsettings.json**: Store gateway configuration:
+    -   `ReverseProxy`: Routes and clusters configuration
+    -   `Keycloak`: Authentication configuration
+    -   `Logging`: Logging configuration
+-   **Environment-Specific**: Use `appsettings.{Environment}.json` for environment-specific settings
+-   **Secrets**: Never commit secrets; use User Secrets or environment variables
+
+## Controllers
+
+-   **Minimal Controllers**: Gateway controllers should be minimal; prefer YARP routing
+-   **Health Endpoints**: Use controllers for health checks and gateway-specific endpoints
+-   **Swagger Endpoints**: Gateway may expose Swagger UI for API exploration
+-   **Avoid Business Logic**: Do not implement business logic in gateway; forward to backend services
+
+## Error Handling
+
+-   **Global Exception Handler**: Use global exception handler for unhandled exceptions
+-   **Error Responses**: Return consistent error responses (ProblemDetails format)
+-   **Backend Errors**: Forward backend error responses to clients appropriately
+-   **Never Expose Internals**: Do not expose internal gateway errors to clients
+
+## Security
+
+-   **HTTPS**: Use HTTPS in production (commented out in development)
+-   **CORS**: Configure CORS if needed for frontend applications
+-   **Rate Limiting**: Consider implementing rate limiting at gateway level
+-   **Request Validation**: Validate requests before forwarding (if needed)
+-   **Never Trust Client Data**: Validate all inputs; sanitize headers if needed
+
+## Docker & Deployment
+
+-   **Dockerfile**: Include `Dockerfile` in gateway projects
+-   **Multi-Stage Builds**: Use multi-stage builds for smaller images
+-   **Health Checks**: Configure health checks in Docker
+-   **Environment Variables**: Use environment variables for configuration
+-   **Service Discovery**: Consider service discovery for dynamic backend addresses
+
+## Routing Patterns
+
+-   **Service Prefix**: Routes use service prefix pattern: `{service-name}-services/{**catch-all}`
+-   **Path Stripping**: Transform paths to remove service prefix before forwarding
+-   **Route Matching**: Use YARP route matching patterns for flexible routing
+-   **Load Balancing**: Configure multiple destinations per cluster for load balancing
+
+## Common Patterns
+
+-   **Request Transformation**: Use YARP transforms for:
+    -   Path rewriting
+    -   Header manipulation
+    -   Query string modification
+-   **Response Transformation**: Use YARP transforms for:
+    -   Response header modification
+    -   Status code mapping (if needed)
+-   **Middleware Pipeline**: Order middleware correctly:
+    1.  Exception handling
+    2.  HTTPS redirection
+    3.  Authentication
+    4.  Authorization
+    5.  Reverse proxy
+    6.  Controllers
+
+## Testing
+
+-   **Integration Tests**: Write integration tests for routing and forwarding
+-   **Health Check Tests**: Test health check endpoints
+-   **Authentication Tests**: Test authentication/authorization flows
+-   **Mock Backend Services**: Mock backend services in tests
+
+## Performance Considerations
+
+-   **Connection Pooling**: YARP handles connection pooling automatically
+-   **Caching**: Consider caching responses at gateway level (if appropriate)
+-   **Compression**: Enable response compression if needed
+-   **Async Operations**: Use async/await for all I/O operations
+
+## Monitoring & Alerting
+
+-   **Metrics**: Expose metrics for:
+    -   Request rates
+    -   Response times
+    -   Error rates
+    -   Backend service health
+-   **Distributed Tracing**: Ensure trace context is propagated to backend services
+-   **Logging**: Log gateway-specific events (routing decisions, authentication failures, etc.)
+
+## Code Organization
+
+-   **Extensions Folder**: Place extension methods in `Extensions/` folder
+-   **Controllers Folder**: Place controllers in `Controllers/` folder
+-   **Configuration**: Keep configuration in `appsettings.json` files
+-   **Minimal Code**: Keep gateway code minimal; prefer configuration over code
+
+## Best Practices
+
+-   **Single Responsibility**: Gateway should only handle routing, authentication, and cross-cutting concerns
+-   **No Business Logic**: Never implement business logic in gateway
+-   **Configuration Over Code**: Prefer YARP configuration over code-based routing
+-   **Versioning**: Consider API versioning at gateway level if needed
+-   **Documentation**: Keep gateway documentation up-to-date with routing changes

@@ -1,9 +1,0 @@
----
-globs:
-  alwaysApply: true
----
-
-# Instructions
-
-1. [./custom-agent.mdc]
-2. [./project-rules.mdc]

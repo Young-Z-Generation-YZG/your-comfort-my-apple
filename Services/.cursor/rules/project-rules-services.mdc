@@ -1,0 +1,242 @@
+---
+globs:
+    - "Services/**"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+AI:
+    alwaysApply: true
+---
+
+# Services Project Rules
+
+These rules apply to all microservices under `Services` folder, including:
+
+-   BuildingBlocks
+-   Catalog
+-   Discount
+-   Identity
+-   Ordering
+
+## Architecture Pattern
+
+-   **Clean Architecture**: All services follow Domain-Driven Design (DDD) with layered architecture:
+    -   **Domain Layer** (`YGZ.{Service}.Domain`): Core business entities, value objects, domain events, and domain logic. No dependencies on other layers.
+    -   **Application Layer** (`YGZ.{Service}.Application`): Use cases, commands, queries, handlers (CQRS), and application services. Depends only on Domain.
+    -   **Infrastructure Layer** (`YGZ.{Service}.Infrastructure`): Data access, external services, caching, messaging. Implements interfaces defined in Application/Domain.
+    -   **API Layer** (`YGZ.{Service}.Api`): Controllers, request/response DTOs, middleware, dependency injection setup. Entry point for HTTP/gRPC.
+
+## CQRS Pattern
+
+-   Use **MediatR** for CQRS implementation:
+    -   Commands: Implement `ICommand<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Queries: Implement `IQuery<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`
+    -   Handlers: Implement `ICommandHandler<TCommand, TResponse>` or `IQueryHandler<TQuery, TResponse>`
+-   Commands and queries must return `Result<TResponse>` from `YGZ.BuildingBlocks.Shared.Abstractions.Result`
+-   Organize by feature: `Application/{Feature}/Commands/{CommandName}` and `Application/{Feature}/Queries/{QueryName}`
+
+## Result Pattern
+
+-   All handlers must return `Result<TResponse>`:
+    -   Use `Result.Success(data)` for successful operations
+    -   Use `Result.Failure(Error)` or `Result.ValidationFailure(ValidationError[])` for failures
+-   Controllers use `result.Match(onSuccess: Ok, onFailure: HandleFailure)` pattern
+-   Never throw exceptions from application layer; use Result pattern instead
+
+## BuildingBlocks Usage
+
+-   **YGZ.BuildingBlocks.Shared**: Contains shared abstractions, contracts, enums, value objects, and utilities:
+    -   Use `ICommand<TResponse>`, `IQuery<TResponse>` for CQRS
+    -   Use `Result<T>` for error handling
+    -   Use shared contracts from `Contracts/` for inter-service communication
+    -   Use shared enums from `Enums/` (e.g., `EOrderStatus`, `EPaymentMethod`)
+    -   Use value objects like `TenantId`, `UserId`, `BranchId`
+-   **YGZ.BuildingBlocks.Messaging**: Use for event-driven communication between services
+-   Do not duplicate shared code; reference BuildingBlocks projects instead
+
+## Controllers
+
+-   All controllers inherit from `ApiController` base class
+-   Use MediatR `ISender` to send commands/queries:
+    ```csharp
+    var result = await _sender.Send(command, cancellationToken);
+    return result.Match(onSuccess: Ok, onFailure: HandleFailure);
+    ```
+-   Use Mapster `IMapper` for request-to-command/query mapping
+-   Route pattern: `[Route("api/v{version:apiVersion}/{resource}")]`
+-   Use API versioning attributes
+-   Use `[OpenApiTag]` for Swagger documentation
+-   Use `CancellationToken` in all async controller methods
+
+## Request/Response Contracts
+
+-   **Request DTOs**: Place in `Api/Contracts/{Feature}Request/` (e.g., `CreateCategoryRequest.cs`)
+    -   Use FluentValidation for request validation
+    -   Include example classes for Swagger (e.g., `CreateCategoryRequestExample.cs`)
+-   **Response DTOs**: Use shared contracts from `YGZ.BuildingBlocks.Shared.Contracts` when possible
+    -   For service-specific responses, place in `Api/Contracts/{Feature}Response/`
+-   Use `PaginationResponse<T>` from BuildingBlocks for paginated results
+
+## Dependency Injection
+
+-   Use extension methods for layer registration:
+    -   `AddPresentationLayer()` in API layer
+    -   `AddApplicationLayer(configuration)` in Application layer
+    -   `AddInfrastructureLayer(configuration)` in Infrastructure layer
+-   Register MediatR handlers: `services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationAssembly).Assembly))`
+-   Register FluentValidation validators: `services.AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssembly(...))`
+-   Register Mapster mappings: `services.AddSingleton<IMapper>(new Mapper(...))`
+
+## Multi-Tenancy
+
+-   Use `X-TenantId` header for tenant isolation
+-   Implement `ITenantHttpContext` from BuildingBlocks to access tenant context
+-   Use `TenantId` value object for type-safe tenant identification
+-   Apply tenant filtering in queries automatically via infrastructure layer
+
+## Authentication & Authorization
+
+-   Use **Keycloak** for authentication via `Keycloak.AuthServices`
+-   Use `[ProtectedResource("resource")]` attribute for resource-based authorization
+-   Use `[AllowAnonymous]` only when explicitly required
+-   Access user context via `IUserHttpContext` from BuildingBlocks
+
+## Validation
+
+-   Use **FluentValidation** for request validation
+-   Register validators in Application layer DI setup
+-   Use `ValidationPipelineBehavior` from BuildingBlocks for automatic validation
+-   Validation errors are returned via `Result.ValidationFailure(ValidationError[])`
+
+## Error Handling
+
+-   Use `GlobalExceptionHandler` from BuildingBlocks for unhandled exceptions
+-   Use `ApplicationProblemDetailsFactory` for consistent error responses
+-   Controllers use `HandleFailure` method from `ApiController` base class
+-   Never expose internal exceptions to clients; map to user-friendly errors
+
+## Logging
+
+-   Use **Serilog** for structured logging
+-   Use `ILogger<T>` with dependency injection
+-   Configure Serilog via `AddSerilogExtension` extension method
+-   Use **OpenTelemetry** for distributed tracing:
+    ```csharp
+    builder.Logging.AddOpenTelemetry(logging => {
+        logging.IncludeFormattedMessage = true;
+        logging.IncludeScopes = true;
+    });
+    ```
+
+## Health Checks
+
+-   Register health checks in `Program.cs`:
+    ```csharp
+    services.AddHealthChecks()
+        .AddMongoDb(connectionString) // or other checks
+    ```
+-   Map health endpoint: `app.MapHealthChecks("/health", new HealthCheckOptions { ... })`
+
+## gRPC Support
+
+-   Define `.proto` files in `Api/Protos/` directory
+-   Implement gRPC services: `public class {Service}RpcService : {Service}Service.{Service}ServiceBase`
+-   Register gRPC: `services.AddGrpc()` and `app.MapGrpcService<{Service}RpcService>()`
+-   Use `ConvertGrpcEnumToNormalEnum` and `ConvertNormalEnumToGrpcEnum` utilities from BuildingBlocks
+
+## Caching
+
+-   Use **Redis** for distributed caching
+-   Access via `StackExchange.Redis.IConnectionMultiplexer`
+-   Use cache key prefixes from `CacheKeyPrefixConstants` in BuildingBlocks
+-   Clear cache on data mutations
+
+## Database
+
+-   Use appropriate database per service (MongoDB, SQL Server, etc.)
+-   Implement repository pattern in Infrastructure layer
+-   Use `IAuditable` interface for entities that need audit fields
+-   Use `ISoftDelete` interface for soft-delete support
+
+## API Documentation
+
+-   Use **NSwag** (OpenAPI) for API documentation
+-   Configure Swagger via `AddSwaggerExtension()` extension method
+-   Use `[OpenApiTag]` attributes on controllers
+-   Include example classes for request DTOs
+-   Use `SwaggerHeaderAttribute` for custom headers (e.g., X-TenantId)
+
+## Code Style
+
+-   Use **C# 12** features where appropriate
+-   Follow C# naming conventions:
+    -   Classes: PascalCase
+    -   Methods: PascalCase
+    -   Properties: PascalCase
+    -   Private fields: \_camelCase
+    -   Parameters: camelCase
+-   Use file-scoped namespaces: `namespace YGZ.{Service}.{Layer};`
+-   Use primary constructors where appropriate (C# 12)
+-   Use `var` for local variables when type is obvious
+-   Use expression-bodied members when appropriate
+
+## Naming Conventions
+
+-   **Commands**: `{Action}{Entity}Command` (e.g., `CreateCategoryCommand`)
+-   **Queries**: `Get{Entity}Query` or `Get{Entity}{Detail}Query` (e.g., `GetCategoriesQuery`, `GetCategoryDetailsQuery`)
+-   **Handlers**: `{Command/Query}Handler` (e.g., `CreateCategoryCommandHandler`)
+-   **Controllers**: `{Entity}Controller` (e.g., `CategoryController`)
+-   **Request DTOs**: `{Action}{Entity}Request` (e.g., `CreateCategoryRequest`)
+-   **Response DTOs**: `{Entity}Response` (e.g., `CategoryResponse`)
+-   **Enums**: `E{Name}` prefix (e.g., `EOrderStatus`, `EPaymentMethod`)
+
+## Testing
+
+-   Write unit tests for domain logic and application handlers
+-   Write integration tests for API endpoints
+-   Use test fixtures and builders for test data
+-   Mock external dependencies appropriately
+
+## Security
+
+-   Never commit secrets or connection strings
+-   Use `IConfiguration` and `appsettings.json` for configuration
+-   Use environment-specific `appsettings.{Environment}.json` files
+-   Validate all inputs; never trust client data
+-   Use HTTPS in production (commented out in development)
+
+## Performance
+
+-   Use async/await for all I/O operations
+-   Use `CancellationToken` throughout async chains
+-   Implement pagination for list endpoints
+-   Use caching for frequently accessed data
+-   Use `ConfigureHttpClientDefaults` with resilience handlers for external HTTP calls
+
+## Inter-Service Communication
+
+-   Use **gRPC** for synchronous inter-service calls
+-   Use **Messaging** (via BuildingBlocks.Messaging) for asynchronous event-driven communication
+-   Use shared contracts from `YGZ.BuildingBlocks.Shared.Contracts` for consistency
+-   Handle service failures gracefully with retries and circuit breakers
+
+## Docker & Deployment
+
+-   Include `Dockerfile` in API projects
+-   Use multi-stage builds for smaller images
+-   Configure health checks in Docker
+-   Use environment variables for configuration
+
+## Code Organization
+
+-   Group related files by feature, not by type
+-   Keep controllers thin; business logic belongs in Application layer
+-   Use extension methods for cross-cutting concerns
+-   Keep domain entities pure; no infrastructure dependencies
+-   Use value objects for domain concepts (e.g., `TenantId`, `UserId`)
+
+## Common Patterns
+
+-   **Pipeline Behaviors**: Use `ValidationPipelineBehavior` and `RequestLoggingPipelineBehavior` from BuildingBlocks
+-   **Mapping**: Use Mapster for DTO-to-command/query mapping
+-   **Pagination**: Use `PaginationResponse<T>` and `PaginationLinks` from BuildingBlocks
+-   **Filtering/Sorting**: Use query builders and expression builders from BuildingBlocks utilities

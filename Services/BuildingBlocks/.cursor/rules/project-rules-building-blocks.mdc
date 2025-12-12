@@ -1,0 +1,140 @@
+---
+globs:
+    - "Services/BuildingBlocks/**/*"
+alwaysApply: true
+---
+
+## BuildingBlocks Project Rules
+
+### Scope
+
+-   Applies to shared libraries and building blocks used across microservices.
+-   Contains two main projects: `YGZ.BuildingBlocks.Shared` and `YGZ.BuildingBlocks.Messaging`.
+-   Pair with `custom-agent.mdc`; keep changes generic and reusable across all services.
+
+### Namespace Conventions
+
+-   **Shared**: `YGZ.BuildingBlocks.Shared.{SubNamespace}`
+    -   Examples: `YGZ.BuildingBlocks.Shared.Abstractions.CQRS`, `YGZ.BuildingBlocks.Shared.Enums`, `YGZ.BuildingBlocks.Shared.Extensions`
+-   **Messaging**: `YGZ.BuildingBlocks.Messaging.{SubNamespace}`
+    -   Examples: `YGZ.BuildingBlocks.Messaging.Events`, `YGZ.BuildingBlocks.Messaging.IntegrationEvents.{ServiceName}`
+
+### Naming Conventions
+
+#### Enums
+
+-   **Prefix**: `E` (e.g., `EOrderStatus`, `EPaymentMethod`, `EProductState`)
+-   **Base Class**: Inherit from `SmartEnum<T>` (Ardalis.SmartEnum)
+-   **Constants**: Use `public static readonly` fields with `nameof()` for names
+-   **Location**: `YGZ.BuildingBlocks.Shared/Enums/`
+
+#### Interfaces
+
+-   **Prefix**: `I` (e.g., `ICommand`, `ICommandHandler`, `IQuery`, `IQueryHandler`)
+-   **Location**: `YGZ.BuildingBlocks.Shared/Abstractions/`
+
+#### Extension Methods
+
+-   **Suffix**: `Extension` (e.g., `ResultExtension`, `MappingExtension`, `SerilogExtension`)
+-   **Class**: `public static class {Name}Extension`
+-   **Location**: `YGZ.BuildingBlocks.Shared/Extensions/` or `YGZ.BuildingBlocks.Messaging/Extensions/`
+
+#### Integration Events
+
+-   **Suffix**: `IntegrationEvent` (e.g., `OrderConfirmedIntegrationEvent`, `BasketCheckoutIntegrationEvent`)
+-   **Base**: Inherit from `IntegrationEvent` record
+-   **Naming**: Use past tense for events (e.g., `OrderConfirmed`, `OrderDelivered`, `OrderPaid`)
+-   **Location**: `YGZ.BuildingBlocks.Messaging/IntegrationEvents/{ServiceName}/`
+-   **Structure**: Organize by service (e.g., `CatalogService/`, `OrderingService/`, `BasketService/`)
+
+#### Value Objects
+
+-   **Naming**: Descriptive name without prefix (e.g., `TenantId`, `UserId`, `BranchId`)
+-   **Base**: Inherit from `ValueObject` base class
+-   **Methods**: Include `Create()` and/or `Of()` static factory methods
+-   **Location**: `YGZ.BuildingBlocks.Shared/ValueObjects/`
+
+#### Contracts (DTOs)
+
+-   **Naming**: Descriptive names indicating purpose (e.g., `GetBasketResponse`, `CheckoutBasketResponse`)
+-   **Suffixes**: Use `Request`, `Response`, `Dto` as appropriate
+-   **Location**: `YGZ.BuildingBlocks.Shared/Contracts/{Domain}/`
+-   **Structure**: Organize by domain (e.g., `Baskets/`, `Catalogs/`, `Ordering/`, `Auth/`)
+
+#### Behaviors
+
+-   **Suffix**: `Behavior` (e.g., `ValidationPipelineBehavior`, `RequestLoggingPipelineBehavior`)
+-   **Base**: Implement `IPipelineBehavior<TRequest, TResponse>` (MediatR)
+-   **Location**: `YGZ.BuildingBlocks.Shared/Behaviors/`
+
+#### Constants
+
+-   **Suffix**: `Constants` (e.g., `AuthorizationConstants`, `CacheKeyPrefixConstants`)
+-   **Location**: `YGZ.BuildingBlocks.Shared/Constants/`
+
+#### Settings
+
+-   **Suffix**: `Settings` (e.g., `MessageBrokerSettings`)
+-   **Location**: `YGZ.BuildingBlocks.Messaging/Settings/` or `YGZ.BuildingBlocks.Shared/Settings/`
+
+#### Utilities
+
+-   **Naming**: Descriptive names (e.g., `CalculatePrice`, `PaginationLinksBuilder`, `QueryParamBuilder`)
+-   **Location**: `YGZ.BuildingBlocks.Shared/Utils/`
+
+#### Errors
+
+-   **Naming**: Descriptive names (e.g., `Error`, `GlobalExceptionHandler`, `ApplicationProblemDetailsFactory`)
+-   **Location**: `YGZ.BuildingBlocks.Shared/Errors/`
+
+### Code Structure Guidelines
+
+#### CQRS Abstractions
+
+-   Commands: `ICommand<TResponse> : IRequest<Result<TResponse>>`
+-   Queries: `IQuery<TResponse> : IRequest<Result<TResponse>>`
+-   Handlers: `ICommandHandler<TCommand, TResponse>` and `IQueryHandler<TQuery, TResponse>`
+
+#### Result Pattern
+
+-   Use `Result<T>` and `ValidationResult` from `YGZ.BuildingBlocks.Shared.Abstractions.Result`
+-   All commands/queries return `Result<TResponse>`
+
+#### Integration Events Structure
+
+-   Base event: `IntegrationEvent` record with `Id`, `OccurredOn`, `EventType`
+-   Service-specific events inherit from base
+-   Use `sealed record` for event classes
+-   Use `required` properties for event data
+
+#### Extension Methods Pattern
+
+-   Extension methods should be in static classes
+-   Use `this` keyword for the extended type
+-   Group related extensions in the same class
+
+#### Value Objects Pattern
+
+-   Private constructor
+-   Public static factory methods (`Create`, `Of`)
+-   Override `GetEqualityComponents()` from base `ValueObject`
+
+### File Organization
+
+-   One class/interface/enum per file
+-   File name matches class/interface/enum name
+-   Group related abstractions in appropriate folders
+
+### Dependencies
+
+-   **Shared**: Should not depend on specific microservices
+-   **Messaging**: Depends on MassTransit for message broker integration
+-   Both projects should remain framework-agnostic where possible
+
+### Best Practices
+
+-   Keep abstractions generic and reusable
+-   Avoid business logic in building blocks
+-   Use nullable reference types (`Nullable: enable`)
+-   Follow C# 8.0+ conventions (records, init-only properties, etc.)
+-   Use `sealed` for classes that shouldn't be inherited (unless specifically designed for inheritance)

@@ -1,9 +1,0 @@
----
-globs:
-  alwaysApply: true
----
-
-## Services Project Rules
-
-- Applies to service solution coordination under `Services`.
-- Pair with `custom-agent.mdc`; keep rules scoped to backend services.

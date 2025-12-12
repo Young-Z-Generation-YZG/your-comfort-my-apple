@@ -1,9 +1,0 @@
----
-globs:
-  alwaysApply: true
----
-
-## Ordering Project Rules
-
-- Applies to Ordering microservice.
-- Pair with `custom-agent.mdc`; keep scope to Ordering domain code.
