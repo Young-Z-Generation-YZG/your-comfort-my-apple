@@ -233,3 +233,8 @@ Global naming rule:
 | Coupon auto-remove when none selected | ✅ Implemented | `cart/page.tsx`                        |
 | Authenticated cart operations (2.2)   | ✅ Implemented | `useCartFormV2()` + `@Services/Basket` |
 
+
+
+
+
+

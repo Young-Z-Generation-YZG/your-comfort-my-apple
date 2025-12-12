@@ -5,13 +5,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
-
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Identity.Api.Contracts.Addresses;
+using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Contracts.Profiles;
 using YGZ.Identity.Api.Contracts.Users;
 using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Users.Commands.AddAddress;
+using YGZ.Identity.Application.Users.Commands.AssignRoles;
 using YGZ.Identity.Application.Users.Commands.DeleteAddress;
 using YGZ.Identity.Application.Users.Commands.SetDefaultAddress;
 using YGZ.Identity.Application.Users.Commands.UpdateAddress;
@@ -22,6 +23,7 @@ using YGZ.Identity.Application.Users.Queries.GetAddresses;
 using YGZ.Identity.Application.Users.Queries.GetListUsers;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
 using YGZ.Identity.Application.Users.Queries.GetUserById;
+using YGZ.Identity.Application.Users.Queries.GetUserRoles;
 using YGZ.Identity.Application.Users.Queries.GetUsers;
 using YGZ.Identity.Application.Users.Queries.GetUsersByAdmin;
 using static YGZ.BuildingBlocks.Shared.Constants.AuthorizationConstants;
@@ -205,6 +207,29 @@ public class UserController : ApiController
         var cmd = _mapper.Map<UpdateProfileCommand>(request);
 
         var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpPut("{userId}/roles")]
+    [OpenApiOperation("Assign roles to user by id", "Accessible only to ADMIN or ADMIN_SUPER roles.")]
+    public async Task<IActionResult> AssignRoles([FromRoute] string userId, [FromBody] AssignRolesRequest request, CancellationToken cancellationToken)
+    {
+        var cmd = _mapper.Map<AssignRolesCommand>(request);
+        cmd.UserId = userId;
+
+        var result = await _sender.Send(cmd, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("{userId}/roles")]
+    [OpenApiOperation("Get roles of user by id", "Accessible only to ADMIN or ADMIN_SUPER roles.")]
+    public async Task<IActionResult> GetUserRoles([FromRoute] string userId, CancellationToken cancellationToken)
+    {
+        var query = new GetUserRolesQuery { UserId = userId };
+
+        var result = await _sender.Send(query, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }

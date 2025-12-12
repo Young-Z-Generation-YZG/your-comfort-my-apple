@@ -11,7 +11,6 @@ using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Extensions;
 using YGZ.Identity.Application.Auths.Commands.AccessOtpPage;
 using YGZ.Identity.Application.Auths.Commands.AddNewStaff;
-using YGZ.Identity.Application.Auths.Commands.AssignRoles;
 using YGZ.Identity.Application.Auths.Commands.ChangePassword;
 using YGZ.Identity.Application.Auths.Commands.Login;
 using YGZ.Identity.Application.Auths.Commands.Logout;
@@ -198,17 +197,6 @@ public class AuthController : ApiController
         var result = await _sender.Send(cmd, cancellationToken);
 
         return result.Match(onSuccess: result => Ok(result), onFailure: HandleAuthFailure);
-    }
-
-    [HttpPost("assign-roles")]
-    [AllowAnonymous]
-    public async Task<IActionResult> AssignRoles([FromBody] AssignRolesRequest request, CancellationToken cancellationToken)
-    {
-        var cmd = _mapper.Map<AssignRolesCommand>(request);
-
-        var result = await _sender.Send(cmd, cancellationToken);
-
-        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
     }
 
     [HttpPost("add-new-staff")]

@@ -2,6 +2,7 @@
 'use client';
 
 import { LoadingOverlay } from '@components/loading-overlay';
+import AddNewStaffDialog from '@components/add-new-staff-dialog';
 import useIdentityService from '~/src/hooks/api/use-identity-service';
 import {
    ColumnDef,
@@ -58,7 +59,7 @@ import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
-import { TUser } from '~/src/infrastructure/services/identity.service';
+import { TUser } from '~/src/domain/types/identity.type';
 import usePaginationV2 from '~/src/hooks/use-pagination';
 import { useDebounce } from '~/src/hooks/use-debounce';
 
@@ -398,6 +399,21 @@ const HRMPage = () => {
                   Manage and view all users in the system
                </p>
             </div>
+            <AddNewStaffDialog
+               onSuccess={() => {
+                  // Refresh the user list
+                  // getUsersByAdminAsync({
+                  //    _page: filters._page ?? undefined,
+                  //    _limit: filters._limit ?? undefined,
+                  //    _email: filters._email ?? undefined,
+                  //    _firstName: filters._firstName ?? undefined,
+                  //    _lastName: filters._lastName ?? undefined,
+                  //    _phoneNumber: filters._phoneNumber ?? undefined,
+                  //    _gender: filters._gender ?? undefined,
+                  //    _emailVerified: filters._emailVerified ?? undefined,
+                  // });
+               }}
+            />
          </div>
 
          <LoadingOverlay isLoading={isLoading}>

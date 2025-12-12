@@ -113,46 +113,6 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
         };
     }
 
-    // public async override Task<BooleanResponse> DeductQuantityGrpc(DeductQuantityGrpcRequest request, ServerCallContext context)
-    // {
-    //     var command = new DeductQuantityCommand
-    //     {
-    //        SkuId = request.SkuId,
-    //        Quantity = request.Quantity.HasValue ? request.Quantity.Value : 0,
-    //        PromotionId = request.PromotionId,
-    //        PromotionType = request.PromotionType switch
-    //        {
-    //         EPromotionTypeGrpc.PromotionTypeCoupon => EPromotionType.COUPON.Name,
-    //         EPromotionTypeGrpc.PromotionTypeEvent => EPromotionType.EVENT_ITEM.Name,
-    //         _ => EPromotionType.UNKNOWN.Name
-    //        }
-    //     };
-
-    //     var result = await _sender.Send(command);
-
-    //     if (result.IsFailure)
-    //     {
-    //         if (result.Error == Errors.Inventory.SkuDoesNotExist)
-    //         {
-    //             throw new RpcException(new Status(StatusCode.FailedPrecondition, result.Error.Message), new Metadata
-    //             {
-    //                 { "error-code", result.Error.Code },
-    //                 { "service-name", "CatalogService" }
-    //             });
-    //         }
-    //         else
-    //         {
-    //             throw new RpcException(new Status(StatusCode.Internal, result.Error.Message), new Metadata
-    //             {
-    //                 { "error-code", result.Error.Code },
-    //                 { "service-name", "CatalogService" }
-    //             });
-    //         }
-    //     }
-
-    //     return new BooleanResponse { IsSuccess = result.Response };
-    // }
-
     public async override Task<BooleanResponse> CheckInsufficientGrpc(CheckInsufficientRequest request, ServerCallContext context)
     {
         var promotionType = request.PromotionType switch
@@ -198,11 +158,9 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
     // privates methods
     private static ETenantTypeGrpc ConvertToETenantTypeGrpc(ETenantType tenantType)
     {
-
-
         return tenantType.Name switch
         {
-            "WARE_HOUSE" => ETenantTypeGrpc.TenantTypeWareHouse,
+            "WAREHOUSE" => ETenantTypeGrpc.TenantTypeWarehouse,
             "BRANCH" => ETenantTypeGrpc.TenantTypeBranch,
             _ => ETenantTypeGrpc.TenantTypeUnknown
         };

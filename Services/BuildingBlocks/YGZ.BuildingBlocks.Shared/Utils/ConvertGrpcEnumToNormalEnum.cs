@@ -41,7 +41,7 @@ public static class ConvertGrpcEnumToNormalEnum
 
         return tenantTypeGrpc switch
         {
-            "TenantTypeWareHouse" => ETenantType.WARE_HOUSE,
+            "TenantTypeWareHouse" => ETenantType.WAREHOUSE,
             "TenantTypeBranch" => ETenantType.BRANCH,
             _ => ETenantType.UNKNOWN
         };

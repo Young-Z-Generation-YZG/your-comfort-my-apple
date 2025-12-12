@@ -27,6 +27,7 @@ import {
    CardTitle,
 } from '@components/ui/card';
 import { Button } from '@components/ui/button';
+import { MultiSelect } from '@components/ui/multi-select';
 import { Badge } from '@components/ui/badge';
 import { Separator } from '@components/ui/separator';
 import {
@@ -49,6 +50,8 @@ import { LoadingOverlay } from '@components/loading-overlay';
 import useUserService from '~/src/hooks/api/use-user-service';
 import { TUser } from '~/src/domain/types/identity.type';
 import { Gender } from '~/src/domain/enums/gender.enum';
+import { ERole } from '~/src/domain/enums/role.enum';
+
 import { cn } from '~/src/infrastructure/lib/utils';
 import type { IUpdateProfileByIdPayload } from '~/src/infrastructure/services/user.service';
 
@@ -119,11 +122,15 @@ const StaffDetailPage = () => {
       updateProfileByUserIdAsync,
       getUserByUserIdQueryState,
       isLoading,
+      assignRolesAsync,
+      assignRolesState,
+      getUserRolesAsync,
    } = useUserService();
 
    // Use query state data directly instead of local state for automatic refetching
    const user = getUserByUserIdQueryState.data as TUser | undefined;
    const [isEditMode, setIsEditMode] = useState(false);
+   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
    const form = useForm<UpdateProfileFormValues>({
       resolver: zodResolver(updateProfileSchema),
@@ -152,7 +159,11 @@ const StaffDetailPage = () => {
       // Trigger the query - RTK Query will handle caching and automatic refetching
       // The data will be available via getUserByUserIdQueryState.data
       await getUserByUserIdAsync(userId);
-   }, [userId, getUserByUserIdAsync]);
+      const rolesResult = await getUserRolesAsync(userId);
+      if (rolesResult.isSuccess && rolesResult.data) {
+         setSelectedRoles(rolesResult.data);
+      }
+   }, [userId, getUserByUserIdAsync, getUserRolesAsync]);
 
    useEffect(() => {
       fetchUserDetails();
@@ -687,6 +698,67 @@ const StaffDetailPage = () => {
                         </CardContent>
                      </Card>
                   </div>
+
+                  {/* Roles and Permissions */}
+                  <Card>
+                     <CardHeader>
+                        <CardTitle>Roles and Permissions</CardTitle>
+                        <CardDescription>
+                           Assign roles to this staff member. This will replace
+                           existing roles.
+                        </CardDescription>
+                     </CardHeader>
+                     <CardContent className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
+                           <div className="space-y-2">
+                              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                 Roles
+                              </label>
+                              <MultiSelect
+                                 options={[
+                                    { label: 'Admin', value: ERole.ADMIN },
+                                    {
+                                       label: 'Super Admin',
+                                       value: ERole.ADMIN_SUPER,
+                                    },
+                                    { label: 'Staff', value: ERole.STAFF },
+                                    { label: 'User', value: ERole.USER },
+                                 ]}
+                                 value={selectedRoles}
+                                 onValueChange={(vals) =>
+                                    setSelectedRoles(vals)
+                                 }
+                                 placeholder="Select roles"
+                                 className="justify-start"
+                              />
+                           </div>
+                           <div className="flex gap-2">
+                              <Button
+                                 onClick={async () => {
+                                    if (!userId) return;
+                                    await assignRolesAsync({
+                                       user_id: userId,
+                                       roles: selectedRoles,
+                                    });
+                                 }}
+                                 disabled={
+                                    (assignRolesState?.isLoading ?? false) ||
+                                    selectedRoles.length === 0
+                                 }
+                              >
+                                 <Save className="mr-2 h-4 w-4" /> Assign Roles
+                              </Button>
+                              <Button
+                                 type="button"
+                                 variant="outline"
+                                 onClick={() => setSelectedRoles([])}
+                              >
+                                 <X className="mr-2 h-4 w-4" /> Clear
+                              </Button>
+                           </div>
+                        </div>
+                     </CardContent>
+                  </Card>
 
                   {/* System Information */}
                   <Card>

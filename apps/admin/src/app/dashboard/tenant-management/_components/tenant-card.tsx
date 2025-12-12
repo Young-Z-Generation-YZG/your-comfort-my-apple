@@ -4,11 +4,11 @@ import { Building2, Calendar, CheckCircle2, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { ETenantType } from '~/src/domain/enums/tenant-type.enum';
 import { cn } from '~/src/infrastructure/lib/utils';
-import { TTenant } from '~/src/infrastructure/services/tenant.service';
+import { TTenant } from '~/src/domain/types/catalog.type';
 
 const getTenantTypeStyle = (tenantType: string) => {
    switch (tenantType) {
-      case ETenantType.WARE_HOUSE:
+      case ETenantType.WAREHOUSE:
          return 'bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-600 hover:text-white hover:border-purple-600 transition-colors';
       case ETenantType.BRANCH:
          return 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors';
@@ -19,7 +19,7 @@ const getTenantTypeStyle = (tenantType: string) => {
 
 const getTenantTypeTextStyle = (tenantType: string) => {
    switch (tenantType) {
-      case ETenantType.WARE_HOUSE:
+      case ETenantType.WAREHOUSE:
          return 'text-purple-700';
       case ETenantType.BRANCH:
          return 'text-blue-700';
@@ -48,12 +48,12 @@ const TenantCard = ({ tenant }: { tenant: TTenant }) => {
                   <span
                      className={cn('p-3 rounded-lg', {
                         'bg-purple-100 dark:bg-purple-900/30':
-                           tenant.tenant_type === ETenantType.WARE_HOUSE,
+                           tenant.tenant_type === ETenantType.WAREHOUSE,
                         'bg-blue-100 dark:bg-blue-900/30':
                            tenant.tenant_type === ETenantType.BRANCH,
                      })}
                   >
-                     {tenant.tenant_type === ETenantType.WARE_HOUSE && (
+                     {tenant.tenant_type === ETenantType.WAREHOUSE && (
                         <Building2 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                      )}
 
@@ -89,7 +89,7 @@ const TenantCard = ({ tenant }: { tenant: TTenant }) => {
                         getTenantTypeStyle(tenant.tenant_type),
                      )}
                   >
-                     {tenant.tenant_type === ETenantType.WARE_HOUSE && (
+                     {tenant.tenant_type === ETenantType.WAREHOUSE && (
                         <Building2 className="h-3.5 w-3.5" />
                      )}
                      {tenant.tenant_type === ETenantType.BRANCH && (

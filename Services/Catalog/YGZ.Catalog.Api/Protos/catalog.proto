@@ -10,7 +10,7 @@ package catalog;
 enum ETenantClassificationGrpc
 {
     TENANT_CLASSIFICATION_UNKNOWN = 0;
-    TENANT_CLASSIFICATION_WARE_HOUSE = 1;
+    TENANT_CLASSIFICATION_WAREHOUSE = 1;
     TENANT_CLASSIFICATION_BRANCH = 2;
 }
 
@@ -24,7 +24,7 @@ enum ESkuStateGrpc
 enum ETenantTypeGrpc
 {
     TENANT_TYPE_UNKNOWN = 0;
-    TENANT_TYPE_WARE_HOUSE = 1;
+    TENANT_TYPE_WAREHOUSE = 1;
     TENANT_TYPE_BRANCH = 2;
 }
 

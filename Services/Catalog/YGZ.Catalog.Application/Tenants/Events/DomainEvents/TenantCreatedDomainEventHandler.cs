@@ -52,7 +52,7 @@ public class TenantCreatedDomainEventHandler : INotificationHandler<TenantCreate
                     {
                         var iphoneSkuPrice = iphoneSkuPrices.FirstOrDefault(p => p.Model.NormalizedName == modelItem.NormalizedName && p.Storage.NormalizedName == storageItem.NormalizedName && p.Color.NormalizedName == colorItem.NormalizedName);
 
-                        var sku = SKU.Create(skuId: notification.Tenant.TenantType == ETenantType.WARE_HOUSE.Name ? SkuId.Of(iphoneSkuPrice?.Id.Value!) : SkuId.Create(),
+                        var sku = SKU.Create(skuId: notification.Tenant.TenantType == ETenantType.WAREHOUSE.Name ? SkuId.Of(iphoneSkuPrice?.Id.Value!) : SkuId.Create(),
                                              modelId: model.Id,
                                              tenantId: notification.Tenant.Id,
                                              branchId: notification.Branch.Id,

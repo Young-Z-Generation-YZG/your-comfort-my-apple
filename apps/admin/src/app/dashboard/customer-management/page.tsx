@@ -57,7 +57,7 @@ import {
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
 import useFilter from '~/src/hooks/use-filter';
-import { TUser } from '~/src/infrastructure/services/identity.service';
+import { TUser } from '~/src/domain/types/identity.type';
 import { useDebounce } from '~/src/hooks/use-debounce';
 
 // Helper function to get gender badge styles

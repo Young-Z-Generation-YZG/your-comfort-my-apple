@@ -1,44 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
 import { baseQuery } from './base-query';
+import { TUser, IAddNewStaffPayload } from '~/src/domain/types/identity.type';
 import { setLogout } from '../redux/features/auth.slice';
 
-export type TUser = {
-   id: string;
-   tenant_id: string;
-   branch_id: string;
-   tenant_code: string;
-   user_name: string;
-   normalized_user_name: string;
-   email: string;
-   normalized_email: string;
-   email_confirmed: boolean;
-   phone_number: string;
-   profile: TUserProfile;
-   created_at: string;
-   updated_at: string;
-   updated_by: string;
-   is_deleted: boolean;
-   deleted_at: string;
-   deleted_by: string;
-};
-
-export type TUserProfile = {
-   id: string;
-   user_id: string;
-   first_name: string;
-   last_name: string;
-   birth_day: string;
-   gender: string;
-   image_id: string;
-   image_url: string | null;
-   created_at: string;
-   updated_at: string;
-   updated_by: string | null;
-   is_deleted: boolean;
-   deleted_at: string | null;
-   deleted_by: string | null;
-};
+// Domain entity types are defined in ~/src/domain/types. Use T-prefixed types there.
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/identity-services')(
@@ -55,6 +21,9 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
 
    return result;
 };
+
+// Moved payload types to domain/types/identity.type.ts
+// import interfaces instead of local type declarations
 
 export const identityApi = createApi({
    reducerPath: 'identity-api',
@@ -88,6 +57,14 @@ export const identityApi = createApi({
          }),
          providesTags: ['Users'],
       }),
+      addNewStaff: builder.mutation<boolean, IAddNewStaffPayload>({
+         query: (data) => ({
+            url: '/api/v1/auth/add-new-staff',
+            method: 'POST',
+            body: data,
+         }),
+         invalidatesTags: ['Users'],
+      }),
    }),
 });
 
@@ -95,4 +72,5 @@ export const {
    useLazyGetUsersByAdminQuery,
    useLazyGetListUsersQuery,
    useLazyGetUsersQuery,
+   useAddNewStaffMutation,
 } = identityApi;

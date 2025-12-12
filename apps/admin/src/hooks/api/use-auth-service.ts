@@ -18,11 +18,14 @@ import {
 import { useDispatch } from 'react-redux';
 import { ERole } from '~/src/domain/enums/role.enum';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
+import { useAddNewStaffMutation } from '~/src/infrastructure/services/identity.service';
+import { IAddNewStaffPayload } from '~/src/domain/types/identity.type';
 
 const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
    const [logoutMutation, logoutMutationState] = useLogoutMutation();
    const [getIdentityTrigger, getIdentityState] = useLazyGetIdentityQuery();
+   const [addNewStaffMutation, addNewStaffState] = useAddNewStaffMutation();
 
    const dispatch = useDispatch();
    const router = useRouter();
@@ -30,6 +33,7 @@ const useAuthService = () => {
    useCheckApiError([
       { title: 'Login failed', error: loginMutationState.error },
       { title: 'Logout failed', error: logoutMutationState.error },
+      { title: 'Add staff failed', error: addNewStaffState.error },
    ]);
 
    const authAppState = useAppSelector((state) => state.auth);
@@ -115,7 +119,25 @@ const useAuthService = () => {
       }
    }, [getIdentityTrigger]);
 
-   // centrally track the loading state
+   const addNewStaffAsync = useCallback(
+      async (payload: IAddNewStaffPayload) => {
+         try {
+            const result = await addNewStaffMutation(payload).unwrap();
+            toast.success('Staff member added successfully');
+            return {
+               isSuccess: true,
+               isError: false,
+               data: result,
+               error: null,
+            };
+         } catch (error) {
+            return { isSuccess: false, isError: true, data: null, error };
+         }
+      },
+      [addNewStaffMutation],
+   );
+
+   // centrally track the loading state (auth-related only)
    const isLoading = useMemo(() => {
       return (
          loginMutationState.isLoading ||
@@ -154,11 +176,13 @@ const useAuthService = () => {
       isLoading,
       isAuthenticated,
       getIdentityState,
+      addNewStaffState,
 
       // Actions
       loginAsync,
       logoutAsync,
       getIdentityAsync,
+      addNewStaffAsync,
 
       // Mutation states
       loginState: loginMutationState,

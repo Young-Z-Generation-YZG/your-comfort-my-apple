@@ -1,0 +1,238 @@
+---
+globs:
+   - 'apps/admin/**'
+   - '!**/node_modules/**'
+   - '!**/.next/**'
+AI:
+   alwaysApply: true
+---
+
+# Admin Project Rules
+
+These rules scope to apps/admin only.
+
+## ⚠️ Important: Feature Documentation Alignment
+
+**All feature documentation in `@docs/features` must align with and be consistent with the rules defined in this file.**
+
+- These rules are the source of truth for implementation patterns, conventions, and best practices.
+- Feature documentation (e.g., `docs/features/add-new-staff.md`, `docs/features/assign-roles.md`) should reflect and demonstrate these rules:
+   - Architecture patterns
+   - Data flow patterns
+   - File structure conventions
+   - Implementation examples
+   - API contracts
+- If there's a discrepancy between feature documentation and these rules, these rules take precedence.
+- When updating feature documentation, ensure it aligns with the current rules in this file.
+- When implementing features, follow these rules first, then update feature documentation to reflect the implementation.
+
+## Core stack and conventions
+
+- Framework: Next.js App Router with TypeScript and React. Client components must include 'use client'.
+- Styling: Tailwind CSS with shadcn/ui. Prefer utility classes; use cn from ~/src/infrastructure/lib/utils for conditional classes.
+- State/data: Redux Toolkit + RTK Query. Place services under apps/admin/src/infrastructure/services and expose hooks. When adding orchestration or side effects (toasts), wrap RTK hooks in apps/admin/src/hooks/api.
+- Path aliases:
+   - @components -> apps/admin/src/components
+   - ~/src -> apps/admin/src
+   - Prefer absolute imports with these aliases.
+- Dates: Use Intl.DateTimeFormat (see existing dateFormatter/dateOnlyFormatter patterns). Avoid adding new date libraries unless requested.
+
+## Network and API patterns
+
+- Use baseQuery('/<service-name>') from apps/admin/src/infrastructure/services/base-query.ts for all APIs.
+- Do not manually set Authorization or X-TenantId headers. baseQuery attaches them from Redux state.
+- 401 handling: rely on baseQuery to dispatch setLogout. Do not duplicate logout logic.
+- RTK Query endpoints:
+   - Provide proper tagTypes (e.g., 'Users', 'Baskets') and use providesTags/invalidatesTags to keep cache consistent.
+   - Define request/response types in ~/src/domain/types or ~/src/domain/interfaces.
+   - Keep endpoint URLs consistent with backend services (identity-services => /api/v1/auth, /api/v1/users, etc.).
+- Params: Pass arrays as arrays; baseQuery paramsSerializer appends repeated keys.
+
+## UI and components
+
+- Use shadcn/ui primitives from @components/ui. Maintain accessibility and consistent spacing.
+- Reuse shared components (e.g., LoadingOverlay) over ad-hoc spinners.
+- Keep components small and composable. Extract repeated Tailwind classes into helpers when appropriate.
+
+## Auth, roles, multi-tenant
+
+- Do not hardcode roles or tokens. Use Redux auth slice/selectors for role checks.
+- X-TenantId header is managed by tenant slice; do not set manually.
+- Assign Roles: do not implement UI here (another agent owns it). Service-layer endpoints/hooks are allowed.
+- Assign Roles endpoint: use user service route `PUT /api/v1/users/{userId}/roles` with body `{ roles: string[] }`; pass the user id via the path, not the request body.
+
+## Error and success handling
+
+- Use useCheckApiError/useCheckSuccess (or use-check-error/use-check-success) to standardize toasts/errors.
+- For ad-hoc async wrappers, return { isSuccess, isError, data, error }.
+- Use sonner toast for user feedback with concise messages.
+
+## Code style
+
+- Functional components with hooks; avoid class components.
+- Strong typing. Avoid any; prefer precise domain types.
+- Keep side effects in useEffect/useCallback with correct deps.
+- Avoid leftover console logs; remove debug logs before merging.
+
+## Routing
+
+- Route files under apps/admin/src/app. Co-locate route-specific components; share generic ones via components/.
+- Use next/navigation hooks (useRouter, useParams) in client components only.
+
+## Testing and QA
+
+- Keep PRs small/focused. Ensure RTK tags invalidate correctly.
+- Validate forms with zod + react-hook-form following existing patterns.
+
+## Zod Schemas and Data Flow (UI → API)
+
+### Schema Location and Purpose
+
+- **Location**: Zod schemas should be defined directly in the UI component files where they are used (e.g., inline in `add-new-staff-dialog.tsx`).
+- **Purpose**: Zod schemas validate and type UI form inputs. They define the shape of data as it exists in forms, before transformation to API payloads.
+- **Co-location**: Keep schemas close to where they're used to improve maintainability and reduce unnecessary file navigation.
+
+### Schema Structure
+
+- Define schemas using `z.object()` with validation rules and user-facing error messages directly in the component file.
+- Define:
+   - The schema itself (e.g., `const AddNewStaffSchema = z.object({...})`)
+   - The resolver: `const addNewStaffResolver = zodResolver(AddNewStaffSchema)`
+   - The form type: `type TAddNewStaffForm = z.input<typeof AddNewStaffSchema>`
+- Use `z.input<>` (not `z.infer<>`) for form types, as it preserves Date objects and other input types before transforms.
+- For conditional validation, use `.refine()` or extend base schemas (e.g., `AddNewStaffSuperAdminSchema` extends `AddNewStaffSchema`).
+
+### Data Flow: UI → Schema → Payload → API Hook → Service
+
+1. **UI Layer (Components)**:
+
+   - Use zod schemas with `react-hook-form` via `zodResolver(schema)`.
+   - Form data is typed as the schema's input type (e.g., `TAddNewStaffForm`).
+   - In `onSubmit`, transform zod-validated form data to API payload format:
+      ```typescript
+      const onSubmit: SubmitHandler<TAddNewStaffForm> = async (data) => {
+         // Transform: Date objects -> ISO strings, add computed fields, etc.
+         const payload: IAddNewStaffPayload = {
+            ...data,
+            birth_day: data.birth_day.toISOString(), // Date -> string
+            tenant_id: isSuperAdmin ? data.tenant_id : tenantId, // Add context
+         };
+         await addNewStaffAsync(payload);
+      };
+      ```
+
+2. **Payload Types (`~/src/domain/types/*.type.ts`)**:
+
+   - Define API payload interfaces with `I` prefix and `Payload` suffix (e.g., `IAddNewStaffPayload`).
+   - These represent the shape of data sent to the backend (strings, not Date objects).
+   - Import payload types in both API hooks and services.
+
+3. **API Hooks (`~/src/hooks/api/*.ts`)**:
+
+   - Accept payload interfaces from `~/src/domain/types` (not zod schema types).
+   - Wrap RTK Query hooks to add side effects (toasts, error handling).
+   - Return normalized shape: `{ isSuccess, isError, data, error }`.
+   - Example:
+      ```typescript
+      const addNewStaffAsync = useCallback(
+         async (payload: IAddNewStaffPayload) => {
+            try {
+               const result = await addNewStaffMutation(payload).unwrap();
+               toast.success('Staff member added successfully');
+               return {
+                  isSuccess: true,
+                  isError: false,
+                  data: result,
+                  error: null,
+               };
+            } catch (error) {
+               return { isSuccess: false, isError: true, data: null, error };
+            }
+         },
+         [addNewStaffMutation],
+      );
+      ```
+
+4. **Services (`~/src/infrastructure/services/*.service.ts`)**:
+   - Define RTK Query endpoints with typed request/response.
+   - Use payload interfaces from `~/src/domain/types` for request bodies.
+   - Export generated hooks (e.g., `useAddNewStaffMutation`).
+   - Example:
+      ```typescript
+      addNewStaff: builder.mutation<boolean, IAddNewStaffPayload>({
+        query: (data) => ({
+          url: '/api/v1/auth/add-new-staff',
+          method: 'POST',
+          body: data,
+        }),
+        invalidatesTags: ['Users'],
+      }),
+      ```
+
+### Key Principles
+
+- **Separation of concerns**:
+   - Zod schemas = UI form validation (Date objects, user-friendly types)
+   - Payload interfaces = API contract (strings, backend-expected format)
+   - Never pass zod schema types directly to API hooks/services.
+- **Transformation happens in UI layer**: Convert between zod form types and payload interfaces in component `onSubmit` handlers.
+- **Type safety**: Use TypeScript types throughout the chain:
+   - Form: `TAddNewStaffForm` (from zod `z.input<>`)
+   - Payload: `IAddNewStaffPayload` (from domain/types)
+   - Response: `TUser`, `PaginationResponse<T>`, etc. (from domain/types)
+- **Date handling**: Zod schemas use `z.date()` for form inputs. Transform to ISO strings (`date.toISOString()`) when creating payloads.
+- **Reusability**: Create base schemas and extend them for variations (e.g., admin vs super-admin validation).
+
+## Security and configuration
+
+- Never commit secrets. Use envConfig for endpoints/config pulled from env.
+- Avoid introducing new runtime envs without alignment.
+
+## Documentation
+
+- Add inline comments where intent is non-obvious. Do not create standalone docs unless explicitly requested.
+
+## Naming conventions (types and interfaces)
+
+- Domain entity types: use T prefix.
+   - Examples: TUser, TProfile, TOrder
+- Request/command/mutation payloads: define as interfaces in ~/src/domain/types with I prefix and Payload suffix.
+   - Examples: IAddNewStaffPayload, IAssignRolesPayload
+- Do not export inline request types from infrastructure/services. Always import payload interfaces from ~/src/domain/types.
+- Response shapes may use T prefix and an optional Response suffix (e.g., TLoginResponse) or reuse existing shared interfaces (e.g., PaginationResponse).
+
+## Services (apps/admin/src/infrastructure/services)
+
+- Location: All service API clients must live under apps/admin/src/infrastructure/services.
+- Base query: Always use baseQuery('/<service>') from base-query.ts. Do not handcraft fetch calls.
+- Error handling:
+   - Centralize 401 handling inside a baseQueryHandler that dispatches setLogout. Do not trigger UI toasts from services.
+   - Do not perform window redirects in services unless explicitly required by product (prefer higher layers to handle navigation).
+- Endpoints:
+   - Prefer typed endpoints with explicit request/response types.
+   - Use providesTags/invalidatesTags to keep cache coherent. Pick minimal invalidations.
+   - Keep reducerPath unique per service (e.g., 'identity-api', 'user-api').
+   - Keep URL paths aligned with backend: e.g., identity-services => /api/v1/auth, /api/v1/users.
+- Params and bodies:
+   - Never construct query strings manually. Use the params option; baseQuery will serialize arrays as repeated keys.
+   - Define payload interfaces in domain types and import here. Avoid defining payloads inline.
+- Exports:
+   - Export generated hooks (useXQuery/useYMutation) and nothing UI-related from service files.
+   - Avoid exporting domain types from service files; re-export from domain/types if needed.
+
+## API Hooks (apps/admin/src/hooks/api)
+
+- Purpose: Wrap RTK Query hooks to coordinate side-effects (toasts, sequencing), merge results, and provide normalized result shapes.
+- Structure:
+   - File per vertical (e.g., use-identity-service.ts, use-user-service.ts).
+   - Expose async functions like getXxxAsync returning { isSuccess, isError, data, error }.
+   - Memoize aggregate isLoading with useMemo, and wrap calls with useCallback.
+- Error and success:
+   - Use useCheckApiError and useCheckSuccess hooks for toasts; do not toast inside service files.
+   - Keep toast messages concise and user-facing.
+- Naming:
+   - Hooks must be prefixed with use- and end with -service when they wrap a service (e.g., use-user-service.ts).
+   - Async functions should end with Async (e.g., getUsersAsync, updateProfileAsync).
+- Separation of concerns:
+   - Do not implement UI logic here. No navigation or layout side effects.
+   - Keep data mapping light; prefer keeping domain shapes consistent across layers.

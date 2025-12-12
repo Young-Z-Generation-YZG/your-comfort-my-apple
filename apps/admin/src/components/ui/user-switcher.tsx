@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import { Badge } from '@components/ui/badge';
 import useKeycloakService from '~/src/hooks/api/use-keycloak-service';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
-import { TUser } from '~/src/infrastructure/services/identity.service';
+import { TUser } from '~/src/domain/types/identity.type';
 
 const UserSwitcher = ({ users }: { users: TUser[] }) => {
    const { currentUser, impersonatedUser } = useAppSelector(

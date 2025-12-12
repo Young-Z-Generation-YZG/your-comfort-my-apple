@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from './base-query';
 import { setLogout } from '~/src/infrastructure/redux/features/auth.slice';
-import { TUser } from '~/src/domain/types/identity.type';
+import { TUser, IAssignRolesPayload } from '~/src/domain/types/identity.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/identity-services')(
@@ -27,7 +27,7 @@ export interface IUpdateProfileByIdPayload {
 
 export const userApi = createApi({
    reducerPath: 'user-api',
-   tagTypes: ['Users'],
+   tagTypes: ['Users', 'UserRoles'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getUserByUserId: builder.query<TUser, string>({
@@ -51,6 +51,21 @@ export const userApi = createApi({
          }),
          invalidatesTags: ['Users'],
       }),
+      assignRoles: builder.mutation<boolean, IAssignRolesPayload>({
+         query: (data) => ({
+            url: `/api/v1/users/${data.user_id}/roles`,
+            method: 'PUT',
+            body: { roles: data.roles },
+         }),
+         invalidatesTags: ['Users', 'UserRoles'],
+      }),
+      getUserRoles: builder.query<string[], string>({
+         query: (userId: string) => ({
+            url: `/api/v1/users/${userId}/roles`,
+            method: 'GET',
+         }),
+         providesTags: ['UserRoles'],
+      }),
       getAccountDetails: builder.query<TUser, void>({
          query: () => ({
             url: `/api/v1/users/account`,
@@ -65,4 +80,6 @@ export const {
    useLazyGetUserByUserIdQuery,
    useLazyGetAccountDetailsQuery,
    useUpdateProfileByUserIdMutation,
+   useAssignRolesMutation,
+   useLazyGetUserRolesQuery,
 } = userApi;

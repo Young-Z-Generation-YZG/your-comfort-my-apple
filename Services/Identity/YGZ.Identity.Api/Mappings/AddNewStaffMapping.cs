@@ -9,6 +9,7 @@ public class AddNewStaffMapping : IRegister
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<AddNewStaffRequest, AddNewStaffCommand>()
+            .Map(dest => dest.BirthDay, src => src.BirthDay)
             .Map(dest => dest.Email, src => src.Email)
             .Map(dest => dest.Password, src => src.Password)
             .Map(dest => dest.FirstName, src => src.FirstName)

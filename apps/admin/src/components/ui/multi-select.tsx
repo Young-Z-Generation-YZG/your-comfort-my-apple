@@ -76,6 +76,9 @@ interface MultiSelectProps
    /** The default selected values when the component mounts. */
    defaultValue?: string[];
 
+   /** The controlled selected values. */
+   value?: string[];
+
    /**
     * Placeholder text to be displayed when no values are selected.
     * Optional, defaults to "Select options".
@@ -124,6 +127,7 @@ export const MultiSelect = React.forwardRef<
          onValueChange,
          variant,
          defaultValue = [],
+         value,
          placeholder = 'Select options',
          animation = 0,
          maxCount = 3,
@@ -138,6 +142,16 @@ export const MultiSelect = React.forwardRef<
          React.useState<string[]>(defaultValue);
       const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
       const [isAnimating, setIsAnimating] = React.useState(false);
+
+      // Use controlled value if provided, otherwise use internal state
+      const currentValues = value !== undefined ? value : selectedValues;
+
+      // Update internal state when controlled value changes
+      React.useEffect(() => {
+         if (value !== undefined) {
+            setSelectedValues(value);
+         }
+      }, [value]);
 
       const handleInputKeyDown = (
          event: React.KeyboardEvent<HTMLInputElement>,
@@ -201,10 +215,10 @@ export const MultiSelect = React.forwardRef<
                      className,
                   )}
                >
-                  {selectedValues.length > 0 ? (
+                  {currentValues.length > 0 ? (
                      <div className="flex justify-between items-center w-full">
                         <div className="flex flex-wrap items-center">
-                           {selectedValues.slice(0, maxCount).map((value) => {
+                           {currentValues.slice(0, maxCount).map((value) => {
                               const option = options.find(
                                  (o) => o.value === value,
                               );
@@ -234,7 +248,7 @@ export const MultiSelect = React.forwardRef<
                                  </Badge>
                               );
                            })}
-                           {selectedValues.length > maxCount && (
+                           {currentValues.length > maxCount && (
                               <Badge
                                  className={cn(
                                     'bg-transparent text-foreground border-foreground/1 hover:bg-transparent',
@@ -243,7 +257,7 @@ export const MultiSelect = React.forwardRef<
                                  )}
                                  style={{ animationDuration: `${animation}s` }}
                               >
-                                 {`+ ${selectedValues.length - maxCount} more`}
+                                 {`+ ${currentValues.length - maxCount} more`}
                                  <XCircle
                                     className="ml-2 h-4 w-4 cursor-pointer"
                                     onClick={(event) => {
@@ -300,7 +314,7 @@ export const MultiSelect = React.forwardRef<
                            <div
                               className={cn(
                                  'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
-                                 selectedValues.length === options.length
+                                 currentValues.length === options.length
                                     ? 'bg-primary text-primary-foreground'
                                     : 'opacity-50 [&_svg]:invisible',
                               )}
@@ -340,7 +354,7 @@ export const MultiSelect = React.forwardRef<
                      <CommandSeparator />
                      <CommandGroup>
                         <div className="flex items-center justify-between">
-                           {selectedValues.length > 0 && (
+                           {currentValues.length > 0 && (
                               <>
                                  <CommandItem
                                     onSelect={handleClear}

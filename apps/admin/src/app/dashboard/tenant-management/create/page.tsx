@@ -225,7 +225,7 @@ const CreateTenantPage = () => {
                               </FormControl>
                               <SelectContent>
                                  <SelectItem
-                                    value={ETenantType.WARE_HOUSE}
+                                    value={ETenantType.WAREHOUSE}
                                     disabled={true}
                                  >
                                     Warehouse

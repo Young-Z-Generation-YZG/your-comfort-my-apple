@@ -3,6 +3,9 @@ import { createSlice, PayloadAction, current } from '@reduxjs/toolkit';
 type AuthAppState = {
    currentUserKey?: 'currentUser' | 'impersonatedUser' | null;
    useRefreshToken?: boolean;
+   // Defaults for tenant and branch derived from currentUser
+   defaultTenantId?: string | null;
+   defaultBranchId?: string | null;
    currentUser?: {
       userId?: string | null;
       tenantId?: string | null;
@@ -36,6 +39,8 @@ const authSlice = createSlice({
    initialState: {
       currentUserKey: null,
       useRefreshToken: false,
+      defaultTenantId: null,
+      defaultBranchId: null,
       currentUser: {
          userId: null,
          tenantId: null,
@@ -72,6 +77,8 @@ const authSlice = createSlice({
       ) => {
          state.currentUserKey = 'currentUser';
          state.currentUser = action.payload.currentUser;
+         state.defaultTenantId = action.payload.currentUser?.tenantId ?? null;
+         state.defaultBranchId = action.payload.currentUser?.branchId ?? null;
          state.useRefreshToken = false;
 
          console.log('AUTH APP STATE: setLogin', current(state));
@@ -111,6 +118,8 @@ const authSlice = createSlice({
       setLogout: (state) => {
          state.currentUser = null;
          state.impersonatedUser = null;
+         state.defaultTenantId = null;
+         state.defaultBranchId = null;
 
          console.log('AUTH APP STATE: setLogout', current(state));
       },
@@ -140,6 +149,8 @@ const authSlice = createSlice({
             state.currentUser.branchId = action.payload.currentUser.branchId;
             state.currentUser.tenantSubDomain =
                action.payload.currentUser.tenantSubDomain;
+            state.defaultTenantId = action.payload.currentUser.tenantId;
+            state.defaultBranchId = action.payload.currentUser.branchId;
          }
 
          if (state.impersonatedUser && action.payload.impersonatedUser) {

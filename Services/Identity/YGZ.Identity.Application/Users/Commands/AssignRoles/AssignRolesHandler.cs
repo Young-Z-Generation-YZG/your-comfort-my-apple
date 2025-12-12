@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
@@ -6,7 +6,7 @@ using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
 
-namespace YGZ.Identity.Application.Auths.Commands.AssignRoles;
+namespace YGZ.Identity.Application.Users.Commands.AssignRoles;
 
 public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
 {
@@ -30,14 +30,18 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
     {
         try
         {
-            // Validate user ID format
-            if (!Guid.TryParse(request.UserId, out var userId))
+            if (request.Roles == null || !request.Roles.Any())
+            {
+                _logger.LogWarning("No roles provided for user {UserId}", request.UserId);
+                return Errors.Keycloak.RoleNotFound;
+            }
+
+            if (!Guid.TryParse(request.UserId, out _))
             {
                 _logger.LogWarning("Invalid user ID format: {UserId}", request.UserId);
                 return Errors.User.DoesNotExist;
             }
 
-            // Find user in database
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
             {
@@ -45,35 +49,42 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
                 return Errors.User.DoesNotExist;
             }
 
-            // Assign roles via Keycloak
-            var keycloakResult = await _keycloakService.AssignRolesToUserAsync(request.UserId, request.Roles);
-            if (keycloakResult.IsFailure)
-            {
-                _logger.LogError("Failed to assign roles via Keycloak for user {UserId}: {Error}",
-                    request.UserId, keycloakResult.Error);
-                return keycloakResult.Error;
-            }
-
-            // Get current user roles
             var currentRoles = await _userManager.GetRolesAsync(user);
 
-            // Remove all existing roles
             if (currentRoles.Any())
             {
                 var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
                 if (!removeResult.Succeeded)
                 {
-                    _logger.LogWarning("Failed to remove existing roles from user {UserId}", request.UserId);
+                    _logger.LogError("Failed to remove existing roles from user {UserId}. Errors: {Errors}",
+                        request.UserId, string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                    return Errors.Keycloak.CannotAssignRole;
                 }
             }
 
-            // Add new roles via ASP.NET Identity UserManager
             var addRolesResult = await _userManager.AddToRolesAsync(user, request.Roles);
             if (!addRolesResult.Succeeded)
             {
                 _logger.LogError("Failed to assign roles via UserManager for user {UserId}. Errors: {Errors}",
                     request.UserId, string.Join(", ", addRolesResult.Errors.Select(e => e.Description)));
+
+                if (currentRoles.Any())
+                {
+                    var restoreResult = await _userManager.AddToRolesAsync(user, currentRoles);
+                    if (!restoreResult.Succeeded)
+                    {
+                        _logger.LogError("Failed to restore previous roles for user {UserId} after failed assignment", request.UserId);
+                    }
+                }
+
                 return Errors.Keycloak.CannotAssignRole;
+            }
+
+            var keycloakResult = await _keycloakService.AssignRolesToUserAsync(request.UserId, request.Roles);
+            if (keycloakResult.IsFailure)
+            {
+                _logger.LogWarning("Failed to assign roles via Keycloak for user {UserId}: {Error}. User has roles in database but not in Keycloak. Manual intervention may be required.",
+                    request.UserId, keycloakResult.Error);
             }
 
             _logger.LogInformation("Successfully assigned roles {Roles} to user {UserId}",
@@ -88,3 +99,4 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
         }
     }
 }
+

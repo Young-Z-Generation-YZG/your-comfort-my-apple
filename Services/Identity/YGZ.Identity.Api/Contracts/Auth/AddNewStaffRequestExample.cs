@@ -10,14 +10,15 @@ public class AddNewStaffRequestExample : ISchemaProcessor
         {
             context.Schema.Example = new
             {
-                email = "staff@example.com",
-                password = "password123",
+                birth_day = "1990-01-01",
                 first_name = "John",
                 last_name = "Doe",
-                phone_number = "0123456789",
+                email = "john.doe@example.com",
+                password = "SecurePassword123",
+                phone_number = "0987654321",
                 role_name = "STAFF",
-                tenant_id = "tenant-123",
-                branch_id = "branch-456"
+                tenant_id = "664355f845e56534956be32b",
+                branch_id = "664357a235e84033bbd0e6b6"
             };
         }
     }

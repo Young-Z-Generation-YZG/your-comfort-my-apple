@@ -35,3 +35,21 @@ export type TProfile = {
    deleted_at: string | null;
    deleted_by: string | null;
 };
+
+// Payloads
+export interface IAddNewStaffPayload {
+   email: string;
+   password: string;
+   first_name: string;
+   last_name: string;
+   birth_day: string;
+   phone_number: string;
+   role_name: string;
+   tenant_id: string;
+   branch_id: string;
+}
+
+export interface IAssignRolesPayload {
+   user_id: string;
+   roles: string[];
+}

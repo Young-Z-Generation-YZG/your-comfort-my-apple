@@ -22,7 +22,7 @@ public class GetTenantsHandler : IQueryHandler<GetTenantsQuery, List<TenantRespo
 
     public async Task<Result<List<TenantResponse>>> Handle(GetTenantsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _repository.GetAllAsync(cancellationToken);
+        var result = await _repository.GetAllAsync(cancellationToken, ignoreBaseFilter: true);
 
         var response = MapToResponse(result);
 

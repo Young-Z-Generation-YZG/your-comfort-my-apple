@@ -4,6 +4,10 @@ namespace YGZ.Identity.Api.Contracts.Auth;
 
 public sealed record AddNewStaffRequest
 {
+    [JsonPropertyName("birth_day")]
+    [JsonRequired]
+    public required string BirthDay { get; init; }
+
     [JsonPropertyName("email")]
     [JsonRequired]
     public required string Email { get; init; }
@@ -29,8 +33,10 @@ public sealed record AddNewStaffRequest
     public required string RoleName { get; init; }
 
     [JsonPropertyName("tenant_id")]
-    public string? TenantId { get; init; }
+    [JsonRequired]
+    public required string TenantId { get; init; }
 
     [JsonPropertyName("branch_id")]
-    public string? BranchId { get; init; }
+    [JsonRequired]
+    public required string BranchId { get; init; }
 }
