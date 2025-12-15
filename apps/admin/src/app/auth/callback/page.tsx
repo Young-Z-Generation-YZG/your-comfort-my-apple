@@ -1,9 +1,17 @@
 'use client';
 
 import { LoadingOverlay } from '@components/loading-overlay';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuthorizationCodeMutation } from '~/src/infrastructure/services/keycloak.service';
+import useAuthService from '~/src/hooks/api/use-auth-service';
+import { useDispatch } from 'react-redux';
+import {
+   setIdentity,
+   setRoles,
+} from '~/src/infrastructure/redux/features/auth.slice';
+import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
+import { ERole } from '~/src/domain/enums/role.enum';
 
 const AuthCallbackPage = () => {
    const searchParams = useSearchParams();
@@ -13,9 +21,12 @@ const AuthCallbackPage = () => {
 
    // Use a ref to track if the API has been called
    const hasCalledApi = useRef(false);
+   const [identityFetched, setIdentityFetched] = useState(false);
 
    const [authorizationCode, { isSuccess, isError, error, data }] =
       useAuthorizationCodeMutation();
+   const { getIdentityAsync } = useAuthService();
+   const dispatch = useDispatch();
 
    console.log('isSuccess', isSuccess);
    console.log('isError', isError);
@@ -48,8 +59,83 @@ const AuthCallbackPage = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [code, authorizationCode]);
 
+   // Fetch identity after successful token exchange
    useEffect(() => {
-      if (isSuccess) {
+      const fetchIdentity = async () => {
+         if (!isSuccess || identityFetched) {
+            return;
+         }
+
+         try {
+            console.log('Fetching identity after Keycloak login...');
+            const identityResult = await getIdentityAsync();
+
+            if (identityResult.isSuccess && identityResult.data) {
+               // Set roles
+               dispatch(
+                  setRoles({
+                     currentUser: {
+                        roles: identityResult.data.roles,
+                     },
+                     impersonatedUser: null,
+                  }),
+               );
+
+               // Set identity (tenant_id, branch_id, etc.)
+               dispatch(
+                  setIdentity({
+                     currentUser: {
+                        userId: identityResult.data.id,
+                        tenantId: identityResult.data.tenant_id,
+                        branchId: identityResult.data.branch_id,
+                        tenantSubDomain: identityResult.data.tenant_sub_domain,
+                     },
+                     impersonatedUser: null,
+                  }),
+               );
+
+               // Set tenant if user is not super admin
+               if (!identityResult.data.roles.includes(ERole.ADMIN_SUPER)) {
+                  dispatch(
+                     setTenant({
+                        tenantId: identityResult.data.tenant_id,
+                        branchId: identityResult.data.branch_id,
+                        tenantSubDomain: identityResult.data.tenant_sub_domain,
+                     }),
+                  );
+               }
+
+               console.log(
+                  'Identity fetched successfully:',
+                  identityResult.data,
+               );
+               setIdentityFetched(true);
+            } else {
+               console.error('Failed to fetch identity:', identityResult.error);
+               // Still proceed even if identity fetch fails (user can still access)
+               setIdentityFetched(true);
+            }
+         } catch (err) {
+            console.error('Error fetching identity:', err);
+            // Still proceed even if identity fetch fails
+            setIdentityFetched(true);
+         }
+      };
+
+      if (isSuccess && !identityFetched) {
+         fetchIdentity();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [isSuccess, getIdentityAsync, dispatch]);
+
+   useEffect(() => {
+      console.log('Success handler effect:', {
+         isSuccess,
+         identityFetched,
+         isError,
+      });
+
+      if (isSuccess && identityFetched) {
          console.log('Auth success, window.opener:', !!window.opener);
          if (window.opener) {
             // Popup flow: Send success message to main window
@@ -65,6 +151,7 @@ const AuthCallbackPage = () => {
             }, 500);
          } else {
             // Full-page redirect flow: Redirect to dashboard
+            console.log('Redirecting to dashboard (full-page flow)');
             window.location.href = '/dashboard';
          }
       } else if (isError && error) {
@@ -83,7 +170,7 @@ const AuthCallbackPage = () => {
             window.location.href = '/auth/sign-in';
          }
       }
-   }, [isSuccess, isError, error]);
+   }, [isSuccess, isError, error, identityFetched]);
 
    return (
       <div>

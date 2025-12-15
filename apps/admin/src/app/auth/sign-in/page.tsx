@@ -20,6 +20,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from '~/src/hooks/use-toast';
 import useMediaQuery from '~/src/hooks/use-media-query';
 import { cn } from '~/src/infrastructure/lib/utils';
+import { setLogin } from '~/src/infrastructure/redux/features/auth.slice';
 
 const SignInPage = () => {
    const { isLoading, loginAsync, getIdentityAsync } = useAuthService();
@@ -84,6 +85,23 @@ const SignInPage = () => {
       }, 500);
    };
 
+   // Listen for storage changes from callback window
+   useEffect(() => {
+      const handleStorageChange = (e: StorageEvent) => {
+         // Listen for changes to redux-persist storage
+         if (e.key === 'persist:admin-root' && e.newValue) {
+            console.log('Storage changed from callback window');
+            // The AUTH_SUCCESS message handler will manually sync the state
+         }
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+
+      return () => {
+         window.removeEventListener('storage', handleStorageChange);
+      };
+   }, []);
+
    // Setup message event listener for popup communication
    useEffect(() => {
       const handleAuthMessages = (event: MessageEvent) => {
@@ -111,13 +129,113 @@ const SignInPage = () => {
             console.log('Auth status:', status);
 
             if (status === 'AUTH_SUCCESS') {
-               console.log('Authentication successful, navigating...');
+               console.log('Authentication successful, syncing state...');
                setIsKeycloakLoading(false);
 
                toast({
                   title: 'Authentication successful',
                   description: 'Welcome back!',
                });
+
+               // Manually sync Redux state from localStorage
+               // The callback window saved auth state to localStorage,
+               // we need to manually read it and update Redux
+               const syncAndNavigate = async () => {
+                  try {
+                     console.log('Reading auth state from localStorage...');
+
+                     // Wait a bit for localStorage to be written by callback window
+                     await new Promise((resolve) => setTimeout(resolve, 300));
+
+                     // Read persisted state from localStorage
+                     const persistKey = 'persist:admin-root';
+                     const stored = localStorage.getItem(persistKey);
+
+                     if (stored) {
+                        try {
+                           const parsedState = JSON.parse(stored);
+                           const authStateStr = parsedState.auth;
+
+                           if (authStateStr) {
+                              const authState = JSON.parse(authStateStr);
+                              console.log(
+                                 'Found auth state in localStorage:',
+                                 authState,
+                              );
+
+                              // Manually dispatch setLogin to update Redux state
+                              if (authState.currentUser?.accessToken) {
+                                 console.log(
+                                    'Dispatching setLogin with stored auth state...',
+                                 );
+                                 dispatch(
+                                    setLogin({
+                                       currentUser: authState.currentUser,
+                                    }),
+                                 );
+
+                                 // Wait a moment for Redux to update
+                                 await new Promise((resolve) =>
+                                    setTimeout(resolve, 200),
+                                 );
+
+                                 // Now fetch identity to get tenant/roles
+                                 console.log(
+                                    'Fetching identity to complete sync...',
+                                 );
+                                 const identityResult =
+                                    await getIdentityAsync();
+
+                                 if (identityResult.isSuccess) {
+                                    console.log(
+                                       'Identity synced, navigating to dashboard...',
+                                    );
+                                    // Use replace to avoid adding to history
+                                    router.replace('/dashboard');
+                                 } else {
+                                    console.log(
+                                       'Identity fetch failed, navigating anyway...',
+                                    );
+                                    router.replace('/dashboard');
+                                 }
+                              } else {
+                                 console.log('No access token in stored state');
+                                 // Fallback: try to fetch identity anyway
+                                 const identityResult =
+                                    await getIdentityAsync();
+                                 if (identityResult.isSuccess) {
+                                    router.replace('/dashboard');
+                                 } else {
+                                    // Last resort: reload page to trigger full rehydration
+                                    window.location.href = '/dashboard';
+                                 }
+                              }
+                           } else {
+                              console.log('No auth state in stored data');
+                              // Fallback: reload page
+                              window.location.href = '/dashboard';
+                           }
+                        } catch (parseErr) {
+                           console.error(
+                              'Error parsing stored state:',
+                              parseErr,
+                           );
+                           // Fallback: reload page
+                           window.location.href = '/dashboard';
+                        }
+                     } else {
+                        console.log('No stored state found, reloading page...');
+                        // No stored state - reload to trigger rehydration
+                        window.location.href = '/dashboard';
+                     }
+                  } catch (err) {
+                     console.error('Error syncing auth state:', err);
+                     // Fallback: reload page
+                     window.location.href = '/dashboard';
+                  }
+               };
+
+               syncAndNavigate();
             } else if (status === 'AUTH_FAILED') {
                setIsKeycloakLoading(false);
                toast({
