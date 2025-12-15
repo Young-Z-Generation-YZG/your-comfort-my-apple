@@ -63,10 +63,12 @@ const CartPage = () => {
       handleRemovePromoCode,
    } = usePromoCode();
 
+   // Fetch basket when authenticated, automatically applying coupon code from URL if present
+   // This handles the case where user visits with ?_couponCode=XXX before logging in
    useEffect(() => {
       const fetchBasket = async () => {
          await getBasketAsync({
-            _couponCode: urlCouponCode,
+            _couponCode: urlCouponCode || null,
          });
       };
 
@@ -108,6 +110,7 @@ const CartPage = () => {
          user_email: '',
          cart_items: cartAppState.cart_items,
          total_amount: 0,
+         discount_coupon_error: null,
       } as TReduxCartState;
    }, [getBasketQueryState, cartAppState]);
 
@@ -297,24 +300,46 @@ const CartPage = () => {
                      </Button>
                   </div>
                   {urlCouponCode ? (
-                     <div className="pt-1 flex items-center gap-2">
-                        <p className="text-sm font-medium text-green-600">
-                           Applied: {urlCouponCode}
-                        </p>
-                        <Button
-                           variant="ghost"
-                           size="sm"
-                           className="h-6 px-2 text-xs text-red-500 hover:text-red-700"
-                           onClick={handleRemovePromoCode}
-                        >
-                           Remove
-                        </Button>
-                     </div>
+                     isAuthenticated ? (
+                        <div className="pt-1 flex items-center gap-2">
+                           <p className="text-sm font-medium text-green-600">
+                              Applied: {urlCouponCode}
+                           </p>
+                           <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 px-2 text-xs text-red-500 hover:text-red-700"
+                              onClick={handleRemovePromoCode}
+                           >
+                              Remove
+                           </Button>
+                        </div>
+                     ) : (
+                        <div className="pt-1 flex items-center gap-2">
+                           <p className="text-sm font-medium text-amber-600">
+                              Coupon code will be applied after login:{' '}
+                              {urlCouponCode}
+                           </p>
+                           <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 px-2 text-xs text-red-500 hover:text-red-700"
+                              onClick={handleRemovePromoCode}
+                           >
+                              Remove
+                           </Button>
+                        </div>
+                     )
                   ) : (
                      <p className="text-sm font-light tracking-[0.2px] text-[#999999] pt-1">
-                        {selectedItems.length === 0
+                        {selectedItems.length === 0 && isAuthenticated
                            ? 'Please select items to apply a promo code'
                            : ''}
+                     </p>
+                  )}
+                  {basketData.discount_coupon_error && isAuthenticated && (
+                     <p className="text-sm font-medium tracking-[0.2px] text-red-600 pt-1">
+                        {basketData.discount_coupon_error}
                      </p>
                   )}
                </div>

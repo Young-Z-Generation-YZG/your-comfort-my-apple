@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
    reactStrictMode: false,
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,
+      DEFAULT_TENANT_ID: process.env.DEFAULT_TENANT_ID,
       IDENTITY_PROVIDER_CLIENT_ID: process.env.IDENTITY_PROVIDER_CLIENT_ID,
       IDENTITY_PROVIDER_CLIENT_SECRET:
          process.env.IDENTITY_PROVIDER_CLIENT_SECRET,

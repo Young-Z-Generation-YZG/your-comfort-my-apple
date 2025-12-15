@@ -26,6 +26,7 @@ const baseQuery = () =>
       baseUrl: envConfig.API_ENDPOINT + '/identity-services',
       prepareHeaders: (headers, { getState, endpoint }) => {
          const refreshToken = (getState() as RootState).auth.refreshToken;
+         const tenantId = (getState() as RootState).app.tenantId;
 
          if (!headers.get('Authorization')) {
             const isLogoutRequest =
@@ -35,6 +36,10 @@ const baseQuery = () =>
             if (isLogoutRequest && refreshToken) {
                headers.set('Authorization', `Bearer ${refreshToken}`);
             }
+         }
+
+         if (tenantId) {
+            headers.set('X-TenantId', tenantId);
          }
 
          headers.set('ngrok-skip-browser-warning', 'true');

@@ -1,12 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import envConfig from '~/infrastructure/config/env.config';
+
+type AppState = {
+   tenantId: string;
+   route: {
+      previousUnAuthenticatedPath: string | null;
+   };
+};
+
+const initialState: AppState = {
+   tenantId: envConfig.DEFAULT_TENANT_ID,
+   route: {
+      previousUnAuthenticatedPath: null,
+   },
+};
 
 const AppSlice = createSlice({
    name: 'app',
-   initialState: {
-      route: {
-         previousUnAuthenticatedPath: null as string | null,
-      },
-   },
+   initialState,
    reducers: {
       setPreviousUnAuthenticatedPath: (
          state,
@@ -14,9 +25,12 @@ const AppSlice = createSlice({
       ) => {
          state.route.previousUnAuthenticatedPath = action.payload;
       },
+      setTenantId: (state, action: PayloadAction<string>) => {
+         state.tenantId = action.payload;
+      },
    },
 });
 
-export const { setPreviousUnAuthenticatedPath } = AppSlice.actions;
+export const { setPreviousUnAuthenticatedPath, setTenantId } = AppSlice.actions;
 
 export default AppSlice.reducer;

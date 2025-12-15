@@ -36,6 +36,7 @@ export type TCart = {
    discount_value: string | null;
    discount_amount: string | null;
    max_discount_amount: number | null;
+   discount_coupon_error: string | null;
    total_amount: number;
 };
 
