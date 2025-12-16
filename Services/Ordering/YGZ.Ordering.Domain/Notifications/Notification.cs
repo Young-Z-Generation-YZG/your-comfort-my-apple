@@ -32,7 +32,7 @@ public class Notification : AggregateRoot<NotificationId>, IAuditable, ISoftDele
                                       string content,
                                       string type,
                                       string status,
-                                      string receiverId,
+                                      string? receiverId,
                                       string? senderId = null,
                                       string? link = null,
                                       bool isRead = false,
