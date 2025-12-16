@@ -5,6 +5,7 @@ import useProductService from '~/src/hooks/api/use-product-service';
 import usePaginationV2 from '~/src/hooks/use-pagination';
 import IphoneModel from './_components/iphone-model';
 import { Button } from '@components/ui/button';
+import Link from 'next/link';
 import {
    Select,
    SelectContent,
@@ -100,6 +101,11 @@ const ProductManagementIphonePage = () => {
                   </p>
                </div>
                <div className="flex flex-row items-center gap-4">
+                  <Button asChild className="rounded-full">
+                     <Link href="/dashboard/product-management/iphone/create">
+                        Create
+                     </Link>
+                  </Button>
                   <div className="flex flex-col items-end">
                      <span className="text-sm text-muted-foreground">
                         Total Products

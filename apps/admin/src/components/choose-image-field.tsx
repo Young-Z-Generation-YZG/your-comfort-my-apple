@@ -18,8 +18,8 @@ import { ScrollArea } from './ui/scroll-area';
 import { ICloudinaryImage } from '~/src/domain/interfaces/common/ICloudinaryImage';
 import { Checkbox } from './ui/checkbox';
 import UploadImageDialog from './upload-image-dialog';
-import { useGetImagesAsyncQuery } from '~/src/infrastructure/services/upload.service';
 import { LoadingOverlay } from '@components/loading-overlay';
+import useUploadService from '~/src/hooks/api/use-upload-service';
 
 type ChooseImageFieldProps<T extends FieldValues> = {
    form: UseFormReturn<T>;
@@ -32,8 +32,6 @@ function ChooseImageField<T extends FieldValues>({
    name,
    index,
 }: ChooseImageFieldProps<T>) {
-   const [isLoading, setIsLoading] = useState(true);
-
    const [selectedItem, setSelectedItem] = useState<string | null>(null);
    const [images, setImages] = useState<ICloudinaryImage[]>([]);
    const uploadBtnRef = useRef<HTMLButtonElement>(
@@ -54,33 +52,21 @@ function ChooseImageField<T extends FieldValues>({
 
       form.setValue(`${name}.${index}.image_id` as Path<T>, imageId as any);
       form.setValue(`${name}.${index}.image_url` as Path<T>, imageUrl as any);
-
-      console.log('form', form.getValues());
    };
 
    // const rootErrorMessage = (form.formState.errors[name] as any)?.root?.message;
 
-   const {
-      data: imagesDataAsync,
-      isLoading: imagesDataLoading,
-      isSuccess: imagesDataSuccess,
-      isError: isImagesDataError,
-      error: imagesDataError,
-   } = useGetImagesAsyncQuery();
+   const { getImagesAsync, getImagesState, isLoading } = useUploadService();
 
    useEffect(() => {
-      if (imagesDataSuccess && imagesDataAsync) {
-         setImages(imagesDataAsync);
-      }
-
-      if (isImagesDataError && imagesDataError) {
-         console.error('Error fetching images: ', imagesDataError);
-      }
-   }, [imagesDataAsync, imagesDataSuccess, isImagesDataError, imagesDataError]);
+      getImagesAsync();
+   }, [getImagesAsync]);
 
    useEffect(() => {
-      setIsLoading(imagesDataLoading);
-   }, [imagesDataLoading]);
+      if (getImagesState.data) {
+         setImages(getImagesState.data);
+      }
+   }, [getImagesState.data]);
 
    return (
       <Fragment>

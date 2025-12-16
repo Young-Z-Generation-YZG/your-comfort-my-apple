@@ -1,7 +1,10 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQuery } from './base-query';
 import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
-import { TProductModel } from '~/src/domain/types/catalog.type';
+import {
+   TIphoneModelDetails,
+   TProductModel,
+} from '~/src/domain/types/catalog.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/catalog-services')(args, api, extraOptions);
@@ -208,7 +211,17 @@ export const productApi = createApi({
          },
          providesTags: ['Products'],
       }),
+      getProductModelBySlug: builder.query<TIphoneModelDetails, string>({
+         query: (slug: string) => ({
+            url: `/api/v1/products/iphone/${slug}`,
+            method: 'GET',
+         }),
+         providesTags: ['Products'],
+      }),
    }),
 });
 
-export const { useLazyGetProductModelsByCategorySlugQuery } = productApi;
+export const {
+   useLazyGetProductModelsByCategorySlugQuery,
+   useLazyGetProductModelBySlugQuery,
+} = productApi;

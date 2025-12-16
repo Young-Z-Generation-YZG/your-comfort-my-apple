@@ -4,11 +4,7 @@ import { baseQuery } from './base-query';
 import { setLogout } from '../redux/features/auth.slice';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('/ordering-services')(
-      args,
-      api,
-      extraOptions,
-   );
+   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
@@ -31,4 +27,5 @@ export const uploadImageApi = createApi({
    }),
 });
 
-export const { useGetImagesAsyncQuery } = uploadImageApi;
+export const { useGetImagesAsyncQuery, useLazyGetImagesAsyncQuery } =
+   uploadImageApi;

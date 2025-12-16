@@ -133,6 +133,47 @@ export type TAverageRating = {
    rating_count: number;
 };
 
+export type TIphoneModelDetails = {
+   id: string;
+   category: TCategory;
+   name: string;
+   model_items: TModel[];
+   color_items: TColor[];
+   storage_items: TStorage[];
+   sku_prices: TSkuPrice[];
+   description: string;
+   showcase_images: TImage[];
+   overall_sold: number;
+   rating_stars: TRatingStar[];
+   average_rating: TAverageRating;
+   branchs: {
+      branch: TBranch;
+      skus: TSku[];
+   }[];
+};
+
+export type TReviewItem = {
+   id: string;
+   model_id: string;
+   sku_id: string;
+   order_info: {
+      order_id: string;
+      order_item_id: string;
+   };
+   customer_review_info: {
+      name: string;
+      avatar_image_url: string | null;
+   };
+   rating: number;
+   content: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
 export type TImage = {
    image_id: string;
    image_url: string;

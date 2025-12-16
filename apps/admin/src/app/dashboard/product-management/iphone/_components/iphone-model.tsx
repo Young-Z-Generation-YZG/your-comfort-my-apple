@@ -4,6 +4,7 @@ import { Separator } from '@components/ui/separator';
 import { Fragment } from 'react';
 import Image from 'next/image';
 import { Star } from 'lucide-react';
+import Link from 'next/link';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { TProductModel } from '~/src/domain/types/catalog.type';
 
@@ -306,8 +307,14 @@ const IphoneModel = ({
                   </div>
                </div>
 
-               <Button className="rounded-full text-base mt-5">
-                  View Details
+               <Button
+                  asChild
+                  className="rounded-full text-base mt-5"
+                  disabled={!productModel.slug}
+               >
+                  <Link href={`/dashboard/product-management/iphone/${productModel.slug}`}>
+                     View Details
+                  </Link>
                </Button>
             </div>
             {/* end feature */}
