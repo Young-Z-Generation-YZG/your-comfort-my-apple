@@ -6,10 +6,10 @@ import {
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '@components/ui/carousel';
+} from '~/components/ui/carousel';
 
-import NewestProduct from '@components/client/newest-product';
-import useProductService from '@components/hooks/api/use-product-service';
+import NewestProduct from '~/components/client/newest-product';
+import useProductService from '~/hooks/api/use-product-service';
 import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
@@ -22,10 +22,7 @@ const NewestProductSection = () => {
    }, [getNewestProductsState.data]);
 
    useEffect(() => {
-      const fetchNewestProducts = async () => {
-         await getNewestProductsAsync();
-      };
-      fetchNewestProducts();
+      getNewestProductsAsync();
    }, [getNewestProductsAsync]);
 
    return (

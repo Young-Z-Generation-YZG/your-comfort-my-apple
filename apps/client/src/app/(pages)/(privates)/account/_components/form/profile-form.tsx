@@ -3,9 +3,9 @@ import {
    ProfileResolver,
 } from '~/domain/schemas/profile.schema';
 
-import { useEffect, useState } from 'react';
-import { Button } from '@components/ui/button';
-import { Label } from '@components/ui/label';
+import { useState } from 'react';
+import { Button } from '~/components/ui/button';
+import { Label } from '~/components/ui/label';
 import { motion } from 'framer-motion';
 import { FiEdit3 } from 'react-icons/fi';
 import { cn } from '~/infrastructure/lib/utils';
@@ -15,29 +15,27 @@ import {
    FormField,
    FormItem,
    FormMessage,
-} from '@components/ui/form';
+} from '~/components/ui/form';
 import { CalendarIcon, Save } from 'lucide-react';
-import FieldInputSecond from '@components/client/forms/field-input-second';
+import FieldInputSecond from '~/components/client/forms/field-input-second';
 import {
    Select,
    SelectContent,
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 import {
    Popover,
    PopoverContent,
    PopoverTrigger,
-} from '@components/ui/popover';
-import { Calendar } from '@components/ui/calendar';
+} from '~/components/ui/popover';
+import { Calendar } from '~/components/ui/calendar';
 import { format } from 'date-fns';
-import { useUpdateProfileAsyncMutation } from '~/infrastructure/services/identity.service';
 import { useForm } from 'react-hook-form';
-import { useToast } from '@components/hooks/use-toast';
-import isServerErrorResponse from '~/infrastructure/utils/http/is-server-error';
-import { toast as sonnerToast } from 'sonner';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
+import useIdentityService from '~/hooks/api/use-identity-service';
+import { useCallback, useMemo } from 'react';
 
 type ProfileFormProps = {
    profile: {
@@ -62,10 +60,7 @@ const ProfileForm = ({
       imageUrl,
    },
 }: ProfileFormProps) => {
-   const [isLoading, setIsLoading] = useState(false);
    const [isEditing, setIsEditing] = useState(false);
-
-   const { toast } = useToast();
 
    const form = useForm<ProfileFormType>({
       resolver: ProfileResolver,
@@ -79,47 +74,41 @@ const ProfileForm = ({
       },
    });
 
-   const [
-      updateProfileAsync,
-      {
-         isLoading: isUpdating,
-         isError: isUpdateError,
-         isSuccess: isUpdateSuccess,
-         error: updateError,
-      },
-   ] = useUpdateProfileAsyncMutation();
+   const { updateProfileAsync, updateProfileState } = useIdentityService();
+   const isSaving = updateProfileState?.isLoading;
+   const initialComparableValues = useMemo(
+      () => ({
+         first_name: firstName,
+         last_name: lastName,
+         email,
+         phone_number: phoneNumber,
+         birth_day: new Date(birthDate).toISOString(),
+         gender: 'OTHER',
+      }),
+      [birthDate, email, firstName, lastName, phoneNumber],
+   );
 
-   const handleSubmit = async (data: ProfileFormType) => {
-      console.log('Form submitted:', data);
-
-      await updateProfileAsync({
-         ...data,
-         birth_day: new Date(data.birth_day).toISOString(),
-      }).unwrap();
-
-      setIsEditing(false);
-   };
-
-   const handleSelectChange = (name: string, value: string) => {};
-
-   useEffect(() => {
-      if (isUpdateSuccess) {
-         sonnerToast.success('Profile updated successfully', {
-            style: {
-               backgroundColor: '#4CAF50', // Custom green background color
-               color: '#FFFFFF', // White text color
-            },
+   const handleSubmit = useCallback(
+      async (data: ProfileFormType) => {
+         const result = await updateProfileAsync({
+            ...data,
+            birth_day: new Date(data.birth_day).toISOString(),
          });
-      }
 
-      // if (isUpdateError) {
+         if (result.isSuccess) {
+            setIsEditing(false);
+            form.reset(data);
+         }
+      },
+      [form, updateProfileAsync],
+   );
 
-      // }
-   }, [isUpdateSuccess, isUpdateError]);
-
-   useEffect(() => {
-      setIsLoading(isUpdating);
-   }, [isUpdating]);
+   const handleSelectChange = useCallback(
+      (name: string, value: string) => {
+         form.setValue(name as keyof ProfileFormType, value as any);
+      },
+      [form],
+   );
 
    return (
       <motion.div
@@ -170,14 +159,14 @@ const ProfileForm = ({
                   form={form}
                   name="first_name"
                   label="First Name"
-                  disabled={!isEditing || isLoading}
+                  disabled={!isEditing || isSaving}
                />
 
                <FieldInputSecond
                   form={form}
                   name="last_name"
                   label="Last Name"
-                  disabled={!isEditing || isLoading}
+                  disabled={!isEditing || isSaving}
                />
 
                <FieldInputSecond
@@ -192,7 +181,7 @@ const ProfileForm = ({
                   type="number"
                   name="phone_number"
                   label="Phone Number"
-                  disabled={!isEditing || isLoading}
+                  disabled={!isEditing || isSaving}
                />
 
                <motion.div
@@ -227,7 +216,7 @@ const ProfileForm = ({
                                     <FormControl>
                                        <Button
                                           variant={'outline'}
-                                          disabled={!isEditing || isLoading}
+                                          disabled={!isEditing || isSaving}
                                           className={cn(
                                              'w-full pl-3 text-left font-normal',
                                              !field.value &&
@@ -322,7 +311,7 @@ const ProfileForm = ({
             <div className="flex gap-3 justify-end px-6 py-4">
                <Button
                   variant="outline"
-                  disabled={isUpdating || isLoading}
+                  disabled={isSaving}
                   onClick={() => {
                      setIsEditing(false);
                      form.reset({
@@ -331,6 +320,7 @@ const ProfileForm = ({
                         email: email,
                         phone_number: phoneNumber,
                         birth_day: new Date(birthDate),
+                        gender: 'OTHER',
                      });
                      form.clearErrors();
                   }}
@@ -343,20 +333,16 @@ const ProfileForm = ({
                      form.handleSubmit(handleSubmit)();
                   }}
                   disabled={
-                     isUpdating ||
-                     isLoading ||
-                     !isDifferentValue(
-                        {
-                           first_name: firstName,
-                           last_name: lastName,
-                           email: email,
-                           phone_number: phoneNumber,
-                        },
-                        form.getValues(),
-                     )
+                     isSaving ||
+                     !isDifferentValue(initialComparableValues, {
+                        ...form.getValues(),
+                        birth_day: new Date(
+                           form.getValues().birth_day,
+                        ).toISOString(),
+                     })
                   }
                >
-                  {isLoading ? (
+                  {isSaving ? (
                      <span className="flex items-center">
                         <svg
                            className="animate-spin -ml-1 mr-2 text-white"

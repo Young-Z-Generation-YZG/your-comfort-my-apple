@@ -4,38 +4,38 @@ import { cn } from '~/infrastructure/lib/utils';
 import { SFDisplayFont } from '@assets/fonts/font.config';
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import images from '@components/client/images';
-import { Button } from '@components/ui/button';
+import images from '~/components/client/images';
+import { Button } from '~/components/ui/button';
 import {
    Accordion,
    AccordionItem,
    AccordionTrigger,
    AccordionContent,
-} from '@components/ui/accordion';
+} from '~/components/ui/accordion';
 import {
    CheckoutFormType,
    CheckoutResolver,
 } from '~/domain/schemas/basket.schema';
-import { FieldInput } from '@components/client/forms/field-input';
+import { FieldInput } from '~/components/client/forms/field-input';
 import CardWrapper from './_components/card-wrapper';
-import { Separator } from '@components/ui/separator';
-import { PaymentMethodSelector } from '@components/client/forms/payment-method-selector';
+import { Separator } from '~/components/ui/separator';
+import { PaymentMethodSelector } from '~/components/client/forms/payment-method-selector';
 import { motion } from 'framer-motion';
 import { ShippingAddressSelector } from '~/app/(pages)/(privates)/cart/_components/shipping-address-selector';
 import { FiEdit3 } from 'react-icons/fi';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import withAuth from '@components/HoCs/with-auth.hoc';
-import useIdentityService from '@components/hooks/api/use-identity-service';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import withAuth from '~/components/HoCs/with-auth.hoc';
+import useIdentityService from '~/hooks/api/use-identity-service';
+import useBasketService from '~/hooks/api/use-basket-service';
 import CheckoutItem from './_components/checkout-item';
 import { Check } from 'lucide-react';
 import svgs from '@assets/svgs';
-import { WalletConnectButton } from '@components/client/wallet-connect-button';
+import { WalletConnectButton } from '~/components/client/wallet-connect-button';
 import BlockchainPaymentModel from './_components/blockchain-payment-model';
 import { EPaymentType } from '~/domain/enums/payment-type.enum';
-import { useSolana } from '@components/providers/solana-provider';
+import { useSolana } from '~/components/providers/solana-provider';
 import { toast } from 'sonner';
 import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 import { useDispatch } from 'react-redux';

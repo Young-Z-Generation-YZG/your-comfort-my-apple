@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
-import { useCheckApiError } from '@components/hooks/use-check-error';
+import { useCheckApiError } from '~/hooks/use-check-error';
 import {
-   IBaseQueryParams,
    useCancelOrderMutation,
    useConfirmOrderMutation,
    useLazyGetOrderDetailsQuery,
@@ -13,6 +12,7 @@ import {
    MomoIpnFormType,
    VnpayIpnFormType,
 } from '~/domain/schemas/order.schema';
+import { IOrderFilterQueryParams } from '~/domain/interfaces/ordering.interface';
 
 const useOrderingService = () => {
    const [confirmOrderMutation, confirmOrderMutationState] =
@@ -43,9 +43,9 @@ const useOrderingService = () => {
    ]);
 
    const getOrderDetailsAsync = useCallback(
-      async (id: string) => {
+      async (orderId: string) => {
          try {
-            const result = await getOrderDetailsTrigger(id).unwrap();
+            const result = await getOrderDetailsTrigger(orderId).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -65,9 +65,9 @@ const useOrderingService = () => {
    );
 
    const getOrdersAsync = useCallback(
-      async (params?: IBaseQueryParams | null) => {
+      async (queryParams: IOrderFilterQueryParams) => {
          try {
-            const result = await getOrdersTrigger(params ?? {}).unwrap();
+            const result = await getOrdersTrigger(queryParams).unwrap();
             return {
                isSuccess: true,
                isError: false,

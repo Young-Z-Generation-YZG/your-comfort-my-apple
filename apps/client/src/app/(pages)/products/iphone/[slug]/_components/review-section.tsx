@@ -9,10 +9,10 @@ import {
    ChevronsRight,
    Ellipsis,
 } from 'lucide-react';
-import useReviewService from '@components/hooks/api/use-review-service';
+import useReviewService from '~/hooks/api/use-review-service';
 import ReviewItem from './review-item';
-import { Button } from '@components/ui/button';
-import { Separator } from '@components/ui/separator';
+import { Button } from '~/components/ui/button';
+import { Separator } from '~/components/ui/separator';
 import {
    Select,
    SelectContent,
@@ -20,11 +20,11 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 import { cn } from '~/infrastructure/lib/utils';
-import RatingStar from '@components/ui/rating-star';
-import usePaginationV2 from '@components/hooks/use-pagination';
-import useCatalogService from '@components/hooks/api/use-catalog-service';
+import RatingStar from '~/components/ui/rating-star';
+import usePaginationV2 from '~/hooks/use-pagination';
+import useCatalogService from '~/hooks/api/use-catalog-service';
 
 const ReviewsSection = () => {
    const { slug } = useParams();

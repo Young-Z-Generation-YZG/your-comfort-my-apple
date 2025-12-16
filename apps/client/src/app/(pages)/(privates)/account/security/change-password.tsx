@@ -3,13 +3,13 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
-import { Label } from '@components/ui/label';
-import { Progress } from '@components/ui/progress';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { Progress } from '~/components/ui/progress';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import useIdentityService from '../../../../../components/hooks/api/use-identity-service';
+import useIdentityService from '~/hooks/api/use-identity-service';
 
 // Password strength calculation
 const calculatePasswordStrength = (password: string): number => {

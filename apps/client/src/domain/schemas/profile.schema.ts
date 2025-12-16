@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IProfilePayload } from '../interfaces/identity/profile';
+import { IUpdateProfilePayload } from '../interfaces/identity.interface';
 
 const ProfileSchema = z.object({
    first_name: z.string().min(1, { message: 'First name is required' }),
@@ -22,7 +22,7 @@ const ProfileSchema = z.object({
       .string()
       .min(1, { message: 'Gender is required' })
       .default('OTHER'),
-} satisfies Record<keyof IProfilePayload, any>);
+} satisfies Record<keyof IUpdateProfilePayload, any>);
 
 export type ProfileFormType = z.infer<typeof ProfileSchema>;
 

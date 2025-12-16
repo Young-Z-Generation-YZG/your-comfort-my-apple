@@ -3,14 +3,14 @@
 
 import { useState } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
-import { Button } from '@components/ui/button';
-import images from '@components/client/images';
+import { Button } from '~/components/ui/button';
+import images from '~/components/client/images';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
 import ServiceCard from './service-card';
 import { appleServices } from '../_constants/services-data';
-import { ApplePickupIcon, DeliveryTruckIcon } from '@components/icon';
+import { ApplePickupIcon, DeliveryTruckIcon } from '~/components/icon';
 
 interface ProductInfoProps {
    selectedModel?: {

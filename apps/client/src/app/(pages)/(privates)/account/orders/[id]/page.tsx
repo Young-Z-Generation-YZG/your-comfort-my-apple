@@ -2,9 +2,9 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Button } from '@components/ui/button';
-import { Badge } from '@components/ui/badge';
-import { Separator } from '@components/ui/separator';
+import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/ui/badge';
+import { Separator } from '~/components/ui/separator';
 import {
    ArrowLeft,
    Package,
@@ -23,15 +23,15 @@ import {
    DialogContent,
    DialogHeader,
    DialogTitle,
-} from '@components/ui/dialog';
+} from '~/components/ui/dialog';
 import { ReviewModal } from '../_components/review-model';
-import { Skeleton } from '@components/ui/skeleton';
+import { Skeleton } from '~/components/ui/skeleton';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
 import NextImage from 'next/image';
-import useOrderingService from '~/components/hooks/api/use-ordering-service';
-import { LoadingOverlay } from '@components/client/loading-overlay';
-import useReviewService from '@components/hooks/api/use-review-service';
-import RatingStar from '@components/ui/rating-star';
+import useOrderingService from '~/hooks/api/use-ordering-service';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
+import useReviewService from '~/hooks/api/use-review-service';
+import RatingStar from '~/components/ui/rating-star';
 import { TOrderItem } from '~/domain/types/ordering.type';
 import { TReviewInOrderItem } from '~/domain/types/catalog.type';
 

@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@components/ui/button';
-import { Textarea } from '@components/ui/textarea';
+import { Button } from '~/components/ui/button';
+import { Textarea } from '~/components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '@components/hooks/use-toast';
 import { Star, AlertCircle } from 'lucide-react';
 import {
    ReviewFormType,
@@ -14,8 +13,8 @@ import { useForm } from 'react-hook-form';
 import { cn } from '~/infrastructure/lib/utils';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import useReviewService from '@components/hooks/api/use-review-service';
-import { IReviewPayload } from '~/domain/interfaces/catalogs/review.interface';
+import useReviewService from '~/hooks/api/use-review-service';
+import { IReviewPayload } from '~/domain/interfaces/catalog.interface';
 import NextImage from 'next/image';
 
 type ReviewModalProps = {
@@ -45,7 +44,6 @@ export function ReviewModal({
    onClose,
    onSubmit,
 }: ReviewModalProps) {
-   const { toast } = useToast();
    const [rating, setRating] = useState(reviewedData.rating || 0);
    const [hoverRating, setHoverRating] = useState(0);
    const [comment, setComment] = useState(reviewedData.content || '');
@@ -56,46 +54,34 @@ export function ReviewModal({
    const form = useForm<ReviewFormType>({
       resolver: ReviewResolver,
       defaultValues: {
+         sku_id: item.sku_id || '',
          order_id: item.order_id,
          order_item_id: item.order_item_id,
-         model_id: item.model_id,
-         product_id: item.product_id,
          rating: reviewedData.rating || 0,
          content: reviewedData.content || '',
-         customer_username:
-            authAppState.username || authAppState.userEmail || '',
       },
    });
 
-   // Update form values and local state when reviewedData or item changes
    useEffect(() => {
       const currentRating = reviewedData.rating || 0;
       const currentContent = reviewedData.content || '';
 
-      // Update local state
       setRating(currentRating);
       setComment(currentContent);
 
-      // Reset form with new values
       form.reset({
+         sku_id: item.sku_id || '',
          order_id: item.order_id,
          order_item_id: item.order_item_id,
-         model_id: item.model_id,
-         product_id: item.product_id,
          rating: currentRating,
          content: currentContent,
-         customer_username:
-            authAppState.username || authAppState.userEmail || '',
       });
    }, [
       reviewedData.rating,
       reviewedData.content,
+      item.sku_id,
       item.order_id,
       item.order_item_id,
-      item.model_id,
-      item.product_id,
-      authAppState.username,
-      authAppState.userEmail,
       form,
    ]);
 
@@ -112,12 +98,6 @@ export function ReviewModal({
 
    const handleSubmit = async (data: ReviewFormType) => {
       if (!item.sku_id) {
-         toast({
-            title: 'Error',
-            description: 'SKU ID is required to submit a review.',
-            variant: 'destructive',
-            duration: 2000,
-         });
          return;
       }
 
@@ -132,20 +112,8 @@ export function ReviewModal({
       const result = await createReviewAsync(payload);
 
       if (result.isSuccess) {
-         toast({
-            title: 'Review submitted',
-            description: 'Thank you for your feedback!',
-            duration: 2000,
-         });
          onSubmit();
          onClose();
-      } else {
-         toast({
-            title: 'Error',
-            description: 'Failed to submit review. Please try again.',
-            variant: 'destructive',
-            duration: 2000,
-         });
       }
    };
 
@@ -166,20 +134,8 @@ export function ReviewModal({
       });
 
       if (result.isSuccess) {
-         toast({
-            title: 'Review updated',
-            description: 'Your review has been updated!',
-            duration: 2000,
-         });
          onSubmit();
          onClose();
-      } else {
-         toast({
-            title: 'Error',
-            description: 'Failed to update review. Please try again.',
-            variant: 'destructive',
-            duration: 2000,
-         });
       }
    };
 
@@ -189,20 +145,8 @@ export function ReviewModal({
       const result = await deleteReviewAsync(reviewId);
 
       if (result.isSuccess) {
-         toast({
-            title: 'Review deleted',
-            description: 'Your review has been deleted!',
-            duration: 2000,
-         });
          onSubmit();
          onClose();
-      } else {
-         toast({
-            title: 'Error',
-            description: 'Failed to delete review. Please try again.',
-            variant: 'destructive',
-            duration: 2000,
-         });
       }
    };
 

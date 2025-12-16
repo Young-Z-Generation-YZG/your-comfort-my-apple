@@ -11,11 +11,11 @@ import {
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '@components/ui/carousel';
+} from '~/components/ui/carousel';
 
 import LatestItem from './_components/latest-item';
 
-import CompareIPhoneSection from '@components/client/compare-iphone-section';
+import CompareIPhoneSection from '~/components/client/compare-iphone-section';
 import ExperienceItem from '~/app/_components/experience-item';
 import NewestProductSection from './_components/newest-product-section';
 import PopularProductSection from './_components/popular-product-section';

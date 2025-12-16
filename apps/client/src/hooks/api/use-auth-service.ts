@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useMemo } from 'react';
 import {
-   LoginFormType,
-   sendEmailResetPasswordFormType,
-   resetPasswordFormType,
-   changePasswordFormType,
-} from '~/domain/schemas/auth.schema';
-import {
    useChangePasswordMutation,
    useLoginMutation,
    useResetPasswordMutation,
@@ -15,18 +9,26 @@ import {
    useRegisterMutation,
    useLogoutMutation,
    useRefreshTokenMutation,
-   IRegisterPayload,
-   TEmailVerificationResponse,
-   IVerifyOtpPayload,
 } from '~/infrastructure/services/auth.service';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import { useCheckApiError } from '~/components/hooks/use-check-error';
+import { useCheckApiError } from '~/hooks/use-check-error';
 import { useRouter } from 'next/navigation';
 import { setUseAccessToken } from '~/infrastructure/redux/features/auth.slice';
 import { useDispatch } from 'react-redux';
-import { EVerificationType } from '~/domain/enums/verification-type.enum';
-import { useCheckApiSuccess } from '~/components/hooks/use-check-success';
+import { EVerificationTypeEnum } from '~/domain/enums/verification-type.enum';
+import { useCheckApiSuccess } from '~/hooks/use-check-success';
 import { setPreviousUnAuthenticatedPath } from '~/infrastructure/redux/features/app.slice';
+import {
+   LoginFormType,
+   sendEmailResetPasswordFormType,
+   resetPasswordFormType,
+   changePasswordFormType,
+} from '~/domain/schemas/auth.schema';
+import {
+   IRegisterPayload,
+   TEmailVerificationResponse,
+   IVerifyOtpPayload,
+} from '~/domain/interfaces/identity.interface';
 
 const useAuthService = () => {
    const [loginMutation, loginMutationState] = useLoginMutation();
@@ -77,7 +79,7 @@ const useAuthService = () => {
                typeof loginMutationState.data === 'object' &&
                'verification_type' in loginMutationState.data &&
                loginMutationState.data.verification_type ===
-                  EVerificationType.EMAIL_VERIFICATION
+                  EVerificationTypeEnum.EMAIL_VERIFICATION
             ) {
                return 'Please verify your email to continue!';
             } else {
@@ -123,9 +125,11 @@ const useAuthService = () => {
                result &&
                typeof result === 'object' &&
                'verification_type' in result &&
-               result.verification_type === EVerificationType.EMAIL_VERIFICATION
+               result.verification_type ===
+                  EVerificationTypeEnum.EMAIL_VERIFICATION
             ) {
-               const typedData = result as TEmailVerificationResponse;
+               const typedData =
+                  result as unknown as TEmailVerificationResponse;
 
                const params = typedData.params;
                const queryParams = new URLSearchParams();
@@ -178,7 +182,7 @@ const useAuthService = () => {
 
    const refreshToken = useCallback(async () => {
       try {
-         const result = await refreshTokenMutation(null).unwrap();
+         const result = await refreshTokenMutation().unwrap();
          return {
             isSuccess: true,
             isError: false,
@@ -199,9 +203,11 @@ const useAuthService = () => {
                result &&
                typeof result === 'object' &&
                'verification_type' in result &&
-               result.verification_type === EVerificationType.EMAIL_VERIFICATION
+               result.verification_type ===
+                  EVerificationTypeEnum.EMAIL_VERIFICATION
             ) {
-               const typedResult = result as TEmailVerificationResponse;
+               const typedResult =
+                  result as unknown as TEmailVerificationResponse;
                const params = typedResult.params;
 
                const queryParams = new URLSearchParams();

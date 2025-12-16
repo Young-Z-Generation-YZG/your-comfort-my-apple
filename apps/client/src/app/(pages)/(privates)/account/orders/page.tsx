@@ -1,7 +1,7 @@
 'use client';
 
 import { CardContext } from '../_components/card-content';
-import { Input } from '@components/ui/input';
+import { Input } from '~/components/ui/input';
 import {
    Select,
    SelectContent,
@@ -9,7 +9,7 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 import {
    Table,
    TableBody,
@@ -17,8 +17,8 @@ import {
    TableHead,
    TableHeader,
    TableRow,
-} from '@components/ui/table';
-import { Badge } from '@components/ui/badge';
+} from '~/components/ui/table';
+import { Badge } from '~/components/ui/badge';
 import {
    Search,
    ChevronRight,
@@ -28,15 +28,15 @@ import {
    ChevronsRight,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { cn } from '~/infrastructure/lib/utils';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
-import useOrderingService from '@components/hooks/api/use-ordering-service';
-import { useEffect, useMemo } from 'react';
-import useFilters from '@components/hooks/use-filter';
-import usePaginationV2 from '@components/hooks/use-pagination';
-import { IOrderFilterQueryParams } from '~/infrastructure/services/ordering.service';
+import useOrderingService from '~/hooks/api/use-ordering-service';
+import { useEffect } from 'react';
+import useFilters from '~/hooks/use-filter';
+import usePaginationV2 from '~/hooks/use-pagination';
+import { IOrderFilterQueryParams } from '~/domain/interfaces/ordering.interface';
 import { TOrder } from '~/domain/types/ordering.type';
 
 const getHoverStatusColor = (status: string) => {
@@ -81,7 +81,6 @@ const itemVariants = {
    },
 };
 
-// Helper function for status badge color with hover
 const getStatusColor = (status: string) => {
    switch (status) {
       case 'PENDING':
@@ -111,24 +110,6 @@ const OrderPage = () => {
       _limit: 'number',
    });
 
-   const paginationData = useMemo(() => {
-      return (
-         getOrdersState.data ?? {
-            total_records: 0,
-            total_pages: 0,
-            page_size: 10,
-            current_page: 1,
-            items: [],
-            links: {
-               first: null,
-               last: null,
-               prev: null,
-               next: null,
-            },
-         }
-      );
-   }, [getOrdersState.data]);
-
    const {
       currentPage,
       totalPages,
@@ -137,11 +118,26 @@ const OrderPage = () => {
       lastItemIndex,
       limitSelectValue,
       getPaginationItems,
-   } = usePaginationV2(paginationData, {
-      pageSizeOverride: filters._limit ?? null,
-      currentPageOverride: filters._page ?? null,
-      fallbackPageSize: 10,
-   });
+   } = usePaginationV2(
+      getOrdersState.data ?? {
+         total_records: 0,
+         total_pages: 0,
+         page_size: 10,
+         current_page: 1,
+         items: [],
+         links: {
+            first: null,
+            last: null,
+            prev: null,
+            next: null,
+         },
+      },
+      {
+         pageSizeOverride: filters._limit ?? null,
+         currentPageOverride: filters._page ?? null,
+         fallbackPageSize: 10,
+      },
+   );
 
    const paginationItems = getPaginationItems();
 

@@ -6,19 +6,19 @@ import { GoArrowUpRight } from 'react-icons/go';
 import Image from 'next/image';
 import signUpImage from '@assets/images/sign-up.png';
 import Button from '~/app/(pages)/(auth)/_components/button';
-import { FieldInput } from '@components/client/forms/field-input';
+import { FieldInput } from '~/components/client/forms/field-input';
 import {
    RegisterFormType,
    RegisterResolver,
 } from '~/domain/schemas/auth.schema';
 import { FormSelector } from '~/app/(pages)/(auth)/_components/selector-input';
-import { FormBirthDateSelector } from '@components/client/forms/birthday-selector';
-import { FormPhoneInput } from '@components/client/forms/phone-input';
-import { LoadingOverlay } from '@components/client/loading-overlay';
-import { Separator } from '@components/ui/separator';
+import { FormBirthDateSelector } from '~/components/client/forms/birthday-selector';
+import { FormPhoneInput } from '~/components/client/forms/phone-input';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
+import { Separator } from '~/components/ui/separator';
 import { useForm } from 'react-hook-form';
-import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuth from '~/components/hooks/api/use-auth-service';
+import withAuth from '~/components/HoCs/with-auth.hoc';
+import useAuth from '~/hooks/api/use-auth-service';
 import { countries } from '~/domain/constants/countries';
 
 const SignUpPage = () => {

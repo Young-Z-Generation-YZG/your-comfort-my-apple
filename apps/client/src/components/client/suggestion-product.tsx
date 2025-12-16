@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import RatingStar from '@components/ui/rating-star';
-import { TSuggestionProduct } from '~/infrastructure/services/product.service';
+import RatingStar from '~/components/ui/rating-star';
+import { TSuggestionProduct } from '~/domain/types/catalog.type';
 
 type SuggestionProductProps = {
    product: TSuggestionProduct;

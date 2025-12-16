@@ -5,28 +5,28 @@ import { SFDisplayFont } from '@assets/fonts/font.config';
 import Image from 'next/image';
 import { FormProvider } from 'react-hook-form';
 
-import images from '@components/client/images';
+import images from '~/components/client/images';
 import { BsExclamationCircle } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 import {
    Accordion,
    AccordionItem,
    AccordionTrigger,
    AccordionContent,
-} from '@components/ui/accordion';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+} from '~/components/ui/accordion';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { usePromoCode } from './_hooks/usePromoCode';
 import CartItem from './_components/cart-item';
 import { useRouter } from 'next/navigation';
-import CheckboxField from '@components/client/forms/checkbox-field';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import CheckboxField from '~/components/client/forms/checkbox-field';
+import useBasketService from '~/hooks/api/use-basket-service';
 import { useEffect, useMemo } from 'react';
 import { TCartItem } from '~/domain/types/basket.type';
 import { TReduxCartState } from '~/infrastructure/redux/features/cart.slice';
 import { useAppSelector } from '~/infrastructure/redux/store';
-import useCartSync from '@components/hooks/use-cart-sync';
+import useCartSync from '~/hooks/use-cart-sync';
 import useCartForm from './_hooks/useCartForm';
 import { useDispatch } from 'react-redux';
 import {

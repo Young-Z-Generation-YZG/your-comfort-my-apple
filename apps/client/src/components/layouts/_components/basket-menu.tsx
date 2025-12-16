@@ -1,4 +1,4 @@
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { PiUserCircleFill } from 'react-icons/pi';
@@ -7,7 +7,7 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import { MdOutlineManageAccounts } from 'react-icons/md';
 import Link from 'next/link';
-import useAuth from '@components/hooks/api/use-auth-service';
+import useAuth from '~/hooks/api/use-auth-service';
 
 const containerVariants = {
    hidden: {},

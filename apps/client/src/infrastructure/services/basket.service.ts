@@ -1,8 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
-
-// import { createQueryEncodedUrl } from '~/infrastructure/utils/query-encoded-url';
-import { setLogout } from '../redux/features/auth.slice';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import {
    IStoreEventItemPayload,
@@ -11,18 +9,6 @@ import {
    IStoreBasketItemPayload,
    IStoreBasketPayload,
    IGetBasketQueryParams,
-} from '~/domain/types/basket.type';
-
-export type {
-   TCart,
-   TCartItem,
-   IStoreBasketPayload,
-   IStoreBasketItemPayload,
-   IStoreEventItemPayload,
-   TUSerInfo,
-   TPromotion,
-   TCheckoutBasketItem,
-   TCheckoutBasket,
 } from '~/domain/types/basket.type';
 
 const baseQueryHandler = async (
@@ -36,15 +22,8 @@ const baseQueryHandler = async (
       extraOptions as unknown as any,
    );
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
-
-      // Redirect to sign-in page
-      if (typeof window !== 'undefined') {
-         window.location.href = '/sign-in';
-      }
    }
 
    return result;

@@ -1,13 +1,13 @@
 'use client';
 
-import useBlockchainPayment from '@components/hooks/blockchain/use-blockchain-payment';
+import useBlockchainPayment from '~/hooks/blockchain/use-blockchain-payment';
 import { X } from 'lucide-react';
-import { useSolana } from '@components/providers/solana-provider';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import { useSolana } from '~/components/providers/solana-provider';
+import useBasketService from '~/hooks/api/use-basket-service';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { CheckoutFormType } from '~/domain/schemas/basket.schema';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { TCheckoutResponse } from '../page';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';

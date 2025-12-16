@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { cn } from '~/infrastructure/lib/utils';
 
 interface TimeLeft {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useSolana } from '@components/providers/solana-provider';
-import { Button } from '@components/ui/button';
+import { useSolana } from '~/components/providers/solana-provider';
+import { Button } from '~/components/ui/button';
 import {
    DropdownMenu,
    DropdownMenuContent,
@@ -10,8 +10,8 @@ import {
    DropdownMenuLabel,
    DropdownMenuSeparator,
    DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+} from '~/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { ChevronDown, Wallet, LogOut } from 'lucide-react';
 import {
    useConnect,

@@ -1,23 +1,23 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import {
-   IAddressPayload,
-   IAddressResponse,
-} from '~/domain/interfaces/identity/address';
-import { IMeResponse } from '~/domain/interfaces/identity/me';
-import { IProfilePayload } from '~/domain/interfaces/identity/profile';
+import { IAddressPayload } from '~/domain/interfaces/identity.interface';
+import { IUpdateProfilePayload } from '~/domain/interfaces/identity.interface';
 import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
+import { TAccount, TAddress } from '~/domain/types/identity.type';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
    const result = await baseQuery('/identity-services')(
       args,
       api,
-      extraOptions,
+      extraOptions as unknown as any,
    );
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 
@@ -29,48 +29,54 @@ export const identityApi = createApi({
    tagTypes: ['Profile', 'Addresses'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getMe: builder.query<IMeResponse, void>({
+      getMe: builder.query<TAccount, void>({
          query: () => '/api/v1/users/me',
          providesTags: ['Profile'],
       }),
       updateProfile: builder.mutation({
-         query: (body: IProfilePayload) => ({
+         query: (payload: IUpdateProfilePayload) => ({
             url: `/api/v1/users/profiles`,
             method: 'PUT',
-            body: body,
+            body: payload,
          }),
          invalidatesTags: ['Profile'],
       }),
-      getAddresses: builder.query<IAddressResponse[], void>({
+      getAddresses: builder.query<TAddress[], void>({
          query: () => '/api/v1/users/addresses',
          providesTags: ['Addresses'],
       }),
       addAddress: builder.mutation({
-         query: (body: IAddressPayload) => ({
+         query: (payload: IAddressPayload) => ({
             url: '/api/v1/users/addresses',
             method: 'POST',
-            body: body,
+            body: payload,
          }),
          invalidatesTags: ['Addresses'],
       }),
       updateAddress: builder.mutation({
-         query: (body: { id: string; payload: IAddressPayload }) => ({
-            url: `/api/v1/users/addresses/${body.id}`,
+         query: ({
+            addressId,
+            payload,
+         }: {
+            addressId: string;
+            payload: IAddressPayload;
+         }) => ({
+            url: `/api/v1/users/addresses/${addressId}`,
             method: 'PUT',
-            body: body.payload,
+            body: payload,
          }),
          invalidatesTags: ['Addresses'],
       }),
       setDefaultAddress: builder.mutation({
-         query: (id: string) => ({
-            url: `/api/v1/users/addresses/${id}/is-default`,
+         query: (addressId: string) => ({
+            url: `/api/v1/users/addresses/${addressId}/is-default`,
             method: 'PATCH',
          }),
          invalidatesTags: ['Addresses'],
       }),
       deleteAddress: builder.mutation({
-         query: (id: string) => ({
-            url: `/api/v1/users/addresses/${id}`,
+         query: (addressId: string) => ({
+            url: `/api/v1/users/addresses/${addressId}`,
             method: 'DELETE',
          }),
          invalidatesTags: ['Addresses'],

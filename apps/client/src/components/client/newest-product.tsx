@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { TNewestProduct } from '~/infrastructure/services/product.service';
+import { TNewestProduct } from '~/domain/types/catalog.type';
 
 type NewestProductProps = {
    product: TNewestProduct;

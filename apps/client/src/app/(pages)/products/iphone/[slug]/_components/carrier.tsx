@@ -1,4 +1,4 @@
-import images from '@components/client/images';
+import images from '~/components/client/images';
 import Image from 'next/image';
 
 const Carrier = () => {

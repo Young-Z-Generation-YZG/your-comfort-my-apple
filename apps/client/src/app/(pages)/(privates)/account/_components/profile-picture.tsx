@@ -3,11 +3,11 @@
 import type React from 'react';
 
 import { useState, useRef } from 'react';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { Camera, Upload, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DefaultActionContent } from './card-content';
-import { useToast } from '@components/hooks/use-toast';
+import { useToast } from '~/hooks/use-toast';
 
 export function ProfilePicture() {
    const { toast } = useToast();

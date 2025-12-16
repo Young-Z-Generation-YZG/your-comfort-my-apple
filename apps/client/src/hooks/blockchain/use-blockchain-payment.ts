@@ -1,6 +1,6 @@
 'use client';
 
-import { useSolana } from '@components/providers/solana-provider';
+import { useSolana } from '~/components/providers/solana-provider';
 import { useWalletAccountTransactionSendingSigner } from '@solana/react';
 import { UiWalletAccount } from '@wallet-standard/react';
 import usdToLamports from '~/infrastructure/utils/blockchain/usd-to-sol';

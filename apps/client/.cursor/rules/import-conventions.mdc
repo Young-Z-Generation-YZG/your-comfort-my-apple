@@ -1,0 +1,71 @@
+---
+globs:
+   alwaysApply: true
+---
+
+# Import Conventions
+
+## Rules
+
+1. **Use path aliases for cross-feature imports**: When importing from different feature areas or directories, always use path aliases instead of relative paths with `../` or `../../../`.
+
+2. **Use relative imports for local files**: When importing from the same folder (`./`) or immediate parent/sibling (`../`), use relative paths to reduce noise.
+
+3. **Decision criteria**:
+   -  If the import requires 2+ levels of `../` → Use path alias
+   -  If the import is within the same feature/module → Use relative path
+   -  If the import crosses feature boundaries → Use path alias
+
+## Available Path Aliases
+
+-  `~/*` → `./src/*` (use for components, infrastructure, domain, app, etc.)
+-  `@constants/*` → `./constants/*`
+-  `@assets/*` → `./assets/*`
+-  `@public/*` → `./public/*`
+
+## Examples
+
+### ✅ Good - Using path aliases for cross-feature imports
+
+```typescript
+// Importing components from anywhere
+import { Header } from '~/components/layouts/Header';
+import { Button } from '~/components/ui/Button';
+
+// Importing from src directory (infrastructure, domain, app)
+import { CatalogService } from '~/infrastructure/services/catalog.service';
+import { CatalogType } from '~/domain/types/catalog.type';
+import { useAuth } from '~/app/hooks/useAuth';
+
+// Importing constants
+import { API_ENDPOINT } from '@constants/api';
+```
+
+### ❌ Bad - Deep relative paths (avoid)
+
+```typescript
+// Too many levels - hard to read and maintain
+import { Header } from '../../../components/layouts/Header';
+import { CatalogService } from '../../infrastructure/services/catalog.service';
+import { CatalogType } from '../../../domain/types/catalog.type';
+```
+
+### ✅ Good - Relative imports for local files
+
+```typescript
+// Same folder
+import { Button } from './Button';
+import { ButtonProps } from './Button.types';
+
+// Immediate parent or sibling
+import { Modal } from '../shared/Modal';
+import { useLocalState } from '../hooks/useLocalState';
+```
+
+### ❌ Bad - Unnecessary path aliases for local files
+
+```typescript
+// Overkill for same-folder imports
+import { Button } from '~/components/ui/Button'; // when already in ~/components/ui folder
+import { Modal } from '~/components/shared/Modal'; // when already in components folder
+```

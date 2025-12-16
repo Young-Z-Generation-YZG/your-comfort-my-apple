@@ -18,12 +18,12 @@ import Search from './_components/search';
 import UserMenu from './_components/user-menu';
 import BasketMenu from './_components/basket-menu';
 import { exploreIphoneList } from './_data/explore-iphone-list';
-import useIdentityService from '@components/hooks/api/use-identity-service';
-import useNotificationService from '@components/hooks/api/use-notification-service';
+import useIdentityService from '~/hooks/api/use-identity-service';
+import useNotificationService from '~/hooks/api/use-notification-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { TNotification } from '~/domain/types/ordering.type';
-import { INotificationQueryParams } from '~/infrastructure/services/notification.service';
-import { Badge } from '@components/ui/badge';
+import { INotificationQueryParams } from '~/domain/interfaces/ordering.interface';
+import { Badge } from '~/components/ui/badge';
 
 const containerVariants = {
    hidden: {},

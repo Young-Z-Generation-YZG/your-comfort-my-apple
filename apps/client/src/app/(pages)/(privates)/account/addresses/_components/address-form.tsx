@@ -3,16 +3,16 @@
 import type React from 'react';
 
 import { useState, useRef, useEffect } from 'react';
-import { Button } from '@components/ui/button';
-import { DialogTrigger } from '@components/ui/dialog';
-import { Label } from '@components/ui/label';
+import { Button } from '~/components/ui/button';
+import { DialogTrigger } from '~/components/ui/dialog';
+import { Label } from '~/components/ui/label';
 import {
    Select,
    SelectContent,
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 
 import { motion } from 'framer-motion';
 
@@ -25,9 +25,9 @@ import {
    AddressFormType,
    AddressResolver,
 } from '~/domain/schemas/address.schema';
-import FieldInputSecond from '@components/client/forms/field-input-second';
-import { Form, FormField, FormItem, FormMessage } from '@components/ui/form';
-import { IAddressPayload } from '~/domain/interfaces/identity/address';
+import FieldInputSecond from '~/components/client/forms/field-input-second';
+import { Form, FormField, FormItem, FormMessage } from '~/components/ui/form';
+import { IAddressPayload } from '~/domain/interfaces/identity.interface';
 import { useForm } from 'react-hook-form';
 import isDifferentValue from '~/infrastructure/utils/is-different-value';
 
@@ -35,13 +35,13 @@ const staggerDuration = 0.05;
 
 type AddressFormProps = {
    initialAddress?: {
-      id: string;
+      addressId: string;
       payload: IAddressPayload;
    } | null;
    isEditing?: boolean;
    onAdd: (data: AddressFormType) => Promise<void>;
-   onUpdate: (id: string, data: AddressFormType) => Promise<void>;
-   onDelete: (id: string) => Promise<void>;
+   onUpdate: (addressId: string, data: AddressFormType) => Promise<void>;
+   onDelete: (addressId: string) => Promise<void>;
    onClose: () => void;
    isLoading?: boolean;
 };
@@ -118,8 +118,8 @@ export function AddressForm({
 
    const handleSubmit = async (data: AddressFormType) => {
       try {
-         if (isEditing && initialAddress?.id) {
-            await onUpdate(initialAddress.id, data);
+         if (isEditing && initialAddress?.addressId) {
+            await onUpdate(initialAddress.addressId, data);
          } else {
             await onAdd(data);
          }
@@ -130,9 +130,9 @@ export function AddressForm({
    };
 
    const handleDelete = async () => {
-      if (initialAddress?.id) {
+      if (initialAddress?.addressId) {
          try {
-            await onDelete(initialAddress.id);
+            await onDelete(initialAddress.addressId);
             onClose();
          } catch (error) {
             console.error('Delete error:', error);
@@ -158,6 +158,7 @@ export function AddressForm({
                      form={form}
                      name="label"
                      label="Label"
+                     placeholder="e.g. Home, Office"
                      disabled={isLoading}
                   />
                </motion.div>
@@ -173,6 +174,7 @@ export function AddressForm({
                      form={form}
                      name="contact_name"
                      label="Full Name"
+                     placeholder="Enter full name"
                      disabled={isLoading}
                   />
                </motion.div>
@@ -188,6 +190,7 @@ export function AddressForm({
                      form={form}
                      name="contact_phone_number"
                      label="Phone Number"
+                     placeholder="Enter phone number"
                      type="number"
                      disabled={isLoading}
                   />
@@ -204,6 +207,7 @@ export function AddressForm({
                      form={form}
                      name="address_line"
                      label="Address Street"
+                     placeholder="Street, house number, etc."
                      disabled={isLoading}
                   />
                </motion.div>

@@ -8,11 +8,11 @@ import {
    VnpayIpnFormType,
    VnpayIpnResolver,
 } from '~/domain/schemas/order.schema';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import SuccessResult from './_components/success-result';
 import FailureResult from './_components/failure-result';
 import { useForm } from 'react-hook-form';
-import useOrderingService from '@components/hooks/api/use-ordering-service';
+import useOrderingService from '~/hooks/api/use-ordering-service';
 import { useDispatch } from 'react-redux';
 import { CleanSelectedItems } from '~/infrastructure/redux/features/cart.slice';
 

@@ -1,20 +1,27 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { setLogout } from '../redux/features/auth.slice';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import {
    IReviewPayload,
    IUpdateReviewPayload,
-} from '~/domain/interfaces/catalogs/review.interface';
+} from '~/domain/interfaces/catalog.interface';
 import { baseQuery } from './base-query';
 import { TReviewInOrderItem, TReviewItem } from '~/domain/types/catalog.type';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
+   const result = await baseQuery('/catalog-services')(
+      args,
+      api,
+      extraOptions as unknown as any,
+   );
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 
@@ -39,13 +46,11 @@ export const reviewApi = createApi({
             queryParams: IGetReviewsQueryParams;
          }
       >({
-         query: ({ slug, queryParams }) => {
-            return {
-               url: `/api/v1/reviews/model/${slug}`,
-               method: 'GET',
-               params: queryParams,
-            };
-         },
+         query: ({ slug, queryParams }) => ({
+            url: `/api/v1/reviews/model/${slug}`,
+            method: 'GET',
+            params: queryParams,
+         }),
          providesTags: ['Reviews'],
       }),
       getReviewByProductModelIdAsync: builder.query<
@@ -55,41 +60,42 @@ export const reviewApi = createApi({
             queryParams: IGetReviewsQueryParams;
          }
       >({
-         query: ({ id, queryParams }) => {
-            return {
-               url: `/api/v1/reviews/product-models/${id}`,
-               method: 'GET',
-               params: queryParams,
-            };
-         },
+         query: ({ id, queryParams }) => ({
+            url: `/api/v1/reviews/product-models/${id}`,
+            method: 'GET',
+            params: queryParams,
+         }),
          providesTags: ['Reviews'],
       }),
       getReviewByOrderIdAsync: builder.query<TReviewInOrderItem[], string>({
-         query: (orderId) => `/api/v1/reviews/orders/${orderId}`,
+         query: (orderId) => ({
+            url: `/api/v1/reviews/orders/${orderId}`,
+            method: 'GET',
+         }),
          providesTags: ['Reviews'],
       }),
-      createReviewAsync: builder.mutation({
-         query: (body: IReviewPayload) => ({
+      createReviewAsync: builder.mutation<boolean, IReviewPayload>({
+         query: (payload: IReviewPayload) => ({
             url: '/api/v1/reviews',
             method: 'POST',
-            body,
+            body: payload,
          }),
       }),
-      updateReviewAsync: builder.mutation({
-         query: ({
-            body,
-            reviewId,
-         }: {
-            body: IUpdateReviewPayload;
+      updateReviewAsync: builder.mutation<
+         boolean,
+         {
             reviewId: string;
-         }) => ({
+            payload: IUpdateReviewPayload;
+         }
+      >({
+         query: ({ reviewId, payload }) => ({
             url: `/api/v1/reviews/${reviewId}`,
             method: 'PUT',
-            body,
+            body: payload,
          }),
          invalidatesTags: ['Reviews'],
       }),
-      deleteReviewAsync: builder.mutation({
+      deleteReviewAsync: builder.mutation<boolean, string>({
          query: (reviewId: string) => ({
             url: `/api/v1/reviews/${reviewId}`,
             method: 'DELETE',

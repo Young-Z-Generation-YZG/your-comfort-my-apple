@@ -3,33 +3,25 @@
 import Link from 'next/link';
 import { CardContext, DefaultActionContent } from './_components/card-content';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import Badge from './_components/badge';
 import { useEffect, useMemo, useState } from 'react';
 import { ProfilePicture } from './_components/profile-picture';
-import TwoRowSkeleton from '@components/ui/two-row-skeleton';
-import ImageSkeleton from '@components/ui/image-skeleton';
-import { Skeleton } from '@components/ui/skeleton';
+import TwoRowSkeleton from '~/components/ui/two-row-skeleton';
+import ImageSkeleton from '~/components/ui/image-skeleton';
+import { Skeleton } from '~/components/ui/skeleton';
 import { IoChevronBack } from 'react-icons/io5';
-import ProfileForm from './_components/form/profile-form';
-import useIdentityService from '@components/hooks/api/use-identity-service';
+import useIdentityService from '~/hooks/api/use-identity-service';
 
 const AccountPage = () => {
    const [editProfile, setEditProfile] = useState(false);
 
-   //  const { data: queryData, ...queryDataState } = useGetMeQuery();
    const { getMeAsync, getMeState, isLoading } = useIdentityService();
 
    useEffect(() => {
-      const fetchMe = async () => {
-         const result = await getMeAsync();
-         if (result.isSuccess) {
-            console.log(result.data);
-         }
-      };
-      fetchMe();
+      getMeAsync();
    }, [getMeAsync]);
 
    const displayMeInfo = useMemo(() => {
@@ -43,9 +35,11 @@ const AccountPage = () => {
       return (
          <div>
             <CardContext>
-                        <div className="flex flex-col gap-2">
+               <div className="flex flex-col gap-2">
                   <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
-                     <h3 className="font-medium text-lg md:text-xl">Profile picture</h3>
+                     <h3 className="font-medium text-lg md:text-xl">
+                        Profile picture
+                     </h3>
 
                      <span
                         onClick={() => {
@@ -61,20 +55,6 @@ const AccountPage = () => {
                   <ProfilePicture />
                </div>
             </CardContext>
-
-            {/* <CardContext className="mt-5">
-               <ProfileForm
-                  profile={{
-                     email: meInfo.email,
-                     firstName: meInfo.first_name,
-                     lastName: meInfo.last_name,
-                     phoneNumber: meInfo.phone_number,
-                     birthDate: meInfo.birth_date,
-                     imageId: meInfo.image_id,
-                     imageUrl: meInfo.image_url,
-                  }}
-               />
-            </CardContext> */}
          </div>
       );
    };
@@ -213,7 +193,9 @@ const AccountPage = () => {
                <CardContext>
                   <div className="flex flex-col gap-2">
                      <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
-                        <h3 className="font-medium text-lg md:text-xl">Payment methods</h3>
+                        <h3 className="font-medium text-lg md:text-xl">
+                           Payment methods
+                        </h3>
 
                         <Link
                            href="#"
@@ -249,7 +231,9 @@ const AccountPage = () => {
                <CardContext>
                   <div className="flex flex-col gap-2">
                      <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
-                        <h3 className="font-medium text-lg md:text-xl">Security</h3>
+                        <h3 className="font-medium text-lg md:text-xl">
+                           Security
+                        </h3>
 
                         <Link
                            href="/account/security"

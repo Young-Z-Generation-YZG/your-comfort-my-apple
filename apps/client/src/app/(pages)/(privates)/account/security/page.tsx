@@ -7,7 +7,7 @@ import { TwoFactorAuth } from './two-factor-auth';
 import { LoginHistory } from './login-history';
 import { SecuritySettings, SecuritySection } from './security-settings';
 import { motion } from 'framer-motion';
-import withAuth from '@components/HoCs/with-auth.hoc';
+import withAuth from '~/components/HoCs/with-auth.hoc';
 
 const SecurityPage = () => {
    const [activeSection, setActiveSection] =

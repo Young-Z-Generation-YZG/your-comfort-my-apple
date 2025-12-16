@@ -11,7 +11,7 @@ import {
 import {
    IReviewPayload,
    IUpdateReviewPayload,
-} from '~/domain/interfaces/catalogs/review.interface';
+} from '~/domain/interfaces/catalog.interface';
 import { useCheckApiError } from '../use-check-error';
 
 const useReviewService = () => {
@@ -63,7 +63,7 @@ const useReviewService = () => {
          try {
             const result = await getReviewByProductModelIdTrigger({
                id,
-               queryParams: queryParams,
+               queryParams,
             }).unwrap();
             return {
                isSuccess: true,
@@ -157,7 +157,7 @@ const useReviewService = () => {
          try {
             const result = await updateReviewMutation({
                reviewId,
-               body: payload,
+               payload,
             }).unwrap();
             return {
                isSuccess: true,

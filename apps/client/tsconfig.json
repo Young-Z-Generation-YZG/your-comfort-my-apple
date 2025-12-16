@@ -25,9 +25,6 @@
       "@constants/*": [
         "./constants/*"
       ],
-      "@components/*": [
-        "./src/components/*"
-      ],
       "@assets/*": [
         "./assets/*"
       ],

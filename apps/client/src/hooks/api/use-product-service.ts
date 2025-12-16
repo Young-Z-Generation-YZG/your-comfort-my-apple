@@ -4,10 +4,12 @@ import {
    useLazyGetPopularProductsQuery,
    useLazyGetNewestProductsQuery,
    useLazyGetSuggestionProductsQuery,
-   IGetProductModelsQueryParams,
    useLazyGetProductModelsByCategorySlugQuery,
-   IGetProductModelsByCategorySlugQueryParams,
 } from '~/infrastructure/services/product.service';
+import {
+   IGetProductModelsQueryParams,
+   IGetProductModelsByCategorySlugQueryParams,
+} from '~/domain/interfaces/catalog.interface';
 
 const useProductService = () => {
    const [getProductModelsTrigger, getProductModelsState] =

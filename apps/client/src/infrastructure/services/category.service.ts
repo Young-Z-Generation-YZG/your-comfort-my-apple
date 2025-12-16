@@ -1,7 +1,8 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { CategoryResponseType } from '~/domain/types/category.type';
+
 import { baseQuery } from './base-query';
 import { setLogout } from '../redux/features/auth.slice';
+import { TCategory } from '~/domain/types/catalog.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/catalog-services')(args, api, extraOptions);
@@ -18,7 +19,7 @@ export const categoryApi = createApi({
    tagTypes: ['Categories'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      getCategoriesAsync: builder.query<CategoryResponseType[], void>({
+      getCategoriesAsync: builder.query<TCategory[], void>({
          query: () => '/api/v1/categories',
          providesTags: ['Categories'],
       }),

@@ -1,22 +1,16 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IReviewPayload } from '../interfaces/catalogs/review.interface';
+import { IReviewPayload } from '../interfaces/catalog.interface';
 
 const reviewSchema = z.object({
-   product_id: z.string().min(1, {
-      message: 'Product ID is required',
-   }),
-   model_id: z.string().min(1, {
-      message: 'Model ID is required',
+   sku_id: z.string().min(1, {
+      message: 'SKU ID is required',
    }),
    order_id: z.string().min(1, {
       message: 'Order ID is required',
    }),
    order_item_id: z.string().min(1, {
       message: 'Order Item ID is required',
-   }),
-   customer_username: z.string().min(1, {
-      message: 'Customer Username is required',
    }),
    rating: z.number().min(1, {
       message: 'Rating is required',

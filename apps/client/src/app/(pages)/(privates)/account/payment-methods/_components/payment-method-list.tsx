@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import {
    Dialog,
    DialogContent,
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '@components/ui/dialog';
+} from '~/components/ui/dialog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '@components/hooks/use-toast';
+import { useToast } from '~/hooks/use-toast';
 import {
    Plus,
    CreditCard,

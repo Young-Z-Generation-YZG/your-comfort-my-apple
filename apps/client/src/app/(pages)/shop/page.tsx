@@ -1,10 +1,10 @@
 'use client';
 
-import useProductService from '@components/hooks/api/use-product-service';
-import usePaginationV2 from '@components/hooks/use-pagination';
+import useProductService from '~/hooks/api/use-product-service';
+import usePaginationV2 from '~/hooks/use-pagination';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
 import { GoMultiSelect } from 'react-icons/go';
 import {
@@ -14,10 +14,10 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 import IphoneModel from '../shop/iphone/_components/iphone-model';
-import { Skeleton } from '@components/ui/skeleton';
-import { Separator } from '@components/ui/separator';
+import { Skeleton } from '~/components/ui/skeleton';
+import { Separator } from '~/components/ui/separator';
 import {
    ChevronLeft,
    ChevronRight,

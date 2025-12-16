@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import { setLogout } from '../redux/features/auth.slice';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import {
    TNewestProduct,
@@ -8,35 +8,29 @@ import {
    TProductModel,
    TSuggestionProduct,
 } from '~/domain/types/catalog.type';
+import {
+   IGetProductModelsQueryParams,
+   IGetProductModelsByCategorySlugQueryParams,
+} from '~/domain/interfaces/catalog.interface';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
+   const result = await baseQuery('/catalog-services')(
+      args,
+      api,
+      extraOptions as unknown as any,
+   );
 
-   // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
-      // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
    }
 
    return result;
 };
-
-export interface IGetProductModelsQueryParams {
-   _page?: number | null;
-   _limit?: number | null;
-   _textSearch?: string | null;
-}
-
-export interface IGetProductModelsByCategorySlugQueryParams {
-   _page?: number | null;
-   _limit?: number | null;
-   _colors?: string[] | null;
-   _storages?: string[] | null;
-   _models?: string[] | null;
-   _minPrice?: number | null;
-   _maxPrice?: number | null;
-   _priceSort?: 'ASC' | 'DESC' | null;
-}
 
 export const productApi = createApi({
    reducerPath: 'product-api',
@@ -47,12 +41,11 @@ export const productApi = createApi({
          PaginationResponse<TProductModel>,
          IGetProductModelsQueryParams
       >({
-         query: (query: IGetProductModelsQueryParams) => {
-            return {
-               url: '/api/v1/product-models',
-               params: query,
-            };
-         },
+         query: (queryParams: IGetProductModelsQueryParams) => ({
+            url: '/api/v1/product-models',
+            method: 'GET',
+            params: queryParams,
+         }),
          providesTags: ['Products'],
       }),
       getProductModelsByCategorySlug: builder.query<
@@ -62,18 +55,11 @@ export const productApi = createApi({
             queryParams: IGetProductModelsByCategorySlugQueryParams;
          }
       >({
-         query: ({
-            categorySlug,
-            queryParams,
-         }: {
-            categorySlug: string;
-            queryParams: IGetProductModelsByCategorySlugQueryParams;
-         }) => {
-            return {
-               url: `/api/v1/product-models/category/${categorySlug}`,
-               params: queryParams,
-            };
-         },
+         query: ({ categorySlug, queryParams }) => ({
+            url: `/api/v1/product-models/category/${categorySlug}`,
+            method: 'GET',
+            params: queryParams,
+         }),
          providesTags: ['Products'],
       }),
       getPopularProducts: builder.query<
@@ -82,6 +68,7 @@ export const productApi = createApi({
       >({
          query: () => ({
             url: `/api/v1/product-models/popular`,
+            method: 'GET',
             params: {
                _limit: 999,
             },
@@ -94,6 +81,7 @@ export const productApi = createApi({
       >({
          query: () => ({
             url: `/api/v1/product-models/newest`,
+            method: 'GET',
             params: {
                _limit: 999,
             },
@@ -106,6 +94,7 @@ export const productApi = createApi({
       >({
          query: () => ({
             url: `/api/v1/product-models/suggestion`,
+            method: 'GET',
             params: {
                _limit: 999,
             },

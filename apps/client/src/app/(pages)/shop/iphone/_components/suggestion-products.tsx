@@ -1,15 +1,15 @@
 'use client';
 
-import useProductService from '@components/hooks/api/use-product-service';
+import useProductService from '~/hooks/api/use-product-service';
 import { useEffect, useMemo } from 'react';
-import SuggestionProduct from '@components/client/suggestion-product';
+import SuggestionProduct from '~/components/client/suggestion-product';
 import {
    Carousel,
    CarouselContent,
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '@components/ui/carousel';
+} from '~/components/ui/carousel';
 
 const SuggestionProducts = () => {
    const { getSuggestionProductsAsync, getSuggestionProductsState, isLoading } =

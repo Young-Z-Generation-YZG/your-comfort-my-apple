@@ -1,19 +1,24 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
-import { setLogout } from '../redux/features/auth.slice';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import { TOrder } from '~/domain/types/ordering.type';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
+import {
+   IOrderFilterQueryParams,
+   IVnpayIpnCallbackPayload,
+   IMomoIpnCallbackPayload,
+} from '~/domain/interfaces/ordering.interface';
 
-export interface IOrderFilterQueryParams {
-   _page?: number;
-   _limit?: number;
-}
-
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
    const result = await baseQuery('/ordering-services')(
       args,
       api,
-      extraOptions,
+      extraOptions as unknown as any,
    );
 
    if (result.error && result.error.status === 401) {
@@ -32,53 +37,39 @@ export const orderingApi = createApi({
          PaginationResponse<TOrder>,
          IOrderFilterQueryParams
       >({
-         query: (params: IOrderFilterQueryParams) => ({
+         query: (queryParams: IOrderFilterQueryParams) => ({
             url: '/api/v1/orders/users',
             method: 'GET',
-            params: params,
+            params: queryParams,
          }),
       }),
       getOrderDetails: builder.query<TOrder, string>({
-         query: (orderId) => ({
+         query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}`,
             method: 'GET',
          }),
       }),
-      vnpayIpnCallback: builder.mutation({
-         query: (payload: any) => ({
+      vnpayIpnCallback: builder.mutation<boolean, IVnpayIpnCallbackPayload>({
+         query: (payload: IVnpayIpnCallbackPayload) => ({
             url: '/api/v1/orders/payment/vnpay-ipn-callback',
             method: 'PATCH',
             body: payload,
-            providesTags: ['Orders'],
          }),
-         transformResponse: (response: any) => {
-            return response;
-         },
-         transformErrorResponse: (error: any) => {
-            return error.data;
-         },
       }),
-      momoIpnCallback: builder.mutation({
-         query: (payload: any) => ({
+      momoIpnCallback: builder.mutation<boolean, IMomoIpnCallbackPayload>({
+         query: (payload: IMomoIpnCallbackPayload) => ({
             url: '/api/v1/orders/payment/momo-ipn-callback',
             method: 'PATCH',
             body: payload,
-            providesTags: ['Orders'],
          }),
-         transformResponse: (response: any) => {
-            return response;
-         },
-         transformErrorResponse: (error: any) => {
-            return error.data;
-         },
       }),
-      confirmOrder: builder.mutation({
+      confirmOrder: builder.mutation<boolean, string>({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}/status/confirm`,
             method: 'PATCH',
          }),
       }),
-      cancelOrder: builder.mutation({
+      cancelOrder: builder.mutation<boolean, string>({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}/status/cancel`,
             method: 'PATCH',

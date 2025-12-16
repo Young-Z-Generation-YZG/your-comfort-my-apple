@@ -4,12 +4,12 @@ import '/globals.css';
 import { SFDisplayFont, SFTextFont } from '@assets/fonts/font.config';
 import { cn } from '~/infrastructure/lib/utils';
 import { ReduxProvider } from '~/infrastructure/redux/provider';
-import Header from '@components/layouts/Header';
-import Footer from '@components/layouts/Footer';
-import { LoadingProvider } from '@components/contexts/loading.context';
-import { Toaster } from '@components/ui/toaster';
-import { Toaster as SonnerToaster } from '@components/ui/sonner';
-import { SolanaProvider } from '@components/providers/solana-provider';
+import Header from '~/components/layouts/Header';
+import Footer from '~/components/layouts/Footer';
+import { LoadingProvider } from '~/components/contexts/loading.context';
+import { Toaster } from '~/components/ui/toaster';
+import { Toaster as SonnerToaster } from '~/components/ui/sonner';
+import { SolanaProvider } from '~/components/providers/solana-provider';
 
 export const metadata: Metadata = {
    title: 'YB Store',

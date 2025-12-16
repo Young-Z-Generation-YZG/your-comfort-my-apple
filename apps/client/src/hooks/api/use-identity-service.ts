@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { useCheckApiError } from '@components/hooks/use-check-error';
-import { IAddressPayload } from '~/domain/interfaces/identity/address';
-import { IProfilePayload } from '~/domain/interfaces/identity/profile';
+import { useCheckApiError } from '~/hooks/use-check-error';
+import {
+   IAddressPayload,
+   IChangePasswordPayload,
+} from '~/domain/interfaces/identity.interface';
+import { IUpdateProfilePayload } from '~/domain/interfaces/identity.interface';
 import {
    useUpdateProfileMutation,
    useAddAddressMutation,
@@ -16,7 +19,6 @@ import {
    useConfirmOrderMutation,
 } from '~/infrastructure/services/ordering.service';
 import { useChangePasswordMutation } from '~/infrastructure/services/auth.service';
-import { changePasswordFormType } from '~/domain/schemas/auth.schema';
 import { toast } from 'sonner';
 
 const useIdentityService = () => {
@@ -74,7 +76,7 @@ const useIdentityService = () => {
    ]);
 
    const updateProfileAsync = useCallback(
-      async (data: IProfilePayload) => {
+      async (data: IUpdateProfilePayload) => {
          try {
             const result = await updateProfileMutation(data).unwrap();
             return {
@@ -108,11 +110,11 @@ const useIdentityService = () => {
    );
 
    const updateAddressAsync = useCallback(
-      async (data: { id: string; payload: IAddressPayload }) => {
+      async (addressId: string, payload: IAddressPayload) => {
          try {
             const result = await updateAddressMutation({
-               id: data.id,
-               payload: data.payload,
+               addressId,
+               payload,
             }).unwrap();
             return {
                isSuccess: true,
@@ -128,9 +130,9 @@ const useIdentityService = () => {
    );
 
    const setDefaultAddressAsync = useCallback(
-      async (id: string) => {
+      async (addressId: string) => {
          try {
-            const result = await setDefaultAddressMutation(id).unwrap();
+            const result = await setDefaultAddressMutation(addressId).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -145,9 +147,9 @@ const useIdentityService = () => {
    );
 
    const deleteAddressAsync = useCallback(
-      async (id: string) => {
+      async (addressId: string) => {
          try {
-            const result = await deleteAddressMutation(id).unwrap();
+            const result = await deleteAddressMutation(addressId).unwrap();
             return {
                isSuccess: true,
                isError: false,
@@ -162,7 +164,7 @@ const useIdentityService = () => {
    );
 
    const changePasswordAsync = useCallback(
-      async (data: changePasswordFormType) => {
+      async (data: IChangePasswordPayload) => {
          try {
             const result = await changePasswordMutation(data).unwrap();
             return {

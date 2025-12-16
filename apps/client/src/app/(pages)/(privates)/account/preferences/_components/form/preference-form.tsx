@@ -1,19 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@components/ui/button';
-import { Label } from '@components/ui/label';
-import { Switch } from '@components/ui/switch';
+import { Button } from '~/components/ui/button';
+import { Label } from '~/components/ui/label';
+import { Switch } from '~/components/ui/switch';
 import {
    Select,
    SelectContent,
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
-import { Separator } from '@components/ui/separator';
+} from '~/components/ui/select';
+import { Separator } from '~/components/ui/separator';
 import { motion } from 'framer-motion';
-import { useToast } from '@components/hooks/use-toast';
+import { useToast } from '~/hooks/use-toast';
 import { Save, Globe, Bell, Volume2, Monitor } from 'lucide-react';
 
 type PreferencesData = {

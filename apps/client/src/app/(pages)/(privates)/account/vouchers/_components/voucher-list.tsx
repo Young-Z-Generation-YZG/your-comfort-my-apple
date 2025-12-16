@@ -1,19 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@components/ui/button';
-import { Input } from '@components/ui/input';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 import {
    Dialog,
    DialogContent,
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '@components/ui/dialog';
-import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs';
-import { Badge } from '@components/ui/badge';
+} from '~/components/ui/dialog';
+import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs';
+import { Badge } from '~/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '@components/hooks/use-toast';
+import { useToast } from '~/hooks/use-toast';
 import {
    Ticket,
    Plus,

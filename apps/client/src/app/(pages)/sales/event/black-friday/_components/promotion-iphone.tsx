@@ -3,10 +3,10 @@
 import { cn } from '~/infrastructure/lib/utils';
 import CardWrapper from './card-wrapper';
 import NextImage from 'next/image';
-import { Button } from '@components/ui/button';
-import { Badge } from '@components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/ui/badge';
 import { useRouter } from 'next/navigation';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import useBasketService from '~/hooks/api/use-basket-service';
 import { TEventItem } from '~/domain/types/catalog.type';
 
 interface PromotionIPhoneProps {

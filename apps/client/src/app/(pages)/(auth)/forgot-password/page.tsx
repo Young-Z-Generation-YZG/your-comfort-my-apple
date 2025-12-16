@@ -2,14 +2,14 @@
 
 import { GoArrowUpRight } from 'react-icons/go';
 import Link from 'next/link';
-import { FieldInput } from '@components/client/forms/field-input';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { FieldInput } from '~/components/client/forms/field-input';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useForm } from 'react-hook-form';
 import {
    sendEmailResetPasswordFormType,
    sendEmailResetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
-import useAuthService from '@components/hooks/api/use-auth-service';
+import useAuthService from '~/hooks/api/use-auth-service';
 
 const defaultValues: sendEmailResetPasswordFormType = {
    email: '',
@@ -24,10 +24,8 @@ const SendEmailResetPasswordPage = () => {
       defaultValues: defaultValues,
    });
 
-   const onSubmit = async (data: sendEmailResetPasswordFormType) => {
-      console.log('data', data);
-
-      await sendEmailResetPassword(data);
+   const onSubmit = (data: sendEmailResetPasswordFormType) => {
+      sendEmailResetPassword(data);
    };
 
    const isSuccess = sendEmailResetPasswordState.isSuccess;

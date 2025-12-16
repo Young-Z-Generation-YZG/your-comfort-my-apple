@@ -14,14 +14,14 @@ import ModelItem from './model-item';
 import HelpItem from './help-item';
 import ColorItem from './color-item';
 import StorageItem from './storage-item';
-import { Button } from '@components/ui/button';
-import useCatalogService from '@components/hooks/api/use-catalog-service';
+import { Button } from '~/components/ui/button';
+import useCatalogService from '~/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
 //
 import { toast } from 'sonner';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 
-import useCartSync from '@components/hooks/use-cart-sync';
+import useCartSync from '~/hooks/use-cart-sync';
 import {
    TBranch,
    TColor,
@@ -32,7 +32,7 @@ import {
    TStorage,
    TSkuPrice,
 } from '~/domain/types/catalog.type';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import useBasketService from '~/hooks/api/use-basket-service';
 
 const resizeFromHeight = (height: number, aspectRatio: string = '16:9') => {
    const [widthRatio, heightRatio] = aspectRatio.split(':').map(Number);

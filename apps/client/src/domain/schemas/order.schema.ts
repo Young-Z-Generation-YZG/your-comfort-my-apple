@@ -3,7 +3,7 @@ import { z } from 'zod';
 import {
    IMomoIpnCallbackPayload,
    IVnpayIpnCallbackPayload,
-} from '../interfaces/orders/ipn-callback.interface';
+} from '../interfaces/ordering.interface';
 
 const vnpayIpnSchema = z.object({
    vnp_Amount: z

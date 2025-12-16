@@ -1,25 +1,25 @@
-import { Button } from '@components/ui/button';
-import RatingStar from '@components/ui/rating-star';
-import { Separator } from '@components/ui/separator';
+import { Button } from '~/components/ui/button';
+import RatingStar from '~/components/ui/rating-star';
+import { Separator } from '~/components/ui/separator';
 import { Fragment } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
 import NextImage from 'next/image';
 import {
-   IModel,
-   IStorage,
-   IColor,
-   IAverageRating,
-   ISKUPrice,
-} from '~/domain/interfaces/common/value-objects.interface';
+   TModel,
+   TStorage,
+   TColor,
+   TAverageRating,
+   TSkuPrice,
+} from '~/domain/types/catalog.type';
 import { useRouter } from 'next/navigation';
 
 interface IphoneModelProps {
-   models: IModel[];
-   colors: IColor[];
-   storages: IStorage[];
+   models: TModel[];
+   colors: TColor[];
+   storages: TStorage[];
    displayImageUrl: string;
-   averageRating: IAverageRating;
-   skuPrices: ISKUPrice[];
+   averageRating: TAverageRating;
+   skuPrices: TSkuPrice[];
    modelSlug: string;
 }
 

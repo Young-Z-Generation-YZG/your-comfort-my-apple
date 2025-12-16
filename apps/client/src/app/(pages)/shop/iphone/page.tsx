@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from 'react';
 import { FaFilter } from 'react-icons/fa6';
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { IoChatboxEllipsesOutline } from 'react-icons/io5';
 import { GoMultiSelect } from 'react-icons/go';
 import {
@@ -12,11 +12,11 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
+} from '~/components/ui/select';
 import FilterSection from './_components/_layout/filter-section';
 import IphoneModel from './_components/iphone-model';
-import { Skeleton } from '@components/ui/skeleton';
-import { Separator } from '@components/ui/separator';
+import { Skeleton } from '~/components/ui/skeleton';
+import { Separator } from '~/components/ui/separator';
 import {
    ChevronLeft,
    ChevronRight,
@@ -26,10 +26,10 @@ import {
 } from 'lucide-react';
 import { cn } from '~/infrastructure/lib/utils';
 import SuggestionProducts from './_components/suggestion-products';
-import useFilters from '@components/hooks/use-filter';
-import useProductService from '@components/hooks/api/use-product-service';
-import { IGetProductModelsByCategorySlugQueryParams } from '~/infrastructure/services/product.service';
-import usePaginationV2 from '@components/hooks/use-pagination';
+import useFilters from '~/hooks/use-filter';
+import useProductService from '~/hooks/api/use-product-service';
+import { IGetProductModelsByCategorySlugQueryParams } from '~/domain/interfaces/catalog.interface';
+import usePaginationV2 from '~/hooks/use-pagination';
 import { TProductModel } from '~/domain/types/catalog.type';
 
 const IphoneShopPage = () => {

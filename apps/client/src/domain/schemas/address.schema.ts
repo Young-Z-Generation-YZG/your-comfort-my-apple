@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IAddressPayload } from '../interfaces/identity/address';
+import { IAddressPayload } from '../interfaces/identity.interface';
 
 const AddressSchema = z.object({
    label: z.string().min(1, {

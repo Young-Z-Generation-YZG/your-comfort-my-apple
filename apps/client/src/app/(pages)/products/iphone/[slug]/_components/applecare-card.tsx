@@ -1,4 +1,4 @@
-import { AppleIcon } from '@components/icon';
+import { AppleIcon } from '~/components/icon';
 
 interface AppleCareCardProps {
    title: string;

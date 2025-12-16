@@ -5,12 +5,12 @@ import Image from 'next/image';
 import googlePng from '@assets/images/google.png';
 import Link from 'next/link';
 import { LoginFormType, LoginResolver } from '~/domain/schemas/auth.schema';
-import { FieldInput } from '@components/client/forms/field-input';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { FieldInput } from '~/components/client/forms/field-input';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useForm } from 'react-hook-form';
-import withAuth from '@components/HoCs/with-auth.hoc';
-import useAuthService from '~/components/hooks/api/use-auth-service';
-import { useRememberMe } from '~/components/hooks/use-remember-me';
+import withAuth from '~/components/HoCs/with-auth.hoc';
+import useAuthService from '~/hooks/api/use-auth-service';
+import { useRememberMe } from '~/hooks/use-remember-me';
 import { useEffect, useState } from 'react';
 
 const SignInPage = () => {

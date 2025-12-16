@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import {
    Table,
    TableBody,
@@ -8,7 +8,7 @@ import {
    TableHead,
    TableHeader,
    TableRow,
-} from '@components/ui/table';
+} from '~/components/ui/table';
 import { motion } from 'framer-motion';
 import { Laptop, Smartphone, AlertTriangle } from 'lucide-react';
 

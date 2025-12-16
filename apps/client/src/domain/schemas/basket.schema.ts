@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IBasketItemPayload } from '../interfaces/baskets/basket.interface';
-import { IPromotionPayload } from '../interfaces/baskets/promotion.interface';
-import { ICheckoutPayload } from '../interfaces/baskets/checkout.interface';
+import { IBasketItemPayload, ICheckoutPayload } from '../interfaces/basket.interface';
 
 const promotionSchema = z.object({
    promotion_id_or_code: z.string().min(1, {
@@ -26,7 +24,7 @@ const promotionSchema = z.object({
    promotion_final_price: z.number().min(0, {
       message: 'Promotion final price is required',
    }),
-} satisfies Record<keyof IPromotionPayload, any>);
+});
 
 const basketItemSchema = z.object({
    product_id: z.string().min(1, { message: 'Product ID is required' }),

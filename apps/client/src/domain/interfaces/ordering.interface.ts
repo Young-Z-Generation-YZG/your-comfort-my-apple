@@ -30,3 +30,16 @@ export interface IMomoIpnCallbackPayload {
    momo_ExtraData: string;
    momo_Signature: string;
 }
+
+export interface INotificationQueryParams {
+   _page?: number | null;
+   _limit?: number | null;
+   _types?: string[] | null;
+   _statuses?: string[] | null;
+   _isRead?: boolean | null;
+}
+
+export interface IOrderFilterQueryParams {
+   _page?: number;
+   _limit?: number;
+}

@@ -10,14 +10,14 @@ import {
    type CarouselApi,
 } from '~/components/ui/carousel';
 import NextImage from 'next/image';
-import { Button } from '@components/ui/button';
-import useCatalogService from '@components/hooks/api/use-catalog-service';
+import { Button } from '~/components/ui/button';
+import useCatalogService from '~/hooks/api/use-catalog-service';
 import { useParams } from 'next/navigation';
-import useBasketService from '@components/hooks/api/use-basket-service';
+import useBasketService from '~/hooks/api/use-basket-service';
 import { useAppSelector } from '~/infrastructure/redux/store';
 import { toast } from 'sonner';
-import { LoadingOverlay } from '@components/client/loading-overlay';
-import useCartSync from '@components/hooks/use-cart-sync';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
+import useCartSync from '~/hooks/use-cart-sync';
 import {
    TBranch,
    TColor,
@@ -28,17 +28,17 @@ import {
    TStorage,
    TSkuPrice,
 } from '~/domain/types/catalog.type';
-import useReviewService from '@components/hooks/api/use-review-service';
+import useReviewService from '~/hooks/api/use-review-service';
 import ColorItem from '~/app/(pages)/products/iphone/[slug]/_components/color-item';
 import HelpItem from '~/app/(pages)/products/iphone/[slug]/_components/help-item';
 import ModelItem from '~/app/(pages)/products/iphone/[slug]/_components/model-item';
 import StorageItem from '~/app/(pages)/products/iphone/[slug]/_components/storage-item';
 import ReviewItem from '~/app/(pages)/products/iphone/[slug]/_components/review-item';
 import { cn } from '~/infrastructure/lib/utils';
-import { AppleIcon } from '@components/icon';
+import { AppleIcon } from '~/components/icon';
 import ProductInfo from '~/app/(pages)/products/iphone/[slug]/_components/product-info';
-import CompareIPhoneSection from '@components/client/compare-iphone-section';
-import usePaginationV2 from '@components/hooks/use-pagination';
+import CompareIPhoneSection from '~/components/client/compare-iphone-section';
+import usePaginationV2 from '~/hooks/use-pagination';
 import {
    ChevronLeft,
    ChevronRight,
@@ -57,9 +57,9 @@ import {
    SelectItem,
    SelectTrigger,
    SelectValue,
-} from '@components/ui/select';
-import { Separator } from '@components/ui/separator';
-import RatingStar from '@components/ui/rating-star';
+} from '~/components/ui/select';
+import { Separator } from '~/components/ui/separator';
+import RatingStar from '~/components/ui/rating-star';
 
 const appleCareOptions = [
    {

@@ -5,10 +5,10 @@ import { motion } from 'framer-motion';
 import svgs from '@assets/svgs';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import { useDebounce } from '@components/hooks/use-debounce';
+import { useDebounce } from '~/hooks/use-debounce';
 import { useRouter } from 'next/navigation';
-import useProductService from '@components/hooks/api/use-product-service';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import useProductService from '~/hooks/api/use-product-service';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { TModel, TProductModel } from '~/domain/types/catalog.type';
 
 // Staggered animation variants

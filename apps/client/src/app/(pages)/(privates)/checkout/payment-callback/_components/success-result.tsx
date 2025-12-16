@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ConfettiAnimation } from '@components/client/confetti-animation';
+import { ConfettiAnimation } from '~/components/client/confetti-animation';
 import { motion } from 'framer-motion';
 import { CheckCircle, ChevronRight, Package, ShoppingBag } from 'lucide-react';
-import { RedirectCountdown } from '@components/client/countdown-redirect';
+import { RedirectCountdown } from '~/components/client/countdown-redirect';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TOrder } from '../page';

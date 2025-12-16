@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@components/ui/button';
+import { Button } from '~/components/ui/button';
 import { CardContext, DefaultActionContent } from '../_components/card-content';
 import Badge from '../_components/badge';
 import { useEffect, useMemo, useState } from 'react';
@@ -10,19 +10,19 @@ import {
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '@components/ui/dialog';
+} from '~/components/ui/dialog';
 import { AddressForm } from './_components/address-form';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { IAddressPayload } from '~/domain/interfaces/identity/address';
-import { Skeleton } from '@components/ui/skeleton';
+import { IAddressPayload } from '~/domain/interfaces/identity.interface';
+import { Skeleton } from '~/components/ui/skeleton';
 import { FiEdit3 } from 'react-icons/fi';
-import useIdentityService from '@components/hooks/api/use-identity-service';
+import useIdentityService from '~/hooks/api/use-identity-service';
 
 const AddressesPage = () => {
    const [open, setOpen] = useState(false);
    const [editingAddress, setEditingAddress] = useState<{
-      id: string;
+      addressId: string;
       payload: IAddressPayload;
    } | null>(null);
 
@@ -51,13 +51,7 @@ const AddressesPage = () => {
    }, [getAddressesState.isSuccess, getAddressesState.data]);
 
    useEffect(() => {
-      const fetchAddresses = async () => {
-         const result = await getAddressesAsync();
-         if (result.isSuccess) {
-            console.log(result.data);
-         }
-      };
-      fetchAddresses();
+      getAddressesAsync();
    }, [getAddressesAsync]);
 
    return (
@@ -93,11 +87,11 @@ const AddressesPage = () => {
                         onAdd={async (data) => {
                            await addAddressAsync(data);
                         }}
-                        onUpdate={async (id, data) => {
-                           await updateAddressAsync({ id, payload: data });
+                        onUpdate={async (addressId, data) => {
+                           await updateAddressAsync(addressId, data);
                         }}
-                        onDelete={async (id) => {
-                           await deleteAddressAsync(id);
+                        onDelete={async (addressId) => {
+                           await deleteAddressAsync(addressId);
                         }}
                         onClose={() => {
                            setOpen(false);
@@ -155,7 +149,7 @@ const AddressesPage = () => {
                                  onClick={() => {
                                     if (item) {
                                        setEditingAddress({
-                                          id: item.id,
+                                          addressId: item.id,
                                           payload: item,
                                        });
                                        setOpen(true);

@@ -1,7 +1,6 @@
 import {
    BaseQueryApi,
    createApi,
-   fetchBaseQuery,
    FetchBaseQueryError,
    FetchBaseQueryMeta,
    QueryReturnValue,
@@ -11,47 +10,32 @@ import {
    setLogout,
    setUseAccessToken,
 } from '../redux/features/auth.slice';
-import { EVerificationType } from '~/domain/enums/verification-type.enum';
-import envConfig from '~/infrastructure/config/env.config';
-import {
-   changePasswordFormType,
-   resetPasswordFormType,
-   sendEmailResetPasswordFormType,
-} from '~/domain/schemas/auth.schema';
 import { RootState } from '~/infrastructure/redux/store';
 import { setPreviousUnAuthenticatedPath } from '../redux/features/app.slice';
-
-const baseQuery = () =>
-   fetchBaseQuery({
-      baseUrl: envConfig.API_ENDPOINT + '/identity-services',
-      prepareHeaders: (headers, { getState, endpoint }) => {
-         const refreshToken = (getState() as RootState).auth.refreshToken;
-         const tenantId = (getState() as RootState).app.tenantId;
-
-         if (!headers.get('Authorization')) {
-            const isLogoutRequest =
-               endpoint === 'logout' ||
-               (typeof endpoint === 'string' && endpoint.includes('logout'));
-
-            if (isLogoutRequest && refreshToken) {
-               headers.set('Authorization', `Bearer ${refreshToken}`);
-            }
-         }
-
-         if (tenantId) {
-            headers.set('X-TenantId', tenantId);
-         }
-
-         headers.set('ngrok-skip-browser-warning', 'true');
-      },
-   });
+import { EVerificationTypeEnum } from '~/domain/enums/verification-type.enum';
+import {
+   IRegisterPayload,
+   TEmailVerificationResponse,
+   IVerifyOtpPayload,
+   ILoginPayload,
+   ILoginResponse,
+   IResetPasswordPayload,
+   IChangePasswordPayload,
+   ISendEmailResetPasswordPayload,
+   IRefreshTokenResponse,
+} from '~/domain/interfaces/identity.interface';
+import { baseQuery } from './base-query';
 
 const baseQueryHandler = async (
    args: any,
    api: BaseQueryApi,
    extraOptions: any,
 ) => {
-   const result = await baseQuery()(args, api, extraOptions);
+   const result = await baseQuery('/identity-services')(
+      args,
+      api,
+      extraOptions,
+   );
 
    if (result.error && result.error.status === 401) {
       const currentRoute = window.location.pathname;
@@ -62,39 +46,13 @@ const baseQueryHandler = async (
    return result;
 };
 
-export interface IRegisterPayload {
-   email: string;
-   password: string;
-   confirm_password: string;
-   first_name: string;
-   last_name: string;
-   phone_number: string;
-   birth_date: string;
-   country: string;
-}
-
-export interface IVerifyOtpPayload {
-   email: string;
-   token: string;
-   otp: string;
-}
-
-export type TEmailVerificationResponse = {
-   params: {
-      _email: string;
-      _token: string;
-   };
-   verification_type: string;
-   token_expired_in: number;
-};
-
 export const authApi = createApi({
    reducerPath: 'auth-api',
    tagTypes: ['auth'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
-      login: builder.mutation({
-         query: (payload: any) => ({
+      login: builder.mutation<ILoginResponse, ILoginPayload>({
+         query: (payload: ILoginPayload) => ({
             url: '/api/v1/auth/login',
             method: 'POST',
             body: payload,
@@ -105,11 +63,11 @@ export const authApi = createApi({
 
                if (
                   data.verification_type !==
-                  EVerificationType.EMAIL_VERIFICATION
+                  EVerificationTypeEnum.EMAIL_VERIFICATION
                ) {
                   dispatch(
                      setLogin({
-                        userId: data.user_id,
+                        userId: 'USER_ID',
                         userEmail: data.user_email,
                         username: data.username,
                         accessToken: data.access_token,
@@ -127,23 +85,6 @@ export const authApi = createApi({
          },
       }),
       logout: builder.mutation<void, void>({
-         //   queryFn: async (_, { getState }, __, baseQuery) => {
-         //     const refreshToken = (getState() as RootState).auth.refreshToken;
-
-         //     const result = await baseQuery({
-         //        url: '/api/v1/auth/logout',
-         //        method: 'POST',
-         //        headers: {
-         //           Authorization: `Bearer ${refreshToken}`,
-         //        },
-         //     });
-
-         //     return result as unknown as QueryReturnValue<
-         //        void,
-         //        FetchBaseQueryError,
-         //        FetchBaseQueryMeta
-         //     >;
-         //  },
          query: () => ({
             url: '/api/v1/auth/logout',
             method: 'POST',
@@ -165,10 +106,7 @@ export const authApi = createApi({
             }
          },
       }),
-      register: builder.mutation<
-         TEmailVerificationResponse | unknown,
-         IRegisterPayload
-      >({
+      register: builder.mutation<TEmailVerificationResponse, IRegisterPayload>({
          query: (payload: IRegisterPayload) => ({
             url: '/api/v1/auth/register',
             method: 'POST',
@@ -182,28 +120,31 @@ export const authApi = createApi({
             body: payload,
          }),
       }),
-      sendEmailResetPassword: builder.mutation({
-         query: (payload: sendEmailResetPasswordFormType) => ({
+      sendEmailResetPassword: builder.mutation<
+         boolean,
+         ISendEmailResetPasswordPayload
+      >({
+         query: (payload: ISendEmailResetPasswordPayload) => ({
             url: '/api/v1/auth/reset-password',
             method: 'POST',
             body: payload,
          }),
       }),
-      resetPassword: builder.mutation({
-         query: (payload: resetPasswordFormType) => ({
+      resetPassword: builder.mutation<boolean, IResetPasswordPayload>({
+         query: (payload: IResetPasswordPayload) => ({
             url: '/api/v1/auth/verification/reset-password',
             method: 'POST',
             body: payload,
          }),
       }),
-      changePassword: builder.mutation({
-         query: (payload: changePasswordFormType) => ({
+      changePassword: builder.mutation<boolean, IChangePasswordPayload>({
+         query: (payload: IChangePasswordPayload) => ({
             url: '/api/v1/auth/change-password',
             method: 'POST',
             body: payload,
          }),
       }),
-      refreshToken: builder.mutation({
+      refreshToken: builder.mutation<IRefreshTokenResponse, void>({
          queryFn: async (_, { getState }, __, baseQuery) => {
             const refreshToken = (getState() as RootState).auth.refreshToken;
 
@@ -214,7 +155,7 @@ export const authApi = createApi({
                      data: { message: 'No refresh token available' },
                   },
                } as unknown as QueryReturnValue<
-                  any,
+                  IRefreshTokenResponse,
                   FetchBaseQueryError,
                   FetchBaseQueryMeta
                >;
@@ -227,7 +168,7 @@ export const authApi = createApi({
             });
 
             return result as unknown as QueryReturnValue<
-               any,
+               IRefreshTokenResponse,
                FetchBaseQueryError,
                FetchBaseQueryMeta
             >;
@@ -237,7 +178,6 @@ export const authApi = createApi({
                const { data } = await queryFulfilled;
                const currentState = (getState() as RootState).auth;
 
-               // Update tokens while preserving user info
                dispatch(
                   setLogin({
                      userId: currentState.userId!,

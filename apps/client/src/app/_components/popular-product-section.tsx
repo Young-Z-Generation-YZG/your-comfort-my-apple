@@ -1,12 +1,12 @@
-import PopularProduct from '@components/client/popular-product';
-import useProductService from '@components/hooks/api/use-product-service';
+import PopularProduct from '~/components/client/popular-product';
+import useProductService from '~/hooks/api/use-product-service';
 import {
    Carousel,
    CarouselContent,
    CarouselItem,
    CarouselNext,
    CarouselPrevious,
-} from '@components/ui/carousel';
+} from '~/components/ui/carousel';
 import { cn } from '~/infrastructure/lib/utils';
 import { useEffect, useMemo } from 'react';
 
@@ -19,10 +19,7 @@ const PopularProductSection = () => {
    }, [getPopularProductsState.data]);
 
    useEffect(() => {
-      const fetchPopularProducts = async () => {
-         await getPopularProductsAsync();
-      };
-      fetchPopularProducts();
+      getPopularProductsAsync();
    }, [getPopularProductsAsync]);
 
    return (

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { AlertCircle, ArrowLeft, HelpCircle } from 'lucide-react';
-import { RedirectCountdown } from '@components/client/countdown-redirect';
+import { RedirectCountdown } from '~/components/client/countdown-redirect';
 
 // Animation variants
 const containerVariants = {

@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { useCheckApiError } from '@components/hooks/use-check-error';
+import { useCheckApiError } from '~/hooks/use-check-error';
 
 import {
    useLazyGetNotificationsQuery,
    useMarkAsReadMutation,
    useMarkAllAsReadMutation,
-   INotificationQueryParams,
 } from '~/infrastructure/services/notification.service';
+import { INotificationQueryParams } from '~/domain/interfaces/ordering.interface';
 
 const useNotificationService = () => {
    const [getNotificationsTrigger, getNotificationsQueryState] =

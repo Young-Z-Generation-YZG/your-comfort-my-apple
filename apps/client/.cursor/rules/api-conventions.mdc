@@ -1,0 +1,125 @@
+---
+globs:
+   alwaysApply: true
+---
+
+1. **API Source of Truth**: Client API contracts must mirror backend responses from `Services/*`. Prefer importing or adding shared types in `apps/client/src/domain` instead of redefining shapes in services/hooks. Request payload and response interfaces should live under `apps/client/src/domain/interfaces` (for example, `ILoginPayload`, `ILoginResponse` used by `apps/client/src/infrastructure/services/auth.service.ts`).
+2. **RTK Query Services**: Define endpoints under `apps/client/src/infrastructure/services` using the shared `baseQuery`/`baseQueryHandler`. Name endpoints with clear verbs that match backend actions. Use `params` for query strings and `body` for payloads; avoid inlining query params in URLs.
+3. **Auth & Headers**: Let the shared base query set `Authorization` (access token for normal calls, refresh token for logout/refresh) and multi-tenant headers (`X-TenantId`). Only add per-endpoint headers when explicitly required by the backend.
+4. **Response & Payload Typing**: Every endpoint must specify typed responses and payloads that match backend contracts. If the backend wraps data (e.g., `{ data, pagination }`), type the full envelope—do not rely on `any` or partially typed objects.
+5. **Hooks Layer**: Centralize UI consumption in `apps/client/src/components/hooks/api`. Hooks should wrap service endpoints, aggregate `isLoading`, and expose typed async helpers that `unwrap()` RTK Query results so callers get typed data or throw.
+6. **Error/Success Handling**: Use shared helpers (`useCheckApiError`, `useCheckApiSuccess`) inside hooks for consistent feedback. Extend helpers when new patterns arise rather than duplicating ad-hoc handling.
+
+### Examples
+
+-  Service endpoint (RTK Query):
+
+   -  Location: `apps/client/src/infrastructure/services/product.service.ts`
+   -  Shape:
+      -  `baseQuery: baseQuery('/catalog')`
+      -  Endpoint name: `getProducts`
+      -  Query: `{ url: '/api/v1/products', method: 'GET', params: { page, size } }`
+      -  Response type: use a shared domain type or an envelope `{ data: Product[]; pagination: PageMeta }`
+
+-  Hook wrapper:
+   -  Location: `apps/client/src/components/hooks/api/use-product-service.ts`
+   -  Wraps `useGetProductsQuery`
+   -  Exposes `getProductsAsync = useCallback(async (params) => await trigger(params).unwrap())`
+   -  Aggregates `isLoading` from `queryState.isLoading || queryState.isFetching`
+   -  Uses `useCheckApiError([{ title: 'Get products failed', error: queryState.error }])`
+
+### Code example
+
+```typescript
+// apps/client/src/infrastructure/services/product.service.ts
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './base-query';
+import { Product, PageMeta } from '~/domain/types/product.type';
+
+type ProductListResponse = { data: Product[]; pagination: PageMeta };
+
+export const productApi = createApi({
+   reducerPath: 'product-api',
+   baseQuery: baseQuery('/catalog'),
+   endpoints: (builder) => ({
+      getProducts: builder.query<
+         ProductListResponse,
+         { page?: number; size?: number }
+      >({
+         query: (params) => ({
+            url: '/api/v1/products',
+            method: 'GET',
+            params,
+         }),
+      }),
+   }),
+});
+
+export const { useGetProductsQuery, useLazyGetProductsQuery } = productApi;
+```
+
+```typescript
+// apps/client/src/components/hooks/api/use-product-service.ts
+import { useCallback, useMemo } from 'react';
+import {
+   useGetProductsQuery,
+   useLazyGetProductsQuery,
+} from '~/infrastructure/services/product.service';
+import { useCheckApiError } from '../use-check-error';
+
+const useProductService = () => {
+   const [trigger, queryState] = useLazyGetProductsQuery();
+   useCheckApiError([
+      { title: 'Get products failed', error: queryState.error },
+   ]);
+
+   const getProductsAsync = useCallback(
+      async (params: { page?: number; size?: number }) => {
+         const result = await trigger(params).unwrap();
+         return result;
+      },
+      [trigger],
+   );
+
+   const isLoading = useMemo(
+      () => queryState.isLoading || queryState.isFetching,
+      [queryState.isLoading, queryState.isFetching],
+   );
+
+   return { isLoading, queryState, getProductsAsync };
+};
+
+export default useProductService;
+```
+
+```typescript
+// apps/client/src/domain/interfaces/identity.interface.ts
+export interface ILoginPayload {
+   email: string;
+   password: string;
+}
+
+export interface ILoginResponse {
+   user_email: string;
+   username: string;
+   access_token: string | null;
+   refresh_token: string | null;
+   access_token_expires_in: number | null;
+   verification_type: EVerificationTypeEnum;
+   params: object | null;
+}
+
+// apps/client/src/infrastructure/services/auth.service.ts
+import {
+   ILoginPayload,
+   ILoginResponse,
+} from '~/domain/interfaces/identity.interface';
+
+login: builder.mutation<ILoginResponse, ILoginPayload>({
+   query: (payload: ILoginPayload) => ({
+      url: '/api/v1/auth/login',
+      method: 'POST',
+      body: payload,
+   }),
+});
+```

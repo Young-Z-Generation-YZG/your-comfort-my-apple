@@ -2,12 +2,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { OTPInput } from '@components/client/forms/otp-input';
-import { Button } from '@components/ui/button';
+import { OTPInput } from '~/components/client/forms/otp-input';
+import { Button } from '~/components/ui/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { OtpFormType, OtpResolver } from '~/domain/schemas/auth.schema';
 import { useForm } from 'react-hook-form';
-import useAuthService from '@components/hooks/api/use-auth-service';
+import useAuthService from '~/hooks/api/use-auth-service';
 
 const defaultValues: OtpFormType = {
    email: '',

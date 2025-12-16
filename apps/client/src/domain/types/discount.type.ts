@@ -1,4 +1,4 @@
-export interface PromotionResponse {
+export type TPromotion = {
    promotion_id_or_code: string;
    promotion_event_type: string;
    promotion_title: string;
@@ -7,4 +7,4 @@ export interface PromotionResponse {
    promotion_discount_unit_price: number;
    promotion_applied_product_count: number;
    promotion_final_price: number;
-}
+};

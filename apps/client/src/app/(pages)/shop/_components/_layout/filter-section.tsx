@@ -5,19 +5,12 @@ import {
    AccordionContent,
    AccordionItem,
    AccordionTrigger,
-} from '@components/ui/accordion';
-import { DualRangeSlider } from '@components/ui/dualRangeSlider';
-import { Button } from '@components/ui/button';
+} from '~/components/ui/accordion';
+import { DualRangeSlider } from '~/components/ui/dualRangeSlider';
+import { Button } from '~/components/ui/button';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '~/infrastructure/lib/utils';
-import { useDispatch } from 'react-redux';
-import {
-   FiltersType,
-   setAppFilters,
-} from '~/infrastructure/redux/features/app.slice';
-import { useDebounce } from '@components/hooks/use-debounce';
-import { useAppSelector } from '~/infrastructure/redux/store';
 import { useSearchParams } from 'next/navigation';
 
 const storageFilter = [
@@ -106,16 +99,6 @@ const FilterSection = () => {
    const _models = searchParams.getAll('_models');
    const _storages = searchParams.getAll('_storages');
 
-   const [filters, setFilters] = useState<FiltersType>({
-      colors: [],
-      models: [],
-      storages: [],
-   });
-
-   const dispatch = useDispatch();
-
-   const debouceFilter = useDebounce(filters, 500);
-
    const toggleStorage = (storage: string) => {
       setSelectedStorages((prev) =>
          prev.includes(storage)
@@ -141,32 +124,10 @@ const FilterSection = () => {
    };
 
    useEffect(() => {
-      setFilters({
-         colors: selectedColors.map((color) => {
-            const foundColor = colors.find((c) => c.name === color);
-            return foundColor ? foundColor : { name: '', hex: '' };
-         }),
-         models: selectedModels.map((model) => {
-            const foundModel = models.find((m) => m.value === model);
-
-            return foundModel ? foundModel : { name: '', value: '' };
-         }),
-         storages: selectedStorages.map((storage) => {
-            const foundStorage = storageFilter.find((s) => s.name === storage);
-            return foundStorage ? foundStorage : { name: '', value: '' };
-         }),
-      });
-   }, [selectedColors, selectedModels, selectedStorages]);
-
-   useEffect(() => {
       setSelectedColors(_colors);
       setSelectedModels(_models);
       setSelectedStorages(_storages);
    }, [_colors.length, _models.length, _storages.length]);
-
-   useEffect(() => {
-      dispatch(setAppFilters(debouceFilter));
-   }, [debouceFilter]);
 
    return (
       <div className="w-[354px] h-[4336px] relative">

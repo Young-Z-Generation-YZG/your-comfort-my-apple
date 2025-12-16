@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ILoginPayload } from '~/domain/interfaces/auth/login.interface';
-import { IOtpPayload } from '../interfaces/auth/otp.interface';
-import { IRegisterPayload } from '../interfaces/auth/register.interface';
+import { ILoginPayload } from '~/domain/interfaces/identity.interface';
+import { IOtpPayload } from '~/domain/interfaces/identity.interface';
+import { IRegisterPayload } from '~/domain/interfaces/identity.interface';
 import {
    IChangePasswordPayload,
    IResetPasswordPayload,
    ISendEmailResetPasswordPayload,
-} from '../interfaces/auth/password.interface';
+} from '~/domain/interfaces/identity.interface';
 import { countries } from '../constants/countries';
 
 /// Login Schema

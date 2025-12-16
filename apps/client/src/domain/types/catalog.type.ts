@@ -295,7 +295,6 @@ export type TCategory = {
    deleted_by: string | null;
 };
 
-
 export type TEventItem = {
    id: string;
    event_id: string;
@@ -339,4 +338,13 @@ export type TEvent = {
    is_deleted: boolean;
    deleted_at: string | null;
    deleted_by: string | null;
+};
+
+export type TReview = {
+   review_id: string;
+   customer_username: string;
+   customer_image: string;
+   rating: number;
+   content: string;
+   created_at: string;
 };

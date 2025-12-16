@@ -1,4 +1,4 @@
-export enum EVerificationType {
+export enum EVerificationTypeEnum {
    EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
    RESET_PASSWORD_VERIFICATION = 'RESET_PASSWORD_VERIFICATION',
 }

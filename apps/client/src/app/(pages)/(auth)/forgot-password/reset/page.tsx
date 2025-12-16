@@ -2,16 +2,16 @@
 
 import { GoArrowUpRight } from 'react-icons/go';
 import Link from 'next/link';
-import { FieldInput } from '@components/client/forms/field-input';
-import { LoadingOverlay } from '@components/client/loading-overlay';
+import { FieldInput } from '~/components/client/forms/field-input';
+import { LoadingOverlay } from '~/components/client/loading-overlay';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import {
    resetPasswordFormType,
    resetPasswordResolver,
 } from '~/domain/schemas/auth.schema';
-import { Button } from '@components/ui/button';
-import useAuthService from '@components/hooks/api/use-auth-service';
+import { Button } from '~/components/ui/button';
+import useAuthService from '~/hooks/api/use-auth-service';
 
 const ResetPasswordPage = () => {
    const searchParams = useSearchParams();
@@ -31,11 +31,7 @@ const ResetPasswordPage = () => {
    });
 
    const onSubmit = async (data: resetPasswordFormType) => {
-      console.log('data', data);
-
-      const result = await resetPassword(data);
-
-      console.log('result', result);
+      resetPassword(data);
    };
 
    const isSuccess = resetPasswordState.isSuccess;

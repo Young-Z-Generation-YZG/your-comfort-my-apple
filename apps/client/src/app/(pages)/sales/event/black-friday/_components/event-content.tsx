@@ -1,6 +1,6 @@
 'use client';
 
-import CategoriesCarousel from '@components/client/categories-carousel';
+import CategoriesCarousel from '~/components/client/categories-carousel';
 import PromotionIPhone from './promotion-iphone';
 import { TEvent, TEventItem } from '~/domain/types/catalog.type';
 import { BlackFridayBanner } from './banner';

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useMemo } from 'react';
-import RatingStar from '@components/ui/rating-star';
+import RatingStar from '~/components/ui/rating-star';
 import { useRouter } from 'next/navigation';
 import { TPopularProduct } from '~/domain/types/catalog.type';
 

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@components/ui/button';
-import { Switch } from '@components/ui/switch';
-import { Label } from '@components/ui/label';
+import { Button } from '~/components/ui/button';
+import { Switch } from '~/components/ui/switch';
+import { Label } from '~/components/ui/label';
 import { motion } from 'framer-motion';
 import { Smartphone, Mail, Shield } from 'lucide-react';
 

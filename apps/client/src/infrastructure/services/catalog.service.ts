@@ -1,10 +1,19 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { setLogout } from '../redux/features/auth.slice';
+import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import { TIphoneModelDetails } from '~/domain/types/catalog.type';
+import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 
-const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
-   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
+const baseQueryHandler = async (
+   args: string | FetchArgs,
+   api: BaseQueryApi,
+   extraOptions: unknown,
+) => {
+   const result = await baseQuery('/catalog-services')(
+      args,
+      api,
+      extraOptions as unknown as any,
+   );
 
    if (result.error && result.error.status === 401) {
       api.dispatch(setLogout());
@@ -19,8 +28,10 @@ export const catalogApi = createApi({
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getModelBySlug: builder.query<TIphoneModelDetails, string>({
-         query: (slug) => `/api/v1/products/iphone/${slug}`,
-         providesTags: ['Iphones'],
+         query: (slug: string) => ({
+            url: `/api/v1/products/iphone/${slug}`,
+            method: 'GET',
+         }),
       }),
    }),
 });

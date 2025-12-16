@@ -1,7 +1,7 @@
 'use client';
 
 import SideBar from './_components/layouts/side-bar';
-import withAuth from '@components/HoCs/with-auth.hoc';
+import withAuth from '~/components/HoCs/with-auth.hoc';
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
    return (
