@@ -1,0 +1,284 @@
+---
+globs:
+   alwaysApply: true
+---
+
+# API Conventions (Admin)
+
+These rules apply to **`apps/admin`** only and govern how you design **RTK Query services** and **API hooks**.
+
+## 1. API Source of Truth
+
+1. **Domain-first types**
+
+   - Request/command/mutation payloads: define as interfaces in `~/src/domain/types` with `I` prefix and `Payload` suffix.
+      - **Examples**: `IAddNewStaffPayload`, `IAssignRolesPayload`, `IUpdateProductPayload`.
+   - Response/entity types: define as types/interfaces in `~/src/domain/types` or `~/src/domain/interfaces`.
+      - **Examples**: `TUser`, `TProductModel`, `PaginationResponse<T>`, `TOrder`.
+   - **Do not** define request/response shapes inline in services or hooks.
+
+2. **Single source of truth**
+   - RTK Query services in `~/src/infrastructure/services` must import all contracts (payloads, responses) from the domain layer.
+   - API hooks in `~/src/hooks/api` must also import these same domain types. Do not duplicate shapes.
+
+## 2. RTK Query Services (`~/src/infrastructure/services`)
+
+### 2.1 Location and structure
+
+- All API clients must live under `apps/admin/src/infrastructure/services`.
+- One file per vertical/domain where reasonable:
+   - `auth.service.ts`, `identity.service.ts`, `user.service.ts`
+   - `catalog.service.ts`, `product.service.ts`, `category.service.ts`
+   - `ordering.service.ts`, `promotion.service.ts`, `tenant.service.ts`, etc.
+
+### 2.2 Base query and headers
+
+Use the shared `baseQuery` and (when needed) a `baseQueryHandler` wrapper:
+
+```typescript
+// Example pattern
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQuery } from './base-query';
+
+const baseQueryHandler = async (
+   args: unknown,
+   api: unknown,
+   extraOptions: unknown,
+) => {
+   const result = await baseQuery('/catalog-services')(args, api, extraOptions);
+   return result;
+};
+
+export const productApi = createApi({
+   reducerPath: 'product-api',
+   tagTypes: ['Products'],
+   baseQuery: baseQueryHandler,
+   endpoints: (builder) => ({
+      // endpoints...
+   }),
+});
+```
+
+**Rules:**
+
+- **Never** set `Authorization` or `X-TenantId` headers manually in services.  
+  `baseQuery` reads tokens and tenant from Redux and attaches them.
+- `baseQuery` is also responsible for:
+   - Choosing the correct token (access vs refresh for logout).
+   - Attaching `X-TenantId`.
+   - Serializing query params (arrays → repeated keys).
+
+### 2.3 Endpoints
+
+- Use clear, verb-based endpoint names that match backend behavior:
+
+   - `getUsers`, `getUserById`, `createUser`, `updateUser`, `deleteUser`
+   - `getOrders`, `approveOrder`, `cancelOrder`, `getOrderById`
+   - `getProductModelsByCategorySlug`, `getPromotions`, etc.
+
+- Use proper typings:
+
+```typescript
+import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
+import { TProductModel } from '~/src/domain/types/catalog.type';
+
+export interface IGetProductModelsByCategorySlugQueryParams {
+   _page?: number | null;
+   _limit?: number | null;
+   _colors?: string[] | null;
+   _storages?: string[] | null;
+   _models?: string[] | null;
+   _minPrice?: number | null;
+   _maxPrice?: number | null;
+   _priceSort?: 'ASC' | 'DESC' | null;
+}
+
+export const productApi = createApi({
+   reducerPath: 'product-api',
+   tagTypes: ['Products'],
+   baseQuery: baseQueryHandler,
+   endpoints: (builder) => ({
+      getProductModelsByCategorySlug: builder.query<
+         PaginationResponse<TProductModel>,
+         {
+            categorySlug: string;
+            queryParams: IGetProductModelsByCategorySlugQueryParams;
+         }
+      >({
+         query: ({ categorySlug, queryParams }) => ({
+            url: `/api/v1/product-models/category/${categorySlug}`,
+            params: queryParams,
+         }),
+         providesTags: ['Products'],
+      }),
+   }),
+});
+
+export const { useLazyGetProductModelsByCategorySlugQuery } = productApi;
+```
+
+### 2.4 Tags, cache, and URLs
+
+- Always configure `tagTypes` and use `providesTags` / `invalidatesTags` to keep cache consistent.
+- Align URLs with backend services:
+   - Identity/Auth: `/api/v1/auth`, `/api/v1/users`, `/api/v1/roles`, etc.
+   - Catalog/Product: `/api/v1/categories`, `/api/v1/product-models`, `/api/v1/products`, etc.
+   - Orders, Tenants, Promotions, Notifications: follow existing patterns.
+- **Do not** inline query strings; always use the `params` option so `baseQuery` can serialize them.
+
+## 3. API Hooks (`~/src/hooks/api`)
+
+API hooks wrap RTK Query services to add **side effects**, **composition**, and a **normalized return shape**.
+
+### 3.1 Location and naming
+
+- Place API wrappers under `apps/admin/src/hooks/api`.
+- One file per vertical, named `use-<domain>-service.ts`:
+   - `use-auth-service.ts`, `use-user-service.ts`, `use-tenant-service.ts`
+   - `use-product-service.ts`, `use-ordering-service.ts`, `use-promotion-service.ts`, etc.
+
+### 3.2 Responsibilities
+
+- Wrap generated RTK hooks (e.g., `useLoginMutation`, `useGetUsersQuery`).
+- Coordinate side effects (toasts, sequencing, extra transformations).
+- Normalize results and loading/error states.
+- Expose async helpers with the suffix `Async`:
+
+```typescript
+// Example pattern in ~/src/hooks/api/use-product-service.ts
+import { useCallback, useMemo } from 'react';
+import { useLazyGetProductModelsByCategorySlugQuery } from '~/src/infrastructure/services/product.service';
+import { useCheckApiError } from '~/src/hooks/use-check-error';
+import { useCheckSuccess } from '~/src/hooks/use-check-success';
+
+export const useProductService = () => {
+   const [triggerGetProductModels, getProductModelsState] =
+      useLazyGetProductModelsByCategorySlugQuery();
+
+   useCheckApiError([
+      { title: 'Get products failed', error: getProductModelsState.error },
+   ]);
+
+   const getProductModelsByCategorySlugAsync = useCallback(
+      async (
+         categorySlug: string,
+         queryParams: IGetProductModelsByCategorySlugQueryParams,
+      ) => {
+         try {
+            const data = await triggerGetProductModels({
+               categorySlug,
+               queryParams,
+            }).unwrap();
+
+            useCheckSuccess([{ title: 'Loaded products successfully' }]);
+
+            return {
+               isSuccess: true,
+               isError: false,
+               data,
+               error: null,
+            };
+         } catch (error) {
+            return {
+               isSuccess: false,
+               isError: true,
+               data: null,
+               error,
+            };
+         }
+      },
+      [triggerGetProductModels],
+   );
+
+   const isLoading = useMemo(
+      () => getProductModelsState.isLoading || getProductModelsState.isFetching,
+      [getProductModelsState.isLoading, getProductModelsState.isFetching],
+   );
+
+   return {
+      isLoading,
+      getProductModelsState,
+      getProductModelsByCategorySlugAsync,
+   };
+};
+```
+
+### 3.3 Error and success handling
+
+- Use shared hooks:
+   - `useCheckApiError` for error toasts and logging.
+   - `useCheckSuccess` (or equivalent) for success toasts.
+- **Do not** trigger toasts directly from service files; keep them in hooks.
+- For custom async helpers, standardize the return shape:
+
+```typescript
+return {
+   isSuccess: boolean;
+   isError: boolean;
+   data: T | null;
+   error: unknown;
+};
+```
+
+## 4. Zod, Forms, and Payloads (UI → API)
+
+These conventions mirror the admin project rules and focus on **clear data flow**.
+
+1. **Zod schemas live in UI components**
+
+   - Define Zod schemas (`z.object({...})`) in the component file that owns the form (e.g., dialogs, pages).
+   - Use `zodResolver(schema)` with `react-hook-form`.
+   - Type the form data with `z.input<typeof Schema>` (not `z.infer`) so you can work with `Date` and other input values before transformation.
+
+2. **Transform form data to payloads in UI layer**
+
+```typescript
+const onSubmit: SubmitHandler<TAddNewStaffForm> = async (data) => {
+   const payload: IAddNewStaffPayload = {
+      ...data,
+      birth_day: data.birth_day.toISOString(),
+      tenant_id: isSuperAdmin ? data.tenant_id : tenantId,
+   };
+
+   await addNewStaffAsync(payload);
+};
+```
+
+- Zod/form types describe **UI input**.
+- Payload interfaces (`IAddNewStaffPayload`) describe **API contract**.
+- Conversion happens in the UI layer (component), not in services.
+
+## 5. Naming and Organization
+
+- **Services**
+
+   - File names: `<domain>.service.ts` (e.g., `auth.service.ts`, `user.service.ts`).
+   - `reducerPath`: kebab-case + `-api` (e.g., `'identity-api'`, `'user-api'`).
+   - Export only RTK hooks and API objects; no UI code.
+
+- **Hooks**
+   - File names: `use-<domain>-service.ts`.
+   - Export a default or named hook `use<Domain>Service`.
+   - Async helpers end with `Async`: `loginAsync`, `getUsersAsync`, `createOrderAsync`.
+
+## 6. Security and Multi-Tenancy
+
+- **Do not** manually:
+   - Inject tokens into headers.
+   - Set `X-TenantId`.
+   - Construct query strings; always use `params`.
+- Let `baseQuery` and the Redux auth/tenant slices manage all security headers.
+
+## 7. Quick Checklist
+
+Before adding or modifying an API:
+
+- [ ] Request/response types live in `~/src/domain/types` or `~/src/domain/interfaces`
+- [ ] Service file is under `~/src/infrastructure/services` and uses `baseQuery('/<service>')`
+- [ ] Endpoint names are verb-based and descriptive
+- [ ] `tagTypes`, `providesTags`, and `invalidatesTags` are configured correctly
+- [ ] No manual headers for `Authorization` or `X-TenantId`
+- [ ] No manual query-string building; use `params`
+- [ ] API hooks live in `~/src/hooks/api` and wrap RTK Query hooks
+- [ ] Hooks handle toasts via `useCheckApiError` / `useCheckSuccess`
+- [ ] Async helpers return `{ isSuccess, isError, data, error }`

@@ -22,9 +22,17 @@ import {
 import { Input } from '@components/ui/input';
 import { useDispatch } from 'react-redux';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
-import { useAppSelector } from '~/src/infrastructure/redux/store';
+import { AppDispatch, useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
 import { TTenant } from '~/src/domain/types/catalog.type';
+import { orderingApi } from '~/src/infrastructure/services/ordering.service';
+import { inventoryApi } from '~/src/infrastructure/services/inventory.service';
+import { productApi } from '~/src/infrastructure/services/product.service';
+import { categoryApi } from '~/src/infrastructure/services/category.service';
+import { notificationApi } from '~/src/infrastructure/services/notification.service';
+import { userApi } from '~/src/infrastructure/services/user.service';
+import { tenantApi } from '~/src/infrastructure/services/tenant.service';
+import { identityApi } from '~/src/infrastructure/services/identity.service';
 
 export function TenantSwitcher({
    tenants,
@@ -43,7 +51,7 @@ export function TenantSwitcher({
       (state) => state.tenant,
    );
 
-   const dispatch = useDispatch();
+   const dispatch = useDispatch<AppDispatch>();
 
    const roles = useMemo(
       () => currentUser?.roles || impersonatedUser?.roles || [],
@@ -83,6 +91,16 @@ export function TenantSwitcher({
       };
 
       dispatch(setTenant(tenantPayload));
+      // Invalidate tenant-scoped caches so queries refetch with new tenant
+      dispatch(orderingApi.util.invalidateTags(['Orders']));
+      dispatch(inventoryApi.util.invalidateTags(['Inventory']));
+      dispatch(productApi.util.invalidateTags(['Products']));
+      dispatch(categoryApi.util.invalidateTags(['Categories']));
+      dispatch(notificationApi.util.invalidateTags(['OrderNotifications']));
+      dispatch(userApi.util.invalidateTags(['Users', 'UserRoles']));
+      dispatch(tenantApi.util.invalidateTags(['Tenants']));
+      // Do not invalidate identityApi 'UserSwitcher' cache so user-switcher list stays global
+      dispatch(identityApi.util.invalidateTags(['Users']));
    };
 
    // Default selected tenant

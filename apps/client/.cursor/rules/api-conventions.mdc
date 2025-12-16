@@ -7,7 +7,7 @@ globs:
 2. **RTK Query Services**: Define endpoints under `apps/client/src/infrastructure/services` using the shared `baseQuery`/`baseQueryHandler`. Name endpoints with clear verbs that match backend actions. Use `params` for query strings and `body` for payloads; avoid inlining query params in URLs.
 3. **Auth & Headers**: Let the shared base query set `Authorization` (access token for normal calls, refresh token for logout/refresh) and multi-tenant headers (`X-TenantId`). Only add per-endpoint headers when explicitly required by the backend.
 4. **Response & Payload Typing**: Every endpoint must specify typed responses and payloads that match backend contracts. If the backend wraps data (e.g., `{ data, pagination }`), type the full envelope—do not rely on `any` or partially typed objects.
-5. **Hooks Layer**: Centralize UI consumption in `apps/client/src/components/hooks/api`. Hooks should wrap service endpoints, aggregate `isLoading`, and expose typed async helpers that `unwrap()` RTK Query results so callers get typed data or throw.
+5. **Hooks Layer**: Centralize UI consumption in `apps/client/src/hooks/api`. Hooks should wrap service endpoints, aggregate `isLoading`, and expose typed async helpers that `unwrap()` RTK Query results so callers get typed data or throw.
 6. **Error/Success Handling**: Use shared helpers (`useCheckApiError`, `useCheckApiSuccess`) inside hooks for consistent feedback. Extend helpers when new patterns arise rather than duplicating ad-hoc handling.
 
 ### Examples
@@ -22,7 +22,7 @@ globs:
       -  Response type: use a shared domain type or an envelope `{ data: Product[]; pagination: PageMeta }`
 
 -  Hook wrapper:
-   -  Location: `apps/client/src/components/hooks/api/use-product-service.ts`
+   -  Location: `apps/client/src/hooks/api/use-product-service.ts`
    -  Wraps `useGetProductsQuery`
    -  Exposes `getProductsAsync = useCallback(async (params) => await trigger(params).unwrap())`
    -  Aggregates `isLoading` from `queryState.isLoading || queryState.isFetching`
@@ -59,7 +59,7 @@ export const { useGetProductsQuery, useLazyGetProductsQuery } = productApi;
 ```
 
 ```typescript
-// apps/client/src/components/hooks/api/use-product-service.ts
+// apps/client/src/hooks/api/use-product-service.ts
 import { useCallback, useMemo } from 'react';
 import {
    useGetProductsQuery,

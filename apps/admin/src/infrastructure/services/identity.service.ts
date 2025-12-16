@@ -27,7 +27,7 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
 
 export const identityApi = createApi({
    reducerPath: 'identity-api',
-   tagTypes: ['Users'],
+   tagTypes: ['Users', 'UserSwitcher'],
    baseQuery: baseQueryHandler,
    endpoints: (builder) => ({
       getUsersByAdmin: builder.query<PaginationResponse<TUser>, any>({
@@ -55,7 +55,7 @@ export const identityApi = createApi({
                _roles: params.roles,
             },
          }),
-         providesTags: ['Users'],
+         providesTags: ['UserSwitcher'],
       }),
       addNewStaff: builder.mutation<boolean, IAddNewStaffPayload>({
          query: (data) => ({
@@ -63,7 +63,7 @@ export const identityApi = createApi({
             method: 'POST',
             body: data,
          }),
-         invalidatesTags: ['Users'],
+         invalidatesTags: ['Users', 'UserSwitcher'],
       }),
    }),
 });

@@ -44,6 +44,7 @@ export const inventoryApi = createApi({
             method: 'GET',
             params: params,
          }),
+         providesTags: ['Inventory'],
       }),
    }),
 });

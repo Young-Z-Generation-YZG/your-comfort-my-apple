@@ -60,12 +60,17 @@ const chartConfig = {
 type FilterMetric = 'revenue' | 'orders' | 'both';
 type GroupBy = 'date' | 'month';
 
+const DEFAULT_RANGE: DateRange = {
+   from: new Date(2025, 0, 1), // 1 Jan 2025
+   to: new Date(2025, 11, 31), // 31 Dec 2025
+};
+
 const RevenueOrdersChart = () => {
    // Filter states for Chart 1
-   const [range, setRange] = useState<DateRange | undefined>(undefined);
+   const [range, setRange] = useState<DateRange | undefined>(DEFAULT_RANGE);
    const [filterMetric, setFilterMetric] = useState<FilterMetric>('both');
    const [groupBy, setGroupBy] = useState<GroupBy>('month');
-   const [isFiltered, setIsFiltered] = useState(false);
+   const [isFiltered, setIsFiltered] = useState(true);
 
    const { getRevenuesAsync, getRevenuesState } = useOrderingService();
 
@@ -178,10 +183,10 @@ const RevenueOrdersChart = () => {
 
    // Reset filter
    const handleResetFilter = () => {
-      setRange(undefined);
+      setRange(DEFAULT_RANGE);
       setFilterMetric('both');
-      setGroupBy('date');
-      setIsFiltered(false);
+      setGroupBy('month');
+      setIsFiltered(true);
    };
 
    useEffect(() => {

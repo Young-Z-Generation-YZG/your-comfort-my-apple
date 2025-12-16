@@ -12,7 +12,7 @@ globs:
 2. **Use relative imports for local files**: When importing from the same folder (`./`) or immediate parent/sibling (`../`), use relative paths to reduce noise.
 
 3. **Decision criteria**:
-   -  If the import requires 2+ levels of `../` → Use path alias
+   -  If the import requires 2+ levels of `../` → Use path aliasY
    -  If the import is within the same feature/module → Use relative path
    -  If the import crosses feature boundaries → Use path alias
 

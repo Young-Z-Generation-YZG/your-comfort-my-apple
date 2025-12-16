@@ -1,0 +1,90 @@
+---
+globs:
+   alwaysApply: true
+---
+
+# Import Conventions (Admin)
+
+These rules apply to `apps/admin` only.
+
+## Rules
+
+1. **Use path aliases for cross-feature imports**  
+   When importing across major folders (`src/app`, `src/components`, `src/domain`, `src/hooks`, `src/infrastructure`), prefer path aliases over long relative paths (`../../..`).
+
+2. **Use relative imports for local files**  
+   For imports within the same folder (`./`) or immediate parent/sibling (`../`), use relative paths to reduce noise.
+
+3. **Decision criteria**
+   - If the import requires **2+ levels** of `../` → use a path alias
+   - If the import is within the **same feature/module** → use a relative path
+   - If the import **crosses feature boundaries** (e.g., `app` → `domain`, `components` → `infrastructure`) → use a path alias
+
+## Available Path Aliases (Admin)
+
+From `apps/admin/tsconfig.json`:
+
+- `@components/*` → `./src/components/*`
+- `@assets/*` → `./assets/*`
+- `~/*` → `./*`
+   - In practice, use it as `~/src/...` for most application code:
+      - `~/src/app/...`
+      - `~/src/components/...`
+      - `~/src/domain/...`
+      - `~/src/hooks/...`
+      - `~/src/infrastructure/...`
+
+## Examples
+
+### ✅ Good – Using path aliases for cross-feature imports
+
+```typescript
+// From a route in src/app/dashboard/*
+import { SidebarLayout } from '@components/layouts/sidebar-layout';
+import { DataTable } from '@components/ui/table';
+
+// Domain and infrastructure imports
+import { TProductModel } from '~/src/domain/types/catalog.type';
+import { PaginationResponse } from '~/src/domain/interfaces/common/pagination-response.interface';
+import { productApi } from '~/src/infrastructure/services/product.service';
+
+// Hooks and utilities
+import { useProductService } from '~/src/hooks/api/use-product-service';
+import { cn } from '~/src/infrastructure/lib/utils';
+
+// Assets
+import Logo from '@assets/images/logo.svg';
+```
+
+### ❌ Bad – Deep relative paths (avoid)
+
+```typescript
+// Hard to read, fragile when folders move
+import { SidebarLayout } from '../../../components/layouts/sidebar-layout';
+import { DataTable } from '../../../components/ui/table';
+import { TProductModel } from '../../domain/types/catalog.type';
+import { productApi } from '../../infrastructure/services/product.service';
+```
+
+### ✅ Good – Relative imports for local files
+
+```typescript
+// Inside src/components/ui/button.tsx
+import { cn } from '~/src/infrastructure/lib/utils';
+import { Spinner } from './spinner';
+
+// Inside src/app/dashboard/product-management/page.tsx
+import { ProductTable } from './_components/product-table';
+import { useProductService } from '~/src/hooks/api/use-product-service';
+```
+
+### ❌ Bad – Unnecessary path aliases for local files
+
+```typescript
+// Overkill for same-folder or near-folder imports
+// When already in src/components/ui/*
+import { Button } from '@components/ui/button';
+
+// When already in src/app/dashboard/product-management/*
+import { ProductTable } from '~/src/app/dashboard/product-management/_components/product-table';
+```

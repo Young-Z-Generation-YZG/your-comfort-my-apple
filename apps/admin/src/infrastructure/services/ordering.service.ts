@@ -49,6 +49,7 @@ export const orderingApi = createApi({
                ...params,
             },
          }),
+         providesTags: ['Orders'],
       }),
       getOrders: builder.query<PaginationResponse<TOrder>, IBaseQueryParams>({
          query: (params: IBaseQueryParams) => ({
@@ -60,12 +61,14 @@ export const orderingApi = createApi({
                ...params,
             },
          }),
+         providesTags: ['Orders'],
       }),
       getOrderDetails: builder.query<any, string>({
          query: (orderId: string) => ({
             url: `/api/v1/orders/${orderId}`,
             method: 'GET',
          }),
+         providesTags: ['Orders'],
       }),
       getUserOrdersDetails: builder.query<
          PaginationResponse<TOrder>,
@@ -79,12 +82,14 @@ export const orderingApi = createApi({
             method: 'GET',
             params: params,
          }),
+         providesTags: ['Orders'],
       }),
       getRevenues: builder.query<TOrder[], void>({
          query: () => ({
             url: `/api/v1/orders/dashboard/revenues`,
             method: 'GET',
          }),
+         providesTags: ['Orders'],
       }),
       getRevenuesByYears: builder.query<
          { groups: Record<string, TOrder[]> },
@@ -97,6 +102,7 @@ export const orderingApi = createApi({
                _years: params?._years || [],
             },
          }),
+         providesTags: ['Orders'],
       }),
       getRevenuesByTenants: builder.query<
          { groups: Record<string, TOrder[]> },
@@ -114,6 +120,7 @@ export const orderingApi = createApi({
                },
             };
          },
+         providesTags: ['Orders'],
       }),
       updateOnlineOrderStatus: builder.mutation<
          boolean,
@@ -127,6 +134,7 @@ export const orderingApi = createApi({
             method: 'PATCH',
             body: payload,
          }),
+         invalidatesTags: ['Orders'],
       }),
    }),
 });

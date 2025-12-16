@@ -13,9 +13,21 @@ import {
    setImpersonatedUser,
    setRoles,
 } from '~/src/infrastructure/redux/features/auth.slice';
-import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
+import {
+   AppDispatch,
+   RootState,
+   useAppSelector,
+} from '~/src/infrastructure/redux/store';
 import useAuthService from './use-auth-service';
 import { setTenant } from '~/src/infrastructure/redux/features/tenant.slice';
+import { orderingApi } from '~/src/infrastructure/services/ordering.service';
+import { inventoryApi } from '~/src/infrastructure/services/inventory.service';
+import { productApi } from '~/src/infrastructure/services/product.service';
+import { categoryApi } from '~/src/infrastructure/services/category.service';
+import { notificationApi } from '~/src/infrastructure/services/notification.service';
+import { userApi } from '~/src/infrastructure/services/user.service';
+import { tenantApi } from '~/src/infrastructure/services/tenant.service';
+import { identityApi } from '~/src/infrastructure/services/identity.service';
 
 const useKeycloakService = () => {
    const [authorizationCodeMutation, authorizationCodeMutationState] =
@@ -25,7 +37,7 @@ const useKeycloakService = () => {
 
    const { getIdentityAsync } = useAuthService();
 
-   const dispatch = useDispatch();
+   const dispatch = useDispatch<AppDispatch>();
 
    const { currentUser } = useAppSelector((state: RootState) => state.auth);
 
@@ -39,6 +51,18 @@ const useKeycloakService = () => {
          error: impersonateUserMutationState.error,
       },
    ]);
+
+   const invalidateTenantScopedCaches = useCallback(() => {
+      dispatch(orderingApi.util.invalidateTags(['Orders']));
+      dispatch(inventoryApi.util.invalidateTags(['Inventory']));
+      dispatch(productApi.util.invalidateTags(['Products']));
+      dispatch(categoryApi.util.invalidateTags(['Categories']));
+      dispatch(notificationApi.util.invalidateTags(['OrderNotifications']));
+      dispatch(userApi.util.invalidateTags(['Users', 'UserRoles']));
+      dispatch(tenantApi.util.invalidateTags(['Tenants']));
+      // Keep user-switcher list (UserSwitcher tag) global across tenants/impersonation
+      dispatch(identityApi.util.invalidateTags(['Users']));
+   }, [dispatch]);
 
    const authorizationCodeAsync = useCallback(
       async (data: unknown) => {
@@ -76,6 +100,7 @@ const useKeycloakService = () => {
                      tenantSubDomain: null,
                   }),
                );
+               invalidateTenantScopedCaches();
 
                // Now fetch identity using current user's token to get roles
                const identityResult = await getIdentityAsync();
@@ -141,6 +166,7 @@ const useKeycloakService = () => {
                         identityResult.data.tenant_sub_domain || null,
                   }),
                );
+               invalidateTenantScopedCaches();
             }
 
             return {
@@ -160,7 +186,13 @@ const useKeycloakService = () => {
             return { isSuccess: false, isError: true, data: null, error };
          }
       },
-      [impersonateUserMutation, dispatch, currentUser, getIdentityAsync],
+      [
+         impersonateUserMutation,
+         dispatch,
+         currentUser,
+         getIdentityAsync,
+         invalidateTenantScopedCaches,
+      ],
    );
 
    // centrally track the loading state
