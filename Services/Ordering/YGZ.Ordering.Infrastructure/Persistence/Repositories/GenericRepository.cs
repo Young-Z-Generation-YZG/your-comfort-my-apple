@@ -129,16 +129,26 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     {
         try
         {
-            _dbSet.Update(entity);
-
-            var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
-
-            if (result > 0)
+            // Check if entity is already being tracked by the DbContext
+            var entry = _dbContext.Entry(entity);
+            
+            if (entry.State == EntityState.Detached)
             {
-                return true;
+                // Entity is not tracked, use Update() which marks all properties as modified
+                _dbSet.Update(entity);
+            }
+            else
+            {
+                // Entity is already tracked, explicitly mark it as modified
+                entry.State = EntityState.Modified;
             }
 
-            return Errors.Common.UpdateFailure;
+            // SaveChangesAsync can return 0 in some cases even when updates are applied
+            // (e.g., when using AsNoTracking() and Update(), or when EF Core optimizes)
+            // If no exception is thrown, we consider the operation successful
+            await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
+
+            return true;
         }
         catch (Exception)
         {

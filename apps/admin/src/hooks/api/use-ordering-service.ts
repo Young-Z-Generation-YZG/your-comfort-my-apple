@@ -12,6 +12,7 @@ import {
    useLazyGetUserOrdersDetailsQuery,
 } from '~/src/infrastructure/services/ordering.service';
 import { useCheckApiError } from '~/src/hooks/use-check-error';
+import { useCheckApiSuccess } from '~/src/hooks/use-check-success';
 
 const useOrderingService = () => {
    const [getOrderDetailsTrigger, orderDetailsQueryState] =
@@ -31,6 +32,13 @@ const useOrderingService = () => {
 
    useCheckApiError([
       { title: 'Can not find this order', error: orderDetailsQueryState.error },
+   ]);
+
+   useCheckApiSuccess([
+      {
+         title: 'Order status updated',
+         isSuccess: updateOnlineOrderStatusQueryState.isSuccess,
+      },
    ]);
 
    const getUserOrdersDetailsAsync = useCallback(

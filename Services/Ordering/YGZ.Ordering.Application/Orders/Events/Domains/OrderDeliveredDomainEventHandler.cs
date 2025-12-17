@@ -49,7 +49,8 @@ public class OrderDeliveredDomainEventHandler : INotificationHandler<OrderDelive
         }, cancellationToken);
 
         await CreateNotificationsAsync(notification, cancellationToken);
-        await SendEmailAsync(notification, cancellationToken);
+        
+        SendEmailAsync(notification, cancellationToken);
     }
 
     private async Task CreateNotificationsAsync(OrderDeliveredDomainEvent domainEvent, CancellationToken cancellationToken)

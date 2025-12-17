@@ -56,7 +56,7 @@ public class OrderConfirmedDomainEventHandler : INotificationHandler<OrderConfir
 
         await CreateNotificationsAsync(notification, cancellationToken);
         
-        await SendEmailAsync(notification, cancellationToken);
+        SendEmailAsync(notification, cancellationToken);
     }
 
     private async Task CreateNotificationsAsync(OrderConfirmedDomainEvent domainEvent, CancellationToken cancellationToken)

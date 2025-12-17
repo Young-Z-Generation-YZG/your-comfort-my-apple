@@ -56,6 +56,7 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
         }
 
         order.UpdatedBy = _userContext.GetUserId();
+        order.UpdatedAt = DateTime.UtcNow;
 
         return await _repository.UpdateAsync(order, cancellationToken);
 

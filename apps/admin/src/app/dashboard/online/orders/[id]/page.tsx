@@ -33,7 +33,6 @@ import {
 import { Separator } from '@components/ui/separator';
 import { LoadingOverlay } from '@components/loading-overlay';
 
-import { useToast } from '~/src/hooks/use-toast';
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
 import type { TOrder, TOrderItem } from '~/src/domain/types/ordering.type';
@@ -73,7 +72,6 @@ const availableUpdateStatuses: Record<EOrderStatus, EOrderStatus[]> = {
 const OnlineOrderDetailsPage = () => {
    const params = useParams<{ id: string }>();
    const router = useRouter();
-   const { toast } = useToast();
 
    const {
       getOrderDetailsAsync,
@@ -104,13 +102,8 @@ const OnlineOrderDetailsPage = () => {
          setOrder(result.data as TOrder);
       } else {
          setOrder(null);
-         toast({
-            variant: 'destructive',
-            title: 'Unable to find this order',
-            description: 'Please verify the order ID or try again later.',
-         });
       }
-   }, [orderId, getOrderDetailsAsync, toast]);
+   }, [orderId, getOrderDetailsAsync]);
 
    useEffect(() => {
       fetchOrderDetails();
@@ -139,18 +132,8 @@ const OnlineOrderDetailsPage = () => {
          setOrder((prev) =>
             prev ? { ...prev, status: selectedStatus } : prev,
          );
-         toast({
-            title: 'Order status updated',
-            description: `Status changed to ${formatStatusLabel(selectedStatus)}.`,
-         });
-      } else {
-         toast({
-            variant: 'destructive',
-            title: 'Failed to update status',
-            description: 'Please try again in a moment.',
-         });
       }
-   }, [order, selectedStatus, updateOnlineOrderStatusAsync, toast]);
+   }, [order, selectedStatus, updateOnlineOrderStatusAsync]);
 
    const canUpdateStatus =
       Boolean(order) &&

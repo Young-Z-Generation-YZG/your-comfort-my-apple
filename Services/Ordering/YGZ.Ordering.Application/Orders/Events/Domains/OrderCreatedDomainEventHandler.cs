@@ -59,6 +59,7 @@ public class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedD
             senderId: null);
 
         var adminResult = await _notificationRepository.AddAsync(adminNotification, cancellationToken);
+
         if (adminResult.IsFailure)
         {
             _logger.LogWarning("Failed to create admin notification for order {OrderId}", order.Id.Value);

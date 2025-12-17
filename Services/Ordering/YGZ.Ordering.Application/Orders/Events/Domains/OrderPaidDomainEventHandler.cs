@@ -57,7 +57,7 @@ public class OrderPaidDomainEventHandler : INotificationHandler<OrderPaidDomainE
 
         await CreateNotificationsAsync(notification, cancellationToken);
         
-        await SendEmailAsync(notification, cancellationToken);
+        SendEmailAsync(notification, cancellationToken);
     }
 
     private async Task CreateNotificationsAsync(OrderPaidDomainEvent domainEvent, CancellationToken cancellationToken)
