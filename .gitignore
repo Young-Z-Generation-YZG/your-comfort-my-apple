@@ -356,3 +356,8 @@ provision/dockerVolumes/mongoDb/volumes/*
 .env
 
 **/key/replica.key
+
+provision/ssl/cert.pem
+provision/ssl/chain.pem
+provision/ssl/fullchain.pem
+provision/ssl/privkey.pem
