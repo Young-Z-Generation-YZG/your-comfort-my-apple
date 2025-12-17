@@ -166,65 +166,102 @@ public static class OrderData_HCM_Q1_CMT8_92
                 return string.Empty;
             }
 
-            // Create order items - cycling through different models, colors, and storages
-            // We'll create 298 order items to match the 298 datetime entries
-            var allModels = new List<(List<string> models, List<string> colors, string modelId)>
+            // Create order items with natural randomness and variation
+            // HCM_Q1_CMT8_92: Prefers mid-range models (iPhone 16, iPhone 17) with balanced storage options
+            var allModels = new List<(List<string> models, List<string> colors, string modelId, double weight)>
             {
-                (iPhone15ModelsList, iPhone15ColorsList, ListModelIds.ModelIds["IPHONE_15"]),
-                (iPhone16ModelsList, iPhone16ColorsList, ListModelIds.ModelIds["IPHONE_16"]),
-                (iPhone16EModelsList, iPhone16EColorsList, ListModelIds.ModelIds["IPHONE_16E"]),
-                (iPhone17ModelsList, iPhone17ColorsList, ListModelIds.ModelIds["IPHONE_17"]),
-                (iPhone17ProModelsList, iPhone17ProColorsList, ListModelIds.ModelIds["IPHONE_17_PRO"]),
-                (iPhone17AirModelsList, iPhone17AirColorsList, ListModelIds.ModelIds["IPHONE_17_AIR"])
+                (iPhone15ModelsList, iPhone15ColorsList, ListModelIds.ModelIds["IPHONE_15"], 0.15), // 15%
+                (iPhone16ModelsList, iPhone16ColorsList, ListModelIds.ModelIds["IPHONE_16"], 0.30), // 30% - preferred
+                (iPhone16EModelsList, iPhone16EColorsList, ListModelIds.ModelIds["IPHONE_16E"], 0.20), // 20%
+                (iPhone17ModelsList, iPhone17ColorsList, ListModelIds.ModelIds["IPHONE_17"], 0.25), // 25% - preferred
+                (iPhone17ProModelsList, iPhone17ProColorsList, ListModelIds.ModelIds["IPHONE_17_PRO"], 0.05), // 5% - less premium
+                (iPhone17AirModelsList, iPhone17AirColorsList, ListModelIds.ModelIds["IPHONE_17_AIR"], 0.05) // 5%
             };
 
-            var orderItemsLists = new List<List<OrderItem>>();
-            var itemIndex = 0;
+            var orders = new List<Order>();
+            var random = new Random(9292); // Different seed for different pattern
 
-            for (int i = 1; i <= 298; i++)
+            // Helper to select model group based on weights
+            (List<string> models, List<string> colors, string modelId) SelectModelGroup(Random rng)
             {
-                var modelGroup = allModels[itemIndex % allModels.Count];
-                var modelIndex = (itemIndex / allModels.Count) % modelGroup.models.Count;
-                var colorIndex = (itemIndex / (allModels.Count * modelGroup.models.Count)) % modelGroup.colors.Count;
-                var storageIndex = (itemIndex / (allModels.Count * modelGroup.models.Count * modelGroup.colors.Count)) % StoragesList.Count;
-
-                var model = modelGroup.models[modelIndex];
-                var color = modelGroup.colors[colorIndex];
-                var storage = StoragesList[storageIndex];
-                var datetimeKey = $"HCM_Q1_CMT8_92_{i}_2025";
-
-                var orderItem = OrderItem.Create(
-                    orderItemId: OrderItemId.Create(),
-                    tenantId: TenantId.Of(listTenantId[2]), // HCM_Q1_CMT8_92
-                    branchId: BranchId.Of(listBranchIds[2]), // HCM_Q1_CMT8_92
-                    orderId: OrderId.Create(),
-                    skuId: "SEED_DATA",
-                    modelId: modelGroup.modelId,
-                    modelName: model,
-                    colorName: color,
-                    storageName: storage,
-                    unitPrice: GetPriceFromSkuPriceList(model, color, storage),
-                    displayImageUrl: GetDisplayImageUrl(model, color, storage),
-                    modelSlug: GetModelSlug(model),
-                    quantity: 1,
-                    promotionId: null,
-                    promotionType: null,
-                    discountType: null,
-                    discountValue: null,
-                    isReviewed: false,
-                    createdAt: ListDateTimes.CreatedAtDateTimes[datetimeKey]);
-
-                orderItemsLists.Add(new List<OrderItem> { orderItem });
-                itemIndex++;
+                var roll = rng.NextDouble();
+                double cumulative = 0;
+                foreach (var group in allModels)
+                {
+                    cumulative += group.weight;
+                    if (roll <= cumulative)
+                    {
+                        return (group.models, group.colors, group.modelId);
+                    }
+                }
+                var lastGroup = allModels.Last(); // Fallback
+                return (lastGroup.models, lastGroup.colors, lastGroup.modelId);
             }
 
-            // Create 298 orders
-            var orders = new List<Order>();
             for (int i = 1; i <= 298; i++)
             {
                 var datetimeKey = $"HCM_Q1_CMT8_92_{i}_2025";
+                var orderId = OrderId.Create();
+                var orderItems = new List<OrderItem>();
+                
+                // Vary order size: 75% single item, 20% two items, 5% three items
+                var orderSize = random.NextDouble() switch
+                {
+                    < 0.75 => 1,
+                    < 0.95 => 2,
+                    _ => 3
+                };
+
+                for (int j = 0; j < orderSize; j++)
+                {
+                    var modelGroup = SelectModelGroup(random);
+                    var model = modelGroup.models[random.Next(modelGroup.models.Count)];
+                    var color = modelGroup.colors[random.Next(modelGroup.colors.Count)];
+                    
+                    // Balanced storage preference: 40% 128GB, 35% 256GB, 20% 512GB, 5% 1TB
+                    var storageRoll = random.NextDouble();
+                    var storage = storageRoll switch
+                    {
+                        < 0.40 => StoragesList[0], // 128GB
+                        < 0.75 => StoragesList[1], // 256GB
+                        < 0.95 => StoragesList[2], // 512GB
+                        _ => StoragesList[3] // 1TB
+                    };
+
+                    // Vary quantity: 90% single, 8% double, 2% triple
+                    var quantity = random.NextDouble() switch
+                    {
+                        < 0.90 => 1,
+                        < 0.98 => 2,
+                        _ => 3
+                    };
+
+                    var orderItem = OrderItem.Create(
+                        orderItemId: OrderItemId.Create(),
+                        tenantId: TenantId.Of(listTenantId[2]), // HCM_Q1_CMT8_92
+                        branchId: BranchId.Of(listBranchIds[2]), // HCM_Q1_CMT8_92
+                        orderId: orderId,
+                        skuId: "SEED_DATA",
+                        modelId: modelGroup.modelId,
+                        modelName: model,
+                        colorName: color,
+                        storageName: storage,
+                        unitPrice: GetPriceFromSkuPriceList(model, color, storage),
+                        displayImageUrl: GetDisplayImageUrl(model, color, storage),
+                        modelSlug: GetModelSlug(model),
+                        quantity: quantity,
+                        promotionId: null,
+                        promotionType: null,
+                        discountType: null,
+                        discountValue: null,
+                        isReviewed: false,
+                        createdAt: ListDateTimes.CreatedAtDateTimes[datetimeKey]);
+
+                    orderItems.Add(orderItem);
+                }
+
                 var order = Order.Create(
-                    orderId: OrderId.Create(),
+                    orderId: orderId,
                     tenantId: TenantId.Of(listTenantId[2]), // HCM_Q1_CMT8_92
                     branchId: BranchId.Of(listBranchIds[2]), // HCM_Q1_CMT8_92
                     customerId: listUserIds[0],
@@ -240,7 +277,11 @@ public static class OrderData_HCM_Q1_CMT8_92
                     discountValue: null,
                     createdAt: ListDateTimes.CreatedAtDateTimes[datetimeKey]);
 
-                order.AddOrderItem(orderItemsLists[i - 1][0]);
+                // Add all order items for this order
+                foreach (var orderItem in orderItems)
+                {
+                    order.AddOrderItem(orderItem);
+                }
                 orders.Add(order);
             }
 

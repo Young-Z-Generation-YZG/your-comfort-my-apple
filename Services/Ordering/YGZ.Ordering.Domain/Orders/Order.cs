@@ -73,7 +73,7 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             CreatedAt = createdAt ??= DateTime.UtcNow
         };
 
-        //order.AddDomainEvent(new OrderCreatedDomainEvent(order));
+        order.AddDomainEvent(new OrderCreatedDomainEvent(order));
 
         return order;
     }
