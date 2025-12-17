@@ -1,9 +1,0 @@
----
-globs:
-   alwaysApply: true
----
-
-## Custom Agent (Admin)
-
-- Scope: `apps/admin` only.
-- Use these rules when cursor operates in the Admin frontend.

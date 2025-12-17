@@ -1,0 +1,29 @@
+project-rules:
+description: High-level architecture and relationships for the TLCN*ADMIN project.
+applies_to: - "\**/\_"
+rules: - id: project-overview
+title: Project Overview
+content: |
+This repository hosts a full e-commerce platform composed of Next.js frontends and a suite of .NET microservices. The system covers catalog browsing, cart and checkout, discounts, ordering, identity, and shared building blocks for cross-cutting concerns.
+
+    - id: high-level-relationships
+      title: High-Level Relationships
+      content: |
+        - `apps`: Frontend applications.
+          - `apps/client`: Customer-facing storefront (product discovery, cart, checkout).
+          - `apps/admin`: Back-office portal for administrators/staff to manage catalog, orders, and operations.
+        - `Services`: Backend microservices and shared libraries.
+          - `Services/BuildingBlocks`: Shared cross-cutting libraries (messaging, common abstractions) used by all services.
+          - `Services/Catalog`: Product catalog domain (products, categories, search, inventory exposure).
+          - `Services/Basket`: Shopping cart domain (persist cart, update quantities, prepare checkout input).
+          - `Services/Discount`: Discount/coupon domain (lookup and apply discounts, gRPC exposed).
+          - `Services/Identity`: Identity and access management (users, roles, tokens).
+          - `Services/Ordering`: Order lifecycle (create, pay, track status, fulfillment).
+
+    - id: domain-flow
+      title: Flow at a Glance
+      content: |
+        1. Client storefront (or Admin portal) calls backend APIs (typically via gateway/proxy) to fetch catalog data, manage carts, and place orders.
+        2. Basket orchestrates cart persistence and coordinates with Catalog for product data and Discount for price adjustments.
+        3. Checkout transitions to Ordering; payments and order status updates flow through Ordering, with Identity handling authentication/authorization.
+        4. Shared cross-cutting concerns (logging, messaging, domain primitives) live in BuildingBlocks and are consumed across services.
