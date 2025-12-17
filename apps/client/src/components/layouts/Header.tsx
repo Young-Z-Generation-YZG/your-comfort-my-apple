@@ -8,6 +8,7 @@ import {
    useCallback,
    useEffect,
    useMemo,
+   useRef,
    useState,
 } from 'react';
 import { PiUserCircleFill } from 'react-icons/pi';
@@ -142,13 +143,22 @@ const Header = () => {
       unread: 0,
       read: 0,
    });
+   const [notificationPages, setNotificationPages] = useState<{
+      all: number;
+      unread: number;
+      read: number;
+   }>({
+      all: 1,
+      unread: 1,
+      read: 1,
+   });
    const isLoading = isNotificationLoading || isIdentityLoading;
 
    const buildNotificationQueryParams = useCallback(
-      (tab: NotificationTab): INotificationQueryParams => {
+      (tab: NotificationTab, page = 1): INotificationQueryParams => {
          const baseParams: INotificationQueryParams = {
             _limit: 5,
-            _page: 1,
+            _page: page,
          };
 
          if (tab === 'unread') {
@@ -164,14 +174,15 @@ const Header = () => {
    );
 
    const fetchNotificationsByTab = useCallback(
-      async (tab: NotificationTab) => {
+      async (tab: NotificationTab, page = 1, append = false) => {
          if (!isAuthenticated) {
             setNotificationData((prev) => ({ ...prev, [tab]: [] }));
             setNotificationCounts((prev) => ({ ...prev, [tab]: 0 }));
+            setNotificationPages((prev) => ({ ...prev, [tab]: 1 }));
             return;
          }
 
-         const queryParams = buildNotificationQueryParams(tab);
+         const queryParams = buildNotificationQueryParams(tab, page);
          const response = await getNotificationsAsync(queryParams);
 
          if (response?.isSuccess && response.data) {
@@ -189,7 +200,11 @@ const Header = () => {
             }));
             setNotificationData((prev) => ({
                ...prev,
-               [tab]: items,
+               [tab]: append ? [...prev[tab], ...items] : items,
+            }));
+            setNotificationPages((prev) => ({
+               ...prev,
+               [tab]: page,
             }));
          } else {
             console.warn(
@@ -225,6 +240,24 @@ const Header = () => {
    const unreadCount = notificationCounts.unread;
    const readCount = notificationCounts.read;
 
+   const hasMoreForActiveTab = useMemo(() => {
+      const data = notificationData[notificationTab] ?? [];
+      const totalForTab =
+         notificationTab === 'all'
+            ? totalNotifications
+            : notificationTab === 'unread'
+              ? unreadCount
+              : readCount;
+
+      return data.length < totalForTab;
+   }, [
+      notificationData,
+      notificationTab,
+      totalNotifications,
+      unreadCount,
+      readCount,
+   ]);
+
    const handleMarkNotification = useCallback(
       async (notification: TNotification) => {
          await markAsReadAsync(notification.id);
@@ -238,20 +271,51 @@ const Header = () => {
       await markAllAsReadAsync();
       await fetchAllNotificationTabs();
    }, [markAllAsReadAsync, fetchAllNotificationTabs]);
+
+   const handleLoadMoreNotifications = useCallback(async () => {
+      if (!isAuthenticated) return;
+
+      const currentTab = notificationTab;
+      const currentItems = notificationData[currentTab] ?? [];
+
+      const totalForTab =
+         currentTab === 'all'
+            ? totalNotifications
+            : currentTab === 'unread'
+              ? unreadCount
+              : readCount;
+
+      // No more items to load
+      if (currentItems.length >= totalForTab) {
+         return;
+      }
+
+      const nextPage = (notificationPages[currentTab] ?? 1) + 1;
+      await fetchNotificationsByTab(currentTab, nextPage, true);
+   }, [
+      isAuthenticated,
+      notificationTab,
+      notificationData,
+      totalNotifications,
+      unreadCount,
+      readCount,
+      notificationPages,
+      fetchNotificationsByTab,
+   ]);
    const handleNotificationToggle = useCallback(() => {
       if (!isAuthenticated) return;
       const nextCategory =
          activeCategory === 'Notifications' ? null : 'Notifications';
       setActiveCategory(nextCategory);
       if (nextCategory === null) {
+         // Reset to default tab when closing the panel
          setNotificationTab('all');
       }
-      if (nextCategory === 'Notifications') {
-         setNotificationTab('all');
-         // Fetch all tabs when panel opens
-         void fetchAllNotificationTabs();
-      }
-   }, [activeCategory, fetchAllNotificationTabs, isAuthenticated]);
+      // NOTE:
+      // - Notifications are fetched once on mount / auth change by useEffect.
+      // - Users can manually refresh via the "Refresh" button in the panel.
+      // - Do NOT re-fetch on every bell click to avoid unnecessary API calls.
+   }, [activeCategory, isAuthenticated]);
 
    const handleNotificationPanelClose = useCallback(() => {
       setActiveCategory(null);
@@ -286,7 +350,13 @@ const Header = () => {
       <header
          className="relative w-full bg-[#fafafc]"
          onMouseLeave={() => {
-            setActiveCategory(null);
+            // Keep the notification panel open when the mouse moves
+            // from the bell icon into the notification content.
+            // Other hover-based menus (e.g. mega menus) should still
+            // close when leaving the header.
+            setActiveCategory((prev) =>
+               prev === 'Notifications' ? prev : null,
+            );
          }}
       >
          <div className="flex flex-row items-center max-w-7xl h-12 md:h-[44px] px-4 sm:px-6 lg:px-8 mx-auto">
@@ -605,7 +675,7 @@ const Header = () => {
                   >
                      <Bell className="w-4 h-4 md:w-[18px] md:h-[18px] text-[#1d1d1f]" />
                      {unreadCount > 0 && (
-                        <span className="absolute -top-0.5 right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
+                        <span className="absolute -top-1.5 -right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                      )}
@@ -917,6 +987,8 @@ const Header = () => {
                      onMarkRead={handleMarkNotification}
                      onRefresh={fetchAllNotificationTabs}
                      onClose={handleNotificationPanelClose}
+                     hasMore={hasMoreForActiveTab}
+                     onLoadMore={handleLoadMoreNotifications}
                   />
                )}
 
@@ -965,6 +1037,8 @@ interface NotificationPanelProps {
    onMarkRead(notification: TNotification): Promise<typeof notification>;
    onRefresh(): void;
    onClose(): void;
+   hasMore: boolean;
+   onLoadMore(): void;
 }
 
 const NotificationPanel = ({
@@ -980,8 +1054,13 @@ const NotificationPanel = ({
    onMarkRead,
    onRefresh,
    onClose,
+   hasMore,
+   onLoadMore,
 }: NotificationPanelProps) => {
    const hasNotifications = notifications.length > 0;
+   const isInitialLoading = isLoading && !hasNotifications;
+
+   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
    const tabOptions: Array<{
       key: NotificationTab;
@@ -993,12 +1072,38 @@ const NotificationPanel = ({
       { key: 'read', label: 'readed', count: readCount },
    ];
 
+   useEffect(() => {
+      if (!hasMore || isLoading) return;
+
+      const sentinel = loadMoreRef.current;
+      if (!sentinel) return;
+
+      const observer = new IntersectionObserver(
+         (entries) => {
+            const [entry] = entries;
+            if (entry.isIntersecting && !isLoading) {
+               onLoadMore();
+            }
+         },
+         {
+            root: null,
+            threshold: 0.1,
+         },
+      );
+
+      observer.observe(sentinel);
+
+      return () => {
+         observer.disconnect();
+      };
+   }, [hasMore, isLoading, onLoadMore]);
+
    return (
       <motion.div
          initial={{ opacity: 0, y: -8 }}
          animate={{ opacity: 1, y: 0 }}
          exit={{ opacity: 0, y: -8 }}
-         className="absolute top-[48px] right-[32px] w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
+         className="absolute top-[52px] right-[250px] w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
          onMouseLeave={onClose}
       >
          <div className="flex items-center justify-between gap-3 px-4 pt-4">
@@ -1057,8 +1162,8 @@ const NotificationPanel = ({
                })}
             </div>
          </div>
-         <div className="mt-3 max-h-[320px] overflow-y-auto px-4 pb-4 space-y-2">
-            {isLoading ? (
+         <div className="mt-3 max-h-[320px] min-h-[200px] overflow-y-auto px-4 pb-4 space-y-2">
+            {isInitialLoading ? (
                <div className="flex items-center justify-center py-8 text-sm text-[#6e6e73]">
                   <span className="mr-2 h-4 w-4 animate-spin rounded-full border border-[#d2d2d7] border-t-[#1d1d1f]" />
                   Loading notifications...
@@ -1136,6 +1241,13 @@ const NotificationPanel = ({
                   );
                })
             )}
+            {hasNotifications && isLoading && (
+               <div className="flex items-center justify-center py-3 text-xs text-[#6e6e73]">
+                  <span className="mr-1 h-3 w-3 animate-spin rounded-full border border-[#d2d2d7] border-t-[#1d1d1f]" />
+                  Loading more...
+               </div>
+            )}
+            {hasMore && !isLoading && <div ref={loadMoreRef} className="h-4" />}
          </div>
       </motion.div>
    );
