@@ -36,10 +36,7 @@ import { LoadingOverlay } from '@components/loading-overlay';
 import { useToast } from '~/src/hooks/use-toast';
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
-import type {
-   TOrder,
-   TOrderItem,
-} from '~/src/infrastructure/services/ordering.service';
+import type { TOrder, TOrderItem } from '~/src/domain/types/ordering.type';
 import { cn } from '~/src/infrastructure/lib/utils';
 
 const statusColorMap: Record<EOrderStatus, string> = {
@@ -62,6 +59,16 @@ const dateTimeFormatter = new Intl.DateTimeFormat('vi-VN', {
    dateStyle: 'medium',
    timeStyle: 'short',
 });
+
+const availableUpdateStatuses: Record<EOrderStatus, EOrderStatus[]> = {
+   [EOrderStatus.PENDING]: [EOrderStatus.CONFIRMED],
+   [EOrderStatus.CONFIRMED]: [EOrderStatus.PREPARING],
+   [EOrderStatus.PAID]: [EOrderStatus.PREPARING],
+   [EOrderStatus.PREPARING]: [EOrderStatus.DELIVERING],
+   [EOrderStatus.DELIVERING]: [EOrderStatus.DELIVERED],
+   [EOrderStatus.DELIVERED]: [],
+   [EOrderStatus.CANCELLED]: [],
+};
 
 const OnlineOrderDetailsPage = () => {
    const params = useParams<{ id: string }>();
@@ -151,15 +158,12 @@ const OnlineOrderDetailsPage = () => {
       selectedStatus !== order?.status;
 
    const availableStatuses = useMemo(() => {
-      const statuses = [
-         EOrderStatus.CONFIRMED,
-         EOrderStatus.PREPARING,
-         EOrderStatus.DELIVERING,
-         EOrderStatus.DELIVERED,
-      ];
+      if (!order?.status) {
+         return [];
+      }
 
-      return statuses;
-   }, []);
+      return availableUpdateStatuses[order.status as EOrderStatus] ?? [];
+   }, [order?.status]);
 
    return (
       <LoadingOverlay
@@ -214,32 +218,13 @@ const OnlineOrderDetailsPage = () => {
                                  <SelectValue placeholder="Select status" />
                               </SelectTrigger>
                               <SelectContent>
-                                 {availableStatuses.map((status) => {
-                                    const isDisabled = () => {
-                                       if (
-                                          order.status ===
-                                          EOrderStatus.DELIVERED
-                                       ) {
-                                          return true;
-                                       }
-
-                                       if (status === order.status) {
-                                          return true;
-                                       }
-
-                                       return false;
-                                    };
-
-                                    return (
-                                       <SelectItem
-                                          key={status}
-                                          value={status}
-                                          disabled={isDisabled()}
-                                       >
+                                 {availableStatuses.map(
+                                    (status: EOrderStatus) => (
+                                       <SelectItem key={status} value={status}>
                                           {formatStatusLabel(status)}
                                        </SelectItem>
-                                    );
-                                 })}
+                                    ),
+                                 )}
                               </SelectContent>
                            </Select>
                            <Button
