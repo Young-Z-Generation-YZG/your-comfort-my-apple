@@ -2,16 +2,24 @@ version: "3.8"
 
 services:
     client.web:
-        image: baledev/client.web
+        image: baledev/ygz.client.web
         build:
             context: ./apps/client
             dockerfile: Dockerfile
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.50"
+                    memory: 512m
+                reservations:
+                    cpus: "0.25"
+                    memory: 512m
         restart: unless-stopped
         networks:
             - client-network
 
     # admin.web:
-    #     image: baledev/admin.web
+    #     image: baledev/ygz.admin.web
     #     build:
     #         context: ./apps/admin
     #         dockerfile: Dockerfile
@@ -29,7 +37,7 @@ services:
             - ./nginx.fe.conf:/etc/nginx/nginx.conf:ro
         depends_on:
             - client.web
-            - admin.web
+            # - admin.web
         networks:
             - client-network
 
