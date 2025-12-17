@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+    client.web:
+        image: baledev/client.web
+        build:
+            context: ./apps/client
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        networks:
+            - client-network
+
+    # admin.web:
+    #     image: baledev/admin.web
+    #     build:
+    #         context: ./apps/admin
+    #         dockerfile: Dockerfile
+    #     restart: unless-stopped
+    #     networks:
+    #         - client-network
+
+    nginx.webserver:
+        image: nginx:stable
+        container_name: nginx.webserver
+        ports:
+            - "80:80"
+        volumes:
+            # Nginx config for routing to client.web and admin.web
+            - ./nginx.fe.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - client.web
+            - admin.web
+        networks:
+            - client-network
+
+networks:
+    client-network:
+        name: client-network
+        driver: bridge
