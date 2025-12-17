@@ -315,7 +315,7 @@ const RevenueOrdersChart = () => {
 
             {/* Filter status */}
             {isFiltered && (
-               <div className="flex items-center gap-2 text-sm text-muted-foreground">
+               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-3">
                   <span>
                      Showing{' '}
                      <strong>
