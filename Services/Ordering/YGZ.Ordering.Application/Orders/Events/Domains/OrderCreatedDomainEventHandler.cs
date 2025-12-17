@@ -4,12 +4,12 @@ using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Messaging.IntegrationEvents.OrderingServices;
+using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Ordering.Application.Abstractions.Data;
-using YGZ.Ordering.Domain.Orders.Events;
 using YGZ.Ordering.Domain.Notifications;
 using YGZ.Ordering.Domain.Notifications.ValueObjects;
+using YGZ.Ordering.Domain.Orders.Events;
 
 namespace YGZ.Ordering.Application.Orders.Events.Domains;
 
@@ -58,24 +58,10 @@ public class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedD
             receiverId: null!,
             senderId: null);
 
-        var userNotification = Notification.Create(
-            title: "Order created successfully",
-            content: $"Thank you! Your order {orderCode} has been created.",
-            type: EOrderNotificationType.ORDER_CREATED.Name,
-            status: EOrderNotificationStatus.PENDING.Name,
-            receiverId: customerId,
-            senderId: null);
-
         var adminResult = await _notificationRepository.AddAsync(adminNotification, cancellationToken);
         if (adminResult.IsFailure)
         {
             _logger.LogWarning("Failed to create admin notification for order {OrderId}", order.Id.Value);
-        }
-
-        var userResult = await _notificationRepository.AddAsync(userNotification, cancellationToken);
-        if (userResult.IsFailure)
-        {
-            _logger.LogWarning("Failed to create user notification for order {OrderId}", order.Id.Value);
         }
     }
 }

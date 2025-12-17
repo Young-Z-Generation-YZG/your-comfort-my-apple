@@ -28,9 +28,7 @@ import {
 } from '@components/ui/sidebar';
 import useAuthService from '~/src/hooks/api/use-auth-service';
 import useUserService from '~/src/hooks/api/use-user-service';
-import useNotificationService from '~/src/hooks/api/use-notification-service';
 import { useRouter } from 'next/navigation';
-import { Badge } from '@components/ui/badge';
 
 // Helper function to get initials from name
 const getInitials = (name: string): string => {
@@ -58,25 +56,11 @@ export function NavUser({
    const { logoutAsync } = useAuthService();
    const { getAccountDetailsAsync, getAccountDetailsQueryState } =
       useUserService();
-   const { getNotificationsAsync, getNotificationsQueryState } =
-      useNotificationService();
 
    // Fetch account details on mount
    useEffect(() => {
       getAccountDetailsAsync();
    }, [getAccountDetailsAsync]);
-
-   // Fetch unread notifications count
-   useEffect(() => {
-      const fetchUnreadCount = async () => {
-         await getNotificationsAsync({
-            _limit: 1,
-            _page: 1,
-            _isRead: false,
-         });
-      };
-      fetchUnreadCount();
-   }, [getNotificationsAsync]);
 
    // Get account data
    const account = getAccountDetailsQueryState.data;
@@ -109,16 +93,6 @@ export function NavUser({
    const avatarInitials = useMemo(() => {
       return getInitials(displayName);
    }, [displayName]);
-
-   const unreadNotificationCount = useMemo(() => {
-      if (
-         getNotificationsQueryState.isSuccess &&
-         getNotificationsQueryState.data
-      ) {
-         return getNotificationsQueryState.data.total_records || 0;
-      }
-      return 0;
-   }, [getNotificationsQueryState]);
 
    return (
       <SidebarMenu>
@@ -197,16 +171,6 @@ export function NavUser({
                      >
                         <Bell />
                         Notifications
-                        {unreadNotificationCount > 0 && (
-                           <Badge
-                              variant="destructive"
-                              className="ml-auto h-5 w-5 rounded-full p-0 text-xs"
-                           >
-                              {unreadNotificationCount > 99
-                                 ? '99+'
-                                 : unreadNotificationCount}
-                           </Badge>
-                        )}
                      </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />

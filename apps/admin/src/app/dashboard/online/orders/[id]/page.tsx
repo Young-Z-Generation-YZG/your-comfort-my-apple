@@ -162,7 +162,11 @@ const OnlineOrderDetailsPage = () => {
          return [];
       }
 
-      return availableUpdateStatuses[order.status as EOrderStatus] ?? [];
+      const currentStatus = order.status as EOrderStatus;
+      const nextStatuses = availableUpdateStatuses[currentStatus] ?? [];
+
+      // Include current status as the first option
+      return [currentStatus, ...nextStatuses];
    }, [order?.status]);
 
    return (
@@ -219,11 +223,25 @@ const OnlineOrderDetailsPage = () => {
                               </SelectTrigger>
                               <SelectContent>
                                  {availableStatuses.map(
-                                    (status: EOrderStatus) => (
-                                       <SelectItem key={status} value={status}>
-                                          {formatStatusLabel(status)}
-                                       </SelectItem>
-                                    ),
+                                    (status: EOrderStatus) => {
+                                       const isCurrentStatus =
+                                          status === order?.status;
+                                       return (
+                                          <SelectItem
+                                             key={status}
+                                             value={status}
+                                             disabled={isCurrentStatus}
+                                             className={
+                                                isCurrentStatus
+                                                   ? 'opacity-50 cursor-not-allowed'
+                                                   : ''
+                                             }
+                                          >
+                                             {formatStatusLabel(status)}
+                                             {isCurrentStatus && ' (Current)'}
+                                          </SelectItem>
+                                       );
+                                    },
                                  )}
                               </SelectContent>
                            </Select>

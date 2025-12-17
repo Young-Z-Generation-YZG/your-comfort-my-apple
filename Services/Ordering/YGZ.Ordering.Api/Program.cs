@@ -62,7 +62,10 @@ app.UseHealthChecks("/health", new HealthCheckOptions
 
 app.UseCors(options =>
 {
-    options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+    options.AllowAnyHeader()
+           .AllowAnyOrigin()
+           .AllowAnyMethod()
+           .SetPreflightMaxAge(TimeSpan.FromHours(24 * 30 * 6));
 });
 
 //app.UseHttpsRedirection();
@@ -75,5 +78,7 @@ app.MapGrpcReflectionService();
 app.MapControllers();
 // Add this line to map gRPC endpoints
 app.MapGrpcEndpoints();
+
+app.MapRazorPages();
 
 app.Run();

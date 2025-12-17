@@ -15,6 +15,8 @@ using YGZ.Ordering.Infrastructure.Persistence;
 using YGZ.Ordering.Infrastructure.Persistence.Interceptors;
 using YGZ.Ordering.Infrastructure.Persistence.Repositories;
 using YGZ.Ordering.Infrastructure.Settings;
+using YGZ.Ordering.Application.Abstractions.Emails;
+using YGZ.Ordering.Infrastructure.Email;
 
 namespace YGZ.Ordering.Infrastructure;
 
@@ -33,6 +35,7 @@ public static class DependencyInjection
         services.Configure<VnpaySettings>(configuration.GetSection(VnpaySettings.SettingKey));
         services.Configure<MomoSettings>(configuration.GetSection(MomoSettings.SettingKey));
         services.Configure<WebClientSettings>(configuration.GetSection(WebClientSettings.SettingKey));
+        services.Configure<MailSettings>(configuration.GetSection(MailSettings.SettingKey));
 
         services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
         //services.AddScoped<IOrderRepository, OrderRepository>();
@@ -40,6 +43,7 @@ public static class DependencyInjection
         services.AddSingleton<IMomoProvider, MomoProvider>();
         services.AddScoped<IUserHttpContext, UserHttpContext>();
         services.AddScoped<ITenantHttpContext, TenantHttpContext>();
+        services.AddTransient<IEmailService, EmailService>();
 
         return services;
     }

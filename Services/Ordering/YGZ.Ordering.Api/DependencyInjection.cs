@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Razor;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Errors;
 using YGZ.BuildingBlocks.Shared.Extensions;
@@ -20,6 +21,13 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         services.AddSignalR();
+
+        services.AddRazorPages();
+
+        services.Configure<RazorViewEngineOptions>(options =>
+        {
+            options.ViewLocationFormats.Add("/Views/Emails/{0}.cshtml");
+        });
 
         services.AddScoped<IUserHttpContext, UserHttpContext>();
         services.AddScoped<ITenantHttpContext, TenantHttpContext>();

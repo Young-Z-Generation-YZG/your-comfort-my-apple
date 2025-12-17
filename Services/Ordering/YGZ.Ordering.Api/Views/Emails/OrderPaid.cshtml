@@ -1,0 +1,78 @@
+@model YGZ.Ordering.Application.Emails.Models.OrderPaidEmailModel
+@{
+    Layout = "_Layout";
+}
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <tr>
+        <td style="padding: 30px 0; text-align: center; background-color: #10b981;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Payment Received</h1>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 30px;">
+            <p style="margin-top: 0; margin-bottom: 16px; font-size: 16px; line-height: 1.5;">Dear @Model?.CustomerName,</p>
+            <p style="margin-top: 0; margin-bottom: 16px; font-size: 16px; line-height: 1.5;">Thank you! We have successfully received your payment for order <strong>@Model?.OrderCode</strong>. Your order is now being processed and will be prepared for shipment.</p>
+            
+            <div style="margin: 30px 0; padding: 20px; background-color: #f0fdf4; border-radius: 4px; border-left: 4px solid #10b981;">
+                <p style="margin: 0 0 8px 0; font-size: 14px; color: #166534;"><strong>✓ Payment Status:</strong> <span style="color: #10b981; font-weight: bold;">PAID</span></p>
+                <p style="margin: 0 0 8px 0; font-size: 14px; color: #166534;"><strong>Order ID:</strong> @Model?.OrderId</p>
+                <p style="margin: 0 0 8px 0; font-size: 14px; color: #166534;"><strong>Order Date:</strong> @Model?.CreatedAt.ToString("dd MMM yyyy HH:mm")</p>
+                <p style="margin: 0; font-size: 14px; color: #166534;"><strong>Amount Paid:</strong> <span style="color: #10b981; font-weight: bold; font-size: 16px;">@Model?.TotalAmount.ToString("N0") VND</span></p>
+            </div>
+
+            <h2 style="margin: 30px 0 16px 0; font-size: 18px; color: #333333;">Order Items</h2>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6; font-size: 14px; font-weight: bold;">Product</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #dee2e6; font-size: 14px; font-weight: bold;">Quantity</th>
+                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #dee2e6; font-size: 14px; font-weight: bold;">Price</th>
+                        <th style="padding: 12px; text-align: right; border-bottom: 2px solid #dee2e6; font-size: 14px; font-weight: bold;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model?.OrderItems ?? new List<YGZ.Ordering.Application.Emails.Models.OrderItemEmailModel>())
+                    {
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #dee2e6;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="@item.DisplayImageUrl" alt="@item.ModelName" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" />
+                                    <div>
+                                        <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: bold;">@item.ModelName</p>
+                                        <p style="margin: 0; font-size: 12px; color: #666666;">@item.ColorName - @item.StorageName</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="padding: 12px; text-align: center; border-bottom: 1px solid #dee2e6; font-size: 14px;">@item.Quantity</td>
+                            <td style="padding: 12px; text-align: right; border-bottom: 1px solid #dee2e6; font-size: 14px;">@item.UnitPrice.ToString("N0") VND</td>
+                            <td style="padding: 12px; text-align: right; border-bottom: 1px solid #dee2e6; font-size: 14px; font-weight: bold;">@item.TotalAmount.ToString("N0") VND</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div style="margin: 20px 0; padding: 16px; background-color: #e7f3ff; border-left: 4px solid #4f46e5; border-radius: 4px;">
+                <p style="margin: 0; font-size: 14px; line-height: 1.5;"><strong>Shipping Address:</strong></p>
+                <p style="margin: 8px 0 0 0; font-size: 14px; line-height: 1.5;">
+                    @Model?.ShippingAddress.ContactName<br />
+                    @Model?.ShippingAddress.AddressLine<br />
+                    @Model?.ShippingAddress.District, @Model?.ShippingAddress.Province<br />
+                    @Model?.ShippingAddress.Country<br />
+                    Phone: @Model?.ShippingAddress.ContactPhoneNumber
+                </p>
+            </div>
+
+            <p style="margin-top: 24px; margin-bottom: 8px; font-size: 16px; line-height: 1.5;">Your order will be processed and shipped as soon as possible. You will receive tracking information once your order is on its way.</p>
+            <p style="margin-top: 24px; margin-bottom: 8px; font-size: 16px; line-height: 1.5;">Best Regards,</p>
+            <p style="margin-top: 0; margin-bottom: 0; font-size: 16px; line-height: 1.5; font-weight: bold;">YGZ Team</p>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+            <p style="margin: 0; font-size: 14px; color: #777777;">If you have any questions about your payment or order, please contact our support team.</p>
+            <p style="margin: 10px 0 0; font-size: 14px; color: #777777;">© 2025 YGZ. All rights reserved.</p>
+        </td>
+    </tr>
+</table>
+

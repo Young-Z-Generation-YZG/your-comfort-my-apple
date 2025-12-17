@@ -1103,11 +1103,11 @@ const NotificationPanel = ({
          initial={{ opacity: 0, y: -8 }}
          animate={{ opacity: 1, y: 0 }}
          exit={{ opacity: 0, y: -8 }}
-         className="absolute top-[52px] right-[250px] w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
+         className="absolute top-[52px] md:top-[52px] right-1 md:right-1 left-1 md:left-auto w-[calc(100%-0.5rem)] md:w-[360px] rounded-2xl border border-black/10 bg-white shadow-2xl shadow-black/10 z-[999]"
          onMouseLeave={onClose}
       >
-         <div className="flex items-center justify-between gap-3 px-4 pt-4">
-            <div>
+         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 pt-3 sm:pt-4">
+            <div className="flex-1 min-w-0">
                <p className="text-sm font-semibold text-[#1d1d1f]">
                   Notifications
                </p>
@@ -1117,7 +1117,7 @@ const NotificationPanel = ({
                      : "You're all caught up"}
                </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:justify-start">
                <button
                   className="p-1.5 rounded-full hover:bg-[#f5f5f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={onRefresh}
@@ -1131,7 +1131,7 @@ const NotificationPanel = ({
                   />
                </button>
                <button
-                  className="text-[11px] font-semibold uppercase tracking-wide text-[#0071e3] disabled:text-[#9f9f9f]"
+                  className="text-[11px] font-semibold uppercase tracking-wide text-[#0071e3] disabled:text-[#9f9f9f] whitespace-nowrap"
                   onClick={onMarkAllRead}
                   disabled={!unreadCount || isActionLoading}
                >
@@ -1139,22 +1139,25 @@ const NotificationPanel = ({
                </button>
             </div>
          </div>
-         <div className="px-4 pt-3">
+         <div className="px-3 sm:px-4 pt-3">
             <div className="flex gap-1 rounded-full bg-[#f5f5f7] p-1">
                {tabOptions.map((tab) => {
                   const isActive = activeTab === tab.key;
                   return (
                      <button
                         key={tab.key}
-                        className={`flex-1 rounded-full px-2 py-1 text-[11px] font-semibold transition ${
+                        className={`flex-1 rounded-full px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] font-semibold transition ${
                            isActive
                               ? 'bg-white text-[#1d1d1f] shadow-sm'
                               : 'text-[#6e6e73]'
                         }`}
                         onClick={() => onTabChange(tab.key)}
                      >
-                        <span>{tab.label}</span>
-                        <span className="ml-1 rounded-full bg-[#e5e5ea] px-1.5 text-[10px]">
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="sm:hidden">
+                           {tab.label.charAt(0).toUpperCase()}
+                        </span>
+                        <span className="ml-1 rounded-full bg-[#e5e5ea] px-1 sm:px-1.5 text-[9px] sm:text-[10px]">
                            {tab.count}
                         </span>
                      </button>
@@ -1162,18 +1165,21 @@ const NotificationPanel = ({
                })}
             </div>
          </div>
-         <div className="mt-3 max-h-[320px] min-h-[200px] overflow-y-auto px-4 pb-4 space-y-2">
+         <div className="mt-3 max-h-[calc(100vh-280px)] sm:max-h-[320px] min-h-[200px] overflow-y-auto px-3 sm:px-4 pb-3 sm:pb-4 space-y-2">
             {isInitialLoading ? (
-               <div className="flex items-center justify-center py-8 text-sm text-[#6e6e73]">
+               <div className="flex items-center justify-center py-8 text-xs sm:text-sm text-[#6e6e73]">
                   <span className="mr-2 h-4 w-4 animate-spin rounded-full border border-[#d2d2d7] border-t-[#1d1d1f]" />
-                  Loading notifications...
+                  <span className="hidden sm:inline">
+                     Loading notifications...
+                  </span>
+                  <span className="sm:hidden">Loading...</span>
                </div>
             ) : !hasNotifications ? (
-               <div className="rounded-xl border border-dashed border-[#d2d2d7] bg-[#f5f5f7] px-4 py-6 text-center">
-                  <p className="text-sm font-semibold text-[#1d1d1f]">
+               <div className="rounded-xl border border-dashed border-[#d2d2d7] bg-[#f5f5f7] px-3 sm:px-4 py-5 sm:py-6 text-center">
+                  <p className="text-xs sm:text-sm font-semibold text-[#1d1d1f]">
                      Nothing new right now
                   </p>
-                  <p className="text-xs text-[#6e6e73]">
+                  <p className="text-[10px] sm:text-xs text-[#6e6e73] mt-1">
                      We&apos;ll let you know when there&apos;s something to see.
                   </p>
                </div>
@@ -1197,14 +1203,14 @@ const NotificationPanel = ({
                      <div
                         key={notification.id}
                         onClick={handleNotificationClick}
-                        className={`rounded-2xl border px-3.5 py-3 transition hover:border-[#0071e3] cursor-pointer ${
+                        className={`rounded-2xl border px-3 sm:px-3.5 py-2.5 sm:py-3 transition hover:border-[#0071e3] cursor-pointer ${
                            isUnread
                               ? 'border-[#d2e3ff] bg-[#f5f8ff]'
                               : 'border-[#e5e5ea] bg-white'
                         }`}
                      >
-                        <div className="flex items-start justify-between gap-3">
-                           <div className="space-y-1">
+                        <div className="flex items-start justify-between gap-2 sm:gap-3">
+                           <div className="space-y-1 flex-1 min-w-0">
                               <p className="text-sm font-semibold text-[#1d1d1f] line-clamp-1">
                                  {notification.title}
                               </p>
@@ -1215,21 +1221,21 @@ const NotificationPanel = ({
                               )}
                            </div>
                            {isUnread && (
-                              <span className="mt-1 h-2 w-2 rounded-full bg-[#0071e3]" />
+                              <span className="mt-1 h-2 w-2 rounded-full bg-[#0071e3] flex-shrink-0" />
                            )}
                         </div>
-                        <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-[#6e6e73]">
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-[#6e6e73]">
                            <span>
                               {formatRelativeTime(notification.created_at)}
                            </span>
                            {notification.type && (
-                              <span className="rounded-full bg-[#f0f0f5] px-2 py-0.5 uppercase tracking-wide text-[10px] font-semibold text-[#1d1d1f]">
+                              <span className="rounded-full bg-[#f0f0f5] px-1.5 sm:px-2 py-0.5 uppercase tracking-wide text-[9px] sm:text-[10px] font-semibold text-[#1d1d1f]">
                                  {formatMetaLabel(notification.type)}
                               </span>
                            )}
                            {notification.status && (
                               <span
-                                 className={`rounded-full px-2 py-0.5 uppercase tracking-wide text-[10px] font-semibold ${getStatusBadgeClass(
+                                 className={`rounded-full px-1.5 sm:px-2 py-0.5 uppercase tracking-wide text-[9px] sm:text-[10px] font-semibold ${getStatusBadgeClass(
                                     notification.status,
                                  )}`}
                               >
@@ -1242,9 +1248,10 @@ const NotificationPanel = ({
                })
             )}
             {hasNotifications && isLoading && (
-               <div className="flex items-center justify-center py-3 text-xs text-[#6e6e73]">
+               <div className="flex items-center justify-center py-3 text-[10px] sm:text-xs text-[#6e6e73]">
                   <span className="mr-1 h-3 w-3 animate-spin rounded-full border border-[#d2d2d7] border-t-[#1d1d1f]" />
-                  Loading more...
+                  <span className="hidden sm:inline">Loading more...</span>
+                  <span className="sm:hidden">Loading...</span>
                </div>
             )}
             {hasMore && !isLoading && <div ref={loadMoreRef} className="h-4" />}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
    ArrowDown,
    ArrowUp,
@@ -26,7 +26,6 @@ import {
    PopoverContent,
    PopoverTrigger,
 } from '@components/ui/popover';
-import { Tabs, TabsList, TabsTrigger } from '@components/ui/tabs';
 import {
    Sidebar,
    SidebarContent,
@@ -39,16 +38,14 @@ import {
 import { ModeToggle } from '@components/ui/mode-toggle';
 import UserSwitcher from '@components/ui/user-switcher';
 import useIdentityService from '~/src/hooks/api/use-identity-service';
-import { useEffect } from 'react';
+import useNotificationService from '~/src/hooks/api/use-notification-service';
 import { RootState, useAppSelector } from '~/src/infrastructure/redux/store';
 import { ERole } from '~/src/domain/enums/role.enum';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '~/src/infrastructure/redux/features/app.slice';
-import useNotificationService from '~/src/hooks/api/use-notification-service';
-import { INotificationQueryParams } from '~/src/infrastructure/services/notification.service';
 import { TNotification } from '~/src/domain/types/ordering.type';
+import { INotificationQueryParams } from '~/src/infrastructure/services/notification.service';
 import { Badge } from '@components/ui/badge';
-import { LoadingOverlay } from '@components/loading-overlay';
 
 const data = [
    [
@@ -96,10 +93,6 @@ const data = [
          label: 'Show delete pages',
          icon: Trash,
       },
-      {
-         label: 'Notifications',
-         icon: Bell,
-      },
    ],
    [
       {
@@ -114,96 +107,47 @@ const data = [
 ];
 
 // Helper function to format relative time
-const formatRelativeTime = (dateString: string): string => {
+const formatRelativeTime = (dateString?: string) => {
+   if (!dateString) return '';
    const date = new Date(dateString);
-   const now = new Date();
-   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+   if (Number.isNaN(date.getTime())) return '';
 
+   const diffInSeconds = Math.floor((Date.now() - date.getTime()) / 1000);
    if (diffInSeconds < 60) return 'Just now';
-   if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes}m ago`;
+   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+   if (diffInSeconds < 604800)
+      return `${Math.floor(diffInSeconds / 86400)}d ago`;
+
+   return date.toLocaleDateString();
+};
+
+const formatMetaLabel = (value?: string | null) =>
+   value ? value.replace(/_/g, ' ') : '';
+
+const getStatusBadgeClass = (status?: string | null) => {
+   if (!status) return 'bg-neutral-100 text-neutral-700';
+   switch (status) {
+      case 'PENDING':
+         return 'bg-amber-100 text-amber-800';
+      case 'COMPLETED':
+      case 'SENT':
+         return 'bg-emerald-100 text-emerald-800';
+      case 'FAILED':
+      case 'CANCELLED':
+         return 'bg-rose-100 text-rose-800';
+      default:
+         return 'bg-neutral-100 text-neutral-700';
    }
-   if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours}h ago`;
-   }
-   if (diffInSeconds < 604800) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days}d ago`;
-   }
-   return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
-   });
 };
 
 type NotificationTab = 'all' | 'unread' | 'read';
-
-const notificationEmptyStates: Record<
-   NotificationTab,
-   { title: string; description: string }
-> = {
-   all: {
-      title: 'No notifications',
-      description: "You're all caught up! New notifications will appear here.",
-   },
-   unread: {
-      title: 'No unread notifications',
-      description: 'You have no pending alerts right now.',
-   },
-   read: {
-      title: 'No read notifications yet',
-      description: 'Mark notifications as read to see them here.',
-   },
-};
-
-const formatNotificationMetaLabel = (value?: string | null) => {
-   if (!value) return '';
-   return value.replace(/_/g, ' ');
-};
-
-const getTypeBadgeClass = (type?: string | null) => {
-   if (!type) return '';
-   return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-900/60 dark:text-slate-200 dark:border-slate-800';
-};
-
-const getStatusBadgeClass = (status?: string | null) => {
-   if (!status) return '';
-   switch (status) {
-      case 'PENDING':
-         return 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-800';
-      case 'COMPLETED':
-      case 'SENT':
-         return 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-800';
-      case 'FAILED':
-      case 'CANCELLED':
-         return 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-800';
-      default:
-         return 'bg-muted text-muted-foreground border-border';
-   }
-};
 
 export function ActionNav() {
    const [isOpen, setIsOpen] = useState(false);
    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
    const [notificationTab, setNotificationTab] =
       useState<NotificationTab>('all');
-   const [notificationCounts, setNotificationCounts] = useState<
-      Record<NotificationTab, number>
-   >({
-      all: 0,
-      unread: 0,
-      read: 0,
-   });
-   const [notificationData, setNotificationData] = useState<
-      Record<NotificationTab, TNotification[]>
-   >({
-      all: [],
-      unread: [],
-      read: [],
-   });
 
    const dispatch = useDispatch();
 
@@ -218,8 +162,40 @@ export function ActionNav() {
       getNotificationsAsync,
       markAsReadAsync,
       markAllAsReadAsync,
-      isLoading: isLoadingNotifications,
+      isLoading: isNotificationLoading,
    } = useNotificationService();
+
+   const isAuthenticated = useMemo(() => {
+      return !!(currentUser?.accessToken || impersonatedUser?.accessToken);
+   }, [currentUser?.accessToken, impersonatedUser?.accessToken]);
+
+   const [notificationData, setNotificationData] = useState<{
+      all: TNotification[];
+      unread: TNotification[];
+      read: TNotification[];
+   }>({
+      all: [],
+      unread: [],
+      read: [],
+   });
+   const [notificationCounts, setNotificationCounts] = useState<{
+      all: number;
+      unread: number;
+      read: number;
+   }>({
+      all: 0,
+      unread: 0,
+      read: 0,
+   });
+   const [notificationPages, setNotificationPages] = useState<{
+      all: number;
+      unread: number;
+      read: number;
+   }>({
+      all: 1,
+      unread: 1,
+      read: 1,
+   });
 
    const staffItems = useMemo(() => {
       return getListUsersState.isSuccess && getListUsersState.data
@@ -227,16 +203,143 @@ export function ActionNav() {
          : [];
    }, [getListUsersState.isSuccess, getListUsersState.data]);
 
-   const notifications = notificationData[notificationTab] ?? [];
-   const totalNotifications = notificationCounts.all;
-   const unreadCount = notificationCounts.unread;
-   const readCount = notificationCounts.read;
-   const activeEmptyState = notificationEmptyStates[notificationTab];
-
    const roles = useMemo(
       () => currentUser?.roles || impersonatedUser?.roles || [],
       [currentUser, impersonatedUser],
    );
+
+   const buildNotificationQueryParams = useCallback(
+      (tab: NotificationTab, page = 1): INotificationQueryParams => {
+         const baseParams: INotificationQueryParams = {
+            _limit: 5,
+            _page: page,
+         };
+
+         if (tab === 'unread') {
+            baseParams._isRead = false;
+         } else if (tab === 'read') {
+            baseParams._isRead = true;
+         }
+         // For 'all' tab, don't include _isRead parameter
+
+         return baseParams;
+      },
+      [],
+   );
+
+   const fetchNotificationsByTab = useCallback(
+      async (tab: NotificationTab, page = 1, append = false) => {
+         if (!isAuthenticated) {
+            setNotificationData((prev) => ({ ...prev, [tab]: [] }));
+            setNotificationCounts((prev) => ({ ...prev, [tab]: 0 }));
+            setNotificationPages((prev) => ({ ...prev, [tab]: 1 }));
+            return;
+         }
+
+         const queryParams = buildNotificationQueryParams(tab, page);
+         const response = await getNotificationsAsync(queryParams);
+
+         if (response?.isSuccess && response.data) {
+            const items = response.data.items ?? [];
+            const count = response.data.total_records ?? items.length ?? 0;
+            setNotificationCounts((prev) => ({
+               ...prev,
+               [tab]: count,
+            }));
+            setNotificationData((prev) => ({
+               ...prev,
+               [tab]: append ? [...prev[tab], ...items] : items,
+            }));
+            setNotificationPages((prev) => ({
+               ...prev,
+               [tab]: page,
+            }));
+         }
+      },
+      [buildNotificationQueryParams, getNotificationsAsync, isAuthenticated],
+   );
+
+   const fetchAllNotificationTabs = useCallback(async () => {
+      if (!isAuthenticated) {
+         setNotificationData({ all: [], unread: [], read: [] });
+         setNotificationCounts({ all: 0, unread: 0, read: 0 });
+         return;
+      }
+
+      const tabs: NotificationTab[] = ['all', 'unread', 'read'];
+      await Promise.all(tabs.map((tab) => fetchNotificationsByTab(tab)));
+   }, [fetchNotificationsByTab, isAuthenticated]);
+
+   const notifications = useMemo(() => {
+      return notificationData[notificationTab] ?? [];
+   }, [notificationData, notificationTab]);
+
+   const totalNotifications = notificationCounts.all;
+   const unreadCount = notificationCounts.unread;
+   const readCount = notificationCounts.read;
+
+   const hasMoreForActiveTab = useMemo(() => {
+      const data = notificationData[notificationTab] ?? [];
+      const totalForTab =
+         notificationTab === 'all'
+            ? totalNotifications
+            : notificationTab === 'unread'
+              ? unreadCount
+              : readCount;
+
+      return data.length < totalForTab;
+   }, [
+      notificationData,
+      notificationTab,
+      totalNotifications,
+      unreadCount,
+      readCount,
+   ]);
+
+   const handleMarkNotification = useCallback(
+      async (notification: TNotification) => {
+         await markAsReadAsync(notification.id);
+         await fetchAllNotificationTabs();
+         return notification;
+      },
+      [markAsReadAsync, fetchAllNotificationTabs],
+   );
+
+   const handleMarkAllNotifications = useCallback(async () => {
+      await markAllAsReadAsync();
+      await fetchAllNotificationTabs();
+   }, [markAllAsReadAsync, fetchAllNotificationTabs]);
+
+   const handleLoadMoreNotifications = useCallback(async () => {
+      if (!isAuthenticated) return;
+
+      const currentTab = notificationTab;
+      const currentItems = notificationData[currentTab] ?? [];
+
+      const totalForTab =
+         currentTab === 'all'
+            ? totalNotifications
+            : currentTab === 'unread'
+              ? unreadCount
+              : readCount;
+
+      // No more items to load
+      if (currentItems.length >= totalForTab) {
+         return;
+      }
+
+      const nextPage = (notificationPages[currentTab] ?? 1) + 1;
+      await fetchNotificationsByTab(currentTab, nextPage, true);
+   }, [
+      isAuthenticated,
+      notificationTab,
+      notificationData,
+      totalNotifications,
+      unreadCount,
+      readCount,
+      notificationPages,
+      fetchNotificationsByTab,
+   ]);
 
    useEffect(() => {
       const fetchUsers = async () => {
@@ -248,72 +351,22 @@ export function ActionNav() {
       };
 
       fetchUsers();
-   }, [getListUsersAsync, roles, dispatch]);
-
-   const buildNotificationQueryParams = useCallback(
-      (tab: NotificationTab): INotificationQueryParams => {
-         const baseParams: INotificationQueryParams = {
-            _limit: 5,
-            _page: 1,
-         };
-
-         if (tab === 'unread') {
-            baseParams._isRead = false;
-         } else if (tab === 'read') {
-            baseParams._isRead = true;
-         }
-         // For 'all' tab, omit _isRead to fetch every notification
-
-         return baseParams;
-      },
-      [],
-   );
-
-   const fetchNotificationsByTab = useCallback(
-      async (tab: NotificationTab) => {
-         const queryParams = buildNotificationQueryParams(tab);
-         const response = await getNotificationsAsync(queryParams);
-
-         if (response?.isSuccess && response.data) {
-            const items = response.data.items ?? [];
-            setNotificationCounts((prev) => ({
-               ...prev,
-               [tab]:
-                  response.data.total_records ??
-                  response.data.items?.length ??
-                  0,
-            }));
-            setNotificationData((prev) => ({
-               ...prev,
-               [tab]: items,
-            }));
-         }
-      },
-      [buildNotificationQueryParams, getNotificationsAsync],
-   );
-
-   const fetchAllNotificationTabs = useCallback(async () => {
-      const tabs: NotificationTab[] = ['all', 'unread', 'read'];
-      await Promise.all(tabs.map((tab) => fetchNotificationsByTab(tab)));
-   }, [fetchNotificationsByTab]);
+   }, [getListUsersAsync, roles]);
 
    useEffect(() => {
       fetchAllNotificationTabs();
    }, [fetchAllNotificationTabs]);
 
    useEffect(() => {
+      if (!isAuthenticated) {
+         setIsNotificationOpen(false);
+         setNotificationTab('all');
+      }
+   }, [isAuthenticated]);
+
+   useEffect(() => {
       dispatch(setIsLoading(isLoading));
    }, [isLoading, dispatch]);
-
-   const handleMarkAsRead = async (notificationId: string) => {
-      await markAsReadAsync(notificationId);
-      await fetchAllNotificationTabs();
-   };
-
-   const handleMarkAllAsRead = async () => {
-      await markAllAsReadAsync();
-      await fetchAllNotificationTabs();
-   };
 
    return (
       <div className="flex items-center gap-2 text-sm">
@@ -326,226 +379,48 @@ export function ActionNav() {
          </Button>
 
          {/* Notification Button */}
-         <Popover
-            open={isNotificationOpen}
-            onOpenChange={setIsNotificationOpen}
-         >
-            <PopoverTrigger asChild>
-               <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 relative data-[state=open]:bg-accent"
-               >
-                  <Bell className="h-4 w-4" />
-                  {unreadCount > 0 && (
-                     <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-red-500 text-[10px] font-semibold text-white flex items-center justify-center border-2 border-background shadow-sm">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                     </span>
-                  )}
-               </Button>
-            </PopoverTrigger>
-            <PopoverContent
-               className="w-[380px] p-0 shadow-lg border"
-               align="end"
+         {isAuthenticated && (
+            <Popover
+               open={isNotificationOpen}
+               onOpenChange={setIsNotificationOpen}
             >
-               {/* Header + Tabs */}
-               <div className="border-b bg-muted/20 px-4 py-3 space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                     <div className="flex items-center gap-2">
-                        <Bell className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="font-semibold text-[13px]">
-                           Notifications
-                        </h3>
-                        {unreadCount > 0 && (
-                           <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
-                              {unreadCount}
-                           </span>
-                        )}
-                     </div>
-                     <div className="flex items-center gap-2">
-                        <button
-                           className="p-1.5 rounded-full hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                           onClick={fetchAllNotificationTabs}
-                           disabled={isLoadingNotifications}
-                           title="Refresh notifications"
-                        >
-                           <RefreshCw
-                              className={`h-4 w-4 text-muted-foreground ${
-                                 isLoadingNotifications ? 'animate-spin' : ''
-                              }`}
-                           />
-                        </button>
-                        <Button
-                           variant="ghost"
-                           size="sm"
-                           className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                           onClick={handleMarkAllAsRead}
-                           disabled={!unreadCount || isLoadingNotifications}
-                        >
-                           Mark all read
-                        </Button>
-                     </div>
-                  </div>
-                  <Tabs
-                     value={notificationTab}
-                     onValueChange={(value) =>
-                        setNotificationTab(value as NotificationTab)
-                     }
-                     className="w-full"
+               <PopoverTrigger asChild>
+                  <Button
+                     variant="ghost"
+                     size="icon"
+                     className="h-8 w-8 relative data-[state=open]:bg-accent"
                   >
-                     <TabsList className="flex w-full gap-1 rounded-lg bg-gray-100 p-1 shadow-sm">
-                        <TabsTrigger
-                           value="all"
-                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
-                        >
-                           <span>ALL</span>
-                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
-                              {totalNotifications}
-                           </span>
-                        </TabsTrigger>
-                        <TabsTrigger
-                           value="unread"
-                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
-                        >
-                           <span>unread</span>
-                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
-                              {unreadCount}
-                           </span>
-                        </TabsTrigger>
-                        <TabsTrigger
-                           value="read"
-                           className="flex-1 gap-2 rounded-md px-3 py-1.5 text-[12px] font-medium text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-semibold data-[state=active]:shadow-sm transition-all"
-                        >
-                           <span>readed</span>
-                           <span className="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-700">
-                              {readCount}
-                           </span>
-                        </TabsTrigger>
-                     </TabsList>
-                  </Tabs>
-               </div>
-
-               {/* Notification List */}
-               <div className="max-h-[360px] overflow-y-auto">
-                  {isLoadingNotifications ? (
-                     <div className="flex flex-col items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mb-3"></div>
-                        <p className="text-xs text-muted-foreground">
-                           Loading notifications...
-                        </p>
-                     </div>
-                  ) : notifications.length === 0 ? (
-                     <div className="flex flex-col items-center justify-center py-12 px-4">
-                        <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                           <Bell className="h-7 w-7 text-muted-foreground" />
-                        </div>
-                        <p className="text-sm font-medium text-foreground mb-1">
-                           {activeEmptyState.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground text-center">
-                           {activeEmptyState.description}
-                        </p>
-                     </div>
-                  ) : (
-                     <LoadingOverlay isLoading={isLoadingNotifications}>
-                        <div className="divide-y divide-border">
-                           {notifications.map((notification: TNotification) => {
-                              const isUnread = !notification.is_read;
-                              const hasLink =
-                                 typeof notification.link === 'string' &&
-                                 notification.link.trim().length > 0;
-
-                              const handleNotificationClick = async () => {
-                                 if (isUnread) {
-                                    await handleMarkAsRead(notification.id);
-                                 }
-                                 if (hasLink) {
-                                    window.location.href = notification.link;
-                                 }
-                              };
-
-                              const isClickable = isUnread || hasLink;
-
-                              return (
-                                 <div
-                                    key={notification.id}
-                                    className={`group relative px-4 py-3 transition-colors ${
-                                       isClickable
-                                          ? isUnread
-                                             ? 'cursor-pointer bg-primary/5 hover:bg-primary/10'
-                                             : 'cursor-pointer hover:bg-muted/50'
-                                          : 'cursor-default hover:bg-muted/50'
-                                    }`}
-                                    onClick={handleNotificationClick}
-                                    role={isClickable ? 'button' : undefined}
-                                    tabIndex={isClickable ? 0 : -1}
-                                 >
-                                    <div className="flex items-start gap-2.5">
-                                       {/* Unread Indicator */}
-                                       {isUnread && (
-                                          <div className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0"></div>
-                                       )}
-                                       {/* Content */}
-                                       <div className="flex-1 min-w-0 space-y-1">
-                                          <div className="flex items-start justify-between gap-1.5">
-                                             <p
-                                                className={`text-[13px] font-medium leading-tight line-clamp-1 ${
-                                                   isUnread
-                                                      ? 'text-foreground'
-                                                      : 'text-muted-foreground'
-                                                }`}
-                                             >
-                                                {notification.title}
-                                             </p>
-                                          </div>
-                                          {notification.content && (
-                                             <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
-                                                {notification.content}
-                                             </p>
-                                          )}
-                                          <div className="flex flex-wrap gap-1.5 pt-0.5">
-                                             {notification.type && (
-                                                <Badge
-                                                   variant="outline"
-                                                   className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getTypeBadgeClass(notification.type)}`}
-                                                >
-                                                   {formatNotificationMetaLabel(
-                                                      notification.type,
-                                                   )}
-                                                </Badge>
-                                             )}
-                                             {notification.status && (
-                                                <Badge
-                                                   variant="outline"
-                                                   className={`px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide border ${getStatusBadgeClass(notification.status)}`}
-                                                >
-                                                   {formatNotificationMetaLabel(
-                                                      notification.status,
-                                                   )}
-                                                </Badge>
-                                             )}
-                                          </div>
-                                          <div className="flex items-center gap-1.5 pt-0.5">
-                                             <span className="text-[9px] text-muted-foreground">
-                                                {formatRelativeTime(
-                                                   notification.created_at,
-                                                )}
-                                             </span>
-                                             {isUnread && (
-                                                <span className="h-1 w-1 rounded-full bg-muted-foreground"></span>
-                                             )}
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              );
-                           })}
-                        </div>
-                     </LoadingOverlay>
-                  )}
-               </div>
-            </PopoverContent>
-         </Popover>
+                     <Bell className="h-4 w-4" />
+                     {unreadCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-red-500 text-[10px] font-semibold text-white flex items-center justify-center border-2 border-background shadow-sm">
+                           {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                     )}
+                  </Button>
+               </PopoverTrigger>
+               <PopoverContent
+                  className="w-[380px] p-0 shadow-lg border"
+                  align="end"
+               >
+                  <NotificationPanel
+                     notifications={notifications}
+                     unreadCount={unreadCount}
+                     readCount={readCount}
+                     totalCount={totalNotifications}
+                     activeTab={notificationTab}
+                     onTabChange={setNotificationTab}
+                     isLoading={isNotificationLoading}
+                     isActionLoading={isNotificationLoading}
+                     onMarkAllRead={handleMarkAllNotifications}
+                     onMarkRead={handleMarkNotification}
+                     onRefresh={fetchAllNotificationTabs}
+                     onClose={() => setIsNotificationOpen(false)}
+                     hasMore={hasMoreForActiveTab}
+                     onLoadMore={handleLoadMoreNotifications}
+                  />
+               </PopoverContent>
+            </Popover>
+         )}
 
          <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -589,3 +464,243 @@ export function ActionNav() {
       </div>
    );
 }
+
+interface NotificationPanelProps {
+   notifications: TNotification[];
+   unreadCount: number;
+   readCount: number;
+   totalCount: number;
+   activeTab: NotificationTab;
+   onTabChange: (tab: NotificationTab) => void;
+   isLoading: boolean;
+   isActionLoading: boolean;
+   onMarkAllRead(): void;
+   onMarkRead(notification: TNotification): Promise<typeof notification>;
+   onRefresh(): void;
+   onClose(): void;
+   hasMore: boolean;
+   onLoadMore(): void;
+}
+
+const NotificationPanel = ({
+   notifications,
+   unreadCount,
+   readCount,
+   totalCount,
+   activeTab,
+   onTabChange,
+   isLoading,
+   isActionLoading,
+   onMarkAllRead,
+   onMarkRead,
+   onRefresh,
+   onClose,
+   hasMore,
+   onLoadMore,
+}: NotificationPanelProps) => {
+   const hasNotifications = notifications.length > 0;
+   const isInitialLoading = isLoading && !hasNotifications;
+
+   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+   const tabOptions: Array<{
+      key: NotificationTab;
+      label: string;
+      count: number;
+   }> = [
+      { key: 'all', label: 'ALL', count: totalCount },
+      { key: 'unread', label: 'unread', count: unreadCount },
+      { key: 'read', label: 'readed', count: readCount },
+   ];
+
+   useEffect(() => {
+      if (!hasMore || isLoading) return;
+
+      const sentinel = loadMoreRef.current;
+      if (!sentinel) return;
+
+      const observer = new IntersectionObserver(
+         (entries) => {
+            const [entry] = entries;
+            if (entry.isIntersecting && !isLoading) {
+               onLoadMore();
+            }
+         },
+         {
+            root: null,
+            threshold: 0.1,
+         },
+      );
+
+      observer.observe(sentinel);
+
+      return () => {
+         observer.disconnect();
+      };
+   }, [hasMore, isLoading, onLoadMore]);
+
+   return (
+      <div className="flex flex-col">
+         {/* Header */}
+         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 pt-3 sm:pt-4 border-b">
+            <div className="flex-1 min-w-0">
+               <div className="flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-muted-foreground" />
+                  <p className="text-sm font-semibold">Notifications</p>
+                  {unreadCount > 0 && (
+                     <span className="h-5 min-w-[20px] px-1.5 rounded-full bg-primary text-primary-foreground text-[10px] font-semibold flex items-center justify-center">
+                        {unreadCount}
+                     </span>
+                  )}
+               </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:justify-start">
+               <button
+                  className="p-1.5 rounded-full hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={onRefresh}
+                  disabled={isLoading || isActionLoading}
+                  title="Refresh notifications"
+               >
+                  <RefreshCw
+                     className={`h-4 w-4 text-muted-foreground ${
+                        isLoading ? 'animate-spin' : ''
+                     }`}
+                  />
+               </button>
+               <button
+                  className="text-[11px] font-semibold uppercase tracking-wide text-primary disabled:text-muted-foreground whitespace-nowrap"
+                  onClick={onMarkAllRead}
+                  disabled={!unreadCount || isActionLoading}
+               >
+                  Mark all read
+               </button>
+            </div>
+         </div>
+
+         {/* Tabs */}
+         <div className="px-3 sm:px-4 pt-3">
+            <div className="flex gap-1 rounded-full bg-muted p-1">
+               {tabOptions.map((tab) => {
+                  const isActive = activeTab === tab.key;
+                  return (
+                     <button
+                        key={tab.key}
+                        className={`flex-1 rounded-full px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] font-semibold transition ${
+                           isActive
+                              ? 'bg-background text-foreground shadow-sm'
+                              : 'text-muted-foreground'
+                        }`}
+                        onClick={() => onTabChange(tab.key)}
+                     >
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="sm:hidden">
+                           {tab.label.charAt(0).toUpperCase()}
+                        </span>
+                        <span className="ml-1 rounded-full bg-muted-foreground/20 px-1 sm:px-1.5 text-[9px] sm:text-[10px]">
+                           {tab.count}
+                        </span>
+                     </button>
+                  );
+               })}
+            </div>
+         </div>
+
+         {/* Notification List */}
+         <div className="mt-3 max-h-[360px] min-h-[200px] overflow-y-auto px-3 sm:px-4 pb-3 sm:pb-4 space-y-2">
+            {isInitialLoading ? (
+               <div className="flex items-center justify-center py-8 text-xs sm:text-sm text-muted-foreground">
+                  <span className="mr-2 h-4 w-4 animate-spin rounded-full border border-muted-foreground/30 border-t-foreground" />
+                  <span className="hidden sm:inline">
+                     Loading notifications...
+                  </span>
+                  <span className="sm:hidden">Loading...</span>
+               </div>
+            ) : !hasNotifications ? (
+               <div className="rounded-xl border border-dashed border-border bg-muted px-3 sm:px-4 py-5 sm:py-6 text-center">
+                  <p className="text-xs sm:text-sm font-semibold">
+                     Nothing new right now
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
+                     We&apos;ll let you know when there&apos;s something to see.
+                  </p>
+               </div>
+            ) : (
+               notifications.map((notification) => {
+                  const isUnread = !notification.is_read;
+                  const hasLink =
+                     typeof notification.link === 'string' &&
+                     notification.link.trim().length > 0;
+
+                  const handleNotificationClick = async () => {
+                     if (isUnread) {
+                        await onMarkRead(notification);
+                     }
+                     if (hasLink) {
+                        window.location.href = notification.link;
+                     }
+                  };
+
+                  return (
+                     <div
+                        key={notification.id}
+                        onClick={handleNotificationClick}
+                        className={`rounded-2xl border px-3 sm:px-3.5 py-2.5 sm:py-3 transition hover:border-primary cursor-pointer ${
+                           isUnread
+                              ? 'border-primary/20 bg-primary/5'
+                              : 'border-border bg-background'
+                        }`}
+                     >
+                        <div className="flex items-start justify-between gap-2 sm:gap-3">
+                           <div className="space-y-1 flex-1 min-w-0">
+                              <p className="text-sm font-semibold line-clamp-1">
+                                 {notification.title}
+                              </p>
+                              {notification.content && (
+                                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                                    {notification.content}
+                                 </p>
+                              )}
+                           </div>
+                           {isUnread && (
+                              <span className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
+                           )}
+                        </div>
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-muted-foreground">
+                           <span>
+                              {formatRelativeTime(notification.created_at)}
+                           </span>
+                           {notification.type && (
+                              <Badge
+                                 variant="outline"
+                                 className="rounded-full px-1.5 sm:px-2 py-0.5 uppercase tracking-wide text-[9px] sm:text-[10px] font-semibold"
+                              >
+                                 {formatMetaLabel(notification.type)}
+                              </Badge>
+                           )}
+                           {notification.status && (
+                              <Badge
+                                 variant="outline"
+                                 className={`rounded-full px-1.5 sm:px-2 py-0.5 uppercase tracking-wide text-[9px] sm:text-[10px] font-semibold ${getStatusBadgeClass(
+                                    notification.status,
+                                 )}`}
+                              >
+                                 {formatMetaLabel(notification.status)}
+                              </Badge>
+                           )}
+                        </div>
+                     </div>
+                  );
+               })
+            )}
+            {hasNotifications && isLoading && (
+               <div className="flex items-center justify-center py-3 text-[10px] sm:text-xs text-muted-foreground">
+                  <span className="mr-1 h-3 w-3 animate-spin rounded-full border border-muted-foreground/30 border-t-foreground" />
+                  <span className="hidden sm:inline">Loading more...</span>
+                  <span className="sm:hidden">Loading...</span>
+               </div>
+            )}
+            {hasMore && !isLoading && <div ref={loadMoreRef} className="h-4" />}
+         </div>
+      </div>
+   );
+};
