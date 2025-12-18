@@ -578,7 +578,7 @@ export default function OrderDetails() {
                                                          );
                                                       }}
                                                    >
-                                                      Write a Review
+                                                      Write review
                                                    </Button>
                                                 ) : (
                                                    <Button
@@ -593,7 +593,7 @@ export default function OrderDetails() {
                                                          );
                                                       }}
                                                    >
-                                                      Edit Review
+                                                      Update review
                                                    </Button>
                                                 )}
                                              </div>
@@ -703,8 +703,8 @@ export default function OrderDetails() {
                <DialogHeader>
                   <DialogTitle>
                      {reviewItem?.is_reviewed
-                        ? 'View Review'
-                        : 'Write a Review'}
+                        ? 'Update review'
+                        : 'Write review'}
                   </DialogTitle>
                </DialogHeader>
                {reviewItem && (

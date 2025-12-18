@@ -13,6 +13,7 @@ import {
    VnpayIpnFormType,
 } from '~/domain/schemas/order.schema';
 import { IOrderFilterQueryParams } from '~/domain/interfaces/ordering.interface';
+import { useCheckApiSuccess } from '../use-check-success';
 
 const useOrderingService = () => {
    const [confirmOrderMutation, confirmOrderMutationState] =
@@ -39,6 +40,17 @@ const useOrderingService = () => {
       {
          title: 'Momo IPN Callback failed',
          error: momoIpnCallbackMutationState.error,
+      },
+   ]);
+
+   useCheckApiSuccess([
+      {
+         title: 'Order confirmed successfully',
+         isSuccess: confirmOrderMutationState.isSuccess,
+      },
+      {
+         title: 'Order canceled successfully',
+         isSuccess: cancelOrderMutationState.isSuccess,
       },
    ]);
 

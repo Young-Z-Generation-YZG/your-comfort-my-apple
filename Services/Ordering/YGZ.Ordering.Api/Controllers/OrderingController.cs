@@ -87,9 +87,7 @@ public class OrderingController : ApiController
         {
             UserId = userId,
             Page = request._page,
-            Limit = request._limit,
-            OrderCode = request._orderCode,
-            OrderStatus = request._orderStatus
+            Limit = request._limit
         };
 
         var result = await _sender.Send(query, cancellationToken);

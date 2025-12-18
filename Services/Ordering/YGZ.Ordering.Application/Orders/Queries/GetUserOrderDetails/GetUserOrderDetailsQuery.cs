@@ -9,7 +9,5 @@ public sealed record GetUserOrderDetailsQuery : IQuery<PaginationResponse<OrderD
     public required string UserId { get; init; }
     public int? Page { get; init; }
     public int? Limit { get; init; }
-    public string? OrderCode { get; init; }
-    public string? OrderStatus { get; init; }
 }
 

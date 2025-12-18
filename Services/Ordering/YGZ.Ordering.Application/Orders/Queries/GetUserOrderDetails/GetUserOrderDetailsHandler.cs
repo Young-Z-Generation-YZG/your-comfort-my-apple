@@ -1,11 +1,9 @@
-using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Common;
 using YGZ.BuildingBlocks.Shared.Contracts.Ordering;
-using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.BuildingBlocks.Shared.Utils;
 using YGZ.BuildingBlocks.Shared.ValueObjects;
 using YGZ.Ordering.Application.Abstractions.Data;
@@ -63,19 +61,20 @@ public sealed class GetUserOrderDetailsHandler : IQueryHandler<GetUserOrderDetai
         var filterExpression = ExpressionBuilder.New<Order>();
 
         var userId = UserId.Of(request.UserId);
+
         filterExpression = filterExpression.And(order => order.CustomerId == userId);
 
-        if (!string.IsNullOrWhiteSpace(request.OrderCode))
-        {
-            var code = Code.Of(request.OrderCode);
-            filterExpression = filterExpression.And(order => order.Code == code);
-        }
+        //if (!string.IsNullOrWhiteSpace(request.OrderCode))
+        //{
+        //    var code = Code.Of(request.OrderCode);
+        //    filterExpression = filterExpression.And(order => order.Code == code);
+        //}
 
-        if (!string.IsNullOrWhiteSpace(request.OrderStatus) &&
-            EOrderStatus.TryFromName(request.OrderStatus, true, out var orderStatus))
-        {
-            filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
-        }
+        //if (!string.IsNullOrWhiteSpace(request.OrderStatus) &&
+        //    EOrderStatus.TryFromName(request.OrderStatus, true, out var orderStatus))
+        //{
+        //    filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
+        //}
 
         return filterExpression;
     }

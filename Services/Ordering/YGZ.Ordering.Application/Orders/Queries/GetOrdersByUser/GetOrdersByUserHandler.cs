@@ -44,8 +44,8 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
         var result = await _repository.GetAllAsync(filterExpression: filterExpression,
                                                    includeExpressions: includeExpressions,
                                                    orderBy: orderByCreatedAtAsc,
-                                                   page: request.Page,
-                                                   limit: request.Limit,
+                                                   page: request._page,
+                                                   limit: request._limit,
                                                    cancellationToken: cancellationToken);
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
@@ -59,30 +59,57 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
 
         filterExpression = filterExpression.And(order => order.CustomerId == userId);
 
-
-        if (!string.IsNullOrWhiteSpace(request.OrderCode))
+        if (!string.IsNullOrWhiteSpace(request._orderCode))
         {
-            filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request.OrderCode)));
+            filterExpression = filterExpression.And(order => order.Code.Equals(Code.Of(request._orderCode)));
         }
 
-        EOrderStatus.TryFromName(request.OrderStatus, out var orderStatus);
-
-        if (!string.IsNullOrWhiteSpace(request.OrderStatus) && orderStatus is not null)
+        // Filter by order status list
+        if (request._orderStatus is not null && request._orderStatus.Any())
         {
-            filterExpression = filterExpression.And(order => order.OrderStatus == orderStatus);
+            var orderStatuses = new List<EOrderStatus>();
+            foreach (var status in request._orderStatus)
+            {
+                if (EOrderStatus.TryFromName(status, out var orderStatus))
+                {
+                    orderStatuses.Add(orderStatus);
+                }
+            }
+
+            if (orderStatuses.Any())
+            {
+                filterExpression = filterExpression.And(order => orderStatuses.Contains(order.OrderStatus));
+            }
+        }
+
+        // Filter by payment method list
+        if (request._paymentMethod is not null && request._paymentMethod.Any())
+        {
+            var paymentMethods = new List<EPaymentMethod>();
+            foreach (var method in request._paymentMethod)
+            {
+                if (EPaymentMethod.TryFromName(method, out var paymentMethod))
+                {
+                    paymentMethods.Add(paymentMethod);
+                }
+            }
+
+            if (paymentMethods.Any())
+            {
+                filterExpression = filterExpression.And(order => paymentMethods.Contains(order.PaymentMethod));
+            }
         }
 
         return filterExpression;
     }
 
-    private PaginationResponse<OrderDetailsResponse> MapToResponse(List<Order> orders, int totalRecords, int totalPages, GetOrdersByUserQuery request)
+    private static PaginationResponse<OrderDetailsResponse> MapToResponse(List<Order> orders, int totalRecords, int totalPages, GetOrdersByUserQuery request)
     {
-        var queryParams = QueryParamBuilder.Build(request);
-
-        var links = PaginationLinksBuilder.Build(basePath: "",
-                                                 queryParams: queryParams,
-                                                 currentPage: request.Page ?? 1,
-                                                 totalPages: totalPages);
+        var links = PaginationLinksBuilder.Build(
+            basePath: "",
+            request: request,
+            currentPage: request._page,
+            totalPages: totalPages);
 
         var items = orders.Select(order => order.ToResponse());
 
@@ -90,8 +117,8 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
         {
             TotalRecords = totalRecords,
             TotalPages = totalPages,
-            PageSize = request.Limit ?? 10,
-            CurrentPage = request.Page ?? 1,
+            PageSize = request._limit ?? 10,
+            CurrentPage = request._page ?? 1,
             Items = items,
             Links = links
         };

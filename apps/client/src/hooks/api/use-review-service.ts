@@ -12,7 +12,8 @@ import {
    IReviewPayload,
    IUpdateReviewPayload,
 } from '~/domain/interfaces/catalog.interface';
-import { useCheckApiError } from '../use-check-error';
+import { useCheckApiError } from '~/hooks/use-check-error';
+import { useCheckApiSuccess } from '~/hooks/use-check-success';
 
 const useReviewService = () => {
    const [getReviewByProductModelIdTrigger, getReviewByProductModelIdState] =
@@ -55,6 +56,21 @@ const useReviewService = () => {
       {
          title: 'Delete Review failed',
          error: deleteReviewMutationState.error,
+      },
+   ]);
+
+   useCheckApiSuccess([
+      {
+         title: 'Review created successfully',
+         isSuccess: createReviewMutationState.isSuccess,
+      },
+      {
+         title: 'Review updated successfully',
+         isSuccess: updateReviewMutationState.isSuccess,
+      },
+      {
+         title: 'Review deleted successfully',
+         isSuccess: deleteReviewMutationState.isSuccess,
       },
    ]);
 

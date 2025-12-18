@@ -42,4 +42,7 @@ export interface INotificationQueryParams {
 export interface IOrderFilterQueryParams {
    _page?: number;
    _limit?: number;
+   _orderCode?: string | null;
+   _orderStatus?: string[] | null;
+   _paymentMethod?: string[] | null;
 }

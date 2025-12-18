@@ -12,8 +12,7 @@ These rules apply to `apps/admin` only.
 1. **Use path aliases for cross-feature imports**  
    When importing across major folders (`src/app`, `src/components`, `src/domain`, `src/hooks`, `src/infrastructure`), prefer path aliases over long relative paths (`../../..`).
 
-2. **Use relative imports for local files**  
-   For imports within the same folder (`./`) or immediate parent/sibling (`../`), use relative paths to reduce noise.
+2. **Use relative imports for local files**
 
 3. **Decision criteria**
    - If the import requires **2+ levels** of `../` → use a path alias

@@ -85,7 +85,6 @@ Path aliases (from `tsconfig.json`):
 **When to use path aliases vs relative imports**
 
 - Cross-feature / cross-layer imports → use `@components`, `@assets`, or `~/src/...`.
-- Same folder or immediate sibling → use relative imports `./` or `../`.
 - If you need `../../..` or deeper → refactor to a path alias; see `import-conventions.mdc`.
 
 **Where to put what**

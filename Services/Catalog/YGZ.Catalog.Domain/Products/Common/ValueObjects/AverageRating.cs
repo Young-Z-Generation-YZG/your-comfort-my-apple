@@ -9,14 +9,21 @@ namespace YGZ.Catalog.Domain.Products.Common.ValueObjects;
 public class AverageRating : ValueObject
 {
     [BsonElement("rating_average_value")]
-    public decimal RatingAverageValue { get; set; }
+    private decimal _ratingAverageValue;
 
     [BsonElement("rating_count")]
     public int RatingCount { get; set; }
 
+    [BsonIgnore]
+    public decimal RatingAverageValue
+    {
+        get => Math.Round(_ratingAverageValue, 1, MidpointRounding.AwayFromZero);
+        set => _ratingAverageValue = value;
+    }
+
     private AverageRating(decimal ratingAverageValue, int ratingCount)
     {
-        RatingAverageValue = ratingAverageValue;
+        _ratingAverageValue = ratingAverageValue;
         RatingCount = ratingCount;
     }
 
@@ -27,17 +34,31 @@ public class AverageRating : ValueObject
 
     public void AddNewRating(int rating)
     {
-        RatingAverageValue = (RatingAverageValue * RatingCount + rating) / ++RatingCount;
+        _ratingAverageValue = (_ratingAverageValue * RatingCount + rating) / ++RatingCount;
     }
 
     public void UpdateRating(int oldRating, int newRating)
     {
-        RatingAverageValue = (RatingAverageValue * RatingCount - oldRating + newRating) / RatingCount;
+        if (RatingCount > 0)
+        {
+            _ratingAverageValue = (_ratingAverageValue * RatingCount - oldRating + newRating) / RatingCount;
+        }
     }
 
     public void RemoveRating(int rating)
     {
-        RatingAverageValue = (RatingAverageValue * RatingCount - rating) / RatingCount--;
+        if (RatingCount > 0)
+        {
+            RatingCount--;
+            if (RatingCount > 0)
+            {
+                _ratingAverageValue = (_ratingAverageValue * (RatingCount + 1) - rating) / RatingCount;
+            }
+            else
+            {
+                _ratingAverageValue = 0;
+            }
+        }
     }
 
     public override IEnumerable<object> GetEqualityComponents()

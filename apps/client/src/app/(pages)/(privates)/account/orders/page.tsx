@@ -26,18 +26,30 @@ import {
    ChevronLeft,
    ChevronsLeft,
    ChevronsRight,
+   ChevronDown,
+   X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '~/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { cn } from '~/infrastructure/lib/utils';
 import { EOrderStatus } from '~/domain/enums/order-status.enum';
+import { EPaymentType } from '~/domain/enums/payment-type.enum';
 import useOrderingService from '~/hooks/api/use-ordering-service';
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import useFilters from '~/hooks/use-filter';
 import usePaginationV2 from '~/hooks/use-pagination';
 import { IOrderFilterQueryParams } from '~/domain/interfaces/ordering.interface';
 import { TOrder } from '~/domain/types/ordering.type';
+import { useDebounce } from '~/hooks/use-debounce';
+import {
+   DropdownMenu,
+   DropdownMenuCheckboxItem,
+   DropdownMenuContent,
+   DropdownMenuLabel,
+   DropdownMenuSeparator,
+   DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
 
 const getHoverStatusColor = (status: string) => {
    switch (status) {
@@ -100,6 +112,40 @@ const getStatusColor = (status: string) => {
    }
 };
 
+const getPaymentMethodStyle = (method: string) => {
+   switch (method) {
+      case EPaymentType.VNPAY:
+         return 'bg-blue-100 text-blue-800 border-blue-300';
+      case EPaymentType.MOMO:
+         return 'bg-pink-100 text-pink-800 border-pink-300';
+      case EPaymentType.COD:
+         return 'bg-green-100 text-green-800 border-green-300';
+      case EPaymentType.SOLANA:
+         return 'bg-purple-100 text-purple-800 border-purple-300';
+      case EPaymentType.UNKNOWN:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+      default:
+         return 'bg-gray-100 text-gray-800 border-gray-300';
+   }
+};
+
+const orderStatuses = [
+   EOrderStatus.PENDING,
+   EOrderStatus.CONFIRMED,
+   EOrderStatus.PAID,
+   EOrderStatus.PREPARING,
+   EOrderStatus.DELIVERING,
+   EOrderStatus.DELIVERED,
+   EOrderStatus.CANCELLED,
+] as const;
+
+const paymentMethods = [
+   EPaymentType.COD,
+   EPaymentType.VNPAY,
+   EPaymentType.MOMO,
+   EPaymentType.SOLANA,
+] as const;
+
 const OrderPage = () => {
    const router = useRouter();
 
@@ -108,7 +154,34 @@ const OrderPage = () => {
    const { filters, setFilters } = useFilters<IOrderFilterQueryParams>({
       _page: 'number',
       _limit: 'number',
+      _orderCode: 'string',
+      _orderStatus: { array: 'string' },
+      _paymentMethod: { array: 'string' },
    });
+
+   // Local state for order code input (not debounced)
+   const [orderCodeInput, setOrderCodeInput] = useState<string>(
+      filters._orderCode ?? '',
+   );
+
+   // Debounce the order code input
+   const debouncedOrderCode = useDebounce<string>(orderCodeInput, 500);
+
+   // Update filter when debounced order code changes
+   useEffect(() => {
+      if (filters._orderCode !== debouncedOrderCode) {
+         setFilters((prev) => {
+            return {
+               ...prev,
+               _orderCode: debouncedOrderCode || null,
+            };
+         });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [debouncedOrderCode]);
+
+   // Track previous API call params to prevent duplicate calls
+   const prevApiParamsRef = useRef<string>('');
 
    const {
       currentPage,
@@ -142,10 +215,25 @@ const OrderPage = () => {
    const paginationItems = getPaginationItems();
 
    useEffect(() => {
-      getOrdersAsync({
+      const apiParams = JSON.stringify({
          _page: filters._page ?? undefined,
          _limit: filters._limit ?? undefined,
+         _orderCode: filters._orderCode ?? undefined,
+         _orderStatus: filters._orderStatus ?? undefined,
+         _paymentMethod: filters._paymentMethod ?? undefined,
       });
+
+      // Only call API if params actually changed
+      if (prevApiParamsRef.current !== apiParams) {
+         prevApiParamsRef.current = apiParams;
+         getOrdersAsync({
+            _page: filters._page ?? undefined,
+            _limit: filters._limit ?? undefined,
+            _orderCode: filters._orderCode ?? undefined,
+            _orderStatus: filters._orderStatus ?? undefined,
+            _paymentMethod: filters._paymentMethod ?? undefined,
+         });
+      }
    }, [filters, getOrdersAsync]);
 
    const handlePageChange = (page: number) => {
@@ -183,56 +271,310 @@ const OrderPage = () => {
                initial="hidden"
                animate="visible"
             >
+               {/* Filter Section */}
                <motion.div
-                  className="px-6 py-3 bg-gray-50 border-b border-gray-200 flex flex-col sm:flex-row gap-3"
+                  className="px-6 py-4 bg-gray-50 border-b border-gray-200 space-y-4"
                   variants={itemVariants}
                >
-                  <div className="relative flex-1">
+                  {/* Search Input */}
+                  <div className="relative">
                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                      <Input
-                        placeholder="Search by order number..."
-                        // value={searchQuery}
-                        // onChange={(e) => handleSearch(e.target.value)}
+                        placeholder="Search by order code..."
+                        value={orderCodeInput}
+                        onChange={(e) => setOrderCodeInput(e.target.value)}
                         className="pl-9 h-9"
                      />
                   </div>
-                  <div className="flex gap-3">
-                     <Select value={''} onValueChange={() => {}}>
-                        <SelectTrigger className="w-[180px] h-9">
-                           <SelectValue placeholder="Filter by status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectItem value="all">All Statuses</SelectItem>
-                           <SelectItem value="PENDING_ASSIGNMENT">
-                              Pending
-                           </SelectItem>
-                           <SelectItem value="PROCESSING">
-                              Processing
-                           </SelectItem>
-                           <SelectItem value="SHIPPED">Shipped</SelectItem>
-                           <SelectItem value="DELIVERED">Delivered</SelectItem>
-                           <SelectItem value="CANCELED">Canceled</SelectItem>
-                        </SelectContent>
-                     </Select>
-                     <Select value={''} onValueChange={() => {}}>
-                        <SelectTrigger className="w-[140px] h-9">
-                           <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                           <SelectItem value="date-desc">
-                              Newest First
-                           </SelectItem>
-                           <SelectItem value="date-asc">
-                              Oldest First
-                           </SelectItem>
-                           <SelectItem value="total-desc">
-                              Highest Amount
-                           </SelectItem>
-                           <SelectItem value="total-asc">
-                              Lowest Amount
-                           </SelectItem>
-                        </SelectContent>
-                     </Select>
+
+                  {/* Filter Dropdowns */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                     {/* Status Filter */}
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                           <Button variant="outline" className="h-9 gap-2">
+                              <span className="font-medium">Status</span>
+                              <div className="flex items-center gap-2">
+                                 {(() => {
+                                    const selectedStatuses =
+                                       filters._orderStatus ?? [];
+                                    const statusCount = selectedStatuses.length;
+
+                                    if (statusCount === 0) {
+                                       return null;
+                                    }
+
+                                    if (statusCount > 2) {
+                                       return (
+                                          <>
+                                             {selectedStatuses
+                                                .slice(0, 2)
+                                                .map((status) => (
+                                                   <Badge
+                                                      key={status}
+                                                      variant="outline"
+                                                      className={cn(
+                                                         getStatusColor(status),
+                                                      )}
+                                                   >
+                                                      {status.replace('_', ' ')}
+                                                   </Badge>
+                                                ))}
+                                             <Badge
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                +{statusCount - 2}
+                                             </Badge>
+                                          </>
+                                       );
+                                    }
+
+                                    return selectedStatuses.map((status) => (
+                                       <Badge
+                                          key={status}
+                                          variant="outline"
+                                          className={cn(getStatusColor(status))}
+                                       >
+                                          {status.replace('_', ' ')}
+                                       </Badge>
+                                    ));
+                                 })()}
+                                 <ChevronDown className="h-4 w-4" />
+                              </div>
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                           align="start"
+                           side="bottom"
+                           sideOffset={4}
+                           className="w-56"
+                        >
+                           <DropdownMenuLabel>Order Status</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           {orderStatuses.map((status) => {
+                              const isChecked =
+                                 filters._orderStatus?.includes(status) ??
+                                 false;
+
+                              return (
+                                 <DropdownMenuCheckboxItem
+                                    key={status}
+                                    onSelect={(e) => e.preventDefault()}
+                                    checked={isChecked}
+                                    onCheckedChange={() => {
+                                       setFilters((prev) => {
+                                          const currentStatuses =
+                                             prev._orderStatus ?? [];
+                                          const isStatusSelected =
+                                             currentStatuses.includes(status);
+
+                                          return {
+                                             ...prev,
+                                             _orderStatus: isStatusSelected
+                                                ? currentStatuses.filter(
+                                                     (s) => s !== status,
+                                                  )
+                                                : [...currentStatuses, status],
+                                          };
+                                       });
+                                    }}
+                                 >
+                                    <div className="flex items-center gap-2">
+                                       <Badge
+                                          variant="outline"
+                                          className={cn(getStatusColor(status))}
+                                       >
+                                          {status.replace('_', ' ')}
+                                       </Badge>
+                                    </div>
+                                 </DropdownMenuCheckboxItem>
+                              );
+                           })}
+                           <DropdownMenuSeparator />
+                           <div className="p-2">
+                              <Button
+                                 variant="outline"
+                                 size="sm"
+                                 className="w-full"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _orderStatus: [],
+                                    }));
+                                 }}
+                                 disabled={
+                                    (filters._orderStatus?.length ?? 0) === 0
+                                 }
+                              >
+                                 Clear All
+                              </Button>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                     {/* Payment Method Filter */}
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                           <Button variant="outline" className="h-9 gap-2">
+                              <span className="font-medium">
+                                 Payment Method
+                              </span>
+                              <div className="flex items-center gap-2">
+                                 {(() => {
+                                    const selectedMethods =
+                                       filters._paymentMethod ?? [];
+                                    const methodCount = selectedMethods.length;
+
+                                    if (methodCount === 0) {
+                                       return null;
+                                    }
+
+                                    if (methodCount > 2) {
+                                       return (
+                                          <>
+                                             {selectedMethods
+                                                .slice(0, 2)
+                                                .map((method) => (
+                                                   <Badge
+                                                      key={method}
+                                                      variant="outline"
+                                                      className={cn(
+                                                         getPaymentMethodStyle(
+                                                            method,
+                                                         ),
+                                                      )}
+                                                   >
+                                                      {method}
+                                                   </Badge>
+                                                ))}
+                                             <Badge
+                                                variant="outline"
+                                                className="bg-gray-100 text-gray-800 border-gray-300"
+                                             >
+                                                +{methodCount - 2}
+                                             </Badge>
+                                          </>
+                                       );
+                                    }
+
+                                    return selectedMethods.map((method) => (
+                                       <Badge
+                                          key={method}
+                                          variant="outline"
+                                          className={cn(
+                                             getPaymentMethodStyle(method),
+                                          )}
+                                       >
+                                          {method}
+                                       </Badge>
+                                    ));
+                                 })()}
+                                 <ChevronDown className="h-4 w-4" />
+                              </div>
+                           </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                           align="start"
+                           side="bottom"
+                           sideOffset={4}
+                           className="w-56"
+                        >
+                           <DropdownMenuLabel>Payment Method</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           {paymentMethods.map((method) => {
+                              const isChecked =
+                                 filters._paymentMethod?.includes(method) ??
+                                 false;
+
+                              return (
+                                 <DropdownMenuCheckboxItem
+                                    key={method}
+                                    onSelect={(e) => e.preventDefault()}
+                                    checked={isChecked}
+                                    onCheckedChange={() => {
+                                       setFilters((prev) => {
+                                          const currentMethods =
+                                             prev._paymentMethod ?? [];
+                                          const isMethodSelected =
+                                             currentMethods.includes(method);
+
+                                          return {
+                                             ...prev,
+                                             _paymentMethod: isMethodSelected
+                                                ? currentMethods.filter(
+                                                     (m) => m !== method,
+                                                  )
+                                                : [...currentMethods, method],
+                                          };
+                                       });
+                                    }}
+                                 >
+                                    <div className="flex items-center gap-2">
+                                       <Badge
+                                          variant="outline"
+                                          className={cn(
+                                             getPaymentMethodStyle(method),
+                                          )}
+                                       >
+                                          {method}
+                                       </Badge>
+                                    </div>
+                                 </DropdownMenuCheckboxItem>
+                              );
+                           })}
+                           <DropdownMenuSeparator />
+                           <div className="p-2">
+                              <Button
+                                 variant="outline"
+                                 size="sm"
+                                 className="w-full"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFilters((prev) => ({
+                                       ...prev,
+                                       _paymentMethod: [],
+                                    }));
+                                 }}
+                                 disabled={
+                                    (filters._paymentMethod?.length ?? 0) === 0
+                                 }
+                              >
+                                 Clear All
+                              </Button>
+                           </div>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                     {/* Clear Filters Button */}
+                     <Button
+                        variant="outline"
+                        onClick={() => {
+                           setFilters({
+                              _orderCode: null,
+                              _orderStatus: [],
+                              _paymentMethod: [],
+                              _page: 1,
+                           });
+                           setOrderCodeInput('');
+                        }}
+                        className={cn(
+                           'h-9 px-4 gap-2 whitespace-nowrap',
+                           (filters._orderCode ||
+                              (filters._orderStatus?.length ?? 0) > 0 ||
+                              (filters._paymentMethod?.length ?? 0) > 0) &&
+                              'border-red-300 text-red-700 bg-red-50 hover:bg-red-100',
+                        )}
+                        disabled={
+                           !filters._orderCode &&
+                           (filters._orderStatus?.length ?? 0) === 0 &&
+                           (filters._paymentMethod?.length ?? 0) === 0
+                        }
+                     >
+                        <X className="h-4 w-4" />
+                        Clear Filters
+                     </Button>
                   </div>
                </motion.div>
 
