@@ -18,14 +18,14 @@ services:
         networks:
             - client-network
 
-    # admin.web:
-    #     image: baledev/ygz.admin.web
-    #     build:
-    #         context: ../apps/admin
-    #         dockerfile: Dockerfile
-    #     restart: unless-stopped
-    #     networks:
-    #         - client-network
+    admin.web:
+        image: baledev/ygz.admin.web
+        build:
+            context: ../apps/admin
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        networks:
+            - client-network
 
     nginx.webserver:
         image: nginx:stable
@@ -38,10 +38,10 @@ services:
             - ./nginx.fe.conf:/etc/nginx/nginx.conf:ro
             # SSL certificates (provisioned locally under ./ssl)
             # Mapped to the standard Certbot-like path inside the container.
-            - /etc/letsencrypt:/etc/letsencrypt:ro
+            # - /etc/letsencrypt:/etc/letsencrypt:ro
         depends_on:
             - client.web
-            # - admin.web
+            - admin.web
         networks:
             - client-network
 

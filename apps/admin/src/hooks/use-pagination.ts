@@ -146,6 +146,7 @@ const usePaginationV2 = (
    const safePageSize =
       resolvedPageSize > 0 ? resolvedPageSize : fallbackPageSize;
    const safeCurrentPage = Math.max(1, resolvedCurrentPage);
+   const safeTotalPages = paginationData.total_pages ?? 0;
 
    const hasRecords = resolvedTotalRecords > 0 && safePageSize > 0;
    const firstItemIndex = hasRecords
@@ -155,15 +156,43 @@ const usePaginationV2 = (
       ? Math.min(safeCurrentPage * safePageSize, resolvedTotalRecords)
       : 0;
 
+   const isFirstPage = safeCurrentPage <= 1 || safeTotalPages === 0;
+   const isLastPage =
+      safeTotalPages === 0 ? true : safeCurrentPage >= safeTotalPages;
+   const isNextPage = safeTotalPages > 0 && safeCurrentPage < safeTotalPages;
+   const isPrevPage = safeCurrentPage > 1;
+
+   const getPageNumbers = () => {
+      const items = getPaginationItems();
+      const pages: Array<number | '...'> = [];
+
+      for (const item of items) {
+         if (item.type === 'page' && item.value !== null) {
+            pages.push(item.value);
+         }
+         if (item.type === 'ellipsis') {
+            pages.push('...');
+         }
+      }
+
+      return pages;
+   };
+
    return {
       currentPage: safeCurrentPage,
-      totalPages: paginationData.total_pages,
+      totalPages: safeTotalPages,
       pageSize: safePageSize,
       totalRecords: resolvedTotalRecords,
       firstItemIndex,
       lastItemIndex,
       limitSelectValue: String(safePageSize),
       getPaginationItems,
+      // Legacy-style helpers used by existing pages
+      isFirstPage,
+      isLastPage,
+      isNextPage,
+      isPrevPage,
+      getPageNumbers,
    };
 };
 

@@ -3,14 +3,13 @@ import { setLogout } from '../redux/features/auth.slice';
 import { baseQuery } from './base-query';
 import {
    TAverageRating,
-   TColorItem,
-   TModelItem,
-   TPromotion,
+   TColor,
+   TModel,
    TRatingStar,
-   TShowcaseImage,
+   TImage,
    TSkuPrice,
-   TStorageItem,
-} from './product.service';
+   TStorage,
+} from '~/src/domain/types/catalog.type';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/catalog-services')(args, api, extraOptions);
@@ -30,16 +29,16 @@ export type ProductModelItem = {
    name: string;
    normalized_model: string;
    product_classification: string;
-   model_items: TModelItem[];
-   color_items: TColorItem[];
-   storage_items: TStorageItem[];
+   model_items: TModel[];
+   color_items: TColor[];
+   storage_items: TStorage[];
    sku_prices: TSkuPrice[];
-   showcase_images: TShowcaseImage[];
+   showcase_images: TImage[];
    description: string;
    average_rating: TAverageRating;
    rating_stars: TRatingStar[];
    overall_sold: number;
-   promotion: TPromotion | null;
+   promotion: null;
    is_newest: boolean;
    slug: string;
    created_at: string;
