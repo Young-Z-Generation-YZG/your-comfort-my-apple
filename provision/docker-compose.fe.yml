@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-    client.web:
-        image: baledev/ygz.client.web
+    ygz.client.web:
+        image: baledev/ygz.client.web:latest
         build:
             context: ../apps/client
             dockerfile: Dockerfile
@@ -18,8 +18,8 @@ services:
         networks:
             - client-network
 
-    admin.web:
-        image: baledev/ygz.admin.web
+    ygz.admin.web:
+        image: baledev/ygz.admin.web:latest
         build:
             context: ../apps/admin
             dockerfile: Dockerfile
@@ -27,7 +27,7 @@ services:
         networks:
             - client-network
 
-    nginx.webserver:
+    ygz.nginx.webserver:
         image: nginx:stable
         container_name: nginx.webserver
         ports:
@@ -38,7 +38,7 @@ services:
             - ./nginx.fe.conf:/etc/nginx/nginx.conf:ro
             # SSL certificates (provisioned locally under ./ssl)
             # Mapped to the standard Certbot-like path inside the container.
-            # - /etc/letsencrypt:/etc/letsencrypt:ro
+            - /etc/letsencrypt:/etc/letsencrypt:ro
         depends_on:
             - client.web
             - admin.web

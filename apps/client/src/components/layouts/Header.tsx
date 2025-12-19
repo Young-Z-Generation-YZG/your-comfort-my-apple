@@ -404,8 +404,8 @@ const Header = () => {
                         className="w-14 h-14"
                      />
                      {totalCartQuantity > 0 && (
-                        <span className="absolute bottom-3 right-3 text-xs min-w-[16px] rounded-full bg-black text-white px-[4px] font-semibold leading-[16px] text-center">
-                           {totalCartQuantity > 99 ? '99+' : totalCartQuantity}
+                        <span className="absolute top-3 right-[-2px] text-xs min-w-[16px] rounded-full bg-black text-white px-[6px] font-semibold leading-[16px] text-center">
+                           {totalCartQuantity > 9 ? '9+' : totalCartQuantity}
                         </span>
                      )}
                   </div>
@@ -421,8 +421,8 @@ const Header = () => {
                   >
                      <Bell className="w-12 h-6 text-[#1d1d1f]" />
                      {unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
-                           {unreadCount > 9 ? '9+' : unreadCount}
+                        <span className="absolute -top-1 right-[0px] min-w-[16px] text-xs rounded-full bg-[#0071e3] px-[6px] text-[10px] font-semibold leading-[16px] text-white text-center">
+                           {unreadCount > 99 ? '99+' : unreadCount}
                         </span>
                      )}
                   </div>
@@ -477,7 +477,7 @@ const Header = () => {
                <li
                   className="cursor-pointer h-[44px] leading-[44px] px-[8px] font-normal text-[14px]"
                   onClick={() => {
-                     router.push('/shop');
+                     router.push('/shop/iphone');
                   }}
                   onMouseEnter={() => {
                      setActiveCategory('Shop');
@@ -662,8 +662,8 @@ const Header = () => {
                      className="w-4 h-8 md:w-[22px] md:h-[44px]"
                   />
                   {totalCartQuantity > 0 && (
-                     <span className="absolute bottom-2 right-1 flex items-center justify-center rounded-full bg-black text-white px-[4px] text-[10px] font-semibold">
-                        {totalCartQuantity > 99 ? '99+' : totalCartQuantity}
+                     <span className="absolute top-2 right-[-6px] flex items-center justify-center rounded-full bg-black text-white px-[6px] text-[10px] font-semibold">
+                        {totalCartQuantity > 9 ? '9+' : totalCartQuantity}
                      </span>
                   )}
                </div>
@@ -675,7 +675,7 @@ const Header = () => {
                   >
                      <Bell className="w-4 h-4 md:w-[18px] md:h-[18px] text-[#1d1d1f]" />
                      {unreadCount > 0 && (
-                        <span className="absolute -top-1.5 -right-1 min-w-[16px] rounded-full bg-[#0071e3] px-[4px] text-[10px] font-semibold leading-[16px] text-white text-center">
+                        <span className="absolute -top-1 right-[-4px] flex items-center justify-center rounded-full bg-blue-600 text-white px-[6px] text-[10px] font-semibold">
                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                      )}
