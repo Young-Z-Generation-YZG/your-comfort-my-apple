@@ -40,8 +40,8 @@ services:
             # Mapped to the standard Certbot-like path inside the container.
             - /etc/letsencrypt:/etc/letsencrypt:ro
         depends_on:
-            - client.web
-            - admin.web
+            - ygz.client.web
+            - ygz.admin.web
         networks:
             - client-network
 
