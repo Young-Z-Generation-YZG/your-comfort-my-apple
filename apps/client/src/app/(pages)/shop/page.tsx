@@ -15,7 +15,7 @@ import {
    SelectTrigger,
    SelectValue,
 } from '~/components/ui/select';
-import IphoneModel from '../shop/iphone/_components/iphone-model';
+import IphoneModel from './iphone/[slug]/_components/iphone-model';
 import { Skeleton } from '~/components/ui/skeleton';
 import { Separator } from '~/components/ui/separator';
 import {

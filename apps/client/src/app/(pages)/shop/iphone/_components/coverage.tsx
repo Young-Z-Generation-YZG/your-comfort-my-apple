@@ -2,7 +2,7 @@
 
 import { cn } from '~/infrastructure/lib/utils';
 import AppleCareCard from '~/app/(pages)/products/iphone/[slug]/_components/applecare-card';
-import HelpItem from './help-item';
+import HelpItem from '../[slug]/_components/help-item';
 import { appleCareOptions } from '~/app/(pages)/products/iphone/[slug]/_constants/applecare-data';
 
 const Coverage = () => {

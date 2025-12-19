@@ -246,8 +246,7 @@ services:
             # - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
             - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - WebClientSettings__BaseUrl=/
-            # - WebClientSettings__BaseUrl=http://localhost:3000
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - Logging__Seq__ServerUrl=http://ygz.logging.seq:5341
         ports:
             - "6005:8080"
@@ -295,9 +294,7 @@ services:
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-            # - WebClientSettings__BaseUrl=https://ybzone.io.vn
-            - WebClientSettings__BaseUrl=/
-            # - WebClientSettings__BaseUrl=http://localhost:3000
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
         ports:
             - "6002:8080"
             - "6062:8081"
@@ -341,9 +338,7 @@ services:
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - FeatureManagement__OrderFulfillment=false
-            # - WebClientSettings__BaseUrl=https://ybzone.io.vn
-            - WebClientSettings__BaseUrl=/
-            # - WebClientSettings__BaseUrl=http://localhost:3000
+            - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
         ports:
             - "6004:8080"

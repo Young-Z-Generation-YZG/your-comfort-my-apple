@@ -245,12 +245,12 @@ const FilterSection = () => {
    }, [selectedColors, selectedModels, selectedStorages, debouncedPriceFilter]);
 
    return (
-      <div className="w-[354px] min-h-screen relative">
+      <div className="w-full lg:w-[354px] min-h-screen relative">
          <div className="w-full h-fit sticky top-0 bg-white">
             <Accordion
                type="multiple"
                defaultValue={['storages', 'colors', 'price', 'models']}
-               className="w-full h-full p-6"
+               className="w-full h-full p-4 md:p-6"
             >
                {/* STORAGE FILTER */}
                <motion.div transition={{ duration: 0.3 }}>
@@ -259,7 +259,7 @@ const FilterSection = () => {
                         Storages
                      </AccordionTrigger>
                      <AccordionContent className="pt-4">
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                            {storageFilter.map((storage) => (
                               <Button
                                  key={storage.normalizedName}
@@ -267,7 +267,7 @@ const FilterSection = () => {
                                     toggleStorage(storage.normalizedName)
                                  }
                                  className={cn(
-                                    'h-fit py-1 rounded-full text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
+                                    'h-fit py-1 rounded-full text-[11px] sm:text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
                                     {
                                        'bg-black text-white opacity-100':
                                           selectedStorages.includes(
@@ -292,7 +292,7 @@ const FilterSection = () => {
                      </AccordionTrigger>
                      <AccordionContent className="pt-4">
                         <TooltipProvider delayDuration={200}>
-                           <div className="grid grid-cols-4 gap-x-0 gap-y-4 ml-2">
+                           <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-4 gap-x-2 gap-y-4 ml-0 sm:ml-2">
                               {colors.map((color) => (
                                  <Tooltip key={color.name}>
                                     <TooltipTrigger asChild>
@@ -301,7 +301,7 @@ const FilterSection = () => {
                                              toggleColor(color.normalizedName)
                                           }
                                           className={cn(
-                                             'h-[30px] w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
+                                             'h-[28px] w-[28px] sm:h-[30px] sm:w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
                                              {
                                                 'ring-2 ring-[#2563EB] ring-offset-2 ring-offset-white':
                                                    selectedColors.includes(
@@ -356,13 +356,13 @@ const FilterSection = () => {
                      Models
                   </AccordionTrigger>
                   <AccordionContent className="pt-4">
-                     <div className="grid grid-cols-3 gap-2">
+                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {models.map((model) => (
                            <Button
                               key={model.normalizedName}
                               onClick={() => toggleModel(model.normalizedName)}
                               className={cn(
-                                 'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
+                                 'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[11px] sm:text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
                                  {
                                     'bg-black text-white opacity-100':
                                        selectedModels.includes(

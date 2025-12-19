@@ -29,14 +29,14 @@ import {
    TSkuPrice,
 } from '~/domain/types/catalog.type';
 import useReviewService from '~/hooks/api/use-review-service';
-import ColorItem from '~/app/(pages)/products/iphone/[slug]/_components/color-item';
-import HelpItem from '~/app/(pages)/products/iphone/[slug]/_components/help-item';
-import ModelItem from '~/app/(pages)/products/iphone/[slug]/_components/model-item';
-import StorageItem from '~/app/(pages)/products/iphone/[slug]/_components/storage-item';
-import ReviewItem from '~/app/(pages)/products/iphone/[slug]/_components/review-item';
+import ColorItem from '~/app/(pages)/shop/iphone/[slug]/_components/color-item';
+import HelpItem from '~/app/(pages)/shop/iphone/[slug]/_components/help-item';
+import ModelItem from '~/app/(pages)/shop/iphone/[slug]/_components/model-item';
+import StorageItem from '~/app/(pages)/shop/iphone/[slug]/_components/storage-item';
+import ReviewItem from '~/app/(pages)/shop/iphone/[slug]/_components/review-item';
 import { cn } from '~/infrastructure/lib/utils';
 import { AppleIcon } from '~/components/icon';
-import ProductInfo from '~/app/(pages)/products/iphone/[slug]/_components/product-info';
+import ProductInfo from '~/app/(pages)/shop/iphone/[slug]/_components/product-info';
 import CompareIPhoneSection from '~/components/client/compare-iphone-section';
 import usePaginationV2 from '~/hooks/use-pagination';
 import {

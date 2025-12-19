@@ -130,9 +130,9 @@ const FilterSection = () => {
    }, [_colors.length, _models.length, _storages.length]);
 
    return (
-      <div className="w-[354px] h-[4336px] relative">
-         <div className="w-full h-fit sticky top-0">
-            <Accordion type="multiple" className="w-full h-full p-6">
+      <div className="w-full lg:w-[354px] min-h-screen relative">
+         <div className="w-full h-fit sticky top-0 bg-white">
+            <Accordion type="multiple" className="w-full h-full p-4 md:p-6">
                {/* STORAGE FILTER */}
                <motion.div transition={{ duration: 0.3 }}>
                   <AccordionItem value="storages">
@@ -140,14 +140,14 @@ const FilterSection = () => {
                         Storages
                      </AccordionTrigger>
                      <AccordionContent className="pt-4">
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                            {storageFilter.map((storage, index) => {
                               return (
                                  <Button
                                     key={index}
                                     onClick={() => toggleStorage(storage.name)}
                                     className={cn(
-                                       'h-fit py-1 rounded-full text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white',
+                                       'h-fit py-1 rounded-full text-[11px] sm:text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
                                        {
                                           'bg-black text-white opacity-100':
                                              selectedStorages.includes(
@@ -172,14 +172,14 @@ const FilterSection = () => {
                         COLORS
                      </AccordionTrigger>
                      <AccordionContent className="pt-4">
-                        <div className="grid grid-cols-4 gap-x-0 gap-y-4 ml-2">
+                        <div className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-4 gap-x-2 gap-y-4 ml-0 sm:ml-2">
                            {colors.map((color, index) => {
                               return (
                                  <div
                                     key={index}
                                     onClick={() => toggleColor(color.name)}
                                     className={cn(
-                                       'h-[30px] w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
+                                       'h-[28px] w-[28px] sm:h-[30px] sm:w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out hover:ring-2 hover:ring-[#2563EB] hover:ring-offset-2 hover:ring-offset-white',
                                        {
                                           'ring-2 ring-[#2563EB] ring-offset-2 ring-offset-white':
                                              selectedColors.includes(
@@ -227,28 +227,24 @@ const FilterSection = () => {
                      Models
                   </AccordionTrigger>
                   <AccordionContent className="pt-4">
-                     <div className="">
-                        <div className="grid grid-cols-3 gap-2">
-                           {models.map((model, index) => {
-                              return (
-                                 <Button
-                                    key={index}
-                                    onClick={() => toggleModel(model.value)}
-                                    className={cn(
-                                       'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white',
-                                       {
-                                          'bg-black text-white opacity-100':
-                                             selectedModels.includes(
-                                                model.value,
-                                             ),
-                                       },
-                                    )}
-                                 >
-                                    {model.name}
-                                 </Button>
-                              );
-                           })}
-                        </div>
+                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {models.map((model, index) => {
+                           return (
+                              <Button
+                                 key={index}
+                                 onClick={() => toggleModel(model.value)}
+                                 className={cn(
+                                    'h-fit py-1 rounded-full select-none cursor-pointer text-center text-[11px] sm:text-[12px] font-normal border border-[#000] opacity-50 hover:opacity-100 bg-white text-black hover:bg-black hover:text-white transition-all',
+                                    {
+                                       'bg-black text-white opacity-100':
+                                          selectedModels.includes(model.value),
+                                    },
+                                 )}
+                              >
+                                 {model.name}
+                              </Button>
+                           );
+                        })}
                      </div>
                   </AccordionContent>
                </AccordionItem>

@@ -56,9 +56,9 @@ const IphoneModel = ({
 
    return (
       <Fragment>
-         <div className="flex flex-row bg-white px-5 py-5 rounded-md">
+         <div className="flex flex-col md:flex-row bg-white px-3 md:px-5 py-3 md:py-5 rounded-md">
             {/* image */}
-            <div className="basis-[20%] overflow-hidden relative h-[300px] rounded-lg">
+            <div className="w-full md:basis-[20%] overflow-hidden relative h-[200px] md:h-[300px] rounded-lg mb-4 md:mb-0">
                <NextImage
                   src={displayImageUrl}
                   alt={`test`}
@@ -69,9 +69,9 @@ const IphoneModel = ({
             </div>
 
             {/* content */}
-            <div className="flex flex-col relative basis-[45%] px-7">
+            <div className="flex flex-col relative w-full md:basis-[45%] px-0 md:px-7">
                <div className="content flex flex-col gap-2">
-                  <h2 className="font-SFProText text-xl text-start font-semibold">
+                  <h2 className="font-SFProText text-lg md:text-xl text-start font-semibold">
                      {models.length > 1 ? (
                         <span>
                            {models[0].name} & {models[1].name}
@@ -82,16 +82,18 @@ const IphoneModel = ({
                   </h2>
 
                   <span className="flex flex-row gap-2">
-                     <p className="first-letter:uppercase text-sm">colors:</p>
+                     <p className="first-letter:uppercase text-xs md:text-sm">
+                        colors:
+                     </p>
                   </span>
 
                   {/* start colors */}
-                  <div className="flex flex-row gap-2">
+                  <div className="flex flex-row gap-2 flex-wrap">
                      {colors.map((color, index) => (
                         <div
                            key={index}
                            className={cn(
-                              'h-[30px] w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out',
+                              'h-[28px] w-[28px] md:h-[30px] md:w-[30px] cursor-pointer rounded-full border-2 border-solid shadow-color-selector transition-all duration-300 ease-in-out',
                            )}
                            style={{ backgroundColor: color.hex_code }}
                         />
@@ -100,16 +102,18 @@ const IphoneModel = ({
                   {/* end color */}
 
                   <span className="flex flex-row gap-2 mt-2">
-                     <p className="first-letter:uppercase text-sm">Storages:</p>
+                     <p className="first-letter:uppercase text-xs md:text-sm">
+                        Storages:
+                     </p>
                   </span>
 
                   {/* start storage */}
-                  <div className="flex flex-row gap-2">
+                  <div className="flex flex-row gap-2 flex-wrap">
                      {storages.map((storage, index) => (
                         <span
                            key={index}
                            className={cn(
-                              'uppercase select-none text-xs font-medium min-w-[70px] py-1 border rounded-full text-center',
+                              'uppercase select-none text-[10px] md:text-xs font-medium min-w-[60px] md:min-w-[70px] py-1 border rounded-full text-center',
                            )}
                         >
                            {storage.name}
@@ -124,24 +128,24 @@ const IphoneModel = ({
                      <RatingStar
                         rating={averageRating.rating_average_value}
                         size="md"
-                        className="text-sm"
+                        className="text-xs md:text-sm"
                      />
-                     <span className="text-base inline-block leading-7">
+                     <span className="text-sm md:text-base inline-block leading-7">
                         {averageRating.rating_average_value}
                      </span>
-                     <span className="text-sm">
+                     <span className="text-xs md:text-sm">
                         ({averageRating.rating_count})
                      </span>
                   </span>
 
                   {/* prices */}
-                  <div className="flex flex-row gap-2 mt-2 justify-end">
+                  <div className="flex flex-row gap-2 mt-2 justify-start md:justify-end">
                      {priceRange.min === priceRange.max ? (
-                        <span className="text-lg font-semibold text-gray-900">
+                        <span className="text-base md:text-lg font-semibold text-gray-900">
                            {formatPrice(priceRange.min)}
                         </span>
                      ) : (
-                        <span className="text-lg font-semibold text-gray-900">
+                        <span className="text-base md:text-lg font-semibold text-gray-900">
                            {formatPrice(priceRange.min)} -{' '}
                            {formatPrice(priceRange.max)}
                         </span>
@@ -151,14 +155,15 @@ const IphoneModel = ({
             </div>
 
             {/* start feature */}
-            <div className="flex flex-col justify-between flex-1 border-l-2 border-[#E5E7EB] px-4">
+            <div className="flex flex-col justify-between flex-1 border-t-2 md:border-l-2 md:border-t-0 border-[#E5E7EB] pt-4 md:pt-0 px-0 md:px-4 mt-4 md:mt-0">
                <div className="flex flex-col gap-2">
-                  <div className="flex flex-row gap-4 items-center border-b border-[#E5E7EB] pb-2">
-                     <span className="">
+                  <div className="flex flex-row gap-3 md:gap-4 items-start md:items-center border-b border-[#E5E7EB] pb-2">
+                     <span className="flex-shrink-0">
                         <svg
-                           height="35"
+                           height="28"
+                           width="28"
                            viewBox="0 0 35 35"
-                           width="35"
+                           className="md:h-[35px] md:w-[35px]"
                            aria-hidden="true"
                         >
                            <path d="m0 0h35v35h-35z" fill="none"></path>
@@ -168,19 +173,20 @@ const IphoneModel = ({
                            ></path>
                         </svg>
                      </span>
-                     <p className="text-xs font-semibold">
-                        Stunning 6.1-inch Super Retina XDR display¹ protected by
-                        durable Ceramic Shield, tougher than any smartphone
+                     <p className="text-[10px] md:text-xs font-semibold">
+                        Stunning 6.1-inch Super Retina XDR display¹ protected
+                        by durable Ceramic Shield, tougher than any smartphone
                         glass
                      </p>
                   </div>
 
-                  <div className="flex flex-row gap-4 items-center border-b border-[#E5E7EB] pb-2">
-                     <span className="">
+                  <div className="flex flex-row gap-3 md:gap-4 items-start md:items-center border-b border-[#E5E7EB] pb-2">
+                     <span className="flex-shrink-0">
                         <svg
-                           width="35"
-                           height="35"
+                           width="28"
+                           height="28"
                            viewBox="0 0 35 35"
+                           className="md:w-[35px] md:h-[35px]"
                            aria-hidden="true"
                         >
                            <path fill="none" d="M0 0H35V35H0z"></path>
@@ -190,15 +196,21 @@ const IphoneModel = ({
                            ></path>
                         </svg>
                      </span>
-                     <p className="text-xs font-semibold">
+                     <p className="text-[10px] md:text-xs font-semibold">
                         A18 chip powers Apple Intelligence, gaming, and iOS
                         updates for years to come
                      </p>
                   </div>
 
-                  <div className="flex flex-row gap-4 items-center border-b border-[#E5E7EB] pb-2">
-                     <span className="">
-                        <svg width="35" height="35" aria-hidden="true">
+                  <div className="flex flex-row gap-3 md:gap-4 items-start md:items-center border-b border-[#E5E7EB] pb-2">
+                     <span className="flex-shrink-0">
+                        <svg
+                           width="28"
+                           height="28"
+                           viewBox="0 0 35 35"
+                           className="md:w-[35px] md:h-[35px]"
+                           aria-hidden="true"
+                        >
                            <defs>
                               <linearGradient
                                  id="16e"
@@ -222,25 +234,26 @@ const IphoneModel = ({
                            ></path>
                         </svg>
                      </span>
-                     <p className="text-xs font-semibold">
+                     <p className="text-[10px] md:text-xs font-semibold">
                         Built for Apple Intelligence. footnote 2 Write, express
                         yourself, and get things done effortlessly.
                      </p>
                   </div>
 
-                  <div className="flex flex-row gap-4 items-center">
-                     <span className="">
+                  <div className="flex flex-row gap-3 md:gap-4 items-start md:items-center">
+                     <span className="flex-shrink-0">
                         <svg
-                           height="35"
+                           height="28"
+                           width="28"
                            viewBox="0 0 35 35"
-                           width="35"
+                           className="md:h-[35px] md:w-[35px]"
                            aria-hidden="true"
                         >
                            <path d="m0 0h35v35h-35z" fill="none"></path>
                            <path d="m16.2444 16.886c.3408.2773.3408.7842 0 1.0615l-3.061 2.4917c-.4675.3804-1.1824.0596-1.1825-.5308l-.0004-1.9084h-5.5006c-.2764 0-.5-.2236-.5-.5s.2236-.5.5-.5h5.5005l-.0004-2.0754c0-.5906.7148-.9114 1.1824-.531zm9.3917-10.886h-.0039c-1.501 0-2.918.5908-3.9912 1.6631-1.0586 1.0586-1.6415 2.3652-1.641 3.8369v3.0012l-.3044-.0005c-.2688-.0002-.4918.0779-.6689.2346-.1772.1567-.2661.3557-.2666.5964l-.01 5.3362c-.0005.239.0876.437.2642.5945.1766.1572.3994.2361.6682.2366l.3176.001v7.5h.9999v-17.5c-.0004-1.2051.4785-2.2598 1.3481-3.1299.8843-.8838 2.0503-1.3701 3.2842-1.3701h3.3677v-1h-3.3638z"></path>
                         </svg>
                      </span>
-                     <p className="text-xs font-semibold">
+                     <p className="text-[10px] md:text-xs font-semibold">
                         Customize the Action button to use visual intelligence,
                         launch your favorite app, and more
                      </p>
@@ -248,7 +261,7 @@ const IphoneModel = ({
                </div>
 
                <Button
-                  className="rounded-full text-base mt-5"
+                  className="rounded-full text-sm md:text-base mt-4 md:mt-5 w-full md:w-auto"
                   onClick={() => router.push(`/shop/iphone/${modelSlug}`)}
                >
                   Visit

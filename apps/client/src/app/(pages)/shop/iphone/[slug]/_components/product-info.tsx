@@ -4,13 +4,43 @@
 import { useState } from 'react';
 import { cn } from '~/infrastructure/lib/utils';
 import { Button } from '~/components/ui/button';
-import images from '~/components/client/images';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MdOutlineArrowDropDown, MdArrowDropUp } from 'react-icons/md';
-import ServiceCard from './service-card';
-import { appleServices } from '../_constants/services-data';
+import ServiceCard from '~/app/(pages)/shop/iphone/[slug]/_components/service-card';
 import { ApplePickupIcon, DeliveryTruckIcon } from '~/components/icon';
+import images from '~/components/client/images';
+import { StaticImageData } from 'next/image';
+
+interface AppleService {
+   icon: StaticImageData | string;
+   title: string;
+   description: string;
+}
+
+export const appleServices: AppleService[] = [
+   {
+      icon: images.serviceTV,
+      title: 'Apple TV+',
+      description: '3 free months of original films and series.°°°',
+   },
+   {
+      icon: images.serviceFitness,
+      title: 'Apple Fitness+',
+      description: '3 free months of workouts, from HIIT to Meditation.°°°',
+   },
+   {
+      icon: images.serviceArcade,
+      title: 'Apple Arcade',
+      description:
+         '3 free months of incredibly fun, uninterrupted gameplay.°°°',
+   },
+   {
+      icon: images.serviceNews,
+      title: 'Apple News+',
+      description: '3 free months of top stories from leading publications.°°°',
+   },
+];
 
 interface ProductInfoProps {
    selectedModel?: {
