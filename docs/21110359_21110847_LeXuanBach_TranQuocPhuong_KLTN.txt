@@ -1,0 +1,1860 @@
+﻿
+
+
+Giảng viên hướng dẫn:TS. Mai Anh ThơNhóm SV:21110359 - Lê Xuân Bách
+21110847 - Trần Quốc Phương 
+
+
+Giảng viên hướng dẫn:TS. Mai Anh ThơNhóm SV:21110359 - Lê Xuân Bách
+21110847 - Trần Quốc Phương
+ĐẠI HỌC SƯ PHẠM KỸ THUẬT TP.HỒ CHÍ MINH
+KHOA CÔNG NGHỆ THÔNG TIN
+⎯⎯⎯⎯⎯⎯⎯⎯⎯CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+Độc lập - Tự do - Hạnh phúc
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+ NHIỆM VỤ THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP
+
+Họ và tên sinh viên 1: Lê Xuân Bách......................MSSV: 21110359
+Họ và tên sinh viên 2: Trần Quốc Phương................MSSV: 21110847
+Chuyên ngành: Công nghệ phần mềm
+Tên đề tài: Xây dựng website bán thiết bị điện tử tính hợp thanh toán bằng Blockchain, hỗ trợ quản lý đa chi nhánh Multi-tenant giúp tối ưa doanh thu hệ thống
+Giảng viên hướng dẫn: TS. Mai Anh Thơ
+Nội dung thực hiện:
+Lý thuyết:
+- Tìm hiểu về RESTful API
+- Tìm hiểu công nghệ C# .NET và Framework phát triển website ASP.NET
+- Tìm hiểu về kiến trúc Microservices và phương pháp thiết kế phần mềm Domain Driven Design
+- Tìm hiểu về mẫu thiết kế kiến trúc Clean Architecture
+- Tìm hiểu về Identity server (Keycloak)
+- Tìm hiểu giao tiếp đồng bộ giữa các service với gRPC
+- Tìm hiểu giao tiếp bất đồng bộ giữa các service với Event Bus (RabbitMQ)
+- Tìm hiểu về cơ sơ dữ liệu MongoDB (NoSQL) và Postgre (SQL)
+- Tìm hiểu về Multi-tenancy và cách thiết kế cơ sở dữ liệu quản lý đa chi nhánh
+- Tìm hiểu công nghệ phía giao diện NextJS
+- Tìm hiểu công nghệ chuỗi khối Blockchain và tích hợp thanh toán bằng Blockchain - Solana (SOL)
+- Tìm hiểu ngôn ngữ Rust và framework Anchor phát triển hợp đồng thông minh (Smart Contract)
+Thực hành:
+- Thiết kế CSDL
+- Xây dựng hệ thống xác thực và phân quyền identity server cho hệ thống
+- Xây dựng các APIs cho các services C# ASP.NET trong hệ thống e-commerce với các chức năng chính như:
+o Đăng ký, đăng nhập, quên mật khẩu (2FA)
+o Tìm kiếm sản phẩm, lọc sản phẩm
+o Thêm sản phẩm vào giỏ hàng
+o Thêm mã giảm giá cho giỏ hàng (Coupon)
+o Thanh toán sản phẩm từ sự kiện giảm giá
+o Thanh toán sản phẩm với các phương thức như: COD, Vnpay, Momo và kết nối ví Blockchain thanh toán bằng đồng SOL
+o Khách hàng có thể thêm nhiều địa chỉ và chọn địa chỉ khi thanh toán
+o Cập nhật thông tin, địa chỉ của khách hàng
+o Khách hàng có thể xác nhận hoặc hủy bỏ đơn hàng khi thanh toán bằng COD (đơn hàng sẽ tự động xác nhận sau 30 phút)
+o Khách hàng có thể chọn "hoàn trả" và sẽ nhận lại tiền khi thanh toán bằng các phương thức thanh toán online như Vnpay, Momo (không bao gồm Blockchain)
+o Quản lý doanh thu với các chức năng lọc đa dạng (quản lý theo từng chi nhánh, theo ngày/tháng/năm, so sánh doanh thu giữa các năm, so sánh doanh thu giữa các chi nhánh)
+o "Giả danh" người dùng (user impersonation) chức năng chỉ dành riêng cho người dùng có chức quyền cao nhất (ADMIN_SUPER)
+o Chuyển đổi chi nhánh (Tenant/Branch) chức năng chỉ dành riêng cho người dùng có chức quyền cao nhất (ADMIN_SUPER)
+o Quản lý kho hàng theo từng chi nhánh
+o Quản lý sản phẩm
+o Quản lý sự kiện giảm giá, mã giảm giá
+o Quản lý hoá đơn
+ 
+Thời gian thực hiện: 15 tuần (bắt đầu từ 04/01/2025 đến 02/06/2025)
+Chữ ký của SV 1:........................................................................................
+Chữ ký của SV 2:........................................................................................
+
+
+							      					TP.HCM, Ngày.... tháng.... năm ...
+TRƯỞNG KHOA CNTT					  	GIẢNG VIÊN HƯỚNG DẪN
+   (Ký và ghi rõ họ tên)						             (Ký và ghi rõ họ tên)
+
+ĐH SƯ PHẠM KỸ THUẬT TP.HCM
+KHOA CNTT
+*******CỘNG HOÀ                                        XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+Độc                                                        Độc lập - Tự do - Hạnh Phúc 
+******* PHIẾU NHẬN XÉT CỦA GIÁO VIÊN HƯỚNG DẪN
+Họ và tên Sinh viên 1: Lê Xuân Bách	MSSV 1: 21110359
+Họ và tên Sinh viên 2: Trần Quốc Phương	MSSV 2: 21110847
+Ngành: Công nghệ Thông tin  	 
+Đề tài: Xây dựng website bán thiết bị điện tử tính hợp thanh toán bằng Blockchain, hỗ trợ quản lý đa chi nhánh Multi-tenant giúp tối ưa doanh thu hệ thống
+Họ và tên Giáo viên hướng dẫn: TS. Mai Anh Thơ
+NHẬN XÉT 
+1. Về nội dung đề tài & khối lượng thực hiện:
+
+
+
+2. Ưu điểm: 
+
+
+3. Khuyết điểm:
+
+
+4. Đề nghị cho bảo vệ hay không?
+5. Đánh giá loại: 
+6. Điểm: 
+  									 Tp. Hồ Chí Minh, ngày    tháng    năm 2025 
+ 	Giáo viên hướng dẫn 
+	 	        (Ký & ghi rõ họ tên)
+
+ĐH SƯ PHẠM KỸ THUẬT TP.HCM
+KHOA CNTT
+*******CỘNG HOÀ                                        XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+Độc                                                        Độc lập - Tự do - Hạnh Phúc 
+******* PHIẾU NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN
+Họ và tên Sinh viên 1: Lê Xuân Bách	MSSV 1: 21110359
+Họ và tên Sinh viên 2: Trần Quốc Phương	MSSV 2: 21110847
+Ngành: Công nghệ Thông tin  	 
+Đề tài: Xây dựng website bán thiết bị điện tử tính hợp thanh toán bằng Blockchain, hỗ trợ quản lý đa chi nhánh Multi-tenant giúp tối ưa doanh thu hệ thống
+Họ và tên Giáo viên phản biện: ...
+NHẬN XÉT 
+1. Về nội dung đề tài & khối lượng thực hiện:
+
+
+	
+2. Ưu điểm: 
+
+
+3. Khuyết điểm:
+
+
+4. Đề nghị cho bảo vệ hay không?
+5. Đánh giá loại: 
+6. Điểm:
+ 	Tp. Hồ Chí Minh, ngày    tháng    năm 2025 
+ 	Giáo viên phản biện
+	 	(Ký & ghi rõ họ tên)
+
+LỜI CẢM ƠN
+	Nhóm chúng em xin gửi lời cảm ơn chân thành đến Khoa Công nghệ Thông tin - Trường Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh và toàn thể quý thầy, cô đã tận tâm giảng dạy, đồng hành và tạo điều kiện thuận lợi cho nhóm trong suốt quá trình học tập tại trường. Những kiến thức chuyên môn, kỹ năng thực tiễn cùng sự động viên và định hướng quý báu từ quý thầy, cô chính là nền móng vững chắc giúp nhóm chúng em có đủ hành trang để hoàn thành bài tiểu luận chuyên ngành này.
+	Đặc biệt, nhóm xin bày tỏ lòng biết ơn sâu sắc đến Tiến sĩ Mai Anh Thơ, giảng viên hướng dẫn của nhóm. Cô không chỉ là người truyền đạt kiến thức một cách tận tụy mà còn luôn đồng hành cùng nhóm với sự tận tình và trách nhiệm trong suốt quá trình thực hiện tiểu luận. Những góp ý thẳng thắn, sự hỗ trợ kịp thời và lòng kiên nhẫn của cô đã giúp nhóm hiểu sâu hơn về vấn đề nghiên cứu, từng bước nâng cao tư duy phản biện và kỹ năng làm việc độc lập, làm việc nhóm.
+	Trong suốt quá trình thực hiện, mặc dù đã cố gắng hoàn thiện tốt nhất có thể, nhóm vẫn nhận thấy còn nhiều điều cần rút kinh nghiệm và cải thiện. Bài luận không chỉ là cơ hội để áp dụng kiến thức đã học vào thực tế mà còn là một hành trình rèn luyện quan trọng giúp nhóm phát triển tư duy hệ thống, làm việc nhóm hiệu quả và học hỏi từ những sai sót.
+	Một lần nữa, nhóm xin gửi lời tri ân sâu sắc đến cô Mai Anh Thơ và toàn thể quý thầy, cô trong Khoa Công nghệ Thông tin. Kính chúc quý thầy, cô luôn mạnh khỏe, hạnh phúc và tiếp tục gặt hái nhiều thành công trong sự nghiệp giáo dục và nghiên cứu.
+	Nhóm chúng em xin chân thành cảm ơn!
+	
+
+
+	Nhóm sinh viên:
+	Lê Xuân Bách 		- 21110359
+	Trần Quốc Phương 	- 21110847
+ MỤC LỤC
+NHIỆM VỤ THỰC HIỆN KHÓA LUẬN TỐT NGHIỆP	3
+PHIẾU NHẬN XÉT CỦA GIÁO VIÊN HƯỚNG DẪN	6
+PHIẾU NHẬN XÉT CỦA GIÁO VIÊN PHẢN BIỆN	7
+MỤC LỤC	9
+DANH MỤC HÌNH ẢNH	0
+DANH MỤC BẢNG BIỂU	0
+DANH MỤC CÁC TỪ VIẾT TẮT	0
+MỞ ĐẦU	1
+1.	Tính cấp thiết của đề tài	1
+2.	Mục tiêu của đề tài	2
+3.	Cách tiếp cận và nội dung nghiên cứu	3
+4.	Kết quả dự kiến đạt được	5
+NỘI DUNG	7
+CHƯƠNG 1.	KHẢO SÁT VÀ ĐẶC TẢ BÀI TOÁN	7
+1.1.	Khảo sát hiện trạng	7
+1.1.1.	Tổng quan về kinh doanh sản phẩm thiết bị điện tử trực tuyến	7
+1.1.2.	Phân tích các hệ thống hiện có trên thị trường	9
+1.1.2.1.	Apple	9
+1.1.2.2.	Topzone	11
+1.1.3.	Xác định các hạn chế cần giải quyết	13
+1.2.	Đặc tả bài toán	14
+1.2.1.	Phạm vi hệ thống	14
+1.2.2.	Tính năng hệ thống	16
+1.2.2.1.	Tính năng cho khách hàng	16
+1.2.2.2.	Tính năng cho nhân viên chi nhánh	17
+1.2.2.3.	Tính năng cho quản lí chi nhánh	17
+1.2.2.4.	Tính năng cho người quản trị toàn hệ thống	18
+1.2.3.	Yêu cầu chức năng	20
+1.2.3.1.	Yêu chức năng nghiệp vụ	20
+1.2.3.2.	Yêu cầu chức năng hệ thống	32
+1.2.4.	Yêu cầu phi chức năng	33
+CHƯƠNG 2.	CƠ SỞ LÝ THUYẾT	35
+2.1.	Kiến trúc phát triển website với RESTful API	35
+2.2.	Kiến trúc hệ thống	37
+2.2.1.	Tổng quan kiến trúc Microservices	37
+2.2.1.1.	Chi tiết kiến trúc Identity Service	39
+2.2.1.2.	Chi tiết kiến trúc Catalog Service	41
+2.2.1.3.	Chi tiết kiến trúc Basket Service	42
+2.2.1.4.	Chi tiết kiến trúc Discount Service	43
+2.2.1.5.	Chi tiết kiến trúc Ordering Service	44
+2.2.1.6.	Mẫu thiết kế phần mềm CQRS	45
+2.2.2.	Các đặc trưng của kiến trúc Microservices	46
+2.2.3.	Ưa điểm và nhược điểm	48
+2.2.4.	So sánh Microservices và kiến trúc nguyên khối Monolithic	50
+2.2.5.	Phân chia Services theo Domain Driven Design	51
+2.2.5.1.	Các khái niệm cốt lõi của DDD	52
+2.2.5.2.	Quy trình phân chia Services theo DDD	52
+2.3.	Công nghệ phía Backend	54
+2.3.1.	Tổng quan	54
+2.3.2.	Thư viện sử dụng	55
+2.4.	Cơ sở dữ liệu	57
+2.4.1.	Postgres	57
+2.4.2.	MongoDB	59
+2.4.3.	Redis	60
+2.5.	Công nghệ phía Frontend	61
+2.5.1.	Tổng quan Next.js	61
+2.5.2.	Thư viện sử dụng	63
+2.6.	Công nghệ phía Blockchain	64
+2.6.1.	Tổng quan về Blockchain	64
+2.6.2.	Tổng quan Solana và Framwork Anchor	65
+2.6.3.	Thư viện sử dụng	67
+CHƯƠNG 3.	PHÂN TÍCH THIẾT KẾ HỆ THỐNG	69
+3.1.	Lược đồ Use case	69
+3.2.	Đặc tả Use case	72
+3.2.1.	Use case đăng ký	72
+3.2.2.	Use case đăng nhập	75
+3.2.3.	Use case đăng xuất	77
+3.2.4.	Use case xem danh sách sản phẩm	78
+3.2.5.	Use case lọc sản phẩm	80
+3.2.6.	Use case xem sản phẩm chi tiết	82
+3.2.7.	Use case tìm kiếm sản phẩm	84
+3.2.8.	Use case thêm sản phẩm vào giỏ hàng	85
+3.2.9.	Use case quản lý giỏ hàng	87
+3.2.10.	Use case thanh toán giỏ hàng	90
+3.2.11.	Use case thanh toán qua Vnpay	94
+3.2.12.	Use case thanh toán qua Blockchain	97
+3.2.13.	Use case xác nhận đơn hàng	102
+3.2.14.	Use case đánh giá sản phẩm	104
+3.2.15.	Use case cập nhật trạng thái đơn hàng	107
+3.2.16.	Use case xem doanh thu hệ thống	111
+3.2.17.	Use case tạo tenant	115
+3.2.18.	Use case "mạo danh" nhân viên	118
+3.3.	Lược đồ lớp	121
+CHƯƠNG 4.	CÀI ĐẶT ỨNG DỤNG	122
+4.1.	Yêu cầu môi trường	122
+4.1.1.	Yêu cầu chung	122
+4.1.2.	Yêu cầu Frontend	122
+4.1.3.	Yêu cầu Backend	122
+4.1.4.	Yêu cầu Smart contract Solana Blockchain	122
+4.2.	Yêu cầu các bước cài đặt và chạy ứng dụng	123
+4.2.1.	Cài đặt chung	123
+4.2.2.	Chạy dự án Frontend	123
+4.2.3.	Chạy dự án Backend	123
+4.2.4.	Tạo chương trình Smart contract trên mạng Solana Blockchain	124
+4.2.5.	Chạy dự án với Docker (khuyến nghị)	125
+4.3.	Kiểm tra cài đặt	125
+4.3.1.	Kiểm tra Frontend	125
+4.3.2.	Kiểm tra Backend	125
+4.3.3.	Kiểm tra Smart contract	126
+4.3.4.	Kiểm tra kết nối	126
+CHƯƠNG 5.	KIỂM THỬ HỆ THỐNG	127
+5.1.	Kiểm tra chức năng đăng ký	127
+5.2.	Kiểm tra chức năng đăng nhập	133
+5.3.	Kiểm tra chức năng đăng xuất	135
+5.4.	Kiểm tra chức năng khôi phục mật khẩu	135
+5.5.	Kiểm tra chức năng tìm kiếm sản phẩm	137
+5.6.	Kiểm tra chức năng xem chi tiết sản phẩm	138
+5.7.	Kiểm tra chức năng xem các sản phẩm	139
+5.8.	Kiểm tra chức năng lọc sản phẩm	140
+5.9.	Kiểm tra chức năng quản lý giỏ hàng	142
+5.10.	Kiểm tra chức năng thanh toán giỏ hàng	143
+5.11.	Kiểm tra chức năng xác nhận đơn hàng	149
+5.12.	Kiểm tra chức năng đánh giá sản phẩm	150
+5.13.	Kiểm tra chức năng cập nhật trạng thái đơn hàng	152
+5.14.	Kiểm tra chức năng thêm sản phẩm	153
+5.15.	Kiểm tra chức năng tạo event khuyến mãi	155
+KẾT LUẬN	159
+1.	Kết quả đạt được	159
+2.	Ưa điểm	162
+3.	Hạn chế	163
+4.	Hướng phát triển	163
+TÀI LIỆU THAM KHẢO	167
+
+
+ DANH MỤC HÌNH ẢNH
+Hình 1: Trang chủ hệ thống trang web apple.com	9
+Hình 2: Trang chủ hệ thống web topzone.com	11
+Hình 3: Kiến trúc tổng quát của hệ thống Microservices	37
+Hình 4: Chi tiết Identity Service	40
+Hình 5: Chi tiết Catalog Service	41
+Hình 6: Chi tiết Baset Service	42
+Hình 7: Chi tiết Discount Service	43
+Hình 8: Chi tiết Ordering Service	44
+Hình 9: Logic trong mẫu thiết phần mềm CQRS	45
+Hình 10: .NET Framework logo	54
+Hình 11: PostgreSQL logo	57
+Hình 12: MongoDB logo	59
+Hình 13: Redis logo	60
+Hình 14: Next.js framework logo	61
+Hình 15: Hình ảnh logo Blockchain Solana	65
+Hình 16: Hình ảnh logo Anchor Framework	66
+Hình 17: Lược đồ use case client app (vai trò khách vãng lai và người dùng)	69
+Hình 18: Lược đồ use case admin app (vai trò quản lí và nhân viên)	70
+Hình 19: Lược đồ use case admin app (vai trò người quản trị hệ thống)	71
+Hình 20: Sequence diagram đăng ký	74
+Hình 21: Sequence diagram đăng nhập	76
+Hình 22: Sequence diagram đăng xuất	78
+Hình 23: Sequence diagram xem danh sách sản phẩm	80
+Hình 24: Sequence diagram lọc sản phẩm	82
+Hình 25: Sequence diagram xem chi tiết sản phẩm	84
+Hình 26: Sequence diagram tìm kiếm sản phẩm	85
+Hình 27: Sequence diagram thêm sản phẩm vào giỏ hàng	87
+Hình 28: Sequence diagram quản lý giỏ hàng	90
+Hình 29: Sequence diagram thanh toán giỏ hàng	94
+Hình 30: Sequence diagram thanh toán qua VNPay	97
+Hình 31: Sequence diagram thanh toán qua Blockchain Solana	101
+Hình 32: Sequence diagram xác nhận đơn hàng	104
+Hình 33: Sequence diagram đánh giá sản phẩm	107
+Hình 34: Sequence diagram cập nhật trạng thái đơn hàng	111
+Hình 35: Sequence diagram xem doanh thu hệ thống	114
+Hình 36: Sequence diagram tạo tenant	117
+Hình 37: Sequence diagram "mạo danh" nhân viên	120
+Hình 38: Lược đồ lớp	121
+Hình 39: Minh hoạ các containers	123
+Hình 40: Cách chạy service với Visual studio	124
+
+ DANH MỤC BẢNG BIỂU
+Bảng 1. Bảng mô tả yêu cầu chức năng của người dùng chưa đăng ký tài khoản	21
+Bảng 2. Bảng mô tả yêu cầu chức năng của người dùng đã đăng kí tài khoản	25
+Bảng 3. Bảng mô tả yêu cầu chức năng của nhân viên hệ thống	27
+Bảng 4. Bảng mô tả yêu cầu chức năng của người quản trị viên hệ thống theo chi nhánh	28
+Bảng 5. Bảng mô tả yêu cầu chức năng của người quản trị toàn hệ thống và chi nhánh	30
+Bảng 6. Bảng quy định cho các yêu cầu chức năng nghiệp vụ	32
+Bảng 7. Yêu cầu chức năng hệ thống	33
+Bảng 8. Yêu cầu phi chức năng	34
+Bảng 9: So sánh Microservices và Monolithic	51
+Bảng 10: Đặc tả use case đăng ký	73
+Bảng 11: Đặc tả use case đăng nhập	76
+Bảng 12: Đặc tả use case đăng xuất	77
+Bảng 13: Đặc tả use case xem danh sách sản phẩm	79
+Bảng 14: Đặc tả use case lọc sản phẩm	81
+Bảng 15: Đặc tả use case xem chi tiết sản phẩm	83
+Bảng 16: Đặc tả use case tìm kiếm sản phẩm	85
+Bảng 17: Đặc tả use case thêm sản phẩm vào giỏ hàng	86
+Bảng 18: Đặc tả use case quản lý giỏ hàng	89
+Bảng 19: Đặc tả use case thanh toán giỏ hàng	93
+Bảng 20: Đặc tả use case thanh toán qua VNPay	97
+Bảng 21: Đặc tả use case thanh toán qua Blockchain Solana	100
+Bảng 22: Đặc tả use case xác nhận đơn hàng	103
+Bảng 23: Đặc tả use case đánh giá sản phẩm	106
+Bảng 24: Đặc tả use case cập nhật trạng thái đơn hàng	110
+Bảng 25: Đặc tả use case thêm sản phẩm	114
+Bảng 26: Đặc tả use case tạo tenant	116
+Bảng 27: Đặc tả use case "mạo danh" nhân viên	119
+Bảng 28: Bảng cấu hình ports	124
+Bảng 29: Test case chức năng đăng ký tài khoản với dữ liệu không hợp lệ	129
+Bảng 30: Test case chức năng đăng ký tài khoản với dữ liệu hợp lệ	131
+Bảng 31: Test case chức năng đăng ký tài khoản với email đã đăng ký tài khoản	133
+Bảng 32: Test case chức năng đăng nhập tài khoản thành công	134
+Bảng 33: Test case chức năng đăng nhập tài khoản thất bại	135
+Bảng 34: Test case chức năng đăng xuất thành công	135
+Bảng 35: Test case chức năng khôi phục mật khẩu	137
+Bảng 36: Test case chức năng tìm kiếm sản phẩm	138
+Bảng 37: Test case chức năng xem chi tiết sản phẩm	139
+Bảng 38: Test case chức năng xem các sản phẩm	140
+Bảng 39: Test case chức năng lọc sản phẩm với nhiều bộ lọc	142
+Bảng 40: Test case chức năng quản lý giỏ hàng	143
+Bảng 41: Test case chức năng thanh toán giỏ hàng bằng COD	145
+Bảng 42: Test case chức năng thanh toán giỏ hàng bằng VNPAY	146
+Bảng 43: Test case chức năng thanh toán giỏ hàng bằng Blockchain Solana	149
+Bảng 44: Test case chức năng xác nhận đơn hàng với trạng thái xác nhận đơn hàng	150
+Bảng 45: Test case chức năng đánh giá sản phẩm	151
+Bảng 46: Test case chức năng cập nhật trạng thái đơn hàng	153
+Bảng 47: Test case chức năng thêm sản phẩm	155
+Bảng 48: Test case chức năng tạo event khuyến mãi	158
+Bảng 49: Bảng liệt kê công việc	166
+
+
+ DANH MỤC CÁC TỪ VIẾT TẮT
+STTKý hiệu chữ viết tắtChữ viết đầy đủ1DDDDomain Driven Design2EDAEvent Driven Architecture3SSRServer Side Rendering4CSRClient Side Rendering5SSGStatic Side Generation6ISRIncremental Static Regeneration
+ MỞ ĐẦU
+1. Tính cấp thiết của đề tài
+	Trong bối cảnh cuộc cách mạng công nghiệp 4.0 đang diễn ra mạnh mẽ và trở thành một phần trong cuộc sống của người dân, công nghệ thông tin đã và đang đóng vai trò then chốt trong việc thúc đẩy sự chuyển đổi số của các doanh nghiệp. Đặc biệt, lĩnh vực thương mại điện tử (E-Commerce) đã trở thành xu hướng tất yếu, góp phần thay đổi phương thức kinh doanh truyền thống sang mô hình kinh doanh trực tuyến linh hoạt, hiện đại và tiện lợi hơn cho người tiêu dùng giúp gia tăng dòng tiền trong nước. Sau đại dịch COVID-19, nhu cầu mua sắm trực tuyến tăng cao đã thúc đẩy sự ra đời của nhiều nền tảng E-Commerce với yêu cầu ngày càng cao về bảo mật, hiệu năng, khả năng mở rộng và trải nghiệm người dùng.
+	Tuy nhiên, nhiều hệ thống E-Commerce hiện nay vẫn còn được xây dựng theo kiến trúc nguyên khối (Monolithic), khiến việc mở rộng quy mô, bảo trì, triển khai tính năng mới hoặc xử lý lượng lớn truy cập làm ứng dụng xử lý chậm, thậm chí là sập ứng dụng làm tiêu hao hàng triệu đồng đến hàng tỷ đồng. Trước những thách thức đó, kiến trúc Microservices đã nổi lên như một giải pháp hiệu quả, tách biệt từ kiến trúc nguyên khối thành nhiều dịch vụ nhỏ, có thể phát triển theo nhóm, triển khai và mở rộng theo chiều ngang và chiều dọc.
+	Song song đó, sự phát triển của công nghệ Blockchain đã mở ra nhiều hướng phát triển mới cho các website từ web 2.0 đến một khái niệm mới "web 3.0" - website có tích hợp Blockchain. Ứng dụng một phần công nghệ Blockchain với hướng đi mới trong lĩnh vực thanh toán điện tử, giúp các giao dịch trở nên minh bạch, an toàn và phi tập trung (không thông qua ngân hàng hay bên thứ 3 như Vnpay). Việc tích hợp Blockchain vào hệ thống thương mại điện tử không chỉ nâng cao độ tin cậy trong thanh toán mà còn góp phần hiện thực hóa xu hướng công nghệ tài chính (FinTech) trong thời đại số.
+	Bên cạnh đó, mô hình Multi-tenant (đa chi nhánh) đóng vai trò quan trọng trong việc tối ưu doanh thu, cho phép nhiều chi nhánh hoặc đơn vị kinh doanh cùng sử dụng chung một nền tảng nhưng vẫn đảm bảo dữ liệu và hoạt động được phân tách độc lập. Mô hình này giúp doanh nghiệp quản lý hệ thống quy mô lớn hiệu quả hơn, đồng thời tiết kiệm chi phí vận hành và mở rộng.
+	Việc kết hợp các công nghệ tiên tiến như C# .NET cho Backend, Next.js cho Frontend, kiến trúc Microservices, cùng tích hợp thanh toán bằng Blockchain và mô hình Multi-tenant thể hiện tính thực tiễn cao, phù hợp với xu hướng phát triển của ngành công nghiệp phần mềm hiện nay.
+	Do đó, việc nghiên cứu và xây dựng đề tài "Xây dựng website bán thiết bị điện tử tích hợp thanh toán bằng Blockchain, hỗ trợ quản lý đa chi nhánh (Multi-tenant) giúp tối ưu doanh thu hệ thống" là hết sức cần thiết. Đề tài không chỉ góp phần giải quyết những hạn chế của các hệ thống thương mại điện tử hiện tại mà còn giúp sinh viên nâng cao năng lực nghiên cứu, tư duy hệ thống và khả năng ứng dụng công nghệ mới trong thực tiễn phát triển phần mềm.
+2. Mục tiêu của đề tài
+	Đề tài hướng đến việc nghiên cứu, thiết kế và xây dựng một hệ thống website thương mại điện tử bán thiết bị điện tử hoàn chỉnh, áp dụng kiến trúc Microservices, tích hợp thanh toán bằng Blockchain và hỗ trợ quản lý đa chi nhánh (Multi-tenant) nhằm tối ưu doanh thu hệ thống và từng chi nhánh, đạt được các mục tiêu cụ thể sau:
+1. Xây dựng hệ thống E-Commerce theo kiến trúc Microservices: Phân chia hệ thống thành các dịch vụ độc lập như: Identity service (quản lý người dùng và xác thực đa chi nhánh), Catalog service (quản lý sản phẩm), Basket service (quản lý giỏ hàng), Ordering service (quản lý đơn hàng), Discount service (quản lý sự kiện, giảm giá). Mỗi dịch vụ có thể hoạt động, triển khai và mở rộng độc lập, góp phần cải thiện khả năng bảo trì, mở rộng hệ thống và tối ưu doanh thu qua phân tích dữ liệu chi nhánh
+2. Ứng dụng công nghệ C# .NET để phát triển các dịch vụ backend: Áp dụng C# ASP.NET Core để xây dựng API cho từng microservice. Tích hợp đa cơ sở dữ liệu như PostgreSQL (RDBMS cho dữ liệu cấu trúc), Redis (Distributed Cache cho hiệu năng cao), và MongoDB (NoSQL cho dữ liệu không cấu trúc), đồng thời hỗ trợ mô hình Multi-tenant để phân tách dữ liệu giữa các chi nhánh.
+3. Phát triển giao diện người dùng bằng Next.js: Thiết kế giao diện website hiện đại, thân thiện với người dùng, tương thích đa thiết bị (responsive). Tối ưu hóa tốc độ tải trang, SEO
+4. Triển khai giao tiếp giữa các dịch vụ thông qua API Gateway, gRPC và message-broker: Sử dụng API Gateway để điều phối request giữa client và các microservice. Áp dụng gRPC cho giao tiếp hiệu suất cao và tích hợp RabbitMQ hoặc Kafka để xử lý giao tiếp bất đồng bộ
+5. Tích hợp thanh toán bằng Blockchain: Phát triển dịch vụ thanh toán sử dụng công nghệ Blockchain (ví dụ: Solana) để đảm bảo giao dịch an toàn, minh bạch, phi tập trung
+6. Triển khai hệ thống sử dụng Docker: Container hóa từng microservice để dễ dàng triển khai, phát triển và kiểm thử. Đảm bảo hệ thống có thể hoạt động ổn định trong môi trường phát triển lẫn triển khai thực tế
+7. Nâng cao kiến thức và kỹ năng thực tiễn cho sinh viên: Củng cố tư duy thiết kế phần mềm theo mô hình Microservices, làm quen với các công nghệ hiện đại như .NET, Next.js, Docker, Blockchain, RabbitMQ, gRPC và các công cụ CI/CD. Làm quen với cách thiết kế CSDL với Multi-tenant nhằm ứng dụng vào thực tiễn phát triển phần mềm thương mại điện tử
+3. Cách tiếp cận và nội dung nghiên cứu
+		Đối tượng nghiên cứu:
+* Kiến trúc phát triển phần mềm Microservices, Domain Driven Design (DDD) và Clean Architecture
+* Công nghệ phát triển web backend với C# .NET ( framework ASP.NET) và kết nối, chỉnh sửa dữ liệu với package Entity Framework Core
+* Quản lý xác thực và phân quyền hệ thống với Keycloak Identity Server
+* Framework Next.js cho frontend và tích hợp với backend qua API
+* Cách thiết kế CSDL khi phát triển ứng dụng triển khai Multi-tenant
+* Công nghệ Blockchain triển khi khai thanh toán bằng Blockchain - Solana, để đảm bảo giao dịch an toàn, minh bạch và phi tập trung
+* Các công cụ hỗ trợ triển khai và vận hành như Docker, API Gateway, hệ quản trị cơ sở dữ liệu (PostgreSQL, Redis và MongoDB)
+* Công cụ tự động triển khai CI/CD với Jenkins
+* Các phương thức thanh toán online với Vnpay và Momo
+		Phạm vi nghiên cứu:
+* Tập trung xây dựng hệ thống E-Commerce bán thiết bị điện tử với đầy đủ chức năng cốt lõi: đăng ký/đăng nhập, tìm kiếm, lọc sản phẩm, cập nhật thông tin cá nhân, quản lý địa chỉ giao hàng, thêm sản phẩm vào giỏ hàng, đặt hàng, thanh toán bằng Blockchain và phương thức truyền thống (COD, Vnpay, Momo), quản lý sản phẩm theo chi nhánh, quản lý đơn hàng, quản lý doanh thu của toàn hệ thống và của từng chi nhánh
+* Hệ thống được thiết kế và triển khai theo mô hình Multi-tenant, cho phép nhiều chi nhánh hoạt động độc lập trên cùng một nền tảng, quản lý doanh thu của toàn hệ thống và riêng cho từng chi nhánh nhằm tối ưu chiến lược kinh doanh và chi phí vận hành giúp tối ưu doanh thu
+* Triển khai toàn bộ hệ thống bằng Docker, đảm bảo tính ổn định, chạy được trên mọi hệ điều hành và dễ mở rộng
+* Triển khai thực tế trên môi trường production (VPS hoặc nền tảng đám mây như AWS, Azure hoặc Digital Ocean)
+* Thiết lập quy trình CI/CD tự động để hỗ trợ phát triển, kiểm thử và triển khai nhanh chóng, giảm thiểu lỗi và tăng hiệu quả phát triển
+4. Kết quả dự kiến đạt được
+	Sau khi hoàn thành đề tài, các kết quả cụ thể dự kiến đạt được bao gồm:
+1. Hệ thống thương mại điện tử được xây dựng hoàn chỉnh, hoạt động ổn định trên môi trường production, đáp ứng đầy đủ các chức năng cốt lõi theo yêu cầu thực tế: quản lý người dùng, quản lý sản phẩm theo chi nhánh, giỏ hàng, đặt hàng, thanh toán bằng Blockchain và phương thức truyền thống (Vnpay, Momo), quản lý đơn hàng, tìm kiếm, lọc sản phẩm, cập nhật thông tin cá nhân và địa chỉ. Hệ thống được tổ chức theo kiến trúc Microservices, mỗi dịch vụ được container hóa bằng Docker, triển khai độc lập và dễ dàng mở rộng quy mô, đồng thời với cách thiết kế hệ thống Multi-tenant hỗ trợ quản lý kinh doanh theo từng chi nhánh để tối ưu doanh thu và chi phí vận hành
+2. Tích hợp thành công mô hình Multi-tenant, cho phép nhiều chi nhánh hoạt động độc lập trên cùng một nền tảng với dữ liệu được phân tách an toàn, chính sách giá và khuyến mãi riêng biệt, giúp doanh nghiệp quản lý tập trung, giảm chi phí vận hành và tối ưu hóa doanh thu tổng thể thông qua báo cáo và phân tích dữ liệu đa chi nhánh
+3. Tích hợp hiệu quả Keycloak làm hệ thống quản lý định danh (Identity Server), đảm bảo xác thực và phân quyền an toàn dựa trên các chuẩn OAuth2, OpenID Connect và JWT, hỗ trợ phân quyền theo vai trò (admin hệ thống, quản lý chi nhánh, khách hàng), tăng cường bảo mật và linh hoạt trong quản lý người dùng đa chi nhánh
+4. Phát triển và tích hợp dịch vụ thanh toán bằng Blockchain ứng dụng Smart Contract của mạng Solana, đảm bảo tính minh bạch, phi tập trung, giảm thiểu rủi ro gian lận - được nhà nước có pháp luật bảo hộ, đồng thời kết hợp với các cổng thanh toán truyền thống (Momo, Vnpay) để mang lại trải nghiệm thanh toán đa dạng cho người dùng
+5. Triển khai toàn bộ hệ thống trên môi trường production (VPS hoặc nền tảng đám mây), với quy trình CI/CD tự động hóa bằng Jenkins hoặc Github Actions giúp rút ngắn thời gian kiểm thử, triển khai, giảm thiểu lỗi và đảm bảo hệ thống luôn sẵn sàng cập nhật tính năng mới trên môi trường test hoặc production một cách hiệu quả và giảm thiểu rủi ro nhất có thể trước khi triển khai
+6. Từ góc nhìn học thuật và kỹ năng lập trình, sinh viên sẽ nắm vững cách thiết kế kiến trúc Microservices, triển khai Multi-tenant hiệu quả, ứng dụng Blockchain trong thanh toán, và quy trình DevOps hiện đại. Việc làm chủ các công nghệ như ASP.NET Core, Next.js, Keycloak, Docker, Blockchain, CI/CD không chỉ củng cố năng lực full-stack mà còn rèn luyện tư duy hệ thống, kỹ năng giải quyết vấn đề thực tế, quản lý dự án phức hợp và khả năng làm việc trong môi trường phát triển phần mềm chuyên nghiệp - đáp ứng yêu cầu tuyển dụng của doanh nghiệp công nghệ hiện nay
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+NỘI DUNG
+CHƯƠNG 1. KHẢO SÁT VÀ ĐẶC TẢ BÀI TOÁN
+1.1. Khảo sát hiện trạng
+1.1.1. Tổng quan về kinh doanh sản phẩm thiết bị điện tử trực tuyến
+	Trong thời đại công nghệ số đang ngày càng phát triển, các sản phẩm thiết bị điện tử đã trở thành một phần không thể thiếu trong đời sống đối với mỗi con người. Song song đó, thói quen mua sắm của người tiêu dùng cũng thay đổi nhanh chóng, chuyển dần từ hình thức truyền thống sang trực tuyến. Kinh doanh sản phẩm thiết bị điện tử trực tuyến vì thế ngày càng trở nên phổ biến và tiềm năng. 
+	Nhu cầu sử dụng thiết bị điện tử đang không ngừng tăng nhờ sự phát triển của công nghệ và lối sống hiện đại. Các thiết bị điện tử như điện thoại thông minh, laptop, máy tính bảng, tai nghe không dây, đồng hồ thông minh,... không chỉ phục vụ công việc mà còn đáp ứng nhu cầu giải trí, học tập và giao tiếp từ xa. Trong đại dịch COVID-19, các doanh nghiệp buộc phải tạm dừng làm việc tại văn phòng và chuyển hướng sang làm việc từ xa, tương tự đối với học sinh, sinh viên không thể đến trường, lớp và bắt đầu chuyển sang học online tại nhà với sự phát triển nhanh chóng của xu hướng làm việc từ xa và học trực tuyến sau càng thúc đẩy nhu cầu về các thiết bị điện tử.
+	Ngoài ra, sự công nghệ phát triển nhanh đến chóng mặt, các sản phẩm điện tử ngày càng được nâng cấp cùng với những tính năng mạnh mẽ hơn, người tiêu dùng thường xuyên nâng cấp thiết bị để bắt kịp xu hướng, dẫn đến nhu cầu tiêu dùng luôn ở mức cao và ổn định.
+	Kinh doanh trực tuyến cũng đang trở thành một xu hướng chủ đạo trong thời đại số. Người tiêu dùng ngày càng có xu hướng mua hàng qua các nền tảng thương mại điện tử như Shopee, Lazada, Tiki, Amazon,... vì sự tiện lợi, giá cả cạnh tranh và nhiều chương trình khuyến mãi. Ngoài ra, mạng xã hội cũng đóng vai trò quan trọng với các hình thức bán hàng qua Facebook, TikTok, Instagram,...
+	Một số xu hướng nổi bật trong kinh doanh sản phẩm điện tử trực tuyến hiện nay bao gồm: livestream bán hàng, marketing qua người ảnh hưởng (influencers), ứng dụng trí tuệ nhân tạo (AI) để gợi ý sản phẩm, và mua sắm đa kênh (omni-channel) kết hợp giữa online và offline. Tất cả những yếu tố này đang giúp doanh nghiệp tiếp cận khách hàng dễ dàng hơn và tối ưu hóa trải nghiệm mua sắm.
+	Kinh doanh thiết bị điện tử trực tuyến có thể được triển khai qua nhiều mô hình khác nhau các doanh nghiệp có thể kinh doanh sản phẩm của họ qua website riêng, sàn thương mại điện tử như Shoppe, Tiktok, kết hợp với KOL, KOC quảng bá sản phẩm.
+	Tiềm năng khi kinh doanh sản phẩm thiết bị điện tử trực tuyến:
+* Kinh doanh trực tuyến giúp giảm thiểu nhiều chi phí thuê như mặt bằng, nhân công, đồng thời có khả năng tiếp cận khách hàng toàn quốc và khách hàng từ quốc gia khác
+* Cho phép các doanh nghiệp phát triển mô hình kinh doanh linh hoạt và đa dạng hóa sản phẩm
+	Kinh doanh sản phẩm thiết bị điện tử trực tuyến tuy nhiều tiềm năng nhưng cũng đi kèm với không ít thử thách:
+* Khách hàng không có cơ hội được trải nghiệm và kiểm tra trực tiếp sản phẩm trước khi mua.
+* Mức độ cạnh tranh rất cao do có quá nhiều đối thủ cùng kinh doanh trên các nền tảng trực tuyến, khiến việc giữ chân khách hàng trở nên khó khăn. 
+* Vấn đề hàng giả, hàng nhái và linh kiện kém chất lượng xuất hiện tràn lan, dễ làm mất uy tín thương hiệu nếu không kiểm soát tốt nguồn hàng. 
+* Việc vận hành bao gồm quản lý kho, xử lý đơn hàng, giao nhận và chăm sóc khách hàng đều cần được tổ chức bài bản, nếu không sẽ dẫn đến sai sót và giảm trải nghiệm người dùng. Hệ thống cần được quản lý chặt chẽ để đảm bảo tính hiệu quả, chính xác và bền vững.
+* Yêu cầu về dịch vụ hậu mãi như đổi trả, bảo hành cũng đòi hỏi doanh nghiệp có chính sách minh bạch và quy trình xử lý hiệu quả. 
+* Hành vi tiêu dùng thay đổi nhanh theo xu hướng công nghệ và mạng xã hội, buộc người kinh doanh phải thường xuyên cập nhật và linh hoạt trong cách tiếp cận thị trường.
+	Kinh doanh sản phẩm thiết bị điện tử trực tuyến đang là xu hướng tất yếu trong thời đại số. Với nhu cầu thị trường lớn, xu hướng công nghệ hỗ trợ mạnh mẽ và tiềm năng lợi nhuận cao, đây là một lĩnh vực hấp dẫn dành cho các doanh nghiệp và cá nhân muốn khai thác thị trường kỹ thuật số. Tuy nhiên, để thành công, người kinh doanh cần có chiến lược rõ ràng, sản phẩm chất lượng và dịch vụ uy tín để xây dựng lòng tin từ khách hàng.
+1.1.2. Phân tích các hệ thống hiện có trên thị trường
+1.1.2.1. Apple
+
+Hình 1: Trang chủ hệ thống trang web apple.com
+* Ưu điểm:
+* Thiết kế tổng thể gọn gàng, không bị rối mắt, màu sắc nhẹ nhàng, sang trọng
+* Menu các mục rõ ràng, phân chia cho người dùng dễ tìm sản phẩm
+* Tốc độ tải trang nhanh, trang không lỗi, chuyển mục mượt mà
+* Giao diện tương thích với thiết bị di động, gọn gàng và dễ dùng
+* Giỏ hàng thêm sản phẩm và đầy đủ các thao tác thêm xóa sửa 
+* Trải nghiệm người dùng thân thiện, không bị quảng cáo che, gây nhiễu
+* Thông tin sản phẩm đầy đủ các thông tin như phiên bản, dung lượng, kích thước, thông số kỹ thuật,..
+* Hình ảnh sản phẩm sắc nét rõ ràng với nhiều góc chụp
+* Giá bán niêm yết rõ ràng, minh bạch, có tương thích với nhiều đơn vị tiền tệ của các nước
+* Có thông báo tình trạng còn hàng của sản phẩm
+* Sản phẩm có các khuyến mãi, ưu đãi đi kèm theo
+* Chính sách bảo hành cụ thể, ghi rõ thời hạn, điều kiện,...
+* Mục so sánh sản phẩm theo nhiều thông số kỹ thuật cho khách hàng có thể tìm hiểu
+* Có nhiều phương thức thanh toán: trả tiền khi nhận hàng, ví điện tử, thẻ ngân hàng 
+* Giao diện check out rõ ràng. Các bước đặt hàng đơn giản, không rối, dễ hiểu
+* Website có hỗ trợ khách hàng qua biểu mẫu liên hệ
+* Có mục hướng dẫn mua sắm cho người dùng và hướng dẫn thiết lập các ứng dụng của Apple
+* Nhược điểm: 
+* Có công cụ tìm kiếm và hỗ trợ nhưng chưa tìm được sản phẩm chính xác hiệu quả
+* Bộ lọc sản phẩm có nhưng chủ yếu là lọc theo danh sách, chưa chi tiết như theo màu, giá tiền, kính cỡ, loại camera,...
+* Nhiều mục sản phẩm vẫn chưa có nội dung đánh giá hay hình ảnh từ khách hàng
+* Khách hàng không thể thêm sản phẩm yêu thích
+* Chưa có các phương thức đăng nhập khác như Google, Facebook, ...
+1.1.2.2. Topzone
+
+Hình 2: Trang chủ hệ thống web topzone.com
+* Ưu điểm:
+* Thiết kế tổng thể gọn gàng, không bị rối mắt
+* Menu các mục rõ ràng, phân chia cho người dùng dễ tìm sản phẩm 
+* Giỏ hàng thêm sản phẩm và đầy đủ các thao tác thêm xóa sửa 
+* Trải nghiệm người dùng thân thiện, không bị quảng cáo che, gây nhiễu
+* Có công cụ tìm kiếm và gợi ý sản phẩm. Kết quả tìm kiếm chính xác
+* Thông tin sản phẩm đầy đủ các thông tin như phiên bản, dung lượng, kích thước, thông số kỹ thuật,..
+* Hình ảnh sản phẩm sắc nét rõ ràng với nhiều góc chụp
+* Giá bán niêm yết rõ ràng, minh bạch, có tương thích với nhiều đơn vị tiền tệ của các nước
+* Có thông báo tình trạng còn hàng của sản phẩm
+* Sản phẩm có các khuyến mãi, ưu đãi đi kèm theo
+* Chính sách bảo hành cụ thể, ghi rõ thời hạn, điều kiện,...
+* Giao diện check out rõ ràng. Các bước đặt hàng đơn giản, không rối, dễ hiểu
+* Website có hỗ trợ khách hàng qua khung chat dưới góc phải trang webstie
+* Nhược điểm: 
+* Tốc độ tải trang tạm ổn, chuyển mục trang còn chưa mượt mà 
+* Giao diện chưa tương thích với thiết bị di động, gây lỗi giao diện
+* Chưa có phần tài khoản đăng ký, đăng nhập để lưu lại thông tin khách hàng
+* Bộ lọc sản phẩm có nhưng chủ yếu là lọc theo danh sách, chưa chi tiết như theo màu, giá tiền, kính cỡ, loại camera,...
+* Khách hàng có thể đánh giá sản phẩm nhưng không xem được đánh giá từ những khách hàng trước
+* Khách hàng không thể thêm sản phẩm yêu thích
+* Chưa có các phương thức đăng nhập khác như Google, Facebook, ...
+* Không có mục so sánh sản phẩm cho khách hàng cân nhắc trước khi mua
+* Chưa có nhiều phương thức thanh toán: trả tiền khi nhận hàng, ví điện tử, thẻ ngân hàng,...
+1.1.3. Xác định các hạn chế cần giải quyết
+	Dựa trên việc đánh giá thực tế hai website bán thiết bị điện tử là Apple.com và Topzone.vn, có thể tổng hợp một số hạn chế chính về giao diện, chức năng và trải nghiệm người dùng như sau:
+* Hạn chế trong công cụ tìm kiếm và bộ lọc sản phẩm: 
+* Website Apple tuy có tích hợp công cụ tìm kiếm nhưng khả năng hiển thị kết quả còn hạn chế, nhiều khi không cho ra đúng sản phẩm người dùng cần. Cả hai website đều chỉ hỗ trợ bộ lọc sản phẩm cơ bản theo danh sách, chưa cho phép lọc nâng cao theo các thuộc tính quan trọng như màu sắc, mức giá, kích thước màn hình, loại camera, hiệu năng... Điều này gây khó khăn cho người dùng khi muốn so sánh và lựa chọn theo nhu cầu chi tiết.
+* Thiếu tính năng đánh giá và phản hồi từ khách hàng: 
+* Apple.com hầu như không hiển thị đánh giá hoặc hình ảnh thực tế từ người mua trước. Trong khi đó, Topzone dù có phần đánh giá nhưng lại không cho phép người dùng xem đánh giá của người khác. Đây là điểm trừ lớn trong việc xây dựng niềm tin cho khách hàng, vì đánh giá cộng đồng đóng vai trò quan trọng trong quyết định mua hàng trực tuyến.
+* Chưa hỗ trợ tính năng yêu thích và đăng nhập mở rộng: 
+* Cả hai website đều không có chức năng lưu sản phẩm yêu thích để người dùng đánh dấu và quay lại sau. Ngoài ra, chưa hỗ trợ đăng nhập nhanh bằng các nền tảng phổ biến như Google hoặc Facebook, làm giảm trải nghiệm và tăng thời gian thao tác cho người dùng.
+* Giao diện chưa tối ưu trên thiết bị di động: 
+* Topzone gặp vấn đề về giao diện khi hiển thị trên các thiết bị di động, gây vỡ bố cục và khó thao tác. Trong bối cảnh người dùng ngày càng mua sắm qua điện thoại, đây là một thiếu sót đáng kể cần khắc phục sớm.
+* Tốc độ tải trang chưa tối ưu: 
+* Topzone vẫn tồn tại độ trễ khi chuyển trang hoặc xem chi tiết sản phẩm. Trải nghiệm chưa mượt mà có thể ảnh hưởng đến cảm nhận chuyên nghiệp của khách hàng khi truy cập.
+* Phương thức thanh toán còn hạn chế: 
+* So với Apple.com, Topzone hiện chỉ hỗ trợ một vài hình thức thanh toán cơ bản, chưa có nhiều lựa chọn như ví điện tử, chuyển khoản nhanh, hoặc trả góp qua thẻ tín dụng. Điều này có thể khiến người dùng thiếu linh hoạt khi thanh toán.
+* Thiếu chức năng so sánh sản phẩm: 
+* Website Topzone chưa tích hợp công cụ so sánh các sản phẩm theo từng thông số kỹ thuật. Đây là tính năng hữu ích đặc biệt với nhóm khách hàng có nhu cầu tìm hiểu sâu trước khi đưa ra quyết định mua hàng.
+	Những hạn chế trên phản ánh một số thiếu sót trong việc tối ưu trải nghiệm người dùng và tính năng hỗ trợ mua hàng trực tuyến. Việc khắc phục các điểm yếu này sẽ góp phần nâng cao chất lượng dịch vụ, tăng tính cạnh tranh và giữ chân người dùng hiệu quả hơn.
+1.2. Đặc tả bài toán
+1.2.1. Phạm vi hệ thống
+	Website thương mại điện tử chuyên về thiết bị điện tử được thiết kế nhằm mang đến trải nghiệm mua sắm trực tuyến hiện đại, nhanh chóng và tiện lợi cho khách hàng, đồng thời hỗ trợ doanh nghiệp trong việc quản lý hoạt động kinh doanh một cách hiệu quả và có hệ thống. Phạm vi hệ thống như sau:
+* Đối tượng sử dụng:
+* Khách hàng: Người tiêu dùng có nhu cầu tìm hiểu, lựa chọn và mua sắm các thiết bị điện tử thông qua nền tảng trực tuyến.
+* Nhân viên: Người đảm nhận các công việc vận hành hệ thống như theo dõi đơn hàng và hỗ trợ khách hàng.
+* Quản lý: Người theo dõi, điều phối hoạt động kinh doanh, giám sát hiệu suất bán hàng và kiểm soát chất lượng dịch vụ.
+* Quản trị viên: Người chịu trách nhiệm thiết lập, cấu hình và quản lý toàn bộ hệ thống với đầy đủ quyền hạn.
+* Phạm vi chức năng:
+* Quản lý doanh thu:
+o Phân tích doanh thu toàn hệ thống
+o Phân tích doanh thu từng chi nhánh
+o So sánh doanh thu giữa các năm
+o Lọc doanh thu theo ngày/tháng/năm, theo mã đơn hàng,...
+* Quản lý sản phẩm, danh mục:
+o Quản lý danh mục sản phẩm
+o Thông tin các sản phẩm trong hệ thống
+o Biến thể sản phẩm (kích thước, màu sắc, dung lượng)
+o Số lượng tồn kho (quản lý theo từng chi nhánh)
+* Quản lý đơn hàng:
+o Xử lý đơn hàng (quản lý trạng thái đơn hàng)
+o Lịch sử mua hàng của khách hàng
+* Quản lý khuyến mãi:
+o Tạo và quản lý chương trình khuyến mãi
+o Tạo sản phẩm khuyến mãi cho cho sự kiện
+* Quản lý người dùng:
+o Đăng nhập, đăng ký, xác thực tài khoản với OTP (2FA - 2 factor authentication), hỗ trợ thay đổi và khôi phục mật khẩu
+o Quản lý thông tin người dùng và nhân viên
+o Quản lý địa chỉ khách hàng
+1.2.2. Tính năng hệ thống
+1.2.2.1. Tính năng cho khách hàng
+	Hệ thống cung cấp đầy đủ các tính năng hỗ trợ khách hàng trong việc tìm kiếm, lựa chọn và mua sắm một cách thuận tiện và nhanh chóng:
+* Xem và tìm kiếm sản phẩm
+* Xem các sản phẩm theo danh mục như điện thoại, laptop, phụ kiện,...
+* Xem thông tin chi tiết về sản phẩm: thông số kỹ thuật, hình ảnh, giá cả, chính sách bảo hành,...
+* Tìm kiếm nhanh sản phẩm theo tên hoặc từ khóa
+* Lọc để chọn sản phẩm theo mức giá, dung lượng, màu sắc,...
+* Xem nhanh các sản phẩm gợi ý, bán chạy, mới nhất và xem danh sách các sản phẩm trong sự kiện giảm giá
+* Quản lý giỏ hàng cá nhân
+* Thêm sản phẩm mong muốn vào giỏ hàng 
+* Tăng/giảm số lượng sản phẩm trực tiếp trong giỏ
+* Loại bỏ sản phẩm không còn nhu cầu
+* Theo dõi tổng số lượng và tổng giá trị đơn hàng trước khi thanh toán
+* Áp dụng mã giảm giá khi cho giỏ hàng
+* Đánh giá sản phẩm đã mua 
+* Xem nhận xét, đánh giá từ những người đã mua sản phẩm
+* Gửi đánh giá thực tế sau khi sử dụng sản phẩm đã đặt mua
+* Chấm điểm sản phẩm theo hệ thống đánh giá 5 sao, giúp cộng đồng mua sắm có thêm thông tin tham khảo
+1.2.2.2. Tính năng cho nhân viên chi nhánh
+	Hệ thống trang bị cho người dùng có vai trò là nhân viên (STAFF) các công cụ cần thiết giúp nhân viên hỗ trợ quá trình vận hành cửa hàng điện tử một cách hiệu quả:
+* Tra cứu sản phẩm và kho hàng
+* Tra cứu danh sách sản phẩm và danh mục hiện có của hệ thống
+* Tra cứu số lượng hàng tồn kho của cửa hàng hiện tại theo thực tế
+* Tra cứu đơn hàng
+* Tra cứu danh sách các đơn hàng của hệ thống
+* Tra cứu thông tin chi tiết từng đơn hàng: sản phẩm, số lượng, địa chỉ giao hàng, phương thức thanh toán
+* Tra cứu khách hàng
+* Tra cứu danh sách khách hàng của hệ thống
+* Tra cứu thông tin chi tiết khách hàng
+* Tra cứu chương trình khuyến mãi
+* Tra cứu danh sách các sự kiện của hệ thống
+* Tra cứu chi tiết chương trình sự kiện
+
+1.2.2.3. Tính năng cho quản lí chi nhánh
+	Bên cạnh các chức năng cơ bản dành cho nhân viên, người dùng có vai trò là quản lý chi nhánh (ADMIN) còn được cấp quyền truy cập vào các công cụ quản lý cấp cao nhằm điều hành, tối ưu và giám sát hiệu quả hoạt động kinh doanh của chi nhánh đó:
+* Tra cứu sản phẩm và kho hàng
+* Tra cứu danh sách sản phẩm và danh mục hiện có của hệ thống
+* Tra cứu số lượng hàng tồn kho của cửa hàng hiện tại theo thực tế
+* Tra cứu đơn hàng
+* Tra cứu danh sách các đơn hàng của hệ thống
+* Tra cứu thông tin chi tiết từng đơn hàng: sản phẩm, số lượng, địa chỉ giao hàng, phương thức thanh toán
+* Tra cứu khách hàng
+* Tra cứu danh sách khách hàng của hệ thống
+* Tra cứu thông tin chi tiết khách hàng
+* Tra cứu chương trình khuyến mãi
+* Tra cứu danh sách các sự kiện của hệ thống
+* Tra cứu chi tiết chương trình sự kiện
+* Quản lí nhân viên chi nhánh
+* Tra cứu danh sách nhân viên của chi nhánh
+* Tra cứu thông tin chi tiết của nhân viên
+* Xem thống kê kinh doanh
+* Theo dõi doanh thu, số lượng đơn hàng của chi nhánh đang quản lí hiện tại
+* Lọc doanh thu theo ngày/tháng/năm
+1.2.2.4. Tính năng cho người quản trị toàn hệ thống
+	Người dùng có vai trò là người quản trị hệ thống (SUPER ADMIN) là vai trò cao nhất trong hệ thống, sở hữu toàn quyền truy cập và kiểm soát toàn bộ chức năng dành cho nhân viên, quản lý, đồng thời thực hiện các tác vụ quản trị hệ thống ở cấp độ sâu hơn.
+* Quản lí chi nhánh (tenant)	
+* Tra cứu danh sách các chi nhánh của hệ thống
+* Tra cứu/chuyển đổi giữa các chi nhánh
+* Thêm chi nhánh mới
+* Cập nhật thông tin chi nhánh
+* Quản lí sản phẩm
+* Tra cứu danh sách sản phẩm hiện có của hệ thống
+* Thêm sản phẩm mới
+* Cập nhật thông tin sản phẩm
+* Quản lí danh mục sản phẩm
+* Tra cứu danh sách danh mục sản phẩm hiện có của hệ thống
+* Thêm danh mục mới
+* Cập nhật danh mục
+* Quản lí khách hàng
+* Tra cứu danh sách khách hàng của hệ thống
+* Tra cứu thông tin chi tiết khách hàng
+* Cập nhật thông tin chi tiết khách hàng khi cấp thiết
+* Quản lí nhân viên
+* Tra cứu danh sách nhân viên của hệ thống
+* Tra cứu thông tin chi tiết của nhân viên
+* Cập nhật thông tin của nhân viên khi cần thiết
+* Quản lí kho hàng
+* Tra cứu kho hàng của toàn hệ thống
+* Tra cứu kho hàng của chi nhánh
+* Xem thống kê kinh doanh
+* Theo dõi doanh thu, số lượng đơn hàng của hệ thống
+* Theo dõi doanh thu của chi nhánh
+* Lọc doanh thu theo ngày/tháng/năm
+* So sánh doanh thu giữa các chi nhánh
+* So sánh doanh thu giữa các năm
+1.2.3. Yêu cầu chức năng
+1.2.3.1. Yêu chức năng nghiệp vụ
+1.2.3.1.1. Người dùng chưa đăng kí tài khoản
+STTMã số YCTên Yêu CầuLoại Nghiệp vụMã quy địnhMã biểu mẫuGhi chú1YC1Đăng kýLưu trữQĐ01Người dùng có thể tạo mới tài khoản.2YC2Tìm kiếm sản phẩmTra cứu  Người dùng có thể tìm kiếm sản phẩm theo tên sản phẩm. 3YC3Xem sản phẩmTra cứuNgười dùng có thể vào trang sản phẩm để xem các sản phẩm hiện có.4YC4Xem thông tin chi tiết sản phẩmTra cứu  Người dùng có thể xem chi tiết thông tin về sản phẩm.5YC5Lọc sản phẩmTra cứuNgười dùng có thể thực hiện lọc sản phẩm trên các tiêu chí như danh mục, giá tiền, đánh giá, màu sắc, kích cỡ.Bảng 1. Bảng mô tả yêu cầu chức năng của người dùng chưa đăng ký tài khoản
+1.2.3.1.2. Người dùng đã đăng kí tài khoản
+STTMã số YCTên Yêu CầuLoại Nghiệp vụMã quy địnhMã biểu mẫuGhi chú6YC6Đăng nhậpTra cứuQĐ02Người dùng có thể đăng nhập vào tài khoản đã có.7YC7Đăng xuấtLưu trữNgười dùng đăng xuất khỏi tài khoản hiện có.8YC8Khôi phục mật khẩuLưu trữQĐ02Người dùng có thể khôi phụ lại mật khẩu thông qua email đã đăng ký.9YC9Thay đổi thông tin tài khoảnLưu trữ  Người dùng có thể thay đổi thông tin tài khoản như tên, địa chỉ, số điện thoại, ...10YC10Đặt lại mật khẩuLưu trữQĐ03Người dùng có thể khôi phục mật khẩu nếu quên.11YC11Lọc sản phẩmTra cứu  Người dùng có thể tìm kiếm sản phẩm theo tên sản phẩm. Lọc theo danh mục, giá tiền, kích cỡm màu sắc, dung lượng, model.12YC12Xem thông tin chi tiết sản phẩmTra cứu  Người dùng có thể xem chi tiết thông tin về sản phẩm13YC13Xem danh sách sản phẩmTra cứuXem các sản phẩm hiện có trong cửa hàng.14YC14Thêm sản phẩm vào giỏ hàngLưu trữ  Người dùng có thể thêm sản phẩm muốn mua vào giỏ hàng15YC15Áp dụng mã giảm giá cho giỏ hàngLưu trữNgười dùng có thể sử dụng mã giảm giá (coupon) cho những sản phẩm đã chọn trong giỏ hàng16YC16Quản lý giỏ hàngTra cứu, lưu trữ  Người dùng có thể xem sản phẩm mà mình đã thêm vào giỏ hàng. Điều chỉnh số lượng.17YC17Chọn sản phẩm cần thanh toánlưu trữ  Người dùng có chọn sản phẩm trong giỏ hàng để thanh toán.18YC18Thanh toán với CODlưu trữNgười dùng có thể thanh toán trực tiếp khi nhận hàng19YC19Thanh toán với Vnpaylưu trữNgười dùng có thể thanh toán online thông qua ví điện tử VNPay20YC20Thanh toán với Momolưu trữNgười dùng có thể thanh toán online thông qua ví điện tử Momo21YC21Thanh toán với Blockchain (SOL)lưu trữNgười dùng có thể thanh toán online thông qua ví mạng Solana22YC22Quản lý địa chỉ nhận hàngTra trứu, lưu trữNgười dùng có thể xem danh sách địa chỉ nhận hàng, thêm sửa xoá địa chỉ mới, đặt địa chỉ thành mặc định.23YC23Xác nhận đơn hànglưu trữNgười dùng khi thanh toán bằng phương thức COD cần xác nhận đơn hàng24YC24Hủy bỏ đơn hànglưu trữNgười dùng khi thanh toán bằng phương thức COD có thể hủy đơn hàng25YC25Xem lại lịch sử mua hàngTra cứuNgươi dùng có thể xem lại các đơn hàng đã đặt.26YC26Đánh giá sản phẩmTra cứu, lưu trữ  Người dùng có thể đánh giá cho sản phẩm đã mua bằng sao và comment. Cũng có thể chỉnh sửa đánh giá đã đăng.Bảng 2. Bảng mô tả yêu cầu chức năng của người dùng đã đăng kí tài khoản
+1.2.3.1.3. Nhân viên hệ thống theo chi nhánh
+STTMã số YCTên Yêu CầuLoại Nghiệp vụMã quy địnhMã biểu mẫuGhi chú27YC27Đăng nhậpTra cứuQĐ02Nhân viên có thể đăng nhập vào tài khoản đã có.28YC28Đăng xuấtLưu trữNhân viên đăng xuất khỏi tài khoản hiện có.29YC29
+(chưa)Tra cứu thông tin sản phẩmTra cứuNhân viên tra cứu danh sách sản phẩm của hệ thống30YC30Tra cứu sản phẩm tồn kho của chi nhánhTra cứuNhân viên tra cứu kho hàng của chi nhánh31YC31Tra cứu đơn hàngTra cứuNhân viên có tra cứu đơn hàng của toàn hệ thống32YC32Tra cứu khách hàngTra cứuNhân viên có tra cứu thông tin của toàn hệ thốngBảng 3. Bảng mô tả yêu cầu chức năng của nhân viên hệ thống
+1.2.3.1.4. Người quản trị viên hệ thống theo chi nhánh
+STTMã số YCTên Yêu CầuLoại Nghiệp vụMã quy địnhMã biểu mẫuGhi chú33YC33Xem doanh thu của chi nhánhTra cứuQuản lí chi nhánh xem doanh thu của chi nhánh34YC34
+(chưa)Tra cứu thông tin sản phẩmTra cứuQuản lí chi nhánh tra cứu danh sách sản phẩm của hệ thống35YC35Tra cứu sản phẩm tồn kho của chi nhánhTra cứuQuản lí chi nhánh tra cứu kho hàng của chi nhánh36YC36Quản lí nhân viên của chi nhánhTra cứu, lưu. trữQuản lí chi nhánh có thể tra cứu, cập nhật thông tin của nhân viên chi nhánh đó37YC37Tra cứu đơn hàngTra cứuQuản lí chi nhánh có thể tra cứu đơn hàng38YC38Tra cứu khách hàngTra cứuQuản lí chi nhánh có thể tra cứu khách hàngBảng 4. Bảng mô tả yêu cầu chức năng của người quản trị viên hệ thống theo chi nhánh
+1.2.3.1.5. Người quản trị toàn hệ thống và chi nhánh
+STTMã số YCTên Yêu CầuLoại Nghiệp vụMã quy địnhMã biểu mẫuGhi chú39YC39Tra cứu doanh thu của toàn hệ thốngTra cứuNgười quản trị hệ thống có thể tra cứu, lọc doanh thu của toàn hệ thống hoặc chi nhánh40YC40
+(chưa)Quản lí sản phẩmTra cứu, lưu trữNgười quản trị hệ thống có thể tra cứu, thêm, cập nhật sản phẩm41YC41Quản lí sản phẩm tồn kho của hệ thốngTra cứuNgười quản trị hệ thống có thể tra cứu kho hàng của toàn hệ thống hoặc của từng chi nhánh42YC42Quản lí nhân viên của hệ thốngTra cứu, lưu chữNgười quản trị hệ thống có tra cứu, cập nhật thông tin của nhân viên của toàn hệ thống nếu cần thiết43YC43Quản lí đơn hàngTra cứu, lưu Người quản trị hệ thống tra cứu đơn hàng của toàn hệ thống hoặc cập nhật nếu cần thiết44YC44Quản lí khách hàngTra cứu, lưu chữNgười quản trị hệ thống có thể tra cứu khách hàng của hệ thống hoặc cập nhật nếu cần thiết45YC45"Giả danh" bất kì nhân viênTra cứuNgười quản trị hệ thống có thể "giả danh" bất kì nhân viên nào của hệ thống và thực hiện hành động dưới danh nghĩa của người đó đúng vai trò được gán46YC46Chuyển đổi sang chi nhánh bất kìTra cứuNgười quản trị hệ thống có thể chuyển đổi qua lại bất kì chi nhánh nàoBảng 5. Bảng mô tả yêu cầu chức năng của người quản trị toàn hệ thống và chi nhánh
+
+Quy Định:
+STTMS Quy ĐịnhTên quy địnhMô tả chi tiếtGhi chú1QĐ1Đăng ký tài khoảnNgười dùng buộc phải tuân theo các quy tắc sau:
++  	Mật khẩu tối thiểu 6 ký tự.
++  	Người dùng thường phải xác nhận địa chỉ email để đảm bảo tính duy nhất của tài khoản và có thể khôi phục mật khẩu khi cần thiết.
++  	Người dùng phải chấp nhận điều khoản và điều kiện của dịch vụ, bao gồm các quy định về bảo mật và quyền riêng tư. 2QĐ02Đăng nhập tài khoảnNgười dùng buộc phải tuân theo các quy tắc sau:
++ Tài khoản và mật khẩu đều phân biệt chữ hoa và chữ thường. 3QĐ03Đặt mật khẩuNgười dùng buộc phải tuân theo các quy tắc sau:
++  	Xác thực email để có thể khôi phục tài khoản.
++  	Mật khẩu tối thiểu 6 ký tự. 4QĐ04Mật khẩu được cấp bởi quản trị viênNgười dùng buộc phải tuân theo các quy tắc sau:
++ Mật khẩu phải bao gồm ít nhất: 1 ký tự chữ hoa (A-Z), 1 ký tự chữ thường (a-z), 1 ký tự số (0-9), 1 ký tự đặc biệt (ví dụ: @, #, $, %, !).Bảng 6. Bảng quy định cho các yêu cầu chức năng nghiệp vụ
+1.2.3.2. Yêu cầu chức năng hệ thống
+STTMã số YCHTTên Yêu CầuNội dungGhi chú1YCHT1Chức năng tìm kiếm hiệu quảHệ thống cần có khả năng tìm kiếm mạnh mẽ để khách hàng có thể dễ dàng tìm kiếm và lọc sản phẩm theo nhiều tiêu chí khác nhau. 2YCHT2Quản lý sản phẩm linh hoạtCó khả năng quản lý danh mục, bộ sưu tập và chi tiết sản phẩm một cách linh hoạt và dễ dàng. 3YCHT3Chức năng giỏ hàng và thanh toánHệ thống cần cung cấp giỏ hàng dễ sử dụng và tiện lợi.
+Tích hợp các cổng thanh toán an toàn và phổ biến để đảm bảo thanh toán thuận lợi cho khách hàng. 4YCHT4Báo cáo và phân tíchCung cấp các công cụ để theo dõi và phân tích hiệu suất của hệ thống. 5YCHT5Sao lưu và khôi phụcSao lưu định kỳ dữ liệu quan trọng nhằm đảm bảo an toàn và khôi phục được dữ liệu trong trường hợp xảy ra sự cố. Bảng 7. Yêu cầu chức năng hệ thống
+1.2.4. Yêu cầu phi chức năng
+STTTiêu chuẩnNội dungGhi chú1Hiệu suấtWebsite phải có thể xử lý một lượng lớn truy cập và giao dịch cùng một lúc. 2Khả năng mở rộngHệ thống phải có khả năng mở rộng để đáp ứng nhu cầu tăng lên của người dùng. 3Bảo mật Bảo vệ thông tin cá nhân và thanh toán của khách hàng là rất quan trọng. 4Độ tin cậyWebsite phải hoạt động liên tục, không được gặp sự cố hoặc gián đoạn. 5Thời gian phản hồiThời gian tải trang và thời gian phản hồi của hệ thống phải nhanh. 6Tính sẵn sàngWebsite phải luôn sẵn sàng và dễ truy cập từ bất kỳ đâu. 7Tương thíchWebsite phải tương thích với nhiều loại trình duyệt và thiết bị. Ngoài ra, các yêu cầu về phần cứng cũng rất quan trọng. Bảng 8. Yêu cầu phi chức năng
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHƯƠNG 2. CƠ SỞ LÝ THUYẾT
+2.1. Kiến trúc phát triển website với RESTful API
+	Trong dự án, hệ thống được thiết kế dựa trên kiến trúc tổng quát là RESTful API tuân thủ nguyên tác client-server và stateless. Đây là một kiến trúc phổ biến, đảm bảo khả năng mở rộng, bảo trì dễ dàng và hiệu suất cao. Đây là phong cách thiết kế được sử dụng phổ biến nhất hiện nay.
+	Các nguyên tắc RESTful API:
+* Client-Server: Tách biệt biệt giữa client (giao diện người dùng hay giao diện website) và server (xử lí dữ liệu), tách biệt client và server giúp tăng tính độc lập và khả năng mở rộng, nơi Frontend gửi yêu cầu HTTP đến Backend và nhận kết quả để hiển thị.
+o Client: Next.js là Javascript Framework công nghệ được áp dụng để phát triển client, đảm nhận vai trò hiển thị giao diện người dùng và gửi yêu cầu đến server thông qua API. Client tập trung vào xử lý giao diện và tương tác với người dùng.
+o Server: ASP.NET là C# Framework công nghệ được áp dụng để phát triển server, đảm nhận vai trò xử lý logic nghiệp vụ, quản lý dữ liệu và cung cấp các API cho client.
+* Stateless: Mỗi yêu cầu từ client đến server đều độc lập, không lưu trạng thái của phiên làm việc trước đó.
+o Server không cần lưu trữ trạng thái phiên làm việc, giảm tải cho tài nguyên server.
+o Do trạng thái phiên được tách biệt mỗi request đến server nên giúp dễ dàng quản lí phiên (xử lý lỗi riêng biệt,...).
+* Cacheable: Phản hồi từ server có thể được lưu trữ (cache) để cải thiện hiệu suất.
+* Layered System: Hệ thống có thể được phân tầng, cho phép thêm các lớp trung gian (như proxy, gateway) mà không ảnh hưởng đến client hoặc server.
+			Cấu trúc của RESTful API trong phát triển website
+* Tài nguyên (Resources): Mỗi tài nguyên (ví dụ: người dùng, bài viết, sản phẩm) được biểu diễn bằng một URI duy nhất (ví dụ: /users, /products/123).
+* Phương thức HTTP:
+o GET: Lấy thông tin tài nguyên (ví dụ: lấy danh sách người dùng).
+o POST: Tạo mới tài nguyên (ví dụ: Thêm sản phẩm).
+o PUT/PATCH: Cập nhật toàn bộ/một phần (ví dụ: cập nhật thông tin người dùng).
+o DELETE: Xoá tài nguyên (ví dụ: xoá bài viết).
+* Định dạng dữ liệu: JSON (file.json) là định dạng phổ biến nhất để trao đổi dữ liệu giữ client và server, nhờ kiểu văn bản nhẹ, dễ đọc và giúp giảm áp lực băng thông.
+* Mã trạng thái HTTP:
+o 200 OK: Yêu cầu thành công.
+o 201 Created: Tạo tài nguyên thành công.
+o 400 Bad Request: Yêu cầu không hợp lệ.
+o 404 Not Found: Tài nguyên không tìm thấy.
+o 500 Internal Server Error: Lỗi phía server.
+2.2. Kiến trúc hệ thống
+2.2.1. Tổng quan kiến trúc Microservices
+
+Hình 3: Kiến trúc tổng quát của hệ thống Microservices
+	Khi nhắc đến kiến trúc phát triển phần mềm, các kỹ sư phát triển phần mềm đều quen thuộc hay ít nhất một lần nghe đến kiến trúc nguyên khối (Monolithic architecture). Đây là một kiến trúc đơn giản, dễ phát triển, dễ dàng tích hợp kiểm thử và triển khai, nên được ứng dụng trong phát triển phần mềm nhiều năm qua cho các ứng dụng vừa và nhỏ. Tuy nhiên, khi hệ thống phần mềm phát triển và trở nên phức tập hơn, kiến trúc monolithic bắt đầu bọc lộ nhiều hạn chế. Đặc biệt là trong các dự án lớn, việc quản lý, mở rộng, và duy trì hệ thống trở nên khó khăn hơn. Trong những năm gần đây, kiến trúc Microservices đã được nhắc đến nhiều hơn cũng như được lựa chọn và phổ biến hơn nhờ khả năng khắc phục những nhược điểm của của kiến trúc Monolithic. Thay vì gộp tất các chức năng và logic xử lý nghiệp vụ vào chung một codebase duy nhất, Microservices chia hệ thống phần mềm thành các dịch vụ nhỏ, độc lập, giảm sự ràng buộc giữa các thành phần và giúp việc phát triển, nâng cấp trở nên linh hoạt hơn, đồng thời giảm chi phí và rủi ro trong quá trình triển khai.
+2.2.1.1. Chi tiết kiến trúc Identity Service
+
+Hình 4: Chi tiết Identity Service
+	Hình ảnh là một sơ đồ kiến trúc phần mềm mô tả luồng xử lý yêu cầu từ Frontend đến các thành phần Backend sử dụng mẫu CQRS (Command Query Responsibility Segregation) và Keycloak. Được mô tả chi tiết:
+1. Frontend: Gửi yêu cầu đã được xác thực với JWT (JSON Web Token)
+2. Controller: Nhận yêu cầu từ Frontend, xác thực và chuyển tiếp đến các thành phần phù hợp
+3. CQRS Pattern: 
+* Write Command: Sử dụng mediator pattern để chuyển request đến Command Handler
+* Read Query: Sử dụng mediator pattern để chuyển request đến Query Handler
+* Command Handler: Thực thi các xử lý nghiệp vụ (domain login) và ghi liệu bằng cách tương tác với Repository Layer
+* Query Handler: Thực thi các xử lý nghiệp vụ (domain login) và đọc dữ liệu bằng cách tương tác với Repository Layer
+4. Repository Layer: Tương tác với cơ sở dữ liệu (PostgresDB) để lấy hoặc lưu dữ liệu, sau đó trả về lỗi hoặc dữ liệu
+5. Identity Service Layer: Xử lý xác thực và ủy quyền, tương tác với Keycloak Server
+6. Keycloak Server: Cung cấp dịch vụ xác thực và quản lý danh tính
+7. Result Pattern: Thu thập kết quả từ các handler và trả về cho Controller, cuối cùng gửi lại cho Frontend
+2.2.1.2. Chi tiết kiến trúc Catalog Service
+
+Hình 5: Chi tiết Catalog Service
+	Tương tự như Identity Service, bằng cách thay thể PostgreDB bằng MongoDB giúp linh hoạt trong việc thiết kế các Entities dễ dàng hơn với BSON.
+	Catalog Service sẽ đảm nhận thêm nhiệm vụ đầu vào là lưu trữ hình ảnh trên Cloudinary.
+2.2.1.3. Chi tiết kiến trúc Basket Service
+
+Hình 6: Chi tiết Baset Service
+	Basket service lưu danh sách sản phẩm trong giỏ hàng khi ghi dữ liệu xuống Postgres database, Repository layer sẽ lưu những sản phẩm đó trong Redis giúp lấy dữ liệu ra nhanh hơn không cần trỏ đển PostgresDB.
+	Khi tiến hành thanh toán sản phẩm, Basket service sẽ publish (gửi messsage) đến Event Bus tiến hành gửi message này đến Ordering service gọi là Integration Event.
+2.2.1.4. Chi tiết kiến trúc Discount Service
+
+Hình 7: Chi tiết Discount Service
+	Discount service sẽ không công khai port ra ngoài Docker mà sẽ tương tác với các services khác bằng gRPC, gRPC sử dụng HTTP2 giúp giao tiếp giữa các services nhanh hơn.
+2.2.1.5. Chi tiết kiến trúc Ordering Service
+
+Hình 8: Chi tiết Ordering Service
+	Ordering service sẽ Subcribe/Consume (tiếp nhận message) từ Event-Bus do Basket service publish sau đó chuyển tiếp message và chuyển đổi message này thành Write Command và tiến hành sử lý các logic nghiệp vụ ở Command Handler.
+2.2.1.6. Mẫu thiết kế phần mềm CQRS
+
+Hình 9: Logic trong mẫu thiết phần mềm CQRS
+Hình ảnh mô tả một luồng xử lý trong một hệ thống phần mềm sử dụng mô hình CQRS và DDD. Được mô tả chi tiết:
+* Luồng xử lý Query (bên trái):
+* API nhận Query: API nhận một yêu cầu truy vấn (Query) từ client
+* Query Handler xử lý: Query được chuyển đến Query Handler thông qua Mediator pattern
+* Truy vấn SQL: Query Handler gửi câu lệnh SQL đến Database
+* Kết quả trả về: Database trả về kết quả truy vấn qua Query Handler
+* API trả kết quả: API nhận kết quả từ Query Handler và gửi lại cho client
+* Luồng xử lý Command (bên phải):
+* API nhận Command: API nhận một lệnh (Command) từ client
+* Command Handler xử lý (DDD + EF): Command được chuyển đến Command Handler, sử dụng DDD và Entity Framework (EF) để xử lý
+* Lấy Entities: Command Handler lấy các thực thể (Entities) cần thiết từ Repository
+* Repository truy vấn Database: Repository gửi câu lệnh SQL đến Database để lấy dữ liệu
+* Trả kết quả Entities: Database trả về dữ liệu cho Repository, sau đó Repository gửi Entities cho Command Handler
+* Áp dụng Domain Logic: Command Handler gọi phương thức Invoke Entity Method trên Domain Logic để xử lý logic nghiệp vụ
+* Lưu thay đổi: Sau khi xử lý, Command Handler yêu cầu Repository lưu các thay đổi
+* SQL lưu trữ: Repository gửi câu lệnh SQL để lưu thay đổi vào Database
+* API trả kết quả: API nhận kết quả từ Command Handler và gửi lại cho client
+	CQRS tách biệt rõ ràng giữa đọc (Query) và ghi (Command), giúp tối ưu hiệu suất và bảo trì.
+2.2.2. Các đặc trưng của kiến trúc Microservices
+* Dựa trên dịch vụ (Service-based): Microservices được thiết kế như các dịch vụ riêng lẻ, mỗi dịch vụ chịu trách nhiệm cho một khả năng kinh doanh hoặc chức năng cụ thể trong ứng dụng. Mỗi dịch vụ có thể được phát triển, triển khai và mở rộng độc lập
+* Tính phi tập trung (Decentralized): Microservices khuyến khích sự quản trị và ra quyết định phi tập trung. Mỗi dịch vụ có mã nguồn riêng, cơ sở dữ liệu (nếu cần), và đội ngũ chịu trách nhiệm phát triển và duy trì dịch vụ đó
+* Tính lỏng lẻo (Loosely Coupled): Microservices giao tiếp với nhau thông qua các giao thức như Restful API hoặc gRPC hoặc Message Queue. Các dịch vụ được tách rời nhau, cho phép phát triển, triển khai và mở rộng một cách độc lập
+* Phát triển độc lập (Independent Deployment): Microservices có thể được triển khai độc lập với nhau. Điều này có nghĩa là thay đổi hoặc cập nhật một dịch vụ không yêu cầu phải triển khai lại toàn bộ ứng dụng, giảm thiểu thời gian ngừng hoạt động và sự gián đoạn
+* Khả năng mở rộng (Scalability): Vì mỗi dịch vụ hoạt động độc lập, có thể mở rộng hoặc giảm quy mô từng dịch vụ theo nhu cầu mà không ảnh hưởng đến phần còn lại của ứng dụng. Điều này cho phép các đội ngũ phân bổ tài nguyên hiệu quả hơn và đảm bảo ứng dụng có thể xử lý lưu lượng truy cập
+* Khả năng cô lập lỗi (Fault Isolation): Nếu một dịch vụ gặp sự cố, dịch vụ này sẽ không ảnh hưởng đến toàn bộ hệ thống. Lỗi được giới hạn trong dịch vụ, nên các dịch vụ khác vẫn hoạt động bình thường
+* Đa dạng công nghệ (Technology Diversity): Các dịch vụ khác nhau có thể được viết bằng các ngôn ngữ khác nhau hoặc sử dụng các công nghệ, framework khác nhau. Điều này giúp dễ dàng chọn công cụ phù hợp cho từng nghiệp vụ, thay vì bị ràng buộc vào một công nghệ duy nhất cho toàn bộ ứng dụng như Monolithic
+* Quản lý dữ liệu phi tập trung (Decentralized Data Management): Microservices cho phép mỗi dịch vụ chỉ quản lý cơ sở dữ liệu của riêng dịch vụ đó, có nghĩa là mỗi dịch vụ có thể là cơ sở dữ liệu khác nhau như (Postgres, SQL Server, MySQL, MongDB...) hoặc giống nhau như dịch vụ A và B dùng Postgres, dịch vụ C dùng MongDB
+2.2.3. Ưa điểm và nhược điểm
+* Ưa điểm của kiến trúc microservices
+* Khả năng mở rộng (Scalability): Microservices cho phép mở rộng theo chiều ngang (horizontal scaling) bằng cách mở rộng từng dịch vụ riêng lẻ dựa trên nhu cầu cụ thể. Điều này giúp tối ưu hóa tài nguyên và giảm thiểu chi phí
+* Tăng cường khả năng bảo trì (Maintainability): Hệ thống được chia thành các dịch vụ nhỏ gọn, tập trung vào các chức năng cụ thể. Các nhóm phát triển có thể làm việc độc lập với các phần của hệ thống mà không ảnh hưởng đến các nhóm khác
+* Tự trị và linh hoạt (Autonomy and Flexibility): Mỗi nhóm lập trình có thể lựa chọn công nghệ, ngôn ngữ lập trình và cơ sở dữ liệu phù hợp nhất cho từng dịch vụ, mà không bị ràng buộc bởi các dịch vụ khác của hệ thống. Điều này phép sử dụng công nghệ phù hợp với từng dịch vụ
+* Cô lập lỗi (Fault Isolation): Khi một dịch vụ gặp sự cố, chỉ dịch vụ đó bị ảnh hưởng, còn các dịch vụ khác trong hệ thống vẫn tiếp tục hoạt động bình thường. Điều này giúp hệ thống ổn định và đáng tin cậy hơn
+* Nhược điểm của kiến trúc microserives
+* Độ phức tạp cao (Complexity): Việc quản lý và đồng bộ hóa nhiều dịch vụ khác nhau trong một hệ thống phân tán đòi hỏi cơ chế quản lý phiên bản, cấu hình, và giám sát phức tạp. Điều này có thể tạo ra khó khăn trong quá trình triển khai và bảo trì hệ thống
+* Khó khăn trong việc kiểm tra (Testing Challenges): Việc kiểm thử toàn bộ hệ thống Microservices phức tạp hơn do sự phụ thuộc giữa các dịch vụ. Đôi khi phải khởi chạy nhiều dịch vụ liên quan để kiểm thử một dịch vụ cụ thể, làm gia tăng độ phức tạp trong việc kiểm tra và đảm bảo tính nhất quán của hệ thống
+* Giao tiếp giữa các dịch vụ (Inter-Service Communication): Các dịch vụ giao tiếp với nhau qua mạng, do đó có thể gặp vấn đề về độ trễ và hiệu suất. Nếu không tối ưu hóa đúng cách, hệ thống có thể bị ảnh hưởng bởi những lỗi phát sinh trong quá trình giao tiếp
+* Chi phí vận hành (Operational Overhead): Mỗi dịch vụ cần được quản lý riêng biệt về triển khai, giám sát và bảo mật, làm tăng chi phí vận hành tổng thể. Điều này đòi hỏi đội ngũ lập trình viên phải có kiến thức chuyên sâu để xác định trước các khả năng ảnh hưởng đến chi phí và tối ưu chi phí
+* Quản lý dữ liệu phức tạp (Data Management Challenges): Việc duy trì tính nhất quán dữ liệu và quản lý giao dịch giữa các dịch vụ khác nhau là một trong những khó khăn nhất khi thiết kế cơ sở dữ liệu. Điều này đặc biệt khó khăn khi sử dụng nhiều cơ sở dữ liệu khác nhau trong một hệ thống, điều này cần nhóm lập trình viên có kinh nghiệp làm việc với hệ thống Microservices đối với nghiệp vụ củ thể
+* Sự phối hợp dịch vụ (Service Coordination): Việc phối hợp và tương tác giữa các dịch vụ có thể gặp vấn đề khi số lượng dịch vụ tăng lên. Nếu không được thiết kế giao tiếp cẩn thận, sự cố có thể lan rộng giữa các dịch vụ, gây ra hiệu ứng domino làm hệ thống mất ổn định
+* Độ trễ (Latency): Trong kiến trúc Microservices, các dịch vụ thường giao tiếp với nhau thông qua mạng, bao gồm cả Internet hoặc mạng nội bộ, khiến độ trễ trở thành một vấn đề quan trọng. Mỗi khi có yêu cầu từ một dịch vụ này đến dịch vụ khác, quá trình truyền tải qua mạng có thể gây ra độ trễ
+2.2.4. So sánh Microservices và kiến trúc nguyên khối Monolithic
+	Kiến trúc Microservices và Monolithic đại diện cho hai cách tiếp cận khác nhau trong phát triển và triển khai ứng dụng phần mềm. Dưới đây là sự so sánh chi tiết giữa hai kiến trúc này dựa trên các khía cạnh quan trọng:
+MicroservicesMonolithicTính linh hoạtCó tính linh hoạt cao trong phát triển và triển khai. Các dịch vụ có thể được phát triển, thay đổi và triển khai độc lập mà không ảnh hưởng đến các phần khác của ứng dụng. Điều này cho phép các nhóm phát triển thích ứng nhanh với yêu cầu mới và thực hiện thay đổi một cách hiệu quả.Thay đổi một phần của ứng dụng có thể ảnh hưởng đến toàn bộ hệ thống, đòi hỏi phải xây dựng và triển khai lại toàn bộ ứng dụng. Điều này làm giảm tính linh hoạt và tăng thời gian triển khai thay đổi.Quy trình phát triểnYêu cầu nhiều kế hoạch và thiết kế trước khi bắt đầu. Các nhà phát triển phải xác định các chức năng độc lập và lập kế hoạch giao tiếp giữa các dịch vụ.Dễ dàng bắt đầu với ít kế hoạch ban đầu. Có thể bắt đầu xây dựng ứng dụng với kế hoạch ban đầu và điều chỉnh kế hoạch nhanh chóng. Tuy nhiên, ứng dụng có thể trở nên phức tạp khi quá nhiều nghiệp trong mã nguồn và khó bảo trì theo thời gian.
+Triển khai
+(Deployment)Triển khai phức tạp hơn vì mỗi dịch vụ là một gói phần mềm có thể triển khai độc lập. Các nhà phát triển thường container hóa (Dockerized) các dịch vụ trước khi triển khai, giúp đảm bảo tính nhất quán và độc lập nền tảng.Triển khai đơn giản hơn vì toàn bộ mã nguồn và các phụ thuộc được cài đặt trong một môi trường duy nhất.Gỡ lỗi
+(Debugging)Khó khăn hơn trong việc gỡ lỗi do khó phải theo dỗi luồng dữ liệu từ các dịch vụ khác. Việc gỡ lỗi có thể yêu cầu phối hợp giữa nhiều nhóm, tốn nhiều thời gian và tài nguyên hơn.Dễ dàng gỡ lỗi vì nhà phát triển có thể theo dõi luồng dữ liệu xử lý nghiệp vụ trong cùng một mã nguồn.Sửa đổi và cập nhậtCho phép linh hoạt hơn trong việc thay đổi ứng dụng. Các nhà phát triển chỉ cần thay đổi các dịch vụ cụ thể mà không ảnh hưởng đến toàn bộ hệ thống. Việc triển khai độc lập hỗ trợ triển khai liên tục, giúp thực hiện các thay đổi nhỏ thường xuyên mà không ảnh hưởng đến sự ổn định.Thay đổi nhỏ trong một phần của ứng dụng có thể ảnh hưởng đến nhiều chức năng khác do mã nguồn kết nối chặt chẽ. Cần kiểm tra và triển khai lại toàn bộ hệ thống khi có thay đổi.Khả năng mở rộng
+(Scalability)Hỗ trợ mở rộng từng dịch vụ độc lập dựa trên nhu cầu. Có thể phân bổ thêm tài nguyên cho các dịch vụ cụ thể khi lưu lượng requests tăng cao sau đó giảm tài nguyên khi requests giảm mà không cần mở rộng toàn bộ hệ thống.Gặp thách thức khi mở rộng vì toàn bộ ứng dụng phải được mở rộng, cần phải cấp thêm tài nguyên khi mở rộng theo chiều dọc tiêu tốn tài nguyên khi sử dụng không hợp lý.Hiệu năngCó thể tối ưu hiệu năng từng dịch vụ riêng lẻ, nhưng việc giao tiếp giữa các dịch vụ có thể tạo độ trễ nếu không được tối ưu.Hiệu năng được duy trì tốt hơn trong ứng dụng không quá lớn và phức tạp, do không có giao tiếp qua mạng giữa các thành phần.Bảng 9: So sánh Microservices và Monolithic
+2.2.5. Phân chia Services theo Domain Driven Design
+	Domain-Driven Design (DDD) là một phương pháp thiết kế phần mềm tập trung vào việc mô hình hóa miền nghiệp vụ (domain) một cách chặt chẽ với mã nguồn. Trong kiến trúc Microservices, DDD được sử dụng để phân chia các dịch vụ (services) dựa trên các Bounded Context và Domain Model, đảm bảo mỗi dịch vụ có trách nhiệm rõ ràng và phù hợp với nghiệp vụ.
+2.2.5.1. Các khái niệm cốt lõi của DDD
+* Domain: Là lĩnh vực nghiệp vụ mà hệ thống phục vụ (ví dụ: thương mại điện tử, quản lý kho, vận chuyển)
+* Subdomain: Các phần nhỏ hơn của domain, đại diện cho các khía cạnh cụ thể của nghiệp vụ (ví dụ: trong thương mại điện tử có subdomain như Quản lý đơn hàng, Quản lý thanh toán, Quản lý sản phẩm)
+* Bounded Context: Một ranh giới logic trong đó một mô hình miền cụ thể được định nghĩa và áp dụng. Mỗi Bounded Context thường ánh xạ tới một microservice để đảm bảo tính độc lập và tránh sự mơ hồ trong thuật ngữ hoặc logic
+* Aggregate: Một nhóm các đối tượng miền liên quan chặt chẽ, được quản lý như một đơn vị (ví dụ: Order và OrderItem là một Aggregate trong subdomain Quản lý đơn hàng)
+* Context Mapping: Cách các Bounded Context giao tiếp hoặc tích hợp với nhau (ví dụ: thông qua API, sự kiện, hoặc message queue)
+2.2.5.2. Quy trình phân chia Services theo DDD
+* Liệt kê những thực thể (Entities): User, Product, ProductItem Review, Cart, CartItem, Order, OrderItem,...
+* Xác định subdomain: Quản lý người dùng, quản lý sản phẩm, quản lý sự kiện giảm giá, quản lý giỏ hàng, quản lý đơn hàng,...
+* Xác định bounded context cho mỗi subdomain: Trong subdomain quản lý người dùng thì sẽ gồm có những thực thể: User, Profile, Shipping Address,...
+* Ánh xạ bounded context thành Microservices: Mỗi Bounded Context thường được triển khai dưới dạng một microservice riêng biệt, điều này đảm bảo mỗi dịch vụ có CSDL riêng và không chia sẽ logic nghiệp vụ, service chỉ xử lý một phần cụ thể của nghiệp vụ. Ví dụ: Bounded context "quản lý sản phẩm" => Microservice "Catalog Service", Bounded context "quản lý đơn hàng" => Microservice "Ordering Service", Bounded context "quản lý người dùng" => Microservice "Identity Service"
+* Xác định Aggregate, Aggregate Root và Entity: Trong mỗi Bounded Context, xác định các Aggregate (nhóm các thực thể và giá trị liên quan) để đảm bảo tính nhất quán dữ liệu. Aggregate Root là điểm truy cập chính để tương tác với Aggregate. Mỗi microservice chỉ quản lý các Aggregate liên quan đến Bounded Context của nó. Ví dụ: Trong Ordering Service, Aggregate Root là Order (chứa OrderItem), trong Identity Service, Aggregate root là User (chứa Profile, Shipping Address,...)
+* Thiết kế giao tiếp giữa các Services: Các microservices (Bounded Context) giao tiếp thông qua:
+o Thông qua API đồng bộ: Sử dụng REST hoặc gRPC để gọi trực tiếp (ví dụ: khi sử dụng mã coupon giảm giá trong Basket Service thì cần phải tìm mã đó trong Discount Service xem có tồn tại hay không và tiến hành giảm giá giỏ hàng đó)
+o Thông qua Event Driven Architecture (EDA): Sử dụng message queue (Kafka hoặc RabbitMQ) để gửi sự kiện (ví dụ: Basket Service gửi sự kiện "OrderCreated" để Ordering Service tiến hành tạo một đơn hàng)
+	Phân chia services theo DDD giúp tạo ra các microservices có ranh giới rõ ràng, phản ánh chính xác nghiệp vụ và dễ dàng mở rộng. Tuy nhiên, nó đòi hỏi sự đầu tư vào phân tích domain và thiết kế hệ thống.
+2.3. Công nghệ phía Backend
+2.3.1. Tổng quan
+
+Hình 10: .NET Framework logo
+	.NE	T là một nền tảng phát triển phần mềm mã nguồn mở do Microsoft phát triển, kế thừa và mở rộng từ .NET Framework. Ra đời từ .NET Core (2016) và thống nhất dưới tên .NET từ phiên bản .NET 5 (2020), nó cung cấp môi trưSờng để xây dựng ứng dụng đa nền tảng, hiệu suất cao, và linh hoạt cho desktop, web, di động, đám mây, IoT, và game. .NET hiện đại (phiên bản mới nhất là .NET 9, tính đến tháng 11/2024) được thiết kế để thay thế .NET Framework, với trọng tâm là tính đa nền tảng và hiệu quả.
+* Cấu trúc chính:
+* Common Language Runtime (CLR): Lõi của .NET Framework, quản lý việc thực thi mã, bao gồm quản lý bộ nhớ (garbage collection), xử lý ngoại lệ, bảo mật và biên dịch mã sang ngôn ngữ máy (just-in-time compilation)
+* Framework Class Library (FCL): Thư viện lớp phong phú cung cấp hàng nghìn lớp (class) và phương thức để xử lý các tác vụ như truy cập cơ sở dữ liệu, xử lý file, giao tiếp mạng, và phát triển giao diện người dùng
+* Ngôn ngữ lập trình: Hỗ trợ nhiều ngôn ngữ như C#, VB.NET, F#, nhưng C# là phổ biến nhất. Các ngôn ngữ này được biên dịch thành mã Intermediate Language (IL) chạy trên CLR
+* ASP.NET: Thành phần để xây dựng ứng dụng web và dịch vụ web
+* Windows Forms/WPF: Công cụ phát triển ứng dụng giao diện desktop
+2.3.2. Thư viện sử dụng
+	Dự án phía Backend sử các thư viện khác nhau để hỗ trợ phát triển ASP.NET và các thư viện khác trong Nutget package để phát triển, giao tiếp trong Microservices.
+* Microsoft.AspNetCore.* các thư viện thuộc namespace chứa tất cả các thư viện cốt lõi cần thiết để xây dựng ASP.NET
+* Microsoft.AspNetCore.Mvc: Hỗ trợ mô hình MVC (Model-View-Controller) để xây dựng ứng dụng web hoặc API
+* Microsoft.AspNetCore.Routing: Quản lý định tuyến (routing) để ánh xạ URL tới các hành động (actions)
+* Microsoft.AspNetCore.Hosting: Cung cấp cơ chế lưu trữ (host) ứng dụng, hỗ trợ các máy chủ như Kestrel hoặc IIS
+* Microsoft.AspNetCore.Http: Xử lý yêu cầu và phản hồi HTTP, bao gồm middleware pipeline
+* Các thư viện bổ sung được tích hợp sẵn trong ASP.NET
+* Microsoft.Extensions.Configuration: Hỗ trợ mô hình MVC (Model-View-Controller) để xây dựng ứng dụng web hoặc API
+* Microsoft.Extensions.Logging: Quản lý định tuyến (routing) để ánh xạ URL tới các hành động (actions)
+* Microsoft.Extensions.Diagnostics: Cung cấp cơ chế lưu trữ (host) ứng dụng, hỗ trợ các máy chủ như Kestrel hoặc IIS
+* Thư viện liên quan đến bảo mật:
+* Keycloak.AuthServices.Authentication: Cung cấp tích hợp xác thực với Keycloak cho ứng dụng .NET, hỗ trợ các giao thức như OpenID Connect để quản lý đăng nhập và token
+* Keycloak.AuthServices.Authorization: Hỗ trợ phân quyền dựa trên Keycloak, cho phép kiểm soát truy cập dựa trên vai trò và chính sách trong ứng dụng .NET
+* Microsoft.AspNetCore.Authentication: Cung cấp middleware xác thực cho ASP.NET Core, hỗ trợ nhiều giao thức như OAuth, OpenID Connect, JWT để tích hợp xác thực đa dạng
+* Thư viện giúp tạo ra API Docs:
+* Swashbuckle.AspNetCore: Tạo tài liệu API tự động cho ứng dụng ASP.NET Core, tích hợp với Swagger/OpenAPI để sinh ra giao diện tài liệu tương tác và mô tả endpoint
+* Thư viện giúp giao tiếp với Message Queue:
+* MassTransit: Framework mạnh mẽ để xây dựng hệ thống nhắn tin phân tán, hỗ trợ giao tiếp với các hàng đợi tin nhắn như RabbitMQ, Azure Service Bus, giúp xử lý thông điệp bất đồng bộ
+* Thư viện giao tiếp với cơ sở dữ liệu:
+* Npgsql.EntityFrameworkCore: Nhà cung cấp cơ sở dữ liệu cho Entity Framework Core, cho phép giao tiếp với PostgreSQL, hỗ trợ truy vấn và ánh xạ dữ liệu hiệu quả
+* Microsoft.Extensions.Caching.StackExchangeRedis: Cung cấp cơ chế lưu trữ cache phân tán sử dụng Redis trong ứng dụng .NET, tối ưu hóa hiệu suất truy cập dữ liệu
+* MongoDB.Driver: Thư viện chính thức để giao tiếp với MongoDB trong .NET, hỗ trợ CRUD, truy vấn và quản lý dữ liệu NoSQL
+* Giao tiếp các Services trong private Docker network:
+* Grpc.AspNetCore: Hỗ trợ xây dựng và tích hợp gRPC trong ứng dụng ASP.NET Core, cho phép giao tiếp hiệu suất cao giữa các dịch vụ trong mạng Docker riêng
+* API Gateway:
+* Yarp.ReverseProxy: Thư viện proxy ngược (reverse proxy) cho .NET, dùng làm API Gateway để định tuyến, cân bằng tải và quản lý lưu lượng giữa các dịch vụ
+* Các thư viện bên thứ ba:
+* CloudinaryDotNet: Thư viện .NET để tích hợp với Cloudinary, hỗ trợ quản lý, tải lên, xử lý và phân phối hình ảnh, video trên đám mây
+2.4. Cơ sở dữ liệu
+2.4.1. Postgres
+
+Hình 11: PostgreSQL logo
+	PostgreSQL là một hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) mã nguồn mở, mạnh mẽ và linh hoạt. Nó hỗ trợ cả SQL chuẩn. PostgreSQL được sử dụng rộng rãi trong các ứng dụng web, doanh nghiệp và phân tích dữ liệu nhờ tính ổn định, hiệu suất cao và khả năng xử lý dữ liệu lớn.
+* Các đặc điểm nổi bật của PostgreSQL bao gồm:
+* Mã nguồn mở: Miễn phí, cho phép tùy chỉnh và phát triển theo nhu cầu
+* Tuân thủ chuẩn SQL: Hỗ trợ SQL chuẩn (ANSI) và các tính năng mở rộng
+* Hiệu suất cao: Tối ưu hóa truy vấn, hỗ trợ xử lý dữ liệu lớn và giao dịch phức tạp
+* Độ tin cậy và ổn định: Đảm bảo tính toàn vẹn dữ liệu với cơ chế ACID (Atomicity, Consistency, Isolation, Durability)
+* Khả năng mở rộng: Hỗ trợ plugin, extension và tích hợp với nhiều công cụ, ngôn ngữ
+* Hỗ trợ dữ liệu đa dạng: Quản lý dữ liệu quan hệ, JSON/JSONB (NoSQL), XML, và dữ liệu không gian (PostGIS)
+* Tính năng nâng cao: 
+* Full-text search
+* Hỗ trợ đồng thời (concurrency) với MVCC (Multiversion Concurrency Control)
+* Sao lưu và phục hồi (backup/restore) mạnh mẽ
+* Replication (nhân bản) để tăng tính sẵn sàng và cân bằng tải
+
+2.4.2. MongoDB
+
+Hình 12: MongoDB logo
+	MongoDB là một hệ quản trị cơ sở dữ liệu NoSQL mã nguồn mở, được thiết kế để lưu trữ và quản lý dữ liệu phi cấu trúc hoặc bán cấu trúc dưới dạng tài liệu (document) theo định dạng JSON hoặc BSON (Binary JSON). Thay vì sử dụng bảng và hàng như cơ sở dữ liệu quan hệ (RDBMS), MongoDB lưu trữ dữ liệu trong các bộ sưu tập (collections) chứa các tài liệu linh hoạt, không yêu cầu schema cố định
+	Các đặc điểm nổi bật của MongoDB bao gồm:
+* Lưu trữ tài liệu dạng BSON (Binary JSON): Dữ liệu được tổ chức dưới dạng tài liệu JSON/BSON, cho phép lưu trữ cấu trúc dữ liệu phức tạp, dễ mở rộng
+* Không cần schema cố định: Mỗi tài liệu trong một bộ sưu tập có thể có cấu trúc khác nhau, phù hợp với ứng dụng cần linh hoạt
+* Hiệu suất cao: Hỗ trợ truy vấn nhanh, lập chỉ mục (indexing), và xử lý khối lượng dữ liệu lớn
+* Khả năng mở rộng ngang: Dễ dàng mở rộng quy mô bằng cách phân tán dữ liệu trên nhiều máy chủ (sharding) và nhân bản (replication)
+* Hỗ trợ truy vấn mạnh mẽ: Cho phép truy vấn phức tạp, tìm kiếm full-text, và phân tích dữ liệu với Aggregation Framework
+* Ứng dụng phổ biến: Thường được dùng trong ứng dụng web, thương mại điện tử, quản lý nội dung, và dữ liệu thời gian thực
+2.4.3. Redis
+
+Hình 13: Redis logo
+	Redis (Remote Dictionary Server) là một hệ quản trị cơ sở dữ liệu NoSQL mã nguồn mở, hoạt động như một kho lưu trữ dữ liệu dạng key-value (khóa-giá trị) với hiệu suất cực cao. Redis được thiết kế để lưu trữ dữ liệu trong bộ nhớ (in-memory), giúp truy xuất dữ liệu nhanh chóng, thường được sử dụng để tăng tốc ứng dụng hoặc làm bộ nhớ đệm (cache).
+	Các đặc điểm nổi bật của MongoDB bao gồm:
+* Hiệu suất cao: Lưu trữ dữ liệu trong RAM, cho phép truy xuất dữ liệu với độ trễ cực thấp (microseconds)
+* Cấu trúc dữ liệu đa dạng: Hỗ trợ nhiều loại dữ liệu như strings, lists, sets, sorted sets, hashes, bitmaps, và geospatial indexes
+* In-memory nhưng bền vững: Dữ liệu chủ yếu lưu trong bộ nhớ, nhưng có tùy chọn lưu trữ xuống đĩa (persistence) thông qua snapshot hoặc append-only file (AOF)
+* Khả năng mở rộng: Hỗ trợ nhân bản (replication), phân cụm (clustering) và phân vùng dữ liệu (sharding)
+* Pub/Sub Messaging: Hỗ trợ mô hình publish/subscribe để xây dựng hệ thống nhắn tin thời gian thực
+* Đa mục đích sử dụng: 
+o Caching: Làm bộ nhớ đệm cho cơ sở dữ liệu quan hệ hoặc NoSQL khác
+o Hàng đợi (Queue): Quản lý tác vụ bất đồng bộ
+o Lưu trữ phiên (Session store): Quản lý dữ liệu phiên người dùng trong ứng dụng web
+* Dữ liệu thời gian thực: Phân tích, bảng xếp hạng, hoặc xử lý sự kiện
+* Cộng đồng mạnh mẽ: Có tài liệu phong phú, được sử dụng rộng rãi trong các công ty lớn như Twitter, GitHub, và StackOverflow
+	Redis đặc biệt phù hợp cho các ứng dụng yêu cầu tốc độ cao, xử lý dữ liệu thời gian thực, hoặc cần bộ nhớ đệm để giảm tải cho cơ sở dữ liệu chính. Tuy nhiên, vì chủ yếu lưu dữ liệu trong RAM, nó có thể không phù hợp cho dữ liệu lớn cần lưu trữ lâu dài nếu không cấu hình persistence hợp lý.
+2.5. Công nghệ phía Frontend
+2.5.1. Tổng quan Next.js
+
+Hình 14: Next.js framework logo 
+	Next.js là một framework mã nguồn mở được xây dựng trên nền thư viện React, được thiết kế để phát triển các ứng dụng web hiện đại, hiệu năng cao và tối ưu SEO khắc phục nhược điểm của React thuần. Next.js cung cấp các tính năng như server-side rendering (SSR), static site generation (SSG), incremental static regeneration (ISR), và client-side rendering (CSR), giúp tối ưu hóa hiệu suất và trải nghiệm người dùng. Next.js cũng tích hợp các công cụ định tuyến linh động - dynamic do framework đã định nghĩa code convention ngay từ ban đầu, giúp việc xây dựng ứng dụng web trở nên nhanh chóng và dễ dàng hơn.
+	Các đặc điểm nổi bật của Next.js:
+* Server-Side Rendering (SSR): Tạo nội dung trang web trên máy chủ cho mỗi yêu cầu, cải thiện hiệu suất và SEO
+* Static Site Generation (SSG): Tạo các trang tĩnh tại thời điểm xây dựng, tối ưu tốc độ tải và giảm tải máy chủ
+* Incremental Static Regeneration (ISR): Cập nhật nội dung tĩnh mà không cần rebuild toàn bộ ứng dụng, kết hợp lợi ích của SSG và SSR
+* Client Side Rendering (CSR): Xây dựng UI/UX mà không cần đến tối ưu SEO, giúp tăng trải nghiệm người dùng
+* File-Based Routing: Hệ thống định tuyến tự động dựa trên cấu trúc thư mục, đơn giản hóa việc tạo và quản lý các tuyến đường
+* API Routes: Cho phép xây dựng các API endpoint ngay trong ứng dụng Next.js, giảm sự phụ thuộc vào backend riêng
+* Tối ưu hóa hình ảnh: Tích hợp next/image, tự động tối ưu hóa kích thước và định dạng hình ảnh, hỗ trợ lazy loading
+* Hỗ trợ TypeScript: Tích hợp sẵn TypeScript, giúp phát triển ứng dụng an toàn và dễ bảo trì hơn
+* Hot Reloading: Cập nhật thay đổi mã nguồn ngay lập tức, cùng với các công cụ như Fast Refresh, cải thiện trải nghiệm phát triển
+* Tối ưu SEO: Cung cấp các công cụ như meta tags, sitemap, và SSR/SSG để cải thiện khả năng tìm kiếm trên công cụ tìm kiếm
+* Hỗ trợ triển khai dễ dàng: Tích hợp chặt chẽ với Vercel và hỗ trợ triển khai trên nhiều nền tảng khác như Netlify, AWS
+* Middleware: Cho phép xử lý logic tùy chỉnh trước khi yêu cầu được xử lý, như xác thực hoặc chuyển hướng (Nếu kết hợp Backend và Frontend chung 1 App)
+* App Router (Next.js 13+): Cải tiến định tuyến với mô hình dựa trên React Server Components, tăng cường hiệu suất và khả năng mở rộng
+2.5.2. Thư viện sử dụng
+	Dự án sử dụng các thư viện hỗ trợ xây dựng UI/UX được nhiều người tin cậy và được sử dụng nhiều:
+* Styling và một số thư viện UI/UX, Icons:
+o Tailwind CSS: Framework CSS utility-first để xây dựng giao diện nhanh chóng và tùy chỉnh
+o framer-motion: Thư viện animation mạnh mẽ cho React, hỗ trợ gesture và transition
+o @radix-ui/react-icons/lucide react: Bộ icon Lucide cho React từ Radix UI, cung cấp icon SVG đơn giản và tùy chỉnh
+o react-day-picker: Component chọn ngày cho React, linh hoạt và dễ tích hợp
+* Xử lý Form + Validation:
+o react-hook-form: Thư viện quản lý form hiệu suất cao, dễ sử dụng với validation tích hợp
+o zod: Thư viện validation schema dựa trên TypeScript, hỗ trợ type inference
+* Quản lí State + Data Fetching:
+o redux/redux-toolkit: Thư viện quản lý state toàn cục, Redux Toolkit đơn giản hóa boilerplate
+o RTKQuery/redux-toolkit: Công cụ fetching và caching data trong Redux Toolkit, thay thế cho các thư viện như Axios
+* Một số thư viện khác:
+o date-fns: Thư viện xử lý ngày tháng hiện đại, nhẹ và không phụ thuộc múi giờ
+o next-cloudinary: Tích hợp Cloudinary cho Next.js, tối ưu hóa hình ảnh và video
+	Các thư viện này được lựa chọn dựa trên các tiêu chí sau:
+* Về styling tailwind giúp code UI/UX trực tiếp ngay trên các HTML Element
+* Sử dụng các Icons đã xây dựng sẵn có thể tùy chính kích thước và màu sắc
+* Tích hợp tốt với Next.js giúp phát triển web nhanh hơn
+* Mỗi thư viện được tin cậy và sử dụng nhiều, đặc biệt được cộng đồng phát triển lớn, được hỗ trợ liên tục, sử dụng được lâu dài
+2.6. Công nghệ phía Blockchain
+2.6.1. Tổng quan về Blockchain
+	Blockchain là một công nghệ sổ cái phân tán (distributed ledger technology) mã nguồn mở, hoạt động như một cơ sở dữ liệu phi tập trung, nơi thông tin được lưu trữ trong các khối (block) được liên kết với nhau bằng mã băm (hash) và phân phối trên nhiều nút mạng (node), Nhờ đặc điểm này, blockchain đảm bảo tính minh bạch, toàn vẹn và không thể thay đổi của dữ liệu. Blockchain khắc phục nhược điểm của các hệ thống tài chính truyền thống bằng cách loại bỏ trung gian, sử dụng cơ chế đồng thuận (consensus mechanism) như Proof-of-Work (PoW) hoặc Proof-of-Stake (PoS) để xác thực giao dịch. Blockchain không chỉ giới hạn ở tiền điện tử mà còn hỗ trợ các ứng dụng như hợp đồng thông minh (smart contracts), quản lý chuỗi cung ứng, tài chính phi tập trung (DeFi), và NFT, giúp tăng cường tính toàn vẹn dữ liệu và giảm chi phí giao dịch.
+	Các đặc điểm nổi bật của Blockchain:
+* Phi tập trung (Decentralization): Dữ liệu được lưu trữ trên nhiều nút mạng, không phụ thuộc vào một thực thể trung tâm, giảm rủi ro kiểm soát và tấn công đơn điểm
+* Bất biến (Immutability): Mỗi khối chứa hash của khối trước, tạo chuỗi liên kết; bất kỳ thay đổi nào cũng yêu cầu đồng thuận toàn mạng, đảm bảo tính toàn vẹn
+* Bảo mật cao (Security): Sử dụng mã hóa mật mã (cryptography) như SHA-256 để bảo vệ giao dịch, chống lại các cuộc tấn công như double-spending
+* Hợp đồng thông minh (Smart Contracts): Mã tự động thực thi khi điều kiện được đáp ứng, hỗ trợ tự động hóa mà không cần bên thứ ba
+2.6.2. Tổng quan Solana và Framwork Anchor
+	Solana là một nền tảng blockchain hiệu suất cao mã nguồn mở, được thiết kế để hỗ trợ các ứng dụng phi tập trung (dApps) quy mô lớn với tốc độ giao dịch vượt trội và chi phí thấp. Solana sử dụng cơ chế đồng thuận kết hợp Proof-of-History (PoH) và Proof-of-Stake (PoS), cho phép xử lý lên đến 65.000 giao dịch/giây (TPS) với phí trung bình chỉ 0.00025 USD. Nền tảng này tối ưu hóa cho DeFi, NFT, gaming và Web3, với kiến trúc song song (parallel processing) và runtime Sealevel hỗ trợ thực thi đồng thời nhiều chương trình.
+
+
+
+Hình 15: Hình ảnh logo Blockchain Solana
+	Các đặc điểm nổi bật của Solana:
+* Proof-of-History (PoH): Cung cấp "đồng hồ" thời gian đáng tin cậy để sắp xếp giao dịch mà không cần đồng bộ toàn mạng, tăng tốc độ xác thực
+* Proof-of-Stake (PoS): Đảm bảo đồng thuận nhanh chóng, an toàn và tiết kiệm năng lượng
+* Xử lý song song (Parallel Processing): Cho phép giao dịch không chồng chéo được thực thi đồng thời, đạt throughput cao
+* Phí giao dịch thấp: Trung bình dưới 0.0025 USD, lý tưởng cho microtransactions và dApps thời gian thực
+* Hỗ trợ lập trình mạnh mẽ: Hợp đồng thông minh (smart contract) được viết bằng Rust, C, hoặc C++ - ngôn ngữ hiệu năng cao và an toàn bộ nhớ
+* Tích hợp dễ dàng: Với các công cụ như Solana CLI và hỗ trợ triển khai trên devnet/mainnet và cả trên giao diện với có thự viện được cung cấp bời chính Solana
+	Anchor là một framework mạnh mẽ được phát triển dành riêng cho Solana, giúp việc xây dựng và triển khai smart contract trở nên dễ dàng, an toàn và nhất quán hơn.
+
+
+
+Hình 16: Hình ảnh logo Anchor Framework
+	Các đặc điểm nổi bật của Anchor:
+* Giảm boilerplate code: Tự động hóa xử lý accounts, instruction data và serialization.
+* Kiểm tra bảo mật tích hợp: Xác thực ownership, signer và constraints để tránh lỗ hổng phổ biến.
+* IDL (Interface Definition Language): Tạo schema tự động cho client-side integration (TypeScript, JS).
+* CLI mạnh mẽ: Hỗ trợ build, test, deploy và quản lý dự án một lệnh.
+* Testing framework: Kiểm tra local mà không cần deploy, tích hợp Mocha/Chai
+* Hỗ trợ Rust macros: Định nghĩa accounts và instructions dễ dàng với #[derive(Accounts)]
+* Tích hợp SPL: Dễ dàng sử dụng token programs và associated accounts
+* Verifiable Builds: Đảm bảo tính minh bạch và an toàn khi deploy
+* Cross-language clients: Tạo client từ IDL cho frontend (React, etc.) và backend
+* Cộng đồng lớn: Tài liệu phong phú, ví dụ và cập nhật liên tục từ Solana Foundation
+2.6.3. Thư viện sử dụng
+	Dự án sử dụng các thư viện hỗ trợ phát triển chương trình Solana và tích hợp blockchain được cộng đồng tin cậy và sử dụng rộng rãi:
+* Core Framework và On-chain Development:
+o Anchor: Framework chính cho việc viết và deploy smart contracts trên Solana
+o solana-program: Thư viện Rust cốt lõi để tương tác với runtime Solana
+o anchor-spl: Tích hợp SPL token và associated token accounts cho Anchor
+* Client-side và Web3 Integration:
+o @solana/web3.js: Thư viện JavaScript/TypeScript để kết nối wallet, gửi giao dịch và query blockchain
+o @coral-xyz/anchor: Client TypeScript cho Anchor programs, hỗ trợ IDL và RPC calls
+* Token và SPL Utilities:
+o @solana/spl-token: Xử lý token fungible (SPL Token standard), minting, transferring
+* Testing và Development Tools:
+o mocha/chai: Framework testing cho Anchor tests
+o solana-cli: Command-line tool để quản lý keypairs, airdrop SOL và deploy
+* Một số thư viện khác:
+o borsh: Serialization/deserialization cho dữ liệu on-chain (tích hợp sẵn trong Anchor)
+o bs58: Encoding/decoding base58 cho Solana addresses
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHƯƠNG 3. PHÂN TÍCH THIẾT KẾ HỆ THỐNG
+3.1. Lược đồ Use case
+
+Hình 17: Lược đồ use case client app (vai trò khách vãng lai và người dùng)
+
+
+Hình 18: Lược đồ use case admin app (vai trò quản lí và nhân viên)
+
+
+Hình 19: Lược đồ use case admin app (vai trò người quản trị hệ thống)
+
+
+
+3.2. Đặc tả Use case
+3.2.1. Use case đăng ký
+Use case IDUC-01Use caseĐăng kýActor(s)Khách hàng chưa đăng ký tài khoảnShort descriptionCho phép actor tạo tài khoản mớiPre-conditionsActor chưa có tài khoản trong hệ thốngPost-conditionsĐăng ký tài khoản thành công và actor được điều hướng đến trang đăng nhậpMain flow1. Actor truy cập trang chủ hệ thống và nhấn vào biểu tượng người dùng    trên thanh điều hướng
+2. Hệ thống hiển thị menu người dùng
+3. Actor nhấn vào đường dẫn đăng nhập "Sign-in" trên menu người dùng
+4. Hệ thống điều hướng đến trang đăng nhập
+5. Actor nhấn vào đường dẫn "Create your account"
+6. Hệ thống điều hướng đến trang đăng ký
+7. Actor nhập các thông tin cần thiết gồm: họ, tên, quốc gia, ngày sinh, số điện thoại, email và mật khẩu
+8. Actor nhấn vào nút "Create Account"
+9. Hệ thống tạo tài khoản người dùng (tài khoản mới đang chờ xác minh email)
+10. Hệ thống điều hướng đến trang xác thực OTP và gửi mã xác thực vào email của actor
+11. Actor truy cập email và kiểm tra mã xác thực OTP
+12. Khi có mã OTP, actor nhập mã ở trang xác thực và ấn nút "Verify Code"
+13. Hệ thống kích hoạt tài khoản sau khi actor ấn nút "Verify Code".
+14. Hệ thống hiển thị thông báo thành công và điều hướng đến trang đăng nhậpAlternative flowException flow7.1 Nếu email hoặc số điện thoại không đúng định dạng, hệ thống hiển thị thông báo lỗi và yêu cầu actor nhập lại
+9.1 Nếu email đã tồn tại, hệ thống hiển thị thông báo "User already exists"Bảng 10: Đặc tả use case đăng ký
+
+
+Hình 20: Sequence diagram đăng ký
+Link sequence: Sequence UC1_Register
+3.2.2. Use case đăng nhập
+Use case IDUC-2Use caseĐăng nhậpActor(s)Khách hàngShort descriptionActor đăng nhập vào tài khoản đã đăng kýPre-conditionsActor chưa đăng nhập vào hệ thống và đã có tài khoản hợp lệ trong hệ thốngPost-conditionsActor đăng nhập thành công và được điều hướng đến trang chủMain flow1. Actor truy cập trang chủ hệ thống và nhấn vào biểu tượng người dùng    trên thanh điều hướng
+2. Hệ thống hiển thị menu người dùng
+3. Actor nhấn vào đường dẫn "Sign-in"
+4. Hệ thống điều hướng đến trang đăng nhập
+5. Actor nhập thông tin email và mật khẩu password đã đăng ký trước đó
+6. Actor nhấn vào nút "Log in"
+7. Hệ thống kiểm tra thông tin đăng nhập
+8. Actor được điều hướng đến trang chủAlternative flowA1: Đăng nhập bằng Google
+5. Actor nhấn vào "Sign in with Google" để đăng nhập bằng tải khoản GoogleException flow5.1 Hệ thống hiển thị thông báo "Email không đúng định dạng"
+7.1 Nếu email không tồn tại trong hệ thống thì hiển thị thông báo "User does not exists"
+7.2 Nếu email và mật khẩu sai thì hệ thống hiển thị thông báo "Invalid credentials"
+7.3 Nếu email chưa được xác thực thì hệ thống sẽ gửi email xác thực và chuyển sang trang xác thực OTPBảng 11: Đặc tả use case đăng nhập
+
+
+Hình 21: Sequence diagram đăng nhập
+Link sequence: Sequence UC2_Login
+
+3.2.3. Use case đăng xuất
+Use case IDUC-4Use caseĐăng xuấtActor(s)Khách hàngShort descriptionActor đăng xuất khỏi tài khoản đang đăng nhậpPre-conditionsActor đã đăng nhập vào tài khoảnPost-conditionsTài khoản actor được đăng xuất và chuyển hướng về trang đăng nhậpMain flow1. Actor truy cập trang chủ hệ thống và nhấn vào biểu tượng người    dùng trên thanh điều hướng
+2. Hệ thống hiển thị menu người dùng
+3. Actor nhấn vào đường dẫn đăng xuất "Logout" trên menu người dùng
+4. Actor được chuyển về trang đăng nhậpAlternative flowException flowBảng 12: Đặc tả use case đăng xuất
+
+Hình 22: Sequence diagram đăng xuất
+Link sequence: Sequence UC4_Logout
+
+
+3.2.4. Use case xem danh sách sản phẩm
+Use case IDUC-5Use caseXem danh sách sản phẩmActor(s)Khách hàngShort descriptionXem danh sách sản phẩmPre-conditionsHệ thống có dữ liệu sản phẩmPost-conditionsActor xem được danh sách sản phẩm trong hệ thốngMain flow1. Actor chọn một hạng mục sản phẩm trên thanh điều hướng
+2. Hệ thống hiển thị danh mục con
+3. Actor chọn "Explore All"
+4. Hệ thống điều hướng đến trang danh sách sản phẩm của hạng mục đã chọn
+5. Hệ thống tải và hiển thị danh sách sản phẩmAlternative flowException flow5.1 Khi tải dữ liệu, nếu hệ thống không tìm thấy sản phẩm nào, hệ thống hiển thị thông báo "No products found"
+5.2 Hệ thống không thể tải danh sách sản phẩm do lỗi mạng, timeout, hoặc server lỗi, hệ thống hiển thị thông báo lỗi "Can't load products"
+Bảng 13: Đặc tả use case xem danh sách sản phẩm
+
+
+Hình 23: Sequence diagram xem danh sách sản phẩm
+Link sequence: Sequence-UC5-Xem-danh-sach-san-pham
+
+3.2.5. Use case lọc sản phẩm
+Use case IDUC-06Use caseLọc sản phẩmActor(s)Khách hàngShort descriptionCho phép actor lọc danh sách sản phẩm theo các tiêu chí mong muốnPre-conditionsActor đang ở trang danh sách sản phẩm (UC-05) và hệ thống có dữ liệu sản phẩm để lọcPost-conditionsHệ thống hiển thị danh sách sản phẩm đã được lọc theo tiêu chí actor chọnMain flow1. Actor truy cập trang danh sách sản phẩm
+2. Actor chọn một hoặc nhiều tiêu chí lọc (màu, dung lượng bộ nhớ, model, giá tiền)
+3. Hệ thống nhận các tiêu chí lọc mà actor chọn
+4. Hệ thống xử lý và cập nhật danh sách sản phẩm tương ứng với bộ lọc
+5. Hệ thống hiển thị danh sách sản phẩm đã lọc cho actorAlternative flow5. Actor xóa một hoặc tất cả tiêu chí lọc
+6. Hệ thống quay về bước 3-5, cập nhật và hiển thị lại danh sách sản phẩm tương ứng (có thể trở về danh sách đầy đủ nếu xóa hết lọc)Exception flow4.1 Sau khi áp dụng lọc, hệ thống không tìm thấy sản phẩm nào thỏa mãn tất cả tiêu chí. Hệ thống hiển thị thông báo "No products found"Bảng 14: Đặc tả use case lọc sản phẩm
+
+
+Hình 24: Sequence diagram lọc sản phẩm
+Link sequence: Sequence-UC6-Loc-san-pham
+
+
+3.2.6. Use case xem sản phẩm chi tiết
+Use case IDUC-7Use caseXem chi tiết sản phẩmActor(s)Khách hàngShort descriptionActor xem thông tin chi tiết của một sản phẩmPre-conditionsActor đang xem danh sách sản phẩmPost-conditionsActor nhìn thấy chi tiết sản phẩm đã chọn, bao gồm mô tả, giá, số lượng bán, số lượng sản phẩm còn lại, hình ảnh, thông số sản phẩm,...Main flow1. Actor nhấn chọn "Visit" của một sản phẩm từ danh sách sản phẩm
+2. Hệ thống điều hướng actor đến trang chi tiết sản phẩm
+3. Hệ thống tải thông tin chi tiết của sản phẩm, bao gồm: hình ảnh, giá, mô tả, thông số, đánh giá,...
+4. Actor xem các thông tin hiển thịAlternative flowException flow3.1 Nếu sản phẩm không tồn tại thì hệ thống hiển thị thông báo "Product not found"Bảng 15: Đặc tả use case xem chi tiết sản phẩm
+
+
+Hình 25: Sequence diagram xem chi tiết sản phẩm
+Link sequence: Sequence-UC7-Xem-chi-tiet-san-pham
+
+3.2.7. Use case tìm kiếm sản phẩm
+Use case IDUC-8Use caseTìm kiếm sản phẩmActor(s)Khách hàngShort descriptionActor nhập từ khóa vào thanh tìm kiếm để tìm các sản phẩm phù hợpPre-conditionsActor đang truy cập hệ thốngPost-conditionsHệ thống hiển thị danh sách sản phẩm phù hợp với từ khóa tìm kiếm (hoặc thông báo không tìm thấy)Main flow1. Actor nhấn vào biểu tượng tìm kiếm trên thanh điều hướng. 
+2. Hệ thống hiển thị ô tìm kiếm 
+3. Actor nhập từ khóa vào ô tìm kiếm. 
+4. Actor nhấn nút tìm kiếm. 
+5. Hệ thống xử lý từ khóa và điều hướng đến trang kết quả tìm kiếm. 
+6. Hệ thống hiển thị danh sách sản phẩm phù hợp với từ khóa.Alternative flowAL1: Actor chọn sản phẩm gợi ý từ thanh search
+Tại bước 3:
+3.1 Hệ thống tự động hiển thị danh sách gợi ý sản phẩm
+3.2 Actor có thể chọn một gợi ý → Hệ thống chuyển sang trang chi tiết sản phẩm
+Exception flow6.1 Khi lọc dữ liệu, nếu hệ thống không tìm thấy sản phẩm nào, hệ thống hiển thị thông báo "No products found"Bảng 16: Đặc tả use case tìm kiếm sản phẩm
+
+
+Hình 26: Sequence diagram tìm kiếm sản phẩm
+Link sequence: Sequence-UC8-tim-kiem-san-pham
+
+
+3.2.8. Use case thêm sản phẩm vào giỏ hàng
+Use case IDUC-9Use caseThêm sản phẩm vào giỏ hàngActor(s)Khách hàngShort descriptionCho phép khách hàng thêm sản phẩm vào giỏ hàng từ trang chi tiết sản phẩmPre-conditionsActor đang ở trang xem chi tiết sản phẩmPost-conditionsHệ thống thông báo sản phẩm được thêm vào giỏ hàng của actorMain flow1. Actor chọn các thuộc tính của sản phẩm (model, màu sắc, và dung lượng), hệ thống hiển thị số lượng trong kho và so lượng sản phẩm ở các cửa hàng khác
+2. Actor bấm nút "Add to bag" 
+3. Hệ thống kiểm tra sản phẩm có các thuộc tính vừa chọn còn trong kho
+4. Hệ thống thêm sản phẩm vào giỏ hàng và hiển thị thông báo "Item added to cart"
+Alternative flowException flow4.1 Hệ thống phát hiện không còn đủ hàng
+4.2 Hệ thống hiển thị thông báo lỗi "Insufficient stock"Bảng 17: Đặc tả use case thêm sản phẩm vào giỏ hàng
+
+
+Hình 27: Sequence diagram thêm sản phẩm vào giỏ hàng
+Link sequence: Sequence-UC9-them-san-pham-vao-gio-hang
+
+3.2.9. Use case quản lý giỏ hàng
+
+Use case IDUC-10Use caseQuản lý giỏ hàngActor(s)Khách hàngShort descriptionCho phép actor xem, điều chỉnh số lượng, áp mã giảm giáPre-conditionsActor đang đăng nhập vào hệ thốngPost-conditionsGiỏ hàng được cập nhật theo thao tác của Actor (số lượng, mã giảm giá, xóa sản phẩm...)Main flow1. Actor chọn biểu tượng    giỏ hàng trên thanh điều hướng
+2. Hệ thống hiển thị các sản phẩm đã cho vào giỏ hàng (nếu có)
+3. Actor nhấn chọn nút "Review bag" 
+4. Hệ thống điều hướng actor đến trang giỏ hàng
+5. Hệ thống hiển thị danh sách sản phẩm trong giỏ hàng, số lượng, giá từng món, tổng tiền và các tùy chọn quản lýAlternative flowA1: Điều chỉnh số lượng sản phẩm
+Tại bước 5:
+5.1 Actor thay đổi số lượng của một sản phẩm (tăng/giảm bằng nút hoặc nhập trực tiếp)
+5.2 Hệ thống cập nhật ngay số lượng, kiểm tra tồn kho và tính lại tổng tiền
+A2: Áp dụng mã khuyến mãi
+Tại bước 5:
+5.1 Actor chọn sản phẩm cần áp dụng khuyến mãi
+5.2 Actor nhập mã vào ô Promo Code và nhấn "Apply" 5.3 Hệ thống kiểm tra tính hợp lệ của mã
+5.4 Hệ thống áp dụng giảm giá và cập nhật tổng tiền
+A3: Xóa một sản phẩm
+Tại bước 5:
+5.1 Actor nhấn biểu tượng xóa (thùng rác) của sản phẩm
+5.2 Hệ thống xóa sản phẩm khỏi giỏ hàng và cập nhật tổng tiền
+A4: Xóa toàn bộ giỏ hàng 
+Tại bước 5:
+5.1 Actor nhấn nút "Clear Cart" (nếu có).
+5.2 Hệ thống xóa tất cả sản phẩm và hiển thị giỏ hàng trống
+Exception flowE1: Giỏ hàng trống
+5.1 Hệ thống hiển thị thông báo "Giỏ hàng của bạn đang trống" kèm gợi ý sản phẩm phổ biến
+E2: Mã khuyến mãi không hợp lệ
+A2 5.2 (Alternative): Hệ thống hiển thị thông báo "Mã khuyến mãi không hợp lệ" hoặc "Mã đã hết hạn"
+E3: Sản phẩm trong giỏ bị hết hàng
+A1 5.2 (Alternative): Hệ thống đánh dấu sản phẩm hết hàng
+E4: Số lượng yêu cầu vượt tồn kho
+A1 5.2 (Alternative): Hệ thống thông báo "Insufficient stock"Bảng 18: Đặc tả use case quản lý giỏ hàng
+
+
+Hình 28: Sequence diagram quản lý giỏ hàng
+Link sequence: Sequence-UC10-quan-ly-gio-hang
+
+3.2.10. Use case thanh toán giỏ hàng
+Use case IDUC-12Use caseThanh toán giỏ hàngActor(s)Khách hàngShort descriptionKhách hàng xác nhận thông tin giao hàng, chọn phương thức thanh toán và hoàn tất đặt hàng từ giỏ hàngPre-conditionsKhách hàng đã đăng nhập. 
+Khách hàng đang ở trang giỏ hàng (UC-10)
+Giỏ hàng có ít nhất một sản phẩm hợp lệ và còn hàngPost-conditionsĐơn hàng được tạo thành công trong hệ thống
+Khách hàng được điều hướng đến trang chi tiết đơn hàng hoặc trang xác nhận thanh toán thành công
+Tồn kho sản phẩm được cập nhật (giảm tương ứng)Main flow1. Actor nhấn nút "Checkout" từ trang giỏ hàng. 
+2. Hệ thống kiểm tra tồn kho cuối cùng và điều hướng đến trang Thanh toán. 
+3. Hệ thống tải thông tin:
+* Danh sách sản phẩm đã chọn, giá, phí vận chuyển (theo địa chỉ mặc định).
+* Địa chỉ giao hàng mặc định, số điện thoại.
+* Mã giảm giá đã áp dụng (nếu có), tổng thanh toán.
+4. Actor xem lại thông tin đơn hàng và chọn phương thức thanh toán "Cash on Delivery" (COD). 
+5. Actor nhấn nút "Place Order". 
+6. Hệ thống tạo đơn hàng. 
+7. Hệ thống điều hướng đến trang chi tiết đơn hàng với trạng thái "Pending" Chờ xác nhận đơn hàng (UC-27: Xác nhận đơn hàng)Alternative flowA1: Chọn phương thức VNPay 
+Tại bước 4:
+4. Actor chọn "VNPay"
+5. Actor nhấn "Place Order"
+6. Hệ thống tạo đơn hàng tạm và điều hướng đến cổng thanh toán VNPay
+7. Actor hoàn thành thanh toán qua VNPay (UC-14: Thanh toán VNPay)
+8. Sau khi thanh toán thành công, hệ thống xác nhận đơn hàng và điều hướng đến trang thanh toán thành công/chi tiết đơn hàng.
+A2: Chọn phương thức Blockchain
+Tại bước 4:
+4.1 Actor chọn "Solana"
+4.2 Actor hoàn thành thanh toán qua Solana (UC-16: Thanh toán qua Solana)
+4.3 Sau khi thanh toán thành công, hệ thống xác nhận đơn hàng và điều hướng đến trang thanh toán thành công/chi tiết đơn hàng.
+A3: Thay đổi địa chỉ giao hàng
+Tại bước 3:
+3.1 Actor nhấn "Change" hoặc "Add new address" tại mục Shipping Address
+3.2 Actor chọn địa chỉ khác hoặc nhập địa chỉ mới → lưuException flowE1: Chưa chọn phương thức thanh toán
+5.1 Actor nhấn "Place Order" mà chưa chọn payment method
+5.2 Hệ thống hiển thị lỗi "Vui lòng chọn phương thức thanh toán" và highlight mục đó
+E2: Địa chỉ giao hàng không hợp lệ hoặc thiếu 
+5.1 Địa chỉ trống hoặc không hợp lệ (ví dụ: thiếu tỉnh/thành phố)
+5.2 Hệ thống hiển thị lỗi cụ thể "Vui lòng nhập đầy đủ địa chỉ giao hàng"
+E3: Sản phẩm hết hàng hoặc không đủ số lượng (kiểm tra cuối) 
+2.1 và 6.1 Một sản phẩm trong giỏ không còn đủ hàng.
+2.2 và 6.2 Hệ thống hiển thị thông báo "Sản phẩm X đã hết hàng" và đề xuất quay lại giỏ hàng chỉnh sửa hoặc xóa
+E4: Thanh toán VNPay/Blockchain thất bại 
+* Sau bước 7 (A1/A2): Cổng thanh toán trả về thất bại. Hệ thống hủy đơn hàng tạm, thông báo "Thanh toán thất bại" và quay về trang thông báo kết quả đơn hàngBảng 19: Đặc tả use case thanh toán giỏ hàng
+
+
+Hình 29: Sequence diagram thanh toán giỏ hàng
+Link sequence: Sequence-UC12-thanh-toan-gio-hang
+
+3.2.11. Use case thanh toán qua Vnpay
+Use case IDUC-14Use Case: Thanh toán qua VnpayActor(s)Khách hàng, Hệ thống VnpayShort Description:Actor thanh toán bằng phương thức "Vnpay"Pre-Conditions:* Khách hàng đã đăng nhập và đang ở trang thanh toán giỏ hàng (UC-12)
+* Khách hàng đã chọn phương thức thanh toán "Vnpay" và nhấn "Place Order"
+* Hệ thống đã tạo thành công đơn hàng tạm và URL thanh toán VnpayPost-Conditions:* Thành công: Đơn hàng được cập nhật trạng thái "Paid", khách hàng xem được trang xác nhận thanh toán thành công 
+* Thất bại: Đơn hàng giữ trạng thái "Pending" hoặc "Failed", khách hàng được thông báo lỗiMain Flow:1. Hệ thống điều hướng khách hàng đến URL thanh toán của Vnpay
+2. Actor chọn loại thẻ/ngân hàng 
+3. Actor nhập thông tin thẻ (số thẻ, tên chủ thẻ, ngày hết hạn,...) và nhấn "Thanh toán". 
+4. Vnpay gửi OTP về số điện thoại liên kết thẻ
+5. Actor nhập mã OTP và xác nhận
+6. Vnpay xử lý giao dịch và chuyển hướng khách hàng về Return URL của hệ thống (trang kết quả thanh toán)
+7. Hệ thống nhận kết quả thành công từ Vnpay (qua Return URL)
+8. Hệ thống cập nhật trạng thái đơn hàng thành "Paid"
+9. Hệ thống hiển thị trang "Thanh toán thành công" với chi tiết đơn hàngAlternate Flow(s):Actor hủy thanh toán trên trang Vnpay: Tại bất kỳ bước nào trước khi nhập OTP: Actor nhấn "Hủy" hoặc đóng trình duyệt. → Chuyển sang Exception E2.Exception Flow(s):E1: Giao dịch bị từ chối (thẻ không đủ tiền, sai thông tin, ngân hàng từ chối)
+6.1 Vnpay trả về lỗi giao dịch
+6.2 Vnpay hiển thị thông báo lỗi cụ thể (ví dụ: "Giao dịch bị từ chối", "Số dư không đủ")
+6.3 Khách hàng được redirect về Return URL với tham số lỗi
+6.4 Hệ thống hiển thị trang "Thanh toán thất bại" và giữ đơn hàng ở trạng thái "Pending"
+E2: Actor hủy giao dịch hoặc timeout
+* Actor đóng trang, không nhập OTP trong thời gian quy định, hoặc nhấn hủy.
+* VNPAY redirect về Return URL với mã lỗi "cancel" hoặc timeout
+* Hệ thống hiển thị "Thanh toán bị hủy" và quay lại trang thanh toán hoặc giỏ hàngBảng 20: Đặc tả use case thanh toán qua VNPay
+
+Hình 30: Sequence diagram thanh toán qua VNPay
+3.2.12. Use case thanh toán qua Blockchain
+Use case IDUC-16Use Case: Thanh toán qua Blockchain SolanaActor(s)Khách hàngShort Description:Khách hàng hoàn tất thanh toán đơn hàng thông qua ví Solana (Phantom hoặc Solflare) trên web appPre-Conditions:Khách hàng đã đăng nhập và đang ở trang thanh toán giỏ hàng (UC-12)
+Browser có extension ví Solana (Phantom hoặc Solflare) installed và đã có ví với đủ SOL (bao gồm fee)
+Khách hàng đã chọn phương thức "Blockchain Solana"
+Hệ thống đã tạo đơn hàng tạm và transaction details (amount, recipient pubkey)Post-Conditions:Thành công: Transaction được confirm trên Solana network, đơn hàng cập nhật "Paid", khách hàng xem trang xác nhận với tx hash
+Thất bại: Transaction fail hoặc timeout, đơn hàng giữ "Pending/Failed", khách hàng thông báo lỗiMain Flow:1. Hệ thống detect ví installed và hiển thị nút "Connect Wallet" (dùng wallet adapter để list ví như Phantom/Solflare)
+2. Actor nhấn "Connect Wallet" và chọn ví từ danh sách
+3. Ví popup mở, Actor nhập mật khẩu và approve kết nối
+
+
+4. Hệ thống tự động hiển thị giao diện ví từ extesion
+
+5. Actor nhập mật khẩu ví
+6. Hệ thống kết nối thành công và hiển thị nút "Pay with Solana"
+7. Extension của ví hiện ra và bấm nút "Approve"
+8. Hệ thống Smart Contract sẽ xử lý và trả về kết quả cho frontend
+9. Hệ thống frontend nhận dữ liệu và gửi thông tin transaction của Blockchain
+10. Hệ thống cập nhật trạng thái đơn hàng thành "Paid"
+11. Hệ thống hiển thị trang "Thanh toán thành công" với chi tiết đơn hàngAlternate Flow(s):A1: Switch ví nếu nhiều ví installed
+Tại bước 2:
+2.1 Actor chọn ví khác
+2.2 Hệ thống reconnect và tiếp tụcException Flow(s):E1: Insufficient funds hoặc tx fail
+7.1 User approve nhưng tx reject (low balance, invalid amount)
+7.2 Ví hiển thị lỗi cụ thể "Insufficient SOL"
+7.3 Hệ thống nhận lỗi và hiển thị	Bảng 21: Đặc tả use case thanh toán qua Blockchain Solana
+
+
+Hình 31: Sequence diagram thanh toán qua Blockchain Solana
+Link sequence: Sequence-UC16-thanh-toan-qua-blockchain-solana
+
+
+3.2.13. Use case xác nhận đơn hàng
+Use case IDUC-27Use caseXác nhận đơn hàngActor(s)Khách hàngShort descriptionKhách hàng xem chi tiết đơn hàng vừa đặt và có thể xác nhận hoặc hủy trong thời gian cho phép (30 phút)Pre-conditions* Khách hàng đã đặt đơn hàng thành công (COD)
+* Đơn hàng đang ở trạng thái "Pending"
+* Thời gian từ khi đặt đơn < 30 phút
+* Khách hàng đang xem trang chi tiết đơn hàngPost-conditions* Đơn hàng được cập nhật trạng thái: "Confirmed" hoặc "Cancelled"
+* Nếu quá 30 phút mà không thao tác, đơn hàng tự động "Confirmed"Main flow1. Hệ thống hiển thị trang chi tiết đơn hàng với nút "Confirm Order", "Cancel Order" và đồng hồ đếm ngược 30 phút
+2. Actor nhấn nút "Confirm Order"
+3. Hệ thống cập nhật trạng thái đơn hàng thành     "CONFIRMED" và cập nhật kho hàngAlternative flowA1: Khách hàng hủy đơn hàng
+Tại bước 2:
+2.1 Actor nhấn nút "Cancel Order"
+2.2 Hệ thống cập nhật trạng thái "CANCELLED"
+A2: Tự động xác nhận sau 30 phút sau khi đặt đơn
+Tại bước 2:
+2.1 Hệ thống bắt đầu đếm ngược 30 phút.
+2.2 Nếu actor không thao tác gì → Sau 30 phút, hệ thống tự động cập nhật trạng thái thành "CONFIRMED" và cập nhật kho hàngException flowE3: Sản phẩm không đủ hàng (kiểm tra lại khi xác nhận)
+3.1 Một sản phẩm không còn đủ số lượng. Hệ thống tự động hủy đơn
+3.2 Thông báo "Đơn hàng không thể xác nhận do hết hàng"Bảng 22: Đặc tả use case xác nhận đơn hàng
+
+
+Hình 32: Sequence diagram xác nhận đơn hàng
+Link sequence: Sequence-UC27-xac-nhan-don-hang
+
+
+3.2.14. Use case đánh giá sản phẩm
+Use case IDUC-29Use caseĐánh giá sản phẩmActor(s)Khách hàngShort descriptionKhách hàng đánh giá (sao + nội dung) cho sản phẩm trong đơn hàng đã giao thành côngPre-conditionsKhách hàng đã đăng nhập vào hệ thống
+Đơn hàng chứa sản phẩm cần đánh giá đang ở trạng thái "Delivered" hoặc "Completed"
+Khách hàng chưa từng đánh giá sản phẩm này từ đơn hàng này trước đó
+Khách hàng đang xem trang chi tiết đơn hàngPost-conditionsĐánh giá được lưu thành công vào hệ thống
+Chỉ số đánh giá trung bình và số lượng đánh giá của sản phẩm được cập nhật
+Nút "Write a Review" của sản phẩm đó bị ẩn hoặc chuyển thành "Edit Review" (nếu hệ thống cho phép chỉnh sửa)
+Trang chi tiết đơn hàng và trang sản phẩm phản ánh đánh giá mới (sau khi refresh hoặc realtime)Main flow1. Actor nhấn nút "Write a Review" bên cạnh sản phẩm cần đánh giá trong trang chi tiết đơn hàng
+2. Hệ thống hiển thị form/modal đánh giá sản phẩm (bao gồm: Rating sao, ô nhập nội dung
+3. Actor chọn số sao (bắt buộc, từ 1 sao - 5 sao)
+4. Actor nhập nội dung đánh giá (bắt buộc) vào ô "Your Review"
+5. Actor nhấn nút "Submit Review"
+6. Hệ thống validate dữ liệu và lưu đánh giá vào database 
+7. Hệ thống hiển thị thông báo thành công "Review successfully"
+8. Hệ thống cập nhật lại trang chi tiết đơn hàng để hiển thị đánh giá vừa submit và ẩn nút "Write a Review" cho sản phẩm đóAlternative flowA1: Chỉnh sửa đánh giá đã submit trước đó
+Tại bước 7
+7.1 Sau khi đã đánh giá: Nút chuyển thành "Edit Review"
+7.2 Actor nhấn "Edit Review"
+7.3 Hệ thống hiển thị form với dữ liệu cũ. 3-8. Actor chỉnh sửa và submit lại → Tiếp tục tương tự Main flowException flowE1: Chưa chọn số sao (rating bắt buộc)
+6.1 Actor nhấn nút "Submit" mà chưa chọn sao
+6.2 Hệ thống hiển thị lỗi validation "Rating is required" và highlight trường đó
+E2: Không nhập nội dung (content bắt buộc)
+6.1 Actor nhấn nút "Submit" mà chưa nhập nội dung
+6.2 Hệ thống hiển thị lỗi validation "Content is required" và highlight trường đóBảng 23: Đặc tả use case đánh giá sản phẩm
+
+
+Hình 33: Sequence diagram đánh giá sản phẩm
+Link sequence: Sequence-UC29-danh-gia-san-pham
+
+3.2.15. Use case cập nhật trạng thái đơn hàng
+Use case IDUC-36Use caseCập nhật trạng thái đơn hàngActor(s)Admin SuperShort description* Admin Super thay đổi trạng thái của đơn hàng thông qua trang quản lý đơn hàng onlinePre-conditions* Actor đã đăng nhập vào tài khoản quản trị và truy cập trang quản lý đơn hàng online
+* Actor có quyền cập nhật đơn hàng (role: ADMIN_SUPER)
+* Đơn hàng tồn tại và ở trạng thái cho phép thay đổi (ví dụ: không phải Completed hoặc Cancelled)
+* Trạng thái mới phải hợp lệ theo quy tắc transition (Confirmed → Preparing → Delivering → Delivered)Post-conditions* Trạng thái đơn hàng được cập nhật thành công trong hệ thống
+* Trang chi tiết đơn hàng và list orders được refresh để hiển thị trạng thái mớiMain flow1. Actor chọn menu "Orders List" trong phần "Online Shop"
+2. Hệ thống hiển thị danh sách tất cả đơn hàng
+3. Actor chọn đơn hàng cần cập nhật (qua nút ellipsis  )
+4. Hệ thống điều hướng đến trang chi tiết đơn hàng. 
+5. Actor chọn trạng thái mới từ dropdown   (chỉ hiển thị các trạng thái hợp lệ theo transition)
+6. Actor nhấn nút "Update Status"
+7. Hệ thống kiểm tra: đơn hàng tồn tại, trạng thái mới hợp lệ, và quyền của actor
+8. Hệ thống cập nhật trạng thái đơn hàng trong database
+9. Hệ thống hiển thị thông báo "Order status updated"
+10. Trang chi tiết đơn hàng được refresh để hiển thị trạng thái mớiAlternative flowA1: Lọc đơn hàng theo trạng thái
+2.1 Actor chọn bộ lọc "Status" và chọn trạng thái mong muốn (ví dụ: PENDING, DELIVERED)
+2.2 Hệ thống tải lại danh sách đơn hàng theo bộ lọc
+A2: Lọc đơn hàng theo phương thức thanh toán
+2.1 Actor chọn bộ lọc "Payment Method" và chọn phương thức (ví dụ: COD, VNPAY, SOLANA)
+2.2 Hệ thống tải lại danh sách đơn hàng theo bộ lọc
+A3: Tìm kiếm đơn hàng theo mã hoặc email
+2.1 Actor nhập từ khóa vào ô "Order Code" hoặc "Customer Email"
+2.2 Actor nhấn Enter hoặc nút tìm kiếm
+2.3 Hệ thống tải lại danh sách đơn hàng phù hợpException flowE1: Đơn hàng không tồn tại
+Tại bước 7:
+7.1 Hệ thống không tìm thấy đơn hàng
+7.2 Hệ thống hiển thị "Order not found" và không cập nhật
+E2: Trạng thái mới không hợp lệ hoặc transition không cho phép
+Tại bước 7
+7.1 Trạng thái không nằm trong danh sách hợp lệ hoặc vi phạm quy tắc (ví dụ: từ DELIVERED quay về PENDING)
+7.2 Hệ thống hiển thị "Status transition not allowed" và không cập nhậtBảng 24: Đặc tả use case cập nhật trạng thái đơn hàng
+
+
+Hình 34: Sequence diagram cập nhật trạng thái đơn hàng
+Link sequence: Sequence-UC36-cap-nhat-trang-thai-don-hang
+
+
+3.2.16. Use case xem doanh thu hệ thống
+Use case IDUC-32Use caseXem doanh thu hệ thốngActor(s)Admin Super, AdminShort description* Actor (Admin Super) có thể xem doanh thu hệ thống toàn bộ chi nhánh (bao gồm doanh thu online)
+* Actor (Admin) có thể xem doanh thu của riêng chi nhánh Actor quản lýPre-conditions* Actor đã đăng nhập vào trang admin và có quyền xem analytics
+* Hệ thống có dữ liệu doanh thu (từ đơn hàng online/offline)Post-conditions* Hệ thống hiển thị dữ liệu doanh thu chính xác theo quyền hạn của actor và các filter đã áp dụng (nếu có)
+* Trang dashboard được cập nhật sau khi reloadMain flow1. Actor chọn mục "Revenue Analytics" trong phần "Dashboard Views" của Sidebar
+2. Hệ thống kiểm tra quyền hạn và hiển thị dashboard:
+* Bảng 1: Doanh thu toàn hệ thống (tổng doanh thu, số lượng đơn hàng theo tháng/mặc định)
+* Bảng 2: So sánh doanh thu giữa các chi nhánh
+* Bảng 3: So sánh doanh thu giữa các năm (ví dụ: năm hiện tại và năm trước)
+Alternative flowA1: Lọc dữ liệu ở Bảng 1 (doanh thu toàn hệ thống)
+Tại bước 2:
+2.1 Actor chọn filter theo ngày/tháng/năm, hoặc chuyển giữa xem doanh thu mỗi tháng và số lượng đơn hàng theo tháng
+2.2 Hệ thống reload bảng 1 với dữ liệu lọc
+A2: Lọc dữ liệu ở Bảng 2 (so sánh chi nhánh)
+Tại bước 2:
+2.1 Actor chọn các chi nhánh cụ thể để so sánh (hoặc filter theo thời gian)
+2.2 Hệ thống reload bảng 2 với dữ liệu lọc
+A3: Lọc dữ liệu ở Bảng 3 (so sánh năm)
+Tại bước 2:
+2.1 Actor chọn các năm cụ thể để so sánh (ví dụ: 2024 vs 2025, hoặc thêm năm khác)
+2.2 Hệ thống reload bảng 3 với dữ liệu lọc
+A4: Flow cho Admin thường (không phải Admin Super)
+Tại bước 2:
+2.1 Hệ thống phát hiện quyền hạn là Admin thường
+2.2 Hệ thống chỉ hiển thị:
+Bảng 1: Doanh thu của chi nhánh mà Admin quản lý.
+Bảng 3: So sánh doanh thu năm cho chi nhánh đó. (Không hiển thị Bảng 2 so sánh chi nhánh để tránh lộ dữ liệu nhạy cảm)Exception flowE1: Không có dữ liệu doanh thu
+2.1 Không có đơn hàng hoặc dữ liệu cho khoảng thời gian
+2.2 Hệ thống hiển thị thông báo "Chưa có dữ liệu doanh thu cho khoảng thời gian này" kèm gợi ý filter khác hoặc biểu đồ rỗng
+E2: Quyền hạn không đủ 
+2.1 Admin thường cố truy cập (hoặc filter toàn hệ thống)
+2.2 Hệ thống hiển thị thông báo "Bạn chỉ có quyền xem doanh thu chi nhánh của mình" và chỉ load dữ liệu chi nhánhBảng 25: Đặc tả use case thêm sản phẩm
+
+
+Hình 35: Sequence diagram xem doanh thu hệ thống
+Link sequence: Sequence-UC32-xem-doanh-thu-he-thong
+
+
+3.2.17. Use case tạo tenant
+Use case IDUC-38Use caseTạo tenantActor(s)Admin SuperShort descriptionAdmin Super tạo một tenant (chi nhánh) mới trong hệ thống Multi-tenant, bao gồm thông tin cơ bản và subdomainPre-conditionsAdmin Super đã đăng nhập vào trang admin và có quyền tạo tenantPost-conditions* Tenant mới được tạo thành công trong hệ thống. 
+* Danh sách tenant được cập nhật và hiển thị tenant mới. Main flow1. Actor chọn menu "Tenant Management" trong phần "Managements" của sidebar
+2. Hệ thống hiển thị danh sách các tenant hiện tại
+3. Actor nhấn nút "Create Tenant"
+4. Hệ thống điều hướng đến trang tạo tenant
+5. Actor điền đầy đủ thông tin:
+* Tên tenant (bắt buộc, unique)
+* Subdomain (bắt buộc, unique, ví dụ: "TD HD2")
+* Kiểu tenant (dropdown: "Branch", "Warehouse")
+* Địa chỉ chi nhánh (bắt buộc)
+* Mô tả tenant (tùy chọn).
+* Mô tả chi nhánh (tùy chọn).
+6. Actor nhấn nút "Create Tenant"
+7. Hệ thống validate thông tin (kiểm tra unique, format hợp lệ)
+8. Hệ thống hiển thị thông báo thành công "Tenant created successfully" và điều hướng về danh sách tenant (với tenant mới hiển thị)
+Alternative flowException flowE1: Thông tin nhập không hợp lệ
+7.1 Một hoặc nhiều trường sai (ví dụ: tên rỗng, không unique)
+7.2 Hệ thống hiển thị lỗi inline tại trường tương ứng
+7.3 Hệ thống không lưu và giữ nguyên form để actor sửa
+E2: Lỗi hệ thống khi tạo tenant
+8.1 Lỗi database, server timeout, hoặc tạo subdomain thất bại
+8.2 Hệ thống hiển thị thông báo chung "Can not create new tenant"
+Bảng 26: Đặc tả use case tạo tenant
+
+
+Hình 36: Sequence diagram tạo tenant
+Link sequence: Sequence-UC38-tao-tenant
+
+
+3.2.18. Use case "mạo danh" nhân viên
+Use case IDUC-67Use case"Mạo danh" nhân viênActor(s)Admin SuperShort descriptionAdmin Super giả lập danh tính của một nhân viên (Admin hoặc Staff của chi nhánh khác) để thực hiện hành động dưới góc nhìn của họ, nhằm hỗ trợ hoặc kiểm tra hệ thốngPre-conditions* Admin Super đã đăng nhập vào hệ thống với quyền cao nhất
+* Có ít nhất một nhân viên (Admin hoặc Staff) tồn tại trong hệ thốngPost-conditions* Session của Admin Super tạm thời chuyển sang danh tính của nhân viên được chọn (giới hạn quyền theo role của nhân viên đó)
+* Tất cả hành động trong session impersonate được ghi log
+* Admin Super có thể thực hiện các use case của nhân viên đó và dễ dàng kết thúc impersonateMain flow1. Actor mở dropdown menu trên thanh Header
+
+2. Actor chọn chức năng "Impersonate" và chọn một nhân viên (Admin hoặc Staff) từ danh sách (có thể search/filter nếu danh sách dài)
+
+3. Hệ thống switch session: Thay đổi tenant/view theo nhân viên được chọn, giới hạn quyền theo role của họ 
+4. Hệ thống bắt đầu ghi log tất cả hành động trong session này dưới danh tính impersonate.
+Alternative flowA1: Chọn nhân viên từ search/filter
+Tại bước 2:
+2.1 Nếu danh sách dài, Actor nhập tên/email để search. 2.2 Hệ thống hiển thị kết quả search. → Tiếp tục từ bước 3 (Main flow)Exception flowE1: Không có nhân viên nào để chọn 
+2.1 Danh sách rỗng
+2.2 Hệ thống hiển thị thông báo "User not found"Bảng 27: Đặc tả use case "mạo danh" nhân viên
+
+
+Hình 37: Sequence diagram "mạo danh" nhân viên
+Link sequence: Sequence-UC67-mao-danh-nhan-vien
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3.3. Lược đồ lớp
+
+ 
+Hình 38: Lược đồ lớp
+CHƯƠNG 4. CÀI ĐẶT ỨNG DỤNG
+4.1. Yêu cầu môi trường
+4.1.1. Yêu cầu chung
+* Git version 2.x trở lên
+* IDE/Text Editor (Visual Studio Code, Visual Code)
+* Docker (môi trường ảo để chạy các containers)
+4.1.2. Yêu cầu Frontend
+* Node.js phiên bản 18.x hoặc cao hơn
+* Npm version 9.x làm công cụ quản lý gói
+* Trình duyệt web hiện đại (Chrome, Firefox, hoặc Edge)
+* Môi trường phát triển như VS Code hoặc bất kỳ IDE nào hỗ trợ JavaScript/TypeScript
+4.1.3. Yêu cầu Backend
+* .NET SDK phiên bản 8.0 hoặc cao hơn
+* Cài đặt MongoDB Compass để xem dữ liệu của Mongo
+* Cài đặt Dbeaver Tool để xem dữ liệu của CSDL quan hệ
+* IDE như Visual Studio 2022 hoặc VS Code với các tiện ích mở rộng C#
+* Hệ điều hành: Windows (tương thích với .NET) để có thể cài đặt dễ dàng nhất
+4.1.4. Yêu cầu Smart contract Solana Blockchain
+* Rust phiên bản 1.75.0 hoặc cao hơn, ngôn ngữ chính cho chương trình Solana
+* Solana CLI phiên bản 1.18.0 hoặc cao hơn, giao diện dòng lệnh để quản lý cặp khóa, triển khai và tương tác mạng
+* Node.js phiên bản 18.x hoặc cao hơn
+* Cargo cùng phiên bản với Rust, trình quản lý gói của Rust (đi kèm với Rust)
+* Anchor Framework phiên bản 0.30.0 hoặc cao hơn, Framework Rust được khuyến nghị để phát triển chương trình dễ dàng hơn bao gồm việc tạo và kiểm tra IDL
+4.2. Yêu cầu các bước cài đặt và chạy ứng dụng
+4.2.1. Cài đặt chung
+	Clone dự án (bao gồm FE và BE): https://github.com/Young-Z-Generation-YZG/your-comfort-my-apple.git
+4.2.2. Chạy dự án Frontend
+1. Đi đến folder chứa dự án FE bằng câu lệnh: "cd Apps/Client"
+2. Tạo 2 file .env.development (cho môi trường local) và .env.production (cho môi trường Docker), điều những biến môi trường cần thiết dựa theo file .env.example. Cả 2 file đều tạo trong thư mục Client (root/Apps/Client/.env.xample)
+3. Cài đặt các dependencies bằng câu lệnh "npm install" hoặc "npm install -lagecy-peer-deps"
+4. Chạy dự án FE bằng câu lệnh: "npm run dev"
+5. Ứng dụng sẽ chạy với port mặt định là :3000 (http://localhost:3000) hoặc port của biến môi trường PORT trong file .env
+4.2.3. Chạy dự án Backend
+1. Tại thư mục root của repository nháy đúp vào file "YGZ.CA.Microservices.sln", IDE Visual Studio sẽ tự động mở ra.
+2. Run các database container như hình bên dưới:
+
+Hình 39: Minh hoạ các containers
+3. Có 5 projects là 5 folder (Identity, Catalog, Discount, Basket, Ordering) là nơi chứa 5 service khác nhau. Có thể chạy độc lập các service (Database container đã start) bằng cách chọn như bên dưới:
+
+Hình 40: Cách chạy service với Visual studio
+4. Ứng dụng sẽ tự động chạy Migration và Seed Data, chúng ta chỉ việc truy cập vào host của từng service:
+ServicesHTTP/HTTPSDOCKER (HTTP/HTTPS)Catalog Service5001/50516001/6061Basket Service5002/50526002/6062Discount Service5003/50536003/6063Ordering Service5004/50546004/6064Identity Service5005/50556005/6065Bảng 28: Bảng cấu hình ports
+5. Backend API sẽ chạy port tương ứng ở trên khi run project tương ứng.
+4.2.4. Tạo chương trình Smart contract trên mạng Solana Blockchain
+1. Tại thư mục root của repository truy cập đến thư mục "blockchain/payment" 
+2. Chạy lệnh `curl --proto '=https' --tlsv1.2 -sSfL https://solana-install.solana.workers.dev | bash` để tải những thư viện/phụ thuộc cần thiết và chạy ` rustc --version && solana --version && anchor --version && surfpool --version && node --version && yarn --version` để kiểm tra lại cài đặt
+3. Chạy lệnh `solana config set --url devnet` để chuyển sang môi trường dev của mạng Solana
+4. Chạy lệnh `solana-keygen new` tạo ra "ví (wallet)" là cặp khóa publicKey và privateKey để sẵn sàng cho việc tạo giao dịch, thanh toán chi phí giao dịch
+5. Chạy lệnh `solana airdrop 2` mạng Solana sẽ cho 2 đồng SOL (vì là môi trường dev) cho ví đã tạo ở trên
+6. Chạy lệnh `anchor build` lệnh này sẽ tạo ra 2 files "target/deploy/*.so" và "target/deploy/ *-keypair.json" sẵn sàng cho triển khai lên môi trường dev
+7. Chạy lệnh `anchor deploy` lệnh này dùng để triển khai "chương trình" đã build từ bước số 6 lên môi trường dev của mạng Solana
+
+4.2.5. Chạy dự án với Docker (khuyến nghị)
+1. Tại thư root Repository chạy câu lệnh: "docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --build"
+2. Truy cập đường dẫn http:localhost:3000
+4.3. Kiểm tra cài đặt
+4.3.1. Kiểm tra Frontend
+1. Truy cập Client: http://localhost:3001/
+2. Đảm bảo hiện lên UI và không hiện lỗi Console
+3. Truy cập Admin: http://localhost:3001/
+4. Đảm bảo hiện lên UI và không hiện lỗi Console
+
+4.3.2. Kiểm tra Backend
+1. Truy cập https://localhost:{port}/swagger/index.html (port của service)
+2. Đảm bảo Swagger UI hiển thị đầy đủ các API endpoints
+3. Thử gọi API health check tại https://localhost:{port}/ping
+4. Thử gọi API database health check tại https://localhost:{port}/db/health-check
+4.3.3. Kiểm tra Smart contract
+* Chạy lệnh `anchor test` lệnh này sẽ chạy những test cases trong thư mục "blockchain/payment/test"
+4.3.4. Kiểm tra kết nối
+1. Kiểm tra các UI Frontend và thử đăng kí/đăng nhập
+2. Kiểm tra các chức năng cơ bản như xem danh sách sản phẩm, thêm vào giỏ hàng,...
+3. Kiểm tra chức năng thanh toán với Blockchain
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHƯƠNG 5. KIỂM THỬ HỆ THỐNG
+5.1. Kiểm tra chức năng đăng ký
+Test case IDSIGNUP_01DescriptionĐăng ký tài khoản với dữ liệu không hợp lệ Test DataPrerequisites- First Name: Trần
+- Last Name: Phương
+- Country: Vietnam
+- Email: boyholo2003 (không hợp lệ)
+- Password: BOYHOLO2003
+- Confirm Password: BOYHO20 (khác password)
+- Phone Number: 0935288524- Truy cập vào trang đăng ký: https://ybzone.io.vn/sign-up
+- Tài khoản chưa được đăng kýStep DetailsExpectedActualResult1. Truy cập trang đăng ký tài khoảnTrang đăng ký được hiển thị đầy đủ các trường thông tinNhư mong đợiPass2. Nhập giá trị "Trần" vào trường First NameTrường First Name hiển thị đúng giá trị "Trần"Như mong đợiPass3. Nhập giá trị "Phương" vào trường Last NameTrường Last Name hiển thị đúng giá trị "Phương"Như mong đợiPass4. Chọn giá trị "Vietnam" tại trường CountryTrường Country hiển thị đúng giá trị đã chọnNhư mong đợiPass5. Nhập giá trị "boyholo2003" vào trường EmailTrường Email hiển thị đúng giá trị đã nhập, dưới trường Email hiển thị thông báo "Please enter a valid email" lỗi email không hợp lệ Như mong đợiPass6. Nhập giá trị "BOYHOLO2003" vào trường PasswordTrường Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass7. Nhập giá trị "BOYHO20" vào trường Confirm PasswordTrường Confirm Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass8. Nhập giá trị "0935288524" vào trường Phone NumberTrường Phone Number hiển thị đúng giá trị đã nhậpNhư mong đợiPass9. Nhấn nút "Create Account"Hệ thống hiển thị thông báo lỗi: Email không đúng định dạng và Confirm Password không khớp với PasswordNhư mong đợiPassTest case ResultPASS
+Bảng 29: Test case chức năng đăng ký tài khoản với dữ liệu không hợp lệ
+
+Test case IDSIGNUP_02DescriptionĐăng ký tài khoản với dữ liệu hợp lệ Test DataPrerequisites- First Name: Trần 
+- Last Name: Phương
+- Country: Vietnam
+- Email: tqp30112003@gmail.com
+- Password: ABC123
+- Confirn Password: ABC123
+- Phone Number: 0935288524- Truy cập vào trang đăng ký: https://ybzone.io.vn/sign-up
+- Tài khoản chưa được đăng kýStep DetailsExpectedActualResult1. Truy cập trang đăng ký tài khoảnTrang đăng ký được hiển thị đầy đủ các trường thông tinNhư mong đợiPass2. Nhập giá trị "Trần" vào trường First NameTrường First Name hiển thị đúng giá trị "Trần"Như mong đợiPass3. Nhập giá trị "Phương" vào trường Last NameTrường Last Name hiển thị đúng giá trị "Phương"Như mong đợiPass4. Chọn giá trị "Vietnam" tại trường CountryTrường Country hiển thị đúng giá trị đã chọnNhư mong đợiPass5. Nhập giá trị " tqp30112003@gmail.com" vào trường EmailTrường Email hiển thị đúng giá trị " tqp30112003@gmail.com"Như mong đợiPass6. Nhập giá trị " ABC123" vào trường PasswordTrường Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass7. Nhập giá trị " ABC123" vào trường Confirm PasswordTrường Confirm Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass8. Nhập giá trị "0935288524" vào trường Phone NumberTrường Phone Number hiển thị đúng giá trị đã nhậpNhư mong đợiPass9. Nhấn nút "Create Account"Hệ thống chuyển sang trang xác thực OTP và gửi mã xác thực về mail của người dùngNhư mong đợiPass10. Kiểm tra mã xác thực trong email và nhập mã xác thực OTP ở trang xác thựcMã OTP hiển thị đúng giá trị vừa nhậpNhư mong đợiPass11. Nhấn nút " Verify Code "Hệ thống hiển thị thông báo thành công và điều hướng đến trang đăng nhậpNhư mong đợiPassTest case ResultPASSBảng 30: Test case chức năng đăng ký tài khoản với dữ liệu hợp lệ
+
+Test case IDSIGNUP_03DescriptionĐăng ký tài khoản với email đã đăng ký tài khoản Test DataPrerequisites- First Name: Trần 
+- Last Name: Phương
+- Country: Vietnam
+- Email: tqp30112003@gmail.com
+- Password: ABC123
+- Confirn Password: ABC123
+- Phone Number: 0935288524- Truy cập vào trang đăng ký: https://ybzone.io.vn/sign-up
+- Tài khoản đã được đăng ký và kích hoạtStep DetailsExpectedActualResult1. Truy cập trang đăng ký tài khoảnTrang đăng ký được hiển thị đầy đủ các trường thông tinNhư mong đợiPass2. Nhập giá trị "Trần" vào trường First NameTrường First Name hiển thị đúng giá trị "Trần"Như mong đợiPass3. Nhập giá trị "Phương" vào trường Last NameTrường Last Name hiển thị đúng giá trị "Phương"Như mong đợiPass4. Chọn giá trị "Vietnam" tại trường CountryTrường Country hiển thị đúng giá trị đã chọnNhư mong đợiPass5. Nhập giá trị " tqp30112003@gmail.com" vào trường EmailTrường Email hiển thị đúng giá trị " tqp30112003@gmail.com"Như mong đợiPass6. Nhập giá trị " ABC123" vào trường PasswordTrường Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass7. Nhập giá trị " ABC123" vào trường Confirm PasswordTrường Confirm Password hiển thị dưới dạng ký tự ẩnNhư mong đợiPass8. Nhập giá trị "0935288524" vào trường Phone NumberTrường Phone Number hiển thị đúng giá trị đã nhậpNhư mong đợiPass9. Nhấn "Create Account"Thông báo lỗi người dùng này đã tồn tại "User already exists" Như mong đợiPassTest case ResultPASSBảng 31: Test case chức năng đăng ký tài khoản với email đã đăng ký tài khoản
+5.2. Kiểm tra chức năng đăng nhập
+Test case IDSIGNIN_01DescriptionĐăng nhập tài khoản thành côngTest DataPrerequisites- Email: boyholo2003@gmail.com
+- Password: BOYHOLO2003- Truy cập vào trang đăng nhập: https://ybzone.io.vn/sign-in
+- Tài khoản đã được đăng ký và kích hoạt.Step DetailsExpectedActualResult1. Nhập giá trị "boyholo2003@gmail.com" vào trường EmailTrường Email hiển thị đúng giá trị nhập vào Như mong đợiPass2. Nhập giá trị "BOYHOLO2003" vào trường PasswordTrường Password hiển thị giá trị dưới dạng nút ẩnNhư mong đợiPass3. Nhấn phím EnterHệ thống kiểm tra thông tin đăng nhập và chuyển hướng đến trang chủNhư mong đợiPassTest case ResultPASSBảng 32: Test case chức năng đăng nhập tài khoản thành công
+
+Test case IDSIGNIN_02DescriptionĐăng nhập tài khoản sai mật khẩuTest DataPrerequisites- Email: boyholo2003@gmail.com
+- Password: BOYHOLO20032456- Truy cập vào trang đăng nhập: https://ybzone.io.vn/sign-in
+- Email đúng: boyholo2003@gmail.com
+- Password đúng: BOYHOLO2003Step DetailsExpectedActualResult1. Nhập giá trị "boyholo2003@gmail.com" vào trường EmailTrường Email hiển thị đúng giá trị nhập vào Như mong đợiPass2. Nhập giá trị "BOYHOLO20032456" vào trường PasswordTrường Password hiển thị giá trị dưới dạng nút ẩnNhư mong đợiPass3. Nhấn phím EnterHệ thống kiểm tra thông tin đăng nhập và thông báo "Invalid credentials"Như mong đợiPassTest case ResultPASSBảng 33: Test case chức năng đăng nhập tài khoản thất bại
+5.3. Kiểm tra chức năng đăng xuất
+Test case IDLOGOUT_01DescriptionĐăng xuất thành côngTest DataPrerequisites- Người dùng đang đăng nhập ở trang: https://ybzone.io.vnStep DetailsExpectedActualResult1. Nhấn biểu tượng người dùng trên thanh headerHệ thống hiển thị menu người dùngNhư mong đợiPass2. Nhấn nút "Logout"Chuyển hướng về trang đăng nhập.Như mong đợiPassTest case Result PASSBảng 34: Test case chức năng đăng xuất thành công
+5.4. Kiểm tra chức năng khôi phục mật khẩu
+Test case IDFORGOTPW_01DescriptionKhôi phục mật khẩu thành công Test DataPrerequisites- Email: tqp30112003@gmail.com
+- New Password: phuong2003
+- Confirm Password: phuong2003- Truy cập trang đăng nhập: https://ybzone.io.vn/sign-inStep DetailsExpectedActualResult1. Nhấn vào liên kết "Forgot password?"Hệ thống chuyển sang trang khôi phục mật khẩuNhư mong đợiPass2. Nhập "tqp30112003@gmail.com" vào trường EmailTrường email hiển thị đúng giá trị đã nhậpNhư mong đợiPass3. Nhấn chọn nút mũi tên bên cạnh trường EmailHệ thống xác thực email và chuyển người dùng đến trang nhập Như mong đợiPass4. Truy cập email và nhấp vào đường dẫn khôi phục mật khẩuChuyển sang trang đặt lại mật khẩu mới cho người dùngNhư mong đợiPass5. Nhập mật khẩu "phuong2003" vào trường mật khẩu mớiTrường mật khẩu mới hiển thị đúng dữ liệu "phuong2003"Như mong đợiPass6. Nhập mật khẩu "phuong2003" vào trường xác thực mật khẩu Trường xác thực mật khẩu hiển thị đúng dữ liệu "phuong2003"Như mong đợiPass7. Nhấn phím EnterHệ thống cập nhập lại mật khẩu mới và chuyển đến trang thông báo đổi mật khẩu thành công.Như mong đợiPassTest case ResultPASSBảng 35: Test case chức năng khôi phục mật khẩu
+5.5. Kiểm tra chức năng tìm kiếm sản phẩm
+Test case IDSEARCH_01DescriptionTìm kiếm sản phẩm với từ khóa hợp lệTest DataPrerequisites- Từ khoá tìm kiếm không đầy đủ: ipho- Truy cập vào trang chủ: https://ybzone.io.vn
+- Có sản phẩm liên quan tới từ khóa iphoStep DetailsExpectedActualResult1. Nhấn vào biểu tượng kính lúp trên thanh điều hướngHệ thống hiển thị vùng tìm kiếm sản phẩm Như mong đợiPass2. Nhập từ khóa tìm kiếm "ipho" vào thanh tìm kiếmTừ khóa hiển thị trên thanh tìm kiếmNhư mong đợiPass3. Kiểm tra kết quả tìm kiếm sản phẩmVùng tìm kiếm xuất hiện danh sách các sản phẩm liên quan tới từ khóa "ipho"Như mong đợiPass4. Bấm vào một sản phẩm bất kỳChuyển hướng tới trang chi tiết sản phẩmNhư mong đợiPassTest case ResultPASSBảng 36: Test case chức năng tìm kiếm sản phẩm
+5.6. Kiểm tra chức năng xem chi tiết sản phẩm
+Test case IDDETAILS_01DescriptionXem chi tiết sản phẩmTest DataPrerequisites- Danh mục: iPhone
+- Xem sản phẩm: 
+iPhone 16 & iPhone 16 Plus- Truy cập vào trang chủ: https://ybzone.io.vnStep DetailsExpectedActualResult1. Nhấn chọn mục iPhone trên thanh điều hướngHệ thống hiển thị menu của mục iPhoneNhư mong đợiPass2. Nhấn chọn "Explore All iPhone" Chuyển hướng đến trang danh sách sản phẩmNhư mong đợiPass3. Kiểm tra danh sách sản phẩm của hạng mục iPhoneHệ thống hiển thị danh sách sản phẩm của danh mục iPhone với các thông tin cơ bảnNhư mong đợiPass4. Nhấn chọn nút "Visit" của sản phẩm "iPhone 16 & iPhone 16 Plus" trong danh sáchHệ thống chuyển hướng đến trang chi tiết sản phẩmNhư mong đợiPass5. Kiểm tra thông tin chi tiết sản phẩm hiển thị trên trangHiển thị đầy đủ thông tin chi tiết: tên, giá tiền, mô tả, đánh giá, màu sắc, dung lượng lưu trữ và modelNhư mong đợiPassTest case ResultPASSBảng 37: Test case chức năng xem chi tiết sản phẩm
+5.7. Kiểm tra chức năng xem các sản phẩm
+Test case IDVIEWPRO_01DescriptionXem danh sách các sản phẩmTest DataPrerequisites- Danh mục: iPhone- Truy cập vào trang chủ: https://ybzone.io.vnStep DetailsExpectedActualResult1. Nhấn chọn mục iPhone trên thanh điều hướngHệ thống hiển thị menu của mục iPhoneNhư mong đợiPass2. Nhấn chọn "Explore All iPhone" Chuyển hướng đến trang danh sách sản phẩmNhư mong đợiPass3. Kiểm tra danh sách sản phẩm của hạng mục iPhoneHệ thống hiển thị danh sách sản phẩm của danh mục iPhone với các thông tin cơ bản: : tên, hình ảnh, giá, đánh giá, các loại màu, các loại dung lượng lưu trữ và các thông tin khácNhư mong đợiPassTest case ResultPASSBảng 38: Test case chức năng xem các sản phẩm 
+
+5.8. Kiểm tra chức năng lọc sản phẩm
+Test case IDFILTER_01DescriptionLọc sản phẩm theo nhiều bộ lọcTest DataPrerequisites- Storage: 128GB
+- Color: Black
+- Price: $0 - $900
+- Models: iPhone 15- Truy cập vào trang danh sách sản phẩm của mục iPhone: https://ybzone.io.vn/shop/iphoneStep DetailsExpectedActualResult1. Truy cập vào trang danh sách sản phẩm.Hiển thị danh sách các sản phẩm có sẵn trong hệ thống.Như mong đợiPass2. Áp dụng bộ lọc theo dung lượng lưu trữ: 128GB 
+Chỉ hiển thị sản phẩm có dung lượng lưu trữ là 128GBNhư mong đợiPass3. Áp dụng bộ lọc theo Color: BlackChỉ hiển thị sản phẩm có màu sắc là đenNhư mong đợiPass4. Áp dụng bộ lọc theo Price: $0 - $900.Chỉ hiển thị sản phẩm trong khoảng giá này.Như mong đợiPass5. Áp dụng bộ lọc theo danh mục loại Models: iPhone 15Chỉ hiển thị sản phẩm có danh mục loại iPhone 15Như mong đợiPass6. Kiểm tra kết quả lọc.Danh sách sản phẩm hiển thị khớp với các tiêu chí lọc.Như mong đợiPassTest case ResultPASSBảng 39: Test case chức năng lọc sản phẩm với nhiều bộ lọc
+5.9. Kiểm tra chức năng quản lý giỏ hàng
+Test case IDMANAGECART_01DescriptionThêm sản phẩm vào giỏ hàngTest DataPrerequisites- Product: iPhone 15 & iPhone 15 Plus
++ Models: iPhone 15 Plus
++ Color: Black
++ Storage: 128GB- Truy cập vào trang sản phẩm: https://ybzone.io.vn/shop/iphone
+- Người dùng đã đăng nhập hệ thốngStep DetailsExpectedActualResult1. Nhấn chọn "Visit" ở sản phẩm iPhone 15 & iPhone 15 PlusChuyển sang trang chi tiết sản phẩm iPhone 15 & iPhone 15 PlusNhư mong đợiPass2. Nhấn chọn iPhone 15 Plus ở trường ModelMục Model chọn đúng iPhone 15 PlusNhư mong đợiPass3. Nhấn chọn màu đen ở trường Color Mục Color chọn đúng màu đen BlackNhư mong đợiPass4. Nhấn chọn dung lượng lưu trữ 128GB ở trường StorageMục Storage chọn đúng dung lượng lưu trữ là 128GB. Hệ thống sẽ hiển trị thông tin sản phẩm có những thuộc tính vừa chọn và danh sách các cửa hàng có tồn kho sản phẩm đóNhư mong đợiPass5. Nhấn chọn "Add to Bag"Hệ thống thông báo "Item added to cart". Sản phẩm được thêm vào giỏ hàng và điều chỉnh số lượng của giỏ hàng trên thanh điều hướngNhư mong đợiPassTest case ResultPASSBảng 40: Test case chức năng quản lý giỏ hàng
+5.10. Kiểm tra chức năng thanh toán giỏ hàng
+Test case IDPLACEORDER_01DescriptionĐặt hàng với phương thức thanh toán CODTest DataPrerequisites- Sản phẩm: IPHONE_15 128GB BLUE
++ Số lượng: 2
++ Đơn giá: $2000
+- Payment method: COD- Người dùng đã đăng nhập tài khoản
+- Truy cập vào trang giỏ hàng: https://ybzone.io.vn/cartStep DetailsExpectedActualResult1. Nhấn chọn biểu tượng giỏ hàng trên thanh điều hướngHệ thống hiển thị tóm tắt giỏ hàngNhư mong đợiPass2. Nhấn chọn "Review bag"Chuyển sang trang giỏ hàngNhư mong đợiPass3. Tích chọn sản phẩm IPHONE_15 128GB BLUE Hệ thống cập nhật  thông tin hóa đơn và tổng tiền là $2000Như mong đợiPass4. Nhấn chọn "Checkout"Chuyển sang trang thanh toán sản phẩm. Hệ thống hiển thị chi tiết đơn hàng với tổng tiền là $2000Như mong đợiPass5. Nhấn chọn phương thức COD ở trường Payment methodTrường Payment method hiển thị chọn phương thức thanh toán CODNhư mong đợiPass6. Nhấn nút "Place Order'Hệ thống tạo đơn hàng và chuyển sang trang chi tiết đơn hàng vừa đặt với trạng thái "PENDING"Như mong đợiPassTest case ResultPASSBảng 41: Test case chức năng thanh toán giỏ hàng bằng COD
+
+Test case IDPLACEORDER_02DescriptionĐặt hàng với phương thức thanh toán VNPAYTest DataPrerequisites- Sản phẩm: IPHONE_15 128GB BLUE
++ Số lượng: 2
++ Đơn giá: $2000
+- Payment method: VNPAY - Người dùng đã đăng nhập tài khoản
+- Truy cập vào trang giỏ hàng: https://ybzone.io.vn/cartStep DetailsExpectedActualResult1. Nhấn chọn biểu tượng giỏ hàng trên thanh điều hướngHệ thống hiển thị tóm tắt giỏ hàngNhư mong đợiPass2. Nhấn chọn "Review bag"Chuyển sang trang giỏ hàngNhư mong đợiPass3. Tích chọn sản phẩm IPHONE_15 128GB BLUE Hệ thống cập nhật  thông tin hóa đơn và tổng tiền là $2000Như mong đợiPass4. Nhấn chọn "Checkout"Chuyển sang trang thanh toán sản phẩm. Hệ thống hiển thị chi tiết đơn hàng với tổng tiền là $2000Như mong đợiPass5. Nhấn chọn phương thức VNPAY ở trường Payment methodTrường Payment method hiển thị chọn phương thức thanh toán VNPAYNhư mong đợiPass6. Nhấn nút "Place Order'Chuyển sang trang thanh toán của VNPAYNhư mong đợiPass7. Thực hiện thanh toán bằng VNPAY thành công Chuyển sang trang thanh toán thành côngNhư mong đợiPassTest case ResultPASSBảng 42: Test case chức năng thanh toán giỏ hàng bằng VNPAY
+
+Test case IDPLACEORDER_03DescriptionNgười dùng thanh toán thành công với phương thức thanh toán là Blockchain SolanaTest DataPrerequisites- Addess Shipping: default
+- Sản phẩm: iPhone 15
+- Số lượng: 1 
+- Tổng tiền: $2000
+- 12 chữ ngẫu nhiên: roast scrap ginger school loop useless slow talent dish seek raw rude
+- Private Key (optional): 5TQpFwV4M2XhXYnVsAySL4z8ZqeT89CyutZisSpSgiPbFLwYRd7UQMhmGc5BrqYuoWqfC8HJQRhWUYtb9uSgEqf
+- Mật khẩu: test12345
+- Payment method: Blockchain Solana- Người dùng đang ở trang giỏ hàngStep DetailsExpectedActualResult1. Truy cập vào giỏ hàng.Hiển thị danh sách sản phẩm và tổng giá trị giỏ hàng.Như mong đợiPass2. Nhấn nút "Checkout".Chuyển đến trang thanh toán.Như mong đợiPass3. Chọn địa chỉ giao hàng mặc định của người dùng tại Default Address ShippingHiển thị đúng thông tin địa chỉ giao hàng mặc định của ngườiNhư mong đợiPass4. Chọn Payment method là Blockchain SolanaHiển thị đúng phương thức thanh toán Blockchain SolanaNhư mong đợiPass5. Bấm nút kết nối víHiển thị danh sách các ví hiện có trong trình duyệtNhư mong đợiPass6. Chọn ví phù hợpHiện thị extension của ví đóNhư mong đợiPass7. Nhập private key hoặc 12 chữ ngẫu nhiên để đăng nhậpChuyển sang nhập mật khẩuNhư mong đợiPass8. Nhập mật khẩuChuyển sang giao diện tài khoản trên extensionNhư mong đợiPass9. Nhấn nút "Pay with Solana"Hiển thị model có mã crypto UUID và nút xác nhận giao dịchNhư mong đợiPass10. Nhấn nút xác nhậnHiển thị extension của ví và nút "Approve"Như mong đợiPass11. Nhấn nút "Approve"Xử lý giao dịch và trả về mã giao dịch cho clientNhư mong đợiPass12. Thực hiện thanh toán Blockchain Solana thành côngChuyển sang trang thanh toán thành công và đơn hàng ở trạng thái "Paid"Như mong đợiPassTest case ResultPASSBảng 43: Test case chức năng thanh toán giỏ hàng bằng Blockchain Solana
+5.11. Kiểm tra chức năng xác nhận đơn hàng 
+Test case IDCONFIRMORDER_01DescriptionNgười dùng xác nhận đơn hàng đang ở trạng thái "PENDING". Hóa đơn của đơn hàng chuyến sang trạng thái "CONFIRMED"Test DataPrerequisites- Order Number: #668183Người dùng đã đăng nhập và vừa đặt đơn hàng với trạng thái là "PENDING", truy cập trang danh sách đơn hàng: https://ybzone.io. vn/account/ordersStep DetailsExpectedActualResult1. Nhấn vào đơn hàng có mã "#668183"Chuyển sang trang đơn hàng chi tiết có mã là ""#668183" Như mong đợiPass2. Nhấn vào "Confirm Order"Hệ thống reload lại trang chi tiết đơn hàng có mã "#668183" với trạng thái COMFIRMEDNhư mong đợiPassTest case ResultPASSBảng 44: Test case chức năng xác nhận đơn hàng với trạng thái xác nhận đơn hàng
+5.12. Kiểm tra chức năng đánh giá sản phẩm
+Test case IDREVIEW_01DescriptionĐánh giá sản phẩm thành côngTest DataPrerequisites- Order Number: # 228979
+- Product: IPHONE_15_PLUS BLACK 128GB
+- Rating: 5
+- Review: good item- Đã đăng nhập tài khoản
+- Đơn hàng ở trạng thái là "DELIVERED"
+- Truy cập trang danh sách đơn hàng: https://ybzone.io. vn/account/ordersStep DetailsExpectedActualResult1. Nhấn chọn đơn hàng có mã "#228979"Chuyển sang trang đơn hàng chi tiết có mã là "#228979" Như mong đợiPass2. Nhấn vào "Write a Review" ở sản phẩm "IPHONE_15_PLUS BLACK 128GB"Hiển thị cửa sổ đánh giá của sản phẩm "IPHONE_15_PLUS BLACK 128GB"Như mong đợiPass3. Nhấn vào sao thứ 5 từ trái sang phải ở mục  "Your Rating"Mục "Your Rating" hiển thị 5 sao vàng từ trái sang phảiNhư mong đợiPass4. Nhập vào đánh giá "good item" ở mục    "Your Review"Mục "Your Review" hiển thị đúng nội dung người dùng đã đánh giáNhư mong đợiPass5. Nhấn chọn "Submit Review" Hệ thống hiển thị thông báo đánh giá sản phẩm thành công và reload lại trang chi tiết hóa đơn. Như mong đợiPass6. Nhấn chọn "View Review" ở sản phẩm "IPHONE_15_PLUS BLACK 128GB"Đánh giá mới hiển thị trong phần đánh giá của sản phẩm, với 5 sao và bình luận đánh giá.Như mong đợiPassTest case ResultPASSBảng 45: Test case chức năng đánh giá sản phẩm
+5.13. Kiểm tra chức năng cập nhật trạng thái đơn hàng
+Test case IDUPDATESTATUS_01DescriptionAdmin cập nhập trạng thái đơn hàng của khách hàng là PREPARINGTest DataPrerequisites- Order number: #668183
+- Old status: CONFIRMED
+- New status: PREPARINGAdmin đang đăng nhập tài khoản admin. Step DetailsExpectedActualResult1. Chọn "Orders" tại mục "Orders Management"Hệ thống chuyển sang trang quản lý đơn hàng và hiển thị danh sách tất cả đơn hàng.Như mong đợiPass2. Chọn "View Detail" tại order có mã "#668183"Hệ thống chuyển sang trang chi tiết đơn hàng của đơn hàng có mã "#668183"Như mong đợiPass3. Nhấn chọn trạng thái "PREPARING" ở mục "Update Status"Hiển thị trạng thái "PREPARING" ở mục "Update Status"Như mong đợiPass4. Nhấn nút "Update Status"Hệ thống cập nhật lại trang chi tiết đơn hàng với trạng thái "PREPARING" mà actor vừa chọnNhư mong đợiPassTest case ResultPASSBảng 46: Test case chức năng cập nhật trạng thái đơn hàng
+5.14. Kiểm tra chức năng thêm sản phẩm
+Test case IDADDPRODUCT_01DescriptionThêm sản phẩm iPhone mới vào danh sách sản phẩm mục iPhoneTest DataPrerequisites- Title: iPhone 16
+- Description: desc
+- Category: iPhone 16
+- Model name: iPhone 16e
+- Storage: 128GB, 256GB, 512GB, 1024GB
+- Color name: Blue - #9AADF6Admin đang đăng nhập tài khoản admin.Step DetailsExpectedActualResult1. Chọn "Model Management" tại mục "iPhone Management"Hệ thống chuyển sang trang quản lý đơn hàng và hiển thị danh sách tất cả đơn hàng.Như mong đợiPass2. Nhập "iPhone 16" ở mục Title Hiển thị đúng "iPhone 16" ở mục TitleNhư mong đợiPass3. Nhập "desc" ở mục DescriptionHiển thị đúng "desc" ở mục DescriptionNhư mong đợiPass4. Nhập "iPhone 16" ở mục CategoryHiển thị đúng "iPhone 16" ở mục CategoryNhư mong đợiPass5. Nhập "iPhone 16e" ở mục Model NameHiển thị đúng "iPhone 16e" ở mục Model NameNhư mong đợiPass6. Nhấn chọn "Select storages" ở mục "Storages" và chọn các dung lượng lưu trữ 128GB, 256GB, 512GB, 1024GBHiển thị các dung lượng lưu trữ 128GB, 256GB, 512GB, 1024GB ở mục StoragesNhư mong đợiPass7. Nhập "Blue" ở mục con  "Color Name" của mục "Choose Colors", và chọn "Pick a color" để chọn màu xanhHiển thị đúng "Blue" và mã màu ở mục con  "Color Name" của mục "Choose Colors" Như mong đợiPass8. Chọn "Create New Model"Hệ thống quay lại trang quản lý các sản phẩm của mục iPhone và hiển thị sản phẩm vừa mới thêmNhư mong đợiPassTest case ResultPASSBảng 47: Test case chức năng thêm sản phẩm
+5.15. Kiểm tra chức năng tạo event khuyến mãi
+Test case IDADDEVENT_01DescriptionThêm khuyến mãi cho các sản phẩm Test DataPrerequisites- Event Title: Black Friday
+- Event Status: Inactive
+- Event Description: desc
+- Event Duration: 01/06/2025 - 30/06/2025
+- Apply promotion for categories: 
+ + Category: iPhone 16 - Discount value: 20%
+* Product: iphone-16-128gb .  Discount value: 30%
+* Product: iphone-16-256gb .  Discount value: 12%Admin đang đăng nhập tài khoản admin.Step DetailsExpectedActualResult1. Chọn "Promotion Events" tại mục "Promotions Management"Hệ thống chuyển sang trang quản lý sự kiện khuyến mãi và hiển thị danh sách tất cả sự kiện khuyến mãi.Như mong đợiPass2. Nhập "Black Friday" ở mục Event TitleHiển thị đúng "Black Friday" ở mục Event TitleNhư mong đợiPass3. Chọn "Inactive" ở mục Event StatusHiển thị đúng "Inactive" ở mục Event StatusNhư mong đợiPass4. Nhập "desc" ở mục Event DescriptionHiển thị đúng "desc" ở mục Event DescriptionNhư mong đợiPass5. Chọn ngày 01/06/2025 - 30/06/2025 ở mục Event DurationHiển thị đúng ngày từ  01/06/2025 đến 30/06/2025 ở mục Event DurationNhư mong đợiPass6. Nhấn chọn "iPhone 16" ở mục nhỏ Category với  Discount là 20% tại mục lớn Apply promotion for categoriesHiển thị đúng loại sản phẩm cần khuyến mãi là loại iPhone 16 với discount là 20%Như mong đợiPass7. Nhấn "Add More" dưới mục Apply promotion for Products. Và chọn sản phẩm "iphone-16-128gb" với discount là 30%
+Hiển thị đúng sản phẩm "iphone-16-128gb" đã được chỉ định để khuyến mãi 30% Như mong đợiPass8. Nhấn "Add More" dưới mục Apply promotion for Products. Và chọn sản phẩm "iphone-16-256gb" với discount là 12%Hiển thị đúng sản phẩm "iphone-16-256gb" đã được chỉ định để khuyến mãi 12%Như mong đợiPass9. Chọn "Create Promotion"Hệ thống thông báo tạo thành công, chuyển sang trang quản lý sự kiện khuyến mãi và hiển thị danh sách tất cả sự kiện khuyến mãi có cả sự kiện khuyến mãi vừa thêm.Như mong đợiPassTest case ResultPASSBảng 48: Test case chức năng tạo event khuyến mãi
+
+
+
+
+
+
+
+
+
+
+ KẾT LUẬN
+1. Kết quả đạt được
+	Qua quá trình nghiên cứu, thử nghiệm và triển khai thành công E-commerce website với kiến trúc Microservices, nhóm chúng em đã đạt được các kết quả cụ thể sau đây:
+1.1. Về kiến trúc và công nghệ
+* Về kiến trúc: Áp dụng thành thành công kiến trúc Microservices và Multi-tenant bao gồm những kiến thức cốt lỗi:
+* Chia ra các service đảm nhận nghiệp vụ cụ thể của từng service, khi service này sập thì những service kia vẫn sẽ tiếp tục hoạt động
+* Tích hợp API Gateway giúp chuyển tiếp các request đến service tương ứng
+* Tích hợp Event bus giúp xử lí bất đồng bộ giữa các serivce giúp dữ liệu được nhất quán
+* Ứng dụng kỹ thuật Multi-tenant thành công giúp phân chia chi nhánh hiệu quả
+* Về Frontend
+* Sử dụng framework hiện đại NextJS, giao tiếp với Backend thông qua RESTful API
+* Thiết kế UI/UX với tailwind CSS giúp thiết kế nhanh và cùng code convention cho các thành viên
+* Sử dụng Typescript với cách viết Javascript nhưng kết hợp strong type giúp định nghĩa và viết code sạch sẽ hơn
+* Về Backend
+* Sử dụng kiến trúc Clean Architecture, CQRS, Result Pattern với ngôn ngữ, framework C# ASP.NET và framework EntityFramework để giao tiếp với Database, tận dụng tính năng Migration và Seed Data
+* Tích hợp thành công Keyclock Identity Server tập trung phân quyền cung cấp JWT
+* Sử dụng Cloudinary để lưu trữ hình ảnh
+* Tận dụng sự thiết kế linh hoạt trong MongoDB để xây dựng Catalog Service và PostgresDB cho các service còn lại, đặc biết PostgresDB tích hợp json trong database giúp thuận tiện thiết kế Basket Service
+* Về Blockchain
+* Viết smart contract của mạng blockchain Solana giúp lưu trữ dữ liệu on-chain
+* Tích hợp thanh toán bằng Blockchain thành vào Frontend
+
+1.2. Về chức năng nghiệp vụ
+* Hoàn thiện đầy đủ các chức năng cốt lõi của một hệ thống thương mại điện tử:
+* Quản lý sản phẩm: CRUD sản phẩm, phân loại theo danh mục, quản lý biến thể (màu sắc, dung lượng, mẫu thiết kế)
+* Quản lý đa chi nhánh: Theo dõi doanh thu từng chi nhánh và doanh thu toàn hệ thống. Quản lý tồn kho của từng chi nhánh
+* Quản lý đơn hàng: Theo dõi trạng thái, cập nhật tình trạng giao hàng
+* Quản lý khuyến mãi: Tạo sự kiện và mã giảm giá theo danh mục, theo sản phẩm hoặc toàn bộ sản phẩm
+* Quản lý người dùng: Phân quyền (khách hàng, nhân viên, quản lý, admin)
+* Giỏ hàng và thanh toán: Thêm/xóa sản phẩm, tích hợp VNPay, MOMO
+* Quản lý địa chỉ giao hàng: Lưu và quản lý nhiều địa chỉ
+* Tìm kiếm và lọc sản phẩm: Hỗ trợ nhiều tiêu chí (tên, danh mục, giá, màu sắc, dung lượng, mẫu sản phẩm)
+* Đánh giá sản phẩm: Cho phép khách hàng đánh giá và bình luận sản phẩm đã mua
+* Thanh toán bằng Blockchain: Hỗ trợ thanh toán bằng Blockchain mạng Solana, viết bằng smart contract
+1.3. Về trải nghiệm người dùng
+* Xây dựng giao diện hiện đại và thân thiện:
+* Giao diện thân thiện, responsive, tương thích với cả desktop và mobile
+* Tốc độ tải trang nhanh nhờ Next.js Image và lazy loading
+* Giao diện trực quan, dễ sử dụng
+* Cải thiện trải nghiệm mua sắm:
+* Quy trình đặt hàng đơn giản, rõ ràng
+* Hiển thị thông tin sản phẩm chi tiết và trực quan
+* Hỗ trợ xem lịch sử đơn hàng và theo dõi trạng thái
+1.4. Về bảo mật
+* Triển khai hệ thống xác thực và phân quyền:
+* Áp dụng JWT cho xác thực, mã hóa mật khẩu với BCrypt, và bảo vệ API khỏi các cuộc tấn công CSRF/XSS.
+* Sử dụng các tham số hóa truy vấn để ngăn SQL Injection.
+* Phân quyền chi tiết theo vai trò
+1.5. Về quy trình phát triển
+* Áp dụng quy trình Agile với các sprint ngắn, sử dụng Jira để quản lý công việc.
+* Tích hợp pipeline CI/CD với Jenkins để kiểm tra và triển khai tự động.
+* Đảm bảo tài liệu hóa mã nguồn và API rõ ràng thông qua Swagger.
+* Sử dụng Git cho quản lý mã nguồn
+* Code review và coding convention
+* Sơ đồ sequence và use case chi tiết
+* Hướng dẫn cài đặt và triển khai
+2. Ưa điểm
+* Trải nghiệm người dùng: Hệ thống có phần so sánh sản phẩm giúp người dùng dễ dàng đưa ra các quyết định dễ dàng hơn. UI/UX giúp tối ưa về mặt giao diện và trải nghiệm người dùng tốt
+* Quản lý doanh thu hiệu quả: Nhờ ứng dụng Multi-tenant, việc quản lý doanh thu theo chi nhánh và toàn bộ hệ thống hiệu quả hơn giúp tối ưu chi phí vận hành và doanh thu
+* Mở rộng phương thức thanh toán: Hệ thống có tích hợp thanh toán bằng Blockchain mạng Solana giúp mở rộng khả năng thanh toán cho những người dùng sở hữu đồng tiền mã hoá có thể thanh toán dễ dàng hơn
+* Hiệu suất vượt trội: Next.js tận dụng SSR và SSG để giảm thời gian tải trang, giúp ứng dụng phản hồi nhanh chóng ngay cả với lưu lượng truy cập cao. ASP.NET với kiến trúc tối ưu hóa hiệu suất xử lý các yêu cầu API đồng thời, đảm bảo khả năng đáp ứng
+* Khả năng mở rộng linh hoạt: Kiến trúc ứng dụng được thiết kế theo mô hình phân tầng Clean Architecture và phân chia dịch vụ Microservices, cho phép dễ dàng thêm các module mới (như giao hàng, quản lý kho), giúp ứng dụng dễ dàng mở rộng khi nhu cầu kinh doanh tăng.
+* Trải nghiệm phát triển cải tiến: Quy trình phát triển sử dụng các công cụ hiện đại như Git, CI/CD pipeline (Jenkins), và tài liệu hóa API tự động qua Swagger, giúp đội ngũ phát triển làm việc hiệu quả. Next.js cung cấp hot-reloading, cải thiện tốc độ phát triển giao diện, trong khi Visual Studio hỗ trợ debugging mạnh mẽ cho Backend
+* Khả năng tối ưu SEO và tiếp cận người dùng: Next.js hỗ trợ SEO tối ưu với SSG và meta tags động, giúp ứng dụng dễ dàng xuất hiện trên các công cụ tìm kiếm. Điều này đặc biệt hữu ích cho các ứng dụng thương mại điện tử hoặc nội dung
+3. Hạn chế
+* Về tính năng
+* Chưa có tính năng chat trực tiếp hỗ trợ, tư vấn khách hàng
+* Chưa có tính năng gợi ý sản phẩm thông minh
+* Chưa có tính năng tìm kiếm nâng cao
+* Chưa hỗ trợ đa ngôn ngữ
+* Về kỹ thuật
+* Chưa có giải pháp backup và phục hồi dữ liệu
+* Thiếu monitoring system để theo dõi hiệu năng hệ thống microservices làm giảm khả năng debug, phát hiện lỗi
+4. Hướng phát triển
+4.2. Thêm nhiều sản phẩm khác nhau và phát triển tính năng tìm kiếm nâng cao
+* Mở rộng danh mục sản phẩm: Cập nhật cơ sở dữ liệu Backend để hỗ trợ danh mục sản phẩm đa dạng hơn, với các thuộc tính như loại sản phẩm, thương hiệu, kích thước, màu sắc. Tích hợp API để Frontend hiển thị danh mục động
+* Tìm kiếm nâng cao: Tích hợp ElasticSearch vào Backend để hỗ trợ tìm kiếm nhanh, chính xác với khả năng xử lý lỗi chính tả, tìm kiếm theo từ khóa, và tìm kiếm mờ (fuzzy search). Frontend sẽ hiển thị kết quả tìm kiếm với các bộ lọc như giá, danh mục, hoặc đánh giá
+* Bộ lọc và sắp xếp: Phát triển giao diện bộ lọc trên Frontend (Next.js) với các tiêu chí như giá (thấp đến cao), đánh giá, hoặc mức độ phổ biến. Sử dụng query parameters trong API để Backend xử lý các yêu cầu lọc/sắp xếp
+4.5. Phát triển tính năng gợi ý nâng cao
+* Gợi ý dựa trên hành vi người dùng: Sử dụng machine learning (TensorFlow) để phân tích lịch sử mua hàng, sản phẩm đã xem, và hành vi tìm kiếm. Backend sẽ cung cấp API gợi ý dựa trên mô hình được huấn luyện
+* Gợi ý theo ngữ cảnh: Tích hợp các thuật toán gợi ý dựa trên danh mục sản phẩm, mùa vụ, hoặc xu hướng thị trường. Frontend hiển thị các mục như "Sản phẩm tương tự" hoặc "Khách hàng cũng mua"
+* Cá nhân hóa trải nghiệm: Lưu trữ sở thích người dùng để cung cấp gợi ý phù hợp
+4.6. Tích hợp chức năng chatbot
+* Tích hợp chatbot AI: Sử dụng các nền tảng như Dialogflow, Rasa để xây dựng chatbot hỗ trợ khách hàng 24/7. Chatbot sẽ được tích hợp vào Frontend (Next.js) thông qua widget hoặc trang riêng
+* Chức năng tự động: Hỗ trợ trả lời các câu hỏi thường gặp (FAQ) như chính sách đổi trả, thông tin sản phẩm, hoặc trạng thái đơn hàng. Chatbot có thể gọi API từ Backend để tra cứu thông tin theo thời gian thực
+* Cải thiện trải nghiệm: Sử dụng NLP (Natural Language Processing) để chatbot hiểu và trả lời các câu hỏi phức tạp hơn, đồng thời hỗ trợ đa ngôn ngữ (ví dụ: tiếng Việt, tiếng Anh). Tích hợp phân tích cảm xúc để chuyển hướng đến nhân viên hỗ trợ khi khách hàng không hài lòng
+
+
+
+
+
+
+Bảng liệt kê công việc
+TuầnNgàyNhiệm vụ (Công việc dự kiến)Người chịu trách nhiệmSản phẩm dự kiếnKết quả thực tếChữ ký của GVHD1 - 304/9 - 19/9- Nghiên cứu và thiết kế cơ sở dữ liệu cho kiến trúc Multi-tenantBách- Thiết kế cơ sở dữ liệu đáp ứng kiến trúc Multi-tenant- Đạt kết quả kỳ vọng4 - 522/9 - 03/10- Chỉnh sửa logic nghiệp vụ tương ứng với kiến trúc Multi-tenantBách- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng 6 - 806/10 - 25/10- Nghiên cứu Blockchain mạng Solana và ngôn ngữ lập trình RustBách- Đánh giá khả năng ứng dụng vào dự án  - Có khả năng ứng thực tế vào dự án9
+29/10- 31/10- Tích hợp Blockchain vào FrontendBách- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng1003/11 - 05/11- Responsive giao hiện trang Home (Phương)
+- Viết báo cáocập nhật công nghệ, lý thuyết (Bách)
+Bách + Phương- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng1110/11 - 16/11- Responsive giao hiện trang Shop (Phương)
+- Cải thiện UI Admin, thêm bộ filter doanh doanh thu theo chi nhánh (Bách)
+- Thêm bộ lọc cho quản lý SKU, HRM, Customer (Bách)
+- Viết báo cáo (cập nhật lược đồ usecase, lược đồ lớp) (Bách)
+- Viết báo cáo (cập nhật đặc tả usecase) (Phương)Bách + Phương- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng1317/11-23/11- Responsive giao hiện trang Account, Order, Address (Phương)
+- Thêm bộ lọc cho Order, Online Order (Bách)
+- Viết báo cáo kiểm thử (Phương)
+Bách + Phương- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng1424/11 - 30/11- Hoàn thành báo cáo
+Bách + Phương- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng1501/12 - 07/12- Kiểm tra lại báo cáo và ứng dụng
+Bách + Phương- Hoàn thành các công việc dự kiến- Đạt kết quả kỳ vọng
+Bảng 49: Bảng liệt kê công việc
+
+
+
+
+
+
+
+
+ TÀI LIỆU THAM KHẢO
+1. Next.js. (n.d.). Next.js by Vercel - The React Framework. 
+https://nextjs.org/docs
+2. Wadepickett. (n.d.). ASP.NET documentation. Microsoft Learn.
+.https://learn.microsoft.com/en-us/aspnet/core/?view=aspnetcore-8.0
+3. Kết nối cổng thanh toán VNPAY · Cổng thanh toán VNPAY. https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html
+4. Test Instructions | MoMo Developers. (n.d.). https://developers.momo.vn/v3/docs/payment/onboarding/test-instructions
+5. Shadcn. (n.d.). Introduction. shadcn/ui. https://ui.shadcn.com/docs
+6. Team, K. (n.d.). Keycloak. Keycloak. https://www.keycloak.org
+7. Zekry, M. (2024, November 27). Clean Architecture in ASP .NET Core Web API - Mohaned Zekry - Medium. Medium. https://medium.com/@mohanedzekry/clean-architecture-in-asp-net-core-web-api-d44e33893e1d
+8. Maneshwar, A. A. (2025, March 15). Domain driven design. DEV Community. https://dev.to/lovestaco/domain-driven-design-3i2j
+9. Di Động, C. T. C. P. T. G. (n.d.). TopZone - Cửa hàng Apple chính hãng. https://www.topzone.vn
+10. Apple. (n.d.). Apple. https://www.apple.com
+11. Developers: Resources and Information for Building on Solana | Solana. (n.d.). https://solana.com/developers
+12. Sandra Suszterová. (2024, June 27). Multi-tenant Architecture: What You Need To Know | GoodData. https://www.gooddata.com/blog/Multi-tenant-architecture/
+6
+
+
+2
+
+
+2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+
+

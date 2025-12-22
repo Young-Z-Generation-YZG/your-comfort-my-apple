@@ -1,0 +1,131 @@
+﻿Research On The Dependence Of University Students On Artificial Intelligence   Thi Nguyen Van*, Cong Phan Le Thanh   Ho Chi Minh City University of Technology and Education, Vietnam
+*Corresponding author. Email: vanthi.work@gmail.com   ARTICLE INFOABSTRACT   Received:    This study investigates the phenomenon of dependence on artificial intelligence tools in the learning process among university students in Vietnam, amid the growing integration of AI technologies in higher education. Using a quantitative approach, the research employed an online survey consisting of five statements designed to measure students' perceptions and behaviors related to AI reliance, rated on a 5-point Likert scale. Over 500 valid responses were collected from students who had previously used at least one AI-based platform, such as ChatGPT or Copilot. The data were processed and analyzed using descriptive statistics in Microsoft Excel to identify patterns in AI usage among learners. Results revealed that the most common indicators of AI dependence included anxiety over falling behind without using AI and the need for AI-generated feedback to feel confident in academic decisions. However, there was no significant evidence of loss of control or addictive behavior. The findings offer an initial empirical foundation for understanding student learning behaviors in the digital era and support the development of educational strategies that promote responsible and conscious use of AI in academic settings.   Revised:       Accepted:      Published:       KEYWORDS   Artificial Intelligence;
+Students; 
+Dependence; 
+Education;
+Technology.   Nghiên Cứu Mức Độ Phụ Thuộc Của Sinh Viên Đại Học Vào Trí Tuệ Nhân Tạo   Nguyễn Văn Thi*, Phan Lê Thành Công   Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh, Việt Nam
+*Tác giả liên hệ. Email: vanthi.work@gmail.com   THÔNG TIN BÀI BÁOTÓM TẮT   Ngày nhận bài: Nghiên cứu này nhằm khảo sát hiện tượng phụ thuộc vào trí tuệ nhân tạo trong học tập của sinh viên đại học tại Việt Nam trong bối cảnh công nghệ phát triển mạnh và giáo dục ngày càng ứng dụng AI rộng rãi. Bằng phương pháp định lượng, nhóm nghiên cứu thiết kế bảng hỏi trực tuyến với năm phát biểu phản ánh mức độ phụ thuộc vào AI, áp dụng thang đo Likert 5 mức độ. Hơn 500 bảng khảo sát hợp lệ được thu thập từ sinh viên có kinh nghiệm sử dụng các công cụ AI như ChatGPT, Copilot trong quá trình học tập. Dữ liệu được xử lý và phân tích bằng các công cụ thống kê mô tả trên Excel để nhận diện xu hướng và đặc điểm sử dụng AI của người học. Kết quả cho thấy các biểu hiện phụ thuộc phổ biến nhất là cảm giác lo lắng nếu không sử dụng AI và sự phụ thuộc vào phản hồi từ AI để củng cố quyết định học tập. Tuy vậy, không có dấu hiệu rõ ràng cho thấy tình trạng mất kiểm soát hay nghiện AI. Nghiên cứu cung cấp cái nhìn ban đầu về hành vi học tập trong môi trường công nghệ, làm cơ sở cho các chương trình giáo dục số an toàn và định hướng sử dụng AI một cách có ý thức trong cộng đồng sinh viên.    Ngày hoàn thiện:    Ngày chấp nhận đăng:   Ngày đăng:    TỪ KHÓA   Trí tuệ nhân tạo;
+Sinh viên;
+Phụ thuộc;
+Giáo dục;
+Công nghệ.      1. Giới thiệu
+   Sự phát triển mạnh mẽ của Trí tuệ nhân tạo (AI) trong những năm gần đây đang tạo ra những chuyển biến sâu rộng trong nhiều lĩnh vực, đặc biệt là trong giáo dục đại học. AI ngày càng được ứng dụng rộng rãi trong quá trình dạy và học thông qua các công cụ như chatbot, trợ lý ảo, hệ thống dạy học thông minh, cho phép cá nhân hóa quá trình học tập, cải thiện hiệu quả tiếp thu kiến thức và tối ưu hóa trải nghiệm học tập của sinh viên [1], [2]. Trong bối cảnh hậu đại dịch COVID-19, các nền tảng học trực tuyến được đẩy mạnh, càng làm gia tăng vai trò của công nghệ trong giáo dục [3]. 
+   Tuy nhiên, bên cạnh những lợi ích rõ rệt, nhiều nghiên cứu gần đây cũng bắt đầu chỉ ra các hệ quả tiêu cực tiềm ẩn từ việc sử dụng AI quá mức trong học tập. Cụ thể, sinh viên có thể trở nên phụ thuộc vào các công cụ AI để hoàn thành bài tập, tìm kiếm thông tin hoặc thậm chí là đưa ra các quyết định học thuật, điều này có thể làm giảm khả năng tư duy phản biện và tính chủ động trong học tập [4], [5]. Việc sử dụng các công cụ như ChatGPT, Copilot hay các trợ lý học tập AI mang lại hiệu suất cao nhưng cũng tiềm ẩn nguy cơ tạo ra sự lệ thuộc công nghệ, tương tự như các dạng nghiện hành vi đã được ghi nhận trước đây như nghiện internet hay trò chơi điện tử [6].
+   Mặc dù hiện tượng này đã được đề cập trong một số công trình quốc tế, tại Việt Nam, vẫn còn rất ít nghiên cứu tập trung phân tích một cách toàn diện về mức độ và tác động của sự phụ thuộc vào AI trong cộng đồng sinh viên. Trong khi đó, sinh viên Việt Nam - đặc biệt là nhóm học trực tuyến hoặc ngành học liên quan đến công nghệ - đang ngày càng tiếp cận và sử dụng AI như một phần trong quá trình học tập hằng ngày. Việc thiếu vắng dữ liệu nghiên cứu cụ thể về đối tượng này gây khó khăn trong việc nhận diện các nguy cơ tiềm ẩn cũng như đưa ra giải pháp hỗ trợ phù hợp.
+   Do đó, nghiên cứu này được thực hiện nhằm phân tích thực trạng mức độ phụ thuộc vào trí tuệ nhân tạo trong học tập của sinh viên đại học tại Việt Nam, làm rõ các yếu tố liên quan đến hiện tượng này và đề xuất các khuyến nghị giúp sử dụng AI một cách hiệu quả, cân bằng và có trách nhiệm trong môi trường giáo dục đại học.
+2. Phương pháp nghiên cứu
+2.1. Thiết kế nghiên cứu và mẫu khảo sát
+   Phương pháp nghiên cứu là điều tra khảo sát định lượng, nhằm thu thập nhận thức và cảm nhận của sinh viên về mức độ phụ thuộc vào AI. Mẫu khảo sát áp dụng phương pháp thuận tiện (convenience sampling), hướng tới sinh viên tại các trường đại học Việt Nam, đã từng sử dụng ít nhất một nền tảng AI (ChatGPT, Copilot...) [7], [11]. Trên cơ sở tính toán cỡ mẫu với mức ý nghĩa α = 0.05 và công suất kiểm định 1-β = 0.90, tối thiểu cần 200-300 người, nhưng để tăng độ tin cậy và khả năng phân tích phân nhóm sẽ thu thập khoảng 500 bảng khảo sát hợp lệ [8].
+2.2. Công cụ khảo sát
+   Bài khảo sát được thiết kế dưới dạng bảng hỏi trực tuyến trên Google Forms, bao gồm năm phát biểu nhằm đánh giá các khía cạnh phụ thuộc AI ở sinh viên đại học:
+* Tôi cảm thấy không được bảo vệ khi không thể truy cập vào trí tuệ nhân tạo (AI),
+* Tôi lo lắng về việc bị tụt lại trong công việc hoặc dự án nếu không sử dụng AI.
+* Tôi làm mọi cách để luôn cập nhật về AI nhằm gây ấn tượng hoặc giữ được sự phù hợp trong lĩnh vực của mình.
+* Tôi liên tục cần sự xác nhận hoặc phản hồi từ các hệ thống AI để cảm thấy tự tin với quyết định của mình.
+* Tôi sợ rằng AI có thể thay thế các kỹ năng hoặc năng lực hiện tại của tôi.
+Mỗi phát biểu được đánh giá theo thang Likert 5 cấp độ, từ "Hoàn toàn không đồng ý" đến "Rất đồng ý" [9], [12].
+2.3. Quy trình thu thập dữ liệu
+   Khảo sát được triển khai trên Google Forms trong khoảng 2-3 tuần. Link khảo sát được gửi rộng rãi qua email và các nhóm mạng xã hội của sinh viên, kèm theo lời mời tham gia với tiêu chí là những sinh viên đã từng sử dụng ít nhất một nền tảng AI mới được tiếp tục. Trong quá trình thu thập, nhóm nghiên cứu chủ động nhắc nhở qua email và các nhóm mạng xã hội để đạt tỷ lệ phản hồi trên 80%, đồng thời lọc bỏ các phiếu trả lời không hoàn chỉnh hoặc trùng lặp để đảm bảo chất lượng dữ liệu.
+2.4. Phân tích số liệu
+   Dữ liệu được thu thập thông qua Google Forms và xuất sang định dạng Excel để xử lý và phân tích. Trước tiên, nhóm nghiên cứu tiến hành rà soát dữ liệu thiếu (missing data) bằng các công cụ lọc và định dạng có điều kiện (Conditional Formatting) trong Excel để đảm bảo tính đầy đủ và nhất quán của bộ dữ liệu.
+   Phân tích mô tả được thực hiện ở cấp độ từng câu hỏi/phát biểu. Cụ thể, giá trị trung bình (Mean) và độ lệch chuẩn (Standard Deviation) được tính cho từng mục trong bảng hỏi nhằm phản ánh mức độ đồng thuận và sự phân tán trong phản hồi của người tham gia khảo sát. Phương pháp này giúp nhóm nghiên cứu xác định xu hướng đánh giá và mức độ biến thiên trong từng nội dung cụ thể liên quan đến việc sử dụng trí tuệ nhân tạo (AI) trong học tập [9], [10].
+   Ở cấp độ cá nhân, hai chỉ số chính được phân tích:
+* Tổng điểm cá nhân: Tổng điểm của từng người tham gia được tính bằng cách cộng điểm từ các phát biểu trong bảng hỏi. Chỉ số này đại diện cho mức độ đồng thuận tổng thể của mỗi cá nhân. 
+* Thời lượng trung bình mỗi lần sử dụng AI cho việc học tập: Dữ liệu được thu thập dưới dạng phân loại (categorical), chia theo các mức thời gian sử dụng như: dưới 15 phút, 15-30 phút, 30 phút-1 tiếng, 1-2 tiếng, 2-4 tiếng, và trên 4 tiếng. Nhóm nghiên cứu trình bày kết quả thông qua biểu đồ tròn, phản ánh tỷ lệ phần trăm số người thuộc mỗi nhóm thời lượng. Đây là cách tiếp cận phù hợp để mô tả đặc điểm phân bố hành vi sử dụng AI trong học tập của người học.
+   Toàn bộ quá trình xử lý và phân tích được thực hiện trên Microsoft Excel, sử dụng các hàm thống kê cơ bản (AVERAGE, STDEV, SUM, COUNTIF) cùng các công cụ trực quan hóa như biểu đồ cột và biểu đồ tròn. Excel được lựa chọn vì tính trực quan, dễ sử dụng và phù hợp với mục tiêu khảo sát định lượng ban đầu trong bối cảnh giáo dục [10].
+3. Kết quả và bàn luận
+3.1. Kết quả
+3.1.1. Thống kê kết quả khảo sát cho từng phát biểu
+   Thang đo phụ thuộc vào trí tuệ nhân tạo bao gồm 5 phát biểu, mỗi phát biểu được đánh giá theo thang Likert 5 mức độ từ "Hoàn toàn không đồng ý" (1 điểm) đến "Rất đồng ý" (5 điểm). Kết quả thống kê mô tả cho từng phát biểu được trình bày trong bảng dưới đây:
+   
+   Hình 1. Kết quả thống kê dựa trên từng phát biểu.
+   
+   Câu hỏi 1: "Tôi cảm thấy không được bảo vệ khi không thể truy cập vào trí tuệ nhân tạo (AI)."
+   
+   Hình 2. Biểu đồ thống kê kết quả khảo sát câu hỏi 1.
+   Với giá trị trung bình M = 2.58 (SD = 1.15), sinh viên nhìn chung không quá lo ngại về việc "mất kết nối" với AI. Mức độ đồng ý ở đây thấp nhất trong 5 phát biểu, cho thấy đa số ý kiến nghiêng về phía không cảm thấy bất an hay bị tổn thương khi không có AI bên cạnh. Đồng thời, độ lệch chuẩn tương đối nhỏ chứng tỏ sự thống nhất khá cao giữa các câu trả lời, nghĩa là hầu hết sinh viên đều chia sẻ quan điểm này.
+   Câu hỏi 2: "Tôi lo lắng về việc bị tụt lại trong công việc hoặc dự án nếu không sử dụng AI."
+   
+   Hình 3. Biểu đồ thống kê kết quả khảo sát câu hỏi 2.
+   Với M = 3.13 (SD = 1.22), sinh viên có xu hướng thận trọng và lo lắng rằng nếu không tận dụng AI, họ sẽ không thể bắt kịp tiến độ hoặc chất lượng công việc. Mức trung bình vượt ngưỡng trung lập (3.0) cho thấy AI đã trở thành yếu tố được xem là cần thiết để duy trì năng lực cạnh tranh. Tuy nhiên, SD cao (1.22) cho thấy còn có một số khác biệt đáng kể trong mức độ lo lắng giữa các cá nhân.
+   Câu hỏi 3: "Tôi làm mọi cách để luôn cập nhật về AI nhằm gây ấn tượng hoặc giữ được sự phù hợp trong lĩnh vực của mình."
+   
+   Hình 4. Biểu đồ thống kê kết quả khảo sát câu hỏi 3.
+   Đây là phát biểu có sự đồng tình tương đối cao, với M = 3.24 (SD = 1.06), phản ánh thái độ chủ động trong việc theo dõi và áp dụng AI. Sinh viên không chỉ muốn sử dụng AI mà còn tìm cách liên tục học hỏi, cập nhật để không bị tụt hậu. Độ lệch chuẩn thấp hơn so với các câu khác cho thấy mức độ đồng thuận khá cao: đa số đều công nhận tầm quan trọng của việc tự làm mới chính mình trước công nghệ.'
+   Câu hỏi 4: "Tôi liên tục cần sự xác nhận hoặc phản hồi từ các hệ thống AI để cảm thấy tự tin với quyết định của mình."
+   
+   Hình 5. Biểu đồ thống kê kết quả khảo sát câu hỏi 4.
+   Giá trị tổng kết M = 3.03 (SD = 1.24), sinh viên nhìn chung vừa phải dựa vào AI để củng cố quyết định, nhưng mức độ này không quá mạnh. Giá trị gần mức trung lập cho thấy chỉ khoảng một bộ phận có xu hướng tìm kiếm "lời khuyên" từ AI, trong khi những người còn lại vẫn tự tin đưa ra quyết định mà không nhất thiết phải phụ thuộc. SD tương đối cao chứng tỏ thái độ giữa các cá nhân khá đa dạng.
+   Câu hỏi 5: "Tôi sợ rằng AI có thể thay thế các kỹ năng hoặc năng lực hiện tại của tôi."
+   
+   Hình 6. Biểu đồ thống kê kết quả khảo sát câu hỏi 5.
+   Đây là phát biểu có mức đồng ý cao nhất với M = 3.67 (SD = 1.33), cho thấy mối lo ngại mạnh mẽ về nguy cơ AI sẽ thay thế con người trong công việc. Nhiều sinh viên cảm thấy bất an trước tiềm năng tự động hóa và thay thế năng lực cá nhân. Đồng thời, độ lệch chuẩn lớn nhất (1.33) phản ánh sự phân hoá sâu sắc trong mức độ lo sợ: có những bạn rất e dè, nhưng cũng có không ít bạn vẫn tin rằng AI và con người sẽ phối hợp chứ không hoàn toàn "cạnh tranh".
+3.1.2. Thống kê kết quả khảo sát theo cá nhân
+   Phần lớn sinh viên sử dụng AI trong khoảng thời gian tương đối ngắn, cho thấy AI đang được tích hợp như một công cụ hỗ trợ nhanh chóng và linh hoạt trong quá trình học tập. Cụ thể, nhóm sinh viên sử dụng AI trong khoảng 30 phút đến 1 tiếng chiếm tỷ lệ cao nhất với 31,2%, tiếp theo là nhóm 1 đến 2 tiếng với 22,8%. Khoảng 17,7% sinh viên sử dụng AI từ 2 đến 4 tiếng, trong khi đó chỉ có 7,7% dành trên 4 tiếng cho mỗi lần sử dụng, cho thấy thời lượng sử dụng kéo dài là tương đối hiếm.
+   Ngoài ra, có 15,1% sinh viên chỉ sử dụng AI trong 15-30 phút và 5,6% dưới 15 phút, phản ánh việc sử dụng AI như một công cụ tra cứu nhanh hoặc hỗ trợ tức thời trong một số nhiệm vụ học thuật cụ thể.
+   Như vậy, kết quả cho thấy phần lớn sinh viên sử dụng AI với tần suất vừa phải (30 phút đến 2 tiếng/lần), cho thấy AI được xem là một công cụ hỗ trợ học tập hiệu quả nhưng không chiếm quá nhiều thời gian trong một lần sử dụng. Điều này phản ánh mức độ tích hợp AI hợp lý vào quá trình học, đồng thời cũng gợi ý rằng sinh viên đã bắt đầu sử dụng AI một cách chủ động và có kiểm soát.
+   
+   Hình 7. Biểu đồ thống kê kết quả khảo sát thời gian trung bình cho mỗi lần sử dụng AI.
+   
+   Để đánh giá mức độ phụ thuộc vào trí tuệ nhân tạo (AI) ở sinh viên, tổng điểm từ năm phát biểu trong thang đo được tính cho từng người tham gia. Tổng điểm này dao động từ 5 đến 25, với điểm cao hơn biểu thị mức độ phụ thuộc AI cao hơn.
+   Kết quả thống kê mô tả cho thấy tổng điểm có giá trị trung bình là 15.65 và độ lệch chuẩn là 3.54, cho thấy mức độ phụ thuộc AI của sinh viên nhìn chung ở mức trung bình, đồng thời có sự phân tán nhất định giữa các cá nhân. Giá trị thấp nhất ghi nhận được là 5, trong khi giá trị cao nhất là 25, phản ánh sự khác biệt rõ rệt trong nhận thức và hành vi liên quan đến việc sử dụng AI giữa các đối tượng khảo sát.
+   Phân loại theo tổng điểm, có:
+* 17.46% sinh viên thuộc nhóm phụ thuộc thấp (tổng điểm từ 5-12),
+* 64.68% ở mức trung bình (13-18),
+* và 17.86% thuộc nhóm phụ thuộc cao (19-25).
+   Kết quả phân loại mức độ phụ thuộc vào AI cho thấy phần lớn sinh viên (64.68%) nằm trong nhóm phụ thuộc trung bình, trong khi tỷ lệ sinh viên có mức phụ thuộc thấp và cao đều ở mức tương đương (~17-18%). Điều này phản ánh một xu hướng tương đối cân bằng, trong đó đa số sinh viên tiếp cận và sử dụng AI một cách thận trọng, không quá lệ thuộc nhưng cũng không thờ ơ với sự phát triển của công nghệ mới. Tuy vậy, sự hiện diện của nhóm phụ thuộc cao cho thấy vẫn cần có định hướng sử dụng AI hợp lý trong môi trường giáo dục.
+3.2. Bàn luận
+   Kết quả khảo sát cho thấy mức độ phụ thuộc vào trí tuệ nhân tạo (AI) đối với sinh viên nhìn chung ở mức trung bình, với giá trị trung bình tổng điểm là 15.65 (trên thang điểm 25). Phần lớn sinh viên (64.68%) thuộc nhóm phụ thuộc trung bình, trong khi tỷ lệ phụ thuộc thấp và cao xấp xỉ nhau (~17%). Sự phân bố này phản ánh một thái độ cân bằng và thận trọng của sinh viên khi tiếp cận AI, cho thấy họ nhìn nhận AI như một công cụ hỗ trợ quan trọng nhưng không tuyệt đối lệ thuộc vào nó.
+   Xét riêng từng phát biểu khảo sát, sinh viên ít cảm thấy bất an khi không thể truy cập vào AI (M = 2.58), chứng tỏ phần lớn vẫn giữ được sự chủ động trong tư duy và học tập. Tuy nhiên, mức độ đồng thuận tăng dần với các phát biểu thể hiện sự quan tâm đến việc cập nhật và theo kịp AI (M = 3.24), cũng như lo lắng về khả năng bị tụt hậu nếu không sử dụng AI (M = 3.13). Đáng chú ý, phát biểu liên quan đến nỗi lo bị thay thế bởi AI nhận được mức đồng thuận cao nhất (M = 3.67), phản ánh rõ nét tâm lý bất ổn trước sự phát triển nhanh chóng của công nghệ.
+   Bên cạnh đó, thời lượng sử dụng AI chủ yếu tập trung trong khoảng 30 phút đến 2 tiếng mỗi lần, cho thấy sinh viên đang sử dụng AI một cách hợp lý và hiệu quả, như một công cụ hỗ trợ học tập thay vì phụ thuộc tuyệt đối. Việc sử dụng AI với thời lượng vừa phải còn cho thấy mức độ tự điều tiết và kỹ năng quản lý công cụ học tập của sinh viên.
+   Nhìn chung, dữ liệu khảo sát cho thấy sinh viên có nhận thức rõ ràng về vai trò và rủi ro của AI. Họ chủ động cập nhật kiến thức, có ý thức duy trì năng lực cá nhân và điều chỉnh cách sử dụng công nghệ phù hợp với nhu cầu. Tuy nhiên, với tỷ lệ không nhỏ sinh viên nằm trong nhóm phụ thuộc cao, cần có các chương trình hướng dẫn sử dụng AI một cách có trách nhiệm, nhằm tránh tình trạng ỷ lại hoặc mất đi năng lực tự học - vốn là yếu tố cốt lõi trong môi trường học thuật và phát triển nghề nghiệp lâu dài.
+4. Kết luận
+   Nghiên cứu cho thấy sinh viên hiện nay có mức độ phụ thuộc vào AI ở mức trung bình, thể hiện thái độ tiếp cận công nghệ một cách chủ động nhưng vẫn giữ được sự kiểm soát. Mặc dù phần lớn sinh viên không cảm thấy bất an khi thiếu vắng AI, vẫn tồn tại tâm lý lo ngại về khả năng bị thay thế hoặc tụt hậu nếu không theo kịp sự phát triển công nghệ. Điều này đặt ra yêu cầu cấp thiết trong việc định hướng sinh viên sử dụng AI một cách hiệu quả, có trách nhiệm, đồng thời phát triển năng lực tư duy phản biện và tự học. Trong tương lai, các nghiên cứu nên mở rộng phạm vi đối tượng và tập trung vào việc đánh giá tác động dài hạn của AI đối với hành vi học tập và phát triển nghề nghiệp, từ đó đề xuất các mô hình tích hợp AI phù hợp trong môi trường giáo dục đại học.
+Lời cám ơn
+   Chân thành cảm ơn TS. Mai Anh Thơ, giảng viên Trường Đại học Sư phạm Kỹ thuật Thành Phố Hồ Chí Minh, đã đồng hành và hỗ trợ nhóm tác giả trong quá trình thực hiện bài nghiên cứu này.
+Xung đột lợi ích
+   Các tác giả tuyên bố không có xung đột lợi ích trong bài báo này.
+TÀI LIỆU THAM KHẢO    
+[1]	A. Bhutoria, "Personalized education and artificial intelligence in the United States, China, and India: a systematic review using a human-in-the-loop model," Comp. Educ. Artif. Intell., vol. 3, Art. no. 100068, 2022, doi: 10.1016/j.caeai.2022.100068.
+[2]	A. Haleem, M. Javaid, M. A. Qadri, and R. Suman, "Understanding the role of digital technologies in education: a review," Sustain. Operat. Comp., vol. 3, pp. 275-285, 2022, doi: 10.1016/j.susoc.2022.05.004.
+[3]	B. Bygstad, E. Øvrelid, S. Ludvigsen, and M. Dæhlen, "From dual digitalization to digital learning space: exploring the digital transformation of higher education," Comp. Educ., vol. 182, Art. no. 104463, 2022, doi: 10.1016/j.compedu.2022.104463.
+[4]	S. F. Ahmad, H. Han, M. M. Alam, M. K. Rehmat, M. Irshad, M. Arraño-Muñoz, et al., "Impact of artificial intelligence on human loss in decision making, laziness and safety in education," Humanit. Soc. Sci. Commun., vol. 10, pp. 1-14, 2023, doi: 10.1057/s41599-023-01787-8.
+[5]	M. Liu, Y. Ren, L. M. Nyagoga, F. Stonier, Z. Wu, and L. Yu, "Future of education in the era of generative artificial intelligence: consensus among Chinese scholars on applications of ChatGPT in schools," Future Educ. Res., vol. 1, pp. 72-101, 2023, doi: 10.1002/fer3.10.
+[6]	L. Z. Sairitupa-Sanchez, A. Collantes-Vargas, O. Rivera-Lozada, and W. C. Morales-García, "Development and validation of a scale for streaming dependence (SDS) of online games in a Peruvian population," Front. Psychol., vol. 14, p. 647, 2023, doi: 10.3389/fpsyg.2023.1184647.
+[7]	L. S. Connaway, T. J. Dickey, and M. L. Radford, "If it is too inconvenient I'm not going after it: Convenience as a critical factor in information-seeking behaviors," Libr. Inf. Sci. Res., vol. 33, no. 3, pp. 179-190, Sep. 2011, doi: 10.1016/j.lisr.2010.12.002.	
+[8]	L. J. Jobst, M. Bader, and M. Moshagen, "A tutorial on assessing statistical power and determining sample size for structural equation models," Psychol. Methods, vol. 28, no. 1, pp. 207-221, Jan. 2023, doi: 10.1037/met0000423.
+[9]	R. Likert, "A technique for the measurement of attitudes," Arch. Psychol., no. 140, pp. 1-55, Feb. 1932.
+[10] 	A. Field, "Discovering Statistics Using IBM SPSS Statistics", 4th ed. London, UK: Sage, 2013.
+[11]	M. Ato, J. J. López, and A. Benavente, "Un sistema de clasificación de los diseños de investigación en psicología," Anals Psicologia, vol. 29, pp. 1038-1059, 2013, doi:10.6018/analesps.29.3.178511.
+[12]	S. F. Ahmad et al., "Impact of artificial intelligence on human loss in decision making, laziness and safety in education," Humanities Soc. Sci. Commun., vol. 10, pp. 1-14, 2023, doi:10.1057/s41599-023-01787-8.
+
+Nguyen Van Thi is a final-year undergraduate student majoring in Software Engineering at the University of Technology and Education, Ho Chi Minh City, Vietnam. He began his academic program in 2021 and is expected to obtain his Bachelor's degree in 2025. His academic training has equipped him with comprehensive knowledge in programming, software design, database systems. His primary areas of interest include artificial intelligence, web development, front-end and back-end technologies.
+Phone: 0366114003
+Email: 21110306@student.hcmute.edu.vn   
+Phan Le Thanh Cong is currently an undergraduate student pursuing a Bachelor's degree in Software Engineering at the University of Technology and Education, Ho Chi Minh City, Vietnam. He began his studies in 2021 and is expected to graduate in 2025. Throughout his academic journey, he has built a solid foundation in web development, algorithms, data structures. His current research interests include web technologies, artificial intelligence.
+Phone: 0945052542
+Email: 21110146@student.hcmute.edu.vn   
+  
+
+  
+
+
+   
+   
+   
+   	
+
+   TNU JOURNAL OF SCIENCE AND TECHNOLOGY   226(01), ID 3528                               
+   
+
+
+ISSN: 1859-1272   TẠP CHÍ KHOA HỌC GIÁO DỤC KỸ THUẬT
+   Trường Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh
+   Website: https://jte.edu.vn 
+   Email: jte@hcmute.edu.vn                               
+   
+                                                                                                                 http://jst.tnu.edu.vn;Email: jst@tnu.edu.vn
+   
+
+JTE, Số xx, xx/20xx   1   
+   

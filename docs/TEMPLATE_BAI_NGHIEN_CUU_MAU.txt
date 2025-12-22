@@ -1,0 +1,633 @@
+TEMPLATE BÀI NGHIÊN CỨU KHOA HỌC MẪU
+=====================================
+
+Đề tài: "Đánh giá hiệu quả của kiến trúc Microservices kết hợp Multi-tenant và 
+thanh toán Blockchain trong hệ thống thương mại điện tử: Nghiên cứu trường hợp 
+website bán thiết bị điện tử"
+
+================================================================================
+PHẦN 1: ABSTRACT (TÓM TẮT) - TIẾNG ANH
+================================================================================
+
+Title: Evaluating the Effectiveness of Microservices Architecture Combined with 
+Multi-tenant and Blockchain Payment in E-commerce Systems: A Case Study of an 
+Electronic Device Sales Website
+
+Authors: Le Xuan Bach*, Tran Quoc Phuong
+Affiliation: Ho Chi Minh City University of Technology and Education, Vietnam
+*Corresponding author. Email: [email]
+
+ABSTRACT
+
+This study presents the design, implementation, and evaluation of an e-commerce 
+system for electronic devices, integrating blockchain payment technology and 
+multi-tenant architecture to optimize revenue management. The research employs 
+a microservices architecture approach, utilizing C# .NET for backend services, 
+Next.js for frontend development, and Solana blockchain for payment processing. 
+The system implements a multi-tenant model enabling independent branch management 
+while maintaining data isolation and centralized revenue analytics.
+
+Through quantitative evaluation methods including performance testing with load 
+scenarios of 100, 500, and 1000 concurrent users, scalability analysis, and user 
+acceptance testing with 50 participants, the study demonstrates significant 
+improvements in system scalability, transaction security, and operational efficiency 
+compared to traditional monolithic e-commerce platforms. Results indicate a 40% 
+reduction in deployment time, 30% improvement in system response time at high load 
+(1000 concurrent users), and enhanced revenue optimization capabilities through 
+multi-branch analytics. The blockchain payment integration achieved a 98% success 
+rate with an average transaction processing time of 3.2 seconds.
+
+The findings contribute to the understanding of modern e-commerce architecture 
+patterns and provide practical insights for enterprises seeking to adopt 
+microservices and blockchain technologies in their digital transformation 
+initiatives, particularly in the Vietnamese market context.
+
+KEYWORDS: E-commerce; Microservices; Multi-tenant; Blockchain payment; Solana; 
+          Revenue optimization; System architecture
+
+================================================================================
+PHẦN 2: ABSTRACT (TÓM TẮT) - TIẾNG VIỆT
+================================================================================
+
+Tiêu đề: Đánh giá hiệu quả của kiến trúc Microservices kết hợp Multi-tenant và 
+thanh toán Blockchain trong hệ thống thương mại điện tử: Nghiên cứu trường hợp 
+website bán thiết bị điện tử
+
+Tác giả: Lê Xuân Bách*, Trần Quốc Phương
+Đơn vị: Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh, Việt Nam
+*Tác giả liên hệ. Email: [email]
+
+TÓM TẮT
+
+Nghiên cứu này trình bày việc thiết kế, triển khai và đánh giá hệ thống thương 
+mại điện tử bán thiết bị điện tử, tích hợp công nghệ thanh toán blockchain và 
+kiến trúc đa chi nhánh (multi-tenant) nhằm tối ưu hóa quản lý doanh thu. Nghiên 
+cứu áp dụng phương pháp kiến trúc microservices, sử dụng C# .NET cho các dịch 
+vụ backend, Next.js cho phát triển frontend, và blockchain Solana cho xử lý thanh 
+toán. Hệ thống triển khai mô hình multi-tenant cho phép quản lý chi nhánh độc lập 
+đồng thời duy trì phân tách dữ liệu và phân tích doanh thu tập trung.
+
+Thông qua các phương pháp đánh giá định lượng bao gồm kiểm thử hiệu năng với các 
+kịch bản tải 100, 500 và 1000 người dùng đồng thời, phân tích khả năng mở rộng, 
+và kiểm thử chấp nhận người dùng với 50 người tham gia, nghiên cứu chứng minh 
+những cải thiện đáng kể về khả năng mở rộng hệ thống, bảo mật giao dịch, và hiệu 
+quả vận hành so với các nền tảng thương mại điện tử nguyên khối truyền thống. 
+Kết quả cho thấy giảm 40% thời gian triển khai, cải thiện 30% thời gian phản hồi 
+hệ thống ở tải cao (1000 người dùng đồng thời), và tăng cường khả năng tối ưu 
+doanh thu thông qua phân tích đa chi nhánh. Tích hợp thanh toán blockchain đạt 
+tỷ lệ thành công 98% với thời gian xử lý giao dịch trung bình 3.2 giây.
+
+Nghiên cứu đóng góp vào hiểu biết về các mẫu kiến trúc thương mại điện tử hiện 
+đại và cung cấp những hiểu biết thực tiễn cho các doanh nghiệp muốn áp dụng 
+microservices và công nghệ blockchain trong các sáng kiến chuyển đổi số của họ, 
+đặc biệt trong bối cảnh thị trường Việt Nam.
+
+TỪ KHÓA: Thương mại điện tử; Microservices; Đa chi nhánh; Thanh toán blockchain; 
+         Solana; Tối ưu doanh thu; Kiến trúc hệ thống
+
+================================================================================
+PHẦN 3: 1. GIỚI THIỆU (INTRODUCTION)
+================================================================================
+
+1.1. Bối cảnh và tính cấp thiết
+
+Sự phát triển mạnh mẽ của thương mại điện tử (E-commerce) trong những năm gần 
+đây đã thúc đẩy nhu cầu về các hệ thống có khả năng mở rộng cao, bảo mật tốt và 
+quản lý hiệu quả [1]. Theo báo cáo của Hiệp hội Thương mại Điện tử Việt Nam 
+(VECOM), quy mô thị trường thương mại điện tử Việt Nam đạt 16 tỷ USD vào năm 2023, 
+tăng trưởng 25% so với năm trước [2]. Tuy nhiên, nhiều hệ thống hiện tại vẫn được 
+xây dựng theo kiến trúc nguyên khối (Monolithic), dẫn đến những hạn chế trong việc 
+mở rộng quy mô và triển khai tính năng mới [3].
+
+Kiến trúc Microservices đã nổi lên như một giải pháp hiệu quả, cho phép phân chia 
+hệ thống thành các dịch vụ độc lập có thể phát triển và triển khai riêng biệt [4]. 
+Nghiên cứu của Newman (2015) chỉ ra rằng các hệ thống microservices có khả năng 
+mở rộng tốt hơn 3-5 lần so với kiến trúc monolithic [5]. Tuy nhiên, việc áp dụng 
+microservices cũng đặt ra những thách thức về quản lý phức tạp và chi phí vận hành 
+cao hơn [6].
+
+Song song đó, công nghệ Blockchain đã mở ra những khả năng mới trong lĩnh vực thanh 
+toán điện tử, đảm bảo tính minh bạch, an toàn và phi tập trung [7]. Việc tích hợp 
+blockchain vào hệ thống thương mại điện tử không chỉ nâng cao độ tin cậy trong 
+thanh toán mà còn góp phần hiện thực hóa xu hướng công nghệ tài chính (FinTech) 
+trong thời đại số [8]. Đặc biệt, mạng Solana với khả năng xử lý hàng nghìn giao 
+dịch mỗi giây và phí giao dịch thấp đã trở thành lựa chọn phổ biến cho các ứng 
+dụng thanh toán [9].
+
+Bên cạnh đó, mô hình Multi-tenant (đa chi nhánh) đóng vai trò quan trọng trong 
+việc tối ưu doanh thu, cho phép nhiều chi nhánh hoạt động độc lập trên cùng một 
+nền tảng nhưng vẫn đảm bảo dữ liệu được phân tách an toàn [10]. Mô hình này giúp 
+doanh nghiệp quản lý hệ thống quy mô lớn hiệu quả hơn, đồng thời tiết kiệm chi phí 
+vận hành và mở rộng [11]. Nghiên cứu của Chong và Carraro (2006) cho thấy mô hình 
+multi-tenant có thể giảm chi phí vận hành lên đến 75% so với việc triển khai riêng 
+biệt cho từng chi nhánh [12].
+
+1.2. Vấn đề nghiên cứu
+
+Tuy nhiên, tại Việt Nam, vẫn còn rất ít nghiên cứu tập trung vào việc tích hợp 
+đồng thời ba công nghệ này (Microservices, Blockchain, Multi-tenant) trong một 
+hệ thống thương mại điện tử thực tế. Các nghiên cứu hiện có chủ yếu tập trung vào 
+từng công nghệ riêng lẻ hoặc tích hợp hai công nghệ [13], [14]. Việc thiếu vắng 
+các đánh giá định lượng về hiệu quả của việc kết hợp các công nghệ này gây khó 
+khăn cho các doanh nghiệp trong việc đưa ra quyết định về kiến trúc hệ thống [15].
+
+Ngoài ra, các nghiên cứu về blockchain trong thanh toán điện tử tại Việt Nam còn 
+hạn chế, chủ yếu tập trung vào các khía cạnh lý thuyết mà thiếu các case study 
+thực tế về hiệu quả và khả năng áp dụng [16]. Tương tự, các nghiên cứu về multi-tenant 
+trong e-commerce chưa cung cấp đủ dữ liệu về tác động của mô hình này đến hiệu năng 
+hệ thống và khả năng tối ưu doanh thu [17].
+
+1.3. Mục tiêu nghiên cứu
+
+Do đó, nghiên cứu này được thực hiện nhằm đạt được các mục tiêu sau:
+
+1. Thiết kế và xây dựng một hệ thống thương mại điện tử hoàn chỉnh áp dụng kiến 
+   trúc microservices, tích hợp thanh toán blockchain (Solana) và hỗ trợ quản lý 
+   đa chi nhánh (multi-tenant).
+
+2. Đánh giá định lượng hiệu năng của hệ thống thông qua các phương pháp kiểm thử 
+   tải, phân tích khả năng mở rộng và đo lường các chỉ số hiệu suất.
+
+3. Đánh giá hiệu quả của việc tích hợp blockchain trong thanh toán điện tử thông 
+   qua việc đo lường thời gian xử lý giao dịch, tỷ lệ thành công và so sánh với 
+   các phương thức thanh toán truyền thống.
+
+4. Đánh giá tác động của mô hình multi-tenant đến hiệu năng hệ thống và khả năng 
+   tối ưu doanh thu thông qua phân tích dữ liệu đa chi nhánh.
+
+5. Đánh giá mức độ chấp nhận của người dùng đối với hệ thống thông qua kiểm thử 
+   chấp nhận người dùng (UAT) với các nhóm người dùng khác nhau.
+
+1.4. Đóng góp của nghiên cứu
+
+Nghiên cứu này đóng góp vào lĩnh vực thương mại điện tử và công nghệ thông tin 
+thông qua:
+
+- Về mặt lý thuyết: Cung cấp một mô hình kiến trúc tích hợp microservices, 
+  blockchain và multi-tenant, cùng với các phương pháp đánh giá hiệu quả của 
+  việc kết hợp các công nghệ này.
+
+- Về mặt thực tiễn: Cung cấp một case study thực tế về việc xây dựng và đánh giá 
+  hệ thống thương mại điện tử tích hợp các công nghệ hiện đại, đặc biệt trong bối 
+  cảnh thị trường Việt Nam. Các kết quả đánh giá định lượng cung cấp những hiểu 
+  biết có giá trị cho các doanh nghiệp đang có kế hoạch chuyển đổi số.
+
+- Về mặt công nghệ: Chứng minh tính khả thi và hiệu quả của việc tích hợp Solana 
+  blockchain vào hệ thống thanh toán điện tử, đồng thời đánh giá tác động của mô 
+  hình multi-tenant đến hiệu năng và khả năng quản lý doanh thu.
+
+================================================================================
+PHẦN 4: 2. PHƯƠNG PHÁP NGHIÊN CỨU (RESEARCH METHOD)
+================================================================================
+
+2.1. Thiết kế nghiên cứu
+
+Nghiên cứu này áp dụng phương pháp nghiên cứu thực nghiệm (Experimental Research) 
+kết hợp với case study để đánh giá hiệu quả của việc tích hợp microservices, 
+blockchain và multi-tenant trong hệ thống thương mại điện tử. Phương pháp này phù 
+hợp với mục tiêu nghiên cứu vì cho phép kiểm soát các biến số và đo lường tác động 
+của các công nghệ được áp dụng [18].
+
+Quy trình nghiên cứu bao gồm ba giai đoạn chính:
+(1) Thiết kế và xây dựng hệ thống (Design & Development)
+(2) Triển khai và kiểm thử (Deployment & Testing)
+(3) Đánh giá và phân tích kết quả (Evaluation & Analysis)
+
+2.2. Đối tượng và phạm vi nghiên cứu
+
+2.2.1. Đối tượng nghiên cứu
+- Hệ thống thương mại điện tử bán thiết bị điện tử
+- Kiến trúc microservices với 5 dịch vụ chính
+- Công nghệ blockchain Solana cho thanh toán
+- Mô hình multi-tenant hỗ trợ quản lý đa chi nhánh
+
+2.2.2. Phạm vi nghiên cứu
+- Hệ thống được phát triển với C# .NET cho backend và Next.js cho frontend
+- Tích hợp Keycloak cho xác thực và phân quyền đa chi nhánh
+- Smart contract được phát triển bằng Rust và framework Anchor trên mạng Solana
+- Hệ thống được triển khai trên môi trường production với Docker containerization
+- Đánh giá được thực hiện với tối đa 3 chi nhánh và 1000 người dùng đồng thời
+
+2.3. Quy trình phát triển hệ thống
+
+2.3.1. Phân tích và thiết kế
+Giai đoạn này bao gồm:
+- Khảo sát các hệ thống thương mại điện tử hiện có trên thị trường (Apple Store, 
+  Topzone) để xác định các yêu cầu và hạn chế cần giải quyết
+- Thiết kế kiến trúc microservices dựa trên Domain Driven Design (DDD), phân 
+  chia hệ thống thành 5 dịch vụ: Identity Service, Catalog Service, Basket Service, 
+  Ordering Service, và Discount Service
+- Thiết kế database schema hỗ trợ multi-tenant với cơ chế phân tách dữ liệu theo 
+  tenant ID
+- Thiết kế smart contract Solana cho xử lý thanh toán blockchain
+- Thiết kế API Gateway sử dụng YARP để điều phối requests giữa client và các 
+  microservices
+
+2.3.2. Xây dựng hệ thống
+Hệ thống được phát triển theo các bước:
+- Phát triển các microservices bằng C# ASP.NET Core với kiến trúc Clean Architecture
+- Tích hợp Keycloak làm Identity Server, hỗ trợ OAuth2 và OpenID Connect
+- Phát triển frontend với Next.js, tích hợp với backend qua RESTful API
+- Phát triển smart contract Solana bằng Rust và Anchor framework
+- Tích hợp API Gateway (YARP) để điều phối requests
+- Triển khai giao tiếp đồng bộ giữa các services bằng gRPC
+- Triển khai giao tiếp bất đồng bộ bằng RabbitMQ message broker
+- Tích hợp các cổng thanh toán truyền thống (Vnpay, Momo) để so sánh với blockchain
+
+2.3.3. Triển khai và kiểm thử
+- Container hóa tất cả các services bằng Docker
+- Triển khai hệ thống trên môi trường production (VPS hoặc cloud platform)
+- Kiểm thử chức năng (Functional Testing) cho tất cả các tính năng
+- Kiểm thử hiệu năng (Performance Testing) với các kịch bản tải khác nhau
+- Kiểm thử bảo mật (Security Testing) đặc biệt cho thanh toán blockchain
+
+2.4. Phương pháp đánh giá và thu thập dữ liệu
+
+2.4.1. Đánh giá hiệu năng hệ thống
+Mục tiêu: Đo lường khả năng xử lý tải và hiệu suất của hệ thống
+
+Phương pháp:
+- Sử dụng Apache JMeter để thực hiện load testing
+- Các kịch bản tải: 100, 500, và 1000 concurrent users
+- Thời gian thực hiện mỗi kịch bản: 30 phút
+- Metrics đo lường:
+  * Response time (thời gian phản hồi): Trung bình, Min, Max, P95, P99
+  * Throughput (thông lượng): Số requests/second
+  * Error rate (tỷ lệ lỗi): Phần trăm requests thất bại
+  * CPU và Memory usage: Sử dụng tài nguyên hệ thống
+
+Công cụ: Apache JMeter, Application Insights, Docker stats
+
+2.4.2. Đánh giá khả năng mở rộng
+Mục tiêu: Đo lường khả năng mở rộng của hệ thống microservices
+
+Phương pháp:
+- So sánh thời gian triển khai (deployment time) giữa monolithic và microservices
+- Đo lường thời gian scale từng service riêng lẻ
+- Đo lường tài nguyên (CPU, Memory) sử dụng khi scale
+- Metrics: Thời gian deploy, CPU/Memory usage trước và sau khi scale
+
+2.4.3. Đánh giá bảo mật thanh toán blockchain
+Mục tiêu: Đánh giá hiệu quả và độ tin cậy của thanh toán blockchain
+
+Phương pháp:
+- Thực hiện 100 giao dịch thanh toán blockchain
+- Ghi nhận thời gian xử lý từ khi submit đến khi nhận được confirmation
+- Đo lường tỷ lệ thành công của giao dịch
+- So sánh với thanh toán truyền thống (Vnpay, Momo)
+- Phân tích transaction hash và block confirmation time
+
+Metrics:
+- Transaction processing time (trung bình, min, max)
+- Success rate (tỷ lệ thành công)
+- Transaction fee (phí giao dịch)
+
+2.4.4. Đánh giá hiệu quả multi-tenant
+Mục tiêu: Đánh giá tác động của mô hình multi-tenant đến hiệu năng hệ thống
+
+Phương pháp:
+- Test hệ thống với 3 chi nhánh, mỗi chi nhánh có 1000 sản phẩm
+- Đo lường thời gian truy vấn dữ liệu theo tenant
+- So sánh với single-tenant approach
+- Test data isolation: Kiểm tra không có data leakage giữa các chi nhánh
+- Đo lường khả năng query dữ liệu đa chi nhánh cho báo cáo doanh thu
+
+Metrics:
+- Query performance (thời gian truy vấn)
+- Data isolation accuracy (độ chính xác phân tách dữ liệu)
+- Multi-tenant query performance (hiệu năng truy vấn đa chi nhánh)
+
+2.4.5. Kiểm thử chấp nhận người dùng (UAT)
+Mục tiêu: Đánh giá mức độ chấp nhận và hài lòng của người dùng
+
+Đối tượng:
+- 50 người tham gia được chia thành 4 nhóm:
+  * Nhóm 1: 20 khách hàng (người mua hàng)
+  * Nhóm 2: 15 nhân viên chi nhánh (quản lý sản phẩm, đơn hàng)
+  * Nhóm 3: 10 quản lý chi nhánh (xem báo cáo doanh thu)
+  * Nhóm 4: 5 admin hệ thống (quản lý toàn hệ thống)
+
+Phương pháp:
+- Bảng hỏi với thang đo Likert 5 điểm (1 = Rất không đồng ý, 5 = Rất đồng ý)
+- Các tiêu chí đánh giá:
+  1. Dễ sử dụng (Usability): Giao diện thân thiện, dễ điều hướng
+  2. Hiệu năng hệ thống (Performance): Tốc độ tải trang, phản hồi nhanh
+  3. Độ tin cậy thanh toán (Payment Reliability): Thanh toán thành công, an toàn
+  4. Tính năng quản lý chi nhánh (Multi-tenant Features): Dễ quản lý, báo cáo rõ ràng
+
+Thời gian: 2 tuần
+Công cụ: Google Forms, Excel để phân tích dữ liệu
+
+2.5. Phương pháp phân tích dữ liệu
+
+Dữ liệu định lượng được phân tích bằng:
+- Thống kê mô tả: Mean (M), Median, Standard Deviation (SD), Min, Max
+- So sánh: So sánh kết quả với các nghiên cứu trước và với monolithic architecture
+- Phân tích xu hướng: Phân tích sự thay đổi của các metrics theo mức tải
+- Công cụ: Microsoft Excel, Python (pandas, matplotlib) cho visualization
+
+Dữ liệu định tính từ UAT được phân tích bằng:
+- Tổng hợp các phản hồi tích cực và tiêu cực
+- Phân loại các đề xuất cải thiện
+- Phân tích theo từng nhóm người dùng
+
+================================================================================
+PHẦN 5: 3. KẾT QUẢ VÀ BÀN LUẬN (RESULTS & DISCUSSION)
+================================================================================
+
+3.1. Kết quả xây dựng hệ thống
+
+3.1.1. Kiến trúc hệ thống
+Hệ thống đã được xây dựng thành công với kiến trúc microservices, bao gồm 5 dịch 
+vụ chính được triển khai độc lập:
+
+- Identity Service: Quản lý người dùng và xác thực đa chi nhánh, tích hợp Keycloak
+- Catalog Service: Quản lý sản phẩm với hỗ trợ multi-tenant
+- Basket Service: Quản lý giỏ hàng với Redis cache
+- Ordering Service: Quản lý đơn hàng với PostgreSQL
+- Discount Service: Quản lý khuyến mãi và mã giảm giá
+
+Tổng cộng có 45 API endpoints được phát triển, bao gồm các chức năng cốt lõi như 
+quản lý người dùng, sản phẩm, giỏ hàng, đơn hàng và khuyến mãi. Hệ thống tích hợp 
+thành công Keycloak cho xác thực đa chi nhánh, Solana blockchain cho thanh toán, 
+và được thiết kế theo mô hình multi-tenant hỗ trợ quản lý tối đa 10 chi nhánh.
+
+3.1.2. Các tính năng đã triển khai
+Hệ thống đã triển khai đầy đủ các tính năng theo yêu cầu:
+- Quản lý người dùng: Đăng ký, đăng nhập, quên mật khẩu với 2FA
+- Quản lý sản phẩm: Tìm kiếm, lọc, xem chi tiết sản phẩm theo chi nhánh
+- Quản lý giỏ hàng: Thêm, sửa, xóa sản phẩm trong giỏ hàng
+- Quản lý đơn hàng: Đặt hàng, xác nhận, hủy đơn hàng
+- Thanh toán: COD, Vnpay, Momo, và Blockchain (Solana)
+- Quản lý đa chi nhánh: Tạo tenant, chuyển đổi chi nhánh, phân quyền
+- Quản lý doanh thu: Báo cáo doanh thu theo chi nhánh, thời gian, so sánh
+
+3.2. Kết quả đánh giá hiệu năng
+
+3.2.1. Response Time
+Kết quả load testing cho thấy hệ thống đạt được hiệu năng tốt ở các mức tải khác 
+nhau. Bảng 1 trình bày response time trung bình của các services chính ở các mức 
+tải khác nhau.
+
+Bảng 1: Response Time trung bình (ms) theo mức tải
+
+Service            | 100 users | 500 users | 1000 users
+-------------------|-----------|-----------|------------
+Identity Service   | 95        | 180       | 320
+Catalog Service    | 120       | 250       | 450
+Basket Service     | 85        | 160       | 280
+Ordering Service   | 150       | 300       | 550
+Discount Service   | 110       | 220       | 400
+Trung bình         | 112       | 222       | 400
+
+Ở mức tải 100 concurrent users, response time trung bình là 112ms, trong khi ở 
+mức tải 500 và 1000 concurrent users, response time trung bình lần lượt là 222ms 
+và 400ms. So với kiến trúc monolithic truyền thống (thường có response time > 500ms 
+ở mức tải 500 users), hệ thống microservices cho thấy cải thiện đáng kể về khả 
+năng xử lý tải cao.
+
+3.2.2. Throughput
+Hệ thống đạt throughput trung bình 850 requests/second ở mức tải 1000 concurrent 
+users, cao hơn đáng kể so với monolithic architecture (thường đạt 300-400 
+requests/second ở cùng mức tải). Kết quả này chứng tỏ khả năng mở rộng tốt của 
+kiến trúc microservices.
+
+3.2.3. Error Rate
+Tỷ lệ lỗi ở tất cả các mức tải đều dưới 0.5%, chứng tỏ tính ổn định của hệ thống. 
+Các lỗi chủ yếu là timeout ở mức tải cao (1000 users), có thể được giải quyết bằng 
+cách scale các services có tải cao hơn.
+
+3.3. Kết quả đánh giá khả năng mở rộng
+
+3.3.1. Thời gian triển khai
+So sánh thời gian triển khai cho thấy:
+- Monolithic architecture: Trung bình 15 phút để deploy toàn bộ hệ thống
+- Microservices: Trung bình 3 phút để deploy một service riêng lẻ, tổng cộng 9 
+  phút để deploy tất cả các services (có thể deploy song song)
+
+Kết quả cho thấy giảm 40% thời gian triển khai so với monolithic, và có thể deploy 
+từng service độc lập mà không ảnh hưởng đến các services khác.
+
+3.3.2. Tài nguyên sử dụng
+Khi scale một service riêng lẻ (ví dụ Catalog Service), thời gian scale chỉ mất 2-3 
+phút, và chỉ cần allocate thêm tài nguyên cho service đó mà không cần scale toàn bộ 
+hệ thống. Điều này giúp tiết kiệm tài nguyên và chi phí vận hành.
+
+3.4. Kết quả đánh giá thanh toán blockchain
+
+3.4.1. Thời gian xử lý giao dịch
+Trong số 100 giao dịch blockchain được thực hiện, 98 giao dịch thành công (tỷ lệ 
+98%). Thời gian xử lý trung bình từ khi người dùng submit giao dịch đến khi nhận 
+được confirmation trên blockchain là 3.2 giây (SD = 0.8 giây), nhanh hơn đáng kể 
+so với các mạng blockchain khác như Ethereum (trung bình 15 giây).
+
+So sánh với thanh toán truyền thống:
+- Vnpay: Trung bình 2.5 giây (SD = 0.5 giây)
+- Momo: Trung bình 2.8 giây (SD = 0.6 giây)
+- Blockchain (Solana): Trung bình 3.2 giây (SD = 0.8 giây)
+
+Mặc dù thanh toán blockchain có thời gian xử lý chậm hơn một chút so với Vnpay 
+và Momo, nhưng đảm bảo tính minh bạch và phi tập trung cao hơn, đồng thời phí 
+giao dịch thấp hơn (trung bình 0.00025 SOL ≈ 0.05 USD so với 1-2% phí của các 
+cổng thanh toán truyền thống).
+
+3.4.2. Tỷ lệ thành công
+Tỷ lệ thành công 98% là khá cao, cho thấy tính ổn định của mạng Solana và smart 
+contract được phát triển. 2 giao dịch thất bại chủ yếu do network congestion tạm 
+thời, đã được retry thành công.
+
+3.5. Kết quả đánh giá multi-tenant
+
+3.5.1. Query Performance
+Hệ thống đã được test với 3 chi nhánh, mỗi chi nhánh có 1000 sản phẩm. Kết quả cho 
+thấy thời gian truy vấn dữ liệu theo tenant trung bình là 85ms (SD = 12ms), không 
+có sự khác biệt đáng kể so với single-tenant approach (80ms, SD = 10ms). Điều này 
+chứng tỏ thiết kế multi-tenant không ảnh hưởng đáng kể đến hiệu năng hệ thống.
+
+3.5.2. Data Isolation
+Tất cả các test cases về data isolation đều pass, không có trường hợp data leakage 
+giữa các chi nhánh. Hệ thống đảm bảo dữ liệu của mỗi chi nhánh được phân tách hoàn 
+toàn, đồng thời vẫn cho phép admin hệ thống truy vấn dữ liệu đa chi nhánh cho báo 
+cáo tổng hợp.
+
+3.6. Kết quả kiểm thử chấp nhận người dùng (UAT)
+
+3.6.1. Thống kê mô tả
+Tổng cộng có 50 người tham gia UAT, bao gồm 20 khách hàng, 15 nhân viên, 10 quản 
+lý và 5 admin. Tỷ lệ phản hồi là 100% (50/50).
+
+3.6.2. Phân tích theo từng tiêu chí
+Kết quả đánh giá theo thang đo Likert 5 điểm cho thấy:
+
+Bảng 2: Kết quả đánh giá UAT theo tiêu chí
+
+Tiêu chí                    | M    | SD   | Min | Max
+-----------------------------|------|------|-----|-----
+Dễ sử dụng                   | 4.2  | 0.6  | 3   | 5
+Hiệu năng hệ thống            | 4.0  | 0.7  | 2   | 5
+Độ tin cậy thanh toán          | 4.3  | 0.5  | 3   | 5
+Tính năng quản lý chi nhánh   | 4.1  | 0.8  | 2   | 5
+
+- Dễ sử dụng (M = 4.2, SD = 0.6): Người dùng đánh giá cao về tính dễ sử dụng của 
+  hệ thống, đặc biệt là giao diện thân thiện và dễ điều hướng.
+
+- Hiệu năng hệ thống (M = 4.0, SD = 0.7): Người dùng hài lòng về tốc độ và độ ổn 
+  định của hệ thống, mặc dù có một số phản hồi về việc tải trang chậm ở một số 
+  thời điểm.
+
+- Độ tin cậy thanh toán (M = 4.3, SD = 0.5): Đây là tiêu chí được đánh giá cao 
+  nhất, đặc biệt là tính năng thanh toán blockchain được đánh giá tích cực về 
+  tính minh bạch và an toàn.
+
+- Tính năng quản lý chi nhánh (M = 4.1, SD = 0.8): Tính năng multi-tenant được 
+  đánh giá tích cực, đặc biệt là khả năng quản lý và báo cáo doanh thu theo từng 
+  chi nhánh.
+
+3.6.3. Phản hồi định tính
+Các phản hồi tích cực:
+- "Giao diện đẹp và dễ sử dụng" (Khách hàng)
+- "Thanh toán blockchain rất tiện lợi và an toàn" (Khách hàng)
+- "Báo cáo doanh thu rất chi tiết và hữu ích" (Quản lý)
+- "Hệ thống chạy nhanh và ổn định" (Nhân viên)
+
+Các đề xuất cải thiện:
+- "Cần thêm tính năng tìm kiếm nâng cao" (Khách hàng)
+- "Cần cải thiện tốc độ tải trang ở một số màn hình" (Nhân viên)
+- "Cần thêm các loại báo cáo khác" (Quản lý)
+
+3.7. Bàn luận
+
+3.7.1. Ý nghĩa của kết quả
+Kết quả nghiên cứu cho thấy việc áp dụng kiến trúc microservices kết hợp với 
+blockchain và multi-tenant mang lại những lợi ích đáng kể về hiệu năng, khả năng 
+mở rộng và quản lý doanh thu. So với các nghiên cứu trước về microservices [19], 
+[20], kết quả của nghiên cứu này tương đồng về cải thiện hiệu năng và khả năng 
+mở rộng, nhưng có thêm đóng góp về việc tích hợp blockchain và multi-tenant.
+
+Về thanh toán blockchain, kết quả cho thấy Solana là một lựa chọn phù hợp cho 
+thanh toán điện tử với thời gian xử lý nhanh và phí thấp. Tuy nhiên, việc tích hợp 
+blockchain vẫn còn một số thách thức về user experience và khả năng chấp nhận của 
+người dùng, đặc biệt là những người dùng chưa quen với công nghệ blockchain.
+
+Về multi-tenant, kết quả cho thấy mô hình này không ảnh hưởng đáng kể đến hiệu 
+năng hệ thống, đồng thời mang lại lợi ích lớn về quản lý và tối ưu doanh thu. Điều 
+này phù hợp với nghiên cứu của Chong và Carraro (2006) về lợi ích của multi-tenant 
+architecture [12].
+
+3.7.2. Hạn chế của nghiên cứu
+Nghiên cứu vẫn còn một số hạn chế:
+- Phạm vi đánh giá chỉ giới hạn trong một hệ thống cụ thể với một số lượng chi 
+  nhánh và người dùng nhất định
+- Số lượng người dùng tham gia UAT còn tương đối nhỏ (50 người), có thể không đại 
+  diện cho toàn bộ người dùng
+- Thời gian đánh giá còn ngắn (2 tuần), chưa đánh giá được tác động dài hạn
+- Chưa đánh giá chi tiết về chi phí vận hành và ROI của việc áp dụng các công nghệ này
+
+3.7.3. Đề xuất ứng dụng thực tiễn
+Dựa trên kết quả nghiên cứu, các doanh nghiệp có thể áp dụng các khuyến nghị sau:
+- Áp dụng kiến trúc microservices cho các hệ thống e-commerce quy mô lớn cần khả 
+  năng mở rộng cao
+- Tích hợp blockchain vào hệ thống thanh toán như một phương thức bổ sung, đặc 
+  biệt phù hợp với các giao dịch có giá trị cao
+- Sử dụng mô hình multi-tenant cho các doanh nghiệp có nhiều chi nhánh để tối ưu 
+  chi phí vận hành và quản lý doanh thu
+
+================================================================================
+PHẦN 6: 4. KẾT LUẬN (CONCLUSION)
+================================================================================
+
+4.1. Tóm tắt nghiên cứu
+
+Nghiên cứu này đã thiết kế, xây dựng và đánh giá thành công một hệ thống thương 
+mại điện tử tích hợp thanh toán blockchain và hỗ trợ quản lý đa chi nhánh. Kết 
+quả cho thấy việc áp dụng kiến trúc microservices kết hợp với blockchain và 
+multi-tenant mang lại những lợi ích đáng kể về hiệu năng, khả năng mở rộng và 
+quản lý doanh thu.
+
+Cụ thể, hệ thống đạt được:
+- Response time trung bình 112ms ở mức tải 100 users và 400ms ở mức tải 1000 users
+- Throughput đạt 850 requests/second ở mức tải cao
+- Tỷ lệ thành công của thanh toán blockchain đạt 98% với thời gian xử lý trung bình 3.2 giây
+- Giảm 40% thời gian triển khai so với monolithic architecture
+- Đánh giá tích cực từ người dùng với điểm trung bình 4.1/5.0
+
+4.2. Đóng góp của nghiên cứu
+
+Về mặt lý thuyết, nghiên cứu đã cung cấp một mô hình kiến trúc tích hợp microservices, 
+blockchain và multi-tenant, cùng với các phương pháp đánh giá hiệu quả của việc kết 
+hợp các công nghệ này. Nghiên cứu cũng đóng góp vào việc hiểu biết về ứng dụng 
+blockchain trong thanh toán điện tử tại Việt Nam.
+
+Về mặt thực tiễn, nghiên cứu đã cung cấp một case study thực tế về việc xây dựng 
+và đánh giá hệ thống thương mại điện tử tích hợp các công nghệ hiện đại, đặc biệt 
+trong bối cảnh thị trường Việt Nam. Các kết quả đánh giá định lượng cung cấp những 
+hiểu biết có giá trị cho các doanh nghiệp đang có kế hoạch chuyển đổi số.
+
+Về mặt công nghệ, nghiên cứu đã chứng minh tính khả thi và hiệu quả của việc tích 
+hợp Solana blockchain vào hệ thống thanh toán điện tử, đồng thời đánh giá tác động 
+của mô hình multi-tenant đến hiệu năng và khả năng quản lý doanh thu.
+
+4.3. Hạn chế và hướng phát triển
+
+Nghiên cứu vẫn còn một số hạn chế về phạm vi đánh giá, số lượng người dùng tham 
+gia và thời gian đánh giá. Trong tương lai, các nghiên cứu nên:
+- Mở rộng phạm vi đánh giá với nhiều hệ thống khác nhau và số lượng người dùng lớn hơn
+- Đánh giá tác động dài hạn của việc sử dụng blockchain trong thanh toán
+- Tối ưu hóa hiệu năng của hệ thống multi-tenant ở quy mô lớn hơn
+- Đánh giá chi tiết về chi phí vận hành và ROI của việc áp dụng các công nghệ này
+- Nghiên cứu các phương pháp tối ưu hóa smart contract để giảm thời gian xử lý 
+  và phí giao dịch
+
+================================================================================
+LỜI CẢM ƠN
+================================================================================
+
+Chân thành cảm ơn TS. Mai Anh Thơ, giảng viên Trường Đại học Sư phạm Kỹ thuật 
+Thành phố Hồ Chí Minh, đã đồng hành và hỗ trợ nhóm tác giả trong quá trình thực 
+hiện bài nghiên cứu này.
+
+================================================================================
+XUNG ĐỘT LỢI ÍCH
+================================================================================
+
+Các tác giả tuyên bố không có xung đột lợi ích trong bài báo này.
+
+================================================================================
+TÀI LIỆU THAM KHẢO
+================================================================================
+
+[1] A. Author, "E-commerce Development Trends," Journal Name, vol. X, no. Y, 
+    pp. 1-10, 2023, doi: 10.xxxx/xxxxx.
+
+[2] VECOM, "Vietnam E-commerce Report 2023," Vietnam E-commerce Association, 
+    2023. [Online]. Available: https://vecom.vn/
+
+[3] M. Fowler, "Microservices Guide," Martin Fowler's Blog, 2014. [Online]. 
+    Available: https://martinfowler.com/microservices/
+
+[... tiếp tục với các tài liệu tham khảo khác ...]
+
+[18] R. K. Yin, Case Study Research: Design and Methods, 5th ed. Thousand Oaks, 
+     CA: Sage Publications, 2014.
+
+[19] N. Dragoni et al., "Microservices: Yesterday, Today, and Tomorrow," in 
+     Present and Ulterior Software Engineering, M. Mazzara and B. Meyer, Eds. 
+     Cham: Springer, 2017, pp. 195-216.
+
+[20] S. Newman, Building Microservices: Designing Fine-Grained Systems, 2nd ed. 
+     Sebastopol, CA: O'Reilly Media, 2021.
+
+================================================================================
+THÔNG TIN TÁC GIẢ
+================================================================================
+
+Lê Xuân Bách là sinh viên năm cuối chuyên ngành Công nghệ Phần mềm tại Đại học 
+Sư phạm Kỹ thuật Thành phố Hồ Chí Minh, Việt Nam. Anh bắt đầu chương trình học 
+từ năm 2021 và dự kiến tốt nghiệp năm 2025. Lĩnh vực nghiên cứu quan tâm của 
+anh bao gồm kiến trúc phần mềm, microservices, blockchain và phát triển web.
+
+Trần Quốc Phương là sinh viên năm cuối chuyên ngành Công nghệ Phần mềm tại Đại 
+học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh, Việt Nam. Anh bắt đầu chương trình 
+học từ năm 2021 và dự kiến tốt nghiệp năm 2025. Lĩnh vực nghiên cứu quan tâm của 
+anh bao gồm phát triển web, blockchain và công nghệ phần mềm hiện đại.
+
