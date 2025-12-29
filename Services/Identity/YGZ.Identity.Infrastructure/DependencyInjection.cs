@@ -59,6 +59,7 @@ public static class DependencyInjection
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IOtpGenerator, OtpGenerator>();
+        services.AddScoped<IUserRegistrationCompensator, UserRegistrationCompensator>();
 
         return services;
     }

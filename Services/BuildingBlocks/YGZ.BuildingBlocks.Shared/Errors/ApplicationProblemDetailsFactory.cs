@@ -105,17 +105,17 @@ public class ApplicationProblemDetailsFactory : ProblemDetailsFactory
 
             var ex = new ValidationException("Validation failed");
 
-            _logger.LogError(ex, "Exception occurred: {@Title} {@Errors} {@Exception} {@TraceId} {@DateTimeUtc}", ex.Message, errors, ex, traceId, DateTime.UtcNow);
+            _logger.LogError(ex, "[Errors exception occurred]:: {@Title} {@Errors} {@Exception} {@TraceId} {@DateTimeUtc}", ex.Message, errors, ex, traceId, DateTime.UtcNow);
         }
-        if (httpContext?.Items["error"] is Error error)
+        else if (httpContext?.Items["error"] is Error error)
         {
             problemDetails.Extensions.Add("error", error);
 
-            _logger.LogError("Exception occurred: {@Title} {@Error} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", error.Message, error, problemDetails, traceId, DateTime.UtcNow);
+            _logger.LogError("[Error exception occurred]:: {@Title} {@Error} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", error.Message, error, problemDetails, traceId, DateTime.UtcNow);
         }
         else
         {
-            _logger.LogError("[Global exception occurred]: {@Title} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", problemDetails.Title, problemDetails, traceId, DateTime.UtcNow);
+            _logger.LogError("[Throw exception]:: {@Title} {@ProblemDetails} {@TraceId} {@DateTimeUtc}", problemDetails.Title, problemDetails, traceId, DateTime.UtcNow);
         }
     }
 }

@@ -6,6 +6,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Users.Queries.GetProfile;
+using YGZ.Identity.Domain.Core.Errors;
 
 namespace YGZ.Identity.Application.Auths.Commands.ChangePassword;
 
@@ -29,18 +30,18 @@ public class ChangePasswordHandler : ICommandHandler<ChangePasswordCommand, bool
     {
         var email = _userHttpContext.GetUserEmail();
 
-        var userAsync = await _identityService.FindUserAsync(email);
+        var userResult = await _identityService.FindUserAsync(email);
 
-        if (userAsync.IsFailure)
+        if (userResult.IsFailure)
         {
-            return userAsync.Error;
+            return userResult.Error;
         }
 
-        var result = await _identityService.ChangePasswordAsync(userAsync.Response!, request.OldPassword, request.NewPassword);
+        var changePasswordResult = await _identityService.ChangePasswordAsync(userResult.Response!, request.OldPassword, request.NewPassword);
 
-        if (result.IsFailure)
+        if (changePasswordResult.IsFailure)
         {
-            return result.Error;
+            return changePasswordResult.Error;
         }
 
         return true;

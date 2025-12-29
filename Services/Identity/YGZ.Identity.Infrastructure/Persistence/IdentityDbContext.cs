@@ -2,7 +2,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
 using YGZ.Identity.Domain.Users;
 using YGZ.Identity.Domain.Users.Entities;
@@ -12,25 +11,16 @@ namespace YGZ.Identity.Infrastructure.Persistence;
 
 public class IdentityDbContext : IdentityDbContext<User>
 {
-    private readonly ILogger<IdentityDbContext> _logger;
     private readonly ITenantHttpContext _tenantHttpContext;
-    private readonly IUserHttpContext _userHttpContext;
-    private readonly IList<string> _userRoles = new List<string>();
 
 
-    public IdentityDbContext(DbContextOptions<IdentityDbContext> options, ITenantHttpContext tenantHttpContext, IUserHttpContext userHttpContext, ILogger<IdentityDbContext> logger) : base(options)
+    public IdentityDbContext(DbContextOptions<IdentityDbContext> options, ITenantHttpContext tenantHttpContext) : base(options)
     {
         _tenantHttpContext = tenantHttpContext;
-        _userHttpContext = userHttpContext;
-        _userRoles = userHttpContext.GetUserRoles();
-        _logger = logger;
     }
 
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<ShippingAddress> ShippingAddresses { get; set; }
-
-    // Property to get current tenant ID dynamically
-    private string? CurrentTenantId => _tenantHttpContext.GetTenantId();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

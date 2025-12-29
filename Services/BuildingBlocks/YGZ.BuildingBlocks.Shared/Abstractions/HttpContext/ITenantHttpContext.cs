@@ -3,6 +3,6 @@
 public interface ITenantHttpContext
 {
     string? GetTenantId();
-    string GetTenantCode();
+    string? GetSubDomain();
     string? GetBranchId();
 }

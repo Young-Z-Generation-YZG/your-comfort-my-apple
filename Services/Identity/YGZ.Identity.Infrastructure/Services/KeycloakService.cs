@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -28,25 +27,21 @@ public class KeycloakService : IKeycloakService
     private readonly ILogger<KeycloakService> _logger;
     private readonly KeycloakSettings _keycloakSettings;
     private readonly HttpClient _httpClient;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
     private readonly string _nextjsClientUUID;
     private readonly string _nextjsClientId;
     private readonly string _nextjsClientSecret;
-
     private readonly string _adminClientId;
     private readonly string _adminClientSecret;
-
     private readonly string _tokenEndpoint;
     private readonly string _adminEndpoint;
     private readonly string _roleManagementEndpoint;
 
-    public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger, IHttpContextAccessor httpContextAccessor)
+    public KeycloakService(HttpClient httpClient, IOptions<KeycloakSettings> options, ILogger<KeycloakService> logger)
     {
         _logger = logger;
         _keycloakSettings = options.Value;
         _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
 
         _nextjsClientUUID = _keycloakSettings.NextjsClient.ClientUUID;
         _nextjsClientId = _keycloakSettings.NextjsClient.ClientId;
@@ -86,8 +81,11 @@ public class KeycloakService : IKeycloakService
                 return user!;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userId };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetUserByIdAsync), ex.Message, parameters);
             throw;
         }
 
@@ -124,8 +122,11 @@ public class KeycloakService : IKeycloakService
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { usernameOrEmail };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetUserByUsernameOrEmailAsync), ex.Message, parameters);
             throw;
         }
 
@@ -170,7 +171,8 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to create keycloak user: {ErrorMessage}", ex.Message);
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(CreateKeycloakUserAsync), ex.Message, userRepresentation);
             throw;
         }
 
@@ -202,7 +204,9 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to assign role to keycloak user: {ErrorMessage}", ex.Message);
+            var parameters = new { userId, roleName = AuthorizationConstants.Roles.USER };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(CreateKeycloakUserAsync), ex.Message, parameters);
             await DeleteKeycloakUserAsync(userId!);
             throw;
         }
@@ -235,7 +239,9 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to get keycloak token pair: {ErrorMessage}", ex.Message);
+            var parameters = new { emailOrUsername, hasPassword = !string.IsNullOrEmpty(password) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetKeycloakTokenPairAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -266,7 +272,10 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            var parameters = new { };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetTokenClientCredentialsTypeAsync), ex.Message, parameters);
+            throw;
         }
     }
 
@@ -291,14 +300,16 @@ public class KeycloakService : IKeycloakService
 
             if (deserializedResp == null)
             {
-                throw new Exception("Failed to retrieve user token.");
+                throw new InvalidOperationException("Failed to retrieve user token.");
             }
 
             return deserializedResp.AccessToken;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to get admin token response: {ErrorMessage}", ex.Message);
+            var parameters = new { };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAdminTokenResponseAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -355,8 +366,11 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.EmailVerificationFailed;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(VerifyEmailAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -432,7 +446,9 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Exception occurred while validating refresh token: {ErrorMessage}", ex.Message);
+            var parameters = new { hasRefreshToken = !string.IsNullOrEmpty(refreshToken) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ValidateRefreshTokenAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -470,7 +486,9 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Exception occurred while refreshing access token");
+            var parameters = new { hasRefreshToken = !string.IsNullOrEmpty(refreshToken) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(RefreshAccessTokenAsync), ex.Message, parameters);
             return Errors.Keycloak.InvalidCredentials;
         }
     }
@@ -502,7 +520,9 @@ public class KeycloakService : IKeycloakService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Exception occurred while logging out user: {ErrorMessage}", ex.Message);
+            var parameters = new { hasRefreshToken = !string.IsNullOrEmpty(refreshToken) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(LogoutAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -556,8 +576,11 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.SendEmailResetPasswordFailed;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailResetPasswordAsync), ex.Message, parameters);
             return Errors.Keycloak.SendEmailResetPasswordFailed;
         }
     }
@@ -584,8 +607,11 @@ public class KeycloakService : IKeycloakService
                     return Errors.Keycloak.InvalidCredentials;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                var parameters = new { email, hasCurrPassword = !string.IsNullOrEmpty(currPassword), hasNewPassword = !string.IsNullOrEmpty(newPassword) };
+                _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(ChangePasswordAsync), ex.Message, parameters);
                 throw;
             }
 
@@ -633,8 +659,11 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email, hasNewPassword = !string.IsNullOrEmpty(newPassword) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ChangePasswordAsync), ex.Message, parameters);
             return Errors.Keycloak.ChangePasswordFailed;
         }
     }
@@ -691,8 +720,11 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.ChangePasswordFailed;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email, hasNewPassword = !string.IsNullOrEmpty(newPassword) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ResetPasswordAsync), ex.Message, parameters);
             return Errors.Keycloak.ResetPasswordFailed;
         }
     }
@@ -731,8 +763,11 @@ public class KeycloakService : IKeycloakService
                 return null;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { code = request.Code, hasCode = !string.IsNullOrEmpty(request.Code) };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AuthorizationCode), ex.Message, parameters);
             throw;
         }
     }
@@ -762,12 +797,18 @@ public class KeycloakService : IKeycloakService
                 return Errors.Keycloak.FailedToDeleteUser;
             }
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
+            var parameters = new { keycloakUserId };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(DeleteKeycloakUserAsync), ex.Message, parameters);
             throw;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { keycloakUserId };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(DeleteKeycloakUserAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -821,17 +862,23 @@ public class KeycloakService : IKeycloakService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request exception while retrieving Keycloak role: {RoleName}", roleName);
+            var parameters = new { roleName };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
             return Errors.Keycloak.RoleRetrievalFailed;
         }
         catch (JsonException ex)
         {
-            _logger.LogError(ex, "JSON deserialization exception while retrieving Keycloak role: {RoleName}", roleName);
+            var parameters = new { roleName };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
             return Errors.Keycloak.RoleRetrievalFailed;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while retrieving Keycloak role: {RoleName}", roleName);
+            var parameters = new { roleName };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -879,12 +926,16 @@ public class KeycloakService : IKeycloakService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request exception while impersonating user {UserId}", userId);
+            var parameters = new { userId };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ImpersonateUserAsync), ex.Message, parameters);
             return Errors.Keycloak.UserNotFound;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while impersonating user {UserId}", userId);
+            var parameters = new { userId };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ImpersonateUserAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -939,12 +990,16 @@ public class KeycloakService : IKeycloakService
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "HTTP request exception while assigning roles to user {UserId}", userId);
+            var parameters = new { userId, roleNames };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AssignRolesToUserAsync), ex.Message, parameters);
             return Errors.Keycloak.CannotAssignRole;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while assigning roles to user {UserId}", userId);
+            var parameters = new { userId, roleNames };
+            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AssignRolesToUserAsync), ex.Message, parameters);
             throw;
         }
     }

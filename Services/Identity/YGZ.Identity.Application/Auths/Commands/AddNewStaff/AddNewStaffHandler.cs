@@ -38,8 +38,7 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
     {
         try
         {
-            // Check if user already exists (ignore tenant filters to honor global unique email)
-            var existingUserResult = await _identityService.FindUserAsyncIgnoreFilters(request.Email);
+            var existingUserResult = await _identityService.FindUserAsync(request.Email, ignoreBaseFilter: true);
             if (existingUserResult.IsSuccess && existingUserResult.Response is not null)
             {
                 _logger.LogWarning("User already exists with email: {Email}", request.Email);

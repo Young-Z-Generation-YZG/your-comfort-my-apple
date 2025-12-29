@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Constants;
-using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Application.Abstractions.Services;
 using YGZ.Identity.Application.Auths.Commands.Register;
 using YGZ.Identity.Domain.Core.Errors;
@@ -20,7 +19,6 @@ public class IdentityService : IIdentityService
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly IKeycloakService _keycloakService;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IIdentityDbContext _identityDbContext;
     private const string DEFAULT_TENANT_ID = "664355f845e56534956be32b";
     private const string DEFAULT_BRANCH_ID = "664357a235e84033bbd0e6b6";
 
@@ -28,59 +26,54 @@ public class IdentityService : IIdentityService
                            UserManager<User> userManager,
                            IPasswordHasher<User> passwordHasher,
                            IKeycloakService keycloakService,
-                           RoleManager<IdentityRole> roleManager,
-                           IIdentityDbContext identityDbContext)
+                           RoleManager<IdentityRole> roleManager)
     {
         _logger = logger;
         _userManager = userManager;
         _passwordHasher = passwordHasher;
         _keycloakService = keycloakService;
         _roleManager = roleManager;
-        _identityDbContext = identityDbContext;
     }
-    public async Task<Result<User>> FindUserAsync(string email)
+    public async Task<Result<User>> FindUserAsync(string email, bool ignoreBaseFilter = false)
     {
         try
         {
-            var existingUser = await _userManager.FindByEmailAsync(email);
+            User? existingUser;
+
+            if (ignoreBaseFilter)
+            {
+                existingUser = await _userManager.Users
+                    .IgnoreQueryFilters()
+                    .FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpperInvariant());
+            }
+            else
+            {
+                existingUser = await _userManager.FindByEmailAsync(email);
+            }
 
             if (existingUser is null)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.FindByEmailAsync), "User not found", new { email });
+
                 return Errors.User.DoesNotExist;
             }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(FindUserAsync), "Successfully found user", new { email });
 
             return existingUser;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to find user: {ErrorMessage}", ex.Message);
+            var parameters = new { email, ignoreBaseFilter };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(FindUserAsync), ex.Message, parameters);
             throw;
         }
     }
 
-    public async Task<Result<User>> FindUserAsyncIgnoreFilters(string email)
-    {
-        try
-        {
-            // Use IgnoreQueryFilters to bypass tenant filtering for this specific endpoint
-            var existingUser = await _identityDbContext.Users
-                .IgnoreQueryFilters()
-                .FirstOrDefaultAsync(u => u.NormalizedEmail == email.ToUpperInvariant());
-
-            if (existingUser is null)
-            {
-                return Errors.User.DoesNotExist;
-            }
-
-            return existingUser;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    public async Task<Result<bool>> CreateUserAsync(RegisterCommand request, Guid userId)
+    public async Task<Result<User>> CreateUserAsync(RegisterCommand request, Guid userId)
     {
         try
         {
@@ -101,44 +94,82 @@ public class IdentityService : IIdentityService
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 
-            var checkRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER);
-
             var result = await _userManager.CreateAsync(newUser);
 
             if (!result.Succeeded)
             {
-                _logger.LogError("Failed to create user: {ErrorMessage}", newUser.Email);
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.CreateAsync), "Failed to create user in database", result.Errors);
+
                 return Errors.User.CannotBeCreated;
             }
 
-            var checkUserRoleExist = await _roleManager.RoleExistsAsync(AuthorizationConstants.Roles.USER);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(CreateUserAsync), "Successfully created user in database", new { request.Email, userId });
 
-            if (!checkUserRoleExist)
+            return newUser;
+        }
+        catch (Exception ex)
+        {
+            var parameters = new { email = request.Email, userId };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(CreateUserAsync), ex.Message, parameters);
+
+            throw;
+        }
+    }
+
+    public async Task<Result<bool>> AssignRolesAsync(User user, List<string> roleNames)
+    {
+        try
+        {
+            if (roleNames == null || roleNames.Count == 0)
             {
-                _logger.LogError("User role does not exist: {ErrorMessage}", AuthorizationConstants.Roles.USER);
-                await _userManager.DeleteAsync(newUser);
-                return Errors.User.CannotBeCreated;
+                _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(AssignRolesAsync), "No roles provided for assignment to user", new { user.Email });
+                
+                return Errors.Keycloak.CannotAssignRole;
             }
 
-            var roleResult = await _userManager.AddToRoleAsync(newUser, AuthorizationConstants.Roles.USER);
+            // Check if all roles exist
+            foreach (var roleName in roleNames)
+            {
+                var roleExists = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExists)
+                {
+                    _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_roleManager.RoleExistsAsync), "Role does not exist", new { roleName });
+                    
+                    return Errors.Keycloak.RoleNotFound;
+                }
+            }
+
+            // Assign all roles to user
+            var roleResult = await _userManager.AddToRolesAsync(user, roleNames);
 
             if (!roleResult.Succeeded)
             {
-                _logger.LogError("Failed to add role to user: {ErrorMessage}", AuthorizationConstants.Roles.USER);
-                await _userManager.DeleteAsync(newUser);
-                return Errors.User.CannotBeCreated;
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.AddToRolesAsync), "Failed to add roles to user", new { roleNames, user.Email, roleResult.Errors });
+
+                return Errors.Keycloak.CannotAssignRole;
             }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(AssignRolesAsync), "Successfully assigned roles to user", new { roleNames, user.Email });
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to create user: {ErrorMessage}", ex.Message);
+            var parameters = new { userId = user.Id, email = user.Email, roleNames };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AssignRolesAsync), ex.Message, parameters);
             throw;
         }
     }
 
-    public async Task<Result<bool>> LoginAsync(User user, string password)
+    public Result<bool> Login(User user, string password)
     {
         try
         {
@@ -146,37 +177,60 @@ public class IdentityService : IIdentityService
 
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
             {
-                return false;
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_passwordHasher.VerifyHashedPassword), "Invalid credentials", new { user.Id, user.Email });
+
+                return Errors.User.InvalidCredentials;
             }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Login), "Successfully logged in", new { user.Id, user.Email });
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to login: {ErrorMessage}", ex.Message);
+            var parameters = new { userId = user.Id, email = user.Email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Login), ex.Message, parameters);
             throw;
         }
     }
 
-    public async Task<Result<string>> GenerateEmailVerificationTokenAsync(string userId)
+    public async Task<Result<string>> GenerateEmailVerificationTokenAsync(User user)
     {
         try
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            if (user is null)
+            if (token is null)
             {
-                return Errors.User.DoesNotExist;
-            }
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.GenerateEmailConfirmationTokenAsync), "Failed to generate email verification token", new { user.Id, user.Email });
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
+                return Errors.Auth.InvalidToken;
+            }
 
             var encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
+            if (encodedToken is null)
+            {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.GenerateEmailConfirmationTokenAsync), "Failed to encode email verification token", new { user.Id, user.Email });
+
+                return Errors.Auth.InvalidToken;
+            }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(GenerateEmailVerificationTokenAsync), "Successfully encoded email verification token", new { user.Id, user.Email });
+
             return encodedToken;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userId = user.Id, email = user.Email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GenerateEmailVerificationTokenAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -190,6 +244,9 @@ public class IdentityService : IIdentityService
 
             if (searchResult.IsFailure)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(FindUserAsync), "User not found", new { email });
+
                 return searchResult.Error;
             }
 
@@ -205,7 +262,7 @@ public class IdentityService : IIdentityService
             }
             catch (FormatException)
             {
-                return Errors.Auth.InvalidToken;
+                throw new FormatException("Failed to decode token");
             }
 
             // Verify the token using UserManager
@@ -217,6 +274,9 @@ public class IdentityService : IIdentityService
 
             if (!isValid)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.VerifyUserTokenAsync), "Invalid token", new { user.Id, user.Email });
+
                 return Errors.Auth.InvalidToken;
             }
 
@@ -224,13 +284,22 @@ public class IdentityService : IIdentityService
 
             if (!confirmResult.Succeeded)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.ConfirmEmailAsync), "Failed to confirm email verification", new { user.Id, user.Email });
+
                 return Errors.Auth.ConfirmEmailVerificationFailure;
             }
 
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(VerifyEmailTokenAsync), "Successfully verified email token", new { user.Id, user.Email });
+
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email, hasToken = !string.IsNullOrEmpty(encodedToken) };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(VerifyEmailTokenAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -243,6 +312,9 @@ public class IdentityService : IIdentityService
 
             if (searchResult.IsFailure)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(FindUserAsync), "User not found", new { email });
+
                 return searchResult.Error;
             }
 
@@ -250,10 +322,24 @@ public class IdentityService : IIdentityService
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
 
+            if (encodedToken is null)
+            {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.GeneratePasswordResetTokenAsync), "Failed to encode reset password token", new { user.Id, user.Email });
+
+                return Errors.Auth.InvalidToken;
+            }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(GenerateResetPasswordTokenAsync), "Successfully encoded reset password token", new { user.Id, user.Email });
+
             return encodedToken;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GenerateResetPasswordTokenAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -267,6 +353,9 @@ public class IdentityService : IIdentityService
 
             if (searchResult.IsFailure)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(FindUserAsync), "User not found", new { email });
+
                 return searchResult.Error;
             }
 
@@ -282,6 +371,9 @@ public class IdentityService : IIdentityService
             }
             catch (FormatException)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Convert.FromBase64String), "Failed to decode token", new { encodedToken });
+
                 return Errors.Auth.InvalidToken;
             }
 
@@ -294,6 +386,9 @@ public class IdentityService : IIdentityService
 
             if (!isValid)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.VerifyUserTokenAsync), "Invalid token", new { user.Id, user.Email });
+
                 return Errors.Auth.InvalidToken;
             }
 
@@ -301,15 +396,24 @@ public class IdentityService : IIdentityService
 
             if (!resetPasswordResult.Succeeded)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.ResetPasswordAsync), "Failed to reset password", new { user.Id, user.Email });
+
                 return Errors.User.CannotResetPassword;
             }
 
             var resetPasswordKeycloak = await _keycloakService.ResetPasswordAsync(email, newPassword);
 
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(VerifyResetPasswordTokenAsync), "Successfully verified reset password token", new { user.Id, user.Email });
+
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email, hasToken = !string.IsNullOrEmpty(encodedToken), hasNewPassword = !string.IsNullOrEmpty(newPassword) };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(VerifyResetPasswordTokenAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -322,6 +426,9 @@ public class IdentityService : IIdentityService
 
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_passwordHasher.VerifyHashedPassword), "Invalid credentials", new { user.Id, user.Email });
+
                 return Errors.User.InvalidCredentials;
             }
 
@@ -329,6 +436,9 @@ public class IdentityService : IIdentityService
 
             if (!changePasswordResult.Succeeded)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.ChangePasswordAsync), "Failed to change password", new { user.Id, user.Email });
+
                 return Errors.User.CannotChangePassword;
             }
 
@@ -336,13 +446,22 @@ public class IdentityService : IIdentityService
 
             if (keycloakResult.IsFailure)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.ResetPasswordAsync), "Failed to reset password", new { user.Email });
+
                 return keycloakResult.Error;
             }
 
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(ChangePasswordAsync), "Successfully changed password", new { user.Id, user.Email });
+
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userId = user.Id, email = user.Email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ChangePasswordAsync), ex.Message, parameters);
             return Errors.User.CannotChangePassword;
         }
     }
@@ -354,8 +473,11 @@ public class IdentityService : IIdentityService
             var roles = await _userManager.GetRolesAsync(user);
             return roles.ToList();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userId = user.Id, email = user.Email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetRolesAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -366,15 +488,13 @@ public class IdentityService : IIdentityService
         {
             var user = await _userManager.FindByEmailAsync(email);
 
-            if (user is null)
-            {
-                return Errors.User.DoesNotExist;
-            }
-
             return user;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { email };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(FindUserByEmailAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -385,6 +505,9 @@ public class IdentityService : IIdentityService
         {
             if (!Guid.TryParse(keycloakUserId, out var userId))
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Guid.TryParse), "Invalid user ID", new { keycloakUserId });
+
                 return Errors.User.DoesNotExist;
             }
 
@@ -392,6 +515,9 @@ public class IdentityService : IIdentityService
 
             if (user is null)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.FindByIdAsync), "User not found", new { userId });
+
                 return Errors.User.DoesNotExist;
             }
 
@@ -399,13 +525,22 @@ public class IdentityService : IIdentityService
 
             if (!deleteResult.Succeeded)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.DeleteAsync), "Failed to delete user", new { user.Id, user.Email });
+
                 return Errors.User.CannotBeDeleted;
             }
 
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(DeleteUserAsync), "Successfully deleted user", new { user.Id, user.Email });
+
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { keycloakUserId };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(DeleteUserAsync), ex.Message, parameters);
             throw;
         }
     }

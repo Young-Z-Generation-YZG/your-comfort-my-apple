@@ -12,19 +12,16 @@ public class GetIdentityHandler : IQueryHandler<GetIdentityQuery, GetIdentityRes
 {
     private readonly ILogger<GetIdentityHandler> _logger;
     private readonly IUserHttpContext _userHttpContext;
-    private readonly IUserRepository _repository;
     private readonly IIdentityService _identityService;
     private readonly ITenantHttpContext _tenantHttpContext;
 
     public GetIdentityHandler(ILogger<GetIdentityHandler> logger,
                         IUserHttpContext userHttpContext,
-                        IUserRepository repository,
                         IIdentityService identityService,
                         ITenantHttpContext tenantHttpContext)
     {
         _logger = logger;
         _userHttpContext = userHttpContext;
-        _repository = repository;
         _identityService = identityService;
         _tenantHttpContext = tenantHttpContext;
     }
@@ -36,8 +33,7 @@ public class GetIdentityHandler : IQueryHandler<GetIdentityQuery, GetIdentityRes
         var branchId = _tenantHttpContext.GetBranchId();
 
 
-        // Use FindUserAsyncIgnoreFilters to bypass tenant filtering for /me endpoint
-        var userResult = await _identityService.FindUserAsyncIgnoreFilters(userEmail);
+        var userResult = await _identityService.FindUserAsync(userEmail, ignoreBaseFilter: true);
 
         if (userResult.IsFailure)
         {

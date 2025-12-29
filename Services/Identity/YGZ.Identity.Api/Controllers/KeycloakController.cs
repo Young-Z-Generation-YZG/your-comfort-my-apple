@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
-using YGZ.Identity.Api.Contracts.Auth.Keycloak;
+using YGZ.Identity.Api.Contracts.Keycloak;
 using YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
 using YGZ.Identity.Application.Keycloak.Commands.ImpersonateUser;
 

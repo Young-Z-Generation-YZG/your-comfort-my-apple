@@ -22,19 +22,19 @@ public class RequestLoggingPipelineBehavior<TRequest, TResponse> : IPipelineBeha
     {
         string requestName = typeof(TRequest).Name;
 
-        _logger.LogInformation("[RequestLoggingPipelineBehavior]: Processing request {RequestName}", requestName);
+        _logger.LogInformation("[RequestLoggingPipelineBehavior]:: Processing {RequestName}", requestName);
 
         TResponse result = await next();
 
         if (result.IsSuccess)
         {
-            _logger.LogInformation("[RequestLoggingPipelineBehavior]: Completed request {RequestName}", requestName);
+            _logger.LogInformation("[RequestLoggingPipelineBehavior]:: Completed {RequestName}", requestName);
         }
         else
         {
             using (LogContext.PushProperty("Error", result.Error, true))
             {
-                _logger.LogError("[RequestLoggingPipelineBehavior]: Completed request {RequestName} with error", requestName);
+                _logger.LogError("[RequestLoggingPipelineBehavior]:: Completed {RequestName} with error", requestName);
             }
         }
 

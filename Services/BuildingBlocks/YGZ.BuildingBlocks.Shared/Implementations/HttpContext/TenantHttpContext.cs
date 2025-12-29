@@ -9,6 +9,9 @@ public class TenantHttpContext : ITenantHttpContext
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<TenantHttpContext> _logger;
     private const string TenantIdHeaderName = "X-TenantId";
+    private const string TenantIdClaimName = "tenant_id";
+    private const string BranchIdClaimName = "branch_id";
+    private const string SubDomainClaimName = "subdomain";
 
     public TenantHttpContext(IHttpContextAccessor httpContextAccessor, ILogger<TenantHttpContext> logger)
     {
@@ -18,12 +21,11 @@ public class TenantHttpContext : ITenantHttpContext
 
     public string? GetBranchId()
     {
-        var branchId = _httpContextAccessor.HttpContext?.User.FindFirst("branch_id")?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "branch_id")?.Value;
+        var branchId = _httpContextAccessor.HttpContext?.User.FindFirst(BranchIdClaimName)?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == BranchIdClaimName)?.Value;
 
         if (string.IsNullOrEmpty(branchId))
         {
             _logger.LogWarning("No branch ID found in user claims.");
-            //throw new UnauthorizedAccessException("Branch ID not found in token.");
         }
 
         return branchId;
@@ -32,7 +34,7 @@ public class TenantHttpContext : ITenantHttpContext
     public string? GetTenantId()
     {
         var tenantIdFromHeader = _httpContextAccessor.HttpContext?.Request.Headers[TenantIdHeaderName].FirstOrDefault();
-        var tenantIdFromUser = _httpContextAccessor.HttpContext?.User.FindFirst("tenant_id")?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "tenant_id")?.Value;
+        var tenantIdFromUser = _httpContextAccessor.HttpContext?.User.FindFirst(TenantIdClaimName)?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == TenantIdClaimName)?.Value;
 
         var tenantId = tenantIdFromHeader ?? tenantIdFromUser;
 
@@ -41,22 +43,21 @@ public class TenantHttpContext : ITenantHttpContext
         if (string.IsNullOrEmpty(tenantId))
         {
             _logger.LogWarning("No tenant ID found in user claims.");
-            //throw new UnauthorizedAccessException("Tenant ID not found in token.");
         }
 
         return tenantId;
     }
 
-    public string GetTenantCode()
+    public string GetSubDomain()
     {
-        var tenantCode = _httpContextAccessor.HttpContext?.User.FindFirst("tenant_code")?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == "tenant_code")?.Value;
+        var subDomain = _httpContextAccessor.HttpContext?.User.FindFirst(SubDomainClaimName)?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == SubDomainClaimName)?.Value;
 
-        if (string.IsNullOrEmpty(tenantCode))
+        if (string.IsNullOrEmpty(subDomain))
         {
-            _logger.LogWarning("No tenant code found in user claims.");
-            throw new UnauthorizedAccessException("Tenant code not found in token.");
+            _logger.LogWarning("No subdomain found in user claims.");
+            throw new UnauthorizedAccessException("Subdomain not found in token.");
         }
 
-        return tenantCode;
+        return subDomain;
     }
 }

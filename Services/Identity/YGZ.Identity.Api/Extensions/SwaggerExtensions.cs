@@ -9,7 +9,6 @@ using NSwag.Generation.Processors.Security;
 using YGZ.Identity.Api.Contracts.Addresses;
 using YGZ.Identity.Api.Contracts.Auth;
 using YGZ.Identity.Api.Contracts.Profiles;
-using YGZ.Identity.Api.Contracts.Tenants;
 using YGZ.Identity.Api.Contracts.Users;
 
 namespace YGZ.Identity.Api.Extensions;
@@ -65,7 +64,6 @@ public static class SwaggerExtensions
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateAddressRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new UpdateProfileRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new ChangePasswordRequestExample());
-            settings.SchemaSettings.SchemaProcessors.Add(new CreateTenantUserRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new AssignRolesRequestExample());
             settings.SchemaSettings.SchemaProcessors.Add(new AddNewStaffRequestExample());
         });

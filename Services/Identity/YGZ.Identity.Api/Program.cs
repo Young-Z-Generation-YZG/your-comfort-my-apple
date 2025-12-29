@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using YGZ.Identity.Api;
 using YGZ.Identity.Api.Extensions;
-using YGZ.Identity.Api.Middlewares;
 using YGZ.Identity.Application;
 using YGZ.Identity.Infrastructure;
 using YGZ.Identity.Infrastructure.Persistence.Extensions;
@@ -46,7 +45,6 @@ if (app.Environment.IsDevelopment())
 }
 
 // Middleware configurations
-app.UseMiddleware<RequestLogContextMiddleware>();
 app.UseSerilogRequestLogging();
 
 // Health checks

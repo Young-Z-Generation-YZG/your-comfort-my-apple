@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace YGZ.Identity.Api.Contracts.Auth.Keycloak;
+namespace YGZ.Identity.Api.Contracts.Keycloak;
 
 public sealed record AuthorizationCodeRequest
 {
