@@ -32,18 +32,32 @@ public class UpdateProfileHandler : ICommandHandler<UpdateProfileCommand, bool>
     public async Task<Result<bool>> Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
         var userId = _userHttpContext.GetUserId();
-
         var transaction = await _dbContext.BeginTransactionAsync(cancellationToken);
 
         try
         {
-            var user = await _userDbSet.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken) ?? throw new Exception("User not found");
+            var user = await _userDbSet.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+            if (user == null)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    "FirstOrDefaultAsync", "User not found", new { userId });
+                
+                await transaction.RollbackAsync(cancellationToken);
+                throw new Exception("User not found");
+            }
 
             user.PhoneNumber = request.PhoneNumber;
-
             _userDbSet.Update(user);
 
-            var profile = await _profileDbSet.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken) ?? throw new Exception("Profile not found");
+            var profile = await _profileDbSet.FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
+            if (profile is null)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    "FirstOrDefaultAsync", "Profile not found", new { userId });
+                
+                await transaction.RollbackAsync(cancellationToken);
+                throw new Exception("Profile not found");
+            }
 
             profile.FirstName = request.FirstName;
             profile.LastName = request.LastName;
@@ -57,17 +71,28 @@ public class UpdateProfileHandler : ICommandHandler<UpdateProfileCommand, bool>
             if (result > 0)
             {
                 await transaction.CommitAsync(cancellationToken);
+                
+                _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Successfully updated profile", new { userId });
+                
                 return true;
             }
 
             await transaction.RollbackAsync(cancellationToken);
+            
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_dbContext.SaveChangesAsync), "Failed to save changes", new { userId });
+            
             return false;
-
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-
+            
+            var parameters = new { userId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

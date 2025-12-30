@@ -78,7 +78,8 @@ public class UserRegistrationCompensator : IUserRegistrationCompensator
         // Step 5: Email sent - No rollback needed (idempotent)
         if (_state.EmailSent)
         {
-            _logger.LogInformation("Email was sent, but this is idempotent - no rollback needed");
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(CompensateAsync), "Email was sent, but this is idempotent - no rollback needed", new { kcUserId, dbUserId });
         }
 
         // Step 4: OTP cached - Remove from cache
@@ -87,11 +88,13 @@ public class UserRegistrationCompensator : IUserRegistrationCompensator
             try
             {
                 // Note: We'd need email to remove OTP, but this is best-effort cleanup
-                _logger.LogInformation("OTP was cached, but cache will expire automatically");
+                _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(CompensateAsync), "OTP was cached, but cache will expire automatically", new { dbUserId });
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failed to remove OTP from cache during compensation");
+                _logger.LogWarning(ex, "::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(CompensateAsync), "Failed to remove OTP from cache during compensation", new { dbUserId });
                 compensationErrors.Add($"OTP cache cleanup: {ex.Message}");
             }
         }
@@ -106,17 +109,20 @@ public class UserRegistrationCompensator : IUserRegistrationCompensator
                 var deleteResult = await _identityService.DeleteUserAsync(dbUserId);
                 if (deleteResult.IsFailure)
                 {
-                    _logger.LogWarning("Failed to delete database user during compensation: {UserId}", dbUserId);
+                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(_identityService.DeleteUserAsync), "Failed to delete database user during compensation", new { dbUserId, Error = deleteResult.Error });
                     compensationErrors.Add($"Database user deletion: {deleteResult.Error.Message}");
                 }
                 else
                 {
-                    _logger.LogInformation("Successfully compensated database user: {UserId}", dbUserId);
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(CompensateAsync), "Successfully compensated database user", new { dbUserId });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception while deleting database user during compensation: {UserId}", dbUserId);
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.DeleteUserAsync), ex.Message, new { dbUserId });
                 compensationErrors.Add($"Database user deletion exception: {ex.Message}");
             }
         }
@@ -129,17 +135,20 @@ public class UserRegistrationCompensator : IUserRegistrationCompensator
                 var deleteResult = await _keycloakService.DeleteKeycloakUserAsync(kcUserId);
                 if (deleteResult.IsFailure)
                 {
-                    _logger.LogWarning("Failed to delete Keycloak user during compensation: {UserId}", kcUserId);
+                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(_keycloakService.DeleteKeycloakUserAsync), "Failed to delete Keycloak user during compensation", new { kcUserId, Error = deleteResult.Error });
                     compensationErrors.Add($"Keycloak user deletion: {deleteResult.Error.Message}");
                 }
                 else
                 {
-                    _logger.LogInformation("Successfully compensated Keycloak user: {UserId}", kcUserId);
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(CompensateAsync), "Successfully compensated Keycloak user", new { kcUserId });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception while deleting Keycloak user during compensation: {UserId}", kcUserId);
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.DeleteKeycloakUserAsync), ex.Message, new { kcUserId });
                 compensationErrors.Add($"Keycloak user deletion exception: {ex.Message}");
             }
         }
@@ -147,18 +156,16 @@ public class UserRegistrationCompensator : IUserRegistrationCompensator
         // Log compensation summary
         if (compensationErrors.Any())
         {
-            _logger.LogWarning(
-                "Compensation completed with {ErrorCount} errors. Errors: {Errors}",
-                compensationErrors.Count,
-                string.Join("; ", compensationErrors));
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(CompensateAsync), "Compensation completed with errors", new { ErrorCount = compensationErrors.Count, Errors = compensationErrors });
             
             // Still return success as we attempted compensation
             // The errors are logged for manual intervention if needed
             return true;
         }
 
-        _logger.LogInformation("Compensation completed successfully for Keycloak: {KcUserId}, Database: {DbUserId}",
-            kcUserId ?? "none", dbUserId ?? "none");
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(CompensateAsync), "Compensation completed successfully", new { kcUserId = kcUserId ?? "none", dbUserId = dbUserId ?? "none" });
 
         return true;
     }

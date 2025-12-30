@@ -25,6 +25,9 @@ public class GetUserRolesHandler : IQueryHandler<GetUserRolesQuery, List<string>
         {
             if (!Guid.TryParse(request.UserId, out _))
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Guid.TryParse), "Invalid user ID format", new { request.UserId });
+
                 return Errors.User.DoesNotExist;
             }
 
@@ -35,15 +38,25 @@ public class GetUserRolesHandler : IQueryHandler<GetUserRolesQuery, List<string>
 
             if (user is null)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    "FirstOrDefaultAsync", "User not found", new { request.UserId });
+
                 return Errors.User.DoesNotExist;
             }
 
             var roles = await _userManager.GetRolesAsync(user);
+            
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user roles", new { request.UserId, roleCount = roles.Count });
+
             return roles.ToList();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting roles for user {UserId}", request.UserId);
+            var parameters = new { userId = request.UserId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

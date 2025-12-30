@@ -26,22 +26,40 @@ public class GetMeHandler : IQueryHandler<GetMeQuery, GetAccountResponse>
 
     public async Task<Result<GetAccountResponse>> Handle(GetMeQuery request, CancellationToken cancellationToken)
     {
-        var userId = _userHttpContext.GetUserId();
-
-        var expressions = new Expression<Func<User, object>>[]
+        try
         {
-            x => x.Profile,
-            x => x.ShippingAddresses.Where(sa => sa.IsDefault == true),
-        };
+            var userId = _userHttpContext.GetUserId();
 
-        var user = await _repository.GetByIdAsync(userId, expressions: expressions, cancellationToken: cancellationToken);
+            var expressions = new Expression<Func<User, object>>[]
+            {
+                x => x.Profile,
+                x => x.ShippingAddresses.Where(sa => sa.IsDefault == true),
+            };
 
-        if (user.IsFailure)
-        {
-            return user.Error;
+            var user = await _repository.GetByIdAsync(userId, expressions: expressions, cancellationToken: cancellationToken);
+
+            if (user.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_repository.GetByIdAsync), "User not found", new { userId, Error = user.Error });
+
+                return user.Error;
+            }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user profile", new { userId });
+
+            return user.Response!.ToAccountResponse();
         }
-
-        return user.Response!.ToAccountResponse();
+        catch (Exception ex)
+        {
+            var userId = _userHttpContext.GetUserId();
+            var parameters = new { userId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
+        }
     }
 
 }

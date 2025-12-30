@@ -11,10 +11,10 @@ namespace YGZ.Identity.Application.Users.Commands.DeleteAddress;
 
 public class DeleteAddressHandler : ICommandHandler<DeleteAddressCommand, bool>
 {
-    private readonly ILogger<GetMeHandler> _logger;
+    private readonly ILogger<DeleteAddressHandler> _logger;
     private readonly IGenericRepository<ShippingAddress, ShippingAddressId> _addressRepository;
 
-    public DeleteAddressHandler(ILogger<GetMeHandler> logger,
+    public DeleteAddressHandler(ILogger<DeleteAddressHandler> logger,
                                 IGenericRepository<ShippingAddress, ShippingAddressId> addressRepository)
     {
         _logger = logger;
@@ -23,22 +23,42 @@ public class DeleteAddressHandler : ICommandHandler<DeleteAddressCommand, bool>
 
     public async Task<Result<bool>> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
-        var addressId = ShippingAddressId.Of(request.AddressId);
-
-        var result = await _addressRepository.GetByIdAsync(addressId, cancellationToken: cancellationToken);
-
-        if (result.IsFailure)
+        try
         {
-            return result.Error;
+            var addressId = ShippingAddressId.Of(request.AddressId);
+
+            var result = await _addressRepository.GetByIdAsync(addressId, cancellationToken: cancellationToken);
+
+            if (result.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_addressRepository.GetByIdAsync), "Address not found", new { request.AddressId, Error = result.Error });
+
+                return result.Error;
+            }
+
+            var removeResult = await _addressRepository.RemoveAsync(result.Response!, cancellationToken);
+
+            if (removeResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_addressRepository.RemoveAsync), "Failed to delete address", new { request.AddressId, Error = removeResult.Error });
+
+                return removeResult.Error;
+            }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully deleted address", new { request.AddressId });
+
+            return removeResult.Response;
         }
-
-        var removeResult = await _addressRepository.RemoveAsync(result.Response!, cancellationToken);
-
-        if (removeResult.IsFailure)
+        catch (Exception ex)
         {
-            return removeResult.Error;
+            var parameters = new { addressId = request.AddressId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
         }
-
-        return removeResult.Response;
     }
 }

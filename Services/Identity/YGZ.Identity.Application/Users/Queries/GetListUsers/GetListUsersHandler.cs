@@ -83,10 +83,17 @@ public class GetListUsersHandler : IQueryHandler<GetListUsersQuery, List<UserRes
 
             var userResponses = users.Select(user => user.ToResponse()).ToList();
 
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved list of users", new { userCount = userResponses.Count, isAdminSuper });
+
             return userResponses;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { roles = request.Roles };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

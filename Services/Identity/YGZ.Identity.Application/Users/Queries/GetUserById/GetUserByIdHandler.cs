@@ -36,19 +36,31 @@ public class GetUserByIdHandler : IQueryHandler<GetUserByIdQuery, UserResponse>
 
             if (user is null)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    "FirstOrDefaultAsync", "User not found", new { request.UserId });
+
                 return Errors.User.DoesNotExist;
             }
 
             if (user.Profile is null)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Profile not found for user", new { request.UserId });
+
                 return Errors.Profile.DoesNotExist;
             }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user by ID", new { request.UserId });
 
             return user.ToResponse();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting user by id: {UserId}", request.UserId);
+            var parameters = new { userId = request.UserId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+
             throw;
         }
     }

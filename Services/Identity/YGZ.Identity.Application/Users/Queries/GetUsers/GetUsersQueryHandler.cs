@@ -79,10 +79,17 @@ public class GetUsersQueryHandler : IQueryHandler<GetUsersQuery, PaginationRespo
 
             var response = MapToResponse(userResponses, totalRecords, totalPages, request);
 
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved users", new { totalRecords, totalPages, currentPage, pageSize });
+
             return response;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { page = request.Page, limit = request.Limit };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

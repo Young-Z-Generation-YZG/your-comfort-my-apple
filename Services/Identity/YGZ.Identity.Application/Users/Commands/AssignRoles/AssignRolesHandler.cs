@@ -32,20 +32,26 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
         {
             if (request.Roles == null || !request.Roles.Any())
             {
-                _logger.LogWarning("No roles provided for user {UserId}", request.UserId);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "No roles provided for user", new { request.UserId });
+                
                 return Errors.Keycloak.RoleNotFound;
             }
 
             if (!Guid.TryParse(request.UserId, out _))
             {
-                _logger.LogWarning("Invalid user ID format: {UserId}", request.UserId);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(Guid.TryParse), "Invalid user ID format", new { request.UserId });
+                
                 return Errors.User.DoesNotExist;
             }
 
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
             {
-                _logger.LogWarning("User not found: {UserId}", request.UserId);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.FindByIdAsync), "User not found", new { request.UserId });
+                
                 return Errors.User.DoesNotExist;
             }
 
@@ -56,8 +62,9 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
                 var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
                 if (!removeResult.Succeeded)
                 {
-                    _logger.LogError("Failed to remove existing roles from user {UserId}. Errors: {Errors}",
-                        request.UserId, string.Join(", ", removeResult.Errors.Select(e => e.Description)));
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_userManager.RemoveFromRolesAsync), "Failed to remove existing roles from user", new { request.UserId, Errors = removeResult.Errors });
+                    
                     return Errors.Keycloak.CannotAssignRole;
                 }
             }
@@ -65,15 +72,16 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
             var addRolesResult = await _userManager.AddToRolesAsync(user, request.Roles);
             if (!addRolesResult.Succeeded)
             {
-                _logger.LogError("Failed to assign roles via UserManager for user {UserId}. Errors: {Errors}",
-                    request.UserId, string.Join(", ", addRolesResult.Errors.Select(e => e.Description)));
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.AddToRolesAsync), "Failed to assign roles via UserManager", new { request.UserId, Errors = addRolesResult.Errors });
 
                 if (currentRoles.Any())
                 {
                     var restoreResult = await _userManager.AddToRolesAsync(user, currentRoles);
                     if (!restoreResult.Succeeded)
                     {
-                        _logger.LogError("Failed to restore previous roles for user {UserId} after failed assignment", request.UserId);
+                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(_userManager.AddToRolesAsync), "Failed to restore previous roles after failed assignment", new { request.UserId });
                     }
                 }
 
@@ -83,18 +91,22 @@ public class AssignRolesHandler : ICommandHandler<AssignRolesCommand, bool>
             var keycloakResult = await _keycloakService.AssignRolesToUserAsync(request.UserId, request.Roles);
             if (keycloakResult.IsFailure)
             {
-                _logger.LogWarning("Failed to assign roles via Keycloak for user {UserId}: {Error}. User has roles in database but not in Keycloak. Manual intervention may be required.",
-                    request.UserId, keycloakResult.Error);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.AssignRolesToUserAsync), "Failed to assign roles via Keycloak. User has roles in database but not in Keycloak. Manual intervention may be required",
+                    new { request.UserId, Error = keycloakResult.Error });
             }
 
-            _logger.LogInformation("Successfully assigned roles {Roles} to user {UserId}",
-                string.Join(", ", request.Roles), request.UserId);
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully assigned roles to user", new { request.UserId, request.Roles });
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while assigning roles to user {UserId}", request.UserId);
+            var parameters = new { userId = request.UserId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

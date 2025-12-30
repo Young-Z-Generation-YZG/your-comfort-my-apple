@@ -107,10 +107,17 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
 
             var response = MapToResponse(userResponses, totalRecords, totalPages, request);
 
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved users by admin", new { totalRecords, totalPages, currentPage, pageSize, isAdminSuper });
+
             return response;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { page = request.Page, limit = request.Limit, tenantId = request.TenantId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

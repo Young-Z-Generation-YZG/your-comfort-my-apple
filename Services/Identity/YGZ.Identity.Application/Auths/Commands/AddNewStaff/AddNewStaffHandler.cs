@@ -18,13 +18,15 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IUserRegistrationCompensator _compensator;
 
     public AddNewStaffHandler(ILogger<AddNewStaffHandler> logger,
                               IIdentityService identityService,
                               IKeycloakService keycloakService,
                               UserManager<User> userManager,
                               RoleManager<IdentityRole> roleManager,
-                              IPasswordHasher<User> passwordHasher)
+                              IPasswordHasher<User> passwordHasher,
+                              IUserRegistrationCompensator compensator)
     {
         _logger = logger;
         _identityService = identityService;
@@ -32,6 +34,7 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
         _userManager = userManager;
         _roleManager = roleManager;
         _passwordHasher = passwordHasher;
+        _compensator = compensator;
     }
 
     public async Task<Result<bool>> Handle(AddNewStaffCommand request, CancellationToken cancellationToken)
@@ -41,7 +44,9 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
             var existingUserResult = await _identityService.FindUserAsync(request.Email, ignoreBaseFilter: true);
             if (existingUserResult.IsSuccess && existingUserResult.Response is not null)
             {
-                _logger.LogWarning("User already exists with email: {Email}", request.Email);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.FindUserAsync), "User already exists", new { request.Email });
+                
                 return Errors.User.AlreadyExists;
             }
 
@@ -49,7 +54,9 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
             var roleExists = await _roleManager.RoleExistsAsync(request.RoleName);
             if (!roleExists)
             {
-                _logger.LogWarning("Role does not exist: {RoleName}", request.RoleName);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_roleManager.RoleExistsAsync), "Role does not exist", new { request.RoleName });
+                
                 return Errors.Keycloak.RoleNotFound;
             }
 
@@ -71,15 +78,18 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
                 )
                 .Build();
 
-            // Create user in Keycloak
-            string keycloakUserId = string.Empty;
+            // Step 1: Create user in Keycloak
+            string keycloakUserId;
             try
             {
                 keycloakUserId = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+                _compensator.TrackStep(RegistrationStep.KeycloakUserCreated, keycloakUserId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to create user in Keycloak: {Email}", request.Email);
+                _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.CreateKeycloakUserAsync), ex.Message, new { request.Email });
+                
                 return Errors.User.CannotBeCreated;
             }
 
@@ -112,80 +122,70 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
             // Hash password
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);
 
-            // Create user in database
+            // Step 2: Create user in database
             try
             {
                 var createResult = await _userManager.CreateAsync(newUser);
                 if (!createResult.Succeeded)
                 {
-                    _logger.LogError("Failed to create user in database: {Email}, Errors: {Errors}",
-                        request.Email, string.Join(", ", createResult.Errors.Select(e => e.Description)));
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_userManager.CreateAsync), "Failed to create user in database", new { request.Email, Errors = createResult.Errors });
 
-                    // Rollback Keycloak user
-                    try
-                    {
-                        await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Failed to rollback Keycloak user during database creation failure: {UserId}", keycloakUserId);
-                    }
+                    await _compensator.CompensateAsync(keycloakUserId, null, cancellationToken);
                     return Errors.User.CannotBeCreated;
                 }
+                
+                _compensator.TrackStep(RegistrationStep.DatabaseUserCreated, newUser.Id.ToString());
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to create user in database: {Email}", request.Email);
+                _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.CreateAsync), ex.Message, new { request.Email });
+                
+                await _compensator.CompensateAsync(keycloakUserId, null, cancellationToken);
                 return Errors.User.CannotBeCreated;
             }
 
-            // Assign the requested role to user in database first
+            // Step 3: Assign the requested role to user in database
             var roleResult = await _userManager.AddToRoleAsync(newUser, request.RoleName);
             if (!roleResult.Succeeded)
             {
-                _logger.LogError("Failed to assign role {RoleName} to user: {Email}, Errors: {Errors}",
-                    request.RoleName, request.Email, string.Join(", ", roleResult.Errors.Select(e => e.Description)));
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userManager.AddToRoleAsync), "Failed to assign role to user", new { request.RoleName, request.Email, Errors = roleResult.Errors });
 
-                // Rollback database user
-                try
-                {
-                    await _userManager.DeleteAsync(newUser);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to rollback database user during role assignment failure: {Email}", request.Email);
-                }
-
-                // Rollback Keycloak user
-                try
-                {
-                    await _keycloakService.DeleteKeycloakUserAsync(keycloakUserId);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to rollback Keycloak user during role assignment failure: {UserId}", keycloakUserId);
-                }
+                await _compensator.CompensateAsync(keycloakUserId, newUser.Id.ToString(), cancellationToken);
                 return Errors.Keycloak.CannotAssignRole;
             }
+            
+            _compensator.TrackStep(RegistrationStep.RoleAssigned, newUser.Id);
 
-            // Assign role in Keycloak (after database assignment succeeds)
+            // Step 4: Assign role in Keycloak (after database assignment succeeds)
             var keycloakRoleResult = await _keycloakService.AssignRolesToUserAsync(keycloakUserId, new List<string> { request.RoleName });
             if (keycloakRoleResult.IsFailure)
             {
-                _logger.LogWarning("Failed to assign role in Keycloak, but user was created in database. UserId: {UserId}, Role: {RoleName}. Manual intervention may be required.",
-                    keycloakUserId, request.RoleName);
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.AssignRolesToUserAsync), "Failed to assign role in Keycloak, but user was created in database. Manual intervention may be required",
+                    new { keycloakUserId, request.RoleName });
                 // User exists in database with role, but Keycloak assignment failed
                 // This is acceptable as the user can still function, but Keycloak sync should be monitored
+                // Note: We don't rollback here as the user is functional without Keycloak role assignment
             }
 
-            _logger.LogInformation("Successfully created new staff user: {Email} with role: {RoleName}",
-                request.Email, request.RoleName);
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully created new staff user", new { request.Email, request.RoleName });
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error while creating new staff user: {Email}", request.Email);
+            var parameters = new { email = request.Email };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            // Attempt compensation based on current state
+            var state = _compensator.GetState();
+            await _compensator.CompensateAsync(state.KeycloakUserId, state.DatabaseUserId, cancellationToken);
+            
             throw;
         }
     }

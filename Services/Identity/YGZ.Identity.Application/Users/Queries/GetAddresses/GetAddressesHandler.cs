@@ -27,25 +27,41 @@ public class GetAddressesHandler : IQueryHandler<GetAddressesQuery, List<Address
 
     public async Task<Result<List<AddressResponse>>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        var userId = _userHttpContext.GetUserId();
-
-        var expressions = new Expression<Func<User, object>>[]
+        try
         {
+            var userId = _userHttpContext.GetUserId();
+
+            var expressions = new Expression<Func<User, object>>[]
+            {
                 x => x.ShippingAddresses
-        };
+            };
 
-        var userResult = await _userRepository.GetByIdAsync(userId, expressions, cancellationToken);
+            var userResult = await _userRepository.GetByIdAsync(userId, expressions, cancellationToken);
 
-        if (userResult.IsFailure)
-        {
-            return userResult.Error;
+            if (userResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_userRepository.GetByIdAsync), "User not found", new { userId, Error = userResult.Error });
+
+                return userResult.Error;
+            }
+
+            var user = userResult.Response!;
+            var addresses = user.ShippingAddresses.ToList();
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user addresses", new { userId, addressCount = addresses.Count });
+
+            return addresses.Select(x => x.ToResponse()).ToList();
         }
-
-        var user = userResult.Response!;
-
-        var addresses = user.ShippingAddresses.ToList();
-
-        return addresses.Select(x => x.ToResponse()).ToList();
-
+        catch (Exception ex)
+        {
+            var userId = _userHttpContext.GetUserId();
+            var parameters = new { userId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
+        }
     }
 }

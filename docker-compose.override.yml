@@ -112,6 +112,7 @@ services:
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
+            - mongo_setup_data:/data
         command: >
             bash -c "
             chmod +x /scripts/rs_config.sh &&
@@ -369,13 +370,16 @@ services:
             interval: 5s
             timeout: 20s
             retries: 5
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
         networks:
             - app-network
 
     ygz.logging.seq:
         container_name: ygz.logging.seq
         volumes:
-            - ./containers/seq:/data
+            # - ./containers/seq:/data
+            - logging_seq_data:/data
         environment:
             - ACCEPT_EULA=Y
         ports:
@@ -390,6 +394,8 @@ services:
             - "4317:4317"
             - "4318:4318"
             - "16686:16686"
+        volumes:
+            - tracking_jaeger_data:/badger
         networks:
             - app-network
 
@@ -437,6 +443,10 @@ volumes:
     mongodb_replica_primary:
     mongodb_replica_secondary:
     mongodb_replica_arbiter:
+    mongo_setup_data:
+    rabbitmq_data:
+    tracking_jaeger_data:
+    logging_seq_data:
 
 networks:
     app-network:

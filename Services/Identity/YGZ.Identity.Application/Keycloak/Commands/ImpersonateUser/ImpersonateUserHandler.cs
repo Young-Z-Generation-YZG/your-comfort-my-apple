@@ -20,13 +20,30 @@ public class ImpersonateUserHandler : ICommandHandler<ImpersonateUserCommand, To
 
     public async Task<Result<TokenExchangeResponse>> Handle(ImpersonateUserCommand request, CancellationToken cancellationToken)
     {
-        var result = await _keycloakService.ImpersonateUserAsync(request.UserId);
-
-        if (result.IsFailure)
+        try
         {
-            return result.Error;
-        }
+            var result = await _keycloakService.ImpersonateUserAsync(request.UserId);
 
-        return result.Response!;
+            if (result.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.ImpersonateUserAsync), "Failed to impersonate user", new { request.UserId, Error = result.Error });
+
+                return result.Error;
+            }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully impersonated user", new { request.UserId });
+
+            return result.Response!;
+        }
+        catch (Exception ex)
+        {
+            var parameters = new { userId = request.UserId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
+        }
     }
 }

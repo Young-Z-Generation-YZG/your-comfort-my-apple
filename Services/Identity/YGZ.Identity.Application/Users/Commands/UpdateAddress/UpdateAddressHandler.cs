@@ -27,40 +27,61 @@ public class UpdateAddressHandler : ICommandHandler<UpdateAddressCommand, bool>
 
     public async Task<Result<bool>> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
-        var userId = _userHttpContext.GetUserId();
-
-        var addressId = ShippingAddressId.Of(request.AddressId);
-
-        var addressResult = await _repository.GetByIdAsync(addressId, cancellationToken: cancellationToken);
-
-        if (addressResult.IsFailure)
+        try
         {
-            return addressResult.Error;
+            var userId = _userHttpContext.GetUserId();
+
+            var addressId = ShippingAddressId.Of(request.AddressId);
+
+            var addressResult = await _repository.GetByIdAsync(addressId, cancellationToken: cancellationToken);
+
+            if (addressResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_repository.GetByIdAsync), "Address not found", new { request.AddressId, userId, Error = addressResult.Error });
+
+                return addressResult.Error;
+            }
+
+            var address = addressResult.Response!;
+
+            address.Update(
+               label: request.Label,
+               contactName: request.ContactName,
+               contactPhoneNumber: request.ContactPhoneNumber,
+               addressDetail: new Address
+               {
+                   AddressLine = request.AddressLine,
+                   AddressDistrict = request.District,
+                   AddressProvince = request.Province,
+                   AddressCountry = request.Country
+               },
+               isDefault: false
+            );
+
+            var updateResult = await _repository.UpdateAsync(address, cancellationToken);
+
+            if (updateResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_repository.UpdateAsync), "Failed to update address", new { request.AddressId, userId, Error = updateResult.Error });
+
+                return updateResult.Error;
+            }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully updated address", new { request.AddressId, userId });
+
+            return updateResult.Response;
         }
-
-        var address = addressResult.Response!;
-
-        address.Update(
-           label: request.Label,
-           contactName: request.ContactName,
-           contactPhoneNumber: request.ContactPhoneNumber,
-           addressDetail: new Address
-           {
-               AddressLine = request.AddressLine,
-               AddressDistrict = request.District,
-               AddressProvince = request.Province,
-               AddressCountry = request.Country
-           },
-           isDefault: false
-        );
-
-        var updateResult = await _repository.UpdateAsync(address, cancellationToken);
-
-        if (updateResult.IsFailure)
+        catch (Exception ex)
         {
-            return updateResult.Error;
+            var userId = _userHttpContext.GetUserId();
+            var parameters = new { addressId = request.AddressId, userId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
         }
-
-        return updateResult.Response;
     }
 }

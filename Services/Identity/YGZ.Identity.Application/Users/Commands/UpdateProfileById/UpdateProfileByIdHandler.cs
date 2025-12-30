@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
-using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Core.Errors;
 using YGZ.Identity.Domain.Users;
@@ -16,7 +15,7 @@ public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand
     private readonly IIdentityDbContext _dbContext;
     private readonly DbSet<User> _userDbSet;
     private readonly DbSet<Profile> _profileDbSet;
-    
+
     public UpdateProfileByIdHandler(
         ILogger<UpdateProfileByIdHandler> logger,
         IIdentityDbContext dbContext)
@@ -42,12 +41,20 @@ public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand
             if (user is null)
             {
                 await transaction.RollbackAsync(cancellationToken);
+
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    "FirstOrDefaultAsync", "User not found", new { request.UserId });
+
                 return Errors.User.DoesNotExist;
             }
 
             if (user.Profile is null)
             {
                 await transaction.RollbackAsync(cancellationToken);
+
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Profile not found for user", new { request.UserId });
+
                 return Errors.Profile.DoesNotExist;
             }
 
@@ -67,16 +74,28 @@ public class UpdateProfileByIdHandler : ICommandHandler<UpdateProfileByIdCommand
             if (result > 0)
             {
                 await transaction.CommitAsync(cancellationToken);
+
+                _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Successfully updated profile by user ID", new { request.UserId });
+
                 return true;
             }
 
             await transaction.RollbackAsync(cancellationToken);
+
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_dbContext.SaveChangesAsync), "Failed to save changes", new { request.UserId });
+
             return false;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-            _logger.LogError(ex, "Error updating profile by UserId: {UserId}", request.UserId);
+
+            var parameters = new { userId = request.UserId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+
             throw;
         }
     }

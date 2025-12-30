@@ -25,6 +25,9 @@ public class LogoutHandler : ICommandHandler<LogoutCommand, bool>
             
             if (validationResult.IsFailure && validationResult.Error == Errors.Keycloak.InvalidRefreshToken)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.ValidateRefreshTokenAsync), "Invalid refresh token", validationResult.Error);
+
                 return Errors.Keycloak.InvalidRefreshToken;
             }
 
@@ -32,14 +35,23 @@ public class LogoutHandler : ICommandHandler<LogoutCommand, bool>
 
             if (logoutResult.IsFailure && logoutResult.Error == Errors.Keycloak.LogoutFailed)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.LogoutAsync), "Failed to logout", logoutResult.Error);
+
                 return Errors.Keycloak.LogoutFailed;
             }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully logged out user", new { hasRefreshToken = !string.IsNullOrEmpty(request.RefreshToken) });
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Exception occurred while logging out user: {ErrorMessage}", ex.Message);
+            var parameters = new { hasRefreshToken = !string.IsNullOrEmpty(request.RefreshToken) };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

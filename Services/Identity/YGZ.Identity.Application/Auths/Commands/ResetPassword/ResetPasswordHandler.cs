@@ -20,8 +20,9 @@ public class ResetPasswordHandler : ICommandHandler<ResetPasswordCommand, ResetP
     private readonly IIdentityService _identityService;
     private readonly IEmailService _emailService;
     private readonly string _webClientUrl;
-    private readonly ILogger<RegisterHandler> _logger;
-    public ResetPasswordHandler(IIdentityService identityService, IEmailService emailService, ILogger<RegisterHandler> logger, IConfiguration configuration)
+    private readonly ILogger<ResetPasswordHandler> _logger;
+    
+    public ResetPasswordHandler(IIdentityService identityService, IEmailService emailService, ILogger<ResetPasswordHandler> logger, IConfiguration configuration)
     {
         _identityService = identityService;
         _emailService = emailService;
@@ -31,55 +32,76 @@ public class ResetPasswordHandler : ICommandHandler<ResetPasswordCommand, ResetP
 
     public async Task<Result<ResetPasswordVerificationResponse>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var userAsync = await _identityService.FindUserAsync(request.Email).ConfigureAwait(false);
-
-        if (userAsync.IsFailure)
-        {
-            return userAsync.Error;
-        }
-
-        var tokenResult = await _identityService.GenerateResetPasswordTokenAsync(request.Email).ConfigureAwait(false);
-
-        if (tokenResult.IsFailure)
-        {
-            return tokenResult.Error;
-        }
-
-        var command = new EmailCommand(
-                    ReceiverEmail: request.Email,
-                    Subject: "YB ZONE RESET PASSWORD",
-                    ViewName: "ResetPassword",
-                    Model: new ResetPasswordModel
-                    {
-                        FullName = $"{request.Email}",
-                        ResetPasswordLink = $"{_webClientUrl}/forgot-password/reset?_email={request.Email}&_token={tokenResult.Response}"
-                    },
-                    Attachments: null
-        );
-
         try
         {
-            await _emailService.SendEmailAsync(command);
+            var userAsync = await _identityService.FindUserAsync(request.Email).ConfigureAwait(false);
+
+            if (userAsync.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.FindUserAsync), "User not found", new { request.Email });
+
+                return userAsync.Error;
+            }
+
+            var tokenResult = await _identityService.GenerateResetPasswordTokenAsync(request.Email).ConfigureAwait(false);
+
+            if (tokenResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.GenerateResetPasswordTokenAsync), "Failed to generate reset password token", tokenResult.Error);
+
+                return tokenResult.Error;
+            }
+
+            var command = new EmailCommand(
+                        ReceiverEmail: request.Email,
+                        Subject: "YB ZONE RESET PASSWORD",
+                        ViewName: "ResetPassword",
+                        Model: new ResetPasswordModel
+                        {
+                            FullName = $"{request.Email}",
+                            ResetPasswordLink = $"{_webClientUrl}/forgot-password/reset?_email={request.Email}&_token={tokenResult.Response}"
+                        },
+                        Attachments: null
+            );
+
+            try
+            {
+                await _emailService.SendEmailAsync(command);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_emailService.SendEmailAsync), ex.Message, new { request.Email });
+
+                return Errors.Email.FailureToSendEmail;
+            }
+
+            Dictionary<string, string> Params = new Dictionary<string, string>
+            {
+                { "_email", request.Email },
+                { "_token", tokenResult.Response! }
+            };
+
+            var response = new ResetPasswordVerificationResponse
+            {
+                Params = Params,
+                VerificationType = VerificationType.RESET_PASSWORD_VERIFICATION.Name,
+            };
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully sent reset password email", new { request.Email });
+
+            return response;
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to send reset password email to {Email}. Error: {Error}", request.Email, ex.Message);
-
-            return Errors.Email.FailureToSendEmail;
+            var parameters = new { email = request.Email };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
         }
-
-        Dictionary<string, string> Params = new Dictionary<string, string>
-        {
-            { "_email", request.Email },
-            { "_token", tokenResult.Response! }
-        };
-
-        var response = new ResetPasswordVerificationResponse
-        {
-            Params = Params,
-            VerificationType = VerificationType.RESET_PASSWORD_VERIFICATION.Name,
-        };
-
-        return response;
     }
 }

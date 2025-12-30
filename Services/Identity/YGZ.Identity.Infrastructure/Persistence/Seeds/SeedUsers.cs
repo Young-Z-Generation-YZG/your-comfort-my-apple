@@ -7,6 +7,7 @@ public static class SeedUsers
 {
     public static Dictionary<string, string> TenantIds => new Dictionary<string, string>
     {
+        { "YBZONE", "664355f845e56534956be32b" },
         { "HCM_TD_KVC_1060", "690e034dff79797b05b3bc89" },
         { "HCM_Q1_CMT8_92", "690e034dff79797b05b3bc90" },
         { "HCM_Q9_LVV_123", "690e034dff79797b05b3bc91" },
@@ -14,6 +15,7 @@ public static class SeedUsers
 
     public static Dictionary<string, string> BranchIds => new Dictionary<string, string>
     {
+        { "YBZONE", "664357a235e84033bbd0e6b6" },
         { "HCM_TD_KVC_1060", "690e034dff79797b05b3bc88" },
         { "HCM_Q1_CMT8_92", "690e034dff79797b05b3bc12" },
         { "HCM_Q9_LVV_123", "690e034dff79797b05b3bc13" },
@@ -24,7 +26,49 @@ public static class SeedUsers
         { "password", "AQAAAAIAAYagAAAAEKktVj/8xY/X/VzgaQKWFICiavT1Zh894avTa8W1TDnD5xm9wjAohg3UuLPdL7QEWQ==" },
     };
 
-    public static IEnumerable<User> UsersTenantHCM_TD_KVC_1060
+        public static IEnumerable<User> UsersTenant_YBZONE
+    {
+        get
+        {
+            var adminSuper = User.Create(
+               guid: new Guid("be0cd669-237a-484d-b3cf-793e0ad1b0ea"),
+               email: "adminsuper@ybzone.com",
+               firstName: "ADMIN SUPER",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2003-08-16").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333284890",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "Vietnam",
+               emailConfirmed: true,
+               tenantId: TenantIds["YBZONE"],
+               branchId: BranchIds["YBZONE"]);
+
+            var admin1 = User.Create(
+               guid: new Guid("0dbb05e1-97be-4a38-9bf0-478005b48b62"),
+               email: "admin1@ybzone.com",
+               firstName: "ADMIN WAREHOUSE",
+               lastName: "USER",
+               birthDay: DateTime.Parse("2004-09-17").ToUniversalTime().AddHours(7),
+               phoneNumber: "0333394890",
+               passwordHash: PasswordHashes["password"],
+               image: null,
+               country: "Vietnam",
+               emailConfirmed: true,
+               tenantId: TenantIds["YBZONE"],
+               branchId: BranchIds["YBZONE"]);
+
+
+
+            return new List<User>
+            {
+                adminSuper,
+                admin1,
+            };
+        }
+    }
+
+    public static IEnumerable<User> UsersTenant_HCM_TD_KVC_1060
     {
         get
         {
@@ -37,7 +81,7 @@ public static class SeedUsers
                phoneNumber: "0333394890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -51,7 +95,7 @@ public static class SeedUsers
                phoneNumber: "0333284890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -65,7 +109,7 @@ public static class SeedUsers
                phoneNumber: "0333284891",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -79,7 +123,7 @@ public static class SeedUsers
                phoneNumber: "0333284892",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -93,7 +137,7 @@ public static class SeedUsers
                phoneNumber: "0333284893",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -107,7 +151,7 @@ public static class SeedUsers
                phoneNumber: "0333284894",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_TD_KVC_1060"],
                branchId: BranchIds["HCM_TD_KVC_1060"]);
@@ -124,7 +168,7 @@ public static class SeedUsers
         }
     }
 
-    public static IEnumerable<User> UsersTenantHCM_Q1_CMT8_92
+    public static IEnumerable<User> UsersTenant_HCM_Q1_CMT8_92
     {
         get
         {
@@ -137,7 +181,7 @@ public static class SeedUsers
                phoneNumber: "0333494890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -151,7 +195,7 @@ public static class SeedUsers
                phoneNumber: "0333384890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -165,7 +209,7 @@ public static class SeedUsers
                phoneNumber: "0333384891",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -179,7 +223,7 @@ public static class SeedUsers
                phoneNumber: "0333384892",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -193,7 +237,7 @@ public static class SeedUsers
                phoneNumber: "0333384893",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -207,7 +251,7 @@ public static class SeedUsers
                phoneNumber: "0333384894",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q1_CMT8_92"],
                branchId: BranchIds["HCM_Q1_CMT8_92"]);
@@ -224,7 +268,7 @@ public static class SeedUsers
         }
     }
 
-    public static IEnumerable<IdentityUserRole<string>> UserRolesHCM_TD_KVC_1060 => new List<IdentityUserRole<string>>
+    public static IEnumerable<IdentityUserRole<string>> UserRoles_HCM_TD_KVC_1060 => new List<IdentityUserRole<string>>
     {
         new IdentityUserRole<string>
         {
@@ -258,7 +302,7 @@ public static class SeedUsers
         }
     };
 
-    public static IEnumerable<IdentityUserRole<string>> UserRolesHCM_Q1_CMT8_92 => new List<IdentityUserRole<string>>
+    public static IEnumerable<IdentityUserRole<string>> UserRoles_HCM_Q1_CMT8_92 => new List<IdentityUserRole<string>>
     {
         new IdentityUserRole<string>
         {
@@ -292,7 +336,7 @@ public static class SeedUsers
         }
     };
 
-    public static IEnumerable<User> UsersTenantHCM_Q9_LVV_123
+    public static IEnumerable<User> UsersTenant_HCM_Q9_LVV_123
     {
         get
         {
@@ -305,7 +349,7 @@ public static class SeedUsers
                phoneNumber: "0333594890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -319,7 +363,7 @@ public static class SeedUsers
                phoneNumber: "0333484890",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -333,7 +377,7 @@ public static class SeedUsers
                phoneNumber: "0333484891",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -347,7 +391,7 @@ public static class SeedUsers
                phoneNumber: "0333484892",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -361,7 +405,7 @@ public static class SeedUsers
                phoneNumber: "0333484893",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -375,7 +419,7 @@ public static class SeedUsers
                phoneNumber: "0333484894",
                passwordHash: PasswordHashes["password"],
                image: null,
-               country: "VN",
+               country: "Vietnam",
                emailConfirmed: true,
                tenantId: TenantIds["HCM_Q9_LVV_123"],
                branchId: BranchIds["HCM_Q9_LVV_123"]);
@@ -392,7 +436,7 @@ public static class SeedUsers
         }
     }
 
-    public static IEnumerable<IdentityUserRole<string>> UserRolesHCM_Q9_LVV_123 => new List<IdentityUserRole<string>>
+    public static IEnumerable<IdentityUserRole<string>> UserRoles_HCM_Q9_LVV_123 => new List<IdentityUserRole<string>>
     {
         new IdentityUserRole<string>
         {

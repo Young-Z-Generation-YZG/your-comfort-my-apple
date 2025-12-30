@@ -28,40 +28,60 @@ public class GetIdentityHandler : IQueryHandler<GetIdentityQuery, GetIdentityRes
 
     public async Task<Result<GetIdentityResponse>> Handle(GetIdentityQuery request, CancellationToken cancellationToken)
     {
-        var userEmail = _userHttpContext.GetUserEmail();
-        var tenantId = _tenantHttpContext.GetTenantId();
-        var branchId = _tenantHttpContext.GetBranchId();
-
-
-        var userResult = await _identityService.FindUserAsync(userEmail, ignoreBaseFilter: true);
-
-        if (userResult.IsFailure)
+        try
         {
-            return userResult.Error;
+            var userEmail = _userHttpContext.GetUserEmail();
+            var tenantId = _tenantHttpContext.GetTenantId();
+            var branchId = _tenantHttpContext.GetBranchId();
+
+            var userResult = await _identityService.FindUserAsync(userEmail, ignoreBaseFilter: true);
+
+            if (userResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.FindUserAsync), "User not found", new { userEmail });
+
+                return userResult.Error;
+            }
+
+            var user = userResult.Response!;
+
+            var rolesResult = await _identityService.GetRolesAsync(user);
+
+            if (rolesResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.GetRolesAsync), "Failed to get user roles", rolesResult.Error);
+
+                return rolesResult.Error;
+            }
+
+            var response = new GetIdentityResponse
+            {
+                Id = user.Id,
+                TenantId = tenantId ?? user.TenantId,
+                BranchId = branchId ?? user.BranchId,
+                TenantSubDomain = "Not Available",
+                Username = user.UserName ?? string.Empty,
+                Email = user.Email!,
+                EmailConfirmed = user.EmailConfirmed,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
+                Roles = rolesResult.Response!
+            };
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user identity", new { userEmail, userId = user.Id });
+
+            return response;
         }
-
-        var user = userResult.Response!;
-
-        var rolesResult = await _identityService.GetRolesAsync(user);
-
-        if (rolesResult.IsFailure)
+        catch (Exception ex)
         {
-            return rolesResult.Error;
+            var userEmail = _userHttpContext.GetUserEmail();
+            var parameters = new { userEmail };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
         }
-
-        var response = new GetIdentityResponse
-        {
-            Id = user.Id,
-            TenantId = tenantId ?? user.TenantId,
-            BranchId = branchId ?? user.BranchId,
-            TenantSubDomain = "Not Available",
-            Username = user.UserName ?? string.Empty,
-            Email = user.Email!,
-            EmailConfirmed = user.EmailConfirmed,
-            PhoneNumber = user.PhoneNumber ?? string.Empty,
-            Roles = rolesResult.Response!
-        };
-
-        return response;
     }
 }

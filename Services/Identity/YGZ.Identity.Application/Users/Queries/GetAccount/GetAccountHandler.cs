@@ -26,20 +26,38 @@ public class GetAccountHandler : IQueryHandler<GetAccountQuery, UserResponse>
 
     public async Task<Result<UserResponse>> Handle(GetAccountQuery request, CancellationToken cancellationToken)
     {
-        var userId = _userHttpContext.GetUserId();
-
-        var includeExpressions = new Expression<Func<User, object>>[]
+        try
         {
+            var userId = _userHttpContext.GetUserId();
+
+            var includeExpressions = new Expression<Func<User, object>>[]
+            {
                 x => x.Profile
-        };
+            };
 
-        var userResult = await _repository.GetByIdAsync(userId, expressions: includeExpressions, cancellationToken: cancellationToken);
+            var userResult = await _repository.GetByIdAsync(userId, expressions: includeExpressions, cancellationToken: cancellationToken);
 
-        if (userResult.IsFailure)
-        {
-            return userResult.Error;
+            if (userResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_repository.GetByIdAsync), "User not found", new { userId, Error = userResult.Error });
+
+                return userResult.Error;
+            }
+
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user account", new { userId });
+
+            return userResult.Response!.ToResponse();
         }
-
-        return userResult.Response!.ToResponse();
+        catch (Exception ex)
+        {
+            var userId = _userHttpContext.GetUserId();
+            var parameters = new { userId };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
+            throw;
+        }
     }
 }

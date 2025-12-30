@@ -1,6 +1,6 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Identity.Application.Abstractions.Data;
 using YGZ.Identity.Domain.Users.Entities;
@@ -14,12 +14,14 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDom
     private readonly IIdentityDbContext _dbContext;
     private readonly DbSet<Profile> _profileDbSet;
     private readonly DbSet<ShippingAddress> _shippingAddressDbSet;
+    private readonly ILogger<UserCreatedDomainEventHandler> _logger;
 
-    public UserCreatedDomainEventHandler(IIdentityDbContext dbContext)
+    public UserCreatedDomainEventHandler(IIdentityDbContext dbContext, ILogger<UserCreatedDomainEventHandler> logger)
     {
         _dbContext = dbContext;
         _profileDbSet = dbContext.Profiles;
         _shippingAddressDbSet = dbContext.ShippingAddresses;
+        _logger = logger;
     }
 
     public async Task Handle(UserCreatedDomainEvent request, CancellationToken cancellationToken)
@@ -58,15 +60,26 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDom
             if (saveChangesResult > 0)
             {
                 await transaction.CommitAsync(cancellationToken);
+                
+                _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Successfully created user profile and default address", new { userId = request.User.Id });
+                
                 return;
             }
 
             await transaction.RollbackAsync(cancellationToken);
+            
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_dbContext.SaveChangesAsync), "Failed to save changes", new { userId = request.User.Id });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await transaction.RollbackAsync(cancellationToken);
-
+            
+            var parameters = new { userId = request.User.Id };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            
             throw;
         }
     }

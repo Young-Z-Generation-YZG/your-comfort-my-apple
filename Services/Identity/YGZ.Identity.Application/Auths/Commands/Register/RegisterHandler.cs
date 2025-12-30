@@ -55,8 +55,11 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
             // Step 1: Check if user already exists
             var userResult = await _identityService.FindUserByEmailAsync(request.Email);
 
-            if (userResult.Response is not null)
+            if (userResult.IsSuccess && userResult.Response is not null)
             {
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.FindUserByEmailAsync), "User already exists", new { request.Email });
+                
                 return Errors.User.AlreadyExists;
             }
 
@@ -85,8 +88,11 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
                 _compensator.TrackStep(RegistrationStep.KeycloakUserCreated, keycloakUserId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.CreateKeycloakUserAsync), "Failed to create user in Keycloak", new { request.Email });
+                
                 return Errors.User.FailedToRegister;
             }
 
@@ -189,7 +195,9 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unexpected error during user registration: {Email}", request.Email);
+            var parameters = new { email = request.Email };
+            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
 
             // Attempt compensation based on current state
             var state = _compensator.GetState();
