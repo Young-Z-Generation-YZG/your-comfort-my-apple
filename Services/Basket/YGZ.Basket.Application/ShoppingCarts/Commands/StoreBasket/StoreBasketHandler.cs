@@ -68,16 +68,25 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
                     // check stock availability
                     if (skuGrpc.AvailableInStock < item.Quantity)
                     {
+                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "Insufficient stock for SKU", new { skuId = item.SkuId, requestedQuantity = item.Quantity, availableStock = skuGrpc.AvailableInStock, userEmail });
+
                         return Errors.Basket.InsufficientQuantity;
                     }
                 }
                 else
                 {
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "SKU not found", new { skuId = item.SkuId, userEmail });
+
                     return false;
                 }
             }
-            catch (RpcException)
+            catch (RpcException ex)
             {
+                var parameters = new { skuId = item.SkuId, quantity = item.Quantity, userEmail };
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                 throw;
             }
 
@@ -119,8 +128,14 @@ public class StoreBasketHandler : ICommandHandler<StoreBasketCommand, bool>
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.StoreBasketAsync), "Failed to store basket", new { userEmail, error = result.Error });
+
             return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully stored basket", new { userEmail, cartItemCount = shoppingCart.CartItems.Count });
 
         return result.Response;
     }

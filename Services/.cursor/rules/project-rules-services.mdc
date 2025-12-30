@@ -116,6 +116,7 @@ These rules apply to all microservices under `Services` folder, including:
 
 ## Logging
 
+-   **See `logging.mdc` for detailed logging standards and patterns** - All services must follow the structured logging conventions defined in the shared logging rules
 -   Use **Serilog** for structured logging
 -   Use `ILogger<T>` with dependency injection
 -   Configure Serilog via `AddSerilogExtension` extension method

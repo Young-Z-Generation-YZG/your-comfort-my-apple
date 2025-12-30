@@ -64,16 +64,25 @@ public class SyncBasketHandler : ICommandHandler<SyncBasketCommand, bool>
                     // check stock availability
                     if (skuGrpc.AvailableInStock < item.Quantity)
                     {
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "Insufficient stock for SKU during sync", new { skuId = item.SkuId, requestedQuantity = item.Quantity, availableStock = skuGrpc.AvailableInStock, userEmail });
+
                         insufficientSkuIds.Add(item.SkuId);
                     }
                 }
                 else
                 {
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "SKU not found during sync", new { skuId = item.SkuId, userEmail });
+
                     return false;
                 }
             }
-            catch (RpcException)
+            catch (RpcException ex)
             {
+                var parameters = new { skuId = item.SkuId, userEmail };
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                 throw;
             }
 
@@ -116,8 +125,14 @@ public class SyncBasketHandler : ICommandHandler<SyncBasketCommand, bool>
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.StoreBasketAsync), "Failed to store synced basket", new { userEmail, insufficientSkuCount = insufficientSkuIds.Count, error = result.Error });
+
             return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully synced basket", new { userEmail, cartItemCount = shoppingCart.CartItems.Count, insufficientSkuCount = insufficientSkuIds.Count });
 
         return result.Response;
     }

@@ -53,19 +53,23 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
             if (eventItem == null || string.IsNullOrEmpty(eventItem.Id))
             {
-                _logger.LogError("Event item with ID {EventItemId} not found", request.EventItemId);
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), "Event item not found", new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail() });
 
                 throw new Exception("Event item not found");
             }
 
-            _logger.LogInformation("Retrieved event item: {Model} {Storage} {Color} - Price: {Price}",
-                eventItem.Model.Name, eventItem.Storage.Name, eventItem.Color.Name, eventItem.OriginalPrice);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), "Retrieved event item", new { eventItemId = request.EventItemId, model = eventItem.Model.Name, storage = eventItem.Storage.Name, color = eventItem.Color.Name, price = eventItem.OriginalPrice, userEmail = _userContext.GetUserEmail() });
 
             // Get existing basket
             var result = await _basketRepository.GetBasketAsync(_userContext.GetUserEmail(), cancellationToken);
 
             if (result.IsFailure)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail(), error = result.Error });
+
                 return result.Error;
             }
 
@@ -92,15 +96,21 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
             if (storeResult.IsFailure)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_basketRepository.StoreBasketAsync), "Failed to store event item in basket", new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail(), error = storeResult.Error });
+
                 return storeResult.Error;
             }
 
-            _logger.LogInformation("Successfully added event item {EventItemId} to basket", request.EventItemId);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully added event item to basket", new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail(), cartItemCount = shoppingCart.CartItems.Count });
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving event item with ID {EventItemId}", request.EventItemId);
+            var parameters = new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
             throw;
         }
     }

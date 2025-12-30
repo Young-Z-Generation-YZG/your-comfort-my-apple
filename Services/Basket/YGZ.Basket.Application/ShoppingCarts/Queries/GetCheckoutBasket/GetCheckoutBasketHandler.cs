@@ -1,4 +1,5 @@
 ﻿using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
@@ -15,17 +16,20 @@ namespace YGZ.Basket.Application.ShoppingCarts.Queries.GetCheckoutBasket;
 
 public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, GetBasketResponse>
 {
+    private readonly ILogger<GetCheckoutBasketHandler> _logger;
     private readonly IBasketRepository _basketRepository;
     private readonly IUserHttpContext _userContext;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
     public GetCheckoutBasketHandler(IBasketRepository basketRepository,
                                     IUserHttpContext userContext,
-                                    DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
+                                    DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient,
+                                    ILogger<GetCheckoutBasketHandler> logger)
     {
         _discountProtoServiceClient = discountProtoServiceClient;
         _basketRepository = basketRepository;
         _userContext = userContext;
+        _logger = logger;
     }
 
     public async Task<Result<GetBasketResponse>> Handle(GetCheckoutBasketQuery request, CancellationToken cancellationToken)
@@ -36,6 +40,9 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { userEmail, error = result.Error });
+
             return result.Error;
         }
 
@@ -43,6 +50,9 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
 
         if (shoppingCart.CartItems is null || !shoppingCart.CartItems.Any())
         {
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Basket is empty, returning empty checkout response", new { userEmail });
+
             return new GetBasketResponse()
             {
                 UserEmail = shoppingCart.UserEmail,
@@ -173,8 +183,17 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 {
                     if (selectedItems.Any())
                     {
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found", new { couponCode = request.CouponCode, userEmail });
+
                         finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
                     }
+                }
+                else
+                {
+                    var parameters = new { couponCode = request.CouponCode, userEmail };
+                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, parameters);
                 }
             }
 
@@ -183,6 +202,9 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 // 4.1.1
                 if (coupon.AvailableQuantity <= 0)
                 {
+                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Coupon has no available quantity", new { couponCode = request.CouponCode, availableQuantity = coupon.AvailableQuantity, userEmail });
+
                     finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
                 }
                 else
@@ -190,15 +212,23 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                     // 4.1.3
                     if (!selectedItems.Any())
                     {
+                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
+
                         return Errors.Basket.NotSelectedItems;
                     }
 
                     // 4.1.4 
                     finalCart = HandleFinalCart(finalCart, coupon);
+
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Successfully applied coupon to checkout basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
                 }
             }
         }
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved checkout basket", new { userEmail, cartItemCount = finalCart.CartItems.Count, totalAmount = finalCart.TotalAmount });
 
         return finalCart.ToResponse();
     }

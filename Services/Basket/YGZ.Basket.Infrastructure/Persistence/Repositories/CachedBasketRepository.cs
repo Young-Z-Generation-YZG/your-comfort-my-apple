@@ -37,7 +37,9 @@ public class CachedBasketRepository : IBasketRepository
 
         return basket;
         } catch (Exception ex) {
-            _logger.LogError("Failed to get basket: {ErrorMessage}", ex.Message);
+            var parameters = new { userEmail };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetBasketAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -51,7 +53,9 @@ public class CachedBasketRepository : IBasketRepository
 
         return true;
         } catch (Exception ex) {
-            _logger.LogError("Failed to store basket: {ErrorMessage}", ex.Message);
+            var parameters = new { userEmail = shoppingCart.UserEmail, cartItemCount = shoppingCart.CartItems.Count };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(StoreBasketAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -64,6 +68,9 @@ public class CachedBasketRepository : IBasketRepository
 
             if (result.IsFailure)
             {
+                _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_basketRepository.DeleteSelectedItemsBasketAsync), "Failed to delete selected items from basket", new { userEmail, error = result.Error });
+
                 return result;
             }
 
@@ -76,8 +83,11 @@ public class CachedBasketRepository : IBasketRepository
 
             return result;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userEmail };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(DeleteSelectedItemsBasketAsync), ex.Message, parameters);
             return false;
         }
     }
@@ -90,8 +100,11 @@ public class CachedBasketRepository : IBasketRepository
 
             await _distributedCache.RemoveAsync(userEmail, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { userEmail };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ClearBasketAsync), ex.Message, parameters);
             return false;
         }
 

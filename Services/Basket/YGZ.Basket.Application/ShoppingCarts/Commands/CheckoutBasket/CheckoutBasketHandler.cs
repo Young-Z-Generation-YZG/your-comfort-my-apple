@@ -69,17 +69,31 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         var shoppingCartResult = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
 
+        if (shoppingCartResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { userEmail, error = shoppingCartResult.Error });
+
+            return shoppingCartResult.Error;
+        }
+
         var shoppingCart = shoppingCartResult.Response;
 
         // 1.1.
         if (shoppingCart is null || !shoppingCart.CartItems.Any())
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Basket is empty or null", new { userEmail });
+
             return Errors.Basket.BasketEmpty;
         }
 
         // 1.2.
         if (shoppingCart.CartItems.All(ci => ci.IsSelected == false))
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "No items selected for checkout", new { userEmail, cartItemCount = shoppingCart.CartItems.Count });
+
             return Errors.Basket.NotSelectedItems;
         }
 
@@ -134,12 +148,18 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
                         if (skuGrpc.AvailableInStock < cartItem.Quantity)
                         {
+                            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                                nameof(Handle), "Insufficient stock for SKU during checkout", new { skuId = cartItem.SkuId, requestedQuantity = cartItem.Quantity, availableStock = skuGrpc.AvailableInStock, userEmail });
+
                             return Errors.Basket.InsufficientQuantity;
                         }
                     }
                 }
-                catch (RpcException)
+                catch (RpcException ex)
                 {
+                    var parameters = new { skuId = cartItem.SkuId, userEmail };
+                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                     throw;
                 }
             }
@@ -164,8 +184,17 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                     {
                         if (checkoutShoppingCart.CartItems.Any())
                         {
+                            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                                nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found during checkout", new { discountCode = request.DiscountCode, userEmail });
+
                             checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
                         }
+                    }
+                    else
+                    {
+                        var parameters = new { discountCode = request.DiscountCode, userEmail };
+                        _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, parameters);
                     }
                 }
 
@@ -173,6 +202,9 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 {
                     if (coupon.AvailableQuantity <= 0)
                     {
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "Coupon has no available quantity during checkout", new { discountCode = request.DiscountCode, availableQuantity = coupon.AvailableQuantity, userEmail });
+
                         checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
                     }
                     else
@@ -184,6 +216,9 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                         cartDiscountType = checkoutShoppingCart.DiscountType;
                         cartDiscountValue = checkoutShoppingCart.DiscountValue;
                         cartDiscountAmount = checkoutShoppingCart.DiscountAmount;
+
+                        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "Successfully applied coupon during checkout", new { discountCode = request.DiscountCode, userEmail, discountAmount = cartDiscountAmount });
                     }
                 }
             }
@@ -230,6 +265,9 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
         await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully processed checkout", new { orderId, userEmail, paymentMethod = request.PaymentMethod, cartItemCount = checkoutShoppingCart.CartItems.Count });
+
         switch (request.PaymentMethod)
         {
             case nameof(EPaymentMethod.VNPAY):
@@ -245,6 +283,9 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
             if (string.IsNullOrEmpty(paymentUrl))
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_vnpayProvider.CreatePaymentUrl), "Failed to create VNPay payment URL", new { orderId, userEmail, amount = model.Amount });
+
                 return Errors.Payment.VnpayPaymentUrlInvalid;
             }
 
@@ -266,6 +307,9 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
             if (momoPaymentUrl?.ErrorCode != 0)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_momoProvider.CreatePaymentUrlAsync), "Failed to create MoMo payment URL", new { orderId, userEmail, errorCode = momoPaymentUrl?.ErrorCode });
+
                 return Errors.Payment.MomoPaymentUrlInvalid;
             }
 

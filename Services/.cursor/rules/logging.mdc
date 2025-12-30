@@ -1,0 +1,269 @@
+---
+alwaysApply: true
+---
+
+# Services Logging Standards
+
+This document defines the logging standards and patterns for all microservices. All logging must follow these conventions for consistency, traceability, and effective monitoring.
+
+## Log Level Usage
+
+-   **LogError**: Use for errors, failures, and exceptions that prevent operation completion
+-   **LogWarning**: Use for warnings, validation issues, or recoverable problems
+-   **LogInformation**: Use for successful operations and important state changes
+-   **LogDebug**: Use for detailed debugging information (typically in development only)
+-   **LogTrace**: Use for very detailed trace information (typically disabled in production)
+
+## Log Message Format
+
+All log messages must follow a structured format with consistent prefixes and placeholders.
+
+### Infrastructure Layer (Services)
+
+#### Operation Error (Business Logic Failures)
+
+```csharp
+_logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(MethodName), "Descriptive error message", new { param1, param2 });
+```
+
+**Example:**
+
+```csharp
+_logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(_repository.CreateAsync), "Failed to create entity in database", result.Errors);
+```
+
+#### Operation Information (Successful Operations)
+
+```csharp
+_logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+    nameof(MethodName), "Descriptive success message", new { param1, param2 });
+```
+
+**Example:**
+
+```csharp
+_logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+    nameof(CreateEntityAsync), "Successfully created entity in database", new { request.Id, entityId });
+```
+
+#### Operation Warning (Warnings and Validation Issues)
+
+```csharp
+_logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+    nameof(MethodName), "Descriptive warning message", new { param1, param2 });
+```
+
+**Example:**
+
+```csharp
+_logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+    nameof(AssignRolesAsync), "No roles provided for assignment", new { entity.Id });
+```
+
+#### Application Exception (Unexpected Exceptions)
+
+```csharp
+_logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(MethodName), ex.Message, parameters);
+```
+
+**Note:** Single colon prefix (`:`) for exceptions, includes exception object as first parameter.
+
+**Example:**
+
+```csharp
+catch (Exception ex)
+{
+    var parameters = new { id, ignoreBaseFilter };
+    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+        nameof(FindEntityAsync), ex.Message, parameters);
+    throw;
+}
+```
+
+### Application Layer (Handlers/Commands/Queries)
+
+#### Handler Error (Command/Query Handler Failures)
+
+```csharp
+_logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(ServiceMethod), "Descriptive error message", errorOrParameters);
+```
+
+**Note:** Three colons prefix (`:::`) for handler-level errors.
+
+**Example:**
+
+```csharp
+if (result.IsFailure)
+{
+    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+        nameof(_service.FindEntityAsync), "Entity does not exist", result.Error);
+
+    return result.Error;
+}
+```
+
+## Key Principles
+
+### 1. Structured Logging
+
+-   Always use structured logging with named placeholders (`{MethodName}`, `{ErrorMessage}`, `{@Parameters}`)
+-   Use `{@Parameters}` for complex objects (enables JSON serialization)
+-   Use `{ParameterName}` for simple values
+
+### 2. Method Name Convention
+
+-   Use `nameof()` for method names to ensure compile-time safety
+-   For external service calls, use the service method name: `nameof(_repository.CreateAsync)`
+-   For current method, use the method name: `nameof(CreateEntityAsync)`
+
+### 3. Parameter Logging
+
+-   Always log relevant parameters as anonymous objects: `new { id, userId }`
+-   **Never log sensitive data** (passwords, tokens, PII unless necessary)
+-   Include enough context to trace the operation
+
+### 4. Error Messages
+
+-   Use clear, descriptive error messages
+-   Include context about what operation failed
+-   Reference the specific method or service that failed
+
+### 5. Exception Handling
+
+-   Always log exceptions in catch blocks
+-   Include exception object as first parameter: `_logger.LogError(ex, ...)`
+-   Log relevant parameters for debugging
+-   Re-throw exceptions unless handling them gracefully
+
+### 6. Success Logging
+
+-   Log successful operations at Information level
+-   Include key parameters for traceability
+-   Helps with auditing and debugging
+
+### 7. Warning Logging
+
+-   Use for recoverable issues or validation warnings
+-   Include context about why it's a warning
+-   May indicate potential issues that need attention
+
+## Logging Checklist
+
+When adding logging, ensure:
+
+-   [ ] Correct log level is used (Error/Warning/Information)
+-   [ ] Correct prefix format for layer (Infrastructure vs Application)
+-   [ ] Method name uses `nameof()` for compile-time safety
+-   [ ] Error message is descriptive and clear
+-   [ ] Parameters are logged as anonymous objects
+-   [ ] No sensitive data is logged
+-   [ ] Exception object is included for exception logging
+-   [ ] Logging is placed at appropriate points (before return, in catch blocks)
+
+## Examples by Scenario
+
+### Successful Operation
+
+```csharp
+_logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+    nameof(AssignRolesAsync), "Successfully assigned roles to entity", new { roleNames, entity.Id });
+```
+
+### Business Logic Failure
+
+```csharp
+if (!result.Succeeded)
+{
+    _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+        nameof(_repository.CreateAsync), "Failed to create entity in database", result.Errors);
+
+    return Errors.Entity.CannotBeCreated;
+}
+```
+
+### Handler-Level Error
+
+```csharp
+if (createResult.IsFailure)
+{
+    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+        nameof(_service.CreateEntityAsync), "Failed to create entity in database", createResult.Error);
+
+    await _compensator.CompensateAsync(entityId, null, cancellationToken);
+    return Errors.Entity.FailedToCreate;
+}
+```
+
+### Exception Handling
+
+```csharp
+catch (Exception ex)
+{
+    var parameters = new { id = request.Id, entityId };
+    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+        nameof(CreateEntityAsync), ex.Message, parameters);
+    throw;
+}
+```
+
+## Anti-Patterns to Avoid
+
+❌ **Don't use string interpolation in log messages:**
+
+```csharp
+// BAD
+_logger.LogError($"Failed to create entity: {id}");
+```
+
+✅ **Use structured logging:**
+
+```csharp
+// GOOD
+_logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(CreateEntityAsync), "Failed to create entity", new { id });
+```
+
+❌ **Don't log without context:**
+
+```csharp
+// BAD
+_logger.LogError("Error occurred");
+```
+
+✅ **Include method name and parameters:**
+
+```csharp
+// GOOD
+_logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    nameof(CreateEntityAsync), "Failed to create entity", new { id, userId });
+```
+
+❌ **Don't log sensitive information:**
+
+```csharp
+// BAD
+_logger.LogInformation("User logged in", new { email, password });
+```
+
+✅ **Exclude sensitive data:**
+
+```csharp
+// GOOD
+_logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+    nameof(Login), "Successfully logged in", new { user.Id, user.Email });
+```
+
+## Summary
+
+-   **Infrastructure Layer**: Use `::[Operation ...]::` prefix (two colons)
+-   **Application Layer (Handlers)**: Use `:::[Handler Error]:::` prefix (three colons)
+-   **Exceptions**: Use `:[Application Exception]:` prefix (single colon) with exception object
+-   Always use `nameof()` for method names
+-   Always log parameters as anonymous objects
+-   Never log sensitive data
+-   Include descriptive error messages
+-   Log both successes and failures for traceability

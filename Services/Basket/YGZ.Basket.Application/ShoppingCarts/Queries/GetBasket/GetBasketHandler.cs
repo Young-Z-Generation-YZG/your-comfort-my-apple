@@ -1,4 +1,5 @@
 ﻿using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
@@ -16,17 +17,19 @@ namespace YGZ.Basket.Application.ShoppingCarts.Queries.GetBasket;
 
 public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 {
+    private readonly ILogger<GetBasketHandler> _logger;
     private readonly IBasketRepository _basketRepository;
     private readonly IUserHttpContext _userContext;
     private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
     private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
 
-    public GetBasketHandler(IBasketRepository basketRepository, IUserHttpContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient, CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient)
+    public GetBasketHandler(IBasketRepository basketRepository, IUserHttpContext userContext, DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient, CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient, ILogger<GetBasketHandler> logger)
     {
         _discountProtoServiceClient = discountProtoServiceClient;
         _basketRepository = basketRepository;
         _userContext = userContext;
         _catalogProtoServiceClient = catalogProtoServiceClient;
+        _logger = logger;
     }
 
     public async Task<Result<GetBasketResponse>> Handle(GetBasketQuery request, CancellationToken cancellationToken)
@@ -35,6 +38,14 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 
         // 1. get basket
         var result = await _basketRepository.GetBasketAsync(userEmail, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { userEmail, error = result.Error });
+
+            return result.Error;
+        }
 
         var shoppingCart = result.Response!;
 
@@ -49,6 +60,9 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         // 1.1 return if cart is empty
         if (!finalCart.CartItems.Any())
         {
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Basket is empty, returning empty response", new { userEmail });
+
             return new GetBasketResponse()
             {
                 UserEmail = shoppingCart.UserEmail,
@@ -84,8 +98,11 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                     }
                 }
             }
-            catch (RpcException)
+            catch (RpcException ex)
             {
+                var parameters = new { skuId = cartItem.SkuId, userEmail };
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                 throw;
             }
         }
@@ -126,8 +143,17 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                 {
                     if (finalCart.CartItems.Any())
                     {
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found", new { couponCode = request.CouponCode, userEmail });
+
                         finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
                     }
+                }
+                else
+                {
+                    var parameters = new { couponCode = request.CouponCode, userEmail };
+                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, parameters);
                 }
             }
 
@@ -136,6 +162,9 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                 // 4.1.1
                 if (coupon.AvailableQuantity <= 0)
                 {
+                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Coupon has no available quantity", new { couponCode = request.CouponCode, availableQuantity = coupon.AvailableQuantity, userEmail });
+
                     finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
                 }
                 else
@@ -143,15 +172,23 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                     // 4.1.3
                     if (!finalCart.CartItems.Any())
                     {
+                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
+
                         return Errors.Basket.NotSelectedItems;
                     }
 
                     // 4.1.4 
                     finalCart = HandleFinalCart(finalCart, coupon);
+
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Successfully applied coupon to basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
                 }
             }
         }
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved basket", new { userEmail, cartItemCount = finalCart.CartItems.Count, totalAmount = finalCart.TotalAmount });
 
         return finalCart.ToResponse();
     }

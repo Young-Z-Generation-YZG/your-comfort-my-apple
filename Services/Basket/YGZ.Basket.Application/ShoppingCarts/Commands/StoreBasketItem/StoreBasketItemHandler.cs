@@ -57,16 +57,25 @@ public class StoreBasketItemHandler : ICommandHandler<StoreBasketItemCommand, bo
                 // check stock availability
                 if (skuGrpc.AvailableInStock < request.Quantity)
                 {
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Insufficient stock for SKU", new { skuId = request.SkuId, requestedQuantity = request.Quantity, availableStock = skuGrpc.AvailableInStock, userEmail = _userContext.GetUserEmail() });
+
                     return Errors.Basket.InsufficientQuantity;
                 }
             }
             else
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "SKU not found", new { skuId = request.SkuId, userEmail = _userContext.GetUserEmail() });
+
                 return false;
             }
         }
-        catch (RpcException)
+        catch (RpcException ex)
         {
+            var parameters = new { skuId = request.SkuId, userEmail = _userContext.GetUserEmail() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
             throw;
         }
 
@@ -122,8 +131,14 @@ public class StoreBasketItemHandler : ICommandHandler<StoreBasketItemCommand, bo
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_basketRepository.StoreBasketAsync), "Failed to store basket item", new { skuId = request.SkuId, userEmail = _userContext.GetUserEmail(), error = result.Error });
+
             return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully stored basket item", new { skuId = request.SkuId, userEmail = _userContext.GetUserEmail(), cartItemCount = shoppingCart.CartItems.Count });
 
         return result.Response;
     }
