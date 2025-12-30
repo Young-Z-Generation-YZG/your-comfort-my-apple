@@ -13,6 +13,7 @@ using YGZ.Identity.Infrastructure.Extensions;
 using YGZ.Identity.Infrastructure.Persistence;
 using YGZ.Identity.Infrastructure.Persistence.Interceptors;
 using YGZ.Identity.Infrastructure.Persistence.Repositories;
+using YGZ.Identity.Infrastructure.Persistence.Seeds;
 using YGZ.Identity.Infrastructure.Services;
 using YGZ.Identity.Infrastructure.Settings;
 using YGZ.Identity.Infrastructure.Utils;
@@ -60,6 +61,7 @@ public static class DependencyInjection
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IOtpGenerator, OtpGenerator>();
         services.AddScoped<IUserRegistrationCompensator, UserRegistrationCompensator>();
+        services.AddScoped<SeedService>();
 
         return services;
     }

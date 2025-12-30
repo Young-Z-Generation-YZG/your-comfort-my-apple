@@ -83,20 +83,26 @@ public class SeedData
         new IdentityRole
         {
             Id = "3a0efb98-7841-4ff1-900c-e255ec60eb4f",
-            Name = "ADMIN_SUPER",
-            NormalizedName = "ADMIN_SUPER"
+            Name = "ADMIN_SUPER_YBZONE",
+            NormalizedName = "ADMIN_SUPER_YBZONE"
         },
         new IdentityRole
         {
             Id = "12d826a4-a9c0-471c-91f3-39b18993e0c1",
-            Name = "ADMIN",
-            NormalizedName = "ADMIN"
+            Name = "ADMIN_YBZONE",
+            NormalizedName = "ADMIN_YBZONE"
+        },
+        new IdentityRole
+        {
+            Id = "12145c29-e918-4cee-b58c-e6fe2a33e561",
+            Name = "ADMIN_BRANCH",
+            NormalizedName = "ADMIN_BRANCH"
         },
         new IdentityRole
         {
             Id = "12145c29-e918-4cee-b58c-e6fe2a66e560",
-            Name = "STAFF",
-            NormalizedName = "STAFF"
+            Name = "STAFF_BRANCH",
+            NormalizedName = "STAFF_BRANCH"
         },
         new IdentityRole
         {

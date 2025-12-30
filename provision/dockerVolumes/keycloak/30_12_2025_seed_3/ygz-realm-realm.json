@@ -328,15 +328,6 @@
                     "attributes": {}
                 },
                 {
-                    "id": "12145c29-e918-4cee-b58c-e6fe2a33e561",
-                    "name": "ADMIN_BRANCH",
-                    "description": "",
-                    "composite": false,
-                    "clientRole": true,
-                    "containerId": "aecd4342-7713-4d05-aae8-0fefa94dbc5f",
-                    "attributes": {}
-                },
-                {
                     "id": "12145c29-e918-4cee-b58c-e6fe2a66e560",
                     "name": "STAFF_BRANCH",
                     "description": "",
@@ -357,6 +348,15 @@
                 {
                     "id": "7e006b99-0328-4671-832e-daa7b677298c",
                     "name": "uma_protection",
+                    "composite": false,
+                    "clientRole": true,
+                    "containerId": "aecd4342-7713-4d05-aae8-0fefa94dbc5f",
+                    "attributes": {}
+                },
+                {
+                    "id": "12145c29-e918-4cee-b58c-e6fe2a33e561",
+                    "name": "ADMIN_BRANCH",
+                    "description": "",
                     "composite": false,
                     "clientRole": true,
                     "containerId": "aecd4342-7713-4d05-aae8-0fefa94dbc5f",
@@ -520,30 +520,103 @@
     "webAuthnPolicyPasswordlessExtraOrigins": [],
     "users": [
         {
-            "id": "be0cd669-237a-484d-b3cf-793e0ad1b0ea",
-            "username": "adminsuper@ybzone.com",
-            "firstName": "ADMIN SUPER",
+            "id": "65dad719-7368-4d9f-b623-f308299e9556",
+            "username": "admin1@hcm-q1-cmt8-92.com",
+            "firstName": "ADMIN 1",
             "lastName": "USER",
-            "email": "adminsuper@ybzone.com",
+            "email": "admin1@hcm-q1-cmt8-92.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
             "enabled": true,
-            "createdTimestamp": 1757267972289,
+            "createdTimestamp": 1757268020325,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2434",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092219269,
+                    "secretData": "{\"value\":\"ppf9joilA7zphtIPJckRw5hC5KQzeFQ6eExiqgJtrEU=\",\"salt\":\"GL1fvcyF8j+AwiKquodw6A==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
             "disableableCredentialTypes": [],
-            "requiredActions": ["UPDATE_PASSWORD"],
+            "requiredActions": [],
             "realmRoles": ["default-roles-ygz-realm"],
             "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["ADMIN_SUPER_YBZONE"]
+                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f120",
+            "username": "admin1@hcm-q9-lvv-123.com",
+            "firstName": "ADMIN 1",
+            "lastName": "USER",
+            "email": "admin1@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020331,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243a",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092225034,
+                    "secretData": "{\"value\":\"2zGahl6FFocCs8Y2Y4AUh1oLK+F6Lfyf3tv9Wkk+eL4=\",\"salt\":\"Mh8nFV5EaVpOxwD6KLxjgg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "65dad719-7368-4d9f-b623-f308299e9575",
+            "username": "admin1@hcm-td-kvc-1060.com",
+            "firstName": "ADMIN 1",
+            "lastName": "USER",
+            "email": "admin1@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020319,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e242e",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092230671,
+                    "secretData": "{\"value\":\"KYXrQ+4mR/rdELtUG3G/I4AOlFYYvnQlaPEVaXkkPeM=\",\"salt\":\"QUr/gxpJ6rHj4E94HCpeWw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
             },
             "notBefore": 0,
             "groups": []
@@ -555,16 +628,21 @@
             "lastName": "USER",
             "email": "admin1@ybzone.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
             "createdTimestamp": 1757268020318,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e242d",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1757268031313,
+                    "secretData": "{\"value\":\"ePSDY1miGnfDZtLj00vdkZ7sAYkkX7+vumXW8x/y3/c=\",\"salt\":\"y5Ke3adxZ7rLh3wHOxZ3cA==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -578,22 +656,27 @@
             "groups": []
         },
         {
-            "id": "65dad719-7368-4d9f-b623-f308299e9575",
-            "username": "admin1@hcm-td-kvc-1060.com",
-            "firstName": "ADMIN 1",
+            "id": "be0cd669-237a-484d-b3cf-793e0ad1b0ea",
+            "username": "adminsuper@ybzone.com",
+            "firstName": "ADMIN SUPER",
             "lastName": "USER",
-            "email": "admin1@hcm-td-kvc-1060.com",
+            "email": "adminsuper@ybzone.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
-            "createdTimestamp": 1757268020319,
+            "createdTimestamp": 1757267972289,
             "totp": false,
             "credentials": [
                 {
                     "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767090780118,
+                    "secretData": "{\"value\":\"O/EJy9xLffSRFGy8SIJIZohwQf8cs8Kd7WtttDiA8sc=\",\"salt\":\"UZmBAxmF3pGyQsQptpeoyA==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -601,666 +684,33 @@
             "requiredActions": [],
             "realmRoles": ["default-roles-ygz-realm"],
             "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
+                "ybstore-admin-dashboard-client-id": ["ADMIN_SUPER_YBZONE"]
             },
             "notBefore": 0,
             "groups": []
         },
         {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f616",
-            "username": "staff1@hcm-td-kvc-1060.com",
-            "firstName": "STAFF 1",
-            "lastName": "USER",
-            "email": "staff1@hcm-td-kvc-1060.com",
+            "id": "b8c9d0e1-f2a3-4456-b7c8-d9e0f1a2b3c4",
+            "username": "bui.thi.thao@gmail.com",
+            "firstName": "Thảo",
+            "lastName": "Bùi Thị",
+            "email": "bui.thi.thao@gmail.com",
             "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020320,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
             },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f617",
-            "username": "staff2@hcm-td-kvc-1060.com",
-            "firstName": "STAFF 2",
-            "lastName": "USER",
-            "email": "staff2@hcm-td-kvc-1060.com",
-            "emailVerified": true,
             "enabled": true,
-            "createdTimestamp": 1757268020321,
+            "createdTimestamp": 1757268020407,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2447",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f618",
-            "username": "staff3@hcm-td-kvc-1060.com",
-            "firstName": "STAFF 3",
-            "lastName": "USER",
-            "email": "staff3@hcm-td-kvc-1060.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020322,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f619",
-            "username": "staff4@hcm-td-kvc-1060.com",
-            "firstName": "STAFF 4",
-            "lastName": "USER",
-            "email": "staff4@hcm-td-kvc-1060.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020323,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f620",
-            "username": "staff5@hcm-td-kvc-1060.com",
-            "firstName": "STAFF 5",
-            "lastName": "USER",
-            "email": "staff5@hcm-td-kvc-1060.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020324,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "65dad719-7368-4d9f-b623-f308299e9556",
-            "username": "admin1@hcm-q1-cmt8-92.com",
-            "firstName": "ADMIN 1",
-            "lastName": "USER",
-            "email": "admin1@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020325,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f655",
-            "username": "staff1@hcm-q1-cmt8-92.com",
-            "firstName": "STAFF 1",
-            "lastName": "USER",
-            "email": "staff1@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020326,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f654",
-            "username": "staff2@hcm-q1-cmt8-92.com",
-            "firstName": "STAFF 2",
-            "lastName": "USER",
-            "email": "staff2@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020327,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f653",
-            "username": "staff3@hcm-q1-cmt8-92.com",
-            "firstName": "STAFF 3",
-            "lastName": "USER",
-            "email": "staff3@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020328,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f652",
-            "username": "staff4@hcm-q1-cmt8-92.com",
-            "firstName": "STAFF 4",
-            "lastName": "USER",
-            "email": "staff4@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020329,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f651",
-            "username": "staff5@hcm-q1-cmt8-92.com",
-            "firstName": "STAFF 5",
-            "lastName": "USER",
-            "email": "staff5@hcm-q1-cmt8-92.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020330,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f120",
-            "username": "admin1@hcm-q9-lvv-123.com",
-            "firstName": "ADMIN 1",
-            "lastName": "USER",
-            "email": "admin1@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020331,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["ADMIN_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f121",
-            "username": "staff1@hcm-q9-lvv-123.com",
-            "firstName": "STAFF 1",
-            "lastName": "USER",
-            "email": "staff1@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020332,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f122",
-            "username": "staff2@hcm-q9-lvv-123.com",
-            "firstName": "STAFF 2",
-            "lastName": "USER",
-            "email": "staff2@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020333,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f123",
-            "username": "staff3@hcm-q9-lvv-123.com",
-            "firstName": "STAFF 3",
-            "lastName": "USER",
-            "email": "staff3@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020334,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f124",
-            "username": "staff4@hcm-q9-lvv-123.com",
-            "firstName": "STAFF 4",
-            "lastName": "USER",
-            "email": "staff4@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020335,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f125",
-            "username": "staff5@hcm-q9-lvv-123.com",
-            "firstName": "STAFF 5",
-            "lastName": "USER",
-            "email": "staff5@hcm-q9-lvv-123.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020336,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "a1b2c3d4-e5f6-4789-a0b1-c2d3e4f5a6b7",
-            "username": "nguyen.van.anh@gmail.com",
-            "firstName": "Anh",
-            "lastName": "Nguyễn Văn",
-            "email": "nguyen.van.anh@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020400,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "b2c3d4e5-f6a7-4890-b1c2-d3e4f5a6b7c8",
-            "username": "tran.thi.lan@gmail.com",
-            "firstName": "Lan",
-            "lastName": "Trần Thị",
-            "email": "tran.thi.lan@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020401,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "c3d4e5f6-a7b8-4901-c2d3-e4f5a6b7c8d9",
-            "username": "le.duc.minh@gmail.com",
-            "firstName": "Minh",
-            "lastName": "Lê Đức",
-            "email": "le.duc.minh@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020402,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "d4e5f6a7-b8c9-4012-d3e4-f5a6b7c8d9e0",
-            "username": "pham.thi.phuong@gmail.com",
-            "firstName": "Phương",
-            "lastName": "Phạm Thị",
-            "email": "pham.thi.phuong@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020403,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e5f6a7b8-c9d0-4123-e4f5-a6b7c8d9e0f1",
-            "username": "hoang.van.tuan@gmail.com",
-            "firstName": "Tuấn",
-            "lastName": "Hoàng Văn",
-            "email": "hoang.van.tuan@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020404,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "f6a7b8c9-d0e1-4234-f5a6-b7c8d9e0f1a2",
-            "username": "vu.thi.huyen@gmail.com",
-            "firstName": "Huyền",
-            "lastName": "Vũ Thị",
-            "email": "vu.thi.huyen@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020405,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767091896856,
+                    "secretData": "{\"value\":\"4uRdzr7KhgovxXREMc6nrY4YDKJd4EScIzHhcWboXDI=\",\"salt\":\"PCwWcegyTw6ucznx5T0mJw==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1280,219 +730,21 @@
             "lastName": "Đặng Văn",
             "email": "dang.van.hung@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
             "createdTimestamp": 1757268020406,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2446",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "b8c9d0e1-f2a3-4456-b7c8-d9e0f1a2b3c4",
-            "username": "bui.thi.thao@gmail.com",
-            "firstName": "Thảo",
-            "lastName": "Bùi Thị",
-            "email": "bui.thi.thao@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020407,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "c9d0e1f2-a3b4-4567-c8d9-e0f1a2b3c4d5",
-            "username": "do.van.cuong@gmail.com",
-            "firstName": "Cường",
-            "lastName": "Đỗ Văn",
-            "email": "do.van.cuong@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020408,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "d0e1f2a3-b4c5-4678-d9e0-f1a2b3c4d5e6",
-            "username": "ho.thi.mai@gmail.com",
-            "firstName": "Mai",
-            "lastName": "Hồ Thị",
-            "email": "ho.thi.mai@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020409,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "e1f2a3b4-c5d6-4789-e0f1-a2b3c4d5e6f7",
-            "username": "ngo.van.quang@gmail.com",
-            "firstName": "Quang",
-            "lastName": "Ngô Văn",
-            "email": "ngo.van.quang@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020410,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "f2a3b4c5-d6e7-4890-f1a2-b3c4d5e6f7a8",
-            "username": "duong.thi.nga@gmail.com",
-            "firstName": "Nga",
-            "lastName": "Dương Thị",
-            "email": "duong.thi.nga@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020411,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "a3b4c5d6-e7f8-4901-a2b3-c4d5e6f7a8b9",
-            "username": "ly.van.son@gmail.com",
-            "firstName": "Sơn",
-            "lastName": "Lý Văn",
-            "email": "ly.van.son@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020412,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "b4c5d6e7-f8a9-4012-b3c4-d5e6f7a8b9c0",
-            "username": "vuong.thi.trang@gmail.com",
-            "firstName": "Trang",
-            "lastName": "Vương Thị",
-            "email": "vuong.thi.trang@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757268020413,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767091906040,
+                    "secretData": "{\"value\":\"jYDSc2yPUGKRq8n8nBr8jwmPHVeg2fEedfHpK0dUn2U=\",\"salt\":\"KyD9/+qRSA4yW+g8Kctmgw==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1512,16 +764,21 @@
             "lastName": "Đào Văn",
             "email": "dao.van.dung@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
             "createdTimestamp": 1757268020414,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e244e",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092031400,
+                    "secretData": "{\"value\":\"ibtwlQmLKmRs/SaZrfHl1wvENSohpWwgiDqjXveiVYw=\",\"salt\":\"1UTbOT0d+FIph02UIl84RA==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1535,22 +792,27 @@
             "groups": []
         },
         {
-            "id": "d6e7f8a9-b0c1-4234-d5e6-f7a8b9c0d1e2",
-            "username": "truong.thi.uyen@gmail.com",
-            "firstName": "Uyên",
-            "lastName": "Trương Thị",
-            "email": "truong.thi.uyen@gmail.com",
+            "id": "c9d0e1f2-a3b4-4567-c8d9-e0f1a2b3c4d5",
+            "username": "do.van.cuong@gmail.com",
+            "firstName": "Cường",
+            "lastName": "Đỗ Văn",
+            "email": "do.van.cuong@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
-            "createdTimestamp": 1757268020415,
+            "createdTimestamp": 1757268020408,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2448",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092043080,
+                    "secretData": "{\"value\":\"5mN+g/kFTyXxs7S/U5HgWMT+UdQeDXnet0oMoJzXlu8=\",\"salt\":\"S1kwwF4BcTg/R//Tt8Dj5Q==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1564,22 +826,163 @@
             "groups": []
         },
         {
-            "id": "e7f8a9b0-c1d2-4345-e6f7-a8b9c0d1e2f3",
-            "username": "phan.van.thanh@gmail.com",
-            "firstName": "Thành",
-            "lastName": "Phan Văn",
-            "email": "phan.van.thanh@gmail.com",
+            "id": "f2a3b4c5-d6e7-4890-f1a2-b3c4d5e6f7a8",
+            "username": "duong.thi.nga@gmail.com",
+            "firstName": "Nga",
+            "lastName": "Dương Thị",
+            "email": "duong.thi.nga@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
-            "createdTimestamp": 1757268020416,
+            "createdTimestamp": 1757268020411,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e244b",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092076648,
+                    "secretData": "{\"value\":\"3ndkI66ee0r0UofyCguHFFv86Y0fGBVAEL+uYdKIu2A=\",\"salt\":\"igt5CjeAztkKcyyt5xTVZQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "8d8059c4-38b8-4f62-a776-4527e059b14a",
+            "username": "foobar@gmail.com",
+            "firstName": "FOO",
+            "lastName": "BAR",
+            "email": "foobar@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757269020002,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "3a6b5c24-de89-47f3-a1b2-abcdef123456",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092087006,
+                    "secretData": "{\"value\":\"uRreUjKt020+ECE80DHLg85OQenxeBx6snVl+xGhypk=\",\"salt\":\"fYqOQLiTzklfTWpzZTC6eg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "d0e1f2a3-b4c5-4678-d9e0-f1a2b3c4d5e6",
+            "username": "ho.thi.mai@gmail.com",
+            "firstName": "Mai",
+            "lastName": "Hồ Thị",
+            "email": "ho.thi.mai@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020409,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2449",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092097869,
+                    "secretData": "{\"value\":\"ISr4BahNpRroI8/DhNWXcW/xJ1bJ7pmNOZF8GlQMtro=\",\"salt\":\"7AkbliWo9ctuOpqqM4rLxg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e5f6a7b8-c9d0-4123-e4f5-a6b7c8d9e0f1",
+            "username": "hoang.van.tuan@gmail.com",
+            "firstName": "Tuấn",
+            "lastName": "Hoàng Văn",
+            "email": "hoang.van.tuan@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020404,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2444",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092107903,
+                    "secretData": "{\"value\":\"q4SsYQUX/a4zvRuztMJAZezPNv2RebXR8/pVyFgOuT0=\",\"salt\":\"01PdhAoT/RLm8jW11mfOTg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "c3d4e5f6-a7b8-4901-c2d3-e4f5a6b7c8d9",
+            "username": "le.duc.minh@gmail.com",
+            "firstName": "Minh",
+            "lastName": "Lê Đức",
+            "email": "le.duc.minh@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020402,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2442",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092119711,
+                    "secretData": "{\"value\":\"l1p/9MdRVGp6/kjvWJ/GWvkc3dOofV817cTvvdQGy6U=\",\"salt\":\"dodsiHYJL0nyrxKlirmbwA==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1599,16 +1002,123 @@
             "lastName": "Lê Thị",
             "email": "le.thi.yen@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
             "createdTimestamp": 1757268020417,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2451",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092131058,
+                    "secretData": "{\"value\":\"eRnrXgNRcmfHaggmQaxsjq9gJiaUHVj3Ni5y3/XB1nM=\",\"salt\":\"yk7jRUvRqpNJ1e7gGvYlJQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "a3b4c5d6-e7f8-4901-a2b3-c4d5e6f7a8b9",
+            "username": "ly.van.son@gmail.com",
+            "firstName": "Sơn",
+            "lastName": "Lý Văn",
+            "email": "ly.van.son@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020412,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e244c",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092141768,
+                    "secretData": "{\"value\":\"dJigmxI85xfh9PXeNinpVDbqTa0tD3lJrjO+SGhqWug=\",\"salt\":\"hsV+rJdZ8icIda2nE5dIgQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e1f2a3b4-c5d6-4789-e0f1-a2b3c4d5e6f7",
+            "username": "ngo.van.quang@gmail.com",
+            "firstName": "Quang",
+            "lastName": "Ngô Văn",
+            "email": "ngo.van.quang@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020410,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e244a",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092157945,
+                    "secretData": "{\"value\":\"1EG5N5JLtZPOGA8r0y0pCyKpfDFzzWWmvUzhWVOvTUc=\",\"salt\":\"HmLRz9FPAUpA/by6QyGyKg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "a1b2c3d4-e5f6-4789-a0b1-c2d3e4f5a6b7",
+            "username": "nguyen.van.anh@gmail.com",
+            "firstName": "Anh",
+            "lastName": "Nguyễn Văn",
+            "email": "nguyen.van.anh@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020400,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2440",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092179018,
+                    "secretData": "{\"value\":\"HYRDPokKOYv0gl+bQlqp2RewHuacGkpKWWtQdf+qZ/c=\",\"salt\":\"OXWO+Ri1vYs6rVyVbuyYcg==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1628,16 +1138,21 @@
             "lastName": "Nguyễn Văn",
             "email": "nguyen.van.phong@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
             "createdTimestamp": 1757268020418,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2452",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092188780,
+                    "secretData": "{\"value\":\"Vu/Wtx7zEL2EXiL8FPPGnaWNATIlHckkBh7rMwwx6jg=\",\"salt\":\"zUrlH4sY5prY5KcCArJXvw==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1651,22 +1166,61 @@
             "groups": []
         },
         {
-            "id": "b0c1d2e3-f4a5-4678-b9c0-d1e2f3a4b5c6",
-            "username": "tran.thi.hoa@gmail.com",
-            "firstName": "Hoa",
-            "lastName": "Trần Thị",
-            "email": "tran.thi.hoa@gmail.com",
+            "id": "d4e5f6a7-b8c9-4012-d3e4-f5a6b7c8d9e0",
+            "username": "pham.thi.phuong@gmail.com",
+            "firstName": "Phương",
+            "lastName": "Phạm Thị",
+            "email": "pham.thi.phuong@gmail.com",
             "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
             "enabled": true,
-            "createdTimestamp": 1757268020419,
+            "createdTimestamp": 1757268020403,
             "totp": false,
             "credentials": [
                 {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
+                    "id": "a9b00616-1680-466e-8433-7025859e2443",
                     "type": "password",
                     "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
+                    "createdDate": 1767092196944,
+                    "secretData": "{\"value\":\"k65BYQNkH1VHKQy7/JcRPAsliTxQYiQnatVQyiN4FZk=\",\"salt\":\"pk4GDqT0pn45y/C/cktJqw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e7f8a9b0-c1d2-4345-e6f7-a8b9c0d1e2f3",
+            "username": "phan.van.thanh@gmail.com",
+            "firstName": "Thành",
+            "lastName": "Phan Văn",
+            "email": "phan.van.thanh@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020416,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2450",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092208272,
+                    "secretData": "{\"value\":\"b+400YKhlJBbITisK3VijL1KCxWh52SanGQjWStVZfI=\",\"salt\":\"uJgl/I869RP/F6Ri8EBq3Q==\",\"additionalParameters\":{}}",
                     "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
                 }
             ],
@@ -1698,64 +1252,6 @@
             "groups": []
         },
         {
-            "id": "c3127b01-9101-4713-8e18-ae1f8f9ffd01",
-            "username": "user@gmail.com",
-            "firstName": "USER",
-            "lastName": "USER",
-            "email": "user@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757269020000,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
-            "id": "8d8059c4-38b8-4f62-a776-4527e059b14a",
-            "username": "foobar@gmail.com",
-            "firstName": "FOO",
-            "lastName": "BAR",
-            "email": "foobar@gmail.com",
-            "emailVerified": true,
-            "enabled": true,
-            "createdTimestamp": 1757269020002,
-            "totp": false,
-            "credentials": [
-                {
-                    "id": "0bcee6d2-7d4e-462e-b11c-99f5b9cc4586",
-                    "type": "password",
-                    "userLabel": "My password",
-                    "createdDate": 1762361964624,
-                    "secretData": "{\"value\":\"nFPpCVsWHkdP05fUgWp3sY7Vb+QU1NxQ/HN7YbU50kc=\",\"salt\":\"gTFcoZCiZQtRLeG1ACWAWQ==\",\"additionalParameters\":{}}",
-                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
-                }
-            ],
-            "disableableCredentialTypes": [],
-            "requiredActions": [],
-            "realmRoles": ["default-roles-ygz-realm"],
-            "clientRoles": {
-                "ybstore-admin-dashboard-client-id": ["USER"]
-            },
-            "notBefore": 0,
-            "groups": []
-        },
-        {
             "id": "ff659fbd-9593-4520-81a0-7e9c6f1da099",
             "username": "service-account-ybstore-admin-dashboard-client-id",
             "emailVerified": false,
@@ -1769,6 +1265,754 @@
             "realmRoles": ["default-roles-ygz-realm"],
             "clientRoles": {
                 "ybstore-admin-dashboard-client-id": ["uma_protection"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f655",
+            "username": "staff1@hcm-q1-cmt8-92.com",
+            "firstName": "STAFF 1",
+            "lastName": "USER",
+            "email": "staff1@hcm-q1-cmt8-92.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020326,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2435",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092246505,
+                    "secretData": "{\"value\":\"XffL2iZMYSAos+3+92MwKBZDFF7rOntoO61njPQFSt0=\",\"salt\":\"JAGwNhbQrdtQngUL+xwKPQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f121",
+            "username": "staff1@hcm-q9-lvv-123.com",
+            "firstName": "STAFF 1",
+            "lastName": "USER",
+            "email": "staff1@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020332,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243b",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092255868,
+                    "secretData": "{\"value\":\"5KLa8e/qLIa6yD9UohBPGu4vAFau7S4DD5uuRQQqeAw=\",\"salt\":\"wcilSj17P0rVSmAkjNcdlg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f616",
+            "username": "staff1@hcm-td-kvc-1060.com",
+            "firstName": "STAFF 1",
+            "lastName": "USER",
+            "email": "staff1@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020320,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e242f",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092264440,
+                    "secretData": "{\"value\":\"YejX1/K7snwYRI+UxXOaoo9lWKP9TlO/VJ4THtOF63A=\",\"salt\":\"VsoGaKekOQbw8iylzPQwVg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f654",
+            "username": "staff2@hcm-q1-cmt8-92.com",
+            "firstName": "STAFF 2",
+            "lastName": "USER",
+            "email": "staff2@hcm-q1-cmt8-92.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020327,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2436",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092274511,
+                    "secretData": "{\"value\":\"jpAmqESZfgvHYHluBSOdDheA7nLuxDPQ4opThlImz80=\",\"salt\":\"tAnKhbifkKHq1Yt8Vz6/rA==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f122",
+            "username": "staff2@hcm-q9-lvv-123.com",
+            "firstName": "STAFF 2",
+            "lastName": "USER",
+            "email": "staff2@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020333,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243c",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092288382,
+                    "secretData": "{\"value\":\"A73WyguDAM+atN9pMzq4p9RYDCCortnLQAYFpjuW9tQ=\",\"salt\":\"gt9JmtES81UjB09KwVjWgw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f617",
+            "username": "staff2@hcm-td-kvc-1060.com",
+            "firstName": "STAFF 2",
+            "lastName": "USER",
+            "email": "staff2@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020321,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2430",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092296102,
+                    "secretData": "{\"value\":\"q6aJUZVLSeqCAUdhzra7ZAi6+eeEUOBlsoqw7vLwpVQ=\",\"salt\":\"I3FzRSd2YESlbkvB1zln4w==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f653",
+            "username": "staff3@hcm-q1-cmt8-92.com",
+            "firstName": "STAFF 3",
+            "lastName": "USER",
+            "email": "staff3@hcm-q1-cmt8-92.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020328,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2437",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092303207,
+                    "secretData": "{\"value\":\"6s8GH2mhr5ed6onZe1Wqh5uR4ksrTE1RiwDKvF9YIbE=\",\"salt\":\"fknB/JMNXJhdqc6Sp8uXpQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f123",
+            "username": "staff3@hcm-q9-lvv-123.com",
+            "firstName": "STAFF 3",
+            "lastName": "USER",
+            "email": "staff3@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020334,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243d",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092316887,
+                    "secretData": "{\"value\":\"47paVgAgnI1d0fiVauNoNH+SXI3QYxfq+tpvW9+egoc=\",\"salt\":\"zbymujlbFoaA3MO9dzc4ug==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f618",
+            "username": "staff3@hcm-td-kvc-1060.com",
+            "firstName": "STAFF 3",
+            "lastName": "USER",
+            "email": "staff3@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020322,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2431",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092327563,
+                    "secretData": "{\"value\":\"ndQkWx/NDW1uEMg+Ni3/u/gRucpfQAEE/T7fDeKd1Lc=\",\"salt\":\"7F83KUUUozWPftdaiFwMbg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f652",
+            "username": "staff4@hcm-q1-cmt8-92.com",
+            "firstName": "STAFF 4",
+            "lastName": "USER",
+            "email": "staff4@hcm-q1-cmt8-92.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020329,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2438",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092340933,
+                    "secretData": "{\"value\":\"VUYXfnZOdkoQ+920DLxdru7kBPXHyjAgKNJI7E2/m2E=\",\"salt\":\"FN7wVH0RbUAbxOdnWKOR0w==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f124",
+            "username": "staff4@hcm-q9-lvv-123.com",
+            "firstName": "STAFF 4",
+            "lastName": "USER",
+            "email": "staff4@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020335,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243e",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092350338,
+                    "secretData": "{\"value\":\"26ngHdcVEOY5EeQdmxCw/IBu4QKoMRmWHcRyk43lHn8=\",\"salt\":\"Wz6OpxajwCq3zjfKmwC26w==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f619",
+            "username": "staff4@hcm-td-kvc-1060.com",
+            "firstName": "STAFF 4",
+            "lastName": "USER",
+            "email": "staff4@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020323,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2432",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092358439,
+                    "secretData": "{\"value\":\"DDvOObf46euR/zPkvp9KFDClFCNYAhKfHGP5sOcutGo=\",\"salt\":\"TnllfQUqleVYiAPW8/fJOQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f651",
+            "username": "staff5@hcm-q1-cmt8-92.com",
+            "firstName": "STAFF 5",
+            "lastName": "USER",
+            "email": "staff5@hcm-q1-cmt8-92.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc90"],
+                "branchId": ["690e034dff79797b05b3bc12"],
+                "subDomain": ["hcm-q1-cmt8-92"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020330,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2439",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092368190,
+                    "secretData": "{\"value\":\"dY4vpcI2lSOJJx5sAFrwVBQRj4KsSjSaj8RtCMxT2ds=\",\"salt\":\"6FKkTJJWNHQS1P5DCJz0lQ==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f125",
+            "username": "staff5@hcm-q9-lvv-123.com",
+            "firstName": "STAFF 5",
+            "lastName": "USER",
+            "email": "staff5@hcm-q9-lvv-123.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc91"],
+                "branchId": ["690e034dff79797b05b3bc13"],
+                "subDomain": ["hcm-q9-lvv-123"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020336,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e243f",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092376268,
+                    "secretData": "{\"value\":\"v8XZAZ3kxZzKJ5U2/CUYU1FoC80mSRfMFisSJQiCeyg=\",\"salt\":\"zjq3q/yxDwxzzXuTyDN9vg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "e79d0b6f-af5a-4162-a6fd-8194d5a5f620",
+            "username": "staff5@hcm-td-kvc-1060.com",
+            "firstName": "STAFF 5",
+            "lastName": "USER",
+            "email": "staff5@hcm-td-kvc-1060.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["690e034dff79797b05b3bc89"],
+                "branchId": ["690e034dff79797b05b3bc88"],
+                "subDomain": ["hcm-td-kvc-1060"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020324,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2433",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092384382,
+                    "secretData": "{\"value\":\"j1BUDzhc3M851JoYNXEDkIojdKGWm1+fazB8Pb4/a3Y=\",\"salt\":\"nblNZ0WfmAt02C+YBBwpRw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["STAFF_BRANCH"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "b0c1d2e3-f4a5-4678-b9c0-d1e2f3a4b5c6",
+            "username": "tran.thi.hoa@gmail.com",
+            "firstName": "Hoa",
+            "lastName": "Trần Thị",
+            "email": "tran.thi.hoa@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020419,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2453",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092397529,
+                    "secretData": "{\"value\":\"MVr7Ch8C2SpXnnA6ZZakVj5vQchRpXUDk6eenf5G8aA=\",\"salt\":\"Of0QolW61YRnxfZPA2Qk+w==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "b2c3d4e5-f6a7-4890-b1c2-d3e4f5a6b7c8",
+            "username": "tran.thi.lan@gmail.com",
+            "firstName": "Lan",
+            "lastName": "Trần Thị",
+            "email": "tran.thi.lan@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020401,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2441",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092405554,
+                    "secretData": "{\"value\":\"JeXKH6LCr6U3D9s+Az+RCfhZuaHndmvP7eebQjnu6LE=\",\"salt\":\"wZk92GYYkUM9KnIuWIbw+g==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "d6e7f8a9-b0c1-4234-d5e6-f7a8b9c0d1e2",
+            "username": "truong.thi.uyen@gmail.com",
+            "firstName": "Uyên",
+            "lastName": "Trương Thị",
+            "email": "truong.thi.uyen@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020415,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e244f",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092414568,
+                    "secretData": "{\"value\":\"sWD87Bn6F8Rp+o7t+bxmoJEjwLtr/cOSpfNwCPfzLsQ=\",\"salt\":\"idalEbcsYRK7nLpFDQkLyg==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "c3127b01-9101-4713-8e18-ae1f8f9f1608",
+            "username": "lov3rinve146@gmail.com",
+            "firstName": "Bách",
+            "lastName": "Lê",
+            "email": "lov3rinve146@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757269020000,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "9f4e3c12-8a7b-4d21-bc9f-1234567890cd",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092424110,
+                    "secretData": "{\"value\":\"VGsS2XVTzkhipoU/rOcjsPB9In9AP0bbVbPO53D1YgQ=\",\"salt\":\"2yHt9NMmVz1caKMBvCRRmA==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "c3127b01-9101-4713-8e18-ae1f8f9ffd01",
+            "username": "user@gmail.com",
+            "firstName": "USER",
+            "lastName": "USER",
+            "email": "user@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757269020000,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "9f4e3c12-8a7b-4d21-bc9f-1234567890ab",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092424110,
+                    "secretData": "{\"value\":\"VGsS2XVTzkhipoU/rOcjsPB9In9AP0bbVbPO53D1YgQ=\",\"salt\":\"2yHt9NMmVz1caKMBvCRRmA==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "f6a7b8c9-d0e1-4234-f5a6-b7c8d9e0f1a2",
+            "username": "vu.thi.huyen@gmail.com",
+            "firstName": "Huyền",
+            "lastName": "Vũ Thị",
+            "email": "vu.thi.huyen@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020405,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e2445",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092433189,
+                    "secretData": "{\"value\":\"OijizyZPC9INxis9Sbk02ulzUbsK0WJ7DYciq5DPlj8=\",\"salt\":\"cRjVZzVf0JYrGwn/vm2UGw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
+            },
+            "notBefore": 0,
+            "groups": []
+        },
+        {
+            "id": "b4c5d6e7-f8a9-4012-b3c4-d5e6f7a8b9c0",
+            "username": "vuong.thi.trang@gmail.com",
+            "firstName": "Trang",
+            "lastName": "Vương Thị",
+            "email": "vuong.thi.trang@gmail.com",
+            "emailVerified": true,
+            "attributes": {
+                "tenantId": ["664355f845e56534956be32b"],
+                "branchId": ["664357a235e84033bbd0e6b6"],
+                "subDomain": ["admin"]
+            },
+            "enabled": true,
+            "createdTimestamp": 1757268020413,
+            "totp": false,
+            "credentials": [
+                {
+                    "id": "a9b00616-1680-466e-8433-7025859e244d",
+                    "type": "password",
+                    "userLabel": "My password",
+                    "createdDate": 1767092440342,
+                    "secretData": "{\"value\":\"2NoQcC2oP2em5DUX3JnVWdMYW6atnfGccgGvmGcfie4=\",\"salt\":\"loKhqmdsbgv+StnrtnMhCw==\",\"additionalParameters\":{}}",
+                    "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+                }
+            ],
+            "disableableCredentialTypes": [],
+            "requiredActions": [],
+            "realmRoles": ["default-roles-ygz-realm"],
+            "clientRoles": {
+                "ybstore-admin-dashboard-client-id": ["USER"]
             },
             "notBefore": 0,
             "groups": []
@@ -2248,6 +2492,57 @@
                         "claim.name": "email_verified",
                         "jsonType.label": "boolean"
                     }
+                },
+                {
+                    "id": "a3e6bf64-ca89-49f6-8680-6ed1dba82822",
+                    "name": "tenant id",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-attribute-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "introspection.token.claim": "true",
+                        "userinfo.token.claim": "true",
+                        "user.attribute": "tenantId",
+                        "id.token.claim": "true",
+                        "lightweight.claim": "false",
+                        "access.token.claim": "true",
+                        "claim.name": "tenant_id",
+                        "jsonType.label": "String"
+                    }
+                },
+                {
+                    "id": "61292571-09c1-485f-b5cb-2b0f07aaf053",
+                    "name": "sub domain",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-attribute-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "introspection.token.claim": "true",
+                        "userinfo.token.claim": "true",
+                        "user.attribute": "subDomain",
+                        "id.token.claim": "true",
+                        "lightweight.claim": "false",
+                        "access.token.claim": "true",
+                        "claim.name": "sub_domain",
+                        "jsonType.label": "String"
+                    }
+                },
+                {
+                    "id": "46c29967-24cb-4b4b-9dc0-1ede0656904b",
+                    "name": "branch id",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-attribute-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "introspection.token.claim": "true",
+                        "userinfo.token.claim": "true",
+                        "user.attribute": "branchId",
+                        "id.token.claim": "true",
+                        "lightweight.claim": "false",
+                        "access.token.claim": "true",
+                        "claim.name": "branch_id",
+                        "jsonType.label": "String"
+                    }
                 }
             ],
             "defaultClientScopes": [
@@ -2276,71 +2571,10 @@
                         "ownerManagedAccess": false,
                         "attributes": {},
                         "uris": ["/*"]
-                    },
-                    {
-                        "name": "test-scoped-resources",
-                        "ownerManagedAccess": false,
-                        "displayName": "test scoped resources",
-                        "attributes": {},
-                        "uris": [],
-                        "scopes": [
-                            {
-                                "name": "test-resources:test"
-                            }
-                        ],
-                        "icon_uri": ""
-                    },
-                    {
-                        "name": "test-resources",
-                        "ownerManagedAccess": false,
-                        "displayName": "test resources",
-                        "attributes": {},
-                        "uris": [],
-                        "icon_uri": ""
                     }
                 ],
-                "policies": [
-                    {
-                        "name": "require-role_staff",
-                        "type": "role",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "UNANIMOUS",
-                        "config": {
-                            "fetchRoles": "false",
-                            "roles": "[{\"id\":\"ybstore-admin-dashboard-client-id/STAFF\",\"required\":true}]"
-                        }
-                    },
-                    {
-                        "name": "test-resource-based-authController",
-                        "description": "",
-                        "type": "resource",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "AFFIRMATIVE",
-                        "config": {
-                            "defaultResourceType": "",
-                            "resources": "[\"test-resources\"]",
-                            "applyPolicies": "[\"require-role_staff\"]"
-                        }
-                    },
-                    {
-                        "name": "test-scoped-based-authController",
-                        "description": "",
-                        "type": "scope",
-                        "logic": "POSITIVE",
-                        "decisionStrategy": "AFFIRMATIVE",
-                        "config": {
-                            "resources": "[\"test-scoped-resources\"]",
-                            "scopes": "[\"test-resources:test\"]",
-                            "applyPolicies": "[\"require-role_staff\"]"
-                        }
-                    }
-                ],
-                "scopes": [
-                    {
-                        "name": "test-resources:test",
-                        "displayName": "test-resources test"
-                    }
-                ],
+                "policies": [],
+                "scopes": [],
                 "decisionStrategy": "UNANIMOUS"
             }
         }
@@ -3125,12 +3359,12 @@
                     "allowed-protocol-mapper-types": [
                         "saml-user-attribute-mapper",
                         "saml-user-property-mapper",
+                        "oidc-full-name-mapper",
                         "oidc-address-mapper",
-                        "saml-role-list-mapper",
-                        "oidc-usermodel-attribute-mapper",
-                        "oidc-sha256-pairwise-sub-mapper",
                         "oidc-usermodel-property-mapper",
-                        "oidc-full-name-mapper"
+                        "saml-role-list-mapper",
+                        "oidc-sha256-pairwise-sub-mapper",
+                        "oidc-usermodel-attribute-mapper"
                     ]
                 }
             },
@@ -3142,14 +3376,14 @@
                 "subComponents": {},
                 "config": {
                     "allowed-protocol-mapper-types": [
+                        "oidc-sha256-pairwise-sub-mapper",
+                        "oidc-usermodel-attribute-mapper",
+                        "oidc-full-name-mapper",
                         "saml-role-list-mapper",
                         "oidc-usermodel-property-mapper",
-                        "oidc-full-name-mapper",
-                        "oidc-address-mapper",
-                        "saml-user-attribute-mapper",
-                        "oidc-sha256-pairwise-sub-mapper",
                         "saml-user-property-mapper",
-                        "oidc-usermodel-attribute-mapper"
+                        "oidc-address-mapper",
+                        "saml-user-attribute-mapper"
                     ]
                 }
             },
@@ -3161,6 +3395,18 @@
                 "subComponents": {},
                 "config": {
                     "allow-default-scopes": ["true"]
+                }
+            }
+        ],
+        "org.keycloak.userprofile.UserProfileProvider": [
+            {
+                "id": "868cf450-5017-4d07-be44-d10f41750a12",
+                "providerId": "declarative-user-profile",
+                "subComponents": {},
+                "config": {
+                    "kc.user.profile.config": [
+                        "{\"attributes\":[{\"name\":\"tenantId\",\"displayName\":\"${tenantId}\",\"validations\":{},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"branchId\",\"displayName\":\"${branchId}\",\"validations\":{},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"subDomain\",\"displayName\":\"${subDomain}\",\"validations\":{},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}"
+                    ]
                 }
             }
         ],
@@ -4020,7 +4266,7 @@
         "cibaInterval": "5",
         "realmReusableOtpCode": "false"
     },
-    "keycloakVersion": "26.3.3",
+    "keycloakVersion": "26.3.4",
     "userManagedAccessAllowed": false,
     "organizationsEnabled": false,
     "verifiableCredentialsEnabled": false,

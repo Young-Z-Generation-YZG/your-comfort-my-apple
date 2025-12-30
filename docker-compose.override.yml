@@ -225,7 +225,7 @@ services:
             - KC_HTTP_PORT=17070
         restart: always
         volumes:
-            - ./provision/dockerVolumes/keycloak/seed-realm:/opt/keycloak/data/import
+            - ./provision/dockerVolumes/keycloak/30_12_2025_seed_3:/opt/keycloak/data/import
         depends_on:
             - db.keycloak
         ports:
