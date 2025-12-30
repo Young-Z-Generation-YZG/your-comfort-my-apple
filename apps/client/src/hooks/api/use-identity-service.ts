@@ -19,7 +19,7 @@ import {
    useConfirmOrderMutation,
 } from '~/infrastructure/services/ordering.service';
 import { useChangePasswordMutation } from '~/infrastructure/services/auth.service';
-import { toast } from 'sonner';
+import { useCheckApiSuccess } from '~/hooks/use-check-success';
 
 const useIdentityService = () => {
    const [getMeTrigger, getMeQueryState] = useLazyGetMeQuery();
@@ -72,6 +72,41 @@ const useIdentityService = () => {
       {
          title: 'Confirm Order failed',
          error: confirmOrderMutationState.error,
+      },
+   ]);
+
+   useCheckApiSuccess([
+      {
+         title: 'Profile updated successfully',
+         isSuccess: updateProfileMutationState.isSuccess,
+      },
+      {
+         title: 'Address added successfully',
+         isSuccess: addAddressMutationState.isSuccess,
+      },
+      {
+         title: 'Address updated successfully',
+         isSuccess: updateAddressMutationState.isSuccess,
+      },
+      {
+         title: 'Default address updated',
+         isSuccess: setDefaultAddressMutationState.isSuccess,
+      },
+      {
+         title: 'Address deleted successfully',
+         isSuccess: deleteAddressMutationState.isSuccess,
+      },
+      {
+         title: 'Password changed successfully',
+         isSuccess: changePasswordMutationState.isSuccess,
+      },
+      {
+         title: 'Order canceled successfully',
+         isSuccess: cancelOrderMutationState.isSuccess,
+      },
+      {
+         title: 'Order confirmed successfully',
+         isSuccess: confirmOrderMutationState.isSuccess,
       },
    ]);
 
@@ -271,58 +306,6 @@ const useIdentityService = () => {
       changePasswordMutationState.isLoading,
       cancelOrderMutationState.isLoading,
       confirmOrderMutationState.isLoading,
-   ]);
-
-   // Centrally track success with toasts
-   useMemo(() => {
-      const successToastStyle = {
-         style: {
-            backgroundColor: '#DCFCE7',
-            color: '#166534',
-            border: '1px solid #86EFAC',
-         },
-         cancel: {
-            label: 'Close',
-            onClick: () => {},
-            actionButtonStyle: {
-               backgroundColor: '#16A34A',
-               color: '#FFFFFF',
-            },
-         },
-      };
-      if (updateProfileMutationState.isSuccess) {
-         toast.success('Profile updated successfully', successToastStyle);
-      }
-      if (addAddressMutationState.isSuccess) {
-         toast.success('Address added successfully', successToastStyle);
-      }
-      if (updateAddressMutationState.isSuccess) {
-         toast.success('Address updated successfully', successToastStyle);
-      }
-      if (setDefaultAddressMutationState.isSuccess) {
-         toast.success('Default address updated', successToastStyle);
-      }
-      if (deleteAddressMutationState.isSuccess) {
-         toast.success('Address deleted successfully', successToastStyle);
-      }
-      if (changePasswordMutationState.isSuccess) {
-         toast.success('Password changed successfully', successToastStyle);
-      }
-      if (cancelOrderMutationState.isSuccess) {
-         toast.success('Order canceled successfully', successToastStyle);
-      }
-      if (confirmOrderMutationState.isSuccess) {
-         toast.success('Order confirmed successfully', successToastStyle);
-      }
-   }, [
-      updateProfileMutationState.isSuccess,
-      addAddressMutationState.isSuccess,
-      updateAddressMutationState.isSuccess,
-      setDefaultAddressMutationState.isSuccess,
-      deleteAddressMutationState.isSuccess,
-      changePasswordMutationState.isSuccess,
-      cancelOrderMutationState.isSuccess,
-      confirmOrderMutationState.isSuccess,
    ]);
 
    return {

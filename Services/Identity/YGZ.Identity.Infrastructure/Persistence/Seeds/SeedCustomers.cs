@@ -33,7 +33,7 @@ public static class SeedCustomers
             return new List<User>
             {
                 User.Create(
-                    guid: new Guid("c3127b01-9101-4713-8e18-ae1f8f9f1608"),
+                    guid: new Guid("7ecf88f8-3e55-40cc-92d0-5d3a5a5e228f"),
                     email: "lov3rinve146@gmail.com",
                     firstName: "Bách",
                     lastName: "Lê",
@@ -362,7 +362,7 @@ public static class SeedCustomers
         new IdentityUserRole<string>
         {
             RoleId = "11118cf4-b9d1-430d-96c1-4e5272d6d112", // USER
-            UserId = "c3127b01-9101-4713-8e18-ae1f8f9f1608" // Bách Lê
+            UserId = "7ecf88f8-3e55-40cc-92d0-5d3a5a5e228f" // Bách Lê
         },
         new IdentityUserRole<string>
         {

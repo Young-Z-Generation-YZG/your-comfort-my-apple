@@ -1,10 +1,4 @@
-import {
-   BaseQueryApi,
-   createApi,
-   FetchBaseQueryError,
-   FetchBaseQueryMeta,
-   QueryReturnValue,
-} from '@reduxjs/toolkit/query/react';
+import { BaseQueryApi, createApi } from '@reduxjs/toolkit/query/react';
 import {
    setLogin,
    setLogout,
@@ -31,15 +25,23 @@ const baseQueryHandler = async (
    api: BaseQueryApi,
    extraOptions: any,
 ) => {
+   // baseQuery already handles 401 and refresh automatically
+   // Only handle logout for refresh/logout endpoints that fail
    const result = await baseQuery('/identity-services')(
       args,
       api,
       extraOptions,
    );
 
-   if (result.error && result.error.status === 401) {
+   // If refresh or logout endpoint fails, logout user
+   if (
+      result.error &&
+      result.error.status === 401 &&
+      typeof args !== 'string' &&
+      args.url &&
+      (args.url.includes('/auth/refresh') || args.url.includes('/auth/logout'))
+   ) {
       const currentRoute = window.location.pathname;
-
       api.dispatch(setPreviousUnAuthenticatedPath(currentRoute));
       api.dispatch(setLogout());
    }
@@ -145,34 +147,11 @@ export const authApi = createApi({
          }),
       }),
       refreshToken: builder.mutation<IRefreshTokenResponse, void>({
-         queryFn: async (_, { getState }, __, baseQuery) => {
-            const refreshToken = (getState() as RootState).auth.refreshToken;
-
-            if (!refreshToken) {
-               return {
-                  error: {
-                     status: 401,
-                     data: { message: 'No refresh token available' },
-                  },
-               } as unknown as QueryReturnValue<
-                  IRefreshTokenResponse,
-                  FetchBaseQueryError,
-                  FetchBaseQueryMeta
-               >;
-            }
-
-            const result = await baseQuery({
-               url: '/api/v1/auth/refresh',
-               method: 'POST',
-               body: { refresh_token: refreshToken },
-            });
-
-            return result as unknown as QueryReturnValue<
-               IRefreshTokenResponse,
-               FetchBaseQueryError,
-               FetchBaseQueryMeta
-            >;
-         },
+         query: () => ({
+            url: '/api/v1/auth/refresh',
+            method: 'POST',
+            // Refresh token sent via Bearer header in prepareHeaders
+         }),
          async onQueryStarted(arg, { dispatch, queryFulfilled, getState }) {
             try {
                const { data } = await queryFulfilled;

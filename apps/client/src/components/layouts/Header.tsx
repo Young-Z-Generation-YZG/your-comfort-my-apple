@@ -25,6 +25,7 @@ import { useAppSelector } from '~/infrastructure/redux/store';
 import { TNotification } from '~/domain/types/ordering.type';
 import { INotificationQueryParams } from '~/domain/interfaces/ordering.interface';
 import { Badge } from '~/components/ui/badge';
+import { cn } from '~/infrastructure/lib/utils';
 
 const containerVariants = {
    hidden: {},
@@ -413,7 +414,14 @@ const Header = () => {
                      className="cursor-pointer"
                      onClick={() => setActiveCategory('UserMenu')}
                   >
-                     <PiUserCircleFill className="w-12 h-6 text-[#1d1d1f]" />
+                     <PiUserCircleFill
+                        className={cn(
+                           'w-12 h-6 transition-colors',
+                           isAuthenticated
+                              ? 'text-[#0071e3]'
+                              : 'text-[#1d1d1f]',
+                        )}
+                     />
                   </div>
                   <div
                      className="cursor-pointer relative"
@@ -691,7 +699,12 @@ const Header = () => {
                      }
                   }}
                >
-                  <PiUserCircleFill className="w-4 h-4 md:size-5" />
+                  <PiUserCircleFill
+                     className={cn(
+                        'w-4 h-4 md:size-5 transition-colors',
+                        isAuthenticated ? 'text-[#0071e3]' : 'text-[#1d1d1f]',
+                     )}
+                  />
                </div>
             </ul>
 

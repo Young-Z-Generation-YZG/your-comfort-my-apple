@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Keycloak.AuthServices.Authorization;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -128,7 +127,7 @@ public class UserController : ApiController
 
     [HttpGet("me")]
     [SwaggerHeader("X-User-Language", "User's preferred language", "en-US", false)]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
     public async Task<IActionResult> GetMe(CancellationToken cancellationToken)
     {
         var query = new GetMeQuery();
@@ -139,7 +138,7 @@ public class UserController : ApiController
     }
 
     [HttpGet("addresses")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.READ_OWN)]
     public async Task<IActionResult> GetAddresses(CancellationToken cancellationToken)
     {
         var query = new GetAddressesQuery();
@@ -151,7 +150,7 @@ public class UserController : ApiController
 
 
     [HttpPost("addresses")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     [SwaggerHeader("X-Address-Type", "Type of address being added (home, work, billing, shipping)", "home", false)]
     public async Task<IActionResult> AddAddress([FromBody] AddAddressRequest request, CancellationToken cancellationToken)
     {
@@ -166,7 +165,7 @@ public class UserController : ApiController
 
 
     [HttpPut("addresses/{addressId}")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> UpdateAddress([FromRoute] string addressId, [FromBody] UpdateAddressRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateAddressCommand>(request);
@@ -178,7 +177,7 @@ public class UserController : ApiController
     }
 
     [HttpPatch("addresses/{addressId}/is-default")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> SetDefaultAddress([FromRoute] string addressId, CancellationToken cancellationToken)
     {
         var cmd = new SetDefaultAddressCommand(addressId);
@@ -201,7 +200,7 @@ public class UserController : ApiController
     }
 
     [HttpPut("profiles")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.UPDATE_OWN)]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request, CancellationToken cancellationToken)
     {
         var cmd = _mapper.Map<UpdateProfileCommand>(request);
@@ -235,7 +234,7 @@ public class UserController : ApiController
     }
 
     [HttpDelete("addresses/{addressId}")]
-    [ProtectedResource(Resources.RESOURCE_USERS, Scopes.DELETE_OWN)]
+    //[ProtectedResource(Resources.RESOURCE_USERS, Scopes.DELETE_OWN)]
     public async Task<IActionResult> DeleteAddress([FromRoute] string addressId, CancellationToken cancellationToken)
     {
         var cmd = new DeleteAddressCommand(addressId);

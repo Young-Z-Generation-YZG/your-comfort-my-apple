@@ -49,7 +49,7 @@ public class UserCreatedDomainEventHandler : INotificationHandler<UserCreatedDom
                                                  addressDetail: Address.Create(addressLine: "",
                                                                                addressDistrict: "",
                                                                                addressProvince: "",
-                                                                               addressCountry: ""),
+                                                                               addressCountry: request.Country),
                                                  isDefault: true,
                                                  userId: request.User.Id);
 

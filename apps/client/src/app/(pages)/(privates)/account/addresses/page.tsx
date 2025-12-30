@@ -45,7 +45,9 @@ const AddressesPage = () => {
             (item) => !item.is_default,
          );
 
-         return [defaultAddress, ...otherAddresses];
+         return defaultAddress
+            ? [defaultAddress, ...otherAddresses]
+            : otherAddresses;
       }
       return null;
    }, [getAddressesState.isSuccess, getAddressesState.data]);
@@ -125,70 +127,68 @@ const AddressesPage = () => {
                         </DefaultActionContent>
                      ))}
                </div>
-            ) : (displayAddresses?.length ?? 0 > 0) ? (
-               displayAddresses?.map((item, index) => {
-                  return (
-                     <DefaultActionContent
-                        className="w-full mt-2"
-                        key={item?.id ?? index}
-                     >
-                        <div className="flex w-full flex-col gap-1 text-slate-500 font-SFProText text-sm font-light">
-                           <div className="flex justify-between items-center">
-                              <div className="flex gap-2 items-center">
-                                 <h3 className="text-xl font-medium text-black/80 font-SFProDisplay">
-                                    {item?.label ?? ''}
-                                 </h3>
-                                 {item?.is_default && (
-                                    <Badge variants="default" />
-                                 )}
-                              </div>
+            ) : (displayAddresses?.length ?? 0) > 0 ? (
+               displayAddresses
+                  ?.filter((item) => item != null)
+                  .map((item, index) => {
+                     return (
+                        <DefaultActionContent
+                           className="w-full mt-2"
+                           key={item.id ?? index}
+                        >
+                           <div className="flex w-full flex-col gap-1 text-slate-500 font-SFProText text-sm font-light">
+                              <div className="flex justify-between items-center">
+                                 <div className="flex gap-2 items-center">
+                                    <h3 className="text-xl font-medium text-black/80 font-SFProDisplay">
+                                       {item.label ?? ''}
+                                    </h3>
+                                    {item.is_default && (
+                                       <Badge variants="default" />
+                                    )}
+                                 </div>
 
-                              <Button
-                                 variant="outline"
-                                 className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium gap-1"
-                                 onClick={() => {
-                                    if (item) {
+                                 <Button
+                                    variant="outline"
+                                    className="select-none rounded-full h-[22px] px-2 py-1 font-SFProText text-sm font-medium gap-1"
+                                    onClick={() => {
                                        setEditingAddress({
                                           addressId: item.id,
                                           payload: item,
                                        });
                                        setOpen(true);
-                                    }
-                                 }}
-                              >
-                                 <span>Edit</span>
-                                 <FiEdit3 className="h-3 w-3" />
-                              </Button>
-                           </div>
-                           <p>
-                              {item?.contact_name ?? ''} | +84{' '}
-                              {item?.contact_phone_number ?? ''}
-                           </p>
-                           <p>{item?.address_line ?? ''}</p>
-                           <p>
-                              {item?.district ?? ''}
-                              {(item?.district?.length ?? 0) > 0 && ','}{' '}
-                              {item?.province ?? ''}
-                              {(item?.province?.length ?? 0) > 0 && ','}{' '}
-                              {item?.country ?? ''}
-                           </p>
-
-                           {!item?.is_default && (
-                              <p
-                                 className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline"
-                                 onClick={async () => {
-                                    if (item?.id) {
-                                       await setDefaultAddressAsync(item.id);
-                                    }
-                                 }}
-                              >
-                                 Set as Default
+                                    }}
+                                 >
+                                    <span>Edit</span>
+                                    <FiEdit3 className="h-3 w-3" />
+                                 </Button>
+                              </div>
+                              <p>
+                                 {item.contact_name ?? ''} | +84{' '}
+                                 {item.contact_phone_number ?? ''}
                               </p>
-                           )}
-                        </div>
-                     </DefaultActionContent>
-                  );
-               })
+                              <p>{item.address_line ?? ''}</p>
+                              <p>
+                                 {item.district ?? ''}
+                                 {(item.district?.length ?? 0) > 0 && ','}{' '}
+                                 {item.province ?? ''}
+                                 {(item.province?.length ?? 0) > 0 && ','}{' '}
+                                 {item.country ?? ''}
+                              </p>
+
+                              {!item.is_default && (
+                                 <p
+                                    className="font-medium w-fit text-blue-600 mt-2 select-none cursor-pointer hover:underline"
+                                    onClick={async () => {
+                                       await setDefaultAddressAsync(item.id);
+                                    }}
+                                 >
+                                    Set as Default
+                                 </p>
+                              )}
+                           </div>
+                        </DefaultActionContent>
+                     );
+                  })
             ) : null}
          </div>
       </CardContext>
