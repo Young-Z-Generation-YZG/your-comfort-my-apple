@@ -36,7 +36,9 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
     {
         if (request.DiscountEventItems is null || !request.DiscountEventItems.Any())
         {
-            _logger.LogError("No DiscountEventItems provided in the request.");
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "No discount event items provided in request", new { eventId = request.EventId });
+
             return false;
         }
 
@@ -46,7 +48,9 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
 
         if (eventEntity is null)
         {
-            _logger.LogError("Event with ID {EventId} not found.", request.EventId);
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Event not found", new { eventId = request.EventId });
+
             return false;
         }
 
@@ -63,15 +67,18 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
 
                 if (skuResponse is null)
                 {
-                    _logger.LogError("SKU with ID {SkuId} not found.", itemCmd.SkuId);
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "SKU not found", new { eventId = request.EventId, skuId = itemCmd.SkuId });
+
                     throw new RpcException(new Status(StatusCode.NotFound, $"SKU with ID {itemCmd.SkuId} not found"));
                 }
 
                 // Validate stock availability
                 if (skuResponse.AvailableInStock < itemCmd.Stock)
                 {
-                    _logger.LogError("SKU with ID {SkuId} has not enough stock. Available: {AvailableInStock}, Requested: {Stock}",
-                        itemCmd.SkuId, skuResponse.AvailableInStock, itemCmd.Stock);
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "SKU has insufficient stock", new { eventId = request.EventId, skuId = itemCmd.SkuId, availableStock = skuResponse.AvailableInStock, requestedStock = itemCmd.Stock });
+
                     throw new RpcException(new Status(StatusCode.FailedPrecondition,
                         $"SKU with ID {itemCmd.SkuId} has not enough stock. Available: {skuResponse.AvailableInStock}, Requested: {itemCmd.Stock}"));
                 }
@@ -106,15 +113,26 @@ public class AddEventItemsHandler : ICommandHandler<AddEventItemsCommand, bool>
             }
             catch (RpcException ex)
             {
-                _logger.LogError(ex, "Error processing event item for SKU {SkuId}", itemCmd.SkuId);
+                var parameters = new { eventId = request.EventId, skuId = itemCmd.SkuId };
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                 throw;
             }
         }
 
         // Save changes
-        await _repository.UpdateAsync(eventEntity, cancellationToken);
+        var updateResult = await _repository.UpdateAsync(eventEntity, cancellationToken);
 
-        _logger.LogInformation("Added {Count} event items to event {EventId}", request.DiscountEventItems.Count, request.EventId);
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update event with new event items", new { eventId = request.EventId, itemCount = request.DiscountEventItems.Count, error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully added event items to event", new { eventId = request.EventId, itemCount = request.DiscountEventItems.Count });
 
         return true;
     }

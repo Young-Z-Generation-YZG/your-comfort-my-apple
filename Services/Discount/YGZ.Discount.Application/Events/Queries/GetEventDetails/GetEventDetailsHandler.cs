@@ -32,11 +32,16 @@ public class GetEventDetailsHandler : IQueryHandler<GetEventDetailsQuery, EventR
 
         if (@event is null)
         {
-            _logger.LogWarning("Event {EventId} was not found.", request.EventId);
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                "FirstOrDefaultAsync", "Event not found", new { eventId = request.EventId });
+
             return Errors.Event.EventNotFound;
         }
 
         var eventItems = @event.EventItems?.Select(ei => ei.ToResponse()).ToList();
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved event details", new { eventId = request.EventId, eventItemCount = eventItems?.Count ?? 0 });
 
         return @event.ToResponse(eventItems);
     }

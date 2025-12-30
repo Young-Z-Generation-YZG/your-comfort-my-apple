@@ -32,8 +32,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAllAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -46,8 +47,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAllByFilterAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -60,8 +62,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAllAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -78,17 +81,20 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AddAsync), ex.Message, parameters);
             return false;
         }
     }
 
     virtual public async Task<Result<bool>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
+        var entitiesList = entities.ToList();
+        
         try
         {
-            await _dbSet.AddRangeAsync(entities, cancellationToken);
+            await _dbSet.AddRangeAsync(entitiesList, cancellationToken);
 
             var affectedRows = await SaveChangesAsync();
 
@@ -96,8 +102,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name, entityCount = entitiesList.Count };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AddRangeAsync), ex.Message, parameters);
             return false;
         }
     }
@@ -114,8 +121,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error occurred: {@Exception} {@StackTrace}", ex.Message, ex.StackTrace);
-
+            var parameters = new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(UpdateAsync), ex.Message, parameters);
             return false;
         }
     }
@@ -129,6 +137,9 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         }
         catch (Exception ex)
         {
+            var parameters = new { id = id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetByIdAsync), ex.Message, parameters);
             return null!;
         }
     }

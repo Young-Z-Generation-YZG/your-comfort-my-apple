@@ -59,16 +59,22 @@ public class GetEventItemByIdHandler : IQueryHandler<GetEventItemByIdQuery, Even
 
             if (eventItem is null)
             {
-                _logger.LogError("Event item with ID {EventItemId} not found", request.EventItemId);
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Event item not found", new { eventItemId = request.EventItemId });
 
                 throw new Exception("Event item not found");
             }
+
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved event item", new { eventItemId = request.EventItemId });
 
             return eventItem;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving event item with ID {EventItemId}", request.EventItemId);
+            var parameters = new { eventItemId = request.EventItemId };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
             throw;
         }
     }

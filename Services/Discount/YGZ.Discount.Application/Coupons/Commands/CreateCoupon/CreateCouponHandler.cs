@@ -41,6 +41,17 @@ public class CreateCouponHandler : ICommandHandler<CreateCouponCommand, bool>
 
         var result = await _repository.AddAsync(coupon, cancellationToken);
 
+        if (result.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.AddAsync), "Failed to create coupon", new { code = request.UniqueCode, title = request.Title, error = result.Error });
+
+            return result.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully created coupon", new { code = request.UniqueCode, title = request.Title, discountType = discountType?.Name, availableQuantity = request.AvailableQuantity });
+
         return result.Response;
     }
 }

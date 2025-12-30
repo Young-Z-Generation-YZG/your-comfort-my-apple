@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.Discount.Domain.Abstractions.Data;
+using YGZ.Discount.Domain.Core.Errors;
 using YGZ.Discount.Domain.Event;
 using ValueObjects = YGZ.Discount.Domain.Event.ValueObjects;
 
@@ -29,8 +30,10 @@ public class DeductEventItemQuantityHandler : ICommandHandler<DeductEventItemQua
 
         if (eventEntity is null)
         {
-            _logger.LogError("Event with ID {EventId} not found.", request.EventId);
-            return YGZ.Discount.Domain.Core.Errors.Errors.Event.EventNotFound;
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                "FirstOrDefaultAsync", "Event not found", new { eventId = request.EventId });
+
+            return Errors.Event.EventNotFound;
         }
 
         // Find event item in event
@@ -39,8 +42,10 @@ public class DeductEventItemQuantityHandler : ICommandHandler<DeductEventItemQua
 
         if (eventItem is null)
         {
-            _logger.LogError("Event item with ID {EventItemId} not found in event {EventId}.", request.EventItemId, request.EventId);
-            return YGZ.Discount.Domain.Core.Errors.Errors.EventItem.EventItemNotFound;
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Event item not found in event", new { eventId = request.EventId, eventItemId = request.EventItemId });
+
+            return Errors.EventItem.EventItemNotFound;
         }
 
         // Increase sold by deduct quantity
@@ -50,20 +55,33 @@ public class DeductEventItemQuantityHandler : ICommandHandler<DeductEventItemQua
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Invalid quantity for event item {EventItemId}.", request.EventItemId);
-            return YGZ.Discount.Domain.Core.Errors.Errors.EventItem.InvalidQuantity;
+            var parameters = new { eventId = request.EventId, eventItemId = request.EventItemId, deductQuantity = request.DeductQuantity };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(eventItem.IncreaseSold), ex.Message, parameters);
+
+            return Errors.EventItem.InvalidQuantity;
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "Cannot increase sold quantity for event item {EventItemId}.", request.EventItemId);
-            return YGZ.Discount.Domain.Core.Errors.Errors.EventItem.InsufficientStock;
+            var parameters = new { eventId = request.EventId, eventItemId = request.EventItemId, deductQuantity = request.DeductQuantity, stock = eventItem.Stock, sold = eventItem.Sold };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(eventItem.IncreaseSold), ex.Message, parameters);
+            return Errors.EventItem.InsufficientStock;
         }
 
         // Save changes
-        await _repository.UpdateAsync(eventEntity, cancellationToken);
+        var updateResult = await _repository.UpdateAsync(eventEntity, cancellationToken);
 
-        _logger.LogInformation("Increased sold quantity for event item {EventItemId} by {Quantity}. New sold: {Sold}",
-            request.EventItemId, request.DeductQuantity, eventItem.Sold);
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update event after deducting quantity", new { eventId = request.EventId, eventItemId = request.EventItemId, error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully increased sold quantity for event item", new { eventId = request.EventId, eventItemId = request.EventItemId, deductQuantity = request.DeductQuantity, newSold = eventItem.Sold });
 
         return true;
     }

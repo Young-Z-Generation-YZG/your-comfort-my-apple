@@ -28,7 +28,9 @@ public class GetEventsHandler : IQueryHandler<GetEventsQuery, List<EventResponse
 
         if (events is null || events.Count == 0)
         {
-            _logger.LogInformation("No events found.");
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "No events found", new { });
+
             return new List<EventResponse>();
         }
 
@@ -37,6 +39,9 @@ public class GetEventsHandler : IQueryHandler<GetEventsQuery, List<EventResponse
             var eventItems = @event.EventItems?.Select(ei => ei.ToResponse()).ToList();
             return @event.ToResponse(eventItems);
         }).ToList();
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved events", new { eventCount = events.Count });
 
         return responses;
     }

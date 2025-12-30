@@ -24,14 +24,17 @@ public class EventItemCreatedDomainEventHandler : INotificationHandler<EventItem
 
     public async Task Handle(EventItemCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Handling EventItemCreatedDomainEvent for EventItemId: {EventItemId}", 
-            notification.EventItem.Id.Value?.ToString() ?? "unknown");
+        var eventItemId = notification.EventItem.Id.ToString();
+        var eventId = notification.EventItem.EventId?.ToString() ?? "";
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Processing event item created domain event", new { eventItemId, eventId, skuId = notification.EventItem.SkuId });
 
         var integrationEvent = new EventItemCreatedIntegrationEvent
         {
             SkuId = notification.EventItem.SkuId,
-            EventId = notification.EventItem.EventId?.Value?.ToString() ?? "",
-            EventItemId = notification.EventItem.Id.Value?.ToString() ?? "",
+            EventId = eventId,
+            EventItemId = eventItemId,
             TenantId = notification.EventItem.TenantId,
             BranchId = notification.EventItem.BranchId,
             EventName = "",
@@ -40,7 +43,7 @@ public class EventItemCreatedDomainEventHandler : INotificationHandler<EventItem
 
         await _integrationEventSender.Publish(integrationEvent, cancellationToken);
         
-        _logger.LogInformation("Successfully published EventItemCreatedIntegrationEvent for EventItemId: {EventItemId}", 
-            integrationEvent.EventItemId);
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully published event item created integration event", new { eventItemId, eventId, skuId = notification.EventItem.SkuId });
     }
 }

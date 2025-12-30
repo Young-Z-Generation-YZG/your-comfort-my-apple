@@ -42,7 +42,9 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
 
         if (eventEntity is null)
         {
-            _logger.LogError("Event with ID {EventId} not found.", request.EventId);
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                "FirstOrDefaultAsync", "Event not found", new { eventId = request.EventId });
+
             return Errors.Event.EventNotFound;
         }
 
@@ -78,11 +80,13 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                 if (eventItem is not null)
                 {
                     eventEntity.RemoveEventItem(eventItem);
-                    _logger.LogInformation("Removed event item {EventItemId} from event {EventId}.", eventItemIdStr, request.EventId);
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Removed event item from event", new { eventId = request.EventId, eventItemId = eventItemIdStr });
                 }
                 else
                 {
-                    _logger.LogWarning("Event item {EventItemId} not found in event {EventId}.", eventItemIdStr, request.EventId);
+                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Event item not found in event", new { eventId = request.EventId, eventItemId = eventItemIdStr });
                 }
             }
         }
@@ -102,15 +106,16 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
 
                     if (skuResponse is null)
                     {
-                        _logger.LogError("SKU with ID {SkuId} not found.", itemCmd.SkuId);
+                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "SKU not found", new { eventId = request.EventId, skuId = itemCmd.SkuId });
                         continue; // Skip this item
                     }
 
                     // Validate stock availability
                     if (skuResponse.AvailableInStock < itemCmd.Stock)
                     {
-                        _logger.LogWarning("SKU with ID {SkuId} has not enough stock. Available: {AvailableInStock}, Requested: {Stock}",
-                            itemCmd.SkuId, skuResponse.AvailableInStock, itemCmd.Stock);
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "SKU has insufficient stock", new { eventId = request.EventId, skuId = itemCmd.SkuId, availableStock = skuResponse.AvailableInStock, requestedStock = itemCmd.Stock });
                         continue; // Skip this item
                     }
 
@@ -127,8 +132,8 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
 
                     if (existingItemBySku is not null)
                     {
-                        _logger.LogWarning("Event item with SKU {SkuId} already exists in event {EventId}. Skipping.", 
-                            itemCmd.SkuId, request.EventId);
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(Handle), "Event item with SKU already exists in event", new { eventId = request.EventId, skuId = itemCmd.SkuId });
                         continue; // Skip this item
                     }
 
@@ -157,16 +162,21 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
                                                            stock: itemCmd.Stock);
 
                     eventEntity.AddEventItem(eventItem);
-                    _logger.LogInformation("Added event item for SKU {SkuId} to event {EventId}.", itemCmd.SkuId, request.EventId);
+                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "Added event item to event", new { eventId = request.EventId, skuId = itemCmd.SkuId, eventItemId = eventItem.Id.ToString() });
                 }
                 catch (RpcException ex)
                 {
-                    _logger.LogError(ex, "Error adding event item for SKU {SkuId}", itemCmd.SkuId);
+                    var parameters = new { eventId = request.EventId, skuId = itemCmd.SkuId };
+                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
                     // Continue with other items
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Unexpected error adding event item for SKU {SkuId}", itemCmd.SkuId);
+                    var parameters = new { eventId = request.EventId, skuId = itemCmd.SkuId };
+                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), ex.Message, parameters);
                     // Continue with other items
                 }
             }
@@ -176,9 +186,18 @@ public class UpdateEventHandler : ICommandHandler<UpdateEventCommand, bool>
         eventEntity.UpdatedAt = DateTime.UtcNow;
 
         // Save all changes atomically
-        await _repository.UpdateAsync(eventEntity, cancellationToken);
+        var updateResult = await _repository.UpdateAsync(eventEntity, cancellationToken);
 
-        _logger.LogInformation("Updated event {EventId} with property changes and item modifications.", request.EventId);
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update event", new { eventId = request.EventId, error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully updated event with property changes and item modifications", new { eventId = request.EventId, eventItemCount = eventEntity.EventItems.Count });
 
         return true;
     }
