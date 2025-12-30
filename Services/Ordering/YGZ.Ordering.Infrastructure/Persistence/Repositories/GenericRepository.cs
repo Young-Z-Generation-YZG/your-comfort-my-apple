@@ -98,8 +98,12 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return result;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { id = id.ToString() };
+
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetByIdAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -119,8 +123,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return Errors.Common.AddFailure;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AddAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -131,7 +138,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         {
             // Check if entity is already being tracked by the DbContext
             var entry = _dbContext.Entry(entity);
-            
+
             if (entry.State == EntityState.Detached)
             {
                 // Entity is not tracked, use Update() which marks all properties as modified
@@ -150,8 +157,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(UpdateAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -198,18 +208,21 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return await query.ToListAsync(cancellationToken ?? CancellationToken.None);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAllAsync), ex.Message, parameters);
             throw;
         }
     }
 
     public async Task<Result<bool>> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken? cancellationToken)
     {
+        var entitiesList = entities.ToList();
+
         try
         {
-            var entitiesList = entities.ToList();
-            
             if (!entitiesList.Any())
             {
                 return true;
@@ -226,8 +239,11 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
 
             return Errors.Common.UpdateFailure;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name, entityCount = entitiesList.Count };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(UpdateRangeAsync), ex.Message, parameters);
             throw;
         }
     }

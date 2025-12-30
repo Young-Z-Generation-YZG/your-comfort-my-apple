@@ -33,6 +33,9 @@ public class OrderPaidDomainEventHandler : INotificationHandler<OrderPaidDomainE
 
     public async Task Handle(OrderPaidDomainEvent notification, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Processing order paid domain event", new { orderId = notification.Order.Id.Value, orderCode = notification.Order.Code.Value, customerId = notification.Order.CustomerId.Value });
+
         var orderItems = notification.Order.OrderItems.Select(x => new OrderItemIntegrationEvent
         {
             ModelId = x.ModelId,
@@ -85,13 +88,15 @@ public class OrderPaidDomainEventHandler : INotificationHandler<OrderPaidDomainE
         var adminResult = await _notificationRepository.AddAsync(adminNotification, cancellationToken);
         if (adminResult.IsFailure)
         {
-            _logger.LogWarning("Failed to create admin payment notification for order {OrderId}", order.Id.Value);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(_notificationRepository.AddAsync), "Failed to create admin payment notification", new { orderId = order.Id.Value, orderCode, error = adminResult.Error });
         }
 
         var userResult = await _notificationRepository.AddAsync(userNotification, cancellationToken);
         if (userResult.IsFailure)
         {
-            _logger.LogWarning("Failed to create user payment notification for order {OrderId}", order.Id.Value);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(_notificationRepository.AddAsync), "Failed to create user payment notification", new { orderId = order.Id.Value, orderCode, customerId, error = userResult.Error });
         }
     }
 
@@ -142,11 +147,14 @@ public class OrderPaidDomainEventHandler : INotificationHandler<OrderPaidDomainE
             );
 
             await _emailService.SendEmailAsync(emailCommand);
-            _logger.LogInformation("Order payment email sent successfully to {CustomerEmail} for order {OrderId}", customerEmail, order.Id.Value);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), "Successfully sent order payment email", new { orderId = order.Id.Value, orderCode = order.Code.Value, customerEmail });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send order payment email for order {OrderId}", domainEvent.Order.Id.Value);
+            var parameters = new { orderId = domainEvent.Order.Id.Value, orderCode = domainEvent.Order.Code.Value, customerEmail = domainEvent.Order.ShippingAddress.ContactEmail };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), ex.Message, parameters);
             // Don't throw - email failure shouldn't break the order payment flow
         }
     }

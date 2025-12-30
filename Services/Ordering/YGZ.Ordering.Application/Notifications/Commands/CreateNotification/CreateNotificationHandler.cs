@@ -33,6 +33,9 @@ public class CreateNotificationHandler : ICommandHandler<CreateNotificationComma
         EOrderNotificationType.TryFromName(request.Type, out var typeEnum);
         if (typeEnum is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Invalid notification type", new { notificationType = request.Type, userId });
+
             throw new ArgumentException("Invalid notification type", nameof(request.Type));
         }
 
@@ -68,8 +71,14 @@ public class CreateNotificationHandler : ICommandHandler<CreateNotificationComma
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.AddAsync), "Failed to create notification", new { notificationType = request.Type, userId, error = result.Error });
+
             return false;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully created notification", new { notificationType = request.Type, userId, receiverId = notification.ReceiverId?.Value });
 
         return true;
     }

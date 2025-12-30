@@ -87,6 +87,9 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.AddAsync), "Failed to create order", new { orderId = request.OrderId, customerId = request.CustomerId, tenantId = request.TenantId, error = result.Error });
+
             return result.Error;
         }
 
@@ -109,6 +112,9 @@ public class CreateOrderHandler : ICommandHandler<CreateOrderCommand, bool>
             .Build();
 
         await scheduler.ScheduleJob(jobDetail, trigger);
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully created order and scheduled auto-confirmation job", new { orderId = request.OrderId, customerId = request.CustomerId, tenantId = request.TenantId, orderItemCount = newOrder.OrderItems.Count });
 
         return true;
     }

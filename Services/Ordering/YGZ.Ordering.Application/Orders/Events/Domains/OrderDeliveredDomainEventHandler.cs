@@ -32,6 +32,9 @@ public class OrderDeliveredDomainEventHandler : INotificationHandler<OrderDelive
     }
     public async Task Handle(OrderDeliveredDomainEvent notification, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Processing order delivered domain event", new { orderId = notification.Order.Id.Value, orderCode = notification.Order.Code.Value, customerId = notification.Order.CustomerId.Value });
+
         await _integrationEventSender.Publish(new OrderDeliveredIntegrationEvent
         {
             OrderId = notification.Order.Id.Value.ToString(),
@@ -78,13 +81,15 @@ public class OrderDeliveredDomainEventHandler : INotificationHandler<OrderDelive
         var adminResult = await _notificationRepository.AddAsync(adminNotification, cancellationToken);
         if (adminResult.IsFailure)
         {
-            _logger.LogWarning("Failed to create admin delivered notification for order {OrderId}", order.Id.Value);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(_notificationRepository.AddAsync), "Failed to create admin delivered notification", new { orderId = order.Id.Value, orderCode, error = adminResult.Error });
         }
 
         var userResult = await _notificationRepository.AddAsync(userNotification, cancellationToken);
         if (userResult.IsFailure)
         {
-            _logger.LogWarning("Failed to create user delivered notification for order {OrderId}", order.Id.Value);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(_notificationRepository.AddAsync), "Failed to create user delivered notification", new { orderId = order.Id.Value, orderCode, customerId, error = userResult.Error });
         }
     }
 
@@ -135,11 +140,14 @@ public class OrderDeliveredDomainEventHandler : INotificationHandler<OrderDelive
             );
 
             await _emailService.SendEmailAsync(emailCommand);
-            _logger.LogInformation("Order delivered email sent to {CustomerEmail} for order {OrderId}", customerEmail, order.Id.Value);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), "Successfully sent order delivered email", new { orderId = order.Id.Value, orderCode = order.Code.Value, customerEmail });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send order delivered email for order {OrderId}", domainEvent.Order.Id.Value);
+            var parameters = new { orderId = domainEvent.Order.Id.Value, orderCode = domainEvent.Order.Code.Value, customerEmail = domainEvent.Order.ShippingAddress.ContactEmail };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), ex.Message, parameters);
             // Best-effort: do not throw to keep domain flow intact
         }
     }

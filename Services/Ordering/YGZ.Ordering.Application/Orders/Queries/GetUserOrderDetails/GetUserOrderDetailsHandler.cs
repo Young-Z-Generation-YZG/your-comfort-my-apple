@@ -46,12 +46,16 @@ public sealed class GetUserOrderDetailsHandler : IQueryHandler<GetUserOrderDetai
 
             var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
 
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully retrieved user order details", new { userId = request.UserId, totalRecords = result.totalRecords, page = request.Page, limit = request.Limit });
+
             return response;
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception,
-                "Error retrieving orders for user {UserId}", request.UserId);
+            var parameters = new { userId = request.UserId, page = request.Page, limit = request.Limit };
+            _logger.LogError(exception, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), exception.Message, parameters);
             throw;
         }
     }

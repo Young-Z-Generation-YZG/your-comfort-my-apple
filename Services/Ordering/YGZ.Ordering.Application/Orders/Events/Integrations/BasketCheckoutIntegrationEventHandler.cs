@@ -21,11 +21,23 @@ public class BasketCheckoutIntegrationEventHandler : IConsumer<BasketCheckoutInt
 
     public async Task Consume(ConsumeContext<BasketCheckoutIntegrationEvent> context)
     {
-        _logger.LogInformation("Integration event handled: {IntegrationEvent}", context.Message.GetType().Name);
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Consume), "Received basket checkout integration event", new { orderId = context.Message.OrderId, customerId = context.Message.CustomerId, tenantId = context.Message.TenantId });
 
         CreateOrderCommand command = MapToCreateOrderCommand(context.Message);
 
-        await _sender.Send(command);
+        var result = await _sender.Send(command);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_sender.Send), "Failed to create order from integration event", new { orderId = context.Message.OrderId, customerId = context.Message.CustomerId, error = result.Error });
+        }
+        else
+        {
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Consume), "Successfully processed basket checkout integration event", new { orderId = context.Message.OrderId, customerId = context.Message.CustomerId });
+        }
     }
 
     private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent context)

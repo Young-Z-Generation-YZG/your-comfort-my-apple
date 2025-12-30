@@ -50,6 +50,9 @@ public class MarkAllAsReadHandler : ICommandHandler<MarkAllAsReadCommand, bool>
 
         if (!notifications.Any())
         {
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "No unread notifications to mark", new { userId });
+
             return true;
         }
 
@@ -65,11 +68,15 @@ public class MarkAllAsReadHandler : ICommandHandler<MarkAllAsReadCommand, bool>
         var result = await _repository.UpdateRangeAsync(notifications, cancellationToken);
         if (result.IsFailure)
         {
-            _logger.LogError("Failed to update notifications for user {UserId}.", userId);
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateRangeAsync), "Failed to mark all notifications as read", new { userId, notificationCount = notifications.Count, error = result.Error });
+
             return result.Error;
         }
 
-        _logger.LogInformation("Marked {Count} notifications as read for user {UserId}.", notifications.Count, userId);
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully marked all notifications as read", new { userId, notificationCount = notifications.Count });
+
         return true;
     }
 

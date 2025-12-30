@@ -42,17 +42,35 @@ public class CancelOrderHandler : ICommandHandler<CancelOrderCommand, bool>
 
         if (order is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Order not found", new { orderId = request.OrderId, userId = userId.Value });
+
             return Errors.Order.DoesNotExist;
         }
 
         if (order.OrderStatus != EOrderStatus.PENDING)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Cannot cancel order - order is not in PENDING status", new { orderId = request.OrderId, currentStatus = order.OrderStatus.Name, userId = userId.Value });
+
             return Errors.Order.CannotCancelOrder;
         }
 
         order.SetCancelled();
 
+        var updateResult = await _repository.UpdateAsync(order, cancellationToken);
 
-        return await _repository.UpdateAsync(order, cancellationToken);
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to cancel order", new { orderId = request.OrderId, userId = userId.Value, error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully cancelled order", new { orderId = request.OrderId, userId = userId.Value });
+
+        return updateResult;
     }
 }

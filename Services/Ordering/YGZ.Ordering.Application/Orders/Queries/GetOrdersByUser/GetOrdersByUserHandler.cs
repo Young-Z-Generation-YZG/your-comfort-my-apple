@@ -50,6 +50,9 @@ public class GetOrdersByUserHandler : IQueryHandler<GetOrdersByUserQuery, Pagina
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved orders by user", new { userId, totalRecords = result.totalRecords, page = request._page, limit = request._limit });
+
         return response;
     }
 

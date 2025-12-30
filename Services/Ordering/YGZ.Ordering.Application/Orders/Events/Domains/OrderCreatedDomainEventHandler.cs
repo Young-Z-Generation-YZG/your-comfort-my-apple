@@ -33,7 +33,8 @@ public class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedD
 
     public async Task Handle(OrderCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Domain Event: {DomainEvent}", notification.GetType().Name);
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Processing order created domain event", new { orderId = notification.Order.Id.Value, orderCode = notification.Order.Code.Value, customerId = notification.Order.CustomerId.Value });
 
         if (await _featureManager.IsEnabledAsync("OrderFulfillment"))
         {
@@ -62,7 +63,13 @@ public class OrderCreatedDomainEventHandler : INotificationHandler<OrderCreatedD
 
         if (adminResult.IsFailure)
         {
-            _logger.LogWarning("Failed to create admin notification for order {OrderId}", order.Id.Value);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(_notificationRepository.AddAsync), "Failed to create admin notification for order", new { orderId = order.Id.Value, orderCode, error = adminResult.Error });
+        }
+        else
+        {
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(CreateNotificationsAsync), "Successfully created admin notification for order", new { orderId = order.Id.Value, orderCode });
         }
     }
 }

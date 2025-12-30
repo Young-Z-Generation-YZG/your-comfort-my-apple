@@ -25,6 +25,9 @@ public class UpdateIsReviewedHandler : ICommandHandler<UpdateIsReviewedCommand, 
 
         if (!guidParsed)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Invalid order item ID format", new { orderItemId = request.OrderItemId, isReviewed = request.IsReviewed });
+
             return false;
         }
 
@@ -32,12 +35,26 @@ public class UpdateIsReviewedHandler : ICommandHandler<UpdateIsReviewedCommand, 
 
         if (orderItem is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Order item not found", new { orderItemId = request.OrderItemId, isReviewed = request.IsReviewed });
+
             return false;
         }
 
         orderItem.SetIsReviewed(request.IsReviewed);
 
         var result = await _repository.UpdateAsync(orderItem, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update order item review status", new { orderItemId = request.OrderItemId, isReviewed = request.IsReviewed, error = result.Error });
+
+            return false;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully updated order item review status", new { orderItemId = request.OrderItemId, isReviewed = request.IsReviewed });
 
         return result.IsSuccess;
     }

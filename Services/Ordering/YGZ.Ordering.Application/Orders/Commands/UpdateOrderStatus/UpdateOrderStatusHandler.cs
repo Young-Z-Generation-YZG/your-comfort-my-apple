@@ -32,11 +32,17 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
 
         if (order is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Order not found", new { orderId = request.OrderId, updateStatus = request.UpdateStatus, userId = _userContext.GetUserId() });
+
             return Errors.Order.DoesNotExist;
         }
 
         if (!EOrderStatus.TryFromName(request.UpdateStatus, true, out var newStatus))
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Invalid order status", new { orderId = request.OrderId, updateStatus = request.UpdateStatus, userId = _userContext.GetUserId() });
+
             return Errors.Order.InvalidOrderStatus;
         }
 
@@ -52,13 +58,29 @@ public class UpdateOrderStatusHandler : ICommandHandler<UpdateOrderStatusCommand
             order.SetDelivered();
             break;
             default:
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Invalid order status transition", new { orderId = request.OrderId, updateStatus = request.UpdateStatus, currentStatus = order.OrderStatus.Name, userId = _userContext.GetUserId() });
+
             return Errors.Order.InvalidOrderStatus;
         }
 
         order.UpdatedBy = _userContext.GetUserId();
         order.UpdatedAt = DateTime.UtcNow;
 
-        return await _repository.UpdateAsync(order, cancellationToken);
+        var updateResult = await _repository.UpdateAsync(order, cancellationToken);
+
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update order status", new { orderId = request.OrderId, updateStatus = request.UpdateStatus, userId = _userContext.GetUserId(), error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully updated order status", new { orderId = request.OrderId, oldStatus = order.OrderStatus.Name, newStatus = newStatus.Name, userId = _userContext.GetUserId() });
+
+        return updateResult;
 
     }
 }

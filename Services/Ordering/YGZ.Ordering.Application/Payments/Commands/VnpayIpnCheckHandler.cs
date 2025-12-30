@@ -56,7 +56,8 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
 
             if (orderId is null)
             {
-                _logger.LogError("orderId can not get orderId");
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Cannot extract order ID from order info", new { orderInfo = request.OrderInfo, responseCode = request.ResponseCode });
 
                 return Errors.Order.DoesNotExist;
             }
@@ -70,6 +71,9 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
 
             if (order is null)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_repository.GetByIdAsync), "Order not found for VNPay IPN", new { orderId, responseCode = request.ResponseCode });
+
                 return Errors.Order.DoesNotExist;
             }
 
@@ -81,8 +85,14 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
 
                 if (updateResult.IsFailure)
                 {
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_repository.UpdateAsync), "Failed to update order status to paid", new { orderId, responseCode = request.ResponseCode, error = updateResult.Error });
+
                     return updateResult.Error;
                 }
+
+                _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Successfully processed VNPay payment", new { orderId, responseCode = request.ResponseCode, transactionNo = request.TransactionNo });
 
                 OrderDetailsResponse response = order.ToResponse();
 
@@ -90,11 +100,17 @@ public class VnpayIpnCheckHandler : ICommandHandler<VnpayIpnCheckCommand, OrderD
             }
             else if (order is not null && EOrderStatus.Equals(order.OrderStatus, EOrderStatus.PAID))
             {
+                _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "VNPay payment already processed", new { orderId, responseCode = request.ResponseCode });
+
                 OrderDetailsResponse response = order.ToResponse();
 
                 return response;
             }
         }
+
+        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "VNPay payment verification failed", new { responseCode = request.ResponseCode, transactionStatus = request.TransactionStatus });
 
         return Errors.Payment.PaymentFailure;
     }

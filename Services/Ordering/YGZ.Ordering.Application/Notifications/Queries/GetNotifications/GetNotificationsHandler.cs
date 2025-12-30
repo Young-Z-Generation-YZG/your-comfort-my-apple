@@ -53,6 +53,9 @@ public class GetNotificationsHandler : IQueryHandler<GetNotificationsQuery, Pagi
 
         var response = MapToResponse(result.items, result.totalRecords, result.totalPages, request);
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved notifications", new { userId, totalRecords = result.totalRecords, page = request._page, limit = request._limit });
+
         return response;
     }
 

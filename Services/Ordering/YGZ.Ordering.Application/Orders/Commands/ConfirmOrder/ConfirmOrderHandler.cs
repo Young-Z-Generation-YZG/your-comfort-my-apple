@@ -40,6 +40,9 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 
         if (order is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Order not found", new { orderId = request.OrderId });
+
             return Errors.Order.DoesNotExist;
         }
 
@@ -70,17 +73,36 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 
             if (!result.IsSuccess)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_catalogProtoServiceClient.CheckInsufficientGrpcAsync), "Insufficient stock for order item", new { orderId = request.OrderId, skuId = item.SkuId, quantity = item.Quantity, promotionId = item.PromotionId });
+
                 return Errors.Order.InsufficientStock;
             }
         }
 
         if (order.OrderStatus != EOrderStatus.PENDING)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Cannot confirm order - order is not in PENDING status", new { orderId = request.OrderId, currentStatus = order.OrderStatus.Name });
+
             return Errors.Order.CannotConfirmOrder;
         }
 
         order.SetConfirmed();
 
-        return await _repository.UpdateAsync(order, cancellationToken);
+        var updateResult = await _repository.UpdateAsync(order, cancellationToken);
+
+        if (updateResult.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to update order status to confirmed", new { orderId = request.OrderId, error = updateResult.Error });
+
+            return updateResult.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully confirmed order", new { orderId = request.OrderId, orderItemCount = order.OrderItems.Count });
+
+        return updateResult;
     }
 }

@@ -31,6 +31,9 @@ public class MarkAsReadHandler : ICommandHandler<MarkAsReadCommand, bool>
 
         if (notification is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByIdAsync), "Notification not found", new { notificationId = request.NotificationId, userId = _userHttpContext.GetUserId() });
+
             return Errors.Notification.NotFound;
         }
 
@@ -41,8 +44,14 @@ public class MarkAsReadHandler : ICommandHandler<MarkAsReadCommand, bool>
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.UpdateAsync), "Failed to mark notification as read", new { notificationId = request.NotificationId, userId = _userHttpContext.GetUserId(), error = result.Error });
+
             return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully marked notification as read", new { notificationId = request.NotificationId, userId = _userHttpContext.GetUserId() });
 
         return true;
     }

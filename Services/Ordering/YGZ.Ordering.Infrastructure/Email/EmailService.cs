@@ -107,11 +107,14 @@ public class EmailService : IEmailService
 
             await smtpClient.DisconnectAsync(true);
 
-            _logger.LogInformation("Email sent successfully to {ReceiverEmail}", mailRequest.ReceiverEmail);
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), "Successfully sent email", new { receiverEmail = mailRequest.ReceiverEmail, subject = mailRequest.Subject, viewName = mailRequest.ViewName });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send email to {ReceiverEmail}: {ErrorMessage}", mailRequest.ReceiverEmail, ex.Message);
+            var parameters = new { receiverEmail = mailRequest.ReceiverEmail, subject = mailRequest.Subject, viewName = mailRequest.ViewName };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(SendEmailAsync), ex.Message, parameters);
             throw;
         }
     }
