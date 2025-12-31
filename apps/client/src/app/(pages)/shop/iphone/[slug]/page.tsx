@@ -527,7 +527,7 @@ const IphoneDetailsPage = () => {
                                        <div className="text-[11px] text-[#86868B]">
                                           {branchData.branch.address}
                                        </div>
-                                       <div className="text-[11px] text-[#0071E3]">
+                                       <div className="text-sm text-[#0071E3]">
                                           In Stock:{' '}
                                           {branchData.sku?.available_in_stock ||
                                              0}{' '}

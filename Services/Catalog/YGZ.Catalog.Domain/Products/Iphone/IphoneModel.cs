@@ -144,6 +144,7 @@ public class IphoneModel : AggregateRoot<ModelId>, IAuditable, ISoftDelete
                                                averageRating: newModel.AverageRating,
                                                ratingStars: newModel.RatingStars,
                                                promotion: null,
+                                               overallSold: overallSold,
                                                isNewest: newModel.IsNewest);
 
         newModel.AddDomainEvent(new IphoneModelCreatedDomainEvent(newModel, productModel));

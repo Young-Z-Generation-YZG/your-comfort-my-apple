@@ -207,6 +207,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 15 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: false);
 
             return new List<IphoneModel>
@@ -427,6 +428,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 16 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: false);
 
             return new List<IphoneModel>
@@ -550,6 +552,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 16 E model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: false);
 
             return new List<IphoneModel>
@@ -714,6 +717,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: true);
 
             return new List<IphoneModel>
@@ -881,6 +885,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 Pro model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: true);
 
             return new List<IphoneModel>
@@ -1030,6 +1035,7 @@ public static class SeedIphoneModel
                                               description: "iPhone 17 Air model description.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
+                                              overallSold: 10,
                                               isNewest: true);
 
             return new List<IphoneModel>
