@@ -48,6 +48,9 @@ public class GetCategoriesHandler : IQueryHandler<GetCategoriesQuery, List<Categ
             return category.ToResponse(categoryModels);
         }).ToList();
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved categories", new { categoryCount = categories.Count, productModelCount = productModels.Count });
+
         return response;
     }
 }

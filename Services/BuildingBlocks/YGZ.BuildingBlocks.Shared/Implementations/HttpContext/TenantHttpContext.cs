@@ -11,7 +11,7 @@ public class TenantHttpContext : ITenantHttpContext
     private const string TenantIdHeaderName = "X-TenantId";
     private const string TenantIdClaimName = "tenant_id";
     private const string BranchIdClaimName = "branch_id";
-    private const string SubDomainClaimName = "subdomain";
+    private const string SubDomainClaimName = "sub_domain";
 
     public TenantHttpContext(IHttpContextAccessor httpContextAccessor, ILogger<TenantHttpContext> logger)
     {

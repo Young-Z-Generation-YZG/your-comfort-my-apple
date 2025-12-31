@@ -272,6 +272,7 @@ services:
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
+            - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6001:8080"
             - "6061:8081"
@@ -296,6 +297,7 @@ services:
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6002:8080"
             - "6062:8081"
@@ -318,6 +320,7 @@ services:
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
+            - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6003:8080"
             - "6063:8081"
@@ -341,6 +344,7 @@ services:
             - FeatureManagement__OrderFulfillment=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6004:8080"
             - "6064:8081"

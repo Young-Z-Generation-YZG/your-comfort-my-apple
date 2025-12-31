@@ -44,6 +44,9 @@ public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<Sku
 
         var response = await MapToResponse(result, request);
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved SKUs", new { page = request._page ?? 1, limit = request._limit ?? 10, totalRecords = result.totalRecords, totalPages = result.totalPages, tenantId = request._tenantId });
+
         return response;
     }
 

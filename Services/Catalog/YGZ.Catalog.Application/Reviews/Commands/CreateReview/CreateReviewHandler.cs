@@ -39,6 +39,9 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
 
         if (sku is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_skuRepository.GetByIdAsync), "SKU not found", new { skuId = request.SkuId, orderId = request.OrderId, orderItemId = request.OrderItemId });
+
             return false;
         }
 
@@ -64,10 +67,16 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
 
         var result = await _reviewRepository.InsertOneAsync(review);
 
-        if (!result.Response)
+        if (result.IsFailure)
         {
-            return result.Response;
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_reviewRepository.InsertOneAsync), "Failed to create review", new { skuId = request.SkuId, orderId = request.OrderId, orderItemId = request.OrderItemId, rating = request.Rating, error = result.Error });
+
+            return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully created review", new { reviewId = review.Id.ToString(), skuId = request.SkuId, orderId = request.OrderId, rating = request.Rating });
 
         return true;
     }

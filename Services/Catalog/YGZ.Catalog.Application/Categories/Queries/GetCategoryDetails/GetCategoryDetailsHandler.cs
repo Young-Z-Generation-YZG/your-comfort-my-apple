@@ -32,7 +32,9 @@ public class GetCategoryDetailsHandler : IQueryHandler<GetCategoryDetailsQuery, 
 
         if (category is null)
         {
-            _logger.LogWarning("Category with id {CategoryId} was not found.", request.CategoryId);
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_mongoRepository.GetByIdAsync), "Category not found", new { categoryId = request.CategoryId });
+
             return Errors.Category.DoesNotExist;
         }
 
@@ -42,6 +44,9 @@ public class GetCategoryDetailsHandler : IQueryHandler<GetCategoryDetailsQuery, 
             .Where(pm => pm.Category.Id.Value == category.Id.Value)
             .Select(pm => pm.ToResponse())
             .ToList();
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved category details", new { categoryId = request.CategoryId, productModelCount = categoryProductModels.Count });
 
         return category.ToResponse(categoryProductModels);
     }

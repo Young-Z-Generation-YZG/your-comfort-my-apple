@@ -112,20 +112,53 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
     {
         try
         {
+            // Check if entity is already being tracked
+            var entry = _dbContext.Entry(entity);
+            
+            if (entry.State != EntityState.Detached)
+            {
+                // Entity is already tracked, detach it first to ensure clean state
+                entry.State = EntityState.Detached;
+            }
+
+            // Add entity to context
             await _dbSet.AddAsync(entity, cancellationToken ?? CancellationToken.None);
 
+            // Verify entity is in Added state before saving
+            var entryAfterAdd = _dbContext.Entry(entity);
+            if (entryAfterAdd.State != EntityState.Added)
+            {
+                _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(AddAsync), $"Entity state is {entryAfterAdd.State} instead of Added", new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString(), state = entryAfterAdd.State });
+
+                // Force the entity to Added state
+                entryAfterAdd.State = EntityState.Added;
+            }
+
+            // Save changes
             var result = await _dbContext.SaveChangesAsync(cancellationToken ?? CancellationToken.None);
 
-            if (result > 0)
+            // Verify save was successful by checking entry state after SaveChanges
+            // After successful SaveChanges, the entity should be in Unchanged state
+            var entryAfterSave = _dbContext.Entry(entity);
+            var isSuccessfullySaved = entryAfterSave.State == EntityState.Unchanged || result > 0;
+
+            if (isSuccessfullySaved)
             {
+                _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(AddAsync), "Successfully added entity to database", new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString(), saveResult = result, finalState = entryAfterSave.State });
+
                 return true;
             }
+
+            _logger.LogError("::[Operation Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AddAsync), "SaveChangesAsync returned 0 and entity state is not Unchanged", new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString(), saveResult = result, finalState = entryAfterSave.State });
 
             return Errors.Common.AddFailure;
         }
         catch (Exception ex)
         {
-            var parameters = new { entityType = typeof(TEntity).Name };
+            var parameters = new { entityType = typeof(TEntity).Name, entityId = entity.Id.ToString() };
             _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(AddAsync), ex.Message, parameters);
             throw;

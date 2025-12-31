@@ -39,6 +39,9 @@ public class GetProductModelsHandler : IQueryHandler<GetProductModelsQuery, Pagi
 
         var response = MapToResponse(result, request);
 
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully retrieved product models", new { page = request.Page ?? 1, limit = request.Limit ?? 10, totalRecords = result.totalRecords, totalPages = result.totalPages, textSearch = request.TextSearch });
+
         return response;
     }
 

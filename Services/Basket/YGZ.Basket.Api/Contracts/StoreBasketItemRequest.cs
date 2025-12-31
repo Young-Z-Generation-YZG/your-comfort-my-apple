@@ -6,6 +6,7 @@ namespace YGZ.Basket.Api.Contracts;
 public sealed record StoreBasketItemRequest
 {
     [Required]
+    [JsonPropertyName("sku_id")]
     public required string SkuId { get; init; }
 
     [Required]

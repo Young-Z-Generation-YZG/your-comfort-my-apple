@@ -138,6 +138,7 @@ export const baseQuery = (service: string) => {
             console.log('[baseQuery] Attempting to refresh token...');
 
             // Create refresh request with explicit refresh token header
+            // IMPORTANT: Always use identity-services for refresh, regardless of current service
             const refreshArgs: FetchArgs = {
                url: '/api/v1/auth/refresh',
                method: 'POST',
@@ -146,7 +147,9 @@ export const baseQuery = (service: string) => {
                },
             };
 
-            const refreshResult = await baseQueryWithAuth(
+            // Use identity-services base query for refresh token endpoint
+            const identityBaseQuery = baseQuery('/identity-services');
+            const refreshResult = await identityBaseQuery(
                refreshArgs,
                api,
                extraOptions,

@@ -59,20 +59,23 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         var userRoles = _userHttpContext.GetUserRoles();
         if (userRoles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER))
         {
-            _logger.LogInformation("User has ADMIN_SUPER role. Tenant filter will be skipped.");
+            _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(GetBaseTenantFilter), "User has ADMIN_SUPER role, tenant filter will be skipped", new { });
             return null;
         }
 
         var tenantId = _tenantHttpContext.GetTenantId();
         if (string.IsNullOrEmpty(tenantId))
         {
-            _logger.LogWarning("Tenant ID is not available. Tenant filter will not be applied.");
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(GetBaseTenantFilter), "Tenant ID is not available, tenant filter will not be applied", new { });
             return null;
         }
 
         if (!ObjectId.TryParse(tenantId, out var objectId))
         {
-            _logger.LogWarning("Invalid tenant ID format: {TenantId}. Tenant filter will not be applied.", tenantId);
+            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                nameof(GetBaseTenantFilter), "Invalid tenant ID format, tenant filter will not be applied", new { tenantId });
             return null;
         }
 
@@ -103,7 +106,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
         _transactionContext.SetSession(_session);
 
-        _logger.LogInformation("[Transaction] Started transaction");
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(StartTransactionAsync), "Transaction started", new { });
     }
 
     public async Task RollbackTransaction(CancellationToken? cancellationToken = null)
@@ -116,7 +120,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         await _session.AbortTransactionAsync(cancellationToken ?? CancellationToken.None);
         _transactionContext.ClearSession();
 
-        _logger.LogInformation("[Transaction] Rolled back transaction");
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(RollbackTransaction), "Transaction rolled back", new { });
     }
 
     public async Task CommitTransaction(CancellationToken? cancellationToken = null)
@@ -129,7 +134,8 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         await _session.CommitTransactionAsync(cancellationToken ?? CancellationToken.None);
         _transactionContext.ClearSession();
 
-        _logger.LogInformation("[Transaction] Committed transaction");
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(CommitTransaction), "Transaction committed", new { });
     }
 
     public IClientSessionHandle? GetCurrentSession()
@@ -211,8 +217,11 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name, entityId = document.Id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(InsertOneAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -247,8 +256,12 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var documentsList = documents.ToList();
+            var parameters = new { entityType = typeof(TEntity).Name, documentCount = documentsList.Count };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(InsertManyAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -288,8 +301,11 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return false;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name, id, entityId = document.Id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(UpdateAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -320,8 +336,11 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 
             return false;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            var parameters = new { entityType = typeof(TEntity).Name, id, entityId = document.Id.ToString() };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(DeleteAsync), ex.Message, parameters);
             throw;
         }
     }

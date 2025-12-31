@@ -153,8 +153,14 @@ public class CreateIPhoneModelHandler : ICommandHandler<CreateIphoneModelCommand
 
         if (result.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_iphoneModelRepository.InsertOneAsync), "Failed to create iPhone model", new { name = request.Name, categoryId = request.CategoryId, error = result.Error });
+
             return result.Error;
         }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully created iPhone model", new { modelId = modelId.ToString(), name = request.Name, categoryId = request.CategoryId });
 
         return result.Response;
     }

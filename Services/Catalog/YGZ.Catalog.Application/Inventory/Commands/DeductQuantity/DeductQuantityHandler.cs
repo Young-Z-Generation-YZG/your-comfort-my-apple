@@ -33,11 +33,17 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
 
             if (sku is null)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_skuRepository.GetByIdAsync), "SKU not found", new { skuId = orderItem.SkuId, orderId = request.Order.OrderId });
+
                 return Errors.Inventory.SkuDoesNotExist;
             }
 
             if (sku.AvailableInStock < orderItem.Quantity)
             {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Insufficient stock", new { skuId = orderItem.SkuId, availableStock = sku.AvailableInStock, requestedQuantity = orderItem.Quantity, orderId = request.Order.OrderId });
+
                 return Errors.Inventory.QuantityIsLessThanTheQuantityToDeduct;
             }
 
@@ -60,8 +66,32 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
                 await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
             }
 
-            await _skuRepository.UpdateAsync(sku.Id.Value!, sku);
+            var updateSkuResult = await _skuRepository.UpdateAsync(sku.Id.Value!, sku);
+
+            if (updateSkuResult.IsFailure)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_skuRepository.UpdateAsync), "Failed to update SKU after deducting quantity", new { skuId = orderItem.SkuId, quantity = orderItem.Quantity, orderId = request.Order.OrderId, error = updateSkuResult.Error });
+
+                return updateSkuResult.Error;
+            }
+
+            if (productModel is not null)
+            {
+                var updateModelResult = await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
+
+                if (updateModelResult.IsFailure)
+                {
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_productModelRepository.UpdateAsync), "Failed to update product model sold quantity", new { modelId = sku.ModelId.Value, skuId = orderItem.SkuId, quantity = orderItem.Quantity, error = updateModelResult.Error });
+
+                    return updateModelResult.Error;
+                }
+            }
         }
+
+        _logger.LogInformation("::[Handler Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully deducted quantities for order", new { orderId = request.Order.OrderId, itemCount = request.Order.OrderItems.Count });
 
         // var orderItems = request.Order.OrderItems;
 

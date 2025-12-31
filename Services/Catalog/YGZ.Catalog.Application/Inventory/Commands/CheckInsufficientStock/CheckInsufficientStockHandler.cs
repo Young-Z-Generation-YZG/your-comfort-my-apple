@@ -30,6 +30,9 @@ public class CheckInsufficientStockHandler : ICommandHandler<CheckInsufficientSt
 
         if (sku is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_repository.GetByFilterAsync), "SKU not found", new { skuId = request.SkuId, quantity = request.Quantity, promotionType = request.PromotionType?.Name });
+
             return Errors.Inventory.SkuDoesNotExist;
         }
 

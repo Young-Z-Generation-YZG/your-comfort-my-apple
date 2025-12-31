@@ -25,18 +25,27 @@ public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand, bool
 
         if (existingCategory is null)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_mongoRepository.GetByIdAsync), "Category not found", new { categoryId = request.CategoryId });
+
             return Errors.Category.DoesNotExist;
         }
 
         var parentCategory = await ResolveParentCategoryAsync(request, cancellationToken);
         if (parentCategory.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ResolveParentCategoryAsync), "Failed to resolve parent category", new { categoryId = request.CategoryId, parentCategoryId = request.ParentCategoryId, error = parentCategory.Error });
+
             return parentCategory.Error;
         }
 
         var subCategories = await ResolveSubCategoriesAsync(request, cancellationToken);
         if (subCategories.IsFailure)
         {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(ResolveSubCategoriesAsync), "Failed to resolve sub categories", new { categoryId = request.CategoryId, error = subCategories.Error });
+
             return subCategories.Error;
         }
 
@@ -48,6 +57,17 @@ public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand, bool
                                 subCategories.Response);
 
         var result = await _mongoRepository.UpdateAsync(request.CategoryId, existingCategory);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(_mongoRepository.UpdateAsync), "Failed to update category", new { categoryId = request.CategoryId, name = request.Name, error = result.Error });
+
+            return result.Error;
+        }
+
+        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Successfully updated category", new { categoryId = request.CategoryId, name = request.Name });
 
         return result;
     }
