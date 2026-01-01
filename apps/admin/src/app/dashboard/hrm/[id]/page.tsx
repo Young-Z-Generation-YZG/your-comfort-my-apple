@@ -716,13 +716,22 @@ const StaffDetailPage = () => {
                               </label>
                               <MultiSelect
                                  options={[
-                                    { label: 'Admin', value: ERole.ADMIN },
                                     {
-                                       label: 'Super Admin',
-                                       value: ERole.ADMIN_SUPER,
+                                       label: 'Super Admin YBZONE',
+                                       value: ERole.ADMIN_SUPER_YBZONE,
                                     },
-                                    { label: 'Staff', value: ERole.STAFF },
-                                    { label: 'User', value: ERole.USER },
+                                    {
+                                       label: 'Admin YBZONE',
+                                       value: ERole.ADMIN_YBZONE,
+                                    },
+                                    {
+                                       label: 'Admin Branch',
+                                       value: ERole.ADMIN_BRANCH,
+                                    },
+                                    {
+                                       label: 'Staff Branch',
+                                       value: ERole.STAFF_BRANCH,
+                                    },
                                  ]}
                                  value={selectedRoles}
                                  onValueChange={(vals) =>

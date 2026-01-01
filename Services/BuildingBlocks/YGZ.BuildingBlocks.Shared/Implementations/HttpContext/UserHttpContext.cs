@@ -21,6 +21,7 @@ public class UserHttpContext : IUserHttpContext
     {
         var email = _httpContextAccessor.HttpContext?.User.FindFirst("email")?.Value ?? _httpContextAccessor.HttpContext?.User.Identity?.Name;
 
+        _logger.LogInformation(":::[UserHttpContext]::: User Email: {Email}", email);
         if (string.IsNullOrEmpty(email))
         {
             _logger.LogWarning("No email found in user claims.");
@@ -35,6 +36,7 @@ public class UserHttpContext : IUserHttpContext
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
             _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
+        _logger.LogInformation(":::[UserHttpContext]::: User ID: {UserId}", userId);
         if (string.IsNullOrEmpty(userId))
         {
             _logger.LogWarning("No user ID found in user claims.");

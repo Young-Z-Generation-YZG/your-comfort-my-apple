@@ -33,9 +33,10 @@ public static class AuthorizationConstants
 
     public static class Roles
     {
-        public const string ADMIN_SUPER = nameof(ADMIN_SUPER);
-        public const string ADMIN = nameof(ADMIN);
-        public const string STAFF = nameof(STAFF);
+        public const string ADMIN_SUPER_YBZONE = nameof(ADMIN_SUPER_YBZONE);
+        public const string ADMIN_YBZONE = nameof(ADMIN_YBZONE);
+        public const string ADMIN_BRANCH = nameof(ADMIN_BRANCH);
+        public const string STAFF_BRANCH = nameof(STAFF_BRANCH);
         public const string USER = nameof(USER);
     }
 }

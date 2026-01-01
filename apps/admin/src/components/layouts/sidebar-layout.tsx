@@ -447,7 +447,7 @@ export function SidebarLayout({
    }, [getTenantByIdState.isSuccess, getTenantByIdState.data]);
 
    useEffect(() => {
-      if (roles.includes(ERole.ADMIN_SUPER)) {
+      if (roles.includes(ERole.ADMIN_SUPER_YBZONE)) {
          getListTenantsAsync();
       }
       if (currentUser?.tenantId) {
@@ -460,18 +460,26 @@ export function SidebarLayout({
       dispatch(setIsLoading(isLoading));
    }, [isLoading, dispatch]);
 
-   // Determine sidebar data based on roles
+   // Determine sidebar data based on roles (priority: ADMIN_SUPER_YBZONE/ADMIN_YBZONE > ADMIN_BRANCH > STAFF_BRANCH)
    const sidebarData = useMemo(() => {
-      const isSuperAdmin = roles.includes(ERole.ADMIN_SUPER);
-      const isImpersonatingAdmin = impersonatedUser?.roles?.includes(
-         ERole.ADMIN,
-      );
-
-      if (isSuperAdmin && !isImpersonatingAdmin) {
+      if (
+         roles.includes(ERole.ADMIN_SUPER_YBZONE) ||
+         roles.includes(ERole.ADMIN_YBZONE)
+      ) {
          return superAdminSidebarData;
       }
+
+      if (roles.includes(ERole.ADMIN_BRANCH)) {
+         return adminSidebarData;
+      }
+
+      if (roles.includes(ERole.STAFF_BRANCH)) {
+         return staffSidebarData;
+      }
+
+      // Default fallback to admin sidebar
       return adminSidebarData;
-   }, [roles, impersonatedUser?.roles]);
+   }, [roles]);
 
    return (
       <Sidebar variant="inset" {...props}>

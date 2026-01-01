@@ -36,7 +36,7 @@ public class GetListUsersHandler : IQueryHandler<GetListUsersQuery, List<UserRes
         try
         {
             var userRolesFromContext = _userHttpContext.GetUserRoles();
-            var isAdminSuper = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_SUPER);
+            var isAdminSuper = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE);
 
             // Get the underlying DbContext to access UserRoles and Roles using Set<>
             var dbContext = _identityDbContext.GetDbContext();

@@ -128,10 +128,21 @@ const useKeycloakService = () => {
             // Start impersonating new user
             dispatch(setCurrentUserKey('impersonatedUser'));
 
+            // Clear tenant state BEFORE fetching identity to avoid sending wrong tenant header
+            // The identity endpoint will use the user's tenant from the token
+            dispatch(
+               setTenant({
+                  tenantId: null,
+                  branchId: null,
+                  tenantSubDomain: null,
+               }),
+            );
+
             // Call API to get impersonation tokens
             const result = await impersonateUserMutation(userId).unwrap();
 
-            // Fetch identity for the impersonated user
+            // Fetch identity for the impersonated user (without tenant header)
+            // This allows the backend to use the tenant from the user's token
             const identityResult = await getIdentityAsync();
 
             if (identityResult.isSuccess && identityResult.data) {
@@ -176,11 +187,19 @@ const useKeycloakService = () => {
                error: null,
             };
          } catch (error) {
-            // On error, revert to current user
+            // On error, revert to current user and clear tenant
             dispatch(setCurrentUserKey('currentUser'));
             dispatch(
                setImpersonatedUser({
                   impersonatedUser: null,
+               }),
+            );
+            // Clear tenant state on error to prevent stale tenant data
+            dispatch(
+               setTenant({
+                  tenantId: null,
+                  branchId: null,
+                  tenantSubDomain: null,
                }),
             );
             return { isSuccess: false, isError: true, data: null, error };

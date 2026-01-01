@@ -36,14 +36,14 @@ public static class KeycloakIdentityServerExtension
                 // This is Keycloak-specific and reads from resource_access["client-id"].roles
                 o.AddPolicy(Policies.R__ADMIN_SUPER___RS__ALL, b =>
                 {
-                    b.RequireResourceRoles(Roles.ADMIN_SUPER);
+                    b.RequireResourceRoles(Roles.ADMIN_SUPER_YBZONE);
                 });
 
                 o.AddPolicy(Policies.GetUsers, b =>
                 {
-                    b.RequireResourceRoles(Roles.ADMIN_SUPER, Roles.ADMIN);
+                    b.RequireResourceRoles(Roles.ADMIN_SUPER_YBZONE, Roles.ADMIN_BRANCH);
                     // Only ADMIN must provide X-TenantId; ADMIN_SUPER is exempt
-                    b.Requirements.Add(new TenantHeaderRequirement(Roles.ADMIN));
+                    b.Requirements.Add(new TenantHeaderRequirement(Roles.ADMIN_BRANCH));
                 });
 
                 // Combined policy: Require ADMIN_SUPER OR ADMIN (OR logic)

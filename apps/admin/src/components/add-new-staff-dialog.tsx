@@ -118,14 +118,14 @@ export default function AddNewStaffDialog({
    const isSuperAdmin = useMemo(() => {
       const activeRoles = impersonatedUser?.roles ?? currentUser?.roles ?? [];
       return Array.isArray(activeRoles)
-         ? activeRoles.includes(ERole.ADMIN_SUPER)
+         ? activeRoles.includes(ERole.ADMIN_SUPER_YBZONE)
          : false;
    }, [currentUser?.roles, impersonatedUser?.roles]);
 
    const isAdmin = useMemo(() => {
       const activeRoles = impersonatedUser?.roles ?? currentUser?.roles ?? [];
       return Array.isArray(activeRoles)
-         ? activeRoles.includes(ERole.ADMIN)
+         ? activeRoles.includes(ERole.ADMIN_YBZONE)
          : false;
    }, [currentUser?.roles, impersonatedUser?.roles]);
 

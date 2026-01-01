@@ -64,7 +64,7 @@ export function TenantSwitcher({
 
    //    // Check if user has permission to switch tenants
    const canSwitchTenants = useMemo(
-      () => roles.includes(ERole.ADMIN_SUPER),
+      () => roles.includes(ERole.ADMIN_SUPER_YBZONE),
       [roles],
    );
 
@@ -124,7 +124,7 @@ export function TenantSwitcher({
       }
    }, [currentUser?.tenantId, tenants, currentTenantId]);
 
-   if (!roles.includes(ERole.ADMIN_SUPER) && currentTenant) {
+   if (!roles.includes(ERole.ADMIN_SUPER_YBZONE) && currentTenant) {
       return (
          <SidebarMenuButton size="lg" className="cursor-default">
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">

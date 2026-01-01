@@ -30,7 +30,7 @@ public class DeleteReviewHandler : ICommandHandler<DeleteReviewCommand, bool>
 
         var filter = Builders<Review>.Filter.Eq(x => x.Id, ReviewId.Of(request.ReviewId));
 
-        var review = await _reviewRepository.GetByFilterAsync(filter, cancellationToken);
+        var review = await _reviewRepository.GetByFilterAsync(filter, cancellationToken, ignoreBaseFilter: true);
 
         if (review is null)
         {
@@ -66,7 +66,7 @@ public class DeleteReviewHandler : ICommandHandler<DeleteReviewCommand, bool>
             throw;
         }
 
-        var result = await _reviewRepository.DeleteAsync(request.ReviewId, review, cancellationToken);
+        var result = await _reviewRepository.DeleteAsync(request.ReviewId, review, cancellationToken, ignoreBaseFilter: true);
 
         if (result.IsFailure)
         {

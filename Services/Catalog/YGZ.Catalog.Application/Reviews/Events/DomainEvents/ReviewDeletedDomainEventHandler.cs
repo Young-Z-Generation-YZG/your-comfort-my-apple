@@ -20,16 +20,32 @@ public class ReviewDeletedDomainEventHandler : INotificationHandler<ReviewDelete
 
     public async Task Handle(ReviewDeletedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var model = await _productModelRepository.GetByIdAsync(notification.Review.ModelId.Value!, cancellationToken);
-
-        if (model is null)
+        try
         {
-            _logger.LogWarning("ProductModel with Id {ModelId} not found when deleting review {ReviewId}", notification.Review.ModelId.Value, notification.Review.Id.Value);
-            return;
+            var model = await _productModelRepository.GetByIdAsync(notification.Review.ModelId.Value!, cancellationToken, ignoreBaseFilter: true);
+
+            if (model is null)
+            {
+                var warningParameters = new { ModelId = notification.Review.ModelId.Value, ReviewId = notification.Review.Id.Value };
+                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "ProductModel not found when deleting review", warningParameters);
+                return;
+            }
+
+            model.DeleteRating(notification.Review);
+
+            await _productModelRepository.UpdateAsync(model.Id.Value!, model, ignoreBaseFilter: true);
+
+            var successParameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value };
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully deleted review and updated product model rating", successParameters);
         }
-
-        model.DeleteRating(notification.Review);
-
-        await _productModelRepository.UpdateAsync(model.Id.Value!, model);
+        catch (Exception ex)
+        {
+            var parameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            throw;
+        }
     }
 }

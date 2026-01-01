@@ -23,7 +23,7 @@ public class UpdateReviewHandler : ICommandHandler<UpdateReviewCommand, bool>
 
     public async Task<Result<bool>> Handle(UpdateReviewCommand request, CancellationToken cancellationToken)
     {
-        var review = await _reviewRepository.GetByIdAsync(request.ReviewId, cancellationToken);
+        var review = await _reviewRepository.GetByIdAsync(request.ReviewId, cancellationToken, ignoreBaseFilter: true);
 
         if (review is null)
         {
@@ -33,7 +33,7 @@ public class UpdateReviewHandler : ICommandHandler<UpdateReviewCommand, bool>
             return Errors.Review.NotFound;
         }
 
-        var oldReview = await _reviewRepository.GetByIdAsync(request.ReviewId, cancellationToken);
+        var oldReview = await _reviewRepository.GetByIdAsync(request.ReviewId, cancellationToken, ignoreBaseFilter: true);
 
         if (oldReview is null)
         {
@@ -45,7 +45,7 @@ public class UpdateReviewHandler : ICommandHandler<UpdateReviewCommand, bool>
 
         review.Update(request.Content, request.Rating, oldReview);
 
-        var result = await _reviewRepository.UpdateAsync(request.ReviewId, review);
+        var result = await _reviewRepository.UpdateAsync(request.ReviewId, review, ignoreBaseFilter: true);
 
         if (result.IsFailure)
         {

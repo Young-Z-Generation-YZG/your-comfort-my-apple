@@ -23,6 +23,7 @@ public class TenantHttpContext : ITenantHttpContext
     {
         var branchId = _httpContextAccessor.HttpContext?.User.FindFirst(BranchIdClaimName)?.Value ?? _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(claim => claim.Type == BranchIdClaimName)?.Value;
 
+        _logger.LogInformation(":::[TenantHttpContext]::: Branch ID: {BranchId}", branchId);
         if (string.IsNullOrEmpty(branchId))
         {
             _logger.LogWarning("No branch ID found in user claims.");
@@ -38,8 +39,8 @@ public class TenantHttpContext : ITenantHttpContext
 
         var tenantId = tenantIdFromHeader ?? tenantIdFromUser;
 
-        _logger.LogInformation("Tenant ID: {TenantId}", tenantId);
 
+        _logger.LogInformation(":::[TenantHttpContext]::: Tenant ID: {TenantId}", tenantId);
         if (string.IsNullOrEmpty(tenantId))
         {
             _logger.LogWarning("No tenant ID found in user claims.");

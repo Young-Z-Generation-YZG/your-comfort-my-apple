@@ -67,7 +67,7 @@ public class GetNotificationsHandler : IQueryHandler<GetNotificationsQuery, Pagi
         var filterExpression = ExpressionBuilder.New<Notification>();
 
         // Role-based filtering
-        if (roles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER))
+        if (roles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE))
         {
             // ADMIN_SUPER users see all notifications with type ORDER_CREATED
             filterExpression = filterExpression.And(n => n.ReceiverId == null);

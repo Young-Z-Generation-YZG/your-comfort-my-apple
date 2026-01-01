@@ -71,7 +71,9 @@ const useAuthService = () => {
                      }),
                   );
 
-                  if (!identityResult.roles.includes(ERole.ADMIN_SUPER)) {
+                  if (
+                     !identityResult.roles.includes(ERole.ADMIN_SUPER_YBZONE)
+                  ) {
                      dispatch(
                         setTenant({
                            tenantId: identityResult.tenant_id,

@@ -18,7 +18,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
 {
     private readonly ILogger<MongoRepository<TEntity, TId>> _logger;
     private readonly ITenantHttpContext _tenantHttpContext;
-    private readonly IUserHttpContext _userHttpContext; 
+    private readonly IUserHttpContext _userHttpContext;
     private readonly IMongoClient _mongoClient;
     private readonly IMongoCollection<TEntity> _collection;
     private readonly MongoDbSettings _mongoDbSettings;
@@ -57,7 +57,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
     {
         // Check if user has ADMIN_SUPER role - if so, skip tenant filtering
         var userRoles = _userHttpContext.GetUserRoles();
-        if (userRoles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER))
+        if (userRoles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE))
         {
             _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
                 nameof(GetBaseTenantFilter), "User has ADMIN_SUPER role, tenant filter will be skipped", new { });
@@ -82,10 +82,10 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return Builders<TEntity>.Filter.Eq("tenant_id", objectId);
     }
 
-    private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter, bool ignoreBaseFilter = false)
+    private FilterDefinition<TEntity> ApplyTenantFilter(FilterDefinition<TEntity>? existingFilter, bool ignoreBaseFilter = true)
     {
         var tenantFilter = ignoreBaseFilter ? null : GetBaseTenantFilter();
-        
+
         if (tenantFilter == null)
         {
             return existingFilter ?? Builders<TEntity>.Filter.Empty;
@@ -143,13 +143,13 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return _transactionContext.CurrentSession;
     }
 
-    public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null, bool ignoreBaseFilter = false)
+    public async Task<List<TEntity>> GetAllAsync(CancellationToken? cancellationToken = null, bool ignoreBaseFilter = true)
     {
         var filter = ApplyTenantFilter(null, ignoreBaseFilter);
         return await _collection.Find(filter).ToListAsync(cancellationToken ?? CancellationToken.None);
     }
 
-    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
+    public async Task<List<TEntity>> GetAllAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = true)
     {
         var combinedFilter = ApplyTenantFilter(filter, ignoreBaseFilter);
         return await _collection.Find(combinedFilter).ToListAsync(cancellationToken ?? CancellationToken.None);
@@ -160,7 +160,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
                                                                                            FilterDefinition<TEntity>? filter,
                                                                                            SortDefinition<TEntity>? sort,
                                                                                            CancellationToken? cancellationToken,
-                                                                                           bool ignoreBaseFilter = false)
+                                                                                           bool ignoreBaseFilter = true)
     {
         var page = _page ?? 1;
         var limit = _limit ?? 10000;
@@ -180,14 +180,14 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         return (items, (int)totalRecords, totalPages);
     }
 
-    public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
+    public async Task<TEntity> GetByIdAsync(string id, CancellationToken? cancellationToken, bool ignoreBaseFilter = true)
     {
         var idFilter = Builders<TEntity>.Filter.Eq("_id", new ObjectId(id));
         var combinedFilter = ApplyTenantFilter(idFilter, ignoreBaseFilter);
         return await _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
     }
 
-    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
+    public Task<TEntity> GetByFilterAsync(FilterDefinition<TEntity> filter, CancellationToken? cancellationToken, bool ignoreBaseFilter = true)
     {
         var combinedFilter = ApplyTenantFilter(filter, ignoreBaseFilter);
         return _collection.Find(combinedFilter).FirstOrDefaultAsync(cancellationToken ?? CancellationToken.None);
@@ -266,7 +266,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> UpdateAsync(string id, TEntity document, IClientSessionHandle? session = null, bool ignoreBaseFilter = false)
+    public async Task<Result<bool>> UpdateAsync(string id, TEntity document, IClientSessionHandle? session = null, bool ignoreBaseFilter = true)
     {
         var modifiedCount = 0;
         try
@@ -310,7 +310,7 @@ public class MongoRepository<TEntity, TId> : IMongoRepository<TEntity, TId> wher
         }
     }
 
-    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken? cancellationToken, bool ignoreBaseFilter = false)
+    public async Task<Result<bool>> DeleteAsync(string id, TEntity document, CancellationToken? cancellationToken, bool ignoreBaseFilter = true)
     {
         var deletedCount = 0;
         try

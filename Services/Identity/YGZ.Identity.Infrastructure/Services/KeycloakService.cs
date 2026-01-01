@@ -409,7 +409,7 @@ public class KeycloakService : IKeycloakService
             if (introspectionResponse.TryGetValue("active", out var activeValue))
             {
                 bool isActive = false;
-                
+
                 // Try to parse as bool directly if it's already a bool
                 if (activeValue is bool activeBool)
                 {
@@ -793,7 +793,9 @@ public class KeycloakService : IKeycloakService
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
                 return true;
-            } else {
+            }
+            else
+            {
                 return Errors.Keycloak.FailedToDeleteUser;
             }
         }

@@ -85,7 +85,7 @@ public class MarkAllAsReadHandler : ICommandHandler<MarkAllAsReadCommand, bool>
         var filterExpression = ExpressionBuilder.New<Notification>();
 
         // Role-based filtering (same as GetNotifications)
-        if (roles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER))
+        if (roles.Contains(AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE))
         {
             // ADMIN_SUPER users see all notifications with ReceiverId == null
             filterExpression = filterExpression.And(n => n.ReceiverId == null);

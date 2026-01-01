@@ -343,9 +343,14 @@ export function ActionNav() {
 
    useEffect(() => {
       const fetchUsers = async () => {
-         if (roles.includes(ERole.ADMIN_SUPER)) {
+         if (roles.includes(ERole.ADMIN_SUPER_YBZONE)) {
             await getListUsersAsync({
-               roles: [ERole.ADMIN_SUPER, ERole.ADMIN, ERole.STAFF],
+               roles: [
+                  ERole.ADMIN_SUPER_YBZONE,
+                  ERole.ADMIN_YBZONE,
+                  ERole.ADMIN_BRANCH,
+                  ERole.STAFF_BRANCH,
+               ],
             });
          }
       };

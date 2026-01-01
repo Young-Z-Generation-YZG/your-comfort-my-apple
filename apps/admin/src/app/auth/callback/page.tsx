@@ -95,7 +95,9 @@ const AuthCallbackPage = () => {
                );
 
                // Set tenant if user is not super admin
-               if (!identityResult.data.roles.includes(ERole.ADMIN_SUPER)) {
+               if (
+                  !identityResult.data.roles.includes(ERole.ADMIN_SUPER_YBZONE)
+               ) {
                   dispatch(
                      setTenant({
                         tenantId: identityResult.data.tenant_id,

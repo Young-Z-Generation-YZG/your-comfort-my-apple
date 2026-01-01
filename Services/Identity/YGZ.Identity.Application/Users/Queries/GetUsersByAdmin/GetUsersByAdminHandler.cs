@@ -37,10 +37,16 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
     public async Task<Result<PaginationResponse<UserResponse>>> Handle(GetUsersByAdminQuery request, CancellationToken cancellationToken)
     {
         var userRolesFromContext = _userHttpContext.GetUserRoles();
-        var isAdminSuper = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_SUPER);
+        var isAdminSuperYBZone = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE);
+        var isAdminYBZone = userRolesFromContext.Contains(AuthorizationConstants.Roles.ADMIN_YBZONE);
         var tenantIdFromHeader = request.TenantId;
         var tenantIdFromContext = _tenantHttpContext.GetTenantId();
-        
+
+        _logger.LogInformation(":::[Debug Information]::: Method: {MethodName}, Debug message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Debug data", new { userRolesFromContext, isAdminSuperYBZone, isAdminYBZone, tenantIdFromHeader, tenantIdFromContext });
+        _logger.LogTrace(":::[Debug Information]::: Method: {MethodName}, Debug message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Debug data", new { userRolesFromContext, isAdminSuperYBZone, isAdminYBZone, tenantIdFromHeader, tenantIdFromContext });
+
         try
         {
             var dbContext = _identityDbContext.GetDbContext();
@@ -51,9 +57,9 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
                 .AsNoTracking()
                 .Include(x => x.Profile);
 
-            Expression<Func<User, bool>> filterExpression;
+            Expression<Func<User, bool>>? filterExpression = null;
 
-            if (isAdminSuper)
+            if (isAdminSuperYBZone)
             {
                 query = query.IgnoreQueryFilters();
 
@@ -66,7 +72,21 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
                     .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.USER))
                     .Any());
 
-                filterExpression = BuildExpression(request, tenantIdFromHeader);
+                filterExpression = BuildExpression(request, tenantIdFromHeader ?? string.Empty);
+            }
+            else if (isAdminYBZone)
+            {
+                query = query.IgnoreQueryFilters();
+
+                query = query.Where(user => userRoles
+                    .Join(roles,
+                        userRole => userRole.RoleId,
+                        role => role.Id,
+                        (userRole, role) => new { userRole.UserId, role.Name })
+                    .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.ADMIN_SUPER_YBZONE || x.Name == AuthorizationConstants.Roles.ADMIN_YBZONE || x.Name == AuthorizationConstants.Roles.ADMIN_BRANCH || x.Name == AuthorizationConstants.Roles.STAFF_BRANCH))
+                    .Any());
+
+                filterExpression = BuildExpression(request, tenantId: null);
             }
             else
             {
@@ -75,10 +95,10 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
                         userRole => userRole.RoleId,
                         role => role.Id,
                         (userRole, role) => new { userRole.UserId, role.Name })
-                    .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.ADMIN || x.Name == AuthorizationConstants.Roles.STAFF))
+                    .Where(x => x.UserId == user.Id && (x.Name == AuthorizationConstants.Roles.ADMIN_BRANCH || x.Name == AuthorizationConstants.Roles.STAFF_BRANCH))
                     .Any());
 
-                filterExpression = BuildExpression(request, tenantIdFromContext);
+                filterExpression = BuildExpression(request, tenantIdFromContext ?? string.Empty);
             }
 
             if (filterExpression != null)
@@ -108,7 +128,7 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
             var response = MapToResponse(userResponses, totalRecords, totalPages, request);
 
             _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "Successfully retrieved users by admin", new { totalRecords, totalPages, currentPage, pageSize, isAdminSuper });
+                nameof(Handle), "Successfully retrieved users by admin", new { totalRecords, totalPages, currentPage, pageSize, isAdminSuperYBZone, isAdminYBZone });
 
             return response;
         }
@@ -117,7 +137,7 @@ public class GetUsersByAdminHandler : IQueryHandler<GetUsersByAdminQuery, Pagina
             var parameters = new { page = request.Page, limit = request.Limit, tenantId = request.TenantId };
             _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(Handle), ex.Message, parameters);
-            
+
             throw;
         }
     }

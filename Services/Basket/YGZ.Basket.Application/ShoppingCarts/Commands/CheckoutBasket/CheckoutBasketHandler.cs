@@ -359,6 +359,15 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
         var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
         var discountValue = (decimal)(coupon.DiscountValue ?? 0);
+        
+        // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
+        // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
+        // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
+        if (discountType == EDiscountType.PERCENTAGE && discountValue > 0 && discountValue < 1)
+        {
+            discountValue = discountValue * 100m;
+        }
+        
         var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
         var afterCart = CalculatePrice.CalculateEfficientCart(

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.Events;
@@ -9,33 +10,56 @@ namespace YGZ.Catalog.Application.Reviews.Events.DomainEvents;
 
 public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreatedDomainEvent>
 {
+    private readonly ILogger<ReviewCreatedDomainEventHandler> _logger;
     private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
     private readonly OrderingProtoService.OrderingProtoServiceClient _orderingProtoServiceClient;
 
 
-    public ReviewCreatedDomainEventHandler(IMongoRepository<ProductModel, ModelId> productModelRepository, OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
+    public ReviewCreatedDomainEventHandler(
+        ILogger<ReviewCreatedDomainEventHandler> logger,
+        IMongoRepository<ProductModel, ModelId> productModelRepository,
+        OrderingProtoService.OrderingProtoServiceClient orderingProtoServiceClient)
     {
+        _logger = logger;
         _productModelRepository = productModelRepository;
         _orderingProtoServiceClient = orderingProtoServiceClient;
     }
 
     public async Task Handle(ReviewCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var productModel = await _productModelRepository.GetByIdAsync(notification.Review.ModelId.Value!, cancellationToken);
-
-        productModel.AddNewRating(notification.Review);
-
-        await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel);
-
-        var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+        try
         {
-            OrderItemId = notification.Review.OrderInfo.OrderItemId,
-            IsReviewed = true
-        });
+            var productModel = await _productModelRepository.GetByIdAsync(notification.Review.ModelId.Value!, cancellationToken, ignoreBaseFilter: true);
 
-        if (rpcResult.IsFailure)
+            productModel.AddNewRating(notification.Review);
+
+            await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel, ignoreBaseFilter: true);
+
+            var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+            {
+                OrderItemId = notification.Review.OrderInfo.OrderItemId,
+                IsReviewed = true
+            });
+
+            if (rpcResult.IsFailure)
+            {
+                var parameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo.OrderItemId };
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync), rpcResult.ErrorMessage ?? "Failed to update order item review status", parameters);
+
+                throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+            }
+
+            var successParameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo.OrderItemId };
+            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(Handle), "Successfully created review and updated product model rating", successParameters);
+        }
+        catch (Exception ex)
         {
-            throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+            var parameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo?.OrderItemId };
+            _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(Handle), ex.Message, parameters);
+            throw;
         }
     }
 }

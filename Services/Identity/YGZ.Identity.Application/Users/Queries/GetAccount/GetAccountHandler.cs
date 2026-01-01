@@ -39,13 +39,13 @@ public class GetAccountHandler : IQueryHandler<GetAccountQuery, UserResponse>
 
             if (userResult.IsFailure)
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                _logger.LogError(":::[GetAccountHandler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                     nameof(_repository.GetByIdAsync), "User not found", new { userId, Error = userResult.Error });
 
                 return userResult.Error;
             }
 
-            _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            _logger.LogInformation(":::[GetAccountHandler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
                 nameof(Handle), "Successfully retrieved user account", new { userId });
 
             return userResult.Response!.ToResponse();
