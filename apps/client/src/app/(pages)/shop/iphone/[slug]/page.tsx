@@ -937,7 +937,25 @@ const IphoneDetailsPage = () => {
                <>
                   <div className="space-y-6 mb-8">
                      {reviewsData.items.map((item) => {
-                        return <ReviewItem key={item.id} review={item} />;
+                        return (
+                           <ReviewItem
+                              key={item.id}
+                              review={item}
+                              onReviewUpdated={() => {
+                                 // Refresh reviews after update
+                                 if (getModelBySlugState.data?.id) {
+                                    getReviewByProductModelIdAsync(
+                                       getModelBySlugState.data.id,
+                                       {
+                                          _page: _pageReview,
+                                          _limit: _limitReview,
+                                          _sortOrder: 'DESC',
+                                       },
+                                    );
+                                 }
+                              }}
+                           />
+                        );
                      })}
                   </div>
 

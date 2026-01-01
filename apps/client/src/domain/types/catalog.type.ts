@@ -219,6 +219,7 @@ export type TReviewItem = {
    customer_review_info: {
       name: string;
       avatar_image_url: string | null;
+      user_id: string | null;
    };
    rating: number;
    content: string;

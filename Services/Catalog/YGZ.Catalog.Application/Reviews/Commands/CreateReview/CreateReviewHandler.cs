@@ -52,7 +52,8 @@ public class CreateReviewHandler : ICommandHandler<CreateReviewCommand, bool>
 
         var customerReviewInfo = CustomerReviewInfo.Create(
             name: userEmail ?? userId ?? "Anonymous",
-            avatarImageUrl: null
+            avatarImageUrl: null,
+            userId: userId
         );
 
         var review = Review.Create(

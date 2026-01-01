@@ -13,20 +13,24 @@ public class CustomerReviewInfo : ValueObject
     [BsonElement("avatar_image_url")]
     public string? AvatarImageUrl { get; init; }
 
-    private CustomerReviewInfo(string name, string? avatarImageUrl)
+    [BsonElement("user_id")]
+    public string? UserId { get; init; }
+
+    private CustomerReviewInfo(string name, string? avatarImageUrl, string? userId)
     {
         Name = name;
         AvatarImageUrl = avatarImageUrl;
+        UserId = userId;
     }
 
-    public static CustomerReviewInfo Create(string name, string? avatarImageUrl = null)
+    public static CustomerReviewInfo Create(string name, string? avatarImageUrl = null, string? userId = null)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Name cannot be null or empty", nameof(name));
         }
 
-        return new CustomerReviewInfo(name, avatarImageUrl);
+        return new CustomerReviewInfo(name, avatarImageUrl, userId);
     }
 
     public override IEnumerable<object> GetEqualityComponents()
@@ -36,6 +40,10 @@ public class CustomerReviewInfo : ValueObject
         {
             yield return AvatarImageUrl;
         }
+        if (UserId is not null)
+        {
+            yield return UserId;
+        }
     }
 
     public CustomerReviewInfoResponse ToResponse()
@@ -43,7 +51,8 @@ public class CustomerReviewInfo : ValueObject
         return new CustomerReviewInfoResponse
         {
             Name = Name,
-            AvatarImageUrl = AvatarImageUrl
+            AvatarImageUrl = AvatarImageUrl,
+            UserId = UserId
         };
     }
 }

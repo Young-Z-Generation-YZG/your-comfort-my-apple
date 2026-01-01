@@ -26,6 +26,7 @@ public sealed record ProductModelReviewResponse
 public sealed record CustomerReviewInfoResponse {
     public required string Name { get; init; }
     public string? AvatarImageUrl { get; init; }
+    public string? UserId { get; init; }
 }
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]

@@ -11,26 +11,26 @@ public static class SeedReviews
     {
         get
         {
-            var customerReviewInfo1 = CustomerReviewInfo.Create(name: "Bach Le", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo2 = CustomerReviewInfo.Create(name: "Tran Danh", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo3 = CustomerReviewInfo.Create(name: "Dang Duong", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo4 = CustomerReviewInfo.Create(name: "Kong Le", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo5 = CustomerReviewInfo.Create(name: "An Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo6 = CustomerReviewInfo.Create(name: "Khang Vo", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo7 = CustomerReviewInfo.Create(name: "Trang Quang Khai", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo8 = CustomerReviewInfo.Create(name: "Bao Du", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo9 = CustomerReviewInfo.Create(name: "Nhat Tan", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo10 = CustomerReviewInfo.Create(name: "Tien Le", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo11 = CustomerReviewInfo.Create(name: "Cong Chinh", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo12 = CustomerReviewInfo.Create(name: "Quy Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo13 = CustomerReviewInfo.Create(name: "Khanh Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo14 = CustomerReviewInfo.Create(name: "Minh Minh", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo15 = CustomerReviewInfo.Create(name: "Huy Hoang", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo16 = CustomerReviewInfo.Create(name: "Hieu Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo17 = CustomerReviewInfo.Create(name: "Danh Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo18 = CustomerReviewInfo.Create(name: "Duc Pham", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo19 = CustomerReviewInfo.Create(name: "Hai Dang", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
-            var customerReviewInfo20 = CustomerReviewInfo.Create(name: "Long Nguyen", avatarImageUrl: "https://picsum.photos/300/300/?blur=1");
+            var customerReviewInfo1 = CustomerReviewInfo.Create(name: "Bach Le", avatarImageUrl: null, userId: null);
+            var customerReviewInfo2 = CustomerReviewInfo.Create(name: "Tran Danh", avatarImageUrl: null, userId: null);
+            var customerReviewInfo3 = CustomerReviewInfo.Create(name: "Dang Duong", avatarImageUrl: null, userId: null);
+            var customerReviewInfo4 = CustomerReviewInfo.Create(name: "Kong Le", avatarImageUrl: null, userId: null);
+            var customerReviewInfo5 = CustomerReviewInfo.Create(name: "An Nguyen", avatarImageUrl: null, userId: null);
+            var customerReviewInfo6 = CustomerReviewInfo.Create(name: "Khang Vo", avatarImageUrl: null, userId: null);
+            var customerReviewInfo7 = CustomerReviewInfo.Create(name: "Trang Quang Khai", avatarImageUrl: null, userId: null);
+            var customerReviewInfo8 = CustomerReviewInfo.Create(name: "Bao Du", avatarImageUrl: null, userId: null);
+            var customerReviewInfo9 = CustomerReviewInfo.Create(name: "Nhat Tan", avatarImageUrl: null, userId: null);
+            var customerReviewInfo10 = CustomerReviewInfo.Create(name: "Tien Le", avatarImageUrl: null, userId: null);
+            var customerReviewInfo11 = CustomerReviewInfo.Create(name: "Cong Chinh", avatarImageUrl: null, userId: null);
+            var customerReviewInfo12 = CustomerReviewInfo.Create(name: "Quy Nguyen", avatarImageUrl: null, userId: null);
+            var customerReviewInfo13 = CustomerReviewInfo.Create(name: "Khanh Nguyen", avatarImageUrl: null, userId: null);
+            var customerReviewInfo14 = CustomerReviewInfo.Create(name: "Minh Minh", avatarImageUrl: null, userId: null);
+            var customerReviewInfo15 = CustomerReviewInfo.Create(name: "Huy Hoang", avatarImageUrl: null, userId: null);
+            var customerReviewInfo16 = CustomerReviewInfo.Create(name: "Hieu Nguyen", avatarImageUrl: null, userId: null);
+            var customerReviewInfo17 = CustomerReviewInfo.Create(name: "Danh Nguyen", avatarImageUrl: null, userId: null);
+            var customerReviewInfo18 = CustomerReviewInfo.Create(name: "Duc Pham", avatarImageUrl: null, userId: null);
+            var customerReviewInfo19 = CustomerReviewInfo.Create(name: "Hai Dang", avatarImageUrl: null, userId: null);
+            var customerReviewInfo20 = CustomerReviewInfo.Create(name: "Long Nguyen", avatarImageUrl: null, userId: null);
 
             var iphone15ModelId = ModelId.Of("664351e90087aa09993f5ae7");
             var iphone16ModelId = ModelId.Of("6643543d0087aa09993f5b14");
