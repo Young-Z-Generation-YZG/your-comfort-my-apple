@@ -104,9 +104,12 @@ const RevenueOrdersChart = () => {
 
       // Initialize all months with 0 revenue and orders when grouping by month
       if (groupBy === 'month') {
-         const currentYear = new Date().getFullYear();
+         // Use year from date range if available, otherwise use current year
+         const targetYear =
+            range?.from?.getFullYear() || new Date().getFullYear();
+
          monthOrder.forEach((month, index) => {
-            const monthDate = new Date(currentYear, index, 1);
+            const monthDate = new Date(targetYear, index, 1);
             const dateKey = monthDate.toLocaleDateString('en-US', {
                month: 'short',
                year: 'numeric',
