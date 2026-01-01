@@ -40,7 +40,6 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             _limit: limit,
             filter: filter,
             sort: sort,
-			ignoreBaseFilter: true,
 			cancellationToken: cancellationToken);
 
         var response = MapToResponse(result, page, limit);
@@ -71,12 +70,16 @@ public class GetSuggestionProductsHandler : IQueryHandler<GetSuggestionProductsQ
             Description = model.Description,
             ShowcaseImages = model.ShowcaseImages.Select(img => img.ToResponse()).ToList(),
             OverallSold = model.OverallSold,
-            AverageRating = new AverageRatingResponse
+            AverageRating = model.AverageRating?.ToResponse() ?? new AverageRatingResponse
             {
                 RatingAverageValue = 0,
                 RatingCount = 0
             },
-            RatingStars = new List<RatingStarResponse>
+            RatingStars = model.RatingStars?.Select(rs => new RatingStarResponse 
+            { 
+                Star = rs.Star, 
+                Count = rs.Count 
+            }).ToList() ?? new List<RatingStarResponse>
             {
                 new RatingStarResponse { Star = 1, Count = 0 },
                 new RatingStarResponse { Star = 2, Count = 0 },
