@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
+using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
@@ -153,13 +154,13 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
         // 4.1.2. if coupon found and available quantity > 0, calculate discount and apply to cart and cart items
         // 4.1.3. if no selected items, return error
         // 4.1.4. apply discount to selected items
+        // Note: For checkout, we only return selected items
         if (!string.IsNullOrEmpty(request.CouponCode))
         {
-            var selectedItems = filterOutEventItemsShoppingCart.CartItems
-                    .Where(item => item.IsSelected == true)
-                    .ToList();
+            // Filter to only selected items for checkout
+            finalCart = filterOutEventItemsShoppingCart.FilterSelectedItem();
 
-            if (!selectedItems.Any())
+            if (!finalCart.CartItems.Any())
             {
                 finalCart.SetDiscountCouponError("Selected item to apply coupon");
             }
@@ -181,7 +182,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 // 4.1.1
                 if (ex.StatusCode == StatusCode.NotFound)
                 {
-                    if (selectedItems.Any())
+                    if (finalCart.CartItems.Any())
                     {
                         _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
                             nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found", new { couponCode = request.CouponCode, userEmail });
@@ -210,7 +211,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 else
                 {
                     // 4.1.3
-                    if (!selectedItems.Any())
+                    if (!finalCart.CartItems.Any())
                     {
                         _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                             nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
@@ -218,13 +219,18 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                         return Errors.Basket.NotSelectedItems;
                     }
 
-                    // 4.1.4 
+                    // 4.1.4 - Apply discount to selected items (cart already filtered to selected items only)
                     finalCart = HandleFinalCart(finalCart, coupon);
 
                     _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
                         nameof(Handle), "Successfully applied coupon to checkout basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
                 }
             }
+        }
+        else
+        {
+            // If no coupon code, still filter to only selected items for checkout
+            finalCart = filterOutEventItemsShoppingCart.FilterSelectedItem();
         }
 
         _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",

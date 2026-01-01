@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
+using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
@@ -114,12 +115,13 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         // 4.1.1. SetDiscountCouponError if coupon not found or no available quantity
         // 4.1.2. if coupon found and available quantity > 0, calculate discount and apply to cart and cart items
         // 4.1.3. if no selected items, return error
-        // 4.1.4. apply discount to selected items
+        // 4.1.4. apply discount to selected items only (but keep all items in response)
         if (!string.IsNullOrEmpty(request.CouponCode))
         {
-            finalCart = filterOutEventItemsShoppingCart.FilterSelectedItem();
+            // Get selected items for validation and discount calculation
+            var selectedItems = filterOutEventItemsShoppingCart.CartItems.Where(item => item.IsSelected).ToList();
 
-            if (!finalCart.CartItems.Any())
+            if (!selectedItems.Any())
             {
                 finalCart.SetDiscountCouponError("Selected item to apply coupon");
             }
@@ -141,7 +143,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                 // 4.1.1
                 if (ex.StatusCode == StatusCode.NotFound)
                 {
-                    if (finalCart.CartItems.Any())
+                    if (selectedItems.Any())
                     {
                         _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
                             nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found", new { couponCode = request.CouponCode, userEmail });
@@ -170,7 +172,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                 else
                 {
                     // 4.1.3
-                    if (!finalCart.CartItems.Any())
+                    if (!selectedItems.Any())
                     {
                         _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                             nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
@@ -178,8 +180,8 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
                         return Errors.Basket.NotSelectedItems;
                     }
 
-                    // 4.1.4 
-                    finalCart = HandleFinalCart(finalCart, coupon);
+                    // 4.1.4 - Apply discount only to selected items, but keep all items in cart
+                    finalCart = HandleFinalCartWithSelectedItemsOnly(finalCart, coupon, selectedItems);
 
                     _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
                         nameof(Handle), "Successfully applied coupon to basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
@@ -259,6 +261,98 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 
             cartItem.ApplyCoupon(promotionCoupon);
             cartItem.DiscountAmount = efficientItem.DiscountAmount;
+        }
+
+        return cart;
+    }
+
+    private ShoppingCart HandleFinalCartWithSelectedItemsOnly(ShoppingCart cart, CouponModel coupon, List<ShoppingCartItem> selectedItems)
+    {
+        // Create a temporary cart with only selected items for discount calculation
+        var tempCart = new ShoppingCart
+        {
+            UserEmail = cart.UserEmail,
+            CartItems = selectedItems.ToList() // Create a copy
+        };
+
+        // Calculate discount on selected items only
+        var efficientCartItems = selectedItems.Select((item, index) => new EfficientCartItem
+        {
+            UniqueString = $"item_{index}_{item.GetHashCode()}",
+            OriginalPrice = item.UnitPrice,
+            Quantity = item.Quantity,
+            PromotionId = item.Promotion?.PromotionCoupon?.PromotionId,
+            PromotionType = item.Promotion?.PromotionCoupon?.PromotionType,
+            DiscountType = null,
+            DiscountValue = null,
+            DiscountAmount = null
+        }).ToList();
+
+        var beforeCart = new EfficientCart
+        {
+            CartItems = efficientCartItems,
+            PromotionId = coupon.Id,
+            PromotionType = EPromotionType.COUPON.Name,
+            DiscountType = null,
+            DiscountValue = null,
+            DiscountAmount = null,
+            MaxDiscountAmount = null
+        };
+
+        var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
+        var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
+        var discountValue = (decimal)(coupon.DiscountValue ?? 0);
+        
+        // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
+        // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
+        // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
+        if (discountType == EDiscountType.PERCENTAGE && discountValue > 0 && discountValue < 1)
+        {
+            discountValue = discountValue * 100m;
+        }
+        
+        var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
+
+        var afterCart = CalculatePrice.CalculateEfficientCart(
+            beforeCart: beforeCart,
+            discountType: discountTypeName,
+            discountValue: discountValue,
+            maxDiscountAmount: maxDiscountAmount);
+
+        // Apply cart-level promotion info
+        cart.PromotionId = afterCart.PromotionId;
+        cart.PromotionType = afterCart.PromotionType;
+        cart.DiscountType = afterCart.DiscountType;
+        cart.DiscountValue = afterCart.DiscountValue;
+        cart.DiscountAmount = afterCart.DiscountAmount;
+        cart.MaxDiscountAmount = null;
+
+        // Create a dictionary to map selected items (by SkuId) to their discount amounts
+        var selectedItemDiscountMap = new Dictionary<string, (decimal discountAmount, decimal discountValue)>();
+        for (int i = 0; i < selectedItems.Count && i < afterCart.CartItems.Count; i++)
+        {
+            var selectedItem = selectedItems[i];
+            var efficientItem = afterCart.CartItems[i];
+            selectedItemDiscountMap[selectedItem.SkuId] = (efficientItem.DiscountAmount ?? 0, efficientItem.DiscountValue ?? 0);
+        }
+
+        // Apply discount only to selected items in the full cart
+        foreach (var cartItem in cart.CartItems)
+        {
+            if (cartItem.IsSelected && selectedItemDiscountMap.TryGetValue(cartItem.SkuId, out var discountInfo))
+            {
+                // This item is selected, apply discount
+                var promotionCoupon = PromotionCoupon.Create(
+                    promotionId: coupon.Id,
+                    promotionType: EPromotionType.COUPON.Name,
+                    discountType: discountType ?? EDiscountType.UNKNOWN,
+                    discountValue: discountInfo.discountValue
+                );
+
+                cartItem.ApplyCoupon(promotionCoupon);
+                cartItem.DiscountAmount = discountInfo.discountAmount;
+            }
+            // Non-selected items remain unchanged (no discount applied)
         }
 
         return cart;
