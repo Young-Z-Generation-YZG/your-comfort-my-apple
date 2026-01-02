@@ -16,7 +16,7 @@ public class ShoppingCart
     public decimal? DiscountValue { get; set; }
     public decimal? DiscountAmount { get; set; }
     public decimal? MaxDiscountAmount { get; set; }
-    public string? DiscountCouponError { get; set; }
+    public CouponApplied? CouponApplied { get; set; }
     public decimal TotalAmount => SubTotalAmount - (DiscountAmount ?? 0);
 
     public static ShoppingCart Create(string userEmail, List<ShoppingCartItem> cartItems)
@@ -93,9 +93,24 @@ public class ShoppingCart
 
     }
 
+    public void SetCouponApplied(string? errorMessage, string? title, string? discountType, double? discountValue, double? maxDiscountAmount, string? description, DateTime? expiredDate)
+    {
+        CouponApplied = new CouponApplied
+        {
+            ErrorMessage = errorMessage,
+            Title = title,
+            DiscountType = discountType,
+            DiscountValue = discountValue,
+            MaxDiscountAmount = maxDiscountAmount,
+            Description = description,
+            ExpiredDate = expiredDate
+        };
+    }
+
     public void SetDiscountCouponError(string message)
     {
-        DiscountCouponError = message;
+        // Legacy method for backward compatibility - now uses SetCouponApplied
+        SetCouponApplied(errorMessage: message, title: null, discountType: null, discountValue: null, maxDiscountAmount: null, description: null, expiredDate: null);
     }
 
     public GetBasketResponse ToResponse()
@@ -112,7 +127,7 @@ public class ShoppingCart
             DiscountValue = this.DiscountValue,
             DiscountAmount = this.DiscountAmount,
             MaxDiscountAmount = this.MaxDiscountAmount,
-            DiscountCouponError = this.DiscountCouponError,
+            CouponApplied = this.CouponApplied,
             TotalAmount = this.TotalAmount
         };
     }

@@ -14,36 +14,43 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
 
     public string? UserId { get; init; }
     public required Code Code { get; init; }
-    public required string Title { get; init; }
-    public required string Description { get; init; }
-    public required EDiscountState DiscountState { get; init; } = EDiscountState.ACTIVE;
+    public string Title { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
+    public EDiscountState DiscountState { get; private set; } = EDiscountState.INACTIVE;
     public required EProductClassification ProductClassification { get; init; }
-    public EPromotionType PromotionType { get; init; } = EPromotionType.COUPON;
-    public required EDiscountType DiscountType { get; init; } = EDiscountType.PERCENTAGE;
-    public required decimal DiscountValue { get; init; }
-    public required decimal? MaxDiscountAmount { get; init; }
-    public int AvailableQuantity { get; private set; }
+    public required EPromotionType PromotionType { get; init; }
+    public required EDiscountType DiscountType { get; init; }
+    public double DiscountValue { get; private set; } = 0;
+    public double? MaxDiscountAmount { get; private set; }
+    public required int AvailableQuantity { get; init; }
     public required int Stock { get; init; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public bool IsDeleted { get; set; } = false;
-    public DateTime? DeletedAt { get; set; } = null;
-    public string? DeletedBy { get; set; } = null;
-
-    public string? UpdatedBy { get; set; } = null;
+    public DateTime? ExpiredDate { get; private set; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime UpdatedAt { get; private set; }
+    public bool IsDeleted { get; private set; }
+    public DateTime? DeletedAt { get; private set; }
+    public string? DeletedBy { get; private set; }
+    public string? UpdatedBy { get; private set; }
 
     public static Coupon Create(CouponId couponId,
-                                string? userId,
                                 Code code,
                                 string title,
                                 string description,
                                 EProductClassification productClassification,
+                                EPromotionType promotionType,
                                 EDiscountState discountState,
                                 EDiscountType discountType,
-                                decimal discountValue,
-                                decimal? maxDiscountAmount,
-                                int availableQuantity,
-                                int stock)
+                                double discountValue,
+                                int stock = 0,
+                                string? userId = null,
+                                double? maxDiscountAmount = null,
+                                DateTime? expiredDate = null,
+                                DateTime? createdAt = null,
+                                DateTime? updatedAt = null,
+                                bool isDeleted = false,
+                                DateTime? deletedAt = null,
+                                string? deletedBy = null,
+                                string? updatedBy = null)
     {
         return new Coupon(couponId)
         {
@@ -52,13 +59,34 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             Title = title,
             Description = description,
             ProductClassification = productClassification,
+            PromotionType = promotionType,
             DiscountState = discountState,
             DiscountType = discountType,
             DiscountValue = discountValue,
             MaxDiscountAmount = maxDiscountAmount,
-            AvailableQuantity = availableQuantity,
-            Stock = stock
+            AvailableQuantity = stock,
+            Stock = stock,
+            ExpiredDate = expiredDate,
+            CreatedAt = createdAt ?? DateTime.UtcNow,
+            UpdatedAt = updatedAt ?? DateTime.UtcNow,
+            IsDeleted = isDeleted,
+            DeletedAt = deletedAt,
+            DeletedBy = deletedBy,
+            UpdatedBy = updatedBy
         };
+    }
+
+    public bool IsExpired()
+    {
+        return ExpiredDate.HasValue && ExpiredDate.Value < DateTime.UtcNow;
+    }
+
+    public bool IsValid()
+    {
+        return !IsExpired() 
+            && AvailableQuantity > 0 
+            && DiscountState == EDiscountState.ACTIVE
+            && !IsDeleted;
     }
 
     public void UseCoupon()
@@ -67,8 +95,6 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
         {
             throw new InvalidOperationException("Coupon out of stock");
         }
-
-        AvailableQuantity--;
     }
 
     public CouponResponse ToResponse()
@@ -87,7 +113,8 @@ public class Coupon : AggregateRoot<CouponId>, IAuditable, ISoftDelete
             DiscountValue = DiscountValue,
             MaxDiscountAmount = MaxDiscountAmount,
             AvailableQuantity = AvailableQuantity,
-            Stock = Stock
+            Stock = Stock,
+            ExpiredDate = ExpiredDate
         };
     }
 }

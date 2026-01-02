@@ -13,7 +13,7 @@ const initialState: TReduxCartState = {
    discount_value: null,
    discount_amount: null,
    max_discount_amount: null,
-   discount_coupon_error: null,
+   coupon_applied: null,
    total_amount: 0,
 };
 
@@ -25,7 +25,7 @@ const cartSlice = createSlice({
          state.user_email = action.payload.user_email;
          state.cart_items = action.payload.cart_items;
          state.total_amount = action.payload.total_amount;
-         state.discount_coupon_error = action.payload.discount_coupon_error;
+         state.coupon_applied = action.payload.coupon_applied;
 
          console.log('CART APP STATE: SyncCart', current(state));
       },

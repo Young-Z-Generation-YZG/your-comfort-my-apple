@@ -1,35 +1,30 @@
-﻿using YGZ.BuildingBlocks.Shared.Enums;
+﻿using YGZ.BuildingBlocks.Shared.Constants;
+using YGZ.BuildingBlocks.Shared.Enums;
 
 namespace YGZ.BuildingBlocks.Shared.Utils;
 
 public static class ConvertGrpcEnumToNormalEnum
 {
-    public static EDiscountType ConvertToEDiscountType(string? discountTypeGrpc)
+    public static EDiscountType ConvertToEDiscountType(string discountTypeGrpc)
     {
-        if (string.IsNullOrWhiteSpace(discountTypeGrpc))
-            return EDiscountType.UNKNOWN;
-
         return discountTypeGrpc switch
         {
-            "DiscountTypePercentage" => EDiscountType.PERCENTAGE,
-            "DiscountTypeFixedAmount" => EDiscountType.FIXED_AMOUNT,
+            DiscountGrpcEnumConstants.DISCOUNT_TYPE_PERCENTAGE_GRPC_ENUM => EDiscountType.PERCENTAGE,
+            DiscountGrpcEnumConstants.DISCOUNT_TYPE_FIXED_AMOUNT_GRPC_ENUM => EDiscountType.FIXED_AMOUNT,
             _ => EDiscountType.UNKNOWN
         };
     }
 
-    public static EProductClassification ConvertToEProductClassification(string? productClassificationGrpc)
+    public static EProductClassification ConvertToEProductClassification(string productClassificationGrpc)
     {
-        if (string.IsNullOrWhiteSpace(productClassificationGrpc))
-            return EProductClassification.UNKNOWN;
-
         return productClassificationGrpc switch
         {
-            "ProductClassificationIphone" => EProductClassification.IPHONE,
-            "ProductClassificationIpad" => EProductClassification.IPAD,
-            "ProductClassificationMacbook" => EProductClassification.MACBOOK,
-            "ProductClassificationWatch" => EProductClassification.WATCH,
-            "ProductClassificationHeadphone" => EProductClassification.HEADPHONE,
-            "ProductClassificationAccessory" => EProductClassification.ACCESSORY,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_IPHONE_GRPC_ENUM => EProductClassification.IPHONE,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_IPAD_GRPC_ENUM => EProductClassification.IPAD,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_MACBOOK_GRPC_ENUM => EProductClassification.MACBOOK,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_WATCH_GRPC_ENUM => EProductClassification.WATCH,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_HEADPHONE_GRPC_ENUM => EProductClassification.HEADPHONE,
+            DiscountGrpcEnumConstants.PRODUCT_CLASSIFICATION_ACCESSORY_GRPC_ENUM => EProductClassification.ACCESSORY,
             _ => EProductClassification.UNKNOWN
         };
     }

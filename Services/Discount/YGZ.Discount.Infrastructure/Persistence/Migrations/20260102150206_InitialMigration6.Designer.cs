@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using YGZ.Discount.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using YGZ.Discount.Infrastructure.Persistence;
 namespace YGZ.Discount.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DiscountDbContext))]
-    partial class DiscountDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260102150206_InitialMigration6")]
+    partial class InitialMigration6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,8 +60,8 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("DiscountType");
 
-                    b.Property<double>("DiscountValue")
-                        .HasColumnType("double precision");
+                    b.Property<decimal>("DiscountValue")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ExpiredDate")
                         .HasColumnType("timestamp with time zone");
@@ -66,8 +69,8 @@ namespace YGZ.Discount.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<double?>("MaxDiscountAmount")
-                        .HasColumnType("double precision");
+                    b.Property<decimal?>("MaxDiscountAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("ProductClassification")
                         .IsRequired()

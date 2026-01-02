@@ -249,6 +249,27 @@ const CheckoutPage = () => {
       }
    }, [appliedCouponFromQuery, form]);
 
+   // Remove _couponCode from URL if coupon has error message
+   useEffect(() => {
+      if (
+         appliedCouponFromQuery &&
+         getCheckoutItemsQueryState.data &&
+         getCheckoutItemsQueryState.data.coupon_applied?.error_message
+      ) {
+         const newSearchParams = new URLSearchParams(searchParams.toString());
+         newSearchParams.delete('_couponCode');
+         const newUrl = newSearchParams.toString()
+            ? `${window.location.pathname}?${newSearchParams.toString()}`
+            : window.location.pathname;
+         router.replace(newUrl, { scroll: false });
+      }
+   }, [
+      appliedCouponFromQuery,
+      getCheckoutItemsQueryState.data,
+      router,
+      searchParams,
+   ]);
+
    return (
       <div
          className={cn(

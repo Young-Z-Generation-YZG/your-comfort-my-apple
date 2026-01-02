@@ -26,6 +26,16 @@ export type TCartItem = {
    index: number;
 };
 
+export type TCouponApplied = {
+   error_message: string | null;
+   title: string | null;
+   discount_type: string | null;
+   discount_value: string | null;
+   max_discount_amount: number | null;
+   description: string | null;
+   expired_date: string | null;
+};
+
 export type TCart = {
    user_email: string;
    cart_items: TCartItem[];
@@ -36,7 +46,7 @@ export type TCart = {
    discount_value: string | null;
    discount_amount: string | null;
    max_discount_amount: number | null;
-   discount_coupon_error: string | null;
+   coupon_applied: TCouponApplied | null;
    total_amount: number;
 };
 
@@ -113,6 +123,7 @@ export type TCheckoutBasket = {
    discount_value: number;
    discount_amount: number;
    max_discount_amount: number | null;
+   coupon_applied: TCouponApplied | null;
    total_amount: number;
 };
 

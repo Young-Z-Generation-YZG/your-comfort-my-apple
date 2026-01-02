@@ -16,8 +16,9 @@ public sealed record CouponResponse
     public required string PromotionType { get; init; }
     public required string DiscountState { get; init; }
     public required string DiscountType { get; init; }
-    public required decimal DiscountValue { get; init; }
-    public decimal? MaxDiscountAmount { get; init; }
+    public required double DiscountValue { get; init; }
+    public double? MaxDiscountAmount { get; init; }
     public required int AvailableQuantity { get; init; }
     public required int Stock { get; init; }
+    public DateTime? ExpiredDate { get; init; }
 }

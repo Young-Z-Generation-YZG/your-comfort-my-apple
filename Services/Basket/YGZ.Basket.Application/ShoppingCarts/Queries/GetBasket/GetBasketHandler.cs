@@ -123,7 +123,14 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 
             if (!selectedItems.Any())
             {
-                finalCart.SetDiscountCouponError("Selected item to apply coupon");
+                finalCart.SetCouponApplied(
+                    errorMessage: "Selected item to apply coupon",
+                    title: null,
+                    discountType: null,
+                    discountValue: null,
+                    maxDiscountAmount: null,
+                    description: null,
+                    expiredDate: null);
             }
 
             var grpcRequest = new GetCouponByCodeRequest
@@ -140,15 +147,25 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
             }
             catch (RpcException ex)
             {
-                // 4.1.1
-                if (ex.StatusCode == StatusCode.NotFound)
+                // Discount Service handles all validation - trust the error from Discount Service
+                if (ex.StatusCode == StatusCode.NotFound || ex.StatusCode == StatusCode.FailedPrecondition)
                 {
                     if (selectedItems.Any())
                     {
-                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
-                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found", new { couponCode = request.CouponCode, userEmail });
+                        // Get error message from Discount Service
+                        var errorMessage = ex.Message;
 
-                        finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
+                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon validation failed", new { couponCode = request.CouponCode, statusCode = ex.StatusCode, errorMessage, userEmail });
+
+                        finalCart.SetCouponApplied(
+                            errorMessage: errorMessage,
+                            title: null,
+                            discountType: null,
+                            discountValue: null,
+                            maxDiscountAmount: null,
+                            description: null,
+                            expiredDate: null);
                     }
                 }
                 else
@@ -161,31 +178,48 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
 
             if (coupon is not null)
             {
-                // 4.1.1
-                if (coupon.AvailableQuantity <= 0)
+                // Coupon is valid (Discount Service already validated it)
+                // 4.1.3 - Check if items are selected
+                if (!selectedItems.Any())
                 {
-                    _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
-                        nameof(Handle), "Coupon has no available quantity", new { couponCode = request.CouponCode, availableQuantity = coupon.AvailableQuantity, userEmail });
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
 
-                    finalCart.SetDiscountCouponError($"Coupon code {request.CouponCode} is expired or not found");
+                    return Errors.Basket.NotSelectedItems;
                 }
-                else
+
+                // 4.1.4 - Apply discount only to selected items, but keep all items in cart
+                finalCart = HandleFinalCartWithSelectedItemsOnly(finalCart, coupon, selectedItems);
+
+                // Set coupon applied information with discount details
+                var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
+                var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
+                var discountValue = (decimal)(coupon.DiscountValue ?? 0);
+
+                // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%) for display
+                if (discountType == EDiscountType.PERCENTAGE && discountValue > 0 && discountValue < 1)
                 {
-                    // 4.1.3
-                    if (!selectedItems.Any())
-                    {
-                        _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                            nameof(Handle), "No selected items to apply coupon", new { couponCode = request.CouponCode, userEmail });
-
-                        return Errors.Basket.NotSelectedItems;
-                    }
-
-                    // 4.1.4 - Apply discount only to selected items, but keep all items in cart
-                    finalCart = HandleFinalCartWithSelectedItemsOnly(finalCart, coupon, selectedItems);
-
-                    _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-                        nameof(Handle), "Successfully applied coupon to basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
+                    discountValue = discountValue * 100m;
                 }
+
+                // Convert from gRPC Timestamp (UTC+7) back to UTC DateTime
+                // ToTimestampUtc adds 7 hours, so we subtract 7 hours when converting back
+                var expiredDateUtc = coupon.ExpiredDate?.ToDateTime();
+                var expiredDate = expiredDateUtc.HasValue
+                    ? expiredDateUtc.Value.AddHours(-7).ToUniversalTime()
+                    : (DateTime?)null;
+
+                finalCart.SetCouponApplied(
+                    errorMessage: null,
+                    title: coupon.Title ?? null,
+                    discountType: discountTypeName,
+                    discountValue: (double?)discountValue,
+                    maxDiscountAmount: coupon.MaxDiscountAmount.HasValue ? coupon.MaxDiscountAmount.Value : null,
+                    description: coupon.Description ?? null,
+                    expiredDate: expiredDate);
+
+                _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Successfully applied coupon to basket", new { couponCode = request.CouponCode, userEmail, cartItemCount = finalCart.CartItems.Count });
             }
         }
 
@@ -223,7 +257,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
         var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
         var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-        
+
         // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
         // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
         // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
@@ -231,7 +265,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         {
             discountValue = discountValue * 100m;
         }
-        
+
         var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
         var afterCart = CalculatePrice.CalculateEfficientCart(
@@ -302,7 +336,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
         var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
         var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-        
+
         // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
         // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
         // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
@@ -310,7 +344,7 @@ public class GetBasketHandler : IQueryHandler<GetBasketQuery, GetBasketResponse>
         {
             discountValue = discountValue * 100m;
         }
-        
+
         var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
         var afterCart = CalculatePrice.CalculateEfficientCart(

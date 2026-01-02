@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { FormProvider } from 'react-hook-form';
 
 import images from '~/components/client/images';
-import { BsExclamationCircle } from 'react-icons/bs';
+import { BsExclamationCircle, BsCheckCircle } from 'react-icons/bs';
 import { FaRegTrashAlt } from 'react-icons/fa';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -110,7 +110,7 @@ const CartPage = () => {
          user_email: '',
          cart_items: cartAppState.cart_items,
          total_amount: 0,
-         discount_coupon_error: null,
+         coupon_applied: null,
       } as TReduxCartState;
    }, [getBasketQueryState, cartAppState]);
 
@@ -179,6 +179,30 @@ const CartPage = () => {
 
    console.log('isAuthenticated', isAuthenticated);
    console.log('isLoading', isLoading);
+
+   // Helper function to extract clean error message from potentially raw gRPC error format
+   const getCleanErrorMessage = (errorMessage: string | null): string => {
+      if (!errorMessage) return '';
+
+      // If error contains gRPC Status format, extract the Detail
+      const detailMatch = errorMessage.match(/Detail="([^"]+)"/);
+      if (detailMatch && detailMatch[1]) {
+         return detailMatch[1];
+      }
+
+      // If error contains StatusCode, try to extract a cleaner message
+      if (errorMessage.includes('Status(')) {
+         // Try to get text after Detail=
+         const afterDetail = errorMessage.split('Detail=')[1];
+         if (afterDetail) {
+            const cleanMessage = afterDetail.replace(/[")]/g, '').trim();
+            if (cleanMessage) return cleanMessage;
+         }
+      }
+
+      // Return original message if no parsing needed
+      return errorMessage;
+   };
 
    return (
       <div
@@ -337,10 +361,90 @@ const CartPage = () => {
                            : ''}
                      </p>
                   )}
-                  {basketData.discount_coupon_error && isAuthenticated && (
-                     <p className="text-sm font-medium tracking-[0.2px] text-red-600 pt-1">
-                        {basketData.discount_coupon_error}
-                     </p>
+                  {basketData.coupon_applied && isAuthenticated && (
+                     <div className="w-full pt-1 flex flex-col gap-1">
+                        {basketData.coupon_applied.error_message && (
+                           <div className="w-full flex flex-row items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg mt-2">
+                              <BsExclamationCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                              <p className="text-sm font-medium tracking-[0.2px] text-red-700 flex-1 break-words">
+                                 {getCleanErrorMessage(
+                                    basketData.coupon_applied.error_message,
+                                 )}
+                              </p>
+                           </div>
+                        )}
+                        {!basketData.coupon_applied.error_message && (
+                           <div className="w-full mt-2 p-4 bg-green-50 border border-green-200 rounded-lg">
+                              <div className="flex flex-row items-start gap-3 mb-3">
+                                 <BsCheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                 <div className="flex-1">
+                                    {basketData.coupon_applied.title && (
+                                       <h4 className="text-base font-semibold tracking-[0.2px] text-green-800 mb-1">
+                                          {basketData.coupon_applied.title}
+                                       </h4>
+                                    )}
+                                    {basketData.coupon_applied.description && (
+                                       <p className="text-sm font-normal tracking-[0.2px] text-green-700 mb-3">
+                                          {
+                                             basketData.coupon_applied
+                                                .description
+                                          }
+                                       </p>
+                                    )}
+                                 </div>
+                              </div>
+                              <div className="flex flex-col gap-2 pl-8">
+                                 {basketData.coupon_applied.discount_type && (
+                                    <div className="flex flex-row items-center gap-2">
+                                       <span className="text-xs font-medium text-green-600 min-w-[100px]">
+                                          Discount:
+                                       </span>
+                                       <span className="text-sm font-semibold text-green-800">
+                                          {
+                                             basketData.coupon_applied
+                                                .discount_value
+                                          }
+                                          {basketData.coupon_applied
+                                             .discount_type === 'PERCENTAGE'
+                                             ? '%'
+                                             : ''}
+                                       </span>
+                                    </div>
+                                 )}
+                                 {basketData.coupon_applied
+                                    .max_discount_amount !== null && (
+                                    <div className="flex flex-row items-center gap-2">
+                                       <span className="text-xs font-medium text-green-600 min-w-[100px]">
+                                          Max Discount:
+                                       </span>
+                                       <span className="text-sm font-semibold text-green-800">
+                                          $
+                                          {basketData.coupon_applied.max_discount_amount.toFixed(
+                                             2,
+                                          )}
+                                       </span>
+                                    </div>
+                                 )}
+                                 {basketData.coupon_applied.expired_date && (
+                                    <div className="flex flex-row items-center gap-2">
+                                       <span className="text-xs font-medium text-green-600 min-w-[100px]">
+                                          Expires:
+                                       </span>
+                                       <span className="text-sm font-normal text-gray-700">
+                                          {new Date(
+                                             basketData.coupon_applied.expired_date,
+                                          ).toLocaleDateString('en-US', {
+                                             year: 'numeric',
+                                             month: 'short',
+                                             day: 'numeric',
+                                          })}
+                                       </span>
+                                    </div>
+                                 )}
+                              </div>
+                           </div>
+                        )}
+                     </div>
                   )}
                </div>
                <div className="summary w-full flex flex-col justify-start items-start py-6 border-b border-[#dddddd]">

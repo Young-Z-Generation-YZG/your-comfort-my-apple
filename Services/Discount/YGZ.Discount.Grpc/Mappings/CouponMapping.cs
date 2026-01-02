@@ -11,8 +11,6 @@ public class CouponMapping : IRegister
     {
         config.Default.NameMatchingStrategy(NameMatchingStrategy.Flexible);
 
-        config.NewConfig<CreateCouponRequest, CreateCouponCommand>();
-
         config.NewConfig<UseCouponRequest, UseCouponCommand>();
     }
 }

@@ -62,10 +62,11 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             Description = result.Response.Description,
             CategoryType = ConvertToEProductClassificationGrpc(result.Response.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(result.Response.DiscountType),
-            DiscountValue = (double)result.Response.DiscountValue,
-            MaxDiscountAmount = result.Response.MaxDiscountAmount != null ? (double)result.Response.MaxDiscountAmount : 0,
+            DiscountValue = result.Response.DiscountValue,
+            MaxDiscountAmount = result.Response.MaxDiscountAmount,
             AvailableQuantity = result.Response.AvailableQuantity,
-            Stock = result.Response.Stock
+            Stock = result.Response.Stock,
+            ExpiredDate = result.Response.ExpiredDate != null ? ToTimestampUtc(result.Response.ExpiredDate.Value) : null
         };
     }
 
@@ -93,16 +94,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
         var couponModels = result.Response!.Select(c => new CouponModel
         {
             Id = c.Id,
-            UserId = c.UserId ?? string.Empty,
+            UserId = c.UserId,
             Code = c.Code,
             Title = c.Title,
             Description = c.Description,
             CategoryType = ConvertToEProductClassificationGrpc(c.ProductClassification),
             DiscountType = ConvertToEDiscountTypeGrpc(c.DiscountType),
-            DiscountValue = (double)c.DiscountValue,
-            MaxDiscountAmount = c.MaxDiscountAmount.HasValue ? (double)c.MaxDiscountAmount.Value : 0,
+            DiscountValue = c.DiscountValue,
+            MaxDiscountAmount = c.MaxDiscountAmount,
             AvailableQuantity = c.AvailableQuantity,
-            Stock = c.Stock
+            Stock = c.Stock,
+            ExpiredDate = c.ExpiredDate.HasValue ? ToTimestampUtc(c.ExpiredDate.Value) : null
         });
 
         response.Coupons.AddRange(couponModels);
@@ -112,11 +114,24 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
 
     // POST METHODS
-    public override async Task<BooleanResponse> CreateCouponGrpc(CreateCouponRequest request, ServerCallContext context)
+    public override async Task<BooleanResponse> CreateCouponGrpc(CreateCouponGrpcRequest request, ServerCallContext context)
     {
         var cmd = _mapper.Map<CreateCouponCommand>(request);
 
         var result = await _sender.Send(cmd);
+
+        if (result.IsFailure)
+        {
+            throw new RpcException(new Status(
+                MapErrorToStatusCode(result.Error),
+                result.Error.Message
+            ), new Metadata
+            {
+                { "error-code", result.Error.Code },
+                { "error-message", result.Error.Message },
+                { "service-name", "DiscountService" }
+            });
+        }
 
         var response = _mapper.Map<BooleanResponse>(result.Response);
 
@@ -537,7 +552,10 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
 
     private static Timestamp ToTimestampUtc(DateTime dateTime)
     {
-        return Timestamp.FromDateTime(DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+        // Convert to UTC+7 (add 7 hours to UTC time)
+        var utcDateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
+        var utcPlus7 = utcDateTime.AddHours(7);
+        return Timestamp.FromDateTime(utcPlus7);
     }
 
     private static Timestamp? ToTimestampUtc(DateTime? dateTime)
@@ -562,14 +580,17 @@ public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
             // Not Found errors
             "Coupon.NotFound" => StatusCode.NotFound,
             "Discount.EventNotFound" => StatusCode.NotFound,
-            "Discount.EventItemNotFound" => StatusCode.NotFound,
+            "Event.EventItemNotFound" => StatusCode.NotFound,
 
             // Validation/Business Logic errors
-            "Discount.CouponExpired" => StatusCode.FailedPrecondition,
-            "Discount.CouponInactive" => StatusCode.FailedPrecondition,
-            "Discount.InsufficientStock" => StatusCode.FailedPrecondition,
-            "Discount.InvalidCouponCode" => StatusCode.InvalidArgument,
-            "Discount.InvalidQuantity" => StatusCode.InvalidArgument,
+            "Coupon.OutOfStock" => StatusCode.FailedPrecondition,
+            "Coupon.Expired" => StatusCode.FailedPrecondition,
+            "Coupon.Inactive" => StatusCode.FailedPrecondition,
+            "Coupon.InvalidDiscountType" => StatusCode.InvalidArgument,
+            "Coupon.InvalidProductClassification" => StatusCode.InvalidArgument,
+            "Coupon.InvalidStock" => StatusCode.InvalidArgument,
+            "Coupon.InvalidMaxDiscountAmount" => StatusCode.InvalidArgument,
+            "Coupon.DuplicateCode" => StatusCode.AlreadyExists,
 
             // Default to Internal for unknown errors
             _ => StatusCode.Internal

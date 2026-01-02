@@ -34,7 +34,7 @@ service DiscountProtoService {
     // POST requests
     rpc CreateEventGrpc (CreateEventRequest) returns (BooleanResponse);
     rpc AddEventItemsGrpc (AddEventItemsGrpcRequest) returns (BooleanResponse);
-    rpc CreateCouponGrpc (CreateCouponRequest)  returns (BooleanResponse);
+    rpc CreateCouponGrpc (CreateCouponGrpcRequest)  returns (BooleanResponse);
     rpc UseCouponGrpc (UseCouponRequest) returns (BooleanResponse);
     rpc UpdateEventGrpc (UpdateEventGrpcRequest) returns (BooleanResponse);
 
@@ -67,6 +67,7 @@ message CouponModel {
     google.protobuf.DoubleValue max_discount_amount = 9;
     google.protobuf.Int32Value available_quantity = 10;
     google.protobuf.Int32Value stock = 11;
+    google.protobuf.Timestamp expired_date = 12;
 }
 
 message EventModel {
@@ -113,17 +114,17 @@ message EventItemModel {
 
 // POST requests
 
-message CreateCouponRequest {
-    google.protobuf.StringValue user_id = 1;
-    google.protobuf.StringValue unique_code = 2;
+message CreateCouponGrpcRequest {
+    optional google.protobuf.StringValue user_id = 1;
+    google.protobuf.StringValue coupon_code = 2;
     google.protobuf.StringValue title = 3;
     google.protobuf.StringValue description = 4;
-    EProductClassificationGrpc category_type = 5;
+    EProductClassificationGrpc product_classification = 5;
     EDiscountTypeGrpc discount_type = 6;
     google.protobuf.DoubleValue discount_value = 7;
     google.protobuf.DoubleValue max_discount_amount = 8;
-    google.protobuf.Int32Value available_quantity = 9;
-    google.protobuf.Int32Value stock = 10;
+    google.protobuf.Int32Value stock = 9;
+    optional google.protobuf.Timestamp expired_date = 10;
 }
 
 message UpdateEventGrpcRequest {

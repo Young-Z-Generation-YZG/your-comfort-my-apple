@@ -7,6 +7,18 @@ using YGZ.BuildingBlocks.Shared.Utils;
 namespace YGZ.BuildingBlocks.Shared.Contracts.Baskets;
 
 [JsonConverter(typeof(SnakeCaseJsonSerializer))]
+public sealed record CouponApplied()
+{
+    public string? ErrorMessage { get; init; }
+    public string? Title { get; init; }
+    public string? DiscountType { get; init; }
+    public double? DiscountValue { get; init; }
+    public double? MaxDiscountAmount { get; init; }
+    public string? Description { get; init; }
+    public DateTime? ExpiredDate { get; init; }
+}
+
+[JsonConverter(typeof(SnakeCaseJsonSerializer))]
 public sealed record GetBasketResponse()
 {
     public required string UserEmail { get; init; }
@@ -18,7 +30,7 @@ public sealed record GetBasketResponse()
     public decimal? DiscountValue { get; init; }
     public decimal? DiscountAmount { get; init; }
     public decimal? MaxDiscountAmount { get; init; }
-    public string? DiscountCouponError { get; init; }
+    public CouponApplied? CouponApplied { get; init; }
     public decimal TotalAmount { get; init; }
 }
 
