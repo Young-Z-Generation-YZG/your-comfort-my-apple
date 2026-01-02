@@ -30,7 +30,7 @@ import {
 } from '~/domain/types/catalog.type';
 import useReviewService from '~/hooks/api/use-review-service';
 import ColorItem from '~/app/(pages)/shop/iphone/[slug]/_components/color-item';
-import HelpItem from '~/app/(pages)/shop/iphone/[slug]/_components/help-item';
+import HelpItem from '~/app/(pages)/shop/iphone/_components/help-item';
 import ModelItem from '~/app/(pages)/shop/iphone/[slug]/_components/model-item';
 import StorageItem from '~/app/(pages)/shop/iphone/[slug]/_components/storage-item';
 import ReviewItem from '~/app/(pages)/shop/iphone/[slug]/_components/review-item';
