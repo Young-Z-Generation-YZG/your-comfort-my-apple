@@ -12,16 +12,16 @@ services:
             - ConnectionStrings__RedisDb=db.distributedcache:6379
         ports:
             - "6005:8080"
-            - "6065:8081"
+            # - "6065:8081"
         depends_on:
             db.identity:
                 condition: service_healthy
             db.distributedcache:
                 condition: service_healthy
         restart: unless-stopped
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
