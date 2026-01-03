@@ -148,7 +148,7 @@ services:
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            # - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
