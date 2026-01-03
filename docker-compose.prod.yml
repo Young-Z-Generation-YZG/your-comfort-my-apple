@@ -5,6 +5,8 @@ services:
             context: ./apps/client
             dockerfile: Dockerfile
         restart: unless-stopped
+        ports:
+            - "3000:3000"
         networks:
             - ybzone-network
 
@@ -62,7 +64,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
         ports:
             - "6006:8080"
             # - "6066:8081"
@@ -83,7 +85,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
             - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
