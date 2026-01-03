@@ -1,0 +1,86 @@
+services:
+    ygz.identity.api:
+        image: baledev/ybzone.ygzidentityapi:latest
+        build:
+            context: .
+            dockerfile: Services/Identity/YGZ.Identity.Api/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
+            - ConnectionStrings__RedisDb=db.distributedcache:6379
+        ports:
+            - "6005:8080"
+            - "6065:8081"
+        depends_on:
+            db.identity:
+                condition: service_healthy
+            db.distributedcache:
+                condition: service_healthy
+        restart: unless-stopped
+        volumes:
+            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - ybzone-network
+
+    ygz.nginx.webserver:
+        image: nginx:stable
+        container_name: nginx.webserver
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./provision/ssl:/ssl:ro
+            - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - ygz.identity.api
+        restart: unless-stopped
+        networks:
+            - ybzone-network
+
+    db.distributedcache:
+        image: redis:alpine
+        container_name: db.distributedcache
+        restart: always
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "6379:6379"
+        volumes:
+            - ybzone.redis_data:/data
+        networks:
+            - ybzone-network
+
+    db.identity:
+        image: postgres:alpine
+        container_name: db.identity
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=IdentityDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d IdentityDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "2432:5432"
+        volumes:
+            - ybzone.postgres_identity:/var/lib/postgresql/data/
+        networks:
+            - ybzone-network
+
+volumes:
+    ybzone.postgres_identity:
+    ybzone.redis_data:
+
+networks:
+    ybzone-network:
+        name: ybzone-network
+        driver: bridge

@@ -404,6 +404,42 @@ services:
         networks:
             - app-network
 
+    # ygz.client.web:
+    #     image: baledev/ygz.client.web:latest
+    #     build:
+    #         context: ./apps/client
+    #         dockerfile: Dockerfile
+    #     restart: unless-stopped
+    #     networks:
+    #         - app-network
+
+    # ygz.admin.web:
+    #     image: baledev/ygz.admin.web:latest
+    #     build:
+    #         context: ./apps/admin
+    #         dockerfile: Dockerfile
+    #     restart: unless-stopped
+    #     networks:
+    #         - app-network
+
+    # ygz.nginx.webserver:
+    #     image: nginx:stable
+    #     container_name: nginx.webserver
+    #     ports:
+    #         - "80:80"
+    #         - "443:443"
+    #     volumes:
+    #         # Nginx config for routing to client.web and admin.web
+    #         - ./provision/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+    #         # SSL certificates (provisioned locally under ./ssl)
+    #         # Mapped to the standard Certbot-like path inside the container.
+    #         - /etc/letsencrypt:/etc/letsencrypt:ro
+    #     depends_on:
+    #         - ygz.client.web
+    #         - ygz.admin.web
+    #     networks:
+    #         - app-network
+
     # ygz.nginx.webserver:
     #     image: nginx:stable
     #     container_name: ygz.nginx.webserver

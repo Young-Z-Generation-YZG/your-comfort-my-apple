@@ -23,14 +23,6 @@ services:
     mongo.setup:
         image: mongo:latest
 
-    # mongo.express:
-    #     image: mongo-express:latest
-
-    # db.catalog.replica.primary:
-    #     build:
-    #         context: ./provision/dockerVolumes/mongoDb/
-    #         dockerfile: mongo.dockerfile
-
     db.basket:
         image: postgres:alpine
 
