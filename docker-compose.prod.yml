@@ -4,6 +4,12 @@ services:
         build:
             context: ./apps/client
             dockerfile: Dockerfile
+            args:
+                - API_ENDPOINT=https://ybstore.io.vn/api
+                - APP_URL=https://ybstore.io.vn
+        environment:
+            - API_ENDPOINT=https://ybstore.io.vn/api
+            - APP_URL=https://ybstore.io.vn
         restart: unless-stopped
         ports:
             - "3000:3000"
