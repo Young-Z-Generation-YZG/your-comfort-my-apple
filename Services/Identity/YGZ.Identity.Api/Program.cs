@@ -54,10 +54,10 @@ app.UseHealthChecks("/health", new HealthCheckOptions
 });
 
 // Enable CORS
-app.UseCors(options =>
-{
-    options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
-});
+// app.UseCors(options =>
+// {
+//     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+// });
 
 app.UseStatusCodePages();
 
