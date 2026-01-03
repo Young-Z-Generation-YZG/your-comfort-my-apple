@@ -16,6 +16,23 @@ services:
         networks:
             - ybzone-network
 
+    ygz.admin.web:
+        image: baledev/ybzone.ygzadminweb:latest
+        build:
+            context: ./apps/admin
+            dockerfile: Dockerfile
+            args:
+                - API_ENDPOINT=https://ybstore.io.vn/api
+                - APP_URL=https://admin.ybstore.io.vn
+        environment:
+            - API_ENDPOINT=https://ybstore.io.vn/api
+            - APP_URL=https://admin.ybstore.io.vn
+        restart: unless-stopped
+        ports:
+            - "3001:3000"
+        networks:
+            - ybzone-network
+
     ygz.keycloak.server:
         image: quay.io/keycloak/keycloak:26.3.4
         container_name: ygz.keycloak.server
@@ -130,6 +147,7 @@ services:
             - ygz.gateways.yarp
             - ygz.identity.api
             - ygz.client.web
+            - ygz.admin.web
         restart: unless-stopped
         networks:
             - ybzone-network

@@ -22,6 +22,14 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Accept build arguments for environment variables
+ARG API_ENDPOINT
+ARG APP_URL
+
+# Make build args available as environment variables during build
+ENV API_ENDPOINT=$API_ENDPOINT
+ENV APP_URL=$APP_URL
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
