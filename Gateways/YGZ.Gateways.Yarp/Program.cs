@@ -67,7 +67,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUi(ui => ui.UseApplicationSwaggerSettings(builder.Configuration));
 }
 
-app.UseHttpsRedirection();
+// HTTPS is handled by nginx, not the Gateway
+// app.UseHttpsRedirection();
 
 // Enable CORS
 app.UseCors(options =>
