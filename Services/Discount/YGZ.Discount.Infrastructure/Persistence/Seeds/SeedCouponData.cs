@@ -29,7 +29,7 @@ public static class SeedCouponData
                     updatedBy: "SYSTEM"
                 ),
                 Coupon.Create(
-                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440000"),
+                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440001"),
                     userId: null,
                     code: Code.Of("SUMMER2025IA"),
                     title: "Summer 2025",
@@ -45,7 +45,7 @@ public static class SeedCouponData
                     updatedBy: "SYSTEM"
                 ),
                 Coupon.Create(
-                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440001"),
+                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440002"),
                     userId: null,
                     code: Code.Of("SUMMER2026"),
                     title: "Summer 2026",
@@ -61,7 +61,7 @@ public static class SeedCouponData
                     updatedBy: "SYSTEM"
                 ),
                 Coupon.Create(
-                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440002"),
+                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440003"),
                     userId: null,
                     code: Code.Of("SUMMER2024"),
                     title: "Summer 2024",
@@ -77,7 +77,7 @@ public static class SeedCouponData
                     updatedBy: "SYSTEM"
                 ),
                 Coupon.Create(
-                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440003"),
+                    couponId: CouponId.Of("550e8400-e29b-41d4-a716-446655440004"),
                     userId: "7ecf88f8-3e55-40cc-92d0-5d3a5a5e228f",
                     code: Code.Of("USER_PROMO"),
                     title: "User Promo Code",
