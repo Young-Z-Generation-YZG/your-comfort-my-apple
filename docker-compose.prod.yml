@@ -1,4 +1,50 @@
 services:
+    ygz.keycloak.server:
+        image: quay.io/keycloak/keycloak:26.3.4
+        container_name: ygz.keycloak.server
+        command:
+            [
+                "start-dev",
+                "--import-realm",
+                "--features=preview,token-exchange",
+                "--http-enabled=false",
+                "--log-level=DEBUG,org.hibernate:info,org.keycloak.transaction.JtaTransactionWrapper:info,org.keycloak.services.scheduled.ScheduledTaskRunner:info",
+                "--log-console-color=true",
+                "--hostname-debug=true",
+                "--hostname=https://keycloak.ybstore.io.vn",
+                "--hostname-strict=false",
+                "--hostname-backchannel-dynamic=true",
+            ]
+        environment:
+            - KEYCLOAK_ADMIN=admin
+            - KEYCLOAK_ADMIN_PASSWORD=admin
+            - KC_HEALTH_ENABLED=true
+            - KC_DB=postgres
+            - KC_DB_URL=jdbc:postgresql://db.keycloak:5432/KeycloakDb
+            - KC_DB_USERNAME=bale
+            - KC_DB_PASSWORD=bale
+            - KC_HTTP_PORT=17070
+        restart: always
+        volumes:
+            - ./provision/dockerVolumes/keycloak/1_1_2025_seed_4:/opt/keycloak/data/import
+        depends_on:
+            db.keycloak:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "timeout 1 bash -c '</dev/tcp/localhost/17070 || exit 1'",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 90s
+        ports:
+            - "17070:17070"
+        networks:
+            - ybzone-network
+
     ygz.identity.api:
         image: baledev/ybzone.ygzidentityapi:latest
         build:
@@ -10,10 +56,15 @@ services:
             - ASPNETCORE_HTTPS_PORTS=8081
             - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
             - ConnectionStrings__RedisDb=db.distributedcache:6379
+            - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - WebClientSettings__BaseUrl=https://ybstore.io.vn
         ports:
             - "6005:8080"
             # - "6065:8081"
         depends_on:
+            ygz.keycloak.server:
+                condition: service_started
             db.identity:
                 condition: service_healthy
             db.distributedcache:
@@ -56,6 +107,26 @@ services:
         networks:
             - ybzone-network
 
+    db.keycloak:
+        image: postgres:alpine
+        container_name: db.keycloak
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=KeycloakDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d KeycloakDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "1432:5432"
+        volumes:
+            - ybzone.postgres_keycloak:/var/lib/postgresql/data/
+        networks:
+            - ybzone-network
+
     db.identity:
         image: postgres:alpine
         container_name: db.identity
@@ -79,6 +150,7 @@ services:
 volumes:
     ybzone.postgres_identity:
     ybzone.redis_data:
+    ybzone.postgres_keycloak:
 
 networks:
     ybzone-network:
