@@ -148,7 +148,7 @@ services:
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - GrpcSettings__DiscountUrl=http://ygz.discount.grpc:8080
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__OrderingUrl=http://ygz.ordering.api:8080
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
@@ -183,7 +183,7 @@ services:
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - FeatureManagement__OrderFulfillment=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
-            - GrpcSettings__CatalogUrl=http://ygz.catalog.api:8080
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6004:8080"
@@ -209,7 +209,7 @@ services:
             - ASPNETCORE_HTTP_PORTS=8080
             # - ASPNETCORE_HTTPS_PORTS=8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-            - GrpcSettings__CatalogUrl=http://ygz.catalog.api:8080
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
@@ -224,23 +224,64 @@ services:
         networks:
             - ybzone-network
 
-    # ygz.nginx.webserver:
-    #     image: nginx:stable
-    #     container_name: nginx.webserver
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #     volumes:
-    #         - ./provision/ssl:/ssl:ro
-    #         - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
-    #     depends_on:
-    #         - ygz.gateways.yarp
-    #         - ygz.identity.api
-    #         - ygz.client.web
-    #         - ygz.admin.web
-    #     restart: unless-stopped
-    #     networks:
-    #         - ybzone-network
+    ygz.basket.api:
+        image: baledev/ybzone.ygzbasketapi:latest
+        build:
+            context: .
+            dockerfile: Services/Basket/YGZ.Basket.Api/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_HTTP_PORTS=8080
+            # - ASPNETCORE_HTTPS_PORTS=8081
+            - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
+            - ConnectionStrings__RedisDb=db.distributedcache:6379
+            - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
+            - WebClientSettings__BaseUrl=https://ybstore.io.vn
+            - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
+        ports:
+            - "6002:8080"
+            # - "6062:8081"
+        depends_on:
+            db.basket:
+                condition: service_healthy
+            db.distributedcache:
+                condition: service_healthy
+            mq.rabbitmq:
+                condition: service_healthy
+            ygz.discount.grpc:
+                condition: service_started
+            ygz.catalog.api:
+                condition: service_started
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        networks:
+            - ybzone-network
+
+    ygz.nginx.webserver:
+        image: nginx:stable
+        container_name: nginx.webserver
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./provision/ssl:/ssl:ro
+            - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - ygz.gateways.yarp
+            - ygz.identity.api
+            - ygz.basket.api
+            - ygz.catalog.api
+            - ygz.ordering.api
+            - ygz.client.web
+            - ygz.admin.web
+            - ygz.keycloak.server
+        restart: unless-stopped
+        networks:
+            - ybzone-network
 
     mq.rabbitmq:
         image: rabbitmq:3-management-alpine
@@ -254,10 +295,11 @@ services:
             - RABBITMQ_DEFAULT_USER=bale
             - RABBITMQ_DEFAULT_PASS=bale
         healthcheck:
-            test: ["CMD", "rabbitmqctl", "status"]
-            interval: 5s
-            timeout: 20s
+            test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+            interval: 10s
+            timeout: 10s
             retries: 5
+            start_period: 40s
         volumes:
             - ybzone.rabbitmq_data:/var/lib/rabbitmq
         networks:
@@ -356,6 +398,26 @@ services:
             - "6432:5432"
         volumes:
             - ybzone.postgres_ordering:/var/lib/postgresql/data/
+        networks:
+            - ybzone-network
+
+    db.basket:
+        image: postgres:alpine
+        container_name: db.basket
+        environment:
+            - POSTGRES_USER=bale
+            - POSTGRES_PASSWORD=bale
+            - POSTGRES_DB=BasketDb
+        restart: always
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U bale -d BasketDb"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "3432:5432"
+        volumes:
+            - ybzone.postgres_basket:/var/lib/postgresql/data/
         networks:
             - ybzone-network
 
@@ -461,6 +523,7 @@ volumes:
     ybzone.postgres_identity:
     ybzone.postgres_ordering:
     ybzone.postgres_discount:
+    ybzone.postgres_basket:
     ybzone.redis_data:
     ybzone.postgres_keycloak:
     ybzone.logging_seq_data:
