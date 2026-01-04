@@ -148,8 +148,8 @@ services:
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8080
-            - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8080
+            - GrpcSettings__DiscountUrl=http://ygz.discount.grpc:8080
+            - GrpcSettings__OrderingUrl=http://ygz.ordering.api:8080
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6001:8080"
@@ -183,7 +183,7 @@ services:
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - FeatureManagement__OrderFulfillment=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
-            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8080
+            - GrpcSettings__CatalogUrl=http://ygz.catalog.api:8080
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6004:8080"
@@ -209,7 +209,7 @@ services:
             - ASPNETCORE_HTTP_PORTS=8080
             # - ASPNETCORE_HTTPS_PORTS=8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8080
+            - GrpcSettings__CatalogUrl=http://ygz.catalog.api:8080
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
@@ -224,23 +224,23 @@ services:
         networks:
             - ybzone-network
 
-    ygz.nginx.webserver:
-        image: nginx:stable
-        container_name: nginx.webserver
-        ports:
-            - "80:80"
-            - "443:443"
-        volumes:
-            - ./provision/ssl:/ssl:ro
-            - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
-        depends_on:
-            - ygz.gateways.yarp
-            - ygz.identity.api
-            - ygz.client.web
-            - ygz.admin.web
-        restart: unless-stopped
-        networks:
-            - ybzone-network
+    # ygz.nginx.webserver:
+    #     image: nginx:stable
+    #     container_name: nginx.webserver
+    #     ports:
+    #         - "80:80"
+    #         - "443:443"
+    #     volumes:
+    #         - ./provision/ssl:/ssl:ro
+    #         - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+    #     depends_on:
+    #         - ygz.gateways.yarp
+    #         - ygz.identity.api
+    #         - ygz.client.web
+    #         - ygz.admin.web
+    #     restart: unless-stopped
+    #     networks:
+    #         - ybzone-network
 
     mq.rabbitmq:
         image: rabbitmq:3-management-alpine
@@ -365,7 +365,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=192.168.0.4
+            - MONGO_HOST_IP=188.166.176.213
         ports:
             - 27001:27017
         volumes:
@@ -414,7 +414,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=188.166.222.120
+            - MONGO_HOST_IP=188.166.176.213
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh

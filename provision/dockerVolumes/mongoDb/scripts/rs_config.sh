@@ -8,7 +8,7 @@ echo "Starting MongoDB replica set configuration..."
 
 # Wait for MongoDB to be ready - simple approach
 echo "Waiting for MongoDB to be ready..."
-sleep 30
+sleep 10
 
 # Get the host IP from environment variable or use default
 HOST_IP=${MONGO_HOST_IP:-"192.168.0.4"}
