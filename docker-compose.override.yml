@@ -265,6 +265,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
+            - FeatureManagement__EnableSelfSsl=false
             - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - ConnectionStrings__RedisDb=db.distributedcache:6379
@@ -290,6 +291,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
+            - FeatureManagement__EnableSelfSsl=false
             - ConnectionStrings__BasketDb=Host=db.basket;Port=5432;Database=BasketDb;Username=bale;Password=bale
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
@@ -317,6 +319,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
+            - FeatureManagement__EnableSelfSsl=false
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
@@ -338,10 +341,11 @@ services:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
+            - FeatureManagement__OrderFulfillment=false
             - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - FeatureManagement__OrderFulfillment=false
+            - FeatureManagement__EnableSelfSsl=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/

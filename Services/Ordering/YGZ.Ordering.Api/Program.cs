@@ -1,9 +1,10 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using HealthChecks.UI.Client;
 using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+using Microsoft.FeatureManagement;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Api.Extensions;
@@ -19,31 +20,50 @@ static X509Certificate2 CreateSelfSignedCertificate()
     var request = new CertificateRequest(subjectName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     request.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyEncipherment, false));
     request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid("1.3.6.1.5.5.7.3.1")], false));
-    
+
     var certificate = request.CreateSelfSigned(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddYears(1));
     return new X509Certificate2(certificate.Export(X509ContentType.Pfx, "password"), "password", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
 }
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel for HTTP and HTTPS
-builder.WebHost.ConfigureKestrel(options =>
+// Add Feature Management early to check feature flags before Kestrel configuration
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("FeatureManagement"));
+
+// Build temporary service provider to access IFeatureManager
+// Note: This is necessary to check feature flags before Kestrel configuration.
+// The temporary service provider is disposed immediately after use.
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in application code
+using var tempServiceProvider = builder.Services.BuildServiceProvider();
+#pragma warning restore ASP0000
+var featureManager = tempServiceProvider.GetRequiredService<IFeatureManager>();
+
+// Check if self-signed SSL is enabled via feature flag
+var enableSelfSsl = await featureManager.IsEnabledAsync("EnableSelfSsl");
+
+if (enableSelfSsl)
 {
-    // HTTP endpoint with HTTP/2 support for gRPC
-    options.ListenAnyIP(8080, listenOptions =>
+    // Configure Kestrel for HTTP and HTTPS
+    builder.WebHost.ConfigureKestrel(options =>
     {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+        // HTTP endpoint with HTTP/2 support for gRPC
+        options.ListenAnyIP(8080, listenOptions =>
+        {
+            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+        });
+
+        // HTTPS endpoint with HTTP/2 (only if EnableSelfSsl feature is enabled)
+        options.ListenAnyIP(8081, listenOptions =>
+        {
+            listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+            // Generate self-signed certificate for Docker
+            var cert = CreateSelfSignedCertificate();
+            listenOptions.UseHttps(cert);
+        });
+
     });
-    
-    // HTTPS endpoint with HTTP/2
-    options.ListenAnyIP(8081, listenOptions =>
-    {
-        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-        // Generate self-signed certificate for Docker
-        var cert = CreateSelfSignedCertificate();
-        listenOptions.UseHttps(cert);
-    });
-});
+}
+
 var services = builder.Services;
 var host = builder.Host;
 
