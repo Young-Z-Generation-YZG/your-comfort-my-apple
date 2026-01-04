@@ -70,7 +70,16 @@ if (app.Environment.IsDevelopment())
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
-    await app.ApplySeedDataAsync();
+    // Seed data initialization - wrap in try-catch to prevent startup failure
+    try
+    {
+        await app.ApplySeedDataAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Failed to apply seed data. Application will continue without seed data.");
+    }
 }
 
 var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();

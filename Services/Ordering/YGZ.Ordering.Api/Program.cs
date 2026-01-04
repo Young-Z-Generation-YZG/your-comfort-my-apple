@@ -7,10 +7,27 @@ using YGZ.Ordering.Api.Extensions;
 using YGZ.Ordering.Application;
 using YGZ.Ordering.Infrastructure;
 using YGZ.Ordering.Infrastructure.Persistence.Extensions;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var host = builder.Host;
+
+// Configure Kestrel to accept HTTP/2 over plain HTTP for gRPC
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     // Configure all endpoints to support both HTTP/1.1 and HTTP/2
+//     options.ConfigureEndpointDefaults(listenOptions =>
+//     {
+//         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+//     });
+    
+//     // Explicitly configure the HTTP endpoint to support HTTP/2
+//     options.ListenAnyIP(8080, listenOptions =>
+//     {
+//         listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+//     });
+// });
 
 // Add Layers
 services

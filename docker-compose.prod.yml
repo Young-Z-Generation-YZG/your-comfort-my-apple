@@ -87,16 +87,16 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
         ports:
             - "6006:8080"
             - "6066:8081"
         depends_on:
             - ygz.identity.api
         restart: unless-stopped
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
@@ -108,7 +108,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
             - ConnectionStrings__IdentityDb=Host=db.identity;Port=5432;Database=IdentityDb;Username=bale;Password=bale
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
@@ -119,7 +119,7 @@ services:
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6005:8080"
-            - "6065:8081"
+            # - "6065:8081"
         depends_on:
             ygz.keycloak.server:
                 condition: service_started
@@ -128,9 +128,9 @@ services:
             db.distributedcache:
                 condition: service_healthy
         restart: unless-stopped
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
@@ -142,18 +142,18 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
             - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
-            - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8080
+            - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8080
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6001:8080"
-            - "6061:8081"
+            # - "6061:8081"
         depends_on:
             mq.rabbitmq:
                 condition: service_healthy
@@ -163,9 +163,9 @@ services:
                 condition: service_completed_successfully
             ygz.ordering.api:
                 condition: service_started
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
@@ -177,25 +177,25 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
             - ConnectionStrings__OrderingDb=Host=db.ordering;Port=5432;Database=OrderingDb;Username=bale;Password=bale
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - FeatureManagement__OrderFulfillment=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
-            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8080
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6004:8080"
-            - "6064:8081"
+            # - "6064:8081"
         depends_on:
             db.ordering:
                 condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
@@ -207,20 +207,20 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Development
             - ASPNETCORE_HTTP_PORTS=8080
-            - ASPNETCORE_HTTPS_PORTS=8081
+            # - ASPNETCORE_HTTPS_PORTS=8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8080
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6003:8080"
-            - "6063:8081"
+            # - "6063:8081"
         depends_on:
             db.discount:
                 condition: service_healthy
-        volumes:
-            - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-            - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+        # volumes:
+        #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+        #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
         networks:
             - ybzone-network
 
@@ -414,7 +414,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=192.168.0.4
+            - MONGO_HOST_IP=188.166.222.120
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh

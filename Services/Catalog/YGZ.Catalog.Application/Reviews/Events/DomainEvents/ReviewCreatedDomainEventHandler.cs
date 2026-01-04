@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Grpc.Core;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -35,20 +36,29 @@ public class ReviewCreatedDomainEventHandler : INotificationHandler<ReviewCreate
 
             await _productModelRepository.UpdateAsync(productModel.Id.Value!, productModel, ignoreBaseFilter: true);
 
-            var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
-            {
-                OrderItemId = notification.Review.OrderInfo.OrderItemId,
-                IsReviewed = true
-            });
+            try {
+                var rpcResult = await _orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync(new UpdateOrderItemIsReviewedGrpcRequest()
+                {
+                    OrderItemId = notification.Review.OrderInfo.OrderItemId,
+                    IsReviewed = true
+                });
 
-            if (rpcResult.IsFailure)
-            {
+                 if (rpcResult.IsFailure)
+                {
+                    var parameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo.OrderItemId };
+                    _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                        nameof(_orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync), rpcResult.ErrorMessage ?? "Failed to update order item review status", parameters);
+
+                    throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+                }
+            } catch (RpcException ex) {
                 var parameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo.OrderItemId };
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync), rpcResult.ErrorMessage ?? "Failed to update order item review status", parameters);
-
-                throw new Exception(rpcResult.ErrorMessage ?? "Unknown");
+                _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_orderingProtoServiceClient.UpdateOrderItemIsReviewedGrpcAsync), ex.Message, parameters);
+                throw;
             }
+
+           
 
             var successParameters = new { ReviewId = notification.Review.Id.Value, ModelId = notification.Review.ModelId.Value, OrderItemId = notification.Review.OrderInfo.OrderItemId };
             _logger.LogInformation(":::[Handler Information]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",

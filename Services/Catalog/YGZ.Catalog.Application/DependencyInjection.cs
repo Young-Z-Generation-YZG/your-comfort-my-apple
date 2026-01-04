@@ -5,6 +5,8 @@ using Microsoft.FeatureManagement;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Discount.Grpc.Protos;
 using YGZ.Ordering.Api.Protos;
+using System.Net.Http;
+using Grpc.Net.Client;
 
 namespace YGZ.Catalog.Application;
 
@@ -56,6 +58,11 @@ public static class DependencyInjection
 
             return handler;
         });
+        // .ConfigureChannel(grpcChannelOptions =>
+        // {
+        //     // Configure HTTP/2 with prior knowledge for plain HTTP connections
+        //     grpcChannelOptions.HttpVersion = new Version(2, 0);
+        // });
 
         return services;
     }
