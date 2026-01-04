@@ -121,7 +121,7 @@ export const baseQuery = (service: string) => {
 
       let result = await baseQueryWithAuth(args, api, extraOptions);
 
-      // If we get a 401 and it's not a refresh or logout request, try to refresh
+      // Handle 401 Unauthorized errors
       if (
          result.error &&
          result.error.status === 401 &&
@@ -132,8 +132,11 @@ export const baseQuery = (service: string) => {
       ) {
          const state = api.getState() as RootState;
          const refreshToken = state.auth.refreshToken;
+         const currentRoute = window.location.pathname;
 
-         // Only attempt refresh if we have a refresh token
+         /**
+          * Case 1: Has refresh token - attempt to refresh
+          */
          if (refreshToken) {
             console.log('[baseQuery] Attempting to refresh token...');
 
@@ -155,8 +158,28 @@ export const baseQuery = (service: string) => {
                extraOptions,
             );
 
+            // Case 1a: Refresh token call also returns 401 - navigate to login
+            if (refreshResult.error && refreshResult.error.status === 401) {
+               console.log(
+                  '[baseQuery] Refresh token also returned 401, navigating to login...',
+               );
+
+               // Force delete access token from localStorage
+               forceClearAccessToken();
+
+               api.dispatch(setPreviousUnAuthenticatedPath(currentRoute));
+               api.dispatch(setLogout());
+
+               // Navigate to login page
+               if (typeof window !== 'undefined') {
+                  window.location.href = '/sign-in';
+               }
+
+               return result;
+            }
+
+            // Case 1b: Refresh token succeeded - update tokens and retry original request
             if (refreshResult.data) {
-               // Update tokens in store
                const refreshData = refreshResult.data as {
                   access_token: string;
                   refresh_token: string;
@@ -180,28 +203,40 @@ export const baseQuery = (service: string) => {
                );
                result = await baseQueryWithAuth(args, api, extraOptions);
             } else {
-               // Refresh failed, logout user and force clear access token
-               console.log('[baseQuery] Token refresh failed, logging out...');
-               const currentRoute = window.location.pathname;
+               // Refresh failed for other reasons - navigate to login
+               console.log(
+                  '[baseQuery] Token refresh failed, navigating to login...',
+               );
 
                // Force delete access token from localStorage
                forceClearAccessToken();
 
                api.dispatch(setPreviousUnAuthenticatedPath(currentRoute));
                api.dispatch(setLogout());
+
+               // Navigate to login page
+               if (typeof window !== 'undefined') {
+                  window.location.href = '/sign-in';
+               }
             }
          } else {
-            // No refresh token available, logout user and force clear access token
+            /**
+             * Case 2: No refresh token available - navigate to login
+             */
             console.log(
-               '[baseQuery] No refresh token available, logging out...',
+               '[baseQuery] No refresh token available, navigating to login...',
             );
-            const currentRoute = window.location.pathname;
 
             // Force delete access token from localStorage
             forceClearAccessToken();
 
             api.dispatch(setPreviousUnAuthenticatedPath(currentRoute));
             api.dispatch(setLogout());
+
+            // Navigate to login page
+            if (typeof window !== 'undefined') {
+               window.location.href = '/sign-in';
+            }
          }
       }
 

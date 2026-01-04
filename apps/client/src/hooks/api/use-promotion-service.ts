@@ -1,9 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { useLazyGetEventDetailsQuery } from '~/infrastructure/services/promotion.service';
+import { useCheckApiError } from '~/hooks/use-check-error';
 
 const usePromotionService = () => {
    const [getEventDetailsTrigger, getEventDetailsState] =
       useLazyGetEventDetailsQuery();
+
+   useCheckApiError([]);
 
    const getEventDetailsAsync = useCallback(
       async (eventId: string) => {
@@ -34,7 +37,6 @@ const usePromotionService = () => {
    return {
       isLoading,
       getEventDetailsState,
-
       getEventDetailsAsync,
    };
 };

@@ -1,80 +1,31 @@
-import type { Metadata } from 'next';
-import { getEventData } from './lib/get-event-data';
+'use client';
+
+import { useEffect } from 'react';
+import usePromotionService from '~/hooks/api/use-promotion-service';
 import EventContent from './_components/event-content';
+import { ProductGridSkeleton } from './_components/product-card-skeleton';
 import { TEvent, TEventItem } from '~/domain/types/catalog.type';
 
-/**
- * Generate dynamic metadata for SEO
- * This runs on the server and provides metadata to search engines
- */
-export async function generateMetadata(): Promise<Metadata> {
-   const eventData = await getEventData();
-
-   if (!eventData) {
-      return {
-         title: 'Black Friday Special - YB Store',
-         description: 'Limited-time savings on your favorite Apple products.',
-      };
-   }
-
-   const title = `${eventData.title} - YB Store`;
-   const description =
-      eventData.description ||
-      'Limited-time savings on your favorite Apple products.';
-
-   // Get banner image from first event item if available
-   const bannerImage =
-      eventData.event_items?.[0]?.image_url ||
-      'https://via.placeholder.com/1200x630?text=Black+Friday+Sale';
-
-   return {
-      title,
-      description,
-      openGraph: {
-         title,
-         description,
-         images: [
-            {
-               url: bannerImage,
-               width: 1200,
-               height: 630,
-               alt: eventData.title,
-            },
-         ],
-         type: 'website',
-         siteName: 'YB Store',
-      },
-      twitter: {
-         card: 'summary_large_image',
-         title,
-         description,
-         images: [bannerImage],
-      },
-      alternates: {
-         canonical: '/sales/event/black-friday',
-      },
-      keywords: [
-         'black friday',
-         'sale',
-         'discount',
-         'apple products',
-         'iphone',
-         'promotion',
-         'limited time offer',
-      ],
-   };
-}
+const EVENT_ID = '611db6eb-3d64-474e-9e23-3517ad0df6ec';
 
 /**
- * Server Component for Black Friday Event Page
- * Fetches data on the server for better SEO and performance
+ * Client Component for Black Friday Event Page
+ * Fetches data on the client using promotion service hook
  */
-export default async function BlackFridayPage() {
-   const eventData = await getEventData();
+export default function BlackFridayPage() {
+   const { isLoading, getEventDetailsState, getEventDetailsAsync } =
+      usePromotionService();
+
+   const { data: eventData } = getEventDetailsState;
+
+   useEffect(() => {
+      // Fetch event data on mount
+      getEventDetailsAsync(EVENT_ID);
+   }, [getEventDetailsAsync]);
 
    // Fallback data if API fails
    const fallbackEvent: TEvent = {
-      id: '611db6eb-3d64-474e-9e23-3517ad0df6ec',
+      id: EVENT_ID,
       title: 'Black Friday Special',
       description: 'Limited-time savings on your favorite Apple products.',
       start_date: new Date().toISOString(),
@@ -88,51 +39,39 @@ export default async function BlackFridayPage() {
       deleted_by: null,
    };
 
+   // Show loading state
+   if (isLoading) {
+      return (
+         <div className="bg-[#f5f5f7]">
+            <div className="bg-white text-red-500 font-bold">
+               {/* Banner placeholder - you can add a loading banner here if needed */}
+            </div>
+
+            <div className="row w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[64px] md:pt-[80px] pb-[48px] md:pb-[64px]">
+               <p className="text-3xl sm:text-4xl lg:text-5xl w-full max-w-[700px] text-wrap font-semibold text-slate-900/60 leading-9 sm:leading-[48px] lg:leading-[60px]">
+                  <span className="inline text-black">Store.</span>
+                  The best way to buy the products you love.
+               </p>
+            </div>
+
+            <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[64px] md:pt-[80px] pb-[48px] md:pb-[64px]">
+               <div className="text-3xl sm:text-4xl lg:text-5xl w-full max-w-[700px] text-wrap font-semibold text-slate-900/60 leading-9 sm:leading-[48px] lg:leading-[60px]">
+                  <h1 className="text-black">
+                     Loading Black Friday Special...
+                  </h1>
+               </div>
+               <ProductGridSkeleton count={6} className="mt-5" />
+            </div>
+         </div>
+      );
+   }
+
+   // Use data from RTK Query state, fallback to default
    const event = eventData || fallbackEvent;
    const eventItems = event.event_items || [];
 
-   // Generate structured data (JSON-LD) for SEO
-   const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'Event',
-      name: event.title,
-      description: event.description,
-      startDate: event.start_date,
-      endDate: event.end_date,
-      eventStatus: 'https://schema.org/EventScheduled',
-      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-      location: {
-         '@type': 'Place',
-         name: 'YB Store',
-         address: {
-            '@type': 'PostalAddress',
-            addressCountry: 'US',
-         },
-      },
-      offers: eventItems.map((item: TEventItem) => ({
-         '@type': 'Offer',
-         name: `${item.model_name} ${item.color_name} ${item.storage_name}`,
-         price: item.final_price,
-         priceCurrency: 'USD',
-         availability:
-            item.stock > 0
-               ? 'https://schema.org/InStock'
-               : 'https://schema.org/OutOfStock',
-         url: `/products/${item.normalized_model.toLowerCase()}`,
-         image: item.image_url,
-      })),
-   };
-
    return (
       <>
-         {/* Structured Data for SEO */}
-         <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-               __html: JSON.stringify(structuredData),
-            }}
-         />
-
          {/* Main Content */}
          <EventContent eventData={event} eventItems={eventItems} />
       </>

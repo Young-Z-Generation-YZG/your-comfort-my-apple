@@ -19,3 +19,4 @@ const CardWrapper = ({ children, className = '' }: CardWrapperProps) => {
 };
 
 export default CardWrapper;
+

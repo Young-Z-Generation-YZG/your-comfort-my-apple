@@ -42,7 +42,7 @@ export function ProductGridSkeleton({
    className?: string;
 }) {
    return (
-      <div className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8', className)}>
+      <div className={cn('', className)}>
          {Array(count)
             .fill(0)
             .map((_, index) => (
