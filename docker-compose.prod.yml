@@ -435,7 +435,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=188.166.176.213
+            - MONGO_HOST_IP=178.128.111.107
         ports:
             - 27001:27017
         volumes:
@@ -484,7 +484,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=188.166.176.213
+            - MONGO_HOST_IP=178.128.111.107
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
