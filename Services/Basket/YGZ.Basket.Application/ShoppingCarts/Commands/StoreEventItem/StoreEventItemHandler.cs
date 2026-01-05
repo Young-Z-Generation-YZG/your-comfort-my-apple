@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Cache.Entities;
+using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
 using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
@@ -57,6 +58,19 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
                     nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), "Event item not found", new { eventItemId = request.EventItemId, userEmail = _userContext.GetUserEmail() });
 
                 throw new Exception("Event item not found");
+            }
+
+            // Check if event item has available stock
+            // Invalidate when stock equals sold (out of stock)
+            var stock = eventItem.Stock ?? 0;
+            var sold = eventItem.Sold ?? 0;
+
+            if (stock <= sold)
+            {
+                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(Handle), "Event item is out of stock (stock equals or less than sold)", new { eventItemId = request.EventItemId, stock, sold, userEmail = _userContext.GetUserEmail() });
+
+                return Errors.Discount.InsufficientStock;
             }
 
             _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",

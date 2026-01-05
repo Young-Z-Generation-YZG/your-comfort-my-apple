@@ -280,6 +280,8 @@ services:
         depends_on:
             db.catalog.replica.primary:
                 condition: service_started
+            mq.rabbitmq:
+                condition: service_healthy
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -330,6 +332,10 @@ services:
         depends_on:
             db.discount:
                 condition: service_healthy
+            mq.rabbitmq:
+                condition: service_healthy
+            ygz.catalog.api:
+                condition: service_started
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -374,10 +380,11 @@ services:
             - RABBITMQ_DEFAULT_USER=bale
             - RABBITMQ_DEFAULT_PASS=bale
         healthcheck:
-            test: ["CMD", "rabbitmqctl", "status"]
-            interval: 5s
-            timeout: 20s
+            test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+            interval: 10s
+            timeout: 10s
             retries: 5
+            start_period: 40s
         volumes:
             - rabbitmq_data:/var/lib/rabbitmq
         networks:

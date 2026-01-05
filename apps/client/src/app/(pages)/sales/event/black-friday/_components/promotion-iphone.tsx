@@ -23,9 +23,16 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
    const discountPercentage = item.discount_value;
 
    // Calculate progress bar values
-   const totalAvailable = (item.stock || 0) + (item.sold || 0);
+   const sold = item.sold || 0;
+   const stock = item.stock || 0;
+
+   // Check if item is out of stock (stock <= sold)
+   const isOutOfStock = stock <= sold;
+
+   // Calculate sold percentage: sold / stock
+   // Ensure percentage is between 0 and 100
    const soldPercentage =
-      totalAvailable > 0 ? ((item.sold || 0) / totalAvailable) * 100 : 0;
+      stock > 0 ? Math.min(100, Math.max(0, (sold / stock) * 100)) : 0;
 
    const handleBuy = async () => {
       const result = await storeEventItemAsync({
@@ -39,20 +46,39 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
 
    return (
       <div className={cn('h-full', className)}>
-         <CardWrapper className="w-full h-full flex flex-col">
+         <CardWrapper
+            className={cn(
+               'w-full h-full flex flex-col',
+               isOutOfStock && 'opacity-75',
+            )}
+         >
             <div className="w-full overflow-hidden relative h-[220px] sm:h-[260px] md:h-[300px]">
                <NextImage
                   src={item.image_url}
                   alt={`${item.model_name} ${item.color_name} ${item.storage_name}`}
                   width={Math.round((1000 * 16) / 9)}
                   height={1000}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
+                  className={cn(
+                     'absolute top-0 left-0 w-full h-full object-cover',
+                     isOutOfStock && 'grayscale opacity-60',
+                  )}
                   loading="lazy"
                />
+               {/* Out of Stock Overlay */}
+               {isOutOfStock && (
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                     <Badge
+                        variant="secondary"
+                        className="text-base sm:text-lg px-4 py-2 bg-gray-800/90 text-white font-bold border-2 border-white/50 shadow-lg"
+                     >
+                        OUT OF STOCK
+                     </Badge>
+                  </div>
+               )}
                {/* Discount Badge */}
                <Badge
                   variant="destructive"
-                  className="absolute top-4 right-4 text-sm sm:text-base px-3 py-1"
+                  className="absolute top-4 right-4 text-sm sm:text-base px-3 py-1 z-10"
                >
                   -{discountPercentage}% OFF
                </Badge>
@@ -90,7 +116,7 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                </p>
 
                {/* Progress Bar - Stock vs Sold */}
-               {totalAvailable > 0 && (
+               {stock > 0 && (
                   <div className="mt-4">
                      <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
@@ -98,14 +124,12 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                               Sold:
                            </span>
                            <span className="inline-flex items-center justify-center min-w-[32px] px-2 py-1 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white text-sm font-bold font-SFProText rounded-md shadow-md">
-                              {item.sold || 0}
+                              {sold}
                            </span>
                         </div>
                         <span className="text-sm text-gray-600 font-SFProText">
                            Stock:{' '}
-                           <strong className="text-emerald-600">
-                              {item.stock || 0}
-                           </strong>
+                           <strong className="text-emerald-600">{stock}</strong>
                         </span>
                      </div>
                      <div className="relative w-full h-3 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full overflow-hidden shadow-inner">
@@ -127,9 +151,13 @@ const PromotionIPhone = ({ item, className }: PromotionIPhoneProps) => {
                <Button
                   className="w-full mt-5 cursor-pointer rounded-lg bg-blue-600 py-2 text-white font-SFProText font-medium hover:bg-blue-700 disabled:opacity-50 text-sm sm:text-base"
                   onClick={handleBuy}
-                  disabled={isStoreEventItemLoading}
+                  disabled={isStoreEventItemLoading || isOutOfStock}
                >
-                  {isStoreEventItemLoading ? 'Adding...' : 'Buy now'}
+                  {isOutOfStock
+                     ? 'Out of Stock'
+                     : isStoreEventItemLoading
+                       ? 'Adding...'
+                       : 'Buy now'}
                </Button>
             </div>
          </CardWrapper>

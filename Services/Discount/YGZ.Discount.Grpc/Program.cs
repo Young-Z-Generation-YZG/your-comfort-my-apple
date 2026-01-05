@@ -76,7 +76,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     await app.ApplyMigrationAsync();
-    await app.ApplySeedDataAsync();
+    
+    // Seed data initialization - wrap in try-catch to prevent startup failure
+    try
+    {
+        await app.ApplySeedDataAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Failed to apply seed data. Application will continue without seed data.");
+    }
 }
 
 app.MapGrpcReflectionService();

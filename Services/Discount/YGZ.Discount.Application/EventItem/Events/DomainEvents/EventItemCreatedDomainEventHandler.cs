@@ -24,8 +24,8 @@ public class EventItemCreatedDomainEventHandler : INotificationHandler<EventItem
 
     public async Task Handle(EventItemCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
-        var eventItemId = notification.EventItem.Id.ToString();
-        var eventId = notification.EventItem.EventId?.ToString() ?? "";
+        var eventItemId = notification.EventItem.Id.Value.ToString();
+        var eventId = notification.EventItem.EventId.Value.ToString() ?? "";
 
         _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
             nameof(Handle), "Processing event item created domain event", new { eventItemId, eventId, skuId = notification.EventItem.SkuId });
@@ -37,12 +37,12 @@ public class EventItemCreatedDomainEventHandler : INotificationHandler<EventItem
             EventItemId = eventItemId,
             TenantId = notification.EventItem.TenantId,
             BranchId = notification.EventItem.BranchId,
-            EventName = "",
+            EventName = "Black Friday 2025",
             ReservedQuantity = notification.EventItem.Stock,
         };
 
         await _integrationEventSender.Publish(integrationEvent, cancellationToken);
-        
+
         _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
             nameof(Handle), "Successfully published event item created integration event", new { eventItemId, eventId, skuId = notification.EventItem.SkuId });
     }

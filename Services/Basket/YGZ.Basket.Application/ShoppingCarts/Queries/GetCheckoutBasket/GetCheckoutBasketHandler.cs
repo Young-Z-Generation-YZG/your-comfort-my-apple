@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using YGZ.Basket.Application.Abstractions.Data;
 using YGZ.Basket.Domain.Core.Errors;
 using YGZ.Basket.Domain.ShoppingCart;
-using YGZ.Basket.Domain.ShoppingCart.Entities;
 using YGZ.Basket.Domain.ShoppingCart.ValueObjects;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.HttpContext;
@@ -81,6 +80,42 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
 
                 if (eventPromotion is not null)
                 {
+
+                    // PromotionId is the EventItemId
+                    var eventItemId = eventPromotion.PromotionId;
+
+                    try
+                    {
+                        var grpcRequest = new GetEventItemByIdRequest
+                        {
+                            EventItemId = eventItemId
+                        };
+
+                        var eventItem = await _discountProtoServiceClient.GetEventItemByIdGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+
+                        if (eventItem != null && !string.IsNullOrEmpty(eventItem.Id))
+                        {
+                            // Check if event item has available stock
+                            var stock = eventItem.Stock ?? 0;
+                            var sold = eventItem.Sold ?? 0;
+                            var availableQuantity = stock - sold;
+
+                            if (availableQuantity <= 0)
+                            {
+                                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                                    nameof(Handle), "Event item has insufficient stock", new { eventItemId, stock, sold, availableQuantity, userEmail });
+
+                                return Errors.Discount.InsufficientStock;
+                            }
+                        }
+                    }
+                    catch (RpcException ex)
+                    {
+                        _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                            nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), ex.Message, new { eventItemId, userEmail });
+                        // Continue processing even if event item fetch fails - let Discount service handle validation
+                    }
+
                     var efficientCartItems = FilterEventItemsShoppingCart.CartItems.Select((item, index) => new EfficientCartItem
                     {
                         UniqueString = $"item_{index}_{item.GetHashCode()}",
@@ -234,20 +269,20 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                 var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
                 var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
                 var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-                
+
                 // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%) for display
                 if (discountType == EDiscountType.PERCENTAGE && discountValue > 0 && discountValue < 1)
                 {
                     discountValue = discountValue * 100m;
                 }
-                
+
                 // Convert from gRPC Timestamp (UTC+7) back to UTC DateTime
                 // ToTimestampUtc adds 7 hours, so we subtract 7 hours when converting back
                 var expiredDateUtc = coupon.ExpiredDate?.ToDateTime();
-                var expiredDate = expiredDateUtc.HasValue 
-                    ? expiredDateUtc.Value.AddHours(-7).ToUniversalTime() 
+                var expiredDate = expiredDateUtc.HasValue
+                    ? expiredDateUtc.Value.AddHours(-7).ToUniversalTime()
                     : (DateTime?)null;
-                
+
                 finalCart.SetCouponApplied(
                     errorMessage: null,
                     title: coupon.Title ?? null,
@@ -301,7 +336,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
         var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
         var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-        
+
         // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
         // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
         // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
@@ -309,7 +344,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
         {
             discountValue = discountValue * 100m;
         }
-        
+
         var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
         var afterCart = CalculatePrice.CalculateEfficientCart(
