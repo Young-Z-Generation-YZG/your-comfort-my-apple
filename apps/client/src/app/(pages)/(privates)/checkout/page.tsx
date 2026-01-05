@@ -106,6 +106,7 @@ const CheckoutPage = () => {
    );
    const [displayPaymentBlockchainModel, setDisplayPaymentBlockchainModel] =
       useState(false);
+   const [isRedirecting, setIsRedirecting] = useState(false);
 
    const { isConnected } = useSolana();
 
@@ -142,8 +143,8 @@ const CheckoutPage = () => {
    }, [getCheckoutItemsQueryState.data]);
 
    const isLoading = useMemo(() => {
-      return isLoadingAddresses || isLoadingBasket;
-   }, [isLoadingAddresses, isLoadingBasket]);
+      return isLoadingAddresses || isLoadingBasket || isRedirecting;
+   }, [isLoadingAddresses, isLoadingBasket, isRedirecting]);
 
    useEffect(() => {
       getAddressesAsync();
@@ -235,10 +236,16 @@ const CheckoutPage = () => {
             (result.data as unknown as TCheckoutResponse)
                .order_details_redirect_url
          ) {
-            router.replace(
-               (result.data as unknown as TCheckoutResponse)
-                  .order_details_redirect_url,
-            );
+            // Set redirecting state to keep loading active
+            setIsRedirecting(true);
+
+            // Wait 3 seconds before redirecting
+            setTimeout(() => {
+               router.replace(
+                  (result.data as unknown as TCheckoutResponse)
+                     .order_details_redirect_url,
+               );
+            }, 3000);
          }
       }
    };

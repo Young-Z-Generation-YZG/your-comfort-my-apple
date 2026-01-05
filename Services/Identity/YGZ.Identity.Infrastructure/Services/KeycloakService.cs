@@ -57,7 +57,7 @@ public class KeycloakService : IKeycloakService
 
     public async Task<Result<KeycloakUser>> GetUserByIdAsync(Guid userId)
     {
-        var adminToken = await GetAdminTokenResponseAsync();
+        var adminToken = await GetAdminTokenHttpAsync();
         var requestMessage = new HttpRequestMessage
         {
             Method = HttpMethod.Get,
@@ -94,7 +94,7 @@ public class KeycloakService : IKeycloakService
 
     public async Task<Result<KeycloakUser?>> GetUserByUsernameOrEmailAsync(string usernameOrEmail)
     {
-        var adminToken = await GetAdminTokenResponseAsync();
+        var adminToken = await GetAdminTokenHttpAsync();
         var url = new Uri(_adminEndpoint + "?q=" + usernameOrEmail);
         var requestMessage = new HttpRequestMessage
         {
@@ -133,18 +133,14 @@ public class KeycloakService : IKeycloakService
         return Errors.Keycloak.UserNotFound;
     }
 
-    public async Task<string> CreateKeycloakUserAsync(UserRepresentation userRepresentation)
+    public async Task<Result<string>> CreateKeycloakUserHttpAsync(UserRepresentation userRepresentation, string? adminToken)
     {
-        var keycloakUser = userRepresentation;
-
-        var jsonContent = new StringContent(JsonConvert.SerializeObject(keycloakUser), Encoding.UTF8, "application/json");
-
-        string? userId = null;
-
-        var adminToken = await GetAdminTokenResponseAsync();
-
         try
         {
+            var adminTokenResponse = adminToken ?? await GetAdminTokenHttpAsync();
+
+            var jsonContent = new StringContent(JsonConvert.SerializeObject(userRepresentation), Encoding.UTF8, "application/json");
+
             var requestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
@@ -152,37 +148,126 @@ public class KeycloakService : IKeycloakService
                 Content = jsonContent,
                 Headers =
                 {
-                    { "Authorization", $"Bearer {adminToken}" }
+                    { "Authorization", $"Bearer {adminTokenResponse}" }
                 }
             };
 
             var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.StatusCode == HttpStatusCode.Created)
+            if (response.StatusCode != HttpStatusCode.Created)
             {
-                var locationHeader = response.Headers.GetValues("Location").First();
-                var locationUrl = new Uri(locationHeader);
-                var path = locationUrl.AbsolutePath;
-                var parts = path.TrimStart('/').Split('/');
-                int usersIndex = Array.IndexOf(parts, "users");
+                _logger.LogError("::[Service:KeycloakService][Result:IsFailure][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(CreateKeycloakUserHttpAsync), Errors.Keycloak.CreateKeycloakUserFailed.Message, new { userRepresentation });
 
-                userId = parts[usersIndex + 1];
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                _logger.LogError("::[Http Internal Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(CreateKeycloakUserHttpAsync), errorContent, new { userRepresentation, errorContent });
+
+                return Errors.Keycloak.CreateKeycloakUserFailed;
             }
+
+            var locationHeader = response.Headers.GetValues("Location").First();
+            var locationUrl = new Uri(locationHeader);
+            var path = locationUrl.AbsolutePath;
+            var parts = path.TrimStart('/').Split('/');
+            int usersIndex = Array.IndexOf(parts, "users");
+
+            return parts[usersIndex + 1];
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(CreateKeycloakUserAsync), ex.Message, userRepresentation);
+            var parameters = new { userRepresentation };
+            _logger.LogCritical(ex, "::[Service:KeycloakService][try/catch][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(CreateKeycloakUserHttpAsync), ex.Message, parameters);
             throw;
         }
+    }
 
+    public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameHttpAsync(string roleName, string? adminToken = null)
+    {
         try
         {
-            var keycloakRole = await GetKeycloakRoleByNameAsync(AuthorizationConstants.Roles.USER);
+            string adminTokenResponse = adminToken ?? await GetAdminTokenHttpAsync();
 
-            List<KeycloakRole> roles = new List<KeycloakRole> { keycloakRole.Response! };
+            // Keycloak API endpoint: GET /admin/realms/{realm}/clients/{id}/roles/{role-name}
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"{_roleManagementEndpoint}/{roleName}"),
+                Headers =
+                {
+                    { "Authorization", $"Bearer {adminToken}" },
+                    { "Accept", "application/json" }
+                }
+            };
+
+            var response = await _httpClient.SendAsync(requestMessage);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return Errors.Keycloak.RoleNotFound;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                var role = JsonConvert.DeserializeObject<KeycloakRole>(content);
+
+                return role!;
+            }
+            else
+            {
+                return Errors.Keycloak.RoleRetrievalFailed;
+            }
+
+            // if (response.IsSuccessStatusCode)
+            // {
+            //     var content = await response.Content.ReadAsStringAsync();
+            //     var role = JsonConvert.DeserializeObject<KeycloakRole>(content);
+
+            //     if (role == null)
+            //     {
+            //         _logger.LogWarning("Failed to deserialize Keycloak role: {RoleName}", roleName);
+            //         return Errors.Keycloak.RoleNotFound;
+            //     }
+
+            //     _logger.LogInformation("Successfully retrieved Keycloak role: {RoleName} with ID: {RoleId}", roleName, role.Id);
+            //     return role;
+            // }
+
+            // if (response.StatusCode == HttpStatusCode.NotFound)
+            // {
+            //     _logger.LogWarning("Keycloak role not found: {RoleName}", roleName);
+            //     return Errors.Keycloak.RoleNotFound;
+            // }
+
+            // var errorContent = await response.Content.ReadAsStringAsync();
+            // _logger.LogError("Failed to get Keycloak role. Status: {StatusCode}, Error: {Error}",
+            //     response.StatusCode, errorContent);
+
+        }
+        catch (Exception ex)
+        {
+            var parameters = new { roleName };
+            _logger.LogCritical(ex, "::[Service:KeycloakService][try/catch][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetKeycloakRoleByNameHttpAsync), ex.Message, parameters);
+            throw;
+        }
+    }
+
+    public async Task<Result<bool>> AssignRoleToKeycloakUserHttpAsync(string userId, KeycloakRole keycloakRole, string? adminToken = null)
+    {
+        try
+        {
+            string adminTokenResponse = adminToken ?? await GetAdminTokenHttpAsync();
+
+
+            List<KeycloakRole> roles = new List<KeycloakRole> { keycloakRole };
 
             var roleJson = JsonConvert.SerializeObject(roles);
+
 
             var requestMessage = new HttpRequestMessage
             {
@@ -191,7 +276,7 @@ public class KeycloakService : IKeycloakService
                 Content = new StringContent(roleJson, Encoding.UTF8, "application/json"),
                 Headers =
                 {
-                    { "Authorization", $"Bearer {adminToken}" }
+                    { "Authorization", $"Bearer {adminTokenResponse}" }
                 }
             };
 
@@ -199,19 +284,79 @@ public class KeycloakService : IKeycloakService
 
             if (response.StatusCode != HttpStatusCode.NoContent)
             {
-                await DeleteKeycloakUserAsync(userId!);
+                _logger.LogError("::[Service:KeycloakService][Result:IsFailure][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(AssignRoleToKeycloakUserHttpAsync), Errors.Keycloak.CannotAssignRole.Message, new { userId, keycloakRole.Name });
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                _logger.LogError("::[Http Internal Error]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(AssignRoleToKeycloakUserHttpAsync), errorContent, new { userId, keycloakRole.Name, errorContent });
+
+                return Errors.Keycloak.CannotAssignRole;
             }
+
+            _logger.LogInformation("::[Service:KeycloakService][Result:IsSuccess][Method:{MethodName}]::Information message: {InformationMessage}, Parameters: {@Parameters}",
+                nameof(AssignRoleToKeycloakUserHttpAsync), "Successfully assigned role to user", new { userId, keycloakRole.Name });
+
+            return true;
         }
         catch (Exception ex)
         {
-            var parameters = new { userId, roleName = AuthorizationConstants.Roles.USER };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(CreateKeycloakUserAsync), ex.Message, parameters);
-            await DeleteKeycloakUserAsync(userId!);
+            var parameters = new { userId, keycloakRole.Name };
+            _logger.LogCritical(ex, "::[Service:KeycloakService][try/catch][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(AssignRoleToKeycloakUserHttpAsync), ex.Message, parameters);
             throw;
         }
 
-        return userId!;
+    }
+
+    public async Task<Result<string>> CreateKeycloakUserAsync(UserRepresentation userRepresentation)
+    {
+        try
+        {
+            string adminToken = await GetAdminTokenHttpAsync();
+
+            var createKeycloakUserResult = await CreateKeycloakUserHttpAsync(userRepresentation, adminToken);
+
+            if (createKeycloakUserResult.IsFailure)
+            {
+                _logger.LogError("::[Service:KeycloakService][Result:IsFailure][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(CreateKeycloakUserAsync), createKeycloakUserResult.Error.Message, new { userRepresentation });
+
+                return createKeycloakUserResult.Error;
+            }
+
+            string userId = createKeycloakUserResult.Response!;
+
+            var userRoleResult = await GetKeycloakRoleByNameHttpAsync(AuthorizationConstants.Roles.USER, adminToken);
+
+            if (userRoleResult.IsFailure)
+            {
+                _logger.LogError("::[Service:KeycloakService][Result:IsFailure][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(CreateKeycloakUserAsync), Errors.Keycloak.CreateKeycloakUserFailed.Message, new { userRepresentation });
+
+                return userRoleResult.Error;
+            }
+
+            var assignRoleResult = await AssignRoleToKeycloakUserHttpAsync(userId, userRoleResult.Response!, adminToken);
+
+            if (assignRoleResult.IsFailure)
+            {
+                _logger.LogError("::[Service:KeycloakService][Result:IsFailure][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(CreateKeycloakUserAsync), Errors.Keycloak.CreateKeycloakUserFailed.Message, new { userRepresentation });
+
+                return assignRoleResult.Error;
+            }
+
+            return userId;
+        }
+        catch (Exception ex)
+        {
+            var parameters = new { userRepresentation };
+            _logger.LogCritical(ex, "::[Service:KeycloakService][try/catch][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(CreateKeycloakUserAsync), ex.Message, parameters);
+            throw;
+        }
     }
 
     public async Task<TokenResponse> GetKeycloakTokenPairAsync(string emailOrUsername, string password)
@@ -240,7 +385,7 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             var parameters = new { emailOrUsername, hasPassword = !string.IsNullOrEmpty(password) };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+            _logger.LogCritical(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(GetKeycloakTokenPairAsync), ex.Message, parameters);
             throw;
         }
@@ -273,13 +418,13 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             var parameters = new { };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+            _logger.LogCritical(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(GetTokenClientCredentialsTypeAsync), ex.Message, parameters);
             throw;
         }
     }
 
-    private async Task<string> GetAdminTokenResponseAsync()
+    private async Task<string> GetAdminTokenHttpAsync()
     {
         var requestBody = new FormUrlEncodedContent(new[]
         {
@@ -308,8 +453,8 @@ public class KeycloakService : IKeycloakService
         catch (Exception ex)
         {
             var parameters = new { };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(GetAdminTokenResponseAsync), ex.Message, parameters);
+            _logger.LogCritical(ex, "::[Service:KeycloakService][try/catch][Method:{MethodName}]::Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetAdminTokenHttpAsync), ex.Message, parameters);
             throw;
         }
     }
@@ -330,7 +475,7 @@ public class KeycloakService : IKeycloakService
             var userId = userResult.Response.Id;
 
             // Step 2: Get admin token
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             // Step 3: Prepare the update payload (only updating emailVerified)
             var updatePayload = new
@@ -541,7 +686,7 @@ public class KeycloakService : IKeycloakService
             var userId = userResult.Response.Id;
 
             // Step 2: Get admin token
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             // Step 3: Prepare the payload to trigger password reset email
             var resetPayload = new
@@ -616,7 +761,7 @@ public class KeycloakService : IKeycloakService
             }
 
             // Step 3: Get admin token
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             // Step 4: Prepare the new password payload
             var resetPayload = new
@@ -680,7 +825,7 @@ public class KeycloakService : IKeycloakService
 
             var userId = userResult.Response.Id;
 
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             var resetPayload = new
             {
@@ -776,7 +921,7 @@ public class KeycloakService : IKeycloakService
     {
         try
         {
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             var requestMessage = new HttpRequestMessage
             {
@@ -815,81 +960,81 @@ public class KeycloakService : IKeycloakService
         }
     }
 
-    public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName)
-    {
-        try
-        {
-            var adminToken = await GetAdminTokenResponseAsync();
+    // public async Task<Result<KeycloakRole>> GetKeycloakRoleByNameHttpAsync(string roleName)
+    // {
+    //     try
+    //     {
+    //         var adminToken = await GetAdminTokenHttpAsync();
 
-            // Keycloak API endpoint: GET /admin/realms/{realm}/clients/{id}/roles/{role-name}
-            var requestMessage = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"{_roleManagementEndpoint}/{roleName}"),
-                Headers =
-                {
-                    { "Authorization", $"Bearer {adminToken}" },
-                    { "Accept", "application/json" }
-                }
-            };
+    //         // Keycloak API endpoint: GET /admin/realms/{realm}/clients/{id}/roles/{role-name}
+    //         var requestMessage = new HttpRequestMessage
+    //         {
+    //             Method = HttpMethod.Get,
+    //             RequestUri = new Uri($"{_roleManagementEndpoint}/{roleName}"),
+    //             Headers =
+    //             {
+    //                 { "Authorization", $"Bearer {adminToken}" },
+    //                 { "Accept", "application/json" }
+    //             }
+    //         };
 
-            var response = await _httpClient.SendAsync(requestMessage);
+    //         var response = await _httpClient.SendAsync(requestMessage);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var role = JsonConvert.DeserializeObject<KeycloakRole>(content);
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             var content = await response.Content.ReadAsStringAsync();
+    //             var role = JsonConvert.DeserializeObject<KeycloakRole>(content);
 
-                if (role == null)
-                {
-                    _logger.LogWarning("Failed to deserialize Keycloak role: {RoleName}", roleName);
-                    return Errors.Keycloak.RoleNotFound;
-                }
+    //             if (role == null)
+    //             {
+    //                 _logger.LogWarning("Failed to deserialize Keycloak role: {RoleName}", roleName);
+    //                 return Errors.Keycloak.RoleNotFound;
+    //             }
 
-                _logger.LogInformation("Successfully retrieved Keycloak role: {RoleName} with ID: {RoleId}", roleName, role.Id);
-                return role;
-            }
+    //             _logger.LogInformation("Successfully retrieved Keycloak role: {RoleName} with ID: {RoleId}", roleName, role.Id);
+    //             return role;
+    //         }
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                _logger.LogWarning("Keycloak role not found: {RoleName}", roleName);
-                return Errors.Keycloak.RoleNotFound;
-            }
+    //         if (response.StatusCode == HttpStatusCode.NotFound)
+    //         {
+    //             _logger.LogWarning("Keycloak role not found: {RoleName}", roleName);
+    //             return Errors.Keycloak.RoleNotFound;
+    //         }
 
-            var errorContent = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Failed to get Keycloak role. Status: {StatusCode}, Error: {Error}",
-                response.StatusCode, errorContent);
+    //         var errorContent = await response.Content.ReadAsStringAsync();
+    //         _logger.LogError("Failed to get Keycloak role. Status: {StatusCode}, Error: {Error}",
+    //             response.StatusCode, errorContent);
 
-            return Errors.Keycloak.RoleRetrievalFailed;
-        }
-        catch (HttpRequestException ex)
-        {
-            var parameters = new { roleName };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
-            return Errors.Keycloak.RoleRetrievalFailed;
-        }
-        catch (JsonException ex)
-        {
-            var parameters = new { roleName };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
-            return Errors.Keycloak.RoleRetrievalFailed;
-        }
-        catch (Exception ex)
-        {
-            var parameters = new { roleName };
-            _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(GetKeycloakRoleByNameAsync), ex.Message, parameters);
-            throw;
-        }
-    }
+    //         return Errors.Keycloak.RoleRetrievalFailed;
+    //     }
+    //     catch (HttpRequestException ex)
+    //     {
+    //         var parameters = new { roleName };
+    //         _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    //             nameof(GetKeycloakRoleByNameHttpAsync), ex.Message, parameters);
+    //         return Errors.Keycloak.RoleRetrievalFailed;
+    //     }
+    //     catch (JsonException ex)
+    //     {
+    //         var parameters = new { roleName };
+    //         _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    //             nameof(GetKeycloakRoleByNameHttpAsync), ex.Message, parameters);
+    //         return Errors.Keycloak.RoleRetrievalFailed;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         var parameters = new { roleName };
+    //         _logger.LogError(ex, "::[Application Exception]:: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+    //             nameof(GetKeycloakRoleByNameHttpAsync), ex.Message, parameters);
+    //         throw;
+    //     }
+    // }
 
     public async Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId)
     {
         try
         {
-            var subjectToken = await GetAdminTokenResponseAsync();
+            var subjectToken = await GetAdminTokenHttpAsync();
 
             // Prepare form-urlencoded request body for token exchange
             var requestBody = new FormUrlEncodedContent(new[]
@@ -946,13 +1091,13 @@ public class KeycloakService : IKeycloakService
     {
         try
         {
-            var adminToken = await GetAdminTokenResponseAsync();
+            var adminToken = await GetAdminTokenHttpAsync();
 
             // Get all roles by name
             var roles = new List<KeycloakRole>();
             foreach (var roleName in roleNames)
             {
-                var roleResult = await GetKeycloakRoleByNameAsync(roleName);
+                var roleResult = await GetKeycloakRoleByNameHttpAsync(roleName);
                 if (roleResult.IsFailure)
                 {
                     _logger.LogWarning("Role not found: {RoleName}", roleName);

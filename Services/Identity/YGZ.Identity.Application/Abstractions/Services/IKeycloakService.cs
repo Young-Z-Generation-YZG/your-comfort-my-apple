@@ -5,7 +5,6 @@ using YGZ.BuildingBlocks.Shared.Contracts.Auth;
 using YGZ.BuildingBlocks.Shared.Contracts.Keycloak;
 using YGZ.Identity.Application.BuilderClasses;
 using YGZ.Identity.Application.Keycloak.Commands.AuthorizationCode;
-using YGZ.Identity.Domain.Core.Keycloak.Entities;
 using YGZ.Identity.Domain.Users.Entities;
 
 namespace YGZ.Identity.Application.Abstractions.Services;
@@ -17,7 +16,7 @@ public interface IKeycloakService
     Task<TokenResponse> GetTokenClientCredentialsTypeAsync();
     Task<TokenResponse> GetKeycloakTokenPairAsync(string emailOrUsername, string password);
     Task<TokenResponse> AuthorizationCode(AuthorizationCodeCommand request);
-    Task<string> CreateKeycloakUserAsync(UserRepresentation userRepresentation);
+    Task<Result<string>> CreateKeycloakUserAsync(UserRepresentation userRepresentation);
     Task<Result<bool>> VerifyEmailAsync(string email);
     Task<Result<bool>> SendEmailResetPasswordAsync(string email);
     Task<Result<bool>> ChangePasswordAsync(string email, string currPassword, string newPassword);
@@ -26,7 +25,7 @@ public interface IKeycloakService
     Task<Result<TokenResponse>> RefreshAccessTokenAsync(string refreshToken);
     Task<Result<bool>> LogoutAsync(string refreshToken);
     Task<Result<bool>> DeleteKeycloakUserAsync(string keycloakUserId);
-    Task<Result<KeycloakRole>> GetKeycloakRoleByNameAsync(string roleName);
+    // Task<Result<KeycloakRole>> GetKeycloakRoleByNameHttpAsync(string roleName);
     Task<Result<TokenExchangeResponse>> ImpersonateUserAsync(string userId);
     Task<Result<bool>> AssignRolesToUserAsync(string userId, List<string> roleNames);
 }

@@ -225,7 +225,7 @@ services:
             - KC_HTTP_PORT=17070
         restart: always
         volumes:
-            - ./provision/dockerVolumes/keycloak/30_12_2025_seed_3:/opt/keycloak/data/import
+            - ./provision/dockerVolumes/keycloak/5_1_2026_seed_5:/opt/keycloak/data/import
         depends_on:
             - db.keycloak
         ports:
@@ -247,7 +247,7 @@ services:
             # - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
             - KeycloakSettings__AuthServerUrl=http://ygz.keycloak.server:17070/
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
-            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - WebClientSettings__BaseUrl=http://localhost:3000
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6005:8080"

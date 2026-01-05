@@ -13,6 +13,7 @@ using YGZ.Identity.Application.Emails;
 using YGZ.Identity.Application.Emails.Models;
 using YGZ.Identity.Domain.Core.Enums;
 using YGZ.Identity.Domain.Core.Errors;
+using YGZ.Identity.Domain.Users;
 
 namespace YGZ.Identity.Application.Auths.Commands.Register;
 
@@ -50,6 +51,8 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
     public async Task<Result<EmailVerificationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(":::[RegisterHandler][Command:RegisterCommand]::: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
+            nameof(Handle), "Start registering user...", request);
         try
         {
             // Step 1: Check if user already exists
@@ -57,9 +60,9 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
             if (userResult.IsSuccess && userResult.Response is not null)
             {
-                _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
-                    nameof(_identityService.FindUserByEmailAsync), "User already exists", new { request.Email });
-                
+                _logger.LogWarning(":::[Handler:RegisterHandler][Result:IsSuccess][Method:{MethodName}]:::Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                "FindUserByEmailAsync", "User already exists", new { email = request.Email });
+
                 return Errors.User.AlreadyExists;
             }
 
@@ -81,36 +84,47 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
                 )
                 .Build();
 
-            string keycloakUserId;
+            string? keycloakUserId = null;
             try
             {
-                keycloakUserId = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+                var keycloakUserIdResult = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+
+                if (keycloakUserIdResult.IsFailure)
+                {
+                    _logger.LogWarning(":::[Handler:RegisterHandler][Result:IsFailure][Method:{MethodName}]:::Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(_keycloakService.CreateKeycloakUserAsync), keycloakUserIdResult.Error.Message, new { request.Email });
+
+                    return Errors.User.FailedToRegister;
+                }
+
+                keycloakUserId = keycloakUserIdResult.Response!;
 
                 _compensator.TrackStep(RegistrationStep.KeycloakUserCreated, keycloakUserId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_keycloakService.CreateKeycloakUserAsync), "Failed to create user in Keycloak", new { request.Email });
-                
+                _logger.LogCritical(ex, ":::[Handler:RegisterHandler][try/catch][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_keycloakService.CreateKeycloakUserAsync), ex.Message, new { request.Email });
+
                 return Errors.User.FailedToRegister;
             }
 
             // Step 3: Create user in database
-            var createResult = await _identityService.CreateUserAsync(request, new Guid(keycloakUserId));
+            var createUserResult = await _identityService.CreateUserAsync(request, new Guid(keycloakUserId));
 
-            if (createResult.IsFailure)
+            if (createUserResult.IsFailure)
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_identityService.CreateUserAsync), "Failed to create user in database", createResult.Error);
+                _logger.LogError(":::[Handler:RegisterHandler][Result:IsFailure][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.CreateUserAsync), createUserResult.Error.Message, new { request.Email });
 
                 await _compensator.CompensateAsync(keycloakUserId, null, cancellationToken);
 
                 return Errors.User.FailedToRegister;
             }
 
-            var createdUser = createResult.Response!;
-            _compensator.TrackStep(RegistrationStep.DatabaseUserCreated, keycloakUserId);
+            User createdUser = createUserResult.Response!;
+
+            _compensator.TrackStep(RegistrationStep.DatabaseUserCreated, createdUser.Id.ToString());
 
             // Step 4: Assign default role to user
             var roleAssignmentResult = await _identityService.AssignRolesAsync(
@@ -119,30 +133,42 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
 
             if (roleAssignmentResult.IsFailure)
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_identityService.AssignRolesAsync), "Failed to assign default role to user", roleAssignmentResult.Error);
+                _logger.LogError(":::[Handler:RegisterHandler][Result:IsFailure][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.AssignRolesAsync), roleAssignmentResult.Error.Message, new { request.Email });
 
-                await _compensator.CompensateAsync(keycloakUserId, keycloakUserId, cancellationToken);
+                await _compensator.CompensateAsync(keycloakUserId, createdUser.Id.ToString(), cancellationToken);
 
                 return Errors.User.FailedToRegister;
             }
 
-            _compensator.TrackStep(RegistrationStep.RoleAssigned, createdUser.Id);
+            _compensator.TrackStep(RegistrationStep.RoleAssigned, createdUser.Id.ToString());
 
             // Step 5: Generate and cache OTP
             var otp = _otpGenerator.GenerateOtp(6);
-            await _cachedRepository.SetAsync(request.Email, otp, TimeSpan.FromMinutes(5));
-            _compensator.TrackStep(RegistrationStep.OtpCached, request.Email);
+            try
+            {
+                await _cachedRepository.SetAsync(request.Email, otp, TimeSpan.FromMinutes(5));
+                _compensator.TrackStep(RegistrationStep.OtpCached, request.Email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ":::[Handler:RegisterHandler][try/catch][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_cachedRepository.SetAsync), ex.Message, new { request.Email });
+
+                await _compensator.CompensateAsync(keycloakUserId, createdUser.Id.ToString(), cancellationToken);
+
+                return Errors.User.FailedToRegister;
+            }
 
             // Step 6: Generate email verification token
             var emailTokenResult = await _identityService.GenerateEmailVerificationTokenAsync(createdUser);
 
             if (emailTokenResult.IsFailure)
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_identityService.GenerateEmailVerificationTokenAsync), "Failed to generate email verification token", emailTokenResult.Error);
+                _logger.LogError(":::[Handler:RegisterHandler][Result:IsFailure][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_identityService.GenerateEmailVerificationTokenAsync), emailTokenResult.Error.Message, new { request.Email });
 
-                await _compensator.CompensateAsync(keycloakUserId, keycloakUserId, cancellationToken);
+                await _compensator.CompensateAsync(keycloakUserId, createdUser.Id.ToString(), cancellationToken);
 
                 return Errors.User.FailedToRegister;
             }
@@ -167,16 +193,17 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
             {
                 await _emailService.SendEmailAsync(emailCommand);
 
-                _compensator.TrackStep(RegistrationStep.EmailSent, request.Email);
+                // _compensator.TrackStep(RegistrationStep.EmailSent, request.Email);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_emailService.SendEmailAsync), "Failed to send email", new { request.Email });
+                _logger.LogCritical(ex, ":::[Handler:RegisterHandler][Result:IsFailure][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                    nameof(_emailService.SendEmailAsync), ex.Message, new { request.Email });
 
                 // Email sending failure - still compensate, but note that email is idempotent
-                await _compensator.CompensateAsync(keycloakUserId, keycloakUserId, cancellationToken);
-                return Errors.User.FailedToRegister;
+
+                // await _compensator.CompensateAsync(keycloakUserId, createdUser.Id.ToString(), cancellationToken);
+                // return Errors.User.FailedToRegister;
             }
 
             // Success - build response
@@ -196,12 +223,12 @@ public class RegisterHandler : ICommandHandler<RegisterCommand, EmailVerificatio
         catch (Exception ex)
         {
             var parameters = new { email = request.Email };
-            _logger.LogError(ex, ":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+            _logger.LogCritical(ex, ":::[Handler:RegisterHandler][try/catch][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(Handle), ex.Message, parameters);
 
             // Attempt compensation based on current state
-            var state = _compensator.GetState();
-            await _compensator.CompensateAsync(state.KeycloakUserId, state.DatabaseUserId, cancellationToken);
+            // var state = _compensator.GetState();
+            // await _compensator.CompensateAsync(state.KeycloakUserId, state.DatabaseUserId, cancellationToken);
 
             return Errors.User.FailedToRegister;
         }

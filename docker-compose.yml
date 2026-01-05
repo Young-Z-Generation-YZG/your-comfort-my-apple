@@ -69,7 +69,7 @@ services:
         image: datalust/seq:latest
 
     ygz.keycloak.server:
-        image: quay.io/keycloak/keycloak:latest
+        image: quay.io/keycloak/keycloak:26.3.4
 
     ygz.jaeger.opentelemetry:
         image: jaegertracing/all-in-one:latest

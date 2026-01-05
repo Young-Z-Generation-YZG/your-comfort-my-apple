@@ -29,6 +29,19 @@ public class TestController : ApiController
         _mapper = mapper;
     }
 
+    [HttpGet("test-logging")]
+    public async Task<IActionResult> TestLoggingException(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Test logging information at {DateTimeUtc}", DateTime.UtcNow);
+        _logger.LogWarning("Test logging warning at {DateTimeUtc}", DateTime.UtcNow);
+        _logger.LogError("Test logging error at {DateTimeUtc}", DateTime.UtcNow);
+        _logger.LogCritical("Test logging critical at {DateTimeUtc}", DateTime.UtcNow);
+        _logger.LogTrace("Test logging trace at {DateTimeUtc}", DateTime.UtcNow);
+        _logger.LogDebug("Test logging debug at {DateTimeUtc}", DateTime.UtcNow);
+
+        return Ok();
+    }
+
     [HttpGet("test-logging-throw-exception")]
     public async Task<IActionResult> TestLoggingThrowException(CancellationToken cancellationToken)
     {

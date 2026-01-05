@@ -79,10 +79,18 @@ public class AddNewStaffHandler : ICommandHandler<AddNewStaffCommand, bool>
                 .Build();
 
             // Step 1: Create user in Keycloak
-            string keycloakUserId;
+            string? keycloakUserId = null;
             try
             {
-                keycloakUserId = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+                var keycloakUserIdResult = await _keycloakService.CreateKeycloakUserAsync(userRepresentation);
+                if (keycloakUserIdResult.IsFailure)
+                {
+                    _logger.LogWarning(":::[Handler Warning]::: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
+                        nameof(_keycloakService.CreateKeycloakUserAsync), keycloakUserIdResult.Error.Message, new { request.Email });
+                    
+                    return Errors.User.CannotBeCreated;
+                }
+                keycloakUserId = keycloakUserIdResult.Response!;
                 _compensator.TrackStep(RegistrationStep.KeycloakUserCreated, keycloakUserId);
             }
             catch (Exception ex)

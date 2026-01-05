@@ -25,5 +25,6 @@ public static partial class Errors
         public static Error RoleRetrievalFailed = Error.BadRequest(code: "Keycloak.RoleRetrievalFailed", message: "Role retrieval failed", serviceName: "KeycloakService");
         public static Error LogoutFailed = Error.BadRequest(code: "Keycloak.LogoutFailed", message: "Logout failed", serviceName: "KeycloakService");
         public static Error FailedToDeleteUser = Error.BadRequest(code: "Keycloak.FailedToDeleteUser", message: "Failed to delete user", serviceName: "KeycloakService");
+        public static Error CreateKeycloakUserFailed = Error.BadRequest(code: "Keycloak.CreateKeycloakUserFailed", message: "Failed to create user", serviceName: "KeycloakService");
     }
 }

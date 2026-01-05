@@ -60,7 +60,7 @@ services:
             - KC_HTTP_PORT=17070
         restart: always
         volumes:
-            - ./provision/dockerVolumes/keycloak/1_1_2025_seed_4:/opt/keycloak/data/import
+            - ./provision/dockerVolumes/keycloak/5_1_2026_seed_5:/opt/keycloak/data/import
         depends_on:
             db.keycloak:
                 condition: service_healthy

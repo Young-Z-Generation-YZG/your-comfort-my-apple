@@ -23,7 +23,9 @@ public interface IUserRegistrationCompensator
     /// <summary>
     /// Tracks a step in the registration process for potential rollback.
     /// </summary>
-    void TrackStep(RegistrationStep step, string resourceId);
+    /// <param name="step">The step to track</param>
+    /// <param name="resourceId">The resource ID to track (optional)</param>
+    void TrackStep(RegistrationStep step, string? resourceId = null);
 
     /// <summary>
     /// Gets the current state of registration steps.
