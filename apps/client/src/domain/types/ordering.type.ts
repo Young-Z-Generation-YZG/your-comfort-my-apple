@@ -35,6 +35,8 @@ export type TOrder = {
    order_id: string;
    customer_id: string;
    customer_email: string;
+   customer_public_key: string | null;
+   tx: string | null;
    order_code: string;
    status: string;
    payment_method: string;
@@ -66,6 +68,8 @@ export type TOrderDetails = {
    order_id: string;
    order_code: string;
    order_customer_email: string;
+   order_customer_public_key: string | null;
+   order_tx: string | null;
    order_status: string;
    order_payment_method: string;
    order_shipping_address: {

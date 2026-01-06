@@ -144,7 +144,7 @@ services:
             - ASPNETCORE_HTTP_PORTS=8080
             # - ASPNETCORE_HTTPS_PORTS=8081
             - FeatureManagement__EnableSelfSsl=true
-            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
+            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017,db.catalog.replica.secondary:27017,db.catalog.replica.arbiter:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
@@ -435,7 +435,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=178.128.111.107
+            - MONGO_HOST_IP=178.128.104.193
         ports:
             - 27001:27017
         volumes:
@@ -484,7 +484,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=178.128.111.107
+            - MONGO_HOST_IP=178.128.104.193
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh

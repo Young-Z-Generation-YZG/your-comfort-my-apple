@@ -266,7 +266,7 @@ services:
             - ASPNETCORE_HTTP_PORTS=8080
             - ASPNETCORE_HTTPS_PORTS=8081
             - FeatureManagement__EnableSelfSsl=false
-            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017/?replicaSet=rs0
+            - MongoDbSettings__ConnectionString=mongodb://db.catalog.replica.primary:27017,db.catalog.replica.secondary:27017,db.catalog.replica.arbiter:27017/?replicaSet=rs0
             - MongoDbSettings__DatabaseName=CatalogDb
             - ConnectionStrings__RedisDb=db.distributedcache:6379
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672

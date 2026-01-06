@@ -187,6 +187,8 @@ public class Order : AggregateRoot<OrderId>, IAuditable, ISoftDelete
             OrderId = Id.Value.ToString(),
             CustomerId = CustomerId.Value.ToString(),
             CustomerEmail = ShippingAddress.ContactEmail,
+            CustomerPublicKey = CustomerPublicKey,
+            Tx = Tx,
             OrderCode = Code.Value,
             Status = OrderStatus.Name,
             PaymentMethod = PaymentMethod.Name,

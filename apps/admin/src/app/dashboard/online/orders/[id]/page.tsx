@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Copy, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
    Card,
@@ -32,11 +33,22 @@ import {
 } from '@components/ui/table';
 import { Separator } from '@components/ui/separator';
 import { LoadingOverlay } from '@components/loading-overlay';
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from '@components/ui/tooltip';
 
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
 import { EOrderStatus } from '~/src/domain/enums/order-status.enum';
-import type { TOrder, TOrderItem } from '~/src/domain/types/ordering.type';
+import type {
+   TOrder,
+   TOrderDetails,
+   TOrderItem,
+} from '~/src/domain/types/ordering.type';
 import { cn } from '~/src/infrastructure/lib/utils';
+import { truncateAddress } from '~/src/infrastructure/utils/truncate-address';
 
 const statusColorMap: Record<EOrderStatus, string> = {
    [EOrderStatus.PENDING]: 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -80,7 +92,7 @@ const OnlineOrderDetailsPage = () => {
       isLoading,
    } = useOrderingService();
 
-   const [order, setOrder] = useState<TOrder | null>(null);
+   const [order, setOrder] = useState<TOrderDetails | null>(null);
    const [selectedStatus, setSelectedStatus] = useState<EOrderStatus | ''>('');
 
    const orderId = useMemo(() => {
@@ -99,7 +111,7 @@ const OnlineOrderDetailsPage = () => {
       const result = await getOrderDetailsAsync(orderId);
 
       if (result.isSuccess && result.data) {
-         setOrder(result.data as TOrder);
+         setOrder(result.data);
       } else {
          setOrder(null);
       }
@@ -265,6 +277,24 @@ const OnlineOrderDetailsPage = () => {
                            label="Payment method"
                            value={order.payment_method}
                         />
+                        {order.customer_public_key && (
+                           <CopyableInfoRow
+                              label="Customer Public Key"
+                              value={order.customer_public_key}
+                              displayValue={truncateAddress(
+                                 order.customer_public_key,
+                                 5,
+                                 5,
+                              )}
+                           />
+                        )}
+                        {order.tx && (
+                           <CopyableInfoRow
+                              label="Transaction Hash"
+                              value={order.tx}
+                              displayValue={truncateAddress(order.tx, 10, 10)}
+                           />
+                        )}
                         <InfoRow
                            label="Total amount"
                            value={currencyFormatter.format(order.total_amount)}
@@ -370,7 +400,7 @@ const formatStatusLabel = (status: string) =>
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
 
-const formatShippingAddress = (address?: TOrder['shipping_address']) => {
+const formatShippingAddress = (address?: TOrderDetails['shipping_address']) => {
    if (!address) {
       return '—';
    }
@@ -394,6 +424,63 @@ const InfoRow = ({ label, value }: { label: string; value?: ReactNode }) => (
       <Separator className="my-3" />
    </div>
 );
+
+const CopyableInfoRow = ({
+   label,
+   value,
+   displayValue,
+}: {
+   label: string;
+   value: string;
+   displayValue: string;
+}) => {
+   const [copied, setCopied] = useState(false);
+
+   const handleCopy = async () => {
+      try {
+         await navigator.clipboard.writeText(value);
+         setCopied(true);
+         toast.success(`${label} copied to clipboard`);
+         setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+         toast.error('Failed to copy to clipboard');
+      }
+   };
+
+   return (
+      <div>
+         <p className="text-sm text-muted-foreground">{label}</p>
+         <div className="flex items-center gap-2">
+            <TooltipProvider>
+               <Tooltip>
+                  <TooltipTrigger asChild>
+                     <Badge variant="outline" className="font-mono text-sm">
+                        {displayValue}
+                     </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-none whitespace-nowrap">
+                     <p>{value}</p>
+                  </TooltipContent>
+               </Tooltip>
+            </TooltipProvider>
+            <Button
+               variant="ghost"
+               size="icon"
+               className="h-6 w-6"
+               onClick={handleCopy}
+               title={`Copy ${label}`}
+            >
+               {copied ? (
+                  <Check className="h-3 w-3 text-green-600" />
+               ) : (
+                  <Copy className="h-3 w-3" />
+               )}
+            </Button>
+         </div>
+         <Separator className="my-3" />
+      </div>
+   );
+};
 
 const OrderItemRow = ({ item }: { item: TOrderItem }) => {
    const subtotal = currencyFormatter.format(item.unit_price * item.quantity);

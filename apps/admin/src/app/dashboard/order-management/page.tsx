@@ -562,7 +562,7 @@ const OrderManagementPage = () => {
          showCustomerEmailSearch,
          setShowCustomerEmailSearch,
          onViewDetails: (orderId: string) =>
-            router.push(`/dashboard/online/orders/${orderId}/details`),
+            router.push(`/dashboard/online/orders/${orderId}`),
       },
    });
 

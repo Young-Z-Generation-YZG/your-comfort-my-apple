@@ -2,7 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { PaginationResponse } from '~/domain/interfaces/common/pagination-response.interface';
 import { setLogout } from '~/infrastructure/redux/features/auth.slice';
 import { baseQuery } from './base-query';
-import { TOrder } from '~/domain/types/ordering.type';
+import { TOrder, TOrderDetails } from '~/domain/types/ordering.type';
 import { BaseQueryApi, FetchArgs } from '@reduxjs/toolkit/query';
 import {
    IOrderFilterQueryParams,

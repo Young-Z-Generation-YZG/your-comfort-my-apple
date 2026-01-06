@@ -3,7 +3,7 @@
 ## SETUP
 
 ```sh
-sudo apt udpate & sudo apt upgrade
+sudo apt udpate & sudo apt upgrade -y
 ```
 
 ## INSTALL DOCKER & DOCKER COMPOSE
@@ -31,7 +31,7 @@ sudo apt-get install docker-compose-plugin
 ```sh
 sudo apt update
 
-sudo apt install python3 python3-venv libaugeas0
+sudo apt install python3 python3-venv libaugeas0 -y
 
 sudo python3 -m venv /opt/certbot/
 

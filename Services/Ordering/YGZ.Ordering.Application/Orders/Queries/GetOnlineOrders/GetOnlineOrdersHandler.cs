@@ -18,6 +18,7 @@ public class GetOnlineOrdersHandler : IQueryHandler<GetOnlineOrdersQuery, Pagina
     private readonly ILogger<GetOnlineOrdersHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly IUserHttpContext _userContext;
+    private const string _onlineTenantId = "664355f845e56534956be32b";
 
     public GetOnlineOrdersHandler(IGenericRepository<Order, OrderId> repository,
                                        IUserHttpContext userContext,
@@ -55,8 +56,7 @@ public class GetOnlineOrdersHandler : IQueryHandler<GetOnlineOrdersQuery, Pagina
     {
         var filterExpression = ExpressionBuilder.New<Order>();
 
-        // default tenantId=
-        filterExpression = filterExpression.And(order => order.TenantId.Equals(TenantId.Of("664355f845e56534956be32b")));
+        filterExpression = filterExpression.And(order => order.TenantId.Equals(TenantId.Of(_onlineTenantId)));
 
         if (!string.IsNullOrWhiteSpace(request._customerEmail))
         {

@@ -12,6 +12,12 @@ import {
 } from '@components/ui/select';
 import { Separator } from '@components/ui/separator';
 import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from '@components/ui/tooltip';
+import {
    Download,
    Mail,
    MapPin,
@@ -25,6 +31,8 @@ import {
    PackageSearch,
    Loader,
    X,
+   Copy,
+   Check,
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
@@ -32,13 +40,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { cn } from '~/src/infrastructure/lib/utils';
 import useOrderingService from '~/src/hooks/api/use-ordering-service';
+import { truncateAddress } from '~/src/infrastructure/utils/truncate-address';
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import {
    UpdateOrderStatusFormType,
    UpdateOrderStatusResolver,
 } from '~/src/domain/schemas/order.schema';
-import { OrderDetailsResponse } from '~/src/domain/interfaces/orders/order.interface';
 import { LoadingOverlay } from '@components/loading-overlay';
+import { TOrderDetails } from '~/src/domain/types/ordering.type';
 
 // Status badge colors and icons
 const statusConfig = {
@@ -85,7 +95,7 @@ const itemVariants = {
 };
 
 const OrderDetails = () => {
-   const [order, setOrder] = useState<OrderDetailsResponse | null>(null);
+   const [order, setOrder] = useState<TOrderDetails | null>(null);
 
    const params = useParams<{ id: string }>();
 
@@ -101,19 +111,19 @@ const OrderDetails = () => {
    });
 
    const AvailableUpdateStatus = () => {
-      if (order?.order_status === 'CONFIRMED') {
+      if (order?.status === 'CONFIRMED') {
          return <SelectItem value="PREPARING">Preparing</SelectItem>;
       }
 
-      if (order?.order_status === 'PAID') {
+      if (order?.status === 'PAID') {
          return <SelectItem value="PREPARING">Preparing</SelectItem>;
       }
 
-      if (order?.order_status === 'PREPARING') {
+      if (order?.status === 'PREPARING') {
          return <SelectItem value="DELIVERING">Delivering</SelectItem>;
       }
 
-      if (order?.order_status === 'DELIVERING') {
+      if (order?.status === 'DELIVERING') {
          return <SelectItem value="DELIVERED">Delivered</SelectItem>;
       }
 
@@ -197,65 +207,31 @@ const OrderDetails = () => {
                                              <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden relative">
                                                 <Image
                                                    src={
-                                                      item.product_image ||
+                                                      item.display_image_url ||
                                                       '/placeholder.svg'
                                                    }
-                                                   alt={item.product_name}
+                                                   alt={item.model_name}
                                                    fill
                                                    className="object-center object-cover"
                                                 />
                                              </div>
                                              <div className="ml-4 flex-1">
                                                 <h4 className="text-sm font-medium text-gray-900">
-                                                   {item.product_name}
+                                                   {item.model_name}
                                                 </h4>
                                                 <p className="mt-1 text-xs text-gray-500">
-                                                   {item.product_color_name}
+                                                   {item.color_name}
                                                 </p>
                                                 <div className="mt-1 flex justify-between">
                                                    <p className="text-sm text-gray-500">
                                                       Qty {item.quantity}
                                                    </p>
-                                                   {item.promotion && (
-                                                      <div className="">
-                                                         <p className="text-sm text-gray-500 inline-block mr-2">
-                                                            <span className="text-sm text-gray-500">
-                                                               Promotion:
-                                                            </span>{' '}
-                                                            {
-                                                               item.promotion
-                                                                  .promotion_title
-                                                            }
-                                                         </p>
-                                                         <p className="text-sm text-gray-500 inline-block mr-2">
-                                                            Discount: %
-                                                            {item.promotion
-                                                               .promotion_discount_value *
-                                                               100}
-                                                         </p>
-                                                         <p className="font-semibold text-red-500 text-base inline-block mr-2">
-                                                            $
-                                                            {item.promotion.promotion_discount_unit_price.toFixed(
-                                                               2,
-                                                            )}
-                                                         </p>
-                                                         <p className="text-sm text-gray-500 line-through inline-block">
-                                                            $
-                                                            {item.product_unit_price.toFixed(
-                                                               2,
-                                                            )}
-                                                         </p>
-                                                      </div>
-                                                   )}
-
-                                                   {!item.promotion && (
-                                                      <p className="font-semibold text-gray-900 text-base">
-                                                         $
-                                                         {item.product_unit_price.toFixed(
-                                                            2,
-                                                         )}
-                                                      </p>
-                                                   )}
+                                                   <p className="font-semibold text-gray-900 text-base">
+                                                      $
+                                                      {item.unit_price.toFixed(
+                                                         2,
+                                                      )}
+                                                   </p>
                                                 </div>
                                              </div>
                                           </motion.div>
@@ -283,13 +259,13 @@ const OrderDetails = () => {
                                           Shipping Address
                                        </div>
                                        <p className="text-sm text-muted-foreground mt-1">
-                                          {order?.order_shipping_address
+                                          {order?.shipping_address
                                              .contact_address_line +
                                              ', ' +
-                                             order?.order_shipping_address
+                                             order?.shipping_address
                                                 .contact_district +
                                              ' ' +
-                                             order?.order_shipping_address
+                                             order?.shipping_address
                                                 .contact_province}
                                        </p>
                                     </div>
@@ -328,10 +304,34 @@ const OrderDetails = () => {
                                           Payment Method
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          {order?.order_payment_method}
+                                          {order?.payment_method}
                                        </div>
                                     </div>
                                  </div>
+
+                                 {order?.customer_public_key && (
+                                    <CopyableAddressRow
+                                       label="Customer Public Key"
+                                       value={order.customer_public_key}
+                                       displayValue={truncateAddress(
+                                          order.customer_public_key,
+                                          5,
+                                          5,
+                                       )}
+                                    />
+                                 )}
+
+                                 {order?.tx && (
+                                    <CopyableAddressRow
+                                       label="Transaction Hash"
+                                       value={order.tx}
+                                       displayValue={truncateAddress(
+                                          order.tx,
+                                          10,
+                                          10,
+                                       )}
+                                    />
+                                 )}
 
                                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                                     <div className="flex justify-between text-sm mb-2">
@@ -340,9 +340,17 @@ const OrderDetails = () => {
                                        </span>
                                        <span>
                                           $
-                                          {order?.order_sub_total_amount.toFixed(
-                                             2,
-                                          )}
+                                          {order
+                                             ? order.order_items
+                                                  .reduce(
+                                                     (sum, item) =>
+                                                        sum +
+                                                        item.unit_price *
+                                                           item.quantity,
+                                                     0,
+                                                  )
+                                                  .toFixed(2)
+                                             : '0.00'}
                                        </span>
                                     </div>
                                     <div className="flex justify-between text-sm mb-2">
@@ -351,11 +359,10 @@ const OrderDetails = () => {
                                        </span>
                                        <span>
                                           $
-                                          {(order?.order_discount_amount ?? 0) >
-                                          0
-                                             ? order?.order_discount_amount.toFixed(
-                                                  2,
-                                               )
+                                          {(order?.discount_amount ?? 0) > 0
+                                             ? (
+                                                  order?.discount_amount ?? 0
+                                               ).toFixed(2)
                                              : '0.00'}
                                        </span>
                                     </div>
@@ -376,9 +383,8 @@ const OrderDetails = () => {
                                        <span>Total</span>
                                        <span>
                                           $
-                                          {order?.order_total_amount?.toFixed(
-                                             2,
-                                          ) || '0.00'}
+                                          {order?.total_amount?.toFixed(2) ||
+                                             '0.00'}
                                        </span>
                                     </div>
                                  </div>
@@ -407,10 +413,7 @@ const OrderDetails = () => {
                                           Customer Name
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
-                                          {
-                                             order?.order_shipping_address
-                                                .contact_name
-                                          }
+                                          {order?.shipping_address.contact_name}
                                        </div>
                                     </div>
                                  </div>
@@ -425,7 +428,7 @@ const OrderDetails = () => {
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
                                           {
-                                             order?.order_shipping_address
+                                             order?.shipping_address
                                                 .contact_email
                                           }
                                        </div>
@@ -442,7 +445,7 @@ const OrderDetails = () => {
                                        </div>
                                        <div className="text-sm text-muted-foreground mt-1">
                                           {
-                                             order?.order_shipping_address
+                                             order?.shipping_address
                                                 .contact_phone_number
                                           }
                                        </div>
@@ -468,15 +471,15 @@ const OrderDetails = () => {
                                        <Badge
                                           className={cn(
                                              'border select-none text-sm font-medium flex items-center gap-1.5 py-2 px-2 mr-5 rounded-lg uppercase hover:bg-white',
-                                             `${statusConfig[order?.order_status as keyof typeof statusConfig]?.color}`,
+                                             `${statusConfig[order?.status as keyof typeof statusConfig]?.color}`,
                                           )}
                                        >
                                           {
                                              statusConfig[
-                                                order?.order_status as keyof typeof statusConfig
+                                                order?.status as keyof typeof statusConfig
                                              ].icon
                                           }
-                                          {order?.order_status}
+                                          {order?.status}
                                        </Badge>
                                     ) : null}
                                  </div>
@@ -556,6 +559,70 @@ const OrderDetails = () => {
             </ContentWrapper>
          </div>
       </Fragment>
+   );
+};
+
+const CopyableAddressRow = ({
+   label,
+   value,
+   displayValue,
+}: {
+   label: string;
+   value: string;
+   displayValue: string;
+}) => {
+   const [copied, setCopied] = useState(false);
+
+   const handleCopy = async () => {
+      try {
+         await navigator.clipboard.writeText(value);
+         setCopied(true);
+         toast.success(`${label} copied to clipboard`);
+         setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+         toast.error('Failed to copy to clipboard');
+      }
+   };
+
+   return (
+      <div className="flex items-start gap-3 mb-4">
+         <div className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+            <CreditCard className="h-5 w-5 text-slate-500" />
+         </div>
+         <div className="flex-1">
+            <div className="font-medium">{label}</div>
+            <div className="flex items-center gap-2 mt-1">
+               <TooltipProvider>
+                  <Tooltip>
+                     <TooltipTrigger asChild>
+                        <Badge
+                           variant="outline"
+                           className="font-mono text-base"
+                        >
+                           {displayValue}
+                        </Badge>
+                     </TooltipTrigger>
+                     <TooltipContent className="max-w-none whitespace-nowrap">
+                        <p>{value}</p>
+                     </TooltipContent>
+                  </Tooltip>
+               </TooltipProvider>
+               <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={handleCopy}
+                  title={`Copy ${label}`}
+               >
+                  {copied ? (
+                     <Check className="h-3 w-3 text-green-600" />
+                  ) : (
+                     <Copy className="h-3 w-3" />
+                  )}
+               </Button>
+            </div>
+         </div>
+      </div>
    );
 };
 

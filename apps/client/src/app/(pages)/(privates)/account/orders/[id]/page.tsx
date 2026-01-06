@@ -14,10 +14,19 @@ import {
    AlertCircle,
    Check,
    X,
+   Copy,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useRouter } from 'next/navigation';
 import { cn } from '~/infrastructure/lib/utils';
+import { truncateAddress } from '~/infrastructure/utils/truncate-address';
+import { toast } from 'sonner';
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from '~/components/ui/tooltip';
 import {
    Dialog,
    DialogContent,
@@ -461,10 +470,36 @@ export default function OrderDetails() {
                         <h3 className="text-sm font-medium text-gray-900 mt-4 mb-2">
                            Payment Method
                         </h3>
-                        <div className="bg-gray-50 rounded-lg p-4">
+                        <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                            <p className="text-sm font-medium">
                               {getOrderDetailsState.data.payment_method}
                            </p>
+                           {getOrderDetailsState.data.customer_public_key && (
+                              <CopyableAddressField
+                                 label="Customer Public Key"
+                                 value={
+                                    getOrderDetailsState.data
+                                       .customer_public_key
+                                 }
+                                 displayValue={truncateAddress(
+                                    getOrderDetailsState.data
+                                       .customer_public_key,
+                                    5,
+                                    5,
+                                 )}
+                              />
+                           )}
+                           {getOrderDetailsState.data.tx && (
+                              <CopyableAddressField
+                                 label="Transaction Hash"
+                                 value={getOrderDetailsState.data.tx}
+                                 displayValue={truncateAddress(
+                                    getOrderDetailsState.data.tx,
+                                    10,
+                                    10,
+                                 )}
+                              />
+                           )}
                         </div>
                      </div>
                   </div>
@@ -772,3 +807,67 @@ export default function OrderDetails() {
       </motion.div>
    );
 }
+
+const CopyableAddressField = ({
+   label,
+   value,
+   displayValue,
+}: {
+   label: string;
+   value: string;
+   displayValue: string;
+}) => {
+   const [copied, setCopied] = useState(false);
+
+   const handleCopy = async () => {
+      try {
+         await navigator.clipboard.writeText(value);
+         setCopied(true);
+         toast.success(`${label} copied to clipboard`);
+         setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+         toast.error('Failed to copy to clipboard');
+      }
+   };
+
+   return (
+      <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+         <div className="flex-1">
+            <p className="text-xs text-gray-500 mb-1">{label}</p>
+            <TooltipProvider delayDuration={200}>
+               <Tooltip>
+                  <TooltipTrigger asChild>
+                     <div className="inline-block">
+                        <Badge
+                           variant="outline"
+                           className="font-mono text-sm cursor-pointer"
+                        >
+                           {displayValue}
+                        </Badge>
+                     </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                     className="max-w-none whitespace-nowrap"
+                     side="top"
+                  >
+                     <p>{value}</p>
+                  </TooltipContent>
+               </Tooltip>
+            </TooltipProvider>
+         </div>
+         <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 ml-2"
+            onClick={handleCopy}
+            title={`Copy ${label}`}
+         >
+            {copied ? (
+               <Check className="h-3 w-3 text-green-600" />
+            ) : (
+               <Copy className="h-3 w-3" />
+            )}
+         </Button>
+      </div>
+   );
+};
