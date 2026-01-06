@@ -347,7 +347,8 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
 
 
-        _logger.LogWarning("###[IntegrationEvent:{IntegrationEvent}]### Parameters: {@Parameters}", nameof(BasketCheckoutIntegrationEvent), integrationEventMessage);
+        _logger.LogWarning("###[CommandHandler:{CommandHandler}][IntegrationEvent:{IntegrationEvent}]### Parameters: {@Parameters}", 
+            nameof(CheckoutBasketWithBlockchainHandler), nameof(BasketCheckoutIntegrationEvent), integrationEventMessage);
         await _publishIntegrationEvent.Publish(integrationEventMessage, cancellationToken);
 
         await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);

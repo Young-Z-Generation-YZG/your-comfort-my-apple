@@ -340,8 +340,6 @@ services:
                 condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-            ygz.catalog.api:
-                condition: service_started
         volumes:
             - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
             - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -405,7 +403,7 @@ services:
             - logging_seq_data:/data
         environment:
             - ACCEPT_EULA=Y
-            # - SEQ_FIRSTRUN_ADMINPASSWORD=bale
+            - SEQ_FIRSTRUN_ADMINPASSWORD=admin
         ports:
             - "18080:80"
             - "5341:5341"

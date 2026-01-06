@@ -20,23 +20,33 @@ public class EventItemCreatedIntegrationEventHandler : IConsumer<EventItemCreate
 
     public async Task Consume(ConsumeContext<EventItemCreatedIntegrationEvent> context)
     {
-        _logger.LogInformation("Integration event received: {IntegrationEvent} for EventItemId: {EventItemId}",
-            nameof(EventItemCreatedIntegrationEvent), context.Message.EventItemId);
+        _logger.LogWarning(":::::[IntegrationEventHandler:{IntegrationEventHandler}]::::: Warning message: {Message}, Parameters: {@Parameters}",
+            nameof(EventItemCreatedIntegrationEventHandler), "Processing event item created integration event", new { eventItemId = context.Message.EventItemId, eventId = context.Message.EventId, skuId = context.Message.SkuId });
 
-        var command = new ReserveEventItemStockCommand
+        var eventItemId = context.Message.EventItemId;
+        var eventId = context.Message.EventId;
+        var skuId = context.Message.SkuId;
+
+        try
         {
-            SkuId = context.Message.SkuId,
-            EventId = context.Message.EventId,
-            EventItemId = context.Message.EventItemId,
-            TenantId = context.Message.TenantId,
-            BranchId = context.Message.BranchId,
-            EventName = context.Message.EventName,
-            ReservedQuantity = context.Message.ReservedQuantity
-        };
+            var command = new ReserveEventItemStockCommand
+            {
+                SkuId = context.Message.SkuId,
+                EventId = context.Message.EventId,
+                EventItemId = context.Message.EventItemId,
+                TenantId = context.Message.TenantId,
+                BranchId = context.Message.BranchId,
+                EventName = context.Message.EventName,
+                ReservedQuantity = context.Message.ReservedQuantity
+            };
 
-        await _sender.Send(command);
-
-        _logger.LogInformation("Successfully processed EventItemCreatedIntegrationEvent for EventItemId: {EventItemId}",
-            context.Message.EventItemId);
+            var result = await _sender.Send(command, context.CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex, ":::::[IntegrationEventHandler:{IntegrationEventHandler}][Exception]::::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(EventItemCreatedIntegrationEventHandler), ex.Message, new { eventItemId, eventId, skuId });
+            throw;
+        }
     }
 }

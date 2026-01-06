@@ -350,7 +350,8 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
 
 
 
-        _logger.LogWarning("###[IntegrationEvent:{IntegrationEvent}]### Parameters: {@Parameters}", nameof(BasketCheckoutIntegrationEvent), integrationEventMessage);
+        _logger.LogWarning("###[CommandHandler:{CommandHandler}][IntegrationEvent:{IntegrationEvent}]### Parameters: {@Parameters}", 
+            nameof(CheckoutBasketHandler), nameof(BasketCheckoutIntegrationEvent), integrationEventMessage);
         await _publishIntegrationEvent.Publish(integrationEventMessage, cancellationToken);
 
         await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
