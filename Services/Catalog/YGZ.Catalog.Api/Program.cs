@@ -7,7 +7,6 @@ using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.FeatureManagement;
-using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api;
 using YGZ.Catalog.Api.Extensions;
 using YGZ.Catalog.Api.GrpcServices;
@@ -73,19 +72,13 @@ var host = builder.Host;
 
 // Add Layers
 services
-    .AddPresentationLayer()
+    .AddPresentationLayer(builder)
     .AddInfrastructureLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration);
 
 // Add services to the container.
 services.AddProblemDetails();
 services.AddSwaggerExtension();
-
-builder.Logging.AddOpenTelemetry(logging =>
-{
-    logging.IncludeFormattedMessage = true;
-    logging.IncludeScopes = true;
-});
 
 services.ConfigureHttpClientDefaults(http => http.AddStandardResilienceHandler());
 
@@ -94,9 +87,6 @@ services.AddControllers(options => options.AddProtectedResources())
         {
             options.JsonSerializerOptions.WriteIndented = true; // Optional
         });
-
-// Add Serilog
-host.AddSerilogExtension(builder.Configuration);
 
 services
     .AddHealthChecks()

@@ -67,7 +67,7 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 
 services
-    .AddPresentationLayer()
+    .AddPresentationLayer(builder)
     .AddApplicationLayer(builder.Configuration)
     .AddInfrastructureLayer(builder.Configuration);
 
@@ -76,7 +76,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     await app.ApplyMigrationAsync();
-    
+
     // Seed data initialization - wrap in try-catch to prevent startup failure
     try
     {

@@ -273,6 +273,8 @@ services:
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__OrderingUrl=https://ygz.ordering.api:8081
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6001:8080"
@@ -301,6 +303,8 @@ services:
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6002:8080"
@@ -325,6 +329,8 @@ services:
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - ConnectionStrings__DiscountDb=Host=db.discount;Port=5432;Database=DiscountDb;Username=bale;Password=bale
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6003:8080"
@@ -354,6 +360,8 @@ services:
             - FeatureManagement__EnableSelfSsl=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
+            - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
         ports:
             - "6004:8080"
@@ -397,7 +405,7 @@ services:
             - logging_seq_data:/data
         environment:
             - ACCEPT_EULA=Y
-            - SEQ_FIRSTRUN_ADMINPASSWORD=bale
+            # - SEQ_FIRSTRUN_ADMINPASSWORD=bale
         ports:
             - "18080:80"
             - "5341:5341"

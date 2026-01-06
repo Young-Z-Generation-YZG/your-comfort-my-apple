@@ -5,7 +5,6 @@ using Keycloak.AuthServices.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.FeatureManagement;
-using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Ordering.Api;
 using YGZ.Ordering.Api.Extensions;
 using YGZ.Ordering.Application;
@@ -69,7 +68,7 @@ var host = builder.Host;
 
 // Add Layers
 services
-    .AddPresentationLayer()
+    .AddPresentationLayer(builder)
     .AddInfrastructureLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration);
 
@@ -92,9 +91,6 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 
 services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("OrderingDb")!);
-
-// Add Serilog
-host.AddSerilogExtension(builder.Configuration);
 
 var app = builder.Build();
 

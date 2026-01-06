@@ -20,8 +20,6 @@ public static class DependencyInjection
     {
         services.AddKeycloakIdentityServerExtension(configuration);
 
-        services.AddKeycloakOpenTelemetryExtension();
-
         services.Configure<MongoDbSettings>(configuration.GetSection(MongoDbSettings.SettingKey));
         services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SettingKey));
 

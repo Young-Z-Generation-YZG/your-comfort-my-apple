@@ -10,7 +10,6 @@ using YGZ.Basket.Api.Extensions;
 using YGZ.Basket.Application;
 using YGZ.Basket.Infrastructure;
 using YGZ.Basket.Infrastructure.Persistence.Extensions;
-using YGZ.BuildingBlocks.Shared.Extensions;
 
 // Helper method to create self-signed certificate for Docker
 static X509Certificate2 CreateSelfSignedCertificate()
@@ -69,7 +68,7 @@ var host = builder.Host;
 
 // Add Layers
 services
-    .AddPresentationLayer()
+    .AddPresentationLayer(builder)
     .AddInfrastructureLayer(builder.Configuration)
     .AddApplicationLayer(builder.Configuration);
 
@@ -87,9 +86,6 @@ services.AddControllers(options => options.AddProtectedResources())
         });
 
 services.AddEndpointsApiExplorer();
-
-// Add Serilog
-host.AddSerilogExtension(builder.Configuration);
 
 services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("BasketDb")!)
