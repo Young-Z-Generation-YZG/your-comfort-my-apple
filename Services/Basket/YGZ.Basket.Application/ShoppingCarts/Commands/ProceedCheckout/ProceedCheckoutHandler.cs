@@ -24,6 +24,9 @@ public class ProceedCheckoutHandler : ICommandHandler<ProceedCheckoutCommand, bo
 
     public async Task<Result<bool>> Handle(ProceedCheckoutCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(ProceedCheckoutHandler), "Start proceeding checkout...", request);
+
         var userEmail = _userContext.GetUserEmail();
         var userId = _userContext.GetUserId();
 
@@ -31,53 +34,50 @@ public class ProceedCheckoutHandler : ICommandHandler<ProceedCheckoutCommand, bo
 
         if (result.IsFailure)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { userEmail, error = result.Error });
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:IsFailure][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(ProceedCheckoutHandler), nameof(_basketRepository.GetBasketAsync), result.Error.Message, new { userEmail, error = result.Error });
 
             return result.Error;
         }
 
-        if (result.Response is null || !result.Response.CartItems.Any())
-        {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "Basket is empty or null", new { userEmail });
-
-            return Errors.Basket.BasketEmpty;
-        }
-
         var shoppingCart = result.Response!;
 
-        if (shoppingCart.CartItems is null || !shoppingCart.CartItems.Any())
+        if (shoppingCart is null || !shoppingCart.CartItems.Any())
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "Basket has no cart items", new { userEmail });
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(ProceedCheckoutHandler), nameof(_basketRepository.GetBasketAsync), Errors.Basket.BasketEmpty.Message, new { userEmail });
 
             return Errors.Basket.BasketEmpty;
         }
+
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(ProceedCheckoutHandler), "Removing event items from cart...", new { userEmail, totalCartItems = shoppingCart.CartItems.Count });
 
         ShoppingCart checkoutCart = shoppingCart.RemoveEventItems();
 
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(ProceedCheckoutHandler), "Event items removed from cart", new { userEmail, remainingCartItems = checkoutCart.CartItems.Count, removedCount = shoppingCart.CartItems.Count - checkoutCart.CartItems.Count });
+
         if (checkoutCart.CartItems.All(ci => ci.IsSelected == false))
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "No items selected for checkout", new { userEmail, cartItemCount = checkoutCart.CartItems.Count });
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(ProceedCheckoutHandler), nameof(Handle), Errors.Basket.NotSelectedItems.Message, new { userEmail, cartItemCount = checkoutCart.CartItems.Count });
 
             return Errors.Basket.NotSelectedItems;
         }
+
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(ProceedCheckoutHandler), "Storing checkout cart...", new { userEmail, selectedCartItems = checkoutCart.CartItems.Count(ci => ci.IsSelected) });
 
         var storeResult = await _basketRepository.StoreBasketAsync(checkoutCart, cancellationToken);
 
         if (storeResult.IsFailure)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_basketRepository.StoreBasketAsync), "Failed to store checkout cart", new { userEmail, error = storeResult.Error });
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:IsFailure][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(ProceedCheckoutHandler), nameof(_basketRepository.StoreBasketAsync), storeResult.Error.Message, new { userEmail, error = storeResult.Error });
 
             return storeResult.Error;
         }
-
-        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Successfully proceeded checkout", new { userEmail, cartItemCount = checkoutCart.CartItems.Count });
-
         return true;
     }
 }

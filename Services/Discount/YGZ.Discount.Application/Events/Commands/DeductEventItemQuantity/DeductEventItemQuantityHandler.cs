@@ -45,7 +45,7 @@ public class DeductEventItemQuantityHandler : ICommandHandler<DeductEventItemQua
             _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(Handle), "Event item not found in event", new { eventId = request.EventId, eventItemId = request.EventItemId });
 
-            return Errors.EventItem.EventItemNotFound;
+            return Errors.EventItem.NotFound;
         }
 
         // Increase sold by deduct quantity

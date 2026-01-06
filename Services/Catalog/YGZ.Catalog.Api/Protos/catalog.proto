@@ -90,6 +90,15 @@ message SkuModel
     bool                        is_deleted = 19;
     google.protobuf.Timestamp   deleted_at = 20;
     google.protobuf.StringValue deleted_by = 21;
+    ReservedForEventFieldModel       reserved_for_event = 22;
+}
+
+message ReservedForEventFieldModel
+{
+    google.protobuf.StringValue event_id = 1;
+    google.protobuf.StringValue event_item_id = 2;
+    google.protobuf.StringValue event_name = 3;
+    google.protobuf.Int32Value  reserved_quantity = 4;
 }
 
 

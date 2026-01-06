@@ -87,7 +87,7 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
             }
         }
 
-        return new SkuModel
+        var skuModel = new SkuModel
         {
             Id = result.Response!.Id,
             ModelId = result.Response.ModelId,
@@ -111,6 +111,19 @@ public class CatalogRpcService : CatalogProtoService.CatalogProtoServiceBase
             DeletedAt = ToTimestampUtc(result.Response.DeletedAt),
             DeletedBy = result.Response.DeletedBy
         };
+
+        if (result.Response.ReservedForEvent is not null)
+        {
+            skuModel.ReservedForEvent = new ReservedForEventFieldModel
+            {
+                EventId = result.Response.ReservedForEvent.EventId,
+                EventItemId = result.Response.ReservedForEvent.EventItemId,
+                EventName = result.Response.ReservedForEvent.EventName,
+                ReservedQuantity = result.Response.ReservedForEvent.ReservedQuantity
+            };
+        }
+
+        return skuModel;
     }
 
     public async override Task<BooleanResponse> CheckInsufficientGrpc(CheckInsufficientRequest request, ServerCallContext context)

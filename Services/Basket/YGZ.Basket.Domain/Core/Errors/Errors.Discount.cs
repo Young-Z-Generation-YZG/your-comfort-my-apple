@@ -10,5 +10,6 @@ public static partial class Errors
     {
         public static Error CouponNotFound = Error.BadRequest(code: "Coupon.NotFound", message: "Coupon not found", serviceName: "BasketService");
         public static Error InsufficientStock = Error.BadRequest(code: "EventItem.InsufficientStock", message: "Event item has insufficient stock", serviceName: "BasketService");
+        public static Error EventItemNotFound = Error.BadRequest(code: "EventItem.NotFound", message: "Event item not found", serviceName: "BasketService");
     }
 }

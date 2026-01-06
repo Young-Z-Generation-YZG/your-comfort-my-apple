@@ -150,7 +150,7 @@ public class StoreEventItemHandler : ICommandHandler<StoreEventItemCommand, bool
 
         BuildingBlocks.Shared.Enums.EDiscountType discountTypeEnum = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(eventItem.DiscountType.ToString());
 
-        PromotionEvent promotionEvent = PromotionEvent.Create(promotionId: eventItem.EventId,
+        PromotionEvent promotionEvent = PromotionEvent.Create(promotionId: eventItem.Id,
                                                               promotionType: EPromotionType.EVENT_ITEM.Name,
                                                               discountType: discountTypeEnum,
                                                               discountValue: discountValue);

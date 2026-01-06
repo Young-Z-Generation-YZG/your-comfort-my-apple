@@ -26,6 +26,8 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
     private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
     private readonly IUserHttpContext _userContext;
     private readonly ITenantHttpContext _tenantContext;
+    private const string _defaultTenantId = "664355f845e56534956be32b";
+    private const string _defaultBranchId = "664357a235e84033bbd0e6b6";
 
     public CheckoutBasketWithBlockchainHandler(IBasketRepository basketRepository,
                                                IPublishEndpoint publishEndpoint,
@@ -47,10 +49,13 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
     public async Task<Result<CheckoutBasketResponse>> Handle(CheckoutBasketWithBlockchainCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(CheckoutBasketWithBlockchainHandler), "Start checking out basket...", request);
+
         var userEmail = _userContext.GetUserEmail();
         var userId = _userContext.GetUserId();
-        var tenantId = _tenantContext.GetTenantId() ?? "664355f845e56534956be32b";
-        var branchId = _tenantContext.GetBranchId() ?? "664357a235e84033bbd0e6b6";
+        var tenantId = _tenantContext.GetTenantId() ?? _defaultTenantId;
+        var branchId = _tenantContext.GetBranchId() ?? _defaultBranchId;
 
         // 1. check basket
         // 1.1. return error if cart is empty or null
@@ -60,28 +65,26 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
         if (shoppingCartResult.IsFailure)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_basketRepository.GetBasketAsync), "Failed to retrieve basket from repository", new { userEmail, error = shoppingCartResult.Error });
-
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:IsFailure][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(CheckoutBasketWithBlockchainHandler), nameof(_basketRepository.GetBasketAsync), shoppingCartResult.Error.Message, new { userEmail, error = shoppingCartResult.Error });
             return shoppingCartResult.Error;
         }
 
-        var shoppingCart = shoppingCartResult.Response;
+        var shoppingCart = shoppingCartResult.Response!;
 
         // 1.1.
-        if (shoppingCart is null || !shoppingCart.CartItems.Any())
+        if (!shoppingCart.CartItems.Any())
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "Basket is empty or null", new { userEmail });
-
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(CheckoutBasketWithBlockchainHandler), nameof(_basketRepository.GetBasketAsync), Errors.Basket.BasketEmpty.Message, new { userEmail });
             return Errors.Basket.BasketEmpty;
         }
 
         // 1.2.
         if (shoppingCart.CartItems.All(ci => ci.IsSelected == false))
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "No items selected for checkout", new { userEmail, cartItemCount = shoppingCart.CartItems.Count });
+            _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                nameof(CheckoutBasketWithBlockchainHandler), nameof(_basketRepository.GetBasketAsync), Errors.Basket.NotSelectedItems.Message, new { userEmail, cartItemCount = shoppingCart.CartItems.Count });
 
             return Errors.Basket.NotSelectedItems;
         }
@@ -113,6 +116,95 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
             cartDiscountAmount = checkoutShoppingCart.CartItems
                 .Where(item => item.Promotion?.PromotionEvent != null)
                 .Sum(item => item.DiscountAmount ?? 0);
+
+            var discountGrpcRequest = new GetEventItemByIdRequest
+            {
+                EventItemId = cartPromotionId
+            };
+
+            EventItemModel? eventItemGrpc = null;
+
+            try
+            {
+                _logger.LogInformation("===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Information message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), "Getting event item by ID...", new { eventItemId = cartPromotionId });
+
+                eventItemGrpc = await _discountProtoServiceClient.GetEventItemByIdGrpcAsync(discountGrpcRequest, cancellationToken: cancellationToken);
+            }
+            catch (RpcException ex)
+            {
+                _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), ex.Message, new { eventItemId = cartPromotionId });
+                throw;
+            }
+
+            if (eventItemGrpc is null)
+            {
+                _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), Errors.Discount.EventItemNotFound.Message, new { eventItemId = cartPromotionId });
+
+                throw new InvalidOperationException("Event item not found");
+            }
+
+            var skuId = eventItemGrpc.SkuId;
+
+            if (string.IsNullOrEmpty(skuId))
+            {
+                _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), "Event item has no SKU ID", new { eventItemId = cartPromotionId });
+                throw new InvalidOperationException("Event item has no SKU ID");
+            }
+
+
+            SkuModel? skuGrpc = null;
+
+            try
+            {
+                _logger.LogInformation("===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Information message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "Getting SKU by ID...", new { skuId = skuId });
+
+                skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                {
+                    SkuId = skuId
+                }, cancellationToken: cancellationToken);
+            }
+            catch (RpcException ex)
+            {
+                _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, new { skuId = skuId });
+                throw;
+            }
+
+            if (skuGrpc is null)
+            {
+                _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), "SKU not found", new { skuId = skuId });
+                throw new InvalidOperationException("SKU not found");
+            }
+
+            if (skuGrpc.ReservedForEvent is null)
+            {
+                _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), "SKU is not reserved for event", new { skuId = skuId });
+                throw new InvalidOperationException("SKU is not reserved for event");
+            }
+
+            if (skuGrpc.ReservedForEvent.EventItemId != cartPromotionId)
+            {
+                _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), "SKU is not reserved for this event", new { skuId = skuId });
+                throw new InvalidOperationException("SKU is not reserved for this event");
+            }
+
+            var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity - eventItemGrpc.Sold;
+            var availableQuantityEventItem = eventItemGrpc.Stock - eventItemGrpc.Sold;
+
+            if (availableQuantitySku <= 0 || availableQuantityEventItem <= 0 || (availableQuantitySku != availableQuantityEventItem))
+            {
+                _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    nameof(CheckoutBasketWithBlockchainHandler), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), Errors.Basket.InsufficientQuantity.Message, new { skuId = eventItemGrpc.SkuId, availableQuantitySku = availableQuantitySku, availableQuantityEventItem = availableQuantityEventItem });
+                return Errors.Basket.InsufficientQuantity;
+            }
         }
         // 2.2
         else
@@ -122,92 +214,89 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
             // Check stock availability
             foreach (var cartItem in checkoutShoppingCart.CartItems)
             {
+                SkuModel? skuGrpc = null;
+
                 try
                 {
-                    var skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                    _logger.LogInformation("===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Information message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), "Getting SKU by ID...", new { skuId = cartItem.SkuId });
+
+                    skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
                     {
                         SkuId = cartItem.SkuId
                     }, cancellationToken: cancellationToken);
-
-                    SkuModel sku;
-
-                    if (skuGrpc is not null)
-                    {
-                        sku = skuGrpc;
-
-                        if (skuGrpc.AvailableInStock < cartItem.Quantity)
-                        {
-                            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                                nameof(Handle), "Insufficient stock for SKU during blockchain checkout", new { skuId = cartItem.SkuId, requestedQuantity = cartItem.Quantity, availableStock = skuGrpc.AvailableInStock, userEmail });
-
-                            return Errors.Basket.InsufficientQuantity;
-                        }
-                    }
                 }
                 catch (RpcException ex)
                 {
-                    var parameters = new { skuId = cartItem.SkuId, userEmail };
-                    _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                        nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, parameters);
+                    _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, new { skuId = cartItem.SkuId });
                     throw;
+                }
+
+                if (skuGrpc is null)
+                {
+                    _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
+                            nameof(CheckoutBasketWithBlockchainHandler), nameof(InvalidOperationException), "SKU not found", new { skuId = cartItem.SkuId });
+                    throw new InvalidOperationException("SKU not found");
+                }
+
+                if (skuGrpc.AvailableInStock < cartItem.Quantity)
+                {
+                    _logger.LogError(":::[CommandHandler:{CommandHandler}][Result:Error][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), Errors.Basket.InsufficientQuantity.Message, new { skuId = cartItem.SkuId, availableQuantity = skuGrpc.AvailableInStock, requestedQuantity = cartItem.Quantity });
+                    return Errors.Basket.InsufficientQuantity;
                 }
             }
 
             // 2.2. (alter flow)
             if (!string.IsNullOrEmpty(request.DiscountCode))
             {
-                var grpcRequest = new GetCouponByCodeRequest
-                {
-                    CouponCode = request.DiscountCode
-                };
-
-                CouponModel? coupon = null;
+                CouponModel? couponGrpc = null;
 
                 try
                 {
-                    coupon = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(grpcRequest, cancellationToken: cancellationToken);
+                    _logger.LogInformation("===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Information message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Getting coupon by code...", new { discountCode = request.DiscountCode });
+
+                    couponGrpc = await _discountProtoServiceClient.GetCouponByCodeGrpcAsync(new GetCouponByCodeRequest
+                    {
+                        CouponCode = request.DiscountCode
+                    }, cancellationToken: cancellationToken);
                 }
                 catch (RpcException ex)
                 {
-                    if (ex.StatusCode == StatusCode.NotFound)
-                    {
-                        if (checkoutShoppingCart.CartItems.Any())
-                        {
-                            _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
-                                nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), "Coupon not found during blockchain checkout", new { discountCode = request.DiscountCode, userEmail });
-
-                            checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
-                        }
-                    }
-                    else
-                    {
-                        var parameters = new { discountCode = request.DiscountCode, userEmail };
-                        _logger.LogError(ex, ":[Application Exception]: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                            nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, parameters);
-                    }
+                    _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, new { discountCode = request.DiscountCode });
+                    throw;
                 }
 
-                if (coupon is not null)
+                if (couponGrpc is null)
                 {
-                    if (coupon.AvailableQuantity <= 0)
-                    {
-                        _logger.LogWarning("::[Operation Warning]:: Method: {MethodName}, Warning message: {WarningMessage}, Parameters: {@Parameters}",
-                            nameof(Handle), "Coupon has no available quantity during blockchain checkout", new { discountCode = request.DiscountCode, availableQuantity = coupon.AvailableQuantity, userEmail });
+                    _logger.LogWarning(":::[CommandHandler:{CommandHandler}][Warning:{Error}]::: Error message: {Message}, Parameters: {@Parameters}",
+                        nameof(CheckoutBasketWithBlockchainHandler), nameof(Errors.Discount.CouponNotFound), Errors.Discount.CouponNotFound.Message, new { discountCode = request.DiscountCode });
 
-                        checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
+                    // note: do not return error here
+                    checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is expired or not found");
+                }
+                else
+                {
+                    if (couponGrpc.AvailableQuantity <= 0)
+                    {
+                        _logger.LogWarning(":::[CommandHandler:{CommandHandler}]::: Warning message: {Message}, Parameters: {@Parameters}",
+                            nameof(CheckoutBasketWithBlockchainHandler), "Coupon is out of stock during checkout", new { discountCode = request.DiscountCode, availableQuantity = couponGrpc.AvailableQuantity, userEmail });
+
+                        // note: do not return error here
+                        checkoutShoppingCart.SetDiscountCouponError($"Coupon code {request.DiscountCode} is out of stock");
                     }
                     else
                     {
-                        checkoutShoppingCart = HandleFinalCart(checkoutShoppingCart, coupon);
+                        checkoutShoppingCart = HandleFinalCart(checkoutShoppingCart, couponGrpc!);
 
                         cartPromotionId = checkoutShoppingCart.PromotionId;
                         cartPromotionType = checkoutShoppingCart.PromotionType;
                         cartDiscountType = checkoutShoppingCart.DiscountType;
                         cartDiscountValue = checkoutShoppingCart.DiscountValue;
                         cartDiscountAmount = checkoutShoppingCart.DiscountAmount;
-
-                        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-                            nameof(Handle), "Successfully applied coupon during blockchain checkout", new { discountCode = request.DiscountCode, userEmail, discountAmount = cartDiscountAmount });
                     }
                 }
             }
@@ -218,7 +307,7 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
         if (!parseOrderIdResult)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
+            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {Message}, Parameters: {@Parameters}",
                 nameof(Handle), "Invalid crypto UUID format", new { cryptoUUID = request.CryptoUUID, userEmail });
 
             return Errors.Basket.InvalidCryptoUUID;
@@ -258,12 +347,10 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
 
 
 
+        _logger.LogWarning("###[IntegrationEvent:{IntegrationEvent}]### Parameters: {@Parameters}", nameof(BasketCheckoutIntegrationEvent), integrationEventMessage);
         await _publishIntegrationEvent.Publish(integrationEventMessage, cancellationToken);
 
         await _basketRepository.DeleteSelectedItemsBasketAsync(userEmail, cancellationToken);
-
-        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Successfully processed blockchain checkout", new { orderId, userEmail, paymentMethod = request.PaymentMethod, cartItemCount = checkoutShoppingCart.CartItems.Count });
 
         return new CheckoutBasketResponse()
         {
@@ -301,7 +388,7 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
         var discountType = ConvertGrpcEnumToNormalEnum.ConvertToEDiscountType(coupon.DiscountType.ToString());
         var discountTypeName = discountType?.Name ?? EDiscountType.UNKNOWN.Name;
         var discountValue = (decimal)(coupon.DiscountValue ?? 0);
-        
+
         // Convert discount value from decimal form (0.1 = 10%) to percentage form (10 = 10%)
         // CalculateEfficientCart expects percentage form for PERCENTAGE discount type
         // If value is between 0 and 1 (exclusive), it's in decimal form and needs conversion
@@ -309,7 +396,7 @@ public class CheckoutBasketWithBlockchainHandler : ICommandHandler<CheckoutBaske
         {
             discountValue = discountValue * 100m;
         }
-        
+
         var maxDiscountAmount = coupon.MaxDiscountAmount.HasValue ? (decimal?)coupon.MaxDiscountAmount.Value : null;
 
         var afterCart = CalculatePrice.CalculateEfficientCart(

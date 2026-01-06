@@ -26,16 +26,12 @@ public class GetSkuByIdHandler : IQueryHandler<GetSkuByIdQuery, SkuResponse>
 
         if (sku is null)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_repository.GetByIdAsync), "SKU not found", new { skuId = request.SkuId });
+            _logger.LogError(":::[QueryHandler:{QueryHandler}][Result:Error][Method:{MethodName}:::] Error message: {ErrorMessage}, Parameters: {@Parameters}",
+                nameof(GetSkuByIdHandler), nameof(_repository.GetByIdAsync), Errors.Inventory.SkuDoesNotExist.Message, request);
 
             return Errors.Inventory.SkuDoesNotExist;
         }
 
-        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Successfully retrieved SKU by ID", new { skuId = request.SkuId, modelId = sku.ModelId.ToString() });
-
         return sku.ToResponse();
-
     }
 }
