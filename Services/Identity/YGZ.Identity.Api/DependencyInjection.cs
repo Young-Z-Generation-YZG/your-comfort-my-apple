@@ -53,7 +53,7 @@ public static class DependencyInjection
         builder.Configuration.GetSection(OpenTelemetrySettings.SettingKey).Bind(otelSettings);
 
         builder.Services.AddOpenTelemetry()
-                        .ConfigureResource(resource => resource.AddService("YGZ.Identity.Api.Test"))
+                        .ConfigureResource(resource => resource.AddService("YGZ.Identity.Api"))
                         .WithTracing(tracing =>
                         {
                             tracing.AddHttpClientInstrumentation()

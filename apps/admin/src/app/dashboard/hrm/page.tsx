@@ -54,6 +54,7 @@ import {
    Ellipsis,
    MoreHorizontal,
    X,
+   Search,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { Gender } from '~/src/domain/enums/gender.enum';
@@ -61,7 +62,6 @@ import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TUser } from '~/src/domain/types/identity.type';
 import usePaginationV2 from '~/src/hooks/use-pagination';
-import { useDebounce } from '~/src/hooks/use-debounce';
 
 // Helper function to get gender badge styles
 const getGenderStyle = (gender: string) => {
@@ -245,7 +245,7 @@ const HRMPage = () => {
       _emailVerified: 'boolean',
    });
 
-   // Local state for input values (not debounced)
+   // Local state for input values (not synced to filters until Apply is clicked)
    const [emailInput, setEmailInput] = useState<string>(filters._email ?? '');
    const [firstNameInput, setFirstNameInput] = useState<string>(
       filters._firstName ?? '',
@@ -257,56 +257,30 @@ const HRMPage = () => {
       filters._phoneNumber ?? '',
    );
 
-   // Debounce the input values
-   const debouncedEmail = useDebounce<string>(emailInput, 500);
-   const debouncedFirstName = useDebounce<string>(firstNameInput, 500);
-   const debouncedLastName = useDebounce<string>(lastNameInput, 500);
-   const debouncedPhoneNumber = useDebounce<string>(phoneNumberInput, 500);
-
-   // Update filters when debounced values change
+   // Sync input values when filters change externally (e.g., from dropdowns, pagination, or clear)
    useEffect(() => {
-      if (filters._email !== debouncedEmail) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _email: debouncedEmail || null,
-            };
-         });
-      }
-   }, [debouncedEmail]);
+      setEmailInput(filters._email ?? '');
+      setFirstNameInput(filters._firstName ?? '');
+      setLastNameInput(filters._lastName ?? '');
+      setPhoneNumberInput(filters._phoneNumber ?? '');
+   }, [
+      filters._email,
+      filters._firstName,
+      filters._lastName,
+      filters._phoneNumber,
+   ]);
 
-   useEffect(() => {
-      if (filters._firstName !== debouncedFirstName) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _firstName: debouncedFirstName || null,
-            };
-         });
-      }
-   }, [debouncedFirstName]);
-
-   useEffect(() => {
-      if (filters._lastName !== debouncedLastName) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _lastName: debouncedLastName || null,
-            };
-         });
-      }
-   }, [debouncedLastName]);
-
-   useEffect(() => {
-      if (filters._phoneNumber !== debouncedPhoneNumber) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _phoneNumber: debouncedPhoneNumber || null,
-            };
-         });
-      }
-   }, [debouncedPhoneNumber]);
+   // Handler to apply filters from input values
+   const handleApplyFilters = () => {
+      setFilters({
+         ...filters,
+         _email: emailInput.trim() || null,
+         _firstName: firstNameInput.trim() || null,
+         _lastName: lastNameInput.trim() || null,
+         _phoneNumber: phoneNumberInput.trim() || null,
+         _page: 1, // Reset to first page when applying new filters
+      });
+   };
 
    const {
       getPaginationItems,
@@ -432,6 +406,11 @@ const HRMPage = () => {
                            onChange={(event) => {
                               setEmailInput(event.target.value);
                            }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
+                           }}
                            className="w-full"
                            type="email"
                         />
@@ -447,6 +426,11 @@ const HRMPage = () => {
                            onChange={(event) => {
                               setFirstNameInput(event.target.value);
                            }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
+                           }}
                            className="w-full"
                         />
                      </div>
@@ -460,6 +444,11 @@ const HRMPage = () => {
                            value={lastNameInput}
                            onChange={(event) => {
                               setLastNameInput(event.target.value);
+                           }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
                            }}
                            className="w-full"
                         />
@@ -475,10 +464,26 @@ const HRMPage = () => {
                            onChange={(event) => {
                               setPhoneNumberInput(event.target.value);
                            }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
+                           }}
                            className="w-full"
                            type="tel"
                         />
                      </div>
+                  </div>
+
+                  {/* Apply Filter Button Row */}
+                  <div className="flex items-center justify-end">
+                     <Button
+                        onClick={handleApplyFilters}
+                        className="h-10 px-4 gap-2"
+                     >
+                        <Search className="h-4 w-4" />
+                        Apply Filters
+                     </Button>
                   </div>
 
                   {/* Filter Dropdowns Row */}

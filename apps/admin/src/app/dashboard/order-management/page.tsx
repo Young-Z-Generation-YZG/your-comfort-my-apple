@@ -59,7 +59,6 @@ import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { useRouter } from 'next/navigation';
 import { TOrder } from '~/src/domain/types/ordering.type';
 import usePaginationV2 from '~/src/hooks/use-pagination';
-import { useDebounce } from '~/src/hooks/use-debounce';
 
 const getStatusStyle = (status: string) => {
    switch (status) {
@@ -441,7 +440,7 @@ const OrderManagementPage = () => {
       _customerEmail: 'string',
    });
 
-   // Local state for input values (not debounced)
+   // Local state for input values (not synced to filters until Apply is clicked)
    const [orderCodeInput, setOrderCodeInput] = useState<string>(
       filters._orderCode ?? '',
    );
@@ -449,35 +448,21 @@ const OrderManagementPage = () => {
       filters._customerEmail ?? '',
    );
 
-   // Debounce the input values
-   const debouncedOrderCode = useDebounce<string>(orderCodeInput, 500);
-   const debouncedCustomerEmail = useDebounce<string>(customerEmailInput, 500);
-
-   // Update filter when debounced order code changes (only if different)
+   // Sync input values when filters change externally (e.g., from dropdowns, pagination, or clear)
    useEffect(() => {
-      if (filters._orderCode !== debouncedOrderCode) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _orderCode: debouncedOrderCode || null,
-            };
-         });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [debouncedOrderCode]);
+      setOrderCodeInput(filters._orderCode ?? '');
+      setCustomerEmailInput(filters._customerEmail ?? '');
+   }, [filters._orderCode, filters._customerEmail]);
 
-   // Update filter when debounced customer email changes (only if different)
-   useEffect(() => {
-      if (filters._customerEmail !== debouncedCustomerEmail) {
-         setFilters((prev) => {
-            return {
-               ...prev,
-               _customerEmail: debouncedCustomerEmail || null,
-            };
-         });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [debouncedCustomerEmail]);
+   // Handler to apply filters from input values
+   const handleApplyFilters = () => {
+      setFilters({
+         ...filters,
+         _orderCode: orderCodeInput.trim() || null,
+         _customerEmail: customerEmailInput.trim() || null,
+         _page: 1, // Reset to first page when applying new filters
+      });
+   };
 
    const {
       getPaginationItems,
@@ -595,6 +580,11 @@ const OrderManagementPage = () => {
                            onChange={(event) => {
                               setOrderCodeInput(event.target.value);
                            }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
+                           }}
                            className="w-full"
                         />
                      </div>
@@ -609,10 +599,26 @@ const OrderManagementPage = () => {
                            onChange={(event) => {
                               setCustomerEmailInput(event.target.value);
                            }}
+                           onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
+                                 handleApplyFilters();
+                              }
+                           }}
                            className="w-full"
                            type="email"
                         />
                      </div>
+                  </div>
+
+                  {/* Apply Filter Button Row */}
+                  <div className="flex items-center justify-end">
+                     <Button
+                        onClick={handleApplyFilters}
+                        className="h-10 px-4 gap-2"
+                     >
+                        <Search className="h-4 w-4" />
+                        Apply Filters
+                     </Button>
                   </div>
 
                   {/* Filter Dropdowns Row */}
