@@ -2,10 +2,16 @@ version: "3.8"
 
 services:
     ygz.client.web:
-        image: baledev/ygz.client.web:latest
+        image: baledev/ybstore.ygzclientweb:latest
         build:
             context: ../apps/client
             dockerfile: Dockerfile
+            args:
+                - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
+                - APP_URL=https://ybszone.io.vn
+        environment:
+            - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
+            - APP_URL=https://ybszone.io.vn
         deploy:
             resources:
                 limits:
@@ -14,16 +20,50 @@ services:
                 reservations:
                     cpus: "0.25"
                     memory: 512m
-        restart: unless-stopped
+        restart: no
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "wget --spider -q http://127.0.0.1:3000/ || exit 1",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
         networks:
             - client-network
 
     ygz.admin.web:
-        image: baledev/ygz.admin.web:latest
+        image: baledev/ybstore.ygzadminweb:latest
         build:
             context: ../apps/admin
             dockerfile: Dockerfile
-        restart: unless-stopped
+            args:
+                - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
+                - APP_URL=https://ybszone.io.vn
+        environment:
+            - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
+            - APP_URL=https://ybszone.io.vn
+        deploy:
+            resources:
+                limits:
+                    cpus: "0.50"
+                    memory: 512m
+                reservations:
+                    cpus: "0.25"
+                    memory: 512m
+        restart: no
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "wget --spider -q http://127.0.0.1:3000/ || exit 1",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 3
+            start_period: 30s
         networks:
             - client-network
 
@@ -38,10 +78,12 @@ services:
             - ./nginx.fe.conf:/etc/nginx/nginx.conf:ro
             # SSL certificates (provisioned locally under ./ssl)
             # Mapped to the standard Certbot-like path inside the container.
-            - /etc/letsencrypt:/etc/letsencrypt:ro
+            - ./ssl:/ssl:ro
         depends_on:
-            - ygz.client.web
-            - ygz.admin.web
+            ygz.client.web:
+                condition: service_healthy
+            ygz.admin.web:
+                condition: service_healthy
         networks:
             - client-network
 

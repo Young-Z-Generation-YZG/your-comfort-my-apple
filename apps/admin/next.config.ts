@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
    },
    // Production optimizations
    productionBrowserSourceMaps: false, // Disable source maps in production
-   optimizeFonts: true, // Optimize font loading
+   // optimizeFonts: true, // Optimize font loading
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,
       DEFAULT_TENANT_ID: process.env.DEFAULT_TENANT_ID,
