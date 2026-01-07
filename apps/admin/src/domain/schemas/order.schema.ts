@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { IUpdateOrderPayload } from '../interfaces/orders/update-order.interface';
+import { IUpdateOrderPayload } from '~/src/domain/interfaces/order.interface';
 
 const UpdateOrderStatusSchema = z.object({
    order_id: z.string().min(1, {

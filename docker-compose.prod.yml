@@ -27,6 +27,16 @@ services:
         environment:
             - API_ENDPOINT=https://ybstore.io.vn/api
             - APP_URL=https://admin.ybstore.io.vn
+            - NODE_OPTIONS=--max-old-space-size=512 --no-warnings
+            - NEXT_TELEMETRY_DISABLED=1
+            - NEXT_PRIVATE_STANDALONE=1
+            - NEXT_PRIVATE_NO_WORKERS=1
+            - UV_THREADPOOL_SIZE=1
+            - NODE_CPU_COUNT=1
+            - NODE_ENV=production
+        mem_limit: 1g
+        mem_reservation: 512m
+        cpus: "1.0"
         restart: unless-stopped
         ports:
             - "3001:3000"
@@ -158,14 +168,14 @@ services:
             - "6001:8080"
             # - "6061:8081"
         depends_on:
-            mq.rabbitmq:
-                condition: service_healthy
             db.catalog.replica.primary:
                 condition: service_started
-            mongo.setup:
-                condition: service_completed_successfully
-            ygz.ordering.api:
-                condition: service_started
+            mq.rabbitmq:
+                condition: service_healthy
+            # mongo.setup:
+            #     condition: service_completed_successfully
+            # ygz.ordering.api:
+            #     condition: service_started
         # volumes:
         #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -265,10 +275,10 @@ services:
                 condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-            ygz.discount.grpc:
-                condition: service_started
-            ygz.catalog.api:
-                condition: service_started
+            # ygz.discount.grpc:
+            #     condition: service_started
+            # ygz.catalog.api:
+            #     condition: service_started
         # volumes:
         #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -441,7 +451,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=178.128.104.193
+            - MONGO_HOST_IP=178.128.61.119
         ports:
             - 27001:27017
         volumes:
@@ -490,7 +500,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=178.128.104.193
+            - MONGO_HOST_IP=178.128.61.119
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
