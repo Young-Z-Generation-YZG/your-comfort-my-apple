@@ -110,25 +110,35 @@ app.UseCors(options =>
     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
 });
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
     app.UseSwaggerUi(ui => ui.SwaggerOAuthSettings(builder.Configuration));
 
+  
+
     // Seed data initialization - wrap in try-catch to prevent startup failure
     try
     {
+        // Wait a bit to ensure MassTransit bus and other services' consumers are ready
+        // This gives time for Catalog service to register its consumers
+        logger.LogInformation("Waiting for message broker and consumers to be ready before seeding...");
+        await Task.Delay(TimeSpan.FromSeconds(60), lifetime.ApplicationStopping);
+        
         await app.ApplySeedDataAsync();
+
+        logger.LogInformation("Seed data applied successfully.");
     }
     catch (Exception ex)
     {
-        var logger = app.Services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "Failed to apply seed data. Application will continue without seed data.");
     }
 }
 
-var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
 lifetime.ApplicationStopping.Register(() =>
 {
     using var scope = app.Services.CreateScope();

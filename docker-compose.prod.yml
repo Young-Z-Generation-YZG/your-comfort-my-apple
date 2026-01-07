@@ -172,8 +172,8 @@ services:
                 condition: service_started
             mq.rabbitmq:
                 condition: service_healthy
-            # mongo.setup:
-            #     condition: service_completed_successfully
+            mongo.setup:
+                condition: service_completed_successfully
             # ygz.ordering.api:
             #     condition: service_started
         # volumes:
@@ -451,7 +451,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=178.128.61.119
+            - MONGO_HOST_IP=167.172.67.214
         ports:
             - 27001:27017
         volumes:
@@ -500,7 +500,7 @@ services:
             - db.catalog.replica.secondary
             - db.catalog.replica.arbiter
         environment:
-            - MONGO_HOST_IP=178.128.61.119
+            - MONGO_HOST_IP=167.172.67.214
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
