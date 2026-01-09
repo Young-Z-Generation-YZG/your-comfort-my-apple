@@ -2,20 +2,20 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
    output: 'standalone',
-   reactStrictMode: true, // Enable to catch memory leaks and issues
-   poweredByHeader: false, // Remove X-Powered-By header
-   compress: true, // Enable gzip compression
+   reactStrictMode: false, // Enable to catch memory leaks and issues
+   // poweredByHeader: false, // Remove X-Powered-By header
+   // compress: true, // Enable gzip compression
    // swcMinify is enabled by default in Next.js 15, no need to specify
    // Configure cache directory to avoid permission issues
-   distDir: '.next',
+   // distDir: '.next',
    // Disable experimental features that might cause issues and spawn workers
-   experimental: {
-      serverActions: {
-         bodySizeLimit: '2mb',
-      },
-   },
+   // experimental: {
+   //    serverActions: {
+   //       bodySizeLimit: '2mb',
+   //    },
+   // },
    // Production optimizations
-   productionBrowserSourceMaps: false, // Disable source maps in production
+   // productionBrowserSourceMaps: false, // Disable source maps in production
    // optimizeFonts: true, // Optimize font loading
    env: {
       API_ENDPOINT: process.env.API_ENDPOINT,

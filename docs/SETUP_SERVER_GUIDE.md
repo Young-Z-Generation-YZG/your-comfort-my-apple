@@ -41,9 +41,9 @@ sudo /opt/certbot/bin/pip install certbot certbot-nginx
 
 sudo ln -s /opt/certbot/bin/certbot /usr/bin/certbot
 
-sudo certbot certonly --standalone -d ybstore.io.vn -d admin.ybstore.io.vn -d keycloak.ybstore.io.vn -d logging.ybstore.io.vn -d tracking.ybstore.io.vn
+sudo certbot certonly --standalone -d ybzone.io.vn -d admin.ybzone.io.vn -d keycloak.ybzone.io.vn -d logging.ybzone.io.vn -d tracking.ybzone.io.vn
 
-sudo cp /etc/letsencrypt/live/ybstore.io.vn/fullchain.pem ~/repo/your-comfort-my-apple/provision/ssl/
+sudo cp /etc/letsencrypt/live/ybzone.io.vn/fullchain.pem ~/repo/your-comfort-my-apple/provision/ssl/
 
-sudo cp /etc/letsencrypt/live/ybstore.io.vn/privkey.pem ~/repo/your-comfort-my-apple/provision/ssl/
+sudo cp /etc/letsencrypt/live/ybzone.io.vn/privkey.pem ~/repo/your-comfort-my-apple/provision/ssl/
 ```

@@ -11,7 +11,7 @@ import {
 } from '../redux/features/auth.slice';
 import { RootState } from '../redux/store';
 import { baseQuery } from './base-query';
-import { setTenant } from '../redux/features/tenant.slice';
+import { clearTenant, setTenant } from '../redux/features/tenant.slice';
 
 const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
    const result = await baseQuery('/identity-services')(
@@ -22,8 +22,17 @@ const baseQueryHandler = async (args: any, api: any, extraOptions: any) => {
 
    // Check if we received a 401 Unauthorized response
    if (result.error && result.error.status === 401) {
+      console.log('[AuthService]::401 Error - Clearing auth and tenant state');
       // Dispatch logout action to clear auth state
       api.dispatch(setLogout());
+      // Clear tenant state
+      api.dispatch(clearTenant());
+      // Verify tenant state is cleared
+      const stateAfterClear = (api.getState() as RootState).tenant;
+      console.log(
+         '[AuthService]::Tenant state after clearTenant:',
+         JSON.stringify(stateAfterClear, null, 2),
+      );
    }
 
    return result;
@@ -127,11 +136,7 @@ export const authApi = createApi({
                await queryFulfilled;
                dispatch(setUseRefreshToken(false));
                dispatch(setLogout());
-               dispatch(
-                  setTenant({
-                     tenantId: null,
-                  }),
-               );
+               dispatch(clearTenant());
             } catch (error: unknown) {
                console.info(
                   '[AuthService]::logout::try/catch',

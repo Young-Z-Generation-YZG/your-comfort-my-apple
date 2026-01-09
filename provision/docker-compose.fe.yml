@@ -8,10 +8,10 @@ services:
             dockerfile: Dockerfile
             args:
                 - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
-                - APP_URL=https://ybszone.io.vn
+                - APP_URL=https://ybstore.io.vn
         environment:
             - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
-            - APP_URL=https://ybszone.io.vn
+            - APP_URL=https://ybstore.io.vn
         deploy:
             resources:
                 limits:
@@ -41,10 +41,10 @@ services:
             dockerfile: Dockerfile
             args:
                 - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
-                - APP_URL=https://ybszone.io.vn
+                - APP_URL=https://ybstore.io.vn
         environment:
             - API_ENDPOINT=https://54472c9696d5.ngrok-free.app
-            - APP_URL=https://ybszone.io.vn
+            - APP_URL=https://ybstore.io.vn
         deploy:
             resources:
                 limits:
