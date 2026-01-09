@@ -25,13 +25,10 @@ public class EventItemCreatedDomainEventHandler : INotificationHandler<EventItem
     public async Task Handle(EventItemCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         _logger.LogWarning("::::[DomainEventHandler:{DomainEventHandler}]:::: Warning message: {Message}, Parameters: {@Parameters}",
-            nameof(EventItemCreatedDomainEventHandler), "Processing event item created domain event", new { eventItemId = notification.EventItem.Id.Value.ToString(), eventId = notification.EventItem.EventId.Value.ToString() ?? "", skuId = notification.EventItem.SkuId });
+            nameof(EventItemCreatedDomainEventHandler), "Processing event item created domain event", notification);
 
         var eventItemId = notification.EventItem.Id.Value.ToString();
         var eventId = notification.EventItem.EventId.Value.ToString() ?? "";
-
-        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Processing event item created domain event", new { eventItemId, eventId, skuId = notification.EventItem.SkuId });
 
         var integrationEvent = new EventItemCreatedIntegrationEvent
         {

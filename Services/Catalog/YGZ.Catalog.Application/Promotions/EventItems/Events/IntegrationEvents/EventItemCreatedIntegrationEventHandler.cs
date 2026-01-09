@@ -21,7 +21,7 @@ public class EventItemCreatedIntegrationEventHandler : IConsumer<EventItemCreate
     public async Task Consume(ConsumeContext<EventItemCreatedIntegrationEvent> context)
     {
         _logger.LogWarning(":::::[IntegrationEventHandler:{IntegrationEventHandler}]::::: Warning message: {Message}, Parameters: {@Parameters}",
-            nameof(EventItemCreatedIntegrationEventHandler), "Processing event item created integration event", new { eventItemId = context.Message.EventItemId, eventId = context.Message.EventId, skuId = context.Message.SkuId });
+            nameof(EventItemCreatedIntegrationEventHandler), "Processing event item created integration event", context.Message);
 
         var eventItemId = context.Message.EventItemId;
         var eventId = context.Message.EventId;

@@ -143,7 +143,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             }
             catch (RpcException ex)
             {
-                _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                _logger.LogCritical(ex, "===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Error message: {Message}, Parameters: {@Parameters}",
                     nameof(CheckoutBasketHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), ex.Message, new { eventItemId = cartPromotionId });
                 throw;
             }
@@ -180,7 +180,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             }
             catch (RpcException ex)
             {
-                _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                _logger.LogCritical(ex, "===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Error message: {Message}, Parameters: {@Parameters}",
                     nameof(CheckoutBasketHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, new { skuId = skuId });
                 throw;
             }
@@ -239,7 +239,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 }
                 catch (RpcException ex)
                 {
-                    _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    _logger.LogCritical(ex, "===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Error message: {Message}, Parameters: {@Parameters}",
                         nameof(CheckoutBasketHandler), nameof(CatalogProtoService), nameof(_catalogProtoServiceClient.GetSkuByIdGrpcAsync), ex.Message, new { skuId = cartItem.SkuId });
                     throw;
                 }
@@ -276,7 +276,7 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 }
                 catch (RpcException ex)
                 {
-                    _logger.LogCritical(ex, ":::[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]::: Error message: {Message}, Parameters: {@Parameters}",
+                    _logger.LogCritical(ex, "===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Error message: {Message}, Parameters: {@Parameters}",
                         nameof(CheckoutBasketHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetCouponByCodeGrpcAsync), ex.Message, new { discountCode = request.DiscountCode });
                     throw;
                 }
