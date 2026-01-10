@@ -1,11 +1,13 @@
 ﻿
 
 using System.Linq.Expressions;
+using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
 using YGZ.Catalog.Api.Protos;
+using YGZ.Discount.Grpc.Protos;
 using YGZ.Ordering.Application.Abstractions.Data;
 using YGZ.Ordering.Domain.Core.Errors;
 using YGZ.Ordering.Domain.Orders.ValueObjects;
@@ -17,14 +19,17 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
     private readonly ILogger<ConfirmOrderHandler> _logger;
     private readonly IGenericRepository<Order, OrderId> _repository;
     private readonly CatalogProtoService.CatalogProtoServiceClient _catalogProtoServiceClient;
+    private readonly DiscountProtoService.DiscountProtoServiceClient _discountProtoServiceClient;
 
     public ConfirmOrderHandler(ILogger<ConfirmOrderHandler> logger,
                                IGenericRepository<Order, OrderId> repository,
-                               CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient)
+                               CatalogProtoService.CatalogProtoServiceClient catalogProtoServiceClient,
+                               DiscountProtoService.DiscountProtoServiceClient discountProtoServiceClient)
     {
         _logger = logger;
         _repository = repository;
         _catalogProtoServiceClient = catalogProtoServiceClient;
+        _discountProtoServiceClient = discountProtoServiceClient;
     }
 
     public async Task<Result<bool>> Handle(ConfirmOrderCommand request, CancellationToken cancellationToken)
@@ -40,9 +45,6 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 
         if (order is null)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_repository.GetByIdAsync), "Order not found", new { orderId = request.OrderId });
-
             return Errors.Order.DoesNotExist;
         }
 
@@ -63,28 +65,67 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
                 _ => EPromotionTypeGrpc.PromotionTypeUnknown
             };
 
-            var result = await _catalogProtoServiceClient.CheckInsufficientGrpcAsync(new CheckInsufficientRequest
-            {
-                SkuId = item.SkuId,
-                Quantity = item.Quantity,
-                PromotionId = item.PromotionId ?? string.Empty,
-                PromotionType = promotionTypeGrpc
-            });
+            SkuModel? skuGrpc = null;
 
-            if (!result.IsSuccess)
+            try
             {
-                _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                    nameof(_catalogProtoServiceClient.CheckInsufficientGrpcAsync), "Insufficient stock for order item", new { orderId = request.OrderId, skuId = item.SkuId, quantity = item.Quantity, promotionId = item.PromotionId });
+                skuGrpc = await _catalogProtoServiceClient.GetSkuByIdGrpcAsync(new GetSkuByIdRequest
+                {
+                    SkuId = item.SkuId
+                }, cancellationToken: cancellationToken);
+            }
+            catch (RpcException ex)
+            {
+                throw;
+            }
 
-                return Errors.Order.InsufficientStock;
+
+            if (skuGrpc is null)
+            {
+                throw new InvalidOperationException("SKU not found");
+            }
+
+            if (promotionType.Name == EPromotionType.EVENT_ITEM.Name)
+            {
+                EventItemModel? eventItemGrpc = null;
+
+                try
+                {
+                    eventItemGrpc = await _discountProtoServiceClient.GetEventItemByIdGrpcAsync(new GetEventItemByIdRequest
+                    {
+                        EventItemId = item.PromotionId
+                    }, cancellationToken: cancellationToken);
+                }
+                catch (RpcException ex)
+                {
+                    throw;
+                }
+
+                if (eventItemGrpc is null)
+                {
+
+                    throw new InvalidOperationException("Event item not found");
+                }
+
+
+                if (skuGrpc.ReservedForEvent is null)
+                {
+                    throw new InvalidOperationException("SKU is not reserved for event");
+                }
+
+                var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity;
+                var availableQuantityEventItem = eventItemGrpc.Stock - eventItemGrpc.Sold;
+
+                if (availableQuantitySku <= 0 || availableQuantityEventItem <= 0 || (availableQuantitySku != availableQuantityEventItem))
+                {
+                    return Errors.Order.InsufficientStock;
+                }
+
             }
         }
 
         if (order.OrderStatus != EOrderStatus.PENDING)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(Handle), "Cannot confirm order - order is not in PENDING status", new { orderId = request.OrderId, currentStatus = order.OrderStatus.Name });
-
             return Errors.Order.CannotConfirmOrder;
         }
 
@@ -94,14 +135,9 @@ public class ConfirmOrderHandler : ICommandHandler<ConfirmOrderCommand, bool>
 
         if (updateResult.IsFailure)
         {
-            _logger.LogError(":::[Handler Error]::: Method: {MethodName}, Error message: {ErrorMessage}, Parameters: {@Parameters}",
-                nameof(_repository.UpdateAsync), "Failed to update order status to confirmed", new { orderId = request.OrderId, error = updateResult.Error });
 
             return updateResult.Error;
         }
-
-        _logger.LogInformation("::[Operation Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Successfully confirmed order", new { orderId = request.OrderId, orderItemCount = order.OrderItems.Count });
 
         return updateResult;
     }

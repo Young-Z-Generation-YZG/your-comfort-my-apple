@@ -79,17 +79,17 @@ if (app.Environment.IsDevelopment())
 
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
-    
+
     // Seed data initialization - wrap in try-catch to prevent startup failure
     try
     {
         // Wait a bit to ensure MassTransit bus and other services' consumers are ready
         // This gives time for Catalog service to register its consumers
         logger.LogInformation("Waiting for mongo setup and consumers to be ready before seeding...");
-        await Task.Delay(TimeSpan.FromSeconds(120), lifetime.ApplicationStopping);
-        
+        //await Task.Delay(TimeSpan.FromSeconds(120), lifetime.ApplicationStopping);
+
         await app.ApplySeedDataAsync();
-        
+
         logger.LogInformation("Seed data applied successfully.");
     }
     catch (Exception ex)

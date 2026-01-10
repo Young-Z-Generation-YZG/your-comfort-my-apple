@@ -127,19 +127,17 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
                 .Where(item => item.Promotion?.PromotionEvent != null)
                 .Sum(item => item.DiscountAmount ?? 0);
 
-            var discountGrpcRequest = new GetEventItemByIdRequest
-            {
-                EventItemId = cartPromotionId
-            };
 
             EventItemModel? eventItemGrpc = null;
 
-            try
-            {
+            try {
                 _logger.LogInformation("===[CommandHandler:{CommandHandler}][gRPC:{gRPCName}][Method:{MethodName}]=== Information message: {Message}, Parameters: {@Parameters}",
                     nameof(CheckoutBasketHandler), nameof(DiscountProtoService), nameof(_discountProtoServiceClient.GetEventItemByIdGrpcAsync), "Getting event item by ID...", new { eventItemId = cartPromotionId });
 
-                eventItemGrpc = await _discountProtoServiceClient.GetEventItemByIdGrpcAsync(discountGrpcRequest, cancellationToken: cancellationToken);
+                eventItemGrpc = await _discountProtoServiceClient.GetEventItemByIdGrpcAsync(new GetEventItemByIdRequest
+                {
+                    EventItemId = cartPromotionId
+                }, cancellationToken: cancellationToken);
             }
             catch (RpcException ex)
             {
@@ -203,10 +201,10 @@ public sealed record CheckoutBasketHandler : ICommandHandler<CheckoutBasketComma
             {
                 _logger.LogCritical(":::[CommandHandler:{CommandHandler}][Exception:{Eception}]::: Error message: {Message}, Parameters: {@Parameters}",
                     nameof(CheckoutBasketHandler), nameof(InvalidOperationException), "SKU is not reserved for this event", new { skuId = skuId });
-                throw new InvalidOperationException("SKU is not reserved for this event");
+                throw new InvalidOperationException("Event item does not match the SKU");
             }
 
-            var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity - eventItemGrpc.Sold;
+            var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity;
             var availableQuantityEventItem = eventItemGrpc.Stock - eventItemGrpc.Sold;
 
             if (availableQuantitySku <= 0 || availableQuantityEventItem <= 0 || (availableQuantitySku != availableQuantityEventItem))

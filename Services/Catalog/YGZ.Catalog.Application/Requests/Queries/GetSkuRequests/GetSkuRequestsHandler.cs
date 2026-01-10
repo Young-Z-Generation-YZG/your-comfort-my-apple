@@ -79,11 +79,11 @@ internal sealed class GetSkuRequestsHandler : IQueryHandler<GetSkuRequestsQuery,
             {
                 if (request.TransferType.ToUpper() == "SENT_TO")
                 {
-                    filter &= filterBuilder.Eq("from_branch.branch_id", branchObjectId);
+                    filter &= filterBuilder.Eq("to_branch.branch_id", branchObjectId);
                 }
                 else if (request.TransferType.ToUpper() == "RECEIVE_FROM")
                 {
-                    filter &= filterBuilder.Eq("to_branch.branch_id", branchObjectId);
+                    filter &= filterBuilder.Eq("from_branch.branch_id", branchObjectId);
                 }
             }
             else

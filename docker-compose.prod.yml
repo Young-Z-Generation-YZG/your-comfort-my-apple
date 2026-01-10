@@ -198,6 +198,7 @@ services:
             - FeatureManagement__OrderFulfillment=false
             - WebClientSettings__BaseUrl=https://ybzone.io.vn
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
             - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
             - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317

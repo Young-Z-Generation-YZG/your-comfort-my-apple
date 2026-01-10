@@ -157,7 +157,7 @@ public class GetCheckoutBasketHandler : IQueryHandler<GetCheckoutBasketQuery, Ge
                         throw new InvalidOperationException("SKU is not reserved for this event");
                     }
 
-                    var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity - eventItemGrpc.Sold;
+                    var availableQuantitySku = skuGrpc.ReservedForEvent.ReservedQuantity;
                     var availableQuantityEventItem = eventItemGrpc.Stock - eventItemGrpc.Sold;
 
                     if (availableQuantitySku <= 0 || availableQuantityEventItem <= 0 || (availableQuantitySku != availableQuantityEventItem))

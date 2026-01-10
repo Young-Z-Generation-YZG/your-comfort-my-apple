@@ -6,6 +6,7 @@ using Microsoft.FeatureManagement;
 using Quartz;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.Catalog.Api.Protos;
+using YGZ.Discount.Grpc.Protos;
 
 namespace YGZ.Ordering.Application;
 
@@ -29,10 +30,25 @@ public static class DependencyInjection
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
         var catalogServiceAddress = configuration["GrpcSettings:CatalogUrl"]!;
+        var discountServiceAddress = configuration["GrpcSettings:DiscountUrl"]!;
 
         services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>(options =>
         {
             options.Address = new Uri(catalogServiceAddress);
+        })
+        .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            return handler;
+        });
+
+        services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+        {
+            options.Address = new Uri(discountServiceAddress);
         })
         .ConfigurePrimaryHttpMessageHandler(() =>
         {

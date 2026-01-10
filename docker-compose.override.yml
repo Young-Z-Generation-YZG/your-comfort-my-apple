@@ -302,7 +302,7 @@ services:
             - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
-            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - WebClientSettings__BaseUrl=http://localhost:3000
             - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
             - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
@@ -356,8 +356,9 @@ services:
             - MessageBrokerSettings__Host=amqp://rabbitmq-host:5672
             - Keycloak__auth-server-url=http://ygz.keycloak.server:17070/
             - FeatureManagement__EnableSelfSsl=false
-            - WebClientSettings__BaseUrl=https://ybzone.io.vn
+            - WebClientSettings__BaseUrl=http://localhost:3000
             - GrpcSettings__CatalogUrl=https://ygz.catalog.api:8081
+            - GrpcSettings__DiscountUrl=https://ygz.discount.grpc:8081
             - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
             - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
