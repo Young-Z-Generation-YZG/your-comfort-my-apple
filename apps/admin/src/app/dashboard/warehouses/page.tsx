@@ -10,6 +10,7 @@ import {
    VisibilityState,
    RowSelectionState,
 } from '@tanstack/react-table';
+import Link from 'next/link';
 import {
    Table,
    TableBody,
@@ -64,7 +65,8 @@ import Image from 'next/image';
 import useFilters from '~/src/hooks/use-filter';
 import { useAppSelector } from '~/src/infrastructure/redux/store';
 import { TSku } from '~/src/domain/types/catalog.type';
-import { Cylinder } from 'lucide-react';
+import { RequestSkuModal } from './components/request-sku-modal';
+import { Cylinder, Send } from 'lucide-react';
 import { IGetWarehousesQueryParams } from '~/src/infrastructure/services/inventory.service';
 import { z } from 'zod';
 
@@ -522,9 +524,20 @@ const columns: ColumnDef<TSku>[] = [
                      Copy SKU ID
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>View details</DropdownMenuItem>
-                  <DropdownMenuItem>Edit SKU</DropdownMenuItem>
-                  <DropdownMenuItem>Adjust stock</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                     <Link href={`/dashboard/warehouses/${sku.id}`}>
+                        View details
+                     </Link>
+                  </DropdownMenuItem>
+                  <RequestSkuModal
+                     sku={sku}
+                     trigger={
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                           <Send className="mr-2 h-4 w-4" />
+                           Request SKU Application
+                        </DropdownMenuItem>
+                     }
+                  />
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="text-destructive">
                      Delete SKU

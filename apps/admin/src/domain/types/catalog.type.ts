@@ -18,6 +18,7 @@ export type TSku = {
       event_name: string;
       reserved_quantity: number;
    } | null;
+   reserved_for_sku_requests: TReservedForSkuRequest[];
    state: string;
    slug: string;
    created_at: string;
@@ -188,4 +189,39 @@ export type TImage = {
 export type TRatingStar = {
    star: number;
    count: number;
+};
+
+export type TEmbeddedBranch = {
+   branch_id: string;
+   branch_name: string;
+};
+
+export type TEmbeddedSku = {
+   sku_id: string;
+   model_normalized_name: string;
+   color_normalized_name: string;
+   storage_normalized_name: string;
+   image_url: string;
+};
+
+export type TSkuRequest = {
+   id: string;
+   sender_user_id: string;
+   from_branch: TEmbeddedBranch;
+   to_branch: TEmbeddedBranch;
+   sku: TEmbeddedSku;
+   request_quantity: number;
+   state: string;
+   created_at: string;
+   updated_at: string;
+   updated_by: string | null;
+   is_deleted: boolean;
+   deleted_at: string | null;
+   deleted_by: string | null;
+};
+
+export type TReservedForSkuRequest = {
+   to_branch_id: string;
+   to_branch_name: string;
+   reserved_quantity: number;
 };

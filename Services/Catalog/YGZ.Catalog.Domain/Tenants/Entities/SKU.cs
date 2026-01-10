@@ -47,6 +47,9 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
     [BsonElement("reserved_for_event")]
     public ReservedForEvent? ReservedForEvent { get; private set; }
 
+    [BsonElement("reserved_for_sku_request")]
+    public List<ReservedForSkuRequest> ReservedForSkuRequests { get; private set; } = [];
+
     [BsonElement("total_sold")]
     public int TotalSold { get; set; } = 0;
 
@@ -100,6 +103,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             UnitPrice = unitPrice,
             AvailableInStock = availableInStock,
             ReservedForEvent = null,
+            ReservedForSkuRequests = [],
             State = EProductState.ACTIVE.Name,
             Slug = Slug.Create(skuCode.Value)
         };
@@ -131,6 +135,26 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
 
             ReservedForEvent = ReservedForEvent.Create(eventId, eventItemId, eventName, reservedQuantity);
         }
+    }
+
+    public void SetReservedForSkuRequest(BranchId toBranchId, string toBranchName, int reservedQuantity)
+    {
+        if(AvailableInStock < reservedQuantity)
+        {
+            throw new InvalidOperationException("Available in stock is less than the reserved quantity");
+        }
+
+        var skuRequest = ReservedForSkuRequests.FirstOrDefault(x => x.ToBranchId.Value == toBranchId.Value);
+
+        if(skuRequest is not null)
+        {
+            skuRequest.ReservedQuantity += reservedQuantity;
+        } else
+        {
+            ReservedForSkuRequests.Add(ReservedForSkuRequest.Create(toBranchId, toBranchName, reservedQuantity));
+        }
+
+        AvailableInStock -= reservedQuantity;
     }
 
     public void DeductQuantity(int quantity)
@@ -177,6 +201,7 @@ public class SKU : Entity<SkuId>, IAuditable, ISoftDelete
             AvailableInStock = AvailableInStock,
             TotalSold = TotalSold,
             ReservedForEvent = ReservedForEvent?.ToResponse(),
+            ReservedForSkuRequests = ReservedForSkuRequests?.Select(x => x.ToResponse()).ToList() ?? [],
             State = State,
             Slug = Slug.Value,
             CreatedAt = CreatedAt,

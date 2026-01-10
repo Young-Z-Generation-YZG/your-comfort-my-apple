@@ -76,7 +76,7 @@ public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<Sku
 
         if (request._models is not null && request._models.Any())
         {
-            var productModels = request._models.Select(x => x.ToLower()).ToList();
+            var productModels = request._models.ToList();
             filter &= filterBuilder.In("model.normalized_name", productModels);
         }
 

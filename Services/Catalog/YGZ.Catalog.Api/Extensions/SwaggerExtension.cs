@@ -11,6 +11,7 @@ using YGZ.Catalog.Api.Contracts.CategoryRequest;
 using YGZ.Catalog.Api.Contracts.IphoneRequest;
 using YGZ.Catalog.Api.Contracts.PromotionRequest;
 using YGZ.Catalog.Api.Contracts.ReviewRequest;
+using YGZ.Catalog.Api.Contracts.SkuRequestRequest;
 using YGZ.Catalog.Api.Contracts.TenantRequest;
 
 namespace YGZ.Catalog.Api.Extensions;
@@ -65,6 +66,9 @@ public static class SwaggerExtension
             settings.SchemaSettings.SchemaProcessors.Add(new CreateIphoneModelRequestExample());
 
             settings.SchemaSettings.SchemaProcessors.Add(new CreateTenantRequestExample());
+
+            settings.SchemaSettings.SchemaProcessors.Add(new CreateSkuRequestRequestExample());
+            settings.SchemaSettings.SchemaProcessors.Add(new UpdateSkuRequestRequestExample());
 
         });
 

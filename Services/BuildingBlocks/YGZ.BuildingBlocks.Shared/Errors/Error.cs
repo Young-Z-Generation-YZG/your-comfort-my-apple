@@ -31,6 +31,9 @@ public class Error
     public static Error ValidationError => new(GetAssemblyName() + "Test", "Validation error", GetAssemblyName());
     public static Error GrpcError(string code, string message) => new("Test", message, GetAssemblyName());
     public static Error BadRequest(string code, string message, string serviceName) => new(code, message, serviceName);
+    public static Error NotFound(string code, string message, string serviceName) => new(code, message, serviceName);
+    public static Error Validation(string code, string message, string serviceName) => new(code, message, serviceName);
+    public static Error OperationFailed(string code, string message, string serviceName) => new(code, message, serviceName);
 
     private static string GetAssemblyName()
     {

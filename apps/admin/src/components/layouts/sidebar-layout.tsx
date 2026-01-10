@@ -3,13 +3,10 @@
 
 import * as React from 'react';
 import {
-   Command,
    LifeBuoy,
    Send,
-   MonitorSmartphone,
    UsersRound,
    ChartNoAxesCombined,
-   TabletSmartphone,
    Tag,
    ScrollText,
    FileUser,
@@ -17,13 +14,13 @@ import {
    UserPen,
    Building2,
    Users,
-   User,
    Box,
    Warehouse,
    Laptop,
    TicketPercent,
    Calendar,
    Ticket,
+   GitPullRequestCreateArrow
 } from 'lucide-react';
 
 import {
@@ -176,17 +173,10 @@ const superAdminSidebarData = [
       url: '/dashboard/online/orders',
       icon: ScrollText,
       isActive: true,
-      items: [
-         {
-            title: 'Orders List',
-            url: '/dashboard/online/orders',
-            icon: ScrollText,
-         },
-      ],
    },
    {
       title: 'Product Management',
-      url: '/dashboard/product-management',
+      url: '#',
       icon: Building2,
       isActive: true,
       items: [
@@ -218,7 +208,7 @@ const superAdminSidebarData = [
    },
    {
       title: 'Promotion Management',
-      url: '/dashboard/promotion-management',
+      url: '#',
       icon: TicketPercent,
       isActive: true,
       items: [
@@ -248,7 +238,7 @@ const superAdminSidebarData = [
    },
    {
       title: 'Order Management',
-      url: '/dashboard/order-management',
+      url: '#',
       icon: ScrollText,
       isActive: true,
       items: [
@@ -259,12 +249,18 @@ const superAdminSidebarData = [
          },
       ],
    },
+   {
+      title: 'Application Requests',
+      url: '/dashboard/application-requests',
+      icon: GitPullRequestCreateArrow,
+      isActive: true,
+   },
 ];
 
 const adminSidebarData = [
    {
       title: 'Product Management',
-      url: '/dashboard/product-management',
+      url: '#',
       icon: Building2,
       isActive: true,
       items: [
@@ -285,7 +281,6 @@ const adminSidebarData = [
       url: '/dashboard/warehouses',
       icon: Warehouse,
       isActive: true,
-      items: [],
    },
    {
       title: 'Categories',
@@ -296,7 +291,7 @@ const adminSidebarData = [
    },
    {
       title: 'Promotion Management',
-      url: '/dashboard/promotion-management',
+      url: '#',
       icon: TicketPercent,
       isActive: true,
       items: [
@@ -327,7 +322,7 @@ const adminSidebarData = [
    },
    {
       title: 'Order Management',
-      url: '/dashboard/order-management',
+      url: '#',
       icon: ScrollText,
       isActive: true,
       items: [
@@ -338,12 +333,18 @@ const adminSidebarData = [
          },
       ],
    },
+   {
+      title: 'Application Requests',
+      url: '/dashboard/application-requests',
+      icon: GitPullRequestCreateArrow,
+      isActive: true,
+   },
 ];
 
 const staffSidebarData = [
    {
       title: 'Product Management',
-      url: '/dashboard/product-management',
+      url: '#',
       icon: Building2,
       isActive: true,
       items: [
@@ -375,7 +376,7 @@ const staffSidebarData = [
    },
    {
       title: 'Promotion Management',
-      url: '/dashboard/promotion-management',
+      url: '#',
       icon: TicketPercent,
       isActive: true,
       items: [
@@ -399,7 +400,7 @@ const staffSidebarData = [
    },
    {
       title: 'Order Management',
-      url: '/dashboard/order-management',
+      url: '#',
       icon: ScrollText,
       isActive: true,
       items: [

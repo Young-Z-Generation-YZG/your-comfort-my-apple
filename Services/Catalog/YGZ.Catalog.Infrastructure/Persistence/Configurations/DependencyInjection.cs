@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization;
 using YGZ.Catalog.Domain.Categories.ValueObjects;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.Iphone.ValueObjects;
+using YGZ.Catalog.Domain.Requests.SkuRequest.ValueObjects;
 using YGZ.Catalog.Domain.Tenants.ValueObjects;
 using YGZ.Catalog.Infrastructure.Persistence.Configurations.Serializers;
 
@@ -22,6 +23,7 @@ public static class DependencyInjection
         BsonSerializer.RegisterSerializer(typeof(SkuCode), new SKUCodeSerialization());
         BsonSerializer.RegisterSerializer(typeof(TenantId), new TenantIdSerialization());
         BsonSerializer.RegisterSerializer(typeof(BranchId), new BranchIdSerialization());
+        BsonSerializer.RegisterSerializer(typeof(RequestId), new RequestIdSerialization());
 
         return services;
     }

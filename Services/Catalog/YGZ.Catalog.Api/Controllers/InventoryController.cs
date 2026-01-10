@@ -6,6 +6,8 @@ using NSwag.Annotations;
 using YGZ.BuildingBlocks.Shared.Extensions;
 using YGZ.BuildingBlocks.Shared.Swaggers;
 using YGZ.Catalog.Api.Contracts.InventoryRequest;
+using YGZ.Catalog.Application.Inventory.Queries.GetSkuById;
+using YGZ.Catalog.Application.Inventory.Queries.GetSkuByIdWithImage;
 using YGZ.Catalog.Application.Inventory.Queries.GetWarehouses;
 
 namespace YGZ.Catalog.Api.Controllers;
@@ -34,6 +36,26 @@ public class InventoryController : ApiController
         var tenantId = Request.Headers["X-TenantId"].FirstOrDefault();
         var query = _mapper.Map<GetSkusQuery>(request);
         query._tenantId = tenantId;
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("skus/{id}")]
+    public async Task<IActionResult> GetSkuById([FromRoute] string id, CancellationToken cancellationToken)
+    {
+        var query = new GetSkuByIdQuery(id);
+
+        var result = await _sender.Send(query, cancellationToken);
+
+        return result.Match(onSuccess: result => Ok(result), onFailure: HandleFailure);
+    }
+
+    [HttpGet("skus/{id}/with-image")]
+    public async Task<IActionResult> GetSkuByIdWithImage([FromRoute] string id, CancellationToken cancellationToken)
+    {
+        var query = new GetSkuByIdWithImageQuery(id);
 
         var result = await _sender.Send(query, cancellationToken);
 

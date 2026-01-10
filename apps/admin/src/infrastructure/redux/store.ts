@@ -29,6 +29,7 @@ import { categoryApi } from '~/src/infrastructure/services/category.service';
 import { userApi } from '~/src/infrastructure/services/user.service';
 import { notificationApi } from '~/src/infrastructure/services/notification.service';
 import { reviewApi } from '~/src/infrastructure/services/review.service';
+import { requestApi } from '~/src/infrastructure/services/request.service';
 
 const storage = createPersistStorage();
 
@@ -50,6 +51,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       userApi.reducerPath,
       notificationApi.reducerPath,
       reviewApi.reducerPath,
+      requestApi.reducerPath,
    ],
    whitelist: ['auth', 'tenant'],
 };
@@ -71,6 +73,7 @@ const reducers = combineReducers({
    [userApi.reducerPath]: userApi.reducer,
    [notificationApi.reducerPath]: notificationApi.reducer,
    [reviewApi.reducerPath]: reviewApi.reducer,
+   [requestApi.reducerPath]: requestApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -96,6 +99,7 @@ export const reduxStore = configureStore({
          userApi.middleware,
          notificationApi.middleware,
          reviewApi.middleware,
+         requestApi.middleware,
       ),
 });
 

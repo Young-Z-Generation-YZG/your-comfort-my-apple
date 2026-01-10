@@ -46,7 +46,25 @@ export const inventoryApi = createApi({
          }),
          providesTags: ['Inventory'],
       }),
+      getSkuById: builder.query<TSku, string>({
+         query: (id: string) => ({
+            url: `/api/v1/inventory/skus/${id}`,
+            method: 'GET',
+         }),
+         providesTags: (result, error, id) => [{ type: 'Inventory', id }],
+      }),
+      getSkuByIdWithImage: builder.query<TSku, string>({
+         query: (id: string) => ({
+            url: `/api/v1/inventory/skus/${id}/with-image`,
+            method: 'GET',
+         }),
+         providesTags: (result, error, id) => [{ type: 'Inventory', id }],
+      }),
    }),
 });
 
-export const { useLazyGetWarehousesQuery } = inventoryApi;
+export const {
+   useLazyGetWarehousesQuery,
+   useLazyGetSkuByIdQuery,
+   useLazyGetSkuByIdWithImageQuery,
+} = inventoryApi;

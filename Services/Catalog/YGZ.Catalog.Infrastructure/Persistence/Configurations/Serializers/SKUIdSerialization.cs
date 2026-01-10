@@ -17,7 +17,7 @@ public class SkuIdSerialization : SerializerBase<SkuId>
             return;
         }
 
-        context.Writer.WriteObjectId((MongoDB.Bson.ObjectId)value.Id!);
+        context.Writer.WriteObjectId((ObjectId)value.Id!);
     }
 
     public override SkuId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)

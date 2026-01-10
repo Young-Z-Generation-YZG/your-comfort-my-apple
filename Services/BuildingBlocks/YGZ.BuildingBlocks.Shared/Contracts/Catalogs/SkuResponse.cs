@@ -21,6 +21,7 @@ public sealed record SkuResponse
     public required int AvailableInStock { get; init; }
     public required int TotalSold { get; init; }
     public required ReservedForEventResponse? ReservedForEvent { get; init; }
+    public required List<ReservedForSkuRequestResponse> ReservedForSkuRequests { get; init; }
     public required string State { get; init; }
     public required string Slug { get; init; }
     public required DateTime CreatedAt { get; init; }

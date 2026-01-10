@@ -9,6 +9,7 @@ import YearOverYearChart from './_components/year-over-year-chart';
 import MultiTenantChart from './_components/multi-tenant-chart';
 import RevenueOrdersChart from './_components/revenue-orders-chart';
 import MetricsCards from './_components/metrics-cards';
+import { useAppSelector } from '~/src/infrastructure/redux/store';
 
 const RevenueAnalytics = () => {
    const {
@@ -18,6 +19,12 @@ const RevenueAnalytics = () => {
       getRevenuesByTenantsState,
       isLoading,
    } = useOrderingService();
+
+   const { currentUser } = useAppSelector((state) => state.auth);
+
+   const isSuperAdmin = useMemo(() => {
+      return currentUser?.roles?.includes('SUPER_ADMIN');
+   }, [currentUser]);
 
    // Get orders from revenues API response
    const orders = useMemo(() => {
@@ -70,9 +77,9 @@ const RevenueAnalytics = () => {
          <div className="mt-6">
             <RevenueOrdersChart />
 
-            <MultiTenantChart />
+            {isSuperAdmin && <MultiTenantChart />}
 
-            <YearOverYearChart />
+            {isSuperAdmin && <YearOverYearChart />}
          </div>
       </div>
    );

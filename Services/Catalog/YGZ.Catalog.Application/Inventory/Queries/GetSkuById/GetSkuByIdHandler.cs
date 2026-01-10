@@ -26,7 +26,7 @@ public class GetSkuByIdHandler : IQueryHandler<GetSkuByIdQuery, SkuResponse>
 
         if (sku is null)
         {
-            _logger.LogError(":::[QueryHandler:{QueryHandler}][Result:Error][Method:{MethodName}:::] Error message: {ErrorMessage}, Parameters: {@Parameters}",
+            _logger.LogError(":::[QueryHandler:{QueryHandler}][Result:Error][Method:{MethodName}]::: Error message: {ErrorMessage}, Parameters: {@Parameters}",
                 nameof(GetSkuByIdHandler), nameof(_repository.GetByIdAsync), Errors.Inventory.SkuDoesNotExist.Message, request);
 
             return Errors.Inventory.SkuDoesNotExist;
