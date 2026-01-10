@@ -169,11 +169,11 @@ services:
             # - "6061:8081"
         depends_on:
             db.catalog.replica.primary:
-                condition: service_started
+                condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-            mongo.setup:
-                condition: service_completed_successfully
+            # mongo.setup:
+            #     condition: service_completed_successfully
             # ygz.ordering.api:
             #     condition: service_started
         # volumes:
@@ -239,6 +239,8 @@ services:
             db.discount:
                 condition: service_healthy
             mq.rabbitmq:
+                condition: service_healthy
+            db.catalog.replica.primary:
                 condition: service_healthy
         # volumes:
         #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
@@ -460,6 +462,11 @@ services:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/docker-entrypoint-initdb.d/rs_config.sh:ro
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         networks:
             - ybzone-network
 
@@ -475,6 +482,11 @@ services:
             - ybzone.mongodb_replica_secondary:/data/db
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         networks:
             - ybzone-network
 
@@ -490,6 +502,11 @@ services:
             - ybzone.mongodb_replica_arbiter:/data/db
         command: mongod --replSet "rs0" --bind_ip_all --replSetName rs0
         user: "999:999"
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
         networks:
             - ybzone-network
 
@@ -497,9 +514,12 @@ services:
         image: mongo:latest
         container_name: mongo.setup
         depends_on:
-            - db.catalog.replica.primary
-            - db.catalog.replica.secondary
-            - db.catalog.replica.arbiter
+            db.catalog.replica.primary:
+                condition: service_healthy
+            db.catalog.replica.secondary:
+                condition: service_healthy
+            db.catalog.replica.arbiter:
+                condition: service_healthy
         environment:
             - MONGO_HOST_IP=167.172.67.214
         volumes:
