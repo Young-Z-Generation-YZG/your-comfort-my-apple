@@ -172,10 +172,6 @@ services:
                 condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-            # mongo.setup:
-            #     condition: service_completed_successfully
-            # ygz.ordering.api:
-            #     condition: service_started
         # volumes:
         #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -217,7 +213,7 @@ services:
             - ybzone-network
 
     ygz.discount.grpc:
-        image: baledev/ygzdiscountgrpc:latest
+        image: baledev/ybzone.ygzdiscountgrpc:latest
         build:
             context: .
             dockerfile: Services/Discount/YGZ.Discount.Grpc/Dockerfile
@@ -278,10 +274,6 @@ services:
                 condition: service_healthy
             mq.rabbitmq:
                 condition: service_healthy
-            # ygz.discount.grpc:
-            #     condition: service_started
-            # ygz.catalog.api:
-            #     condition: service_started
         # volumes:
         #     - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
         #     - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
@@ -454,7 +446,7 @@ services:
         restart: always
         environment:
             - MONGO_INITDB_REPLICASET=rs0
-            - MONGO_HOST_IP=167.172.67.214
+            - MONGO_HOST_IP=160.191.243.131
         ports:
             - 27001:27017
         volumes:
@@ -521,7 +513,7 @@ services:
             db.catalog.replica.arbiter:
                 condition: service_healthy
         environment:
-            - MONGO_HOST_IP=167.172.67.214
+            - MONGO_HOST_IP=160.191.243.131
         volumes:
             - ./provision/dockerVolumes/mongoDb/scripts/rs_config.sh:/scripts/rs_config.sh
             - ./provision/dockerVolumes/mongoDb/scripts/init_catalog_db.sh:/scripts/init_catalog_db.sh
