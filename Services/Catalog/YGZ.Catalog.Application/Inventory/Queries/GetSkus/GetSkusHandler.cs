@@ -60,6 +60,11 @@ public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<Sku
             filter &= filterBuilder.Eq("tenant_id", new ObjectId(request._tenantId));
         }
 
+        if (request._branchId is not null)
+        {
+            filter &= filterBuilder.Eq("branch_id", new ObjectId(request._branchId));
+        }
+
         if (request._colors is not null && request._colors.Any())
         {
             var productColors = request._colors.ToList();
@@ -150,10 +155,12 @@ public class GetSkusHandler : IQueryHandler<GetSkusQuery, PaginationResponse<Sku
                 AvailableInStock = sku.AvailableInStock,
                 TotalSold = sku.TotalSold,
                 ReservedForEvent = sku.ReservedForEvent?.ToResponse(),
+                ReservedForSkuRequests = sku.ReservedForSkuRequests.Select(x => x.ToResponse()).ToList(),
                 State = sku.State,
                 Slug = sku.Slug.Value,
                 CreatedAt = sku.CreatedAt,
                 UpdatedAt = sku.UpdatedAt,
+                UpdatedBy = sku.UpdatedBy,
                 DeletedAt = sku.DeletedAt,
                 DeletedBy = sku.DeletedBy,
                 IsDeleted = sku.IsDeleted

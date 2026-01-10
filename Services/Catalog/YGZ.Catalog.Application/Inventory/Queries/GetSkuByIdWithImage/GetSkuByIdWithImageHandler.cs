@@ -55,10 +55,12 @@ public class GetSkuByIdWithImageHandler : IQueryHandler<GetSkuByIdWithImageQuery
             AvailableInStock = sku.AvailableInStock,
             TotalSold = sku.TotalSold,
             ReservedForEvent = sku.ReservedForEvent?.ToResponse(),
+            ReservedForSkuRequests = sku.ReservedForSkuRequests.Select(x => x.ToResponse()).ToList(),
             State = sku.State,
             Slug = sku.Slug.Value,
             CreatedAt = sku.CreatedAt,
             UpdatedAt = sku.UpdatedAt,
+            UpdatedBy = sku.UpdatedBy,
             DeletedAt = sku.DeletedAt,
             DeletedBy = sku.DeletedBy,
             IsDeleted = sku.IsDeleted

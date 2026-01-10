@@ -54,6 +54,7 @@ import {
    Smartphone,
    TabletSmartphone,
    Plus,
+   Building2,
 } from 'lucide-react';
 import { cn } from '~/src/infrastructure/lib/utils';
 import { LoadingOverlay } from '@components/loading-overlay';
@@ -68,6 +69,7 @@ import { TSku } from '~/src/domain/types/catalog.type';
 import { RequestSkuModal } from './components/request-sku-modal';
 import { Cylinder, Send } from 'lucide-react';
 import { IGetWarehousesQueryParams } from '~/src/infrastructure/services/inventory.service';
+import useTenantService from '~/src/hooks/api/use-tenant-service';
 import { z } from 'zod';
 
 // Zod schemas for dynamic filters
@@ -469,7 +471,7 @@ const columns: ColumnDef<TSku>[] = [
    },
    {
       id: 'reserved_quantity',
-      header: 'Reserved',
+      header: 'Event Reserved',
       cell: ({ row }) => {
          const reservedEvent = row.original.reserved_for_event;
          if (!reservedEvent) {
@@ -482,6 +484,32 @@ const columns: ColumnDef<TSku>[] = [
                   className="bg-orange-100 text-orange-800 border-orange-300"
                >
                   {reservedEvent.reserved_quantity}
+               </Badge>
+            </div>
+         );
+      },
+   },
+   {
+      id: 'sku_reserved_quantity',
+      header: 'SKU Reserved',
+      cell: ({ row }) => {
+         const reservedRequests = row.original.reserved_for_sku_requests;
+         if (!reservedRequests || reservedRequests.length === 0) {
+            return <div className="text-center text-gray-400">-</div>;
+         }
+
+         const totalReserved = reservedRequests.reduce(
+            (sum, req) => sum + req.reserved_quantity,
+            0,
+         );
+
+         return (
+            <div className="text-center">
+               <Badge
+                  variant="outline"
+                  className="bg-indigo-100 text-indigo-800 border-indigo-300"
+               >
+                  {totalReserved}
                </Badge>
             </div>
          );
@@ -550,10 +578,20 @@ const columns: ColumnDef<TSku>[] = [
 ];
 
 const WarehousesPage = () => {
-   const { getWarehousesAsync, getWarehousesState, isLoading } =
+   const { getWarehousesAsync, getWarehousesState, isLoading: isInventoryLoading } =
       useInventoryService();
 
    const { tenantId } = useAppSelector((state) => state.tenant);
+   const { currentUser } = useAppSelector((state) => state.auth);
+   const defaultBranchId = currentUser?.branchId;
+
+   const {
+      getListTenantsAsync,
+      getListTenantsState,
+      isLoading: isTenantLoading,
+   } = useTenantService();
+
+   const isLoading = isInventoryLoading || isTenantLoading;
 
    const { filters, setFilters } = useFilters<IGetWarehousesQueryParams>({
       _page: 'number',
@@ -561,6 +599,7 @@ const WarehousesPage = () => {
       _colors: { array: 'string' },
       _storages: { array: 'string' },
       _models: { array: 'string' },
+      _branchId: 'string',
    });
 
    const [sorting, setSorting] = useState<SortingState>([]);
@@ -568,6 +607,41 @@ const WarehousesPage = () => {
       {},
    );
    const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+   const isSuperAdmin = useMemo(() => {
+      const roles = currentUser?.roles ?? [];
+      return roles.includes('ADMIN_SUPER_YBZONE') || roles.includes('ADMIN_YBZONE');
+   }, [currentUser]);
+
+   const isInitialMount = useRef(true);
+
+   useEffect(() => {
+      if (isInitialMount.current) {
+         if (!isSuperAdmin && defaultBranchId) {
+            setFilters({ _branchId: defaultBranchId });
+         }
+         isInitialMount.current = false;
+      }
+   }, [defaultBranchId, setFilters, isSuperAdmin]);
+
+   const tenantItems = useMemo(() => {
+      return getListTenantsState.isSuccess && getListTenantsState.data
+         ? getListTenantsState.data
+         : [];
+   }, [getListTenantsState.isSuccess, getListTenantsState.data]);
+
+   const branchItems = useMemo(() => {
+      return tenantItems.map((tenant) => {
+         return {
+            branch_id: tenant.embedded_branch.id,
+            branch_name: tenant.embedded_branch.name,
+         };
+      });
+   }, [tenantItems]);
+
+   useEffect(() => {
+      getListTenantsAsync();
+   }, [getListTenantsAsync]);
 
    // Search states for filter dropdowns
    const [modelSearchQuery, setModelSearchQuery] = useState('');
@@ -679,12 +753,12 @@ const WarehousesPage = () => {
                `${filterToRemove.field}Operator` as keyof IGetWarehousesQueryParams;
 
             // Remove from filters state
-            setFilters((prev) => {
-               const newFilters = { ...prev };
-               delete newFilters[valueKey];
-               delete newFilters[operatorKey];
-               return { ...newFilters, _page: 1 };
-            });
+            setFilters((prev) => ({
+               ...prev,
+               [valueKey]: null,
+               [operatorKey]: null,
+               _page: 1,
+            }));
          }
          setDynamicFilters((prev) => prev.filter((f) => f.id !== id));
       };
@@ -932,6 +1006,7 @@ const WarehousesPage = () => {
          _models: filters._models ?? undefined,
          _colors: filters._colors ?? undefined,
          _storages: filters._storages ?? undefined,
+         _branchId: filters._branchId ?? undefined,
       });
 
       // Only call API if params actually changed
@@ -1493,6 +1568,39 @@ const WarehousesPage = () => {
                            </div>
                         </DropdownMenuContent>
                      </DropdownMenu>
+                     <Select
+                        disabled={!isSuperAdmin}
+                        value={filters._branchId ?? 'ALL'}
+                        onValueChange={(value) =>
+                           setFilters({
+                              _branchId: value === 'ALL' ? null : value,
+                              _page: 1,
+                           })
+                        }
+                     >
+                        <SelectTrigger className="h-10 w-auto min-w-[260px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                           <div className="flex items-center gap-2 overflow-hidden">
+                              <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" />
+                              <span className="font-medium shrink-0">
+                                 Branch
+                              </span>
+                              <div className="truncate text-left">
+                                 <SelectValue placeholder="Select Branch" />
+                              </div>
+                           </div>
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectItem value="ALL">All Branches</SelectItem>
+                           {branchItems.map((branch) => (
+                              <SelectItem
+                                 key={branch.branch_id}
+                                 value={branch.branch_id}
+                              >
+                                 {branch.branch_name}
+                              </SelectItem>
+                           ))}
+                        </SelectContent>
+                     </Select>
 
                      <Button
                         variant="outline"
@@ -1517,7 +1625,12 @@ const WarehousesPage = () => {
                               _models: [],
                               _colors: [],
                               _storages: [],
+                              _branchId: isSuperAdmin ? null : defaultBranchId,
                               _page: 1,
+                              _stock: null,
+                              _stockOperator: null,
+                              _sold: null,
+                              _soldOperator: null,
                            });
                            setDynamicFilters([]);
                         }}
@@ -1525,13 +1638,19 @@ const WarehousesPage = () => {
                            'h-10 px-4 gap-2 whitespace-nowrap',
                            ((filters._models?.length ?? 0) > 0 ||
                               (filters._colors?.length ?? 0) > 0 ||
-                              (filters._storages?.length ?? 0) > 0) &&
-                              'border-[#ef4444] text-[#ef4444] bg-[#ef4444]/10 hover:bg-[#ef4444]/20',
+                              (filters._storages?.length ?? 0) > 0 ||
+                              (isSuperAdmin ? !!filters._branchId : filters._branchId !== defaultBranchId) ||
+                              !!filters._stock ||
+                              !!filters._sold) &&
+                              'border-[#ef4444] text-[#ef4444] bg-[#ef4444]/10 hover:bg-[#ef4444]/20 dark:bg-[#ef4444]/20 dark:border-[#ef4444]',
                         )}
                         disabled={
                            (filters._models?.length ?? 0) === 0 &&
                            (filters._colors?.length ?? 0) === 0 &&
-                           (filters._storages?.length ?? 0) === 0
+                           (filters._storages?.length ?? 0) === 0 &&
+                           (isSuperAdmin ? !filters._branchId : filters._branchId === defaultBranchId) &&
+                           !filters._stock &&
+                           !filters._sold
                         }
                      >
                         <X className="h-4 w-4" />

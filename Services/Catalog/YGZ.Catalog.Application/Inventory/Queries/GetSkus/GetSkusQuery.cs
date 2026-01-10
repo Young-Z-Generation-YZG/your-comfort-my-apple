@@ -12,6 +12,7 @@ public sealed record GetSkusQuery : IQuery<PaginationResponse<SkuWithImageRespon
     public List<string>? _colors { get; init; }
     public List<string>? _storages { get; init; }
     public List<string>? _models { get; init; }
+    public string? _branchId { get; init; }
     
     // Dynamic filters for stock
     public int? _stock { get; init; }

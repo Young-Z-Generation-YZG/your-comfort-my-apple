@@ -22,6 +22,7 @@ export interface IGetWarehousesQueryParams {
    _colors?: string[] | null;
    _storages?: string[] | null;
    _models?: string[] | null;
+   _branchId?: string | null;
    // Dynamic filters for stock
    _stock?: number | null;
    _stockOperator?: string | null; // ">=", ">", "<", "<=", "==", "!=", "in"

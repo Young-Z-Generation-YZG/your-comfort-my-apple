@@ -107,9 +107,10 @@ const ApplicationRequestsPage = () => {
    const [rowSelection, setRowSelection] = useState({});
 
    const { tenantId } = useAppSelector((state) => state.tenant);
-   const { currentUser } = useAppSelector((state) => state.auth);
-   const defaultBranchId = currentUser?.branchId;
-   const router = useRouter();
+   const { currentUser, currentUserKey, impersonatedUser } = useAppSelector((state) => state.auth);
+   const isImpertionating = currentUserKey === "impersonatedUser"
+
+   const defaultBranchId = isImpertionating ? impersonatedUser?.branchId : currentUser?.branchId;
 
    const {
       getSkuRequestsAsync,
@@ -366,6 +367,7 @@ const ApplicationRequestsPage = () => {
                               <DropdownMenuItem
                                  onClick={() => handleUpdateStatus(request.id, ESkuRequestState.APPROVED)}
                                  className="text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50 dark:focus:bg-emerald-950/30"
+                                 disabled={request.from_branch.branch_id === defaultBranchId}
                               >
                                  <CheckCircle2 className="h-4 w-4 mr-2" />
                                  Approve Request
@@ -373,6 +375,7 @@ const ApplicationRequestsPage = () => {
                               <DropdownMenuItem
                                  onClick={() => handleUpdateStatus(request.id, ESkuRequestState.REJECTED)}
                                  className="text-rose-600 focus:text-rose-700 focus:bg-rose-50 dark:focus:bg-rose-950/30"
+                                 disabled={request.from_branch.branch_id === defaultBranchId}
                               >
                                  <XCircle className="h-4 w-4 mr-2" />
                                  Reject Request

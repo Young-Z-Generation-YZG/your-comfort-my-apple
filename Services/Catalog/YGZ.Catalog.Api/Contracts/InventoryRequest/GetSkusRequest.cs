@@ -7,6 +7,7 @@ public sealed record GetSkusRequest
     public List<string>? _colors { get; init; } = new List<string>();
     public List<string>? _storages { get; init; } = new List<string>();
     public List<string>? _models { get; init; } = new List<string>();
+    public string? _branchId { get; init; }
     
     // Dynamic filters for stock
     public int? _stock { get; init; }
