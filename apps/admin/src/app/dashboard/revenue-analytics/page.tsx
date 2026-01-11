@@ -23,7 +23,7 @@ const RevenueAnalytics = () => {
    const { currentUser } = useAppSelector((state) => state.auth);
 
    const isSuperAdmin = useMemo(() => {
-      return currentUser?.roles?.includes('SUPER_ADMIN');
+      return currentUser?.roles?.includes('ADMIN_SUPER_YBZONE') || currentUser?.roles?.includes('ADMIN_YBZONE');
    }, [currentUser]);
 
    // Get orders from revenues API response
