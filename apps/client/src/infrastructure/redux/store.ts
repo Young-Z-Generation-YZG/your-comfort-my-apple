@@ -27,6 +27,7 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { createPersistStorage } from './persist-storage';
 import { promotionApi } from '~/infrastructure/services/promotion.service';
 import { notificationApi } from '~/infrastructure/services/notification.service';
+import { chatApi } from '~/infrastructure/services/chat.service';
 
 const storage = createPersistStorage();
 
@@ -45,6 +46,7 @@ const persistConfig: PersistConfig<ReturnType<typeof reducers>> = {
       identityApi.reducerPath,
       productApi.reducerPath,
       notificationApi.reducerPath,
+      chatApi.reducerPath,
    ], // Add the blacklist option
    whitelist: ['auth', 'cart', 'search'],
 };
@@ -64,6 +66,7 @@ const reducers = combineReducers({
    [identityApi.reducerPath]: identityApi.reducer,
    [productApi.reducerPath]: productApi.reducer,
    [notificationApi.reducerPath]: notificationApi.reducer,
+   [chatApi.reducerPath]: chatApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -86,6 +89,7 @@ export const reduxStore = configureStore({
          identityApi.middleware,
          productApi.middleware,
          notificationApi.middleware,
+         chatApi.middleware,
       ),
 });
 

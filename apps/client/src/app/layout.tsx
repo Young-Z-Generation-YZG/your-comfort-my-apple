@@ -10,6 +10,7 @@ import { LoadingProvider } from '~/components/contexts/loading.context';
 import { Toaster } from '~/components/ui/toaster';
 import { Toaster as SonnerToaster } from '~/components/ui/sonner';
 import { SolanaProvider } from '~/components/providers/solana-provider';
+import ChatWidget from '~/components/client/chat-widget';
 
 export const metadata: Metadata = {
    title: 'YB Store',
@@ -40,6 +41,7 @@ export default function RootLayout({
                         <Header />
                         {children}
                         <Footer />
+                        <ChatWidget />
                      </ReduxProvider>
                   </SolanaProvider>
                </LoadingProvider>
