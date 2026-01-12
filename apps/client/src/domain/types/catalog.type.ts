@@ -349,3 +349,9 @@ export type TReview = {
    content: string;
    created_at: string;
 };
+
+export type TChatbotMessage = {
+   role: 'user' | 'assistant';
+   content: string;
+}
+
