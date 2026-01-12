@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using YGZ.BuildingBlocks.Messaging.Extensions;
 using YGZ.BuildingBlocks.Shared.Extensions;
+using YGZ.Catalog.Application.Abstractions.Caching;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Application.Abstractions.Data.Context;
 using YGZ.Catalog.Application.Abstractions.Uploading;
@@ -9,6 +10,7 @@ using YGZ.Catalog.Infrastructure.Persistence.Configurations;
 using YGZ.Catalog.Infrastructure.Persistence.Context;
 using YGZ.Catalog.Infrastructure.Persistence.Interceptors;
 using YGZ.Catalog.Infrastructure.Persistence.Repositories;
+using YGZ.Catalog.Infrastructure.Services.Caching;
 using YGZ.Catalog.Infrastructure.Services.ImageUploader;
 using YGZ.Catalog.Infrastructure.Settings;
 
@@ -28,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<ITransactionContext, TransactionContext>();
         services.AddScoped(typeof(IMongoRepository<,>), typeof(MongoRepository<,>));
         services.AddScoped<IUploadImageService, UploadImageService>();
+        services.AddScoped<IProductCatalogCacheService, ProductCatalogCacheService>();
 
         services.AddScoped<IDispatchDomainEventInterceptor, DispatchDomainEventInterceptor>();
 

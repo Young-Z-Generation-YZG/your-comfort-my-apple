@@ -6,6 +6,7 @@ using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Contracts.Catalogs;
 using YGZ.BuildingBlocks.Shared.Errors;
+using YGZ.Catalog.Application.Abstractions.Caching;
 
 namespace YGZ.Catalog.Application.Chat.Commands.SendChat;
 
@@ -14,17 +15,23 @@ public class SendChatbotMessagesHandler : ICommandHandler<SendChatbotMessagesCom
     private readonly ILogger<SendChatbotMessagesHandler> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
+    private readonly IProductCatalogCacheService _productCatalogCacheService;
 
-    private const string SystemPrompt = @"Bạn là một trợ lý bán hàng thân thiện và chuyên nghiệp của YB Store - cửa hàng chuyên bán các sản phẩm Apple chính hãng bao gồm iPhone, iPad, MacBook, Apple Watch, AirPods và các phụ kiện. 
+    private const string BaseSystemPrompt = @"Bạn là một trợ lý bán hàng thân thiện và chuyên nghiệp của YB Store - cửa hàng chuyên bán các sản phẩm Apple chính hãng.
 
-Nhiệm vụ của bạn:
+🎯 NGUYÊN TẮC QUAN TRỌNG:
+- Bạn CHỈ được tư vấn về các sản phẩm có trong danh mục dưới đây
+- Nếu khách hỏi về sản phẩm KHÔNG CÓ trong danh mục, hãy trả lời: 'Xin lỗi, hiện tại YB Store chưa có sản phẩm này. Bạn có muốn tôi tư vấn các sản phẩm tương tự mà chúng tôi đang có không?'
+- Khi tư vấn, hãy sử dụng thông tin chính xác từ danh mục sản phẩm
+
+📋 Nhiệm vụ của bạn:
 - Tư vấn sản phẩm phù hợp với nhu cầu khách hàng
 - Giải đáp thắc mắc về thông số kỹ thuật, giá cả, bảo hành
 - Hỗ trợ so sánh các sản phẩm
 - Cung cấp thông tin về chương trình khuyến mãi nếu có
 - Hướng dẫn quy trình mua hàng và thanh toán
 
-Phong cách giao tiếp:
+💬 Phong cách giao tiếp:
 - Thân thiện, lịch sự nhưng chuyên nghiệp
 - Trả lời ngắn gọn, súc tích nhưng đầy đủ thông tin
 - Sử dụng emoji phù hợp để tạo cảm giác thân thiện
@@ -33,11 +40,13 @@ Phong cách giao tiếp:
     public SendChatbotMessagesHandler(
         ILogger<SendChatbotMessagesHandler> logger,
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IProductCatalogCacheService productCatalogCacheService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
+        _productCatalogCacheService = productCatalogCacheService;
     }
 
     public async Task<Result<ChatbotMessageResponse>> Handle(SendChatbotMessagesCommand request, CancellationToken cancellationToken)
@@ -58,6 +67,10 @@ Phong cách giao tiếp:
 
         try
         {
+            // Get product catalog from cache for context
+            var productCatalog = await _productCatalogCacheService.GetProductCatalogSummaryAsync(cancellationToken);
+            var systemPrompt = BuildSystemPrompt(productCatalog);
+
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
             client.DefaultRequestHeaders.Add("HTTP-Referer", "https://ybstore.com");
@@ -65,7 +78,7 @@ Phong cách giao tiếp:
 
             var messages = new List<object>
             {
-                new { role = "system", content = SystemPrompt }
+                new { role = "system", content = systemPrompt }
             };
 
             foreach (var msg in request.ChatbotMessages)
@@ -82,7 +95,7 @@ Phong cách giao tiếp:
             };
 
             _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
-                nameof(SendChatbotMessagesHandler), "Sending request to OpenRouter", new { model });
+                nameof(SendChatbotMessagesHandler), "Sending request to OpenRouter with product context", new { model, hasProductContext = !string.IsNullOrEmpty(productCatalog) });
 
             var response = await client.PostAsJsonAsync(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -121,5 +134,20 @@ Phong cách giao tiếp:
 
             return Error.BadRequest("Chat.Exception", $"Failed to process chat: {ex.Message}", "CatalogService");
         }
+    }
+
+    private string BuildSystemPrompt(string? productCatalog)
+    {
+        if (string.IsNullOrEmpty(productCatalog))
+        {
+            return BaseSystemPrompt + "\n\n⚠️ Lưu ý: Không thể tải danh mục sản phẩm. Vui lòng thông báo khách hàng liên hệ trực tiếp cửa hàng.";
+        }
+
+        return $@"{BaseSystemPrompt}
+
+📦 DANH MỤC SẢN PHẨM HIỆN CÓ TẠI YB STORE:
+{productCatalog}
+
+Hãy sử dụng thông tin trên để tư vấn chính xác cho khách hàng.";
     }
 }
