@@ -129,9 +129,9 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
         var maxPrice = allPrices.Max();
 
         if (minPrice == maxPrice)
-            return $"{minPrice:N0}đ";
+            return $"${minPrice:N0}";
 
-        return $"{minPrice:N0}đ - {maxPrice:N0}đ";
+        return $"${minPrice:N0} - ${maxPrice:N0}";
     }
 
     private static string TruncateDescription(string? description, int maxLength)

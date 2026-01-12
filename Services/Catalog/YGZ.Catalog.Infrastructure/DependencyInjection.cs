@@ -24,6 +24,7 @@ public static class DependencyInjection
 
         services.Configure<MongoDbSettings>(configuration.GetSection(MongoDbSettings.SettingKey));
         services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SettingKey));
+        services.Configure<OpenRouterSettings>(configuration.GetSection(OpenRouterSettings.SettingKey));
 
         services.AddMongoDbConfigurations();
 
