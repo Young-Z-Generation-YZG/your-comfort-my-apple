@@ -27,3 +27,14 @@ export interface IGetProductModelsByCategorySlugQueryParams {
    _maxPrice?: number | null;
    _priceSort?: 'ASC' | 'DESC' | null;
 }
+
+export interface ChatbotMessagesRequest {
+   chatbot_messages: ChatbotMessage[];
+}
+
+export interface ChatbotMessage {
+   role: 'user' | 'assistant';
+   content: string;
+}
+
+
