@@ -121,6 +121,24 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
                         BranchName = branch.Name,
                         BranchAddress = branch.Address,
                         AvailableStock = s.AvailableInStock,
+                        UnitPrice = s.UnitPrice,
+                        IsOnPromotion = s.ReservedForEvent != null,
+                        PromotionName = s.ReservedForEvent?.EventName
+                    };
+                }).ToList();
+
+            // Get products on promotion/discount
+            var promotionSummaries = availableSkus
+                .Where(s => s.ReservedForEvent != null && branchLookup.ContainsKey(s.BranchId.Value!))
+                .Select(s =>
+                {
+                    var branch = branchLookup[s.BranchId.Value!];
+                    return new PromotionSummary
+                    {
+                        ProductName = $"{s.Model.Name} {s.Color.Name} {s.Storage.Name}",
+                        EventName = s.ReservedForEvent!.EventName,
+                        BranchName = branch.Name,
+                        AvailableStock = s.ReservedForEvent.ReservedQuantity,
                         UnitPrice = s.UnitPrice
                     };
                 }).ToList();
@@ -131,7 +149,8 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
                 TotalProducts = productSummaries.Count,
                 Products = productSummaries,
                 Branches = branchSummaries,
-                Inventory = inventorySummaries
+                Inventory = inventorySummaries,
+                Promotions = promotionSummaries
             };
 
             var jsonOptions = new JsonSerializerOptions
@@ -149,8 +168,8 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
 
             await _cache.SetStringAsync(CacheKey, jsonData, cacheOptions, cancellationToken);
 
-            _logger.LogInformation(":::[Service:{ServiceName}]::: Product catalog cache refreshed with {ProductCount} products, {BranchCount} branches, {InventoryCount} inventory items",
-                nameof(ProductCatalogCacheService), productSummaries.Count, branchSummaries.Count, inventorySummaries.Count);
+            _logger.LogInformation(":::[Service:{ServiceName}]::: Product catalog cache refreshed with {ProductCount} products, {BranchCount} branches, {InventoryCount} inventory items, {PromotionCount} promotions",
+                nameof(ProductCatalogCacheService), productSummaries.Count, branchSummaries.Count, inventorySummaries.Count, promotionSummaries.Count);
         }
         catch (Exception ex)
         {
@@ -197,6 +216,7 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
         public List<ProductSummary> Products { get; set; } = new();
         public List<BranchSummary> Branches { get; set; } = new();
         public List<InventorySummary> Inventory { get; set; } = new();
+        public List<PromotionSummary> Promotions { get; set; } = new();
     }
 
     private class ProductSummary
@@ -228,6 +248,17 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
         public string Storage { get; set; } = "";
         public string BranchName { get; set; } = "";
         public string BranchAddress { get; set; } = "";
+        public int AvailableStock { get; set; }
+        public decimal UnitPrice { get; set; }
+        public bool IsOnPromotion { get; set; }
+        public string? PromotionName { get; set; }
+    }
+
+    private class PromotionSummary
+    {
+        public string ProductName { get; set; } = "";
+        public string EventName { get; set; } = "";
+        public string BranchName { get; set; } = "";
         public int AvailableStock { get; set; }
         public decimal UnitPrice { get; set; }
     }
