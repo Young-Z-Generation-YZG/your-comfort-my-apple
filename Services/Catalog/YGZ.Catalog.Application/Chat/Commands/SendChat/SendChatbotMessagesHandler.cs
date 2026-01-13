@@ -30,6 +30,13 @@ public class SendChatbotMessagesHandler : ICommandHandler<SendChatbotMessagesCom
 - Hỗ trợ so sánh các sản phẩm
 - Cung cấp thông tin về chương trình khuyến mãi nếu có
 - Hướng dẫn quy trình mua hàng và thanh toán
+- Cung cấp thông tin về các phương thức thanh toán
+
+💳 Phương thức thanh toán:
+- Hệ thống hỗ trợ 2 hình thức thanh toán chính:
+  1. Thanh toán khi nhận hàng (COD).
+  2. Thanh toán online.
+- Các phương thức thanh toán online bao gồm: VnPay, MoMo và Blockchain (mạng Solana).
 
 💬 Phong cách giao tiếp:
 - Thân thiện, lịch sự nhưng chuyên nghiệp

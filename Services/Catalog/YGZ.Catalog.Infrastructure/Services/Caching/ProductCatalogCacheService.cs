@@ -6,6 +6,8 @@ using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
 using YGZ.Catalog.Domain.Products.ProductModels;
 using YGZ.Catalog.Domain.Products.ProductModels.ValueObjects;
+using YGZ.Catalog.Domain.Tenants.Entities;
+using YGZ.Catalog.Domain.Tenants.ValueObjects;
 
 namespace YGZ.Catalog.Infrastructure.Services.Caching;
 
@@ -16,15 +18,21 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
 
     private readonly IDistributedCache _cache;
     private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
+    private readonly IMongoRepository<SKU, SkuId> _skuRepository;
+    private readonly IMongoRepository<Branch, BranchId> _branchRepository;
     private readonly ILogger<ProductCatalogCacheService> _logger;
 
     public ProductCatalogCacheService(
         IDistributedCache cache,
         IMongoRepository<ProductModel, ModelId> productModelRepository,
+        IMongoRepository<SKU, SkuId> skuRepository,
+        IMongoRepository<Branch, BranchId> branchRepository,
         ILogger<ProductCatalogCacheService> logger)
     {
         _cache = cache;
         _productModelRepository = productModelRepository;
+        _skuRepository = skuRepository;
+        _branchRepository = branchRepository;
         _logger = logger;
     }
 
@@ -60,12 +68,21 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
             _logger.LogInformation(":::[Service:{ServiceName}]::: Refreshing product catalog cache",
                 nameof(ProductCatalogCacheService));
 
+            // Fetch products
             var (products, _, _) = await _productModelRepository.GetAllAsync(
                 _page: 1,
                 _limit: 100,
                 filter: null,
                 sort: null,
                 cancellationToken: cancellationToken);
+
+            // Fetch branches
+            var branches = await _branchRepository.GetAllAsync(cancellationToken);
+            var branchLookup = branches.ToDictionary(b => b.Id.Value!, b => b);
+
+            // Fetch SKUs with available stock
+            var skus = await _skuRepository.GetAllAsync(cancellationToken);
+            var availableSkus = skus.Where(s => s.AvailableInStock > 0 && !s.IsDeleted).ToList();
 
             var productSummaries = products.Select(p => new ProductSummary
             {
@@ -82,11 +99,39 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
                 HasPromotion = p.Promotion != null
             }).ToList();
 
+            var branchSummaries = branches
+                .Where(b => !b.IsDeleted)
+                .Select(b => new BranchSummary
+                {
+                    Name = b.Name,
+                    Address = b.Address
+                }).ToList();
+
+            var inventorySummaries = availableSkus
+                .Where(s => branchLookup.ContainsKey(s.BranchId.Value!))
+                .Select(s =>
+                {
+                    var branch = branchLookup[s.BranchId.Value!];
+                    return new InventorySummary
+                    {
+                        ProductName = $"{s.Model.Name} {s.Color.Name} {s.Storage.Name}",
+                        Model = s.Model.Name,
+                        Color = s.Color.Name,
+                        Storage = s.Storage.Name,
+                        BranchName = branch.Name,
+                        BranchAddress = branch.Address,
+                        AvailableStock = s.AvailableInStock,
+                        UnitPrice = s.UnitPrice
+                    };
+                }).ToList();
+
             var catalogData = new ProductCatalogData
             {
                 UpdatedAt = DateTime.UtcNow,
                 TotalProducts = productSummaries.Count,
-                Products = productSummaries
+                Products = productSummaries,
+                Branches = branchSummaries,
+                Inventory = inventorySummaries
             };
 
             var jsonOptions = new JsonSerializerOptions
@@ -104,8 +149,8 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
 
             await _cache.SetStringAsync(CacheKey, jsonData, cacheOptions, cancellationToken);
 
-            _logger.LogInformation(":::[Service:{ServiceName}]::: Product catalog cache refreshed with {ProductCount} products",
-                nameof(ProductCatalogCacheService), productSummaries.Count);
+            _logger.LogInformation(":::[Service:{ServiceName}]::: Product catalog cache refreshed with {ProductCount} products, {BranchCount} branches, {InventoryCount} inventory items",
+                nameof(ProductCatalogCacheService), productSummaries.Count, branchSummaries.Count, inventorySummaries.Count);
         }
         catch (Exception ex)
         {
@@ -150,6 +195,8 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
         public DateTime UpdatedAt { get; set; }
         public int TotalProducts { get; set; }
         public List<ProductSummary> Products { get; set; } = new();
+        public List<BranchSummary> Branches { get; set; } = new();
+        public List<InventorySummary> Inventory { get; set; } = new();
     }
 
     private class ProductSummary
@@ -165,5 +212,23 @@ public class ProductCatalogCacheService : IProductCatalogCacheService
         public int OverallSold { get; set; }
         public bool IsNewest { get; set; }
         public bool HasPromotion { get; set; }
+    }
+
+    private class BranchSummary
+    {
+        public string Name { get; set; } = "";
+        public string Address { get; set; } = "";
+    }
+
+    private class InventorySummary
+    {
+        public string ProductName { get; set; } = "";
+        public string Model { get; set; } = "";
+        public string Color { get; set; } = "";
+        public string Storage { get; set; } = "";
+        public string BranchName { get; set; } = "";
+        public string BranchAddress { get; set; } = "";
+        public int AvailableStock { get; set; }
+        public decimal UnitPrice { get; set; }
     }
 }

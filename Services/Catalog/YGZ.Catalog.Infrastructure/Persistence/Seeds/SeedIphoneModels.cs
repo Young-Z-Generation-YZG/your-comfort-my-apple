@@ -204,7 +204,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 15 model description.",
+                                              description: @"Experience the perfect balance of power and style with iPhone 15, a device that redefines what you expect from a smartphone. Featuring the innovative Dynamic Island—which bubbles up alerts and Live Activities so you don't miss them while you’re doing something else—it captures life's moments with a powerful 48MP Main camera. This advanced camera system allows you to take super-high-resolution photos with incredible detail and color, and the 2x Telephoto lens behaves like a third camera, giving you the perfect close-up for portraits.
+
+Powered by the A16 Bionic chip, the same powerhouse found in previous Pro models, iPhone 15 delivers smooth performance for memory-intensive gaming, computational photography, and more, all while remaining incredibly efficient for all-day battery life. Transitioning to the future of connectivity, the USB-C connector allows you to charge your Mac or iPad with the same cable you use to charge iPhone 15, and even use it to charge Apple Watch or AirPods.
+
+With its durable design featuring color-infused glass that is toughened through a custom dual-ion exchange process and an aerospace-grade aluminum frame, it's built to withstand the rigors of daily life. Available in five vibrant, sophisticated colors, the iPhone 15 isn't just a tool; it's a statement of elegance and technological mastery that keeps you going from morning until night.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
@@ -425,7 +429,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 16 model description.",
+                                              description: @"Elevate your everyday with iPhone 16, a revolutionary device built from the ground up for the era of Apple Intelligence. This personal intelligence system helps you write, express yourself, and get things done effortlessly, all while maintaining the highest standards of privacy. The most striking addition is the all-new Camera Control button—a tactile, sapphire-crystal-protected interface that gives you instant, sliding access to zoom, exposure, and depth of field, transforming your phone into a professional-grade creative tool in a heartbeat.
+
+Under the hood lies the powerful A18 chip, jumping two generations ahead of the A16 to enable high-end gaming and advanced computational photography with remarkable power efficiency. The 48MP Fusion camera system is a marvel of engineering, offering a 2-in-1 experience that combines a high-resolution main camera with a 2x optical-quality Telephoto lens, while the new Ultra Wide camera with autofocus allows for breathtaking macro photography and expansive landscapes.
+
+The design is more functional than ever, featuring the customizable Action button that puts your most-used features—from the flashlight to voice memos—just a press away. Wrapped in a beautiful, durable aerospace-grade aluminum design with the latest generation Ceramic Shield that is 50% tougher than the first generation, iPhone 16 is as resilient as it is smart, offering a spectacular leap in battery life to fuel your most ambitious adventures.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
@@ -549,7 +557,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 16 E model description.",
+                                              description: @"The iPhone 16e is designed for those who seek the perfect fusion of essential Apple innovation and exceptional value. Bringing the iconic Dynamic Island to a more accessible price point, it ensures you stay connected to your notifications and Live Activities with seamless fluidity. The device is fully compatible with the MagSafe ecosystem, opening up a world of effortless wireless charging and a vast array of magnetic accessories that snap on instantly.
+
+Driven by a high-performance A-series chip optimized for efficiency, the iPhone 16e ensures that every swipe, tap, and app launch feels instantaneous and responsive. Whether you are browsing the web, streaming your favorite content, or managing your daily schedule, the hardware works in perfect harmony with iOS to provide a smooth, dependable experience without compromise.
+
+The advanced camera system is engineered to deliver sharp, vibrant, and color-accurate photos in any condition, supported by sophisticated software that automatically enhances every shot. Encased in a design that prioritizes both durability and comfort, the iPhone 16e is the ideal choice for anyone who wants the core flagship iPhone experience—complete with industry-leading security, reliable all-day battery life, and the legendary simplicity of the Apple ecosystem.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
@@ -714,7 +726,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 17 model description.",
+                                              description: @"Step into the future with iPhone 17, where sophisticated elegance meets the next generation of mobile power. This device is a pioneer, driven by the revolutionary 3nm A19 Bionic chip that pushes the boundaries of what a flagship phone can achieve. It fully unlocks the next chapter of Apple Intelligence, providing a personalized and deeply integrated AI experience that anticipates your needs while ensuring your most private data never leaves the device.
+
+The viewing experience is completely transformed by a stunning 6.3-inch Super Retina XDR display. For the first time on a standard model, it incorporates ProMotion technology, offering an adaptive 120Hz refresh rate that makes every scroll feel silky-smooth and every game feel incredibly responsive. With a rumored peak outdoor brightness of 3,000 nits, the screen remains perfectly legible even under the harshest direct sunlight, bringing HDR content to life like never before.
+
+Photography enters a new dimension with a reimagined 48MP dual-camera system that utilizes larger sensors for superior low-light performance. On the front, a brand-new 24MP TrueDepth camera captures professional-grade portraits and enables crystal-clear video calls, even in challenging environments. Built for the long haul, the iPhone 17 features the upgraded Ceramic Shield 2 for the best-in-class scratch and drop resistance, and introduces Wi-Fi 7 support for the fastest, most reliable wireless connectivity available. It's not just a phone; it's your window to a smarter, faster world.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
@@ -882,7 +898,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 17 Pro model description.",
+                                              description: @"Redefine the absolute limits of smartphone technology with the iPhone 17 Pro. At its core lies the pioneering A19 Pro chip, built on a state-of-the-art 2-nanometer process that delivers unprecedented efficiency and raw power. This silicon marvel enables console-level gaming with hardware-accelerated ray tracing and powers the most advanced professional-grade AI capabilities ever seen in a mobile device, allowing you to edit ProRes video, render 3D models, and manage complex workflows on the go with ease.
+
+The Pro camera system has been completely revolutionized, now featuring a triple 48MP sensor array across the Wide, Ultra Wide, and Telephoto lenses. This uniform high resolution allows for incredible detail and flexibility in post-production, while the new telephoto lens offers enhanced optical zoom for capturing distant subjects with stunning clarity. Complementing this is a new 24MP front-facing camera, ensuring every selfie and FaceTime call is broadcast in professional quality.
+
+To manage this immense power, the iPhone 17 Pro incorporates a sophisticated vapor chamber cooling system, a first for iPhone, ensuring sustained peak performance during even the most intensive tasks. The display is a masterclass in engineering—an always-on ProMotion panel that is brighter, tougher, and more responsive than its predecessors. Housed in a refined aerospace-grade frame that balances lightweight portability with ultimate durability, the Pro series remains the gold standard for those who refuse to compromise on their technology.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
@@ -1032,7 +1052,11 @@ public static class SeedIphoneModel
                                               },
                                               prices: prices,
                                               showcaseImages: showcaseImages,
-                                              description: "iPhone 17 Air model description.",
+                                              description: @"Defying the very laws of physics and design, the iPhone 17 Air introduces an impossibly thin and light silhouette that feels like the future in your hand. Measuring at a rumored, record-breaking thickness of just over 6mm, it represents the pinnacle of Apple's engineering—a device that is ultra-portable yet uncompromisingly powerful. Its minimalist aesthetic is achieved through a radical new internal architecture that optimizes every millimeter of space, making it the thinnest iPhone ever created.
+
+Despite its slender profile, the iPhone 17 Air boasts a vibrant 6.6-inch Super Retina XDR display that provides an expansive and immersive canvas for your content. Driven by the high-efficiency A19 chip, it delivers a fluid, responsive experience for multitasking, creative work, and entertainment. The streamlined rear camera system, featuring a single but highly capable sensor, leverages the full power of computational photography to deliver professional-grade images that rival multi-camera setups, focusing on simplicity and quality.
+
+Crafted from premium materials that ensure structural integrity despite its thinness, the iPhone 17 Air is more than just a piece of technology—n its a statement of design philosophy. It is built for a new generation of users who prioritize portability, elegance, and the seamless integration of technology into their lifestyle, offering the full power of the iPhone ecosystem in its most refined form yet.",
                                               averageRating: initAverageRating,
                                               ratingStars: initRatingStars,
                                               overallSold: 10,
