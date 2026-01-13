@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using YGZ.BuildingBlocks.Shared.Abstractions.CQRS;
 using YGZ.BuildingBlocks.Shared.Abstractions.Result;
 using YGZ.BuildingBlocks.Shared.Enums;
+using YGZ.Catalog.Application.Abstractions.Caching;
 using YGZ.Catalog.Application.Abstractions.Data;
 using YGZ.Catalog.Domain.Core.Errors;
 using YGZ.Catalog.Domain.Products.Common.ValueObjects;
@@ -17,12 +18,18 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
     private readonly ILogger<DeductQuantityHandler> _logger;
     private readonly IMongoRepository<SKU, SkuId> _skuRepository;
     private readonly IMongoRepository<ProductModel, ModelId> _productModelRepository;
+    private readonly IProductCatalogCacheService _productCatalogCacheService;
 
-    public DeductQuantityHandler(ILogger<DeductQuantityHandler> logger, IMongoRepository<SKU, SkuId> skuRepository, IMongoRepository<ProductModel, ModelId> productModelRepository)
+    public DeductQuantityHandler(
+        ILogger<DeductQuantityHandler> logger,
+        IMongoRepository<SKU, SkuId> skuRepository,
+        IMongoRepository<ProductModel, ModelId> productModelRepository,
+        IProductCatalogCacheService productCatalogCacheService)
     {
         _logger = logger;
         _skuRepository = skuRepository;
         _productModelRepository = productModelRepository;
+        _productCatalogCacheService = productCatalogCacheService;
     }
 
     public async Task<Result<bool>> Handle(DeductQuantityCommand request, CancellationToken cancellationToken)
@@ -90,57 +97,11 @@ public class DeductQuantityHandler : ICommandHandler<DeductQuantityCommand, bool
             }
         }
 
-        _logger.LogInformation("::[Handler Information]:: Method: {MethodName}, Information message: {InformationMessage}, Parameters: {@Parameters}",
-            nameof(Handle), "Successfully deducted quantities for order", new { orderId = request.Order.OrderId, itemCount = request.Order.OrderItems.Count });
+        _logger.LogInformation(":::[CommandHandler:{CommandHandler}]::: Information message: {Message}, Parameters: {@Parameters}",
+            nameof(DeductQuantityHandler), "Successfully deducted quantities for order", new { orderId = request.Order.OrderId, itemCount = request.Order.OrderItems.Count });
 
-        // var orderItems = request.Order.OrderItems;
-
-        // // Group order items by ModelId to aggregate quantities per ProductModel
-        // var modelGroups = orderItems
-        //     .GroupBy(item => item.ModelId)
-        //     .ToList();
-
-        // foreach (var group in modelGroups)
-        // {
-        //     var modelId = group.Key;
-        //     var totalQuantity = group.Sum(item => item.Quantity);
-
-        //     try
-        //     {
-        //         var productModel = await _productModelRepository.GetByIdAsync(modelId, cancellationToken);
-
-        //         if (productModel is null)
-        //         {
-        //             _logger.LogWarning("ProductModel with Id {ModelId} not found", modelId);
-        //             continue;
-        //         }
-
-        //         // Increase overall sold count
-        //         productModel.OverallSold += totalQuantity;
-
-        //         // Update the ProductModel
-        //         var updateResult = await _productModelRepository.UpdateAsync(modelId, productModel);
-
-        //         if (updateResult.IsSuccess)
-        //         {
-        //             _logger.LogInformation(
-        //                 "Updated OverallSold for ProductModel {ModelId}: Added {Quantity}, New Total: {OverallSold}",
-        //                 modelId, totalQuantity, productModel.OverallSold);
-        //         }
-        //         else
-        //         {
-        //             _logger.LogError(
-        //                 "Failed to update OverallSold for ProductModel {ModelId}: {Error}",
-        //                 modelId, updateResult.Error);
-        //         }
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex,
-        //             "Error updating OverallSold for ProductModel {ModelId}: {ErrorMessage}",
-        //             modelId, ex.Message);
-        //     }
-        // }
+        // Refresh chatbot cache with updated inventory
+        await _productCatalogCacheService.SetProductCatalogSummaryAsync(cancellationToken);
 
         return true;
     }
