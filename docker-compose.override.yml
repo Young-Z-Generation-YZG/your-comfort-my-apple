@@ -294,6 +294,7 @@ services:
             - OpenTelemetrySettings__OtelExporterOtlpEndpointSeq=http://ygz.logging.seq:5341/ingest/otlp/v1/traces
             - OpenTelemetrySettings__OtelExporterOtlpEndpointJaeger=http://ygz.jaeger.opentelemetry:4317
             - Serilog__WriteTo__1__Args__serverUrl=http://ygz.logging.seq:5341/
+            - OpenRouterSettings__ApiKey=sk-or-v1-5e616d4a873e686e45eecf412464a7a1f874488342738309e3ebca23bf9xxxxx
         ports:
             - "6001:8080"
             - "6061:8081"
